@@ -113,7 +113,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
-    @BindView(R2.id.progress_bar) ProgressBar progressBar;
     @BindView(R2.id.content_lv) LinearLayout contentLv;
     @BindView(R2.id.new_comment) EditText comment;
     @BindView(R2.id.send_but) ImageView sendBut;
@@ -175,7 +174,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     @Override
     protected void onFirstTimeLaunched() {
         displayLoading(true);
-        showMainLoading();
         getComment();
     }
 
@@ -348,7 +346,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         parseResult(result);
         adapter.notifyDataSetChanged();
         getActivity().setResult(Activity.RESULT_OK, getResult());
-        hideMainLoading();
     }
 
     private void parseResult(JSONObject result) {
@@ -380,7 +377,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     @Override
     public void showError(String error) {
-        hideMainLoading();
         isRequest = false;
         swipe.setRefreshing(false);
         displayRetry(true);
@@ -643,14 +639,31 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     private int getMenuID() {
         int menuID;
-        if (token.getLoginID(context).equals(userIDTalk)) {
-            if (isFollow==1) {
-                menuID = R.menu.unfollow_delete_menu;
-            } else {
-                menuID = R.menu.follow_delete_menu;
-            }
-        } else {
+//        if (token.getLoginID(context).equals(userIDTalk)) {
+//            if (isFollow==1) {
+//                menuID = R.menu.unfollow_delete_menu;
+//            } else {
+//                menuID = R.menu.follow_delete_menu;
+//            }
+//        } else {
+//            menuID = R.menu.report_menu;
+//        }
+        if (shopID.equals(SessionHandler.getShopID(context))) {
             menuID = R.menu.report_menu;
+        } else {
+            if (token.getLoginID(context).equals(userIDTalk)) {
+                if (isFollow == 1) {
+                    menuID = R.menu.unfollow_delete_menu;
+                } else {
+                    menuID = R.menu.follow_delete_menu;
+                }
+            } else {
+                if (isFollow == 1) {
+                    menuID = R.menu.unfollow_report_menu;
+                } else {
+                    menuID = R.menu.follow_report_menu;
+                }
+            }
         }
         return menuID;
     }
@@ -822,13 +835,5 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     public void reportCommentTalk(TalkDetail talk, int position) {
         presenter.reportCommentTalk(talk, position);
-    }
-
-    protected void showMainLoading(){
-
-    }
-
-    protected void hideMainLoading(){
-
     }
 }

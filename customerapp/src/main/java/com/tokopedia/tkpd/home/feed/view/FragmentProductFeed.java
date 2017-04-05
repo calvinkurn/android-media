@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,8 +18,10 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -34,6 +37,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -73,6 +77,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Inject
     FeedPresenter feedPresenter;
+    View parentView;
 
     private GridLayoutManager gridLayoutManager;
     private DataFeedAdapter adapter;
@@ -92,7 +97,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_feed, container, false);
+        parentView = inflater.inflate(R.layout.fragment_feed, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         prepareView(parentView);
         feedPresenter.attachView(this);
@@ -323,10 +328,19 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         return !adapter.getData().isEmpty();
     }
 
+
     @Override
-    public void forceShowEmptyHistory() {
-         emptyHistoryView.setVisibility(View.VISIBLE);
+    public void showErrorFeed() {
+        NetworkErrorHelper.showEmptyState(getContext(), parentView,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        feedPresenter.refreshDataFeed();
+                    }
+                });
     }
+
+
 
     @Override
     public HistoryProductListItem getViewmodelHistory() {

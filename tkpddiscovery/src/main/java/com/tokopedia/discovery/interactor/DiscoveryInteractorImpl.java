@@ -23,6 +23,7 @@ import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
@@ -54,7 +55,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     CompositeSubscription compositeSubscription;
 
     public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
+        return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
 
     public void setCompositeSubscription(CompositeSubscription compositeSubscription) {
@@ -422,5 +423,4 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                     }
                 }));
     }
-
 }

@@ -267,6 +267,7 @@
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
+    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
     <string name="header_opportunity">Di halaman ini anda dapat mengambil pesanan yang ditolak oleh seller lain</string>
 
     <string name="same_day">Same Day</string>

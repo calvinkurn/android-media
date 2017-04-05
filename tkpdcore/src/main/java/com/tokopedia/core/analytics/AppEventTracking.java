@@ -82,6 +82,7 @@ public interface AppEventTracking {
         String MESSAGE_SHOP = "clickMessageShop";
         String FAVORITE_SHOP = "clickFavoriteShop";
         String TOP_SELLER = "clickTopSeller";
+        String SLIDE_BANNER = "sliderBanner";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -104,6 +105,7 @@ public interface AppEventTracking {
         String CLICK_ADD_PRODUCT = "clickAddProduct";
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CATEGORY_PAGE = "clickKategori";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String EVENT_OTP = "OTPSuccess";
     }
@@ -161,8 +163,11 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
+        String CATEGORY_PAGE = "Category Page";
+        String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
+        String SLIDER = "Slider";
     }
 
     interface Action {
@@ -195,6 +200,20 @@ public interface AppEventTracking {
         String SUCCESS = "Success";
         String LOAD = "Load";
         String SCROLL = "Scroll";
+        String SEARCH_POPULAR = "Popular Search";
+        String SEARCH_RECENT = "Recent Search";
+        String SEARCH_HOTLIST = "Search HotList";
+        String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
+        String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
+        String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
+
+        String PRODUCT_CATEGORY = "Click Product";
+        String CATEGORY_LEVEL = "Category";
+        String CATEGORY_MORE = "Category Breakdown";
+        String CATEGORY_SORT = "Bottom Navigation - Sort";
+        String CATEGORY_FILTER = "Bottom Navigation - Filter";
+        String CATEGORY_DISLPAY = "Bottom Navigation - Display";
+        String CATEGORY_SHARE = "Bottom Navigation - Share";
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
     }
@@ -341,6 +360,7 @@ public interface AppEventTracking {
         String CHANGE_INSURANCE_PRODUCT_TOPMENU = "Ganti Asuransi - Top Menu";
         String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
         String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
+        String CATEGORY_SHOW_MORE = "Lihat Lainnya";
         String OPPORTUNIT_LIST = "Peluang";
     }
 
@@ -357,31 +377,38 @@ public interface AppEventTracking {
     }
 
     interface GTM {
-        String GTM_ID = "GTM_ID";
+        String GA_ID = "GA_ID";
+        String GTM_ID       = "GTM_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
-        String LUCKY_BUYER = "msg_lucky_buyer";
-        String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
-        String LUCKY_BUYER_VALID = "msg_lucky_valid";
+        String LUCKY_BUYER          = "msg_lucky_buyer";
+        String LUCKY_BUYER_DETAIL   = "msg_lucky_buyer_detail";
+        String LUCKY_BUYER_VALID    = "msg_lucky_valid";
 
-        String LUCKY_MERCHANT = "msg_lucky_merchant";
-        String LUCKY_MERCHANT_DETAIL = "msg_lucky_merchant_detail";
-        String OVERRIDE_BANNER = "is_override_url_banner";
-        String CREATE_TICKET = "is_create_ticket";
-        String REPORT = "enable_report";
-        String CONTACT_US = "disable_contactus";
-        String TICKER_SEARCH = "is_show_ticker_search";
-        String TICKER_SEARCH_TEXT = "ticker_text_search";
-        String FILTER_SORT = "sort_filter_data";
-        String EXCLUDED_URL = "excluded-url";
-        String EXCLUDED_HOST = "excluded-host";
+        String LUCKY_MERCHANT           = "msg_lucky_merchant";
+        String LUCKY_MERCHANT_DETAIL    = "msg_lucky_merchant_detail";
+        String OVERRIDE_BANNER          = "is_override_url_banner";
+        String CREATE_TICKET            = "is_create_ticket";
+        String REPORT                   = "enable_report";
+        String CONTACT_US               = "disable_contactus";
+        String TICKER_SEARCH            = "is_show_ticker_search";
+        String TICKER_SEARCH_TEXT       = "ticker_text_search";
+        String FILTER_SORT              = "sort_filter_data";
+        String EXCLUDED_URL             = "excluded-url";
+        String EXCLUDED_HOST            = "excluded-host";
 
-        String TICKER_PDP = "is_show_ticker_pdp";
-        String TICKER_PDP_TEXT = "ticker_text_pdp";
-        String TICKER_CART = "is_show_ticker_cart";
+        String TICKER_PDP       = "is_show_ticker_pdp";
+        String TICKER_PDP_TEXT  = "ticker_text_pdp";
+        String TICKER_CART      = "is_show_ticker_cart";
         String TICKER_CART_TEXT = "ticker_text_cart";
-        String TICKER_ATC = "is_show_ticker_atc";
-        String TICKER_ATC_TEXT = "ticker_text_atc";
+        String TICKER_ATC       = "is_show_ticker_atc";
+        String TICKER_ATC_TEXT  = "ticker_text_atc";
+
+        String SEARCH_RECENT                = "recent_search";
+        String SEARCH_POPULAR               = "popular_search";
+        String SEARCH_AUTOCOMPLETE          = "autocomplete";
+        String SEARCH_HOTLIST               = "hotlist";
+        String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
     }
 
     interface LOCA {

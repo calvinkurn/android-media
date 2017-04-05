@@ -20,7 +20,7 @@ public class WishlistDataRepository implements WishlistRepository{
     }
 
     @Override
-    public Observable<DataWishlist> search_wishlist(String userId, String query) {
-        return new CloudWishlistDatasource(mojitoService, wishlistDataMapper).searchWishlist(userId, query);
+    public Observable<DataWishlist> search_wishlist(String userId, String query, int page) {
+        return new CloudWishlistDatasource(mojitoService, wishlistDataMapper).searchWishlist(userId, query, page);
     }
 }

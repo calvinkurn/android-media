@@ -35,6 +35,7 @@ import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -344,8 +345,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
-                intent.putExtra("PARAM_URL", TkpdBaseURL.ContactUs.URL_CHANGE_NUMBER);
+                Intent intent = SessionRouter.getChangePhoneNumberRequestActivity(getActivity());
                 startActivity(intent);
             }
         });

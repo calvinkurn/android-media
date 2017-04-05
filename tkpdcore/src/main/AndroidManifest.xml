@@ -518,6 +518,12 @@
             </intent-filter>
         </service>
         <service
+            android:name=".gcm.BaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
             android:name="com.tokopedia.core.gcm.intentservices.PushNotificationIntentService"
             android:exported="false" />
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />

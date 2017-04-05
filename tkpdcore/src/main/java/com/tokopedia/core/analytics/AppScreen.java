@@ -218,6 +218,8 @@ public final class AppScreen {
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
     public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
+    public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
+    public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
     public static final String SCREEN_OTP_SQ = "Security Question Screen";
     public static final String GOLD_MERCHANT_REDIRECT = "Gold Merchant Redirect Page";
@@ -245,6 +247,9 @@ public final class AppScreen {
     public static final String EVENT_ADDED_PRODUCT = "event : Add Product";
     public static final String EVENT_ADDED_WISHLIST = "event : Add to wishlist";
     public static final String EVENT_CLICKED_HOTLIST= "event : Clicked Hot List";
+    public static final String EVENT_GOOD_REVIEW = "event: Good Review";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
+
+
 }

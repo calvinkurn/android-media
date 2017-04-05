@@ -1,19 +1,31 @@
 package com.tokopedia.transaction.wallet;
 
-import android.app.Fragment;
+import android.annotation.SuppressLint;
+import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.View;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.core.util.TkpdWebView;
+import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.transaction.R;
 
 /**
  * Created by kris on 1/13/17. Tokopedia
  */
 
-public class WalletActivity extends TActivity implements FragmentGeneralWebView.OnFragmentInteractionListener {
+public class WalletActivity extends TActivity implements BaseWebViewClient.WebViewCallback, View.OnKeyListener{
 
-    private String Url;
+    private String url;
+
+    private TkpdWebView webView;
+    private ProgressBar progressBar;
 
     @Override
     public String getScreenName() {
@@ -23,29 +35,73 @@ public class WalletActivity extends TActivity implements FragmentGeneralWebView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Url = getIntent().getExtras().getString("url");
+        url = getIntent().getExtras().getString("url");
         inflateView(R.layout.wallet_webview);
+        initiateView();
+        setWebView();
         showFragmentWebView();
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setWebView() {
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.setWebViewClient(new BaseWebViewClient(this));
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                //  progressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
+    }
+
+    private void initiateView() {
+        webView = (TkpdWebView) findViewById(R.id.webview);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar.setIndeterminate(true);
+        webView.setOnKeyListener(this);
+    }
+
     private void showFragmentWebView() {
-        Fragment fragment = FragmentGeneralWebView.createInstance(Url);
-        getFragmentManager().beginTransaction().add(R.id.main_view, fragment).commit();
-    }
-
-
-    @Override
-    public void onWebViewSuccessLoad() {
-
+        webView.loadAuthUrl(url);
     }
 
     @Override
-    public void onWebViewErrorLoad() {
+    public void onSuccessResult(String successResult) {
 
     }
 
     @Override
-    public void onWebViewProgressLoad() {
+    public void onProgressResult(String progressResult) {
+        Uri uri = Uri.parse(progressResult);
+        if(uri.getPath().contains("thanks_wallet")) {
+            drawer.clearTokoCashData();
+            finish();
+        }
+    }
 
+    @Override
+    public void onErrorResult(SslError errorResult) {
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        drawer.clearTokoCashData();
+        super.onBackPressed();
     }
 }

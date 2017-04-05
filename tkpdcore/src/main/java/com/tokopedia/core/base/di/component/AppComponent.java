@@ -5,15 +5,15 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.di.qualifier.AceQualifier;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.qualifier.BaseDomainQualifier;
-import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
-import com.tokopedia.core.base.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.di.qualifier.AceQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -41,7 +41,7 @@ public interface AppComponent {
 
     Gson gson();
 
-    @BaseDomainQualifier
+    @WsV4Qualifier
     Retrofit baseDomainRetrofit();
 
     @ActivityContext

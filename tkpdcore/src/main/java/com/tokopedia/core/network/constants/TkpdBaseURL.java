@@ -530,19 +530,21 @@ public class TkpdBaseURL {
     }
 
     public static class Mojito {
-        public static final String PATH_USER = "v1.0.2/users/";
-        public static final String PATH_PRODUCT = "v1/products/";
+        public static final String PATH_USER = "v1.0.3/users/";
+        public static final String PATH_PRODUCT = "users/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
         public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
-        public static final String PATH_WISHLIST = "wishlist";
+        public static final String PATH_WISHLIST = "wishlist/";
+        public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
+
 
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
         public static final String PATH_USER_WISHLIST = "/users";
-        public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST+"/{userId}/wishlist/search/v2";
+        public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
     }
 
 
@@ -617,6 +619,16 @@ public class TkpdBaseURL {
             public static final String REQUEST_OTP = BASE_OTP + "/request";
             public static final String VALIDATE_OTP = BASE_OTP + "/validate";
         }
+
+        public class Image {
+            public static final String VALIDATE_SIZE = "/api/image/validate-size";
+            public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
+            public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
+        }
+
+        public class Ktp {
+            public static final String CHECK_STATUS = "/api/ktp/check-status";
+        }
     }
 
     public static class Home {
@@ -653,7 +665,7 @@ public class TkpdBaseURL {
     public static class HadesCategory {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
-        public static final String PATH_CATEGORIES =  "/v1/categories/{catId}/detail";
+        public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
     }
 
     public static class Replacement {
