@@ -59,6 +59,8 @@ public class ProductDetailEntity {
         private String name;
         @SerializedName("price")
         private int price;
+        @SerializedName("priceStr")
+        private String priceStr;
 
         public Photo getPhoto() {
             return photo;
@@ -82,6 +84,14 @@ public class ProductDetailEntity {
 
         public void setPrice(int price) {
             this.price = price;
+        }
+
+        public String getPriceStr() {
+            return priceStr;
+        }
+
+        public void setPriceStr(String priceStr) {
+            this.priceStr = priceStr;
         }
 
         public static class Photo {

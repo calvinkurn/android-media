@@ -11,14 +11,12 @@ public class DetailData {
     private String shopID;
     private String shopName;
     private String responseDeadline;
-    private boolean buyerDeadlineVisibility;
-    private boolean sellerDeadlineVisibility;
+    private boolean deadlineVisibility;
     private String buyerID;
     private String buyerName;
     private String invoiceUrl;
     private String orderID;
     private boolean received;
-    private int responseDeadlineUrgency;
 
     public String getAwbNumber() {
         return awbNumber;
@@ -61,20 +59,12 @@ public class DetailData {
         this.responseDeadline = responseDeadline;
     }
 
-    public boolean isBuyerDeadlineVisibility() {
-        return buyerDeadlineVisibility;
+    public boolean isDeadlineVisibility() {
+        return deadlineVisibility;
     }
 
-    public void setBuyerDeadlineVisibility(boolean buyerDeadlineVisibility) {
-        this.buyerDeadlineVisibility = buyerDeadlineVisibility;
-    }
-
-    public boolean isSellerDeadlineVisibility() {
-        return sellerDeadlineVisibility;
-    }
-
-    public void setSellerDeadlineVisibility(boolean sellerDeadlineVisibility) {
-        this.sellerDeadlineVisibility = sellerDeadlineVisibility;
+    public void setDeadlineVisibility(boolean deadlineVisibility) {
+        this.deadlineVisibility = deadlineVisibility;
     }
 
     public String getBuyerID() {
@@ -125,11 +115,4 @@ public class DetailData {
         this.received = received;
     }
 
-    public int getResponseDeadlineUrgency() {
-        return responseDeadlineUrgency;
-    }
-
-    public void setResponseDeadlineUrgency(int responseDeadlineUrgency) {
-        this.responseDeadlineUrgency = responseDeadlineUrgency;
-    }
 }

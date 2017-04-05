@@ -38,6 +38,7 @@ import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressActivity;
 import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingActivity;
 import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
+import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 /**
  * Created by hangnadi on 3/8/17.
@@ -57,7 +58,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     View loading;
     View mainView;
-    ButtonView buttonView;
+//    ButtonView buttonView;
     StatusView statusView;
     AwbReturView awbReturView;
     AddressReturView addressReturView;
@@ -166,7 +167,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     protected void initView(View view) {
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
-        buttonView = (ButtonView) view.findViewById(R.id.button_view);
+//        buttonView = (ButtonView) view.findViewById(R.id.button_view);
         statusView = (StatusView) view.findViewById(R.id.status_view);
         awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
         addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
@@ -180,7 +181,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void setViewListener() {
-        buttonView.setListener(this);
+//        buttonView.setListener(this);
         statusView.setListener(this);
         awbReturView.setListener(this);
         addressReturView.setListener(this);
@@ -237,9 +238,10 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     public void doOnInitSuccess() {
         showLoading(false);
         if (getViewData().getButtonData() != null) {
-            buttonView.renderData(getViewData().getButtonData());
+//            buttonView.renderData(getViewData().getButtonData());
         }
         if (getViewData().getStatusData() != null) {
+            statusView.setButtonData(getViewData().getButtonData());
             statusView.renderData(getViewData().getStatusData());
         }
         if (getViewData().getAwbData() != null) {
@@ -398,6 +400,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         startActivityForResult(
                 EditResCenterActivity.newAppealInstance(getActivity(), resolutionID, orderID, isSeller(), isReceived),
                 REQUEST_APPEAL_SOLUTION);
+    }
+
+    @Override
+    public void setOnActionInputAwbNumberClick() {
+        startActivityForResult(
+                InputShippingActivity.createNewPageIntent(getActivity(), getResolutionID()),
+                REQUEST_INPUT_SHIPPING
+        );
     }
 
     @Override

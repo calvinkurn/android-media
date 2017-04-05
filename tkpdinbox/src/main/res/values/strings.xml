@@ -5,8 +5,7 @@
     <string name="detail_rescenter_shop">Beli dari Toko :</string>
     <string name="detail_rescenter_awb_selling">No. Resi Pembelian :</string>
     <string name="detail_rescenter_invoice_selling">No. Invoice :</string>
-    <string name="detail_rescenter_deadline_for_buyer">Batas Waktu Respon Pembeli :</string>
-    <string name="detail_rescenter_deadline_for_seller">Batas Waktu Respon Penjual :</string>
+    <string name="detail_rescenter_deadline">Tombol Bantuan Akan Muncul Pada:</string>
 
     <string name="template_last_solution_provider">Solusi dari X123 - Y123</string>
     <string name="template_history_additional_information">X123 - Y123</string>
@@ -31,7 +30,7 @@
     <string name="action_ask_help">Minta Bantuan</string>
     <string name="action_appeal_solution">Naik Banding</string>
     <string name="action_cancel_resolution">Batalkan Komplain</string>
-    <string name="action_input_shipping_ref_number">Tambah Nomor Resi</string>
+    <string name="action_input_shipping_ref_number">Masukan Nomor Resi</string>
     <string name="title_activity_history_awb">Riwayat No. Resi</string>
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
@@ -43,6 +42,7 @@
     <string name="hint_write_message">Tulis pesan</string>
     <string name="dot">•</string>
     <string name="title_activity_rescenter_discussion">Diskusi</string>
+    <string name="action_response">Respon</string>
     <string name="attachment">Lampiran</string>
     <string name="no_result_res_center_discussion">Tidak ada pesan di diskusi</string>
     <string name="failed_upload_image">Gagal mengunggah gambar</string>

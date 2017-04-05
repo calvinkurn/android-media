@@ -75,7 +75,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         }
         AddressDomainModel data = new AddressDomainModel();
         data.setCity(entity.getLast().getAddress().getCity().getName());
-        data.setDate("NOT SETTTTT");
+        data.setDate(entity.getLast().getAddress().getDetail().getAction().getCreateTimeStr());
         data.setDistrict(entity.getLast().getAddress().getDistrict().getName());
         data.setPhoneReceiver(entity.getLast().getAddress().getReceiver().getPhone());
         data.setPostalCode(entity.getLast().getAddress().getPostalCode());
@@ -158,8 +158,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setInvoiceUrl(order.getInvoice().getUrl());
         // -----------
         data.setResponseDeadline(resolution.getExpireTimeStr());
-        data.setSellerDeadlineVisibility(by.getCustomer() == 1);
-        data.setBuyerDeadlineVisibility(by.getCustomer() == 0);
+        data.setDeadlineVisibility(resolution.getExpireTimeStr() != null);
         // -----------
         data.setShopID(shop.getId());
         data.setShopName(shop.getName());

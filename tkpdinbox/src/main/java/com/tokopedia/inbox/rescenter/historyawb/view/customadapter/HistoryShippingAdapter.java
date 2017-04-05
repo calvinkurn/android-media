@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,10 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         this.arraylist = arraylist;
     }
 
+    public List<HistoryAwbViewItem> getArraylist() {
+        return arraylist;
+    }
+
     @SuppressWarnings("WeakerAccess")
     public class ShippingViewHolder extends RecyclerView.ViewHolder {
 
@@ -49,6 +53,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         RecyclerView attachment;
         View actionTrack;
         View actionEdit;
+        View lineIndicator;
 
         public ShippingViewHolder(View itemView) {
             super(itemView);
@@ -58,6 +63,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
             attachment = (RecyclerView) itemView.findViewById(R.id.attachment);
             actionTrack = itemView.findViewById(R.id.action_track);
             actionEdit = itemView.findViewById(R.id.action_edit);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
         }
     }
 
@@ -129,9 +135,8 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void renderView(ShippingViewHolder holder, HistoryAwbViewItem item) {
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
-        );
+        setIndicator(holder, item);
+        setPadding(holder);
         if (item.isLatest()) {
             holder.date.setTypeface(Typeface.DEFAULT_BOLD);
             holder.history.setTypeface(Typeface.DEFAULT_BOLD);
@@ -140,6 +145,28 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
             holder.date.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.grey));
+        }
+    }
+
+    private void setIndicator(ShippingViewHolder holder, HistoryAwbViewItem item) {
+        holder.lineIndicator.setVisibility(
+                holder.getAdapterPosition() == getArraylist().size() - 1 ?
+                        View.GONE : View.VISIBLE
+        );
+
+        holder.indicator.setImageResource(
+                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+        );
+    }
+
+    private void setPadding(ShippingViewHolder holder) {
+        if (holder.getAdapterPosition() == 0) {
+            holder.itemView.setPadding(
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    0
+            );
         }
     }
 
@@ -153,11 +180,11 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private boolean isLastItemPosition(int position) {
-        return position == arraylist.size();
+        return position == getArraylist().size();
     }
 
     @Override
     public int getItemCount() {
-        return arraylist.size() + super.getItemCount();
+        return getArraylist().size() + super.getItemCount();
     }
 }

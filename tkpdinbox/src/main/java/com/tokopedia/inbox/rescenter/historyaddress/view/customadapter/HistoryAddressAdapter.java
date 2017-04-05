@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.historyaddress.view.customadapter;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,18 +39,24 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         this.arraylist = arraylist;
     }
 
+    public List<HistoryAddressViewItem> getArraylist() {
+        return arraylist;
+    }
+
     @SuppressWarnings("WeakerAccess")
-    public class ShippingViewHolder extends RecyclerView.ViewHolder {
+    public class AddressViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
         TextView history;
         ImageView indicator;
+        View lineIndicator;
 
-        public ShippingViewHolder(View itemView) {
+        public AddressViewHolder(View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.tv_date);
             history = (TextView) itemView.findViewById(R.id.tv_address_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
         }
     }
 
@@ -61,7 +66,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
             case VIEW_SHIPPING_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 View view = inflater.inflate(R.layout.recyclerview_history_address, parent, false);
-                return new ShippingViewHolder(view);
+                return new AddressViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -71,7 +76,7 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_SHIPPING_ITEM:
-                bindShippingViewHolder((ShippingViewHolder) viewHolder, position);
+                bindShippingViewHolder((AddressViewHolder) viewHolder, position);
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
@@ -79,14 +84,14 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         }
     }
 
-    private void bindShippingViewHolder(ShippingViewHolder holder, int position) {
+    private void bindShippingViewHolder(AddressViewHolder holder, int position) {
         context = holder.itemView.getContext();
         final HistoryAddressViewItem item = arraylist.get(position);
         renderData(holder, item);
         renderView(holder, item);
     }
 
-    private void renderData(ShippingViewHolder holder, HistoryAddressViewItem item) {
+    private void renderData(AddressViewHolder holder, HistoryAddressViewItem item) {
         String additionalText = context.getString(R.string.template_history_additional_information);
         holder.date.setText(
                 additionalText
@@ -96,10 +101,9 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
         holder.history.setText(item.getAddress());
     }
 
-    private void renderView(ShippingViewHolder holder, HistoryAddressViewItem item) {
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
-        );
+    private void renderView(AddressViewHolder holder, HistoryAddressViewItem item) {
+        setPadding(holder);
+        setIndicator(holder, item);
         if (item.isLatest()) {
             holder.date.setTypeface(Typeface.DEFAULT_BOLD);
             holder.history.setTypeface(Typeface.DEFAULT_BOLD);
@@ -110,6 +114,30 @@ public class HistoryAddressAdapter extends BaseLinearRecyclerViewAdapter {
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.grey));
         }
     }
+
+
+    private void setIndicator(AddressViewHolder holder, HistoryAddressViewItem item) {
+        holder.lineIndicator.setVisibility(
+                holder.getAdapterPosition() == getArraylist().size() - 1 ?
+                        View.GONE : View.VISIBLE
+        );
+
+        holder.indicator.setImageResource(
+                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+        );
+    }
+
+    private void setPadding(AddressViewHolder holder) {
+        if (holder.getAdapterPosition() == 0) {
+            holder.itemView.setPadding(
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    0
+            );
+        }
+    }
+
 
     @Override
     public int getItemViewType(int position) {

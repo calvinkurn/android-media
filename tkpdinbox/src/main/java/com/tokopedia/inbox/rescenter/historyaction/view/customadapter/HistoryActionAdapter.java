@@ -39,18 +39,24 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         this.arraylist = arraylist;
     }
 
+    public List<HistoryActionViewItem> getArraylist() {
+        return arraylist;
+    }
+
     @SuppressWarnings("WeakerAccess")
-    public class ShippingViewHolder extends RecyclerView.ViewHolder {
+    public class ActionViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
         TextView history;
         ImageView indicator;
+        View lineIndicator;
 
-        public ShippingViewHolder(View itemView) {
+        public ActionViewHolder(View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.tv_date);
             history = (TextView) itemView.findViewById(R.id.tv_action_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
         }
     }
 
@@ -60,7 +66,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
             case VIEW_SHIPPING_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 View view = inflater.inflate(R.layout.recyclerview_history_action, parent, false);
-                return new ShippingViewHolder(view);
+                return new ActionViewHolder(view);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -70,7 +76,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (getItemViewType(position)) {
             case VIEW_SHIPPING_ITEM:
-                bindShippingViewHolder((ShippingViewHolder) viewHolder, position);
+                bindShippingViewHolder((ActionViewHolder) viewHolder, position);
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
@@ -78,14 +84,14 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         }
     }
 
-    private void bindShippingViewHolder(ShippingViewHolder holder, int position) {
+    private void bindShippingViewHolder(ActionViewHolder holder, int position) {
         context = holder.itemView.getContext();
         final HistoryActionViewItem item = arraylist.get(position);
         renderData(holder, item);
         renderView(holder, item);
     }
 
-    private void renderData(ShippingViewHolder holder, HistoryActionViewItem item) {
+    private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
         String additionalText = context.getString(R.string.template_history_additional_information);
         holder.date.setText(
                 additionalText
@@ -95,10 +101,9 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         holder.history.setText(item.getHistoryText());
     }
 
-    private void renderView(ShippingViewHolder holder, HistoryActionViewItem item) {
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
-        );
+    private void renderView(ActionViewHolder holder, HistoryActionViewItem item) {
+        setPadding(holder);
+        setIndicator(holder, item);
         if (item.isLatest()) {
             holder.date.setTypeface(Typeface.DEFAULT_BOLD);
             holder.history.setTypeface(Typeface.DEFAULT_BOLD);
@@ -107,6 +112,28 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
             holder.date.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.grey));
+        }
+    }
+
+    private void setIndicator(ActionViewHolder holder, HistoryActionViewItem item) {
+        holder.lineIndicator.setVisibility(
+                holder.getAdapterPosition() == getArraylist().size() - 1 ?
+                        View.GONE : View.VISIBLE
+        );
+
+        holder.indicator.setImageResource(
+                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
+        );
+    }
+
+    private void setPadding(ActionViewHolder holder) {
+        if (holder.getAdapterPosition() == 0) {
+            holder.itemView.setPadding(
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    context.getResources().getDimensionPixelSize(R.dimen.padding_small),
+                    0
+            );
         }
     }
 

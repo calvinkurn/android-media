@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.HistoryItem;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
 
     private List<HistoryItem> historyItems;
     private boolean limit;
+    private DetailResCenterFragmentView listener;
 
     public HistoryAdapter() {
         historyItems = new ArrayList<>();
@@ -35,11 +37,12 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         return adapter;
     }
 
-    public static HistoryAdapter createLimitInstance(List<HistoryItem> historyItems) {
+    public static HistoryAdapter createLimitInstance(List<HistoryItem> historyItems, DetailResCenterFragmentView listener) {
         HistoryAdapter adapter = new HistoryAdapter();
         adapter.setHistoryItems(historyItems);
         adapter.setLimit(true);
         adapter.notifyDataSetChanged();
+        adapter.setListener(listener);
         return adapter;
     }
 
@@ -59,17 +62,23 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         this.limit = limit;
     }
 
+    public void setListener(DetailResCenterFragmentView listener) {
+        this.listener = listener;
+    }
+
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
         TextView history;
         ImageView indicator;
+        View lineIndicator;
 
         public HistoryViewHolder(View itemView) {
             super(itemView);
             date = (TextView) itemView.findViewById(R.id.tv_date);
             history = (TextView) itemView.findViewById(R.id.tv_history_text);
             indicator = (ImageView) itemView.findViewById(R.id.indicator);
+            lineIndicator = itemView.findViewById(R.id.line_indicator);
         }
     }
 
@@ -94,6 +103,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.indicator.setImageResource(
                 item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
         );
+        holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.setOnActionMoreHistoryClick();
+            }
+        });
     }
 
     @Override

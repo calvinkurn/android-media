@@ -41,8 +41,8 @@ public class HistoryAddressMapper implements Func1<Response<TkpdResponse>, Histo
         List<HistoryAddressItemDomainData> list = new ArrayList<>();
         for (ListHistoryAddress item : listHistoryAwb) {
             HistoryAddressItemDomainData data = new HistoryAddressItemDomainData();
-            data.setActionBy(item.getDetail().getAction().getActionBy());
-            data.setActionByText(item.getDetail().getAction().getActionByStr());
+            data.setActionBy(item.getDetail().getAction().getBy());
+            data.setActionByText(item.getDetail().getAction().getByStr());
             data.setDate(item.getDetail().getAction().getCreateTimeStr());
             data.setCity(item.getAddress().getCity().getName());
             data.setDistrict(item.getAddress().getDistrict().getName());

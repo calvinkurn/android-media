@@ -68,6 +68,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionAppealClick();
 
+    void setOnActionInputAwbNumberClick();
+
     void doOnInitTimeOut();
 
     void doOnInitSuccess();
