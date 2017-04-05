@@ -309,11 +309,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    if (!isAlreadyHavePhonePrefixInView) {
-                        this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                                category.getId(),
-                                category.getAttributes().getValidatePrefix());
-                    }
+                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                            category.getId(),
+                            category.getAttributes().getValidatePrefix());
                 } else {
                     isAlreadyHavePhonePrefixInView = false;
                     hideFormAndImageOperator();
@@ -328,6 +326,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             setPhoneBookVisibility();
             hideFormAndImageOperator();
         }
+    }
+
+    @Override
+    public void onRechargeTextClear() {
+        LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+        rechargePresenter.clearRechargePhonebookCache();
+        hideFormAndImageOperator();
     }
 
     private boolean isValidatePrefix() {
@@ -636,6 +641,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             rechargeEditText.setText(
                     rechargePresenter.getLastInputFromCache(LAST_INPUT_KEY + category.getId())
             );
+            showFormAndImageOperator();
         } else if (!TextUtils.isEmpty(
                 cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId()))
                 ) {
@@ -643,11 +649,12 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId())
             );
             LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+            showFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
                 && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
             renderLastOrder();
         } else {
-            hideFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         }
     }
 
@@ -656,7 +663,18 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
+                showFormAndImageOperator();
+            } else {
+                handlingAppearanceFormAndImageOperator();
             }
+        }
+    }
+
+    private void handlingAppearanceFormAndImageOperator() {
+        if (!rechargeEditText.getText().toString().trim().equals("")) {
+            showFormAndImageOperator();
+        } else {
+            hideFormAndImageOperator();
         }
     }
 
@@ -689,7 +707,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (isVisibleToUser) {
             if (isAlreadyHavePhonePrefixInView) {
                 setTextToEditTextOrSetVisibilityForm();
-                showFormAndImageOperator();
             } else {
                 hideFormAndImageOperator();
             }
