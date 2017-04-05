@@ -1411,4 +1411,22 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventPushNotifLowTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_LOW_CREDIT
+        ).getEvent());
+    }
+
+    public static void eventPushNotifSuccessTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
+        ).getEvent());
+    }
 }

@@ -12,12 +12,14 @@ public class NotificationConfiguration {
     private boolean networkIcon;
     private Uri soundUri;
     private long[] vibratePattern;
+    private int notificationId;
 
     public NotificationConfiguration() {
         bell = false;
         vibrate = false;
         networkIcon = false;
         vibratePattern = new long[]{500, 500, 500, 500, 500, 500, 500, 500, 500};
+        notificationId = 100;
     }
 
     public boolean isBell() {
@@ -54,5 +56,13 @@ public class NotificationConfiguration {
 
     public long[] getVibratePattern() {
         return vibratePattern;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
     }
 }

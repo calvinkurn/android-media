@@ -110,7 +110,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                         DbManagerImpl.getInstance().removeAllEtalase();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
-                                        notif.cancelNotif();
                                         notif.dismissAllActivedNotifications();
 
                                         NotificationModHandler.clearCacheAllNotification();
