@@ -206,6 +206,7 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
         String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
+        String UPLOAD_SUCCESS = "Success Upload";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
@@ -280,6 +281,7 @@ public interface AppEventTracking {
         String REPORT = "Report";
         String REPORT_NOT_LOGIN = "Report - Not Login";
         String REPORT_SUCCESS = "Report Success";
+        String INSTAGRAM_IMG_PICKER = "Instagram Image Picker";
 
         String SHOP_INFO = "Shop Info";
         String SHOP_SHIPPING = "Shop Shipping";
