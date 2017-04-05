@@ -21,12 +21,6 @@ public class Attributes {
     @SerializedName("user_agent")
     @Expose
     private String userAgent;
-//    @SerializedName("access_token")
-//    @Expose
-//    private String accessToken;
-//    @SerializedName("wallet_refresh_token")
-//    @Expose
-//    private String walletRefreshToken;
 
     public void setVoucherCode(String voucherCode) {
         this.voucherCode = voucherCode;
@@ -44,11 +38,4 @@ public class Attributes {
         this.userAgent = userAgent;
     }
 
-//    public void setAccessToken(String accessToken) {
-//        this.accessToken = accessToken;
-//    }
-//
-//    public void setWalletRefreshToken(String walletRefreshToken) {
-//        this.walletRefreshToken = walletRefreshToken;
-//    }
 }

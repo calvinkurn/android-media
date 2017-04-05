@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.domain;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -36,18 +38,9 @@ public class CartDigitalRepository implements ICartDigitalRepository {
     @Override
     public Observable<CartDigitalInfoData> getCartInfoData(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getCart(param)
-                .map(new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
-                    @Override
-                    public CartDigitalInfoData call(Response<TkpdDigitalResponse>
-                                                            tkpdDigitalResponseResponse) {
-                        return cartMapperData.transformCartInfoData(
-                                tkpdDigitalResponseResponse.body().convertDataObj(
-                                        ResponseCartData.class
-                                )
-                        );
-                    }
-                });
+                .map(getFuncResponseToCartDigitalInfoData());
     }
+
 
     @Override
     public Observable<CartDigitalInfoData> patchOtpCart(RequestBodyOtpSuccess requestBodyOtpSuccess,
@@ -56,39 +49,7 @@ public class CartDigitalRepository implements ICartDigitalRepository {
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
         return digitalEndpointService.getApi().patchOtpCart(requestBody)
-                .flatMap(new Func1<Response<TkpdDigitalResponse>, Observable<CartDigitalInfoData>>() {
-                    @Override
-                    public Observable<CartDigitalInfoData> call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-                    ) {
-                        if (tkpdDigitalResponseResponse.code() == 200) {
-                            ResponsePatchOtpSuccess responsePatchOtpSuccess =
-                                    tkpdDigitalResponseResponse.body().convertDataObj(
-                                            ResponsePatchOtpSuccess.class
-                                    );
-                            if (responsePatchOtpSuccess.isSuccess()) {
-                                TKPDMapParam<String, String> newParam = new TKPDMapParam<>();
-                                newParam.put("category_id", paramGetCart.get("category_id"));
-                                return digitalEndpointService.getApi().getCart(
-                                        paramGetCart
-                                )
-                                        .map(new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
-                                            @Override
-                                            public CartDigitalInfoData call(
-                                                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-                                            ) {
-                                                return cartMapperData.transformCartInfoData(
-                                                        tkpdDigitalResponseResponse.body().convertDataObj(
-                                                                ResponseCartData.class
-                                                        )
-                                                );
-                                            }
-                                        });
-                            }
-                        }
-                        throw new RuntimeException("Gagal COY!!!!!!");
-                    }
-                });
+                .flatMap(getFuncResponsePatchToGetCartInfo(paramGetCart));
     }
 
     @Override
@@ -105,16 +66,45 @@ public class CartDigitalRepository implements ICartDigitalRepository {
         requestBody.add("data", jsonElement);
         return digitalEndpointService.getApi()
                 .addToCart(requestBody, idemPotencyKeyHeader)
-                .map(new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
-                    @Override
-                    public CartDigitalInfoData call(Response<TkpdDigitalResponse>
-                                                            tkpdDigitalResponseResponse) {
-                        return cartMapperData.transformCartInfoData(
-                                tkpdDigitalResponseResponse.body().convertDataObj(
-                                        ResponseCartData.class
-                                )
-                        );
+                .map(getFuncResponseToCartDigitalInfoData());
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>
+    getFuncResponseToCartDigitalInfoData() {
+        return new Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>() {
+            @Override
+            public CartDigitalInfoData call(Response<TkpdDigitalResponse>
+                                                    tkpdDigitalResponseResponse) {
+                return cartMapperData.transformCartInfoData(
+                        tkpdDigitalResponseResponse.body().convertDataObj(
+                                ResponseCartData.class
+                        )
+                );
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, Observable<CartDigitalInfoData>>
+    getFuncResponsePatchToGetCartInfo(final TKPDMapParam<String, String> paramGetCart) {
+        return new Func1<Response<TkpdDigitalResponse>, Observable<CartDigitalInfoData>>() {
+            @Override
+            public Observable<CartDigitalInfoData> call(
+                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+            ) {
+                if (tkpdDigitalResponseResponse.code() == 200) {
+                    ResponsePatchOtpSuccess responsePatchOtpSuccess =
+                            tkpdDigitalResponseResponse.body().convertDataObj(
+                                    ResponsePatchOtpSuccess.class
+                            );
+                    if (responsePatchOtpSuccess.isSuccess()) {
+                        return digitalEndpointService.getApi().getCart(paramGetCart)
+                                .map(getFuncResponseToCartDigitalInfoData());
                     }
-                });
+                }
+                throw new RuntimeException("Gagal COY!!!!!!");
+            }
+        };
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.domain;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -29,17 +31,22 @@ public class VoucherDigitalRepository implements IVoucherDigitalRepository {
     @Override
     public Observable<VoucherDigital> checkVoucher(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().checkVoucher(param)
-                .map(new Func1<Response<TkpdDigitalResponse>, VoucherDigital>() {
-                    @Override
-                    public VoucherDigital call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-                    ) {
-                        return cartMapperData.transformVoucherDigitalData(
-                                tkpdDigitalResponseResponse.body().convertDataObj(
-                                        ResponseVoucherData.class
-                                )
-                        );
-                    }
-                });
+                .map(getFuncResponseToVoucherDigital());
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, VoucherDigital> getFuncResponseToVoucherDigital() {
+        return new Func1<Response<TkpdDigitalResponse>, VoucherDigital>() {
+            @Override
+            public VoucherDigital call(
+                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+            ) {
+                return cartMapperData.transformVoucherDigitalData(
+                        tkpdDigitalResponseResponse.body().convertDataObj(
+                                ResponseVoucherData.class
+                        )
+                );
+            }
+        };
     }
 }

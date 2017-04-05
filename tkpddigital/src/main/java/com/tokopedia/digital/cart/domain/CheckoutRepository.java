@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.domain;
 
+import android.support.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,33 +39,47 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
         return digitalEndpointService.getApi().checkout(requestBody)
-                .map(new Func1<Response<TkpdDigitalResponse>, CheckoutDigitalData>() {
-                    @Override
-                    public CheckoutDigitalData call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                        return cartMapperData.transformCheckoutData(
-                                tkpdDigitalResponseResponse.body()
-                                        .convertDataObj(ResponseCheckoutData.class)
-                        );
-                    }
-                });
+                .map(getFuncResponseToCheckoutDigitalData());
     }
 
     @Override
-    public Observable<InstantCheckoutData> instantCheckoutCart(RequestBodyCheckout requestBodyCheckout) {
+    public Observable<InstantCheckoutData> instantCheckoutCart(
+            RequestBodyCheckout requestBodyCheckout
+    ) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCheckout));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
         return digitalEndpointService.getApi().checkout(requestBody)
-                .map(new Func1<Response<TkpdDigitalResponse>, InstantCheckoutData>() {
-                    @Override
-                    public InstantCheckoutData call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
-                        return cartMapperData.transformInstantCheckoutData(
-                                tkpdDigitalResponseResponse.body()
-                                        .convertDataObj(ResponseInstantCheckoutData.class)
-                        );
-                    }
-                });
+                .map(getFuncResponseToInstantCheckoutData());
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, CheckoutDigitalData>
+    getFuncResponseToCheckoutDigitalData() {
+        return new Func1<Response<TkpdDigitalResponse>, CheckoutDigitalData>() {
+            @Override
+            public CheckoutDigitalData call(
+                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                return cartMapperData.transformCheckoutData(
+                        tkpdDigitalResponseResponse.body()
+                                .convertDataObj(ResponseCheckoutData.class)
+                );
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, InstantCheckoutData>
+    getFuncResponseToInstantCheckoutData() {
+        return new Func1<Response<TkpdDigitalResponse>, InstantCheckoutData>() {
+            @Override
+            public InstantCheckoutData call(
+                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
+                return cartMapperData.transformInstantCheckoutData(
+                        tkpdDigitalResponseResponse.body()
+                                .convertDataObj(ResponseInstantCheckoutData.class)
+                );
+            }
+        };
     }
 }

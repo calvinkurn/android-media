@@ -324,7 +324,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                     view.clearContentRendered();
                     view.interruptRequestTokenVerification(cartDigitalInfoData);
                 } else {
-                    view.renderCartDigitalInfoData(cartDigitalInfoData);
+                    view.renderAddToCartData(cartDigitalInfoData);
                 }
                 //  view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
@@ -458,8 +458,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setTransactionAmount(checkoutData.getTransactionAmount());
         attributes.setIpAddress(checkoutData.getIpAddress());
         attributes.setUserAgent(checkoutData.getUserAgent());
-//        attributes.setAccessToken(checkoutData.getAccessToken());
-//        attributes.setWalletRefreshToken(checkoutData.getWalletRefreshToken());
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

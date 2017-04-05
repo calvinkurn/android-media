@@ -41,52 +41,62 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     @Override
     public void getCartInfoData(TKPDMapParam<String, String> paramNetwork,
                                 Subscriber<CartDigitalInfoData> subscriber) {
-        compositeSubscription.add(cartDigitalRepository.getCartInfoData(paramNetwork)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                cartDigitalRepository.getCartInfoData(paramNetwork)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
     @Override
     public void addToCart(RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader,
                           Subscriber<CartDigitalInfoData> subscriber) {
-        compositeSubscription.add(cartDigitalRepository.addToCart(requestBodyAtcDigital, idemPotencyKeyHeader)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                cartDigitalRepository.addToCart(requestBodyAtcDigital, idemPotencyKeyHeader)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
     @Override
     public void checkVoucher(
             TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     ) {
-        compositeSubscription.add(voucherDigitalRepository.checkVoucher(paramNetwork)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                voucherDigitalRepository.checkVoucher(paramNetwork)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
     @Override
     public void checkout(RequestBodyCheckout requestBodyCheckout,
                          Subscriber<CheckoutDigitalData> subscriber) {
-        compositeSubscription.add(checkoutRepository.checkoutCart(requestBodyCheckout)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                checkoutRepository.checkoutCart(requestBodyCheckout)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
     @Override
     public void instantCheckout(RequestBodyCheckout requestBodyCheckout,
                                 Subscriber<InstantCheckoutData> subscriber) {
-        compositeSubscription.add(checkoutRepository.instantCheckoutCart(requestBodyCheckout)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                checkoutRepository.instantCheckoutCart(requestBodyCheckout)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 
     @Override
@@ -94,10 +104,12 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
             RequestBodyOtpSuccess requestBodyOtpSuccess, TKPDMapParam<String, String> paramgetCart,
             Subscriber<CartDigitalInfoData> subscriber
     ) {
-        compositeSubscription.add(cartDigitalRepository.patchOtpCart(requestBodyOtpSuccess, paramgetCart)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber));
+        compositeSubscription.add(
+                cartDigitalRepository.patchOtpCart(requestBodyOtpSuccess, paramgetCart)
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .subscribe(subscriber)
+        );
     }
 }
