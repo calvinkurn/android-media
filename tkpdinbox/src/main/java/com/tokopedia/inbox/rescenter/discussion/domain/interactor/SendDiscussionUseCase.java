@@ -299,11 +299,11 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
 
     private String formatTime(String createTimeOld) {
         Locale id = new Locale("in", "ID");
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy hh:mm WIB", id);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy hh:mm", id);
         SimpleDateFormat newSdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
         String createTimeNew;
         try {
-            createTimeNew = newSdf.format(sdf.parse(createTimeOld));
+            createTimeNew = newSdf.format(sdf.parse(createTimeOld.replace("WIB","")));
         } catch (ParseException e) {
             createTimeNew = createTimeOld;
         }
