@@ -30,13 +30,15 @@
                 android:gravity="center"
                 android:textColor="@color/digital_voucher"
                 android:textSize="@dimen/fontvs"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                tools:ignore="UnusedAttribute"/>
 
             <RelativeLayout
                 android:id="@+id/holder_input_voucher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@+id/text_checkedbox"
+                android:layout_alignStart="@+id/text_checkedbox"
                 android:layout_below="@+id/checkbox_voucher"
                 android:layout_marginTop="@dimen/margin_small"
                 android:visibility="gone"
@@ -46,6 +48,7 @@
                     android:id="@+id/button_voucher"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
@@ -62,7 +65,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_toLeftOf="@+id/button_voucher"
+                    android:layout_toStartOf="@+id/button_voucher"
                     android:hint="@string/kode_voucher"/>
 
                 <TextView
@@ -108,6 +113,7 @@
                     android:id="@+id/button_cancel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
@@ -124,8 +130,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_marginTop="@dimen/margin_small"
                     android:layout_toLeftOf="@+id/button_cancel"
+                    android:layout_toStartOf="@+id/button_cancel"
                     android:text="@string/title_detail_voucher"
                     android:textColor="@color/digital_voucher"/>
 
@@ -134,9 +142,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
                     android:layout_below="@+id/textview_title_voucher"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:layout_toLeftOf="@+id/button_cancel"
+                    android:layout_toStartOf="@+id/button_cancel"
                     android:textColor="@color/tkpd_main_green"
                     tools:text="Anda HEMAT"/>
 
@@ -144,12 +154,14 @@
 
             <TextView
                 android:id="@+id/text_checkedbox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/checkbox_voucher"
                 android:layout_alignTop="@+id/checkbox_voucher"
+                android:layout_toEndOf="@+id/checkbox_voucher"
                 android:layout_toRightOf="@+id/checkbox_voucher"
                 android:gravity="center_vertical"
+                android:lines="1"
                 android:text="@string/title_use_promo_code"
                 android:textColor="@color/digital_voucher"/>
 
