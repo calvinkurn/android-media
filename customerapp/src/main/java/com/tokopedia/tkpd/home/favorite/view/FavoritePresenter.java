@@ -348,26 +348,88 @@ public class FavoritePresenter
         @Override
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
-            if (dataFavorite != null && dataFavorite.getWishListData() != null
-                    && dataFavorite.getWishListData().getData() != null) {
 
-                dataFavoriteItemList.add(prepareDataWishlist(dataFavorite.getWishListData()));
-            }
             if (dataFavorite != null
-                    && dataFavorite.getTopAdsShop() != null
-                    && dataFavorite.getFavoriteShop().getData() != null) {
-                dataFavoriteItemList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
-            }
-            if (dataFavorite != null
-                    && dataFavorite.getFavoriteShop() != null
-                    && dataFavorite.getFavoriteShop().getData() != null) {
+                    && dataFavorite.getWishListData() != null) {
 
-                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
-
-                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
-                    favoriteShopItem.setIsFav(true);
-                    dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
+                if (dataFavorite.getWishListData().isNetworkError()) {
+                    getView().showWishlistFailedMessage();
+                } else {
+                    getView().dismissWishlistFailedMessage();
                 }
+
+                if (dataFavorite.getWishListData().getData() != null) {
+                    if (dataFavorite.getWishListData().getData().size() > 0) {
+                        dataFavoriteItemList.add(
+                                prepareDataWishlist(dataFavorite.getWishListData()));
+                    } else {
+                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
+                    }
+                }
+            }
+
+//            if (dataFavorite != null && dataFavorite.getWishListData() != null
+//                    && dataFavorite.getWishListData().getData() != null) {
+//
+//                dataFavoriteItemList.add(prepareDataWishlist(dataFavorite.getWishListData()));
+//            }
+
+//            if (dataFavorite != null
+//                    && dataFavorite.getTopAdsShop() != null
+//                    && dataFavorite.getFavoriteShop().getData() != null) {
+//                dataFavoriteItemList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+//            }
+
+            if (dataFavorite != null && dataFavorite.getTopAdsShop() != null) {
+                if (dataFavorite.getTopAdsShop().isNetworkError()) {
+                    getView().showTopadsShopFailedMessage();
+                } else {
+                    getView().dismissTopadsShopFailedMessage();
+                }
+                getView().validateMessageError();
+
+                if (dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null) {
+                    if (dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
+
+                        dataFavoriteItemList
+                                .add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+                    }
+                }
+            }
+
+
+//            if (dataFavorite != null
+//                    && dataFavorite.getFavoriteShop() != null
+//                    && dataFavorite.getFavoriteShop().getData() != null) {
+//
+//                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+//
+//                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
+//                    favoriteShopItem.setIsFav(true);
+//                    dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
+//                }
+//            }
+
+            if (dataFavorite != null
+                    && dataFavorite.getFavoriteShop() != null) {
+
+                if (dataFavorite.getFavoriteShop().isNetworkError()) {
+                    getView().showFavoriteShopFailedMessage();
+                } else {
+                    getView().dismissFavoriteShopFailedMessage();
+                }
+                if (dataFavorite.getFavoriteShop().getData() != null) {
+                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+                    if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+                        for (FavoriteShopItem favoriteShopItem
+                                : dataFavorite.getFavoriteShop().getData()) {
+
+                            favoriteShopItem.setIsFav(true);
+                            dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
+                        }
+                    }
+                }
+
             }
             getView().refreshDataFavorite(dataFavoriteItemList);
             getView().hideRefreshLoading();

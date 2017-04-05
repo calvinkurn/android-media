@@ -60,7 +60,8 @@ public class FavoriteFactory {
 
 
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
-        return cloudWishlistObservable(param);
+        return cloudWishlistObservable(param)
+                .onExceptionResumeNext(localWishlistObservable().doOnNext(setWishlistNetworkError()));
     }
 
     Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
@@ -88,7 +89,10 @@ public class FavoriteFactory {
     Observable<TopAdsShop> getFreshTopAdsShop(TKPDMapParam<String, Object> params) {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(context, gson, topAdsService);
-        return topAdsShopDataSource.getTopAdsShop(params);
+
+        return topAdsShopDataSource.getTopAdsShop(params)
+                .onExceptionResumeNext(
+                        getLocalTopAdsShopObservable().doOnNext(setTopAdsShopNetworkError()));
     }
 
     Observable<FavShop> postFavShop(TKPDMapParam<String, String> param) {
@@ -133,7 +137,8 @@ public class FavoriteFactory {
 
     private Observable<DomainWishlist> cloudWishlistObservable(TKPDMapParam<String, Object> param) {
         String userId = SessionHandler.getLoginID(context);
-        return new CloudWishlistDataStore(context, gson, mojitoService).getWishlist(userId,param);
+        return new CloudWishlistDataStore(context, gson, mojitoService)
+                .getWishlist(userId, param);
     }
 
     private Observable<DomainWishlist> localWishlistObservable() {
