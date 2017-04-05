@@ -30,21 +30,32 @@ public class CloudTopAdsShopDataSource {
 
     public Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> param) {
         return topAdsService.getShopTopAds(param)
-                .doOnNext(saveToCache())
+                .doOnNext(validateError())
                 .map(new TopAdsShopMapper(context, gson));
     }
 
-    private Action1<? super Response<String>> saveToCache() {
+    private Action1<Response<String>> validateError() {
         return new Action1<Response<String>>() {
             @Override
-            public void call(Response<String> response) {
-                int tenMinute = 600000;
-                new GlobalCacheManager()
-                        .setKey(TkpdCache.Key.TOP_ADS_SHOP)
-                        .setCacheDuration(tenMinute)
-                        .setValue(response.body())
-                        .store();
+            public void call(Response<String> stringResponse) {
+                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
+                    throw new RuntimeException("Server Error!");
+                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
+                    throw new RuntimeException("Client Error!");
+                } else {
+                    saveResponseToCache(stringResponse);
+                }
             }
         };
     }
+
+    private void saveResponseToCache(Response<String> stringResponse) {
+        int tenMinute = 600000;
+        new GlobalCacheManager()
+                .setKey(TkpdCache.Key.TOP_ADS_SHOP)
+                .setCacheDuration(tenMinute)
+                .setValue(stringResponse.body())
+                .store();
+    }
+
 }

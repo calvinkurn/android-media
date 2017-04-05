@@ -43,6 +43,10 @@ interface FavoriteContract {
         void hasToShowWishlistFailedMessage();
 
         void hasToDismissWishlistFailedMessage();
+
+        void validateMessageError();
+
+        void showTopAdsProductError();
     }
 
     interface Presenter extends CustomerPresenter<View> {

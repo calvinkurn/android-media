@@ -9,6 +9,7 @@ import java.util.List;
 public class TopAdsShop {
     private String message;
     private boolean isDataValid;
+    private boolean isNetworkError;
     private List<TopAdsShopItem> topAdsShopItemList;
 
     public String getMessage() {
@@ -33,5 +34,13 @@ public class TopAdsShop {
 
     public void setTopAdsShopItemList(List<TopAdsShopItem> topAdsShopItemList) {
         this.topAdsShopItemList = topAdsShopItemList;
+    }
+
+    public boolean isNetworkError() {
+        return isNetworkError;
+    }
+
+    public void setNetworkError(boolean networkError) {
+        isNetworkError = networkError;
     }
 }

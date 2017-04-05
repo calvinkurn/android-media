@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
@@ -109,8 +110,12 @@ public class FavoriteFactory {
     private Observable<TopAdsShop> getCloudTopAdsShopObservable(TKPDMapParam<String, Object> params) {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(context, gson, topAdsService);
-        return topAdsShopDataSource.getTopAdsShop(params);
+
+        return topAdsShopDataSource.getTopAdsShop(params)
+                .onExceptionResumeNext(
+                        getLocalTopAdsShopObservable().doOnNext(setTopAdsShopNetworkError()).first());
     }
+
 
     private Observable<TopAdsShop> getLocalTopAdsShopObservable() {
         return new LocalTopAdsShopDataSource(context, gson, cacheManager).getTopAdsShop();
@@ -153,5 +158,14 @@ public class FavoriteFactory {
         };
     }
 
+    @NonNull
+    private Action1<TopAdsShop> setTopAdsShopNetworkError() {
+        return new Action1<TopAdsShop>() {
+            @Override
+            public void call(TopAdsShop topAdsShop) {
+                topAdsShop.setNetworkError(true);
+            }
+        };
+    }
 
 }

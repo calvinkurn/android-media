@@ -126,19 +126,39 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         try {
             if (isVisibleToUser && isAdded() && getActivity() != null) {
-                if (messageSnackbar != null && isHasToShowMessageFailed) {
-                    messageSnackbar.showRetrySnackbar();
-                }
+                validateMessageError();
                 ScreenTracking.screen(getScreenName());
                 favoritePresenter.loadDataTopAdsShop();
             } else {
-                if (messageSnackbar != null) {
+                if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
                 }
             }
         } catch (NullPointerException e) {
             e.printStackTrace();
             onCreate(new Bundle());
+        }
+
+    }
+
+    @Override
+    public void validateMessageError() {
+        if (messageSnackbar != null) {
+            if (isHasToShowMessageFailed) {
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                messageSnackbar.hideRetrySnackbar();
+            }
+        }
+    }
+
+    @Override
+    public void showTopAdsProductError() {
+        if (favoriteAdapter.getItemCount() > 0) {
+            isHasToShowMessageFailed = true;
+            validateMessageError();
+        } else {
+            showErrorLoadData();
         }
 
     }
@@ -309,6 +329,5 @@ public class FragmentFavorite extends BaseDaggerFragment
     private boolean isAdapterNotEmpty() {
         return favoriteAdapter.getItemCount() > 0;
     }
-
 
 }

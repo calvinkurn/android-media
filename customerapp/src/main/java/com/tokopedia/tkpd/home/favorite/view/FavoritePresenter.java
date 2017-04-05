@@ -234,8 +234,6 @@ public class FavoritePresenter
 
             if (dataFavorite != null
                     && dataFavorite.getFavoriteShop() != null) {
-//                && dataFavorite.getFavoriteShop().getData() != null
-
 
                 if (dataFavorite.getFavoriteShop().isNetworkError()) {
                     getView().hasToShowWishlistFailedMessage();
@@ -304,10 +302,19 @@ public class FavoritePresenter
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
+            getView().showTopAdsProductError();
         }
 
         @Override
         public void onNext(TopAdsShop topAdsShop) {
+            if (topAdsShop != null) {
+                if (topAdsShop.isNetworkError()) {
+                    getView().hasToShowWishlistFailedMessage();
+                } else {
+                    getView().hasToDismissWishlistFailedMessage();
+                }
+                getView().validateMessageError();
+            }
             if (isTopAdsShopListNotEmpty(topAdsShop)) {
                 getView().addTopAdsShop(prepareDataTopAdsShop(topAdsShop));
             }
