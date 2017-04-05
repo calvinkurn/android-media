@@ -201,8 +201,14 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                             if (isViewAttached()) {
 
                                 Object object = objects.get(0);
+                                boolean isEmptyShop = false;
                                 if (object != null && object instanceof ShopModel) {
-                                    getView().loadShopInfo((ShopModel) object);
+                                    ShopModel shopModel = (ShopModel) object;
+                                    getView().loadShopInfo(shopModel);
+                                    if(shopModel.stats.shopReputationScore.equals("0") ||
+                                            shopModel.stats.shopReputationScore.isEmpty()){
+                                        isEmptyShop = true;
+                                    }
                                 }
 
                                 object = objects.get(1);
@@ -218,6 +224,7 @@ public class SellerReputationFragmentPresenter extends BaseDaggerPresenter<Selle
                                     EmptyListModel emptyListModel = null;
                                     if (typeBasedModels.isEmpty()) {
                                         typeBasedModels.add(emptyListModel = new EmptyListModel());
+                                        emptyListModel.setEmptyShop(isEmptyShop);
                                     }
 
                                     SetDateHeaderModel headerModel = getView().getHeaderModel();

@@ -253,6 +253,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         startActivity(new Intent(this, GMSubscribeActivity.class));
     }
 
+    @OnClick(R.id.seller_home_reputation_view)
+    public void goToSellerReputationHistory(){
+        Intent intent = new Intent(this, InboxReputationActivity.class);
+        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

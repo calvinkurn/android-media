@@ -10,6 +10,7 @@ public class EmptyListModel extends TypeBasedModel {
     public static final int TYPE = 128912;
 
     SetDateHeaderModel setDateHeaderModel;
+    private boolean isEmptyShop;
 
     public EmptyListModel() {
         super(TYPE);
@@ -21,5 +22,13 @@ public class EmptyListModel extends TypeBasedModel {
 
     public void setSetDateHeaderModel(SetDateHeaderModel setDateHeaderModel) {
         this.setDateHeaderModel = setDateHeaderModel;
+    }
+
+    public boolean isEmptyShop() {
+        return isEmptyShop;
+    }
+
+    public void setEmptyShop(boolean emptyShop) {
+        isEmptyShop = emptyShop;
     }
 }

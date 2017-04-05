@@ -296,12 +296,16 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         DateUtilHelper dateUtilHelper;
         Fragment fragment;
         private LinearLayout containerClick;
+        private TextView reputationInfo;
+        private TextView descReputationInfo;
 
         public EmptyListViewHolder(View itemView) {
             super(itemView);
 
             dateUtilHelper = new DateUtilHelper(itemView.getContext());
             containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
+            reputationInfo = (TextView) itemView.findViewById(R.id.good_job_reputation_retry);
+            descReputationInfo = (TextView) itemView.findViewById(R.id.description_reputation_retry);
         }
 
         public Fragment getFragment() {
@@ -318,6 +322,10 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
+            if(emptyListModel.isEmptyShop()){
+                reputationInfo.setText(context.getString(R.string.reputation_history_label_congrats_no_penalty));
+                descReputationInfo.setText(context.getString(R.string.reputation_history_label_improve_selling_get_badge));
+            }
 
             containerClick.setOnClickListener(new View.OnClickListener() {
                 @Override

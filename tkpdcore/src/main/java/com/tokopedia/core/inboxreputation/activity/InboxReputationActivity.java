@@ -38,7 +38,9 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     public static final String REVIEW_ALL = "inbox-reputation";
     public static final String REVIEW_PRODUCT = "inbox-reputation-my-product";
     public static final String REVIEW_USER = "inbox-reputation-my-review";
+    public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
     private static final int OFFSCREEN_PAGE_LIMIT = 2;
+    public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     TkpdFragmentWrapper sellerReputationFragment;
 
     @BindView(R2.id.pager)
@@ -46,10 +48,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     @BindView(R2.id.indicator)
     TabLayout indicator;
 
+    private boolean goToReputationHistory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+        goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
     }
 
     @Override
@@ -87,11 +92,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
-
         if (GlobalConfig.isSellerApp()) {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product_seller)));
             if (sellerReputationFragment != null) {
                 indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
+            }
+            if(goToReputationHistory){
+                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         } else {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
