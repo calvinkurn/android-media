@@ -269,4 +269,11 @@
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
 
+    <!-- Product -->
+    <string name="product_label_name">Nama Produk</string>
+    <string name="product_label_catalog">Katalog</string>
+    <string name="product_label_category">Kategori</string>
+    <string name="product_label_choose">Pilih</string>
+    <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
+
 </resources>

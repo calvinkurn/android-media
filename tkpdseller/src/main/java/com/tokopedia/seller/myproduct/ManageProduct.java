@@ -93,6 +93,7 @@ import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
 import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -692,8 +693,8 @@ public class ManageProduct extends TkpdActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_product) {
             if (isProdManager == 1) {
-                ProductActivity.moveToAddProduct(this);
-
+                Intent intent = new Intent(this, ProductAddActivity.class);
+                startActivity(intent);
                 // analytic below : https://phab.tokopedia.com/T18496
                 UnifyTracking.eventClickAPManageProductTop();
             } else {
