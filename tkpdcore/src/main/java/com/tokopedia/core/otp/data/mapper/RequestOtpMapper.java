@@ -26,11 +26,10 @@ public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOt
                 model.setSuccess(true);
                 model.setRequestOtpData(data);
             } else {
-                if (response.body().getErrorMessages() == null
-                        && response.body().getErrorMessages().isEmpty()) {
-                    model.setSuccess(false);
-                } else {
-                    model.setSuccess(false);
+                RequestOtpData data = response.body().convertDataObj(RequestOtpData.class);
+                model.setSuccess(data.isSuccess());
+                if (!(response.body().getErrorMessages() == null
+                        && response.body().getErrorMessages().isEmpty())) {
                     model.setErrorMessage(response.body().getErrorMessageJoined());
                 }
             }

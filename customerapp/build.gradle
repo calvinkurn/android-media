@@ -180,12 +180,12 @@ android {
 
     productFlavors {
         staging {
-            applicationIdSuffix ".staging"
-            versionNameSuffix "-staging"
+//            applicationIdSuffix ".staging"
+//            versionNameSuffix "-staging"
         }
         alpha {
-            applicationIdSuffix ".alpha"
-            versionNameSuffix "-alpha"
+//            applicationIdSuffix ".alpha"
+//            versionNameSuffix "-alpha"
         }
         live {
 
