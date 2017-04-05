@@ -155,12 +155,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionCheckout(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionCheckout(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
@@ -202,12 +202,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionInstantCheckout(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionInstantCheckout(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
@@ -249,12 +249,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionCheckVoucher(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionCheckVoucher(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
@@ -294,12 +294,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionAddToCart(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionAddToCart(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
@@ -346,12 +346,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionGetCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionGetCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
@@ -391,12 +391,12 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionGetCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionGetCartData(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
                     );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */

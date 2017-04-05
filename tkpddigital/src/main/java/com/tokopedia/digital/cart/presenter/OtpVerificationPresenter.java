@@ -88,7 +88,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorTimeoutReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof UnknownHostException) {
                     view.renderErrorNoConnectionReRequestSmsOtp(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else {
                     view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -121,7 +121,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorTimeoutFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof UnknownHostException) {
                     view.renderErrorNoConnectionFirstRequestSmsOtp(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else {
                     view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -154,7 +154,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorTimeoutRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof UnknownHostException) {
                     view.renderErrorNoConnectionRequestCallOtp(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else {
                     view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
@@ -187,7 +187,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorTimeoutVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof UnknownHostException) {
                     view.renderErrorNoConnectionVerifyOtp(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
                 } else {
                     view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
