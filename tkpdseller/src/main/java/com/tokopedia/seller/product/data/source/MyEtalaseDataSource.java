@@ -2,7 +2,9 @@ package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.mapper.MyEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.source.cloud.MyEtalaseCloud;
-import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,7 +22,7 @@ public class MyEtalaseDataSource {
         this.myEtalaseCloud = myEtalaseCloud;
     }
 
-    public Observable<MyEtalaseListDomainModel> fetchMyEtalase() {
+    public Observable<List<MyEtalaseDomainModel>> fetchMyEtalase() {
         return myEtalaseCloud
                 .fetchMyEtalaseList()
                 .map(new MyEtalaseServiceToDomainMapper());

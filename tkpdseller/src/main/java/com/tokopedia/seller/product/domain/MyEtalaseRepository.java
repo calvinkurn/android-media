@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.domain;
 
-import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -9,5 +11,5 @@ import rx.Observable;
  */
 
 public interface MyEtalaseRepository {
-    Observable<MyEtalaseListDomainModel> fetchMyEtalase();
+    Observable<List<MyEtalaseDomainModel>> fetchMyEtalase();
 }

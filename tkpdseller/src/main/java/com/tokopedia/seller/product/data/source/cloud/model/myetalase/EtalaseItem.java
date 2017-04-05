@@ -4,7 +4,7 @@ package com.tokopedia.seller.product.data.source.cloud.model.myetalase;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class EtalaseList {
+public class EtalaseItem {
 
     @SerializedName("etalase_total_product")
     @Expose

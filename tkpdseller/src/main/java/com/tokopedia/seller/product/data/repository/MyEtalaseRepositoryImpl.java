@@ -2,7 +2,9 @@ package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
-import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -18,7 +20,7 @@ public class MyEtalaseRepositoryImpl implements MyEtalaseRepository {
     }
 
     @Override
-    public Observable<MyEtalaseListDomainModel> fetchMyEtalase() {
+    public Observable<List<MyEtalaseDomainModel>> fetchMyEtalase() {
         return myEtalaseDataSource.fetchMyEtalase();
     }
 }

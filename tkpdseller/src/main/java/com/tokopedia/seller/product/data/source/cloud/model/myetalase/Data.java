@@ -13,7 +13,7 @@ public class Data {
     private Integer isAllow;
     @SerializedName("list")
     @Expose
-    private List<EtalaseList> list = null;
+    private List<EtalaseItem> list = null;
 
     public Integer getIsAllow() {
         return isAllow;
@@ -23,11 +23,11 @@ public class Data {
         this.isAllow = isAllow;
     }
 
-    public List<EtalaseList> getList() {
+    public List<EtalaseItem> getList() {
         return list;
     }
 
-    public void setList(List<EtalaseList> list) {
+    public void setList(List<EtalaseItem> list) {
         this.list = list;
     }
 

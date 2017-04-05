@@ -5,7 +5,9 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
-import com.tokopedia.seller.product.domain.model.MyEtalaseListDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -14,7 +16,7 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 4/5/17.
  */
-public class FetchMyEtalaseUseCase extends UseCase<MyEtalaseListDomainModel>{
+public class FetchMyEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
     private final MyEtalaseRepository myEtalaseRepository;
 
     @Inject
@@ -24,7 +26,7 @@ public class FetchMyEtalaseUseCase extends UseCase<MyEtalaseListDomainModel>{
     }
 
     @Override
-    public Observable<MyEtalaseListDomainModel> createObservable(RequestParams requestParams) {
+    public Observable<List<MyEtalaseDomainModel>> createObservable(RequestParams requestParams) {
         return myEtalaseRepository.fetchMyEtalase();
     }
 }
