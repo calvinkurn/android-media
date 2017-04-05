@@ -97,7 +97,10 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         renderData(holder, item);
         renderView(holder, item);
         if (item.getAttachment() != null && !item.getAttachment().isEmpty()) {
+            holder.attachment.setVisibility(View.VISIBLE);
             renderAttachment(holder, item);
+        } else {
+            holder.attachment.setVisibility(View.GONE);
         }
         holder.actionTrack.setOnClickListener(new View.OnClickListener() {
             @Override
