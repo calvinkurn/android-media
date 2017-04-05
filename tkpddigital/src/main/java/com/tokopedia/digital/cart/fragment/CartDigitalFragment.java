@@ -433,14 +433,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionCheckVoucher(String message) {
-        NetworkErrorHelper.showDialogCustomMSG(getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                message, new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         presenter.processCheckVoucher();
                     }
-                }, message
-        );
+                }
+        ).showRetrySnackbar();
     }
 
     @Override
@@ -468,12 +468,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionCheckout(String message) {
-        NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.processToCheckout();
-            }
-        });
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.processToCheckout();
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
@@ -502,12 +503,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionInstantCheckout(String message) {
-        NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.processToInstantCheckout();
-            }
-        });
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.processToInstantCheckout();
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
