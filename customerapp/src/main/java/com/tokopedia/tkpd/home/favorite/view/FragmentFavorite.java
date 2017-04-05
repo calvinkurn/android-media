@@ -71,7 +71,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     private EndlessRecyclerviewListener recylerviewScrollListener;
 
     private SnackbarRetry messageSnackbar;
-    private boolean isHasToShowMessageFailed;
+    private boolean isWishlistNetworkFailed;
+    private boolean isFavoriteShopNetworkFailed;
+    private boolean isTopAdsShopNetworkFailed;
 
 
     @Override
@@ -90,6 +92,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         prepareView();
         favoritePresenter.attachView(this);
         favoritePresenter.loadDataWishlistAndFavorite();
+
         return parentView;
     }
 
@@ -126,7 +129,9 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void setUserVisibleHint(boolean isVisibleToUser) {
         try {
             if (isVisibleToUser && isAdded() && getActivity() != null) {
-                validateMessageError();
+                if (isAdapterNotEmpty()) {
+                    validateMessageError();
+                }
                 ScreenTracking.screen(getScreenName());
                 favoritePresenter.loadDataTopAdsShop();
             } else {
@@ -144,7 +149,8 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void validateMessageError() {
         if (messageSnackbar != null) {
-            if (isHasToShowMessageFailed) {
+            if (isWishlistNetworkFailed
+                    || isFavoriteShopNetworkFailed || isTopAdsShopNetworkFailed) {
                 messageSnackbar.showRetrySnackbar();
             } else {
                 messageSnackbar.hideRetrySnackbar();
@@ -155,9 +161,10 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void showTopAdsProductError() {
         if (favoriteAdapter.getItemCount() > 0) {
-            isHasToShowMessageFailed = true;
+            isTopAdsShopNetworkFailed = true;
             validateMessageError();
         } else {
+            isTopAdsShopNetworkFailed = false;
             showErrorLoadData();
         }
 
@@ -196,16 +203,22 @@ public class FragmentFavorite extends BaseDaggerFragment
                 favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
             }
         } else {
-            favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
+            favoriteAdapter.addElement(shopViewModel);
         }
     }
 
 
     @Override
-    public void showDataFavorite(List<Visitable> elementList) {
+    public void refreshDataFavorite(List<Visitable> elementList) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(elementList);
+    }
+
+    @Override
+    public void showWishlistFavorite(List<Visitable> dataFavorite) {
+        favoriteAdapter.hideLoading();
+        favoriteAdapter.setElement(dataFavorite);
     }
 
     @Override
@@ -255,13 +268,33 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void hasToShowWishlistFailedMessage() {
-        isHasToShowMessageFailed = true;
+    public void showWishlistFailedMessage() {
+        isWishlistNetworkFailed = true;
     }
 
     @Override
-    public void hasToDismissWishlistFailedMessage() {
-        isHasToShowMessageFailed = false;
+    public void dismissWishlistFailedMessage() {
+        isWishlistNetworkFailed = false;
+    }
+
+    @Override
+    public void showFavoriteShopFailedMessage() {
+        isFavoriteShopNetworkFailed = true;
+    }
+
+    @Override
+    public void dismissFavoriteShopFailedMessage() {
+        isFavoriteShopNetworkFailed = false;
+    }
+
+    @Override
+    public void showTopadsShopFailedMessage() {
+        isTopAdsShopNetworkFailed = true;
+    }
+
+    @Override
+    public void dismissTopadsShopFailedMessage() {
+        isTopAdsShopNetworkFailed = false;
     }
 
     @Override

@@ -22,7 +22,9 @@ interface FavoriteContract {
 
         void addTopAdsShop(TopAdsShopViewModel shopViewModel);
 
-        void showDataFavorite(List<Visitable> elementList);
+        void refreshDataFavorite(List<Visitable> elementList);
+
+        void showWishlistFavorite(List<Visitable> dataFavorite);
 
         void showMoreDataFavoriteShop(List<Visitable> elementList);
 
@@ -40,13 +42,23 @@ interface FavoriteContract {
 
         void showErrorLoadData();
 
-        void hasToShowWishlistFailedMessage();
+        void showWishlistFailedMessage();
 
-        void hasToDismissWishlistFailedMessage();
+        void dismissWishlistFailedMessage();
+
+        void showFavoriteShopFailedMessage();
+
+        void dismissFavoriteShopFailedMessage();
+
+        void showTopadsShopFailedMessage();
+
+        void dismissTopadsShopFailedMessage();
 
         void validateMessageError();
 
         void showTopAdsProductError();
+
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

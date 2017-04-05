@@ -207,7 +207,7 @@ public class FavoritePresenter
 
         @Override
         public void onNext(DataFavorite dataFavorite) {
-            getView().showDataFavorite(getDataFavoriteViewModel(dataFavorite));
+            getView().showWishlistFavorite(getDataFavoriteViewModel(dataFavorite));
         }
 
         @NonNull
@@ -218,9 +218,9 @@ public class FavoritePresenter
                     && dataFavorite.getWishListData() != null) {
 
                 if (dataFavorite.getWishListData().isNetworkError()) {
-                    getView().hasToShowWishlistFailedMessage();
+                    getView().showWishlistFailedMessage();
                 } else {
-                    getView().hasToDismissWishlistFailedMessage();
+                    getView().dismissWishlistFailedMessage();
                 }
 
                 if (dataFavorite.getWishListData().getData() != null) {
@@ -236,9 +236,9 @@ public class FavoritePresenter
                     && dataFavorite.getFavoriteShop() != null) {
 
                 if (dataFavorite.getFavoriteShop().isNetworkError()) {
-                    getView().hasToShowWishlistFailedMessage();
+                    getView().showFavoriteShopFailedMessage();
                 } else {
-                    getView().hasToDismissWishlistFailedMessage();
+                    getView().dismissFavoriteShopFailedMessage();
                 }
                 if (dataFavorite.getFavoriteShop().getData() != null) {
                     setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
@@ -309,9 +309,9 @@ public class FavoritePresenter
         public void onNext(TopAdsShop topAdsShop) {
             if (topAdsShop != null) {
                 if (topAdsShop.isNetworkError()) {
-                    getView().hasToShowWishlistFailedMessage();
+                    getView().showTopadsShopFailedMessage();
                 } else {
-                    getView().hasToDismissWishlistFailedMessage();
+                    getView().dismissTopadsShopFailedMessage();
                 }
                 getView().validateMessageError();
             }
@@ -369,7 +369,7 @@ public class FavoritePresenter
                     dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
                 }
             }
-            getView().showDataFavorite(dataFavoriteItemList);
+            getView().refreshDataFavorite(dataFavoriteItemList);
             getView().hideRefreshLoading();
             pagingHandler.resetPage();
         }
