@@ -7,6 +7,7 @@ import android.net.Uri;
  */
 
 public class NotificationConfiguration {
+    private static final int GENERAL_NOTIFICATION_ID = 100;
     private boolean bell;
     private boolean vibrate;
     private boolean networkIcon;
@@ -19,7 +20,7 @@ public class NotificationConfiguration {
         vibrate = false;
         networkIcon = false;
         vibratePattern = new long[]{500, 500, 500, 500, 500, 500, 500, 500, 500};
-        notificationId = 100;
+        notificationId = GENERAL_NOTIFICATION_ID;
     }
 
     public boolean isBell() {
