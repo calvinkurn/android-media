@@ -39,6 +39,24 @@
             tools:text ="Gukguk meong meongaksjdkajshdkajhsdkajhsdkajhsdaksdjhaksjhkahsdk"
             android:textSize="@dimen/fonts" />
 
+        <TextView
+            android:id="@+id/title_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/attachment"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_below="@id/message"
+            android:textStyle="bold"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/image_holder"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/img_thumb_holder"
+            android:layout_below="@id/title_attachment"
+            android:scrollbars="horizontal"
+            android:visibility="visible" />
+
+
     </RelativeLayout>
 
     <TextView

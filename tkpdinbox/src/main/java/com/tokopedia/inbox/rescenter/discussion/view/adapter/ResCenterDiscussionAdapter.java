@@ -5,10 +5,11 @@ import android.content.Context;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.inboxmessage.adapter.databinder.LoadMoreDataBinder;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.EmptyDataBinder;
+import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.LoadMoreDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.MyDiscussionDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.TheirDiscussionDataBinder;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,27 +24,31 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int VIEW_THEIR_MESSAGE = 100;
     private static final int VIEW_MY_MESSAGE = 101;
     private static final int VIEW_LOAD_MORE = 102;
+    private static final int VIEW_EMPTY = 103;
+
 
     private MyDiscussionDataBinder myDiscussionDataBinder;
     private TheirDiscussionDataBinder theirDiscussionDataBinder;
     private LoadMoreDataBinder loadMoreDataBinder;
+    private EmptyDataBinder emptyDataBinder;
 
-    private ArrayList<ResCenterDiscussionItemViewModel> data;
+    private ArrayList<DiscussionItemViewModel> data;
     private Context context;
     private int canLoadMore = 0;
 
-    public ResCenterDiscussionAdapter(Context context) {
+    public ResCenterDiscussionAdapter(Context context, LoadMoreDataBinder.LoadMoreListener listener) {
         super();
         this.context = context;
         this.data = new ArrayList<>();
         myDiscussionDataBinder = new MyDiscussionDataBinder(this, context);
         theirDiscussionDataBinder = new TheirDiscussionDataBinder(this, context);
-        loadMoreDataBinder = new LoadMoreDataBinder(this);
+        loadMoreDataBinder = new LoadMoreDataBinder(this, listener);
+        emptyDataBinder = new EmptyDataBinder(this);
 
     }
 
-    public static ResCenterDiscussionAdapter createAdapter(Context context) {
-        return new ResCenterDiscussionAdapter(context);
+    public static ResCenterDiscussionAdapter createAdapter(Context context, LoadMoreDataBinder.LoadMoreListener listener) {
+        return new ResCenterDiscussionAdapter(context, listener);
     }
 
     @Override
@@ -82,6 +87,8 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
                 return theirDiscussionDataBinder;
             case VIEW_LOAD_MORE:
                 return loadMoreDataBinder;
+            case VIEW_EMPTY:
+                return emptyDataBinder;
             default:
                 return super.getDataBinder(viewType);
         }
@@ -98,8 +105,7 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
-    public void setList(List<ResCenterDiscussionItemViewModel> list) {
-        Collections.reverse(list);
+    public void setList(List<DiscussionItemViewModel> list) {
         this.data.addAll(0, list);
         this.myDiscussionDataBinder.addAll(list);
         this.myDiscussionDataBinder.notifyDataSetChanged();
@@ -108,26 +114,22 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public void addReply(ResCenterDiscussionItemViewModel item) {
+    public void addReply(DiscussionItemViewModel item) {
         this.data.add(item);
         this.myDiscussionDataBinder.addReply(item);
         this.theirDiscussionDataBinder.addReply(item);
         notifyDataSetChanged();
     }
 
-    public ArrayList<ResCenterDiscussionItemViewModel> getData() {
+    public ArrayList<DiscussionItemViewModel> getData() {
         return data;
     }
 
     public void setCanLoadMore(boolean canLoadMore) {
         if (canLoadMore) {
             this.canLoadMore = 1;
-            theirDiscussionDataBinder.setCanLoadMore(1);
-            myDiscussionDataBinder.setCanLoadMore(1);
         } else {
             this.canLoadMore = 0;
-            theirDiscussionDataBinder.setCanLoadMore(0);
-            myDiscussionDataBinder.setCanLoadMore(0);
         }
     }
 
@@ -153,14 +155,14 @@ public class ResCenterDiscussionAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public void add(int position, ResCenterDiscussionItemViewModel resCenterDiscussionItemViewModel) {
-        this.data.add(position, resCenterDiscussionItemViewModel);
-        theirDiscussionDataBinder.add(position, resCenterDiscussionItemViewModel);
-        myDiscussionDataBinder.add(position, resCenterDiscussionItemViewModel);
+    public void add(int position, DiscussionItemViewModel discussionItemViewModel) {
+        this.data.add(position, discussionItemViewModel);
+        theirDiscussionDataBinder.add(position, discussionItemViewModel);
+        myDiscussionDataBinder.add(position, discussionItemViewModel);
         notifyDataSetChanged();
     }
 
-    public int canLoadMore() {
-        return this.canLoadMore;
+    public boolean canLoadMore() {
+        return this.canLoadMore == 1;
     }
 }

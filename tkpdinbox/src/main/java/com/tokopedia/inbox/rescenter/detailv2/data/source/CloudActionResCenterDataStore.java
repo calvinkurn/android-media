@@ -5,7 +5,10 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.ReplyConversationValidationMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.ResolutionCenterActionMapper;
+import com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDiscussionValidationUseCase;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 
 import rx.Observable;
@@ -19,12 +22,14 @@ public class CloudActionResCenterDataStore {
     private final Context context;
     private final ResCenterActService resCenterActService;
     private final ResolutionCenterActionMapper resolutionCenterActionMapper;
+    private final ReplyConversationValidationMapper replyConversationValidationMapper;
 
     public CloudActionResCenterDataStore(Context context, ResCenterActService resCenterActService) {
         super();
         this.context = context;
         this.resCenterActService = resCenterActService;
         this.resolutionCenterActionMapper = new ResolutionCenterActionMapper();
+        this.replyConversationValidationMapper = new ReplyConversationValidationMapper();
     }
 
     public Observable<ResolutionActionDomainData> cancelResolution(TKPDMapParam<String, Object> parameters) {
@@ -61,5 +66,14 @@ public class CloudActionResCenterDataStore {
         return resCenterActService.getApi()
                 .inputAddressResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(resolutionCenterActionMapper);
+    }
+
+    public Observable<ReplyDiscussionValidationModel> replyConversationValidation(
+            TKPDMapParam<String, Object> parameters) {
+        replyConversationValidationMapper.setHasAttachment(parameters.containsKey(ReplyDiscussionValidationUseCase.PARAM_PHOTOS));
+        return resCenterActService.getApi()
+                .replyConversationValidation2(
+                        AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(replyConversationValidationMapper);
     }
 }

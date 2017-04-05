@@ -4,9 +4,12 @@ import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.Attachment;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionItemData;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.ResCenterDiscussionItemViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import rx.Subscriber;
  * Created by nisie on 3/30/17.
  */
 
-public class GetDiscussionSubscriber extends Subscriber<DiscussionData> {
+public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
 
     private ResCenterDiscussionView viewListener;
 
@@ -80,24 +83,36 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionData> {
     }
 
     @Override
-    public void onNext(DiscussionData discussionData) {
+    public void onNext(DiscussionModel discussionModel) {
         viewListener.finishLoading();
-        viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionData));
+        viewListener.onSuccessGetDiscussion(mappingToViewModel(discussionModel), discussionModel.canLoadMore());
     }
 
-    private List<ResCenterDiscussionItemViewModel> mappingToViewModel(DiscussionData discussionData) {
-        List<ResCenterDiscussionItemViewModel> list = new ArrayList<>();
+    private List<DiscussionItemViewModel> mappingToViewModel(DiscussionModel discussionModel) {
+        List<DiscussionItemViewModel> list = new ArrayList<>();
 
-        list.add(new ResCenterDiscussionItemViewModel("Message 1", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 2", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "24 Jul 2016 11:45 WIB", "3045173"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 4", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 5", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 6", "24 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 7", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 8", "25 Jul 2016 11:45 WIB"));
-        list.add(new ResCenterDiscussionItemViewModel("Message 3", "26 Jul 2016 11:45 WIB", "3045173"));
+        for(DiscussionItemData item : discussionModel.getListDiscussionData()){
+            DiscussionItemViewModel viewModel = new DiscussionItemViewModel();
+            viewModel.setMessage(item.getSolutionRemark());
+            viewModel.setMessageReplyTimeFmt(item.getCreateTimeStr());
+            viewModel.setUserLabelId(item.getActionBy());
+            viewModel.setUserLabel(item.getActionByStr());
+            viewModel.setAttachment(mappingAttachment(item.getAttachment()));
+            viewModel.setConversationId(String.valueOf(item.getResConvId()));
+            viewModel.setMessageCreateBy(item.getCreateBy());
+            list.add(viewModel);
+        }
+        return list;
+    }
 
+    private List<AttachmentViewModel>  mappingAttachment(List<Attachment> listAttachments) {
+        List<AttachmentViewModel> list = new ArrayList<>();
+        for (Attachment item : listAttachments) {
+            AttachmentViewModel attachment = new AttachmentViewModel();
+            attachment.setUrl(item.getUrl());
+            attachment.setImgThumb(item.getImageThumb());
+            list.add(attachment);
+        }
         return list;
     }
 }

@@ -2,14 +2,16 @@ package com.tokopedia.inbox.rescenter.detailv2.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.DiscussionData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 
 import rx.Observable;
 
@@ -21,9 +23,9 @@ public interface ResCenterRepository {
 
     Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters);
 
-    Observable<DiscussionData> getConversation(TKPDMapParam<String, Object> parameters);
+    Observable<DiscussionModel> getConversation(TKPDMapParam<String, Object> parameters);
 
-    Observable<DetailResCenter> getConversationMore(String conversationID, TKPDMapParam<String, Object> parameters);
+    Observable<LoadMoreModel> getConversationMore(TKPDMapParam<String, Object> parameters);
 
     Observable<HistoryAwbData> getHistoryAwb(TKPDMapParam<String, Object> parameters);
 
@@ -48,4 +50,6 @@ public interface ResCenterRepository {
     Observable<ResolutionActionDomainData> acceptSolution(TKPDMapParam<String, Object> parameters);
 
     Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters);
+
+    Observable<ReplyDiscussionValidationModel> replyConversationValidation(TKPDMapParam<String, Object> parameters);
 }

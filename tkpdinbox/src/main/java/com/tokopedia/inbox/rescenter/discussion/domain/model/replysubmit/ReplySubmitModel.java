@@ -1,16 +1,14 @@
-package com.tokopedia.inbox.rescenter.discussion.domain.model;
-
-import java.util.List;
+package com.tokopedia.inbox.rescenter.discussion.domain.model.replysubmit;
 
 /**
- * Created by nisie on 3/30/17.
+ * Created by nisie on 4/3/17.
  */
 
-public class DiscussionData {
+public class ReplySubmitModel {
 
     private boolean success;
     private String messageError;
-    private List<DiscussionItemData> listDiscussionData;
+    private ReplySubmitData replySubmitData;
     private int responseCode;
 
     public boolean isSuccess() {
@@ -29,12 +27,12 @@ public class DiscussionData {
         this.messageError = messageError;
     }
 
-    public List<DiscussionItemData> getListDiscussionData() {
-        return listDiscussionData;
+    public ReplySubmitData getReplySubmitData() {
+        return replySubmitData;
     }
 
-    public void setListDiscussionData(List<DiscussionItemData> listDiscussionData) {
-        this.listDiscussionData = listDiscussionData;
+    public void setReplySubmitData(ReplySubmitData replySubmitData) {
+        this.replySubmitData = replySubmitData;
     }
 
     public void setResponseCode(int responseCode) {
