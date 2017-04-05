@@ -147,4 +147,8 @@
         <attr name="default_limit" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="CountInputView">
+        <attr name="count_hint" format="string"/>
+        <attr name="count_value" format="string"/>
+    </declare-styleable>
 </resources>
