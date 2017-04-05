@@ -8,12 +8,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -270,6 +272,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         private LinearLayout containerClick;
         private TextView reputationInfo;
         private TextView descReputationInfo;
+        private ImageView imageEmptyReputation;
 
         public EmptyListViewHolder(View itemView) {
             super(itemView);
@@ -278,6 +281,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             containerClick = (LinearLayout) itemView.findViewById(R.id.reputation_container_change_date);
             reputationInfo = (TextView) itemView.findViewById(R.id.good_job_reputation_retry);
             descReputationInfo = (TextView) itemView.findViewById(R.id.description_reputation_retry);
+            imageEmptyReputation = (ImageView) itemView.findViewById(R.id.img_reputation_retry);
         }
 
         public Fragment getFragment() {
@@ -293,6 +297,7 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             dateUtilHelper.setsDate(emptyListModel.getSetDateHeaderModel().getsDate());
             dateUtilHelper.seteDate(emptyListModel.getSetDateHeaderModel().geteDate());
             if(emptyListModel.isEmptyShop()){
+                imageEmptyReputation.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_penalti_reputasi_zero));
                 reputationInfo.setText(context.getString(R.string.reputation_history_label_congrats_no_penalty));
                 descReputationInfo.setText(context.getString(R.string.reputation_history_label_improve_selling_get_badge));
             }
