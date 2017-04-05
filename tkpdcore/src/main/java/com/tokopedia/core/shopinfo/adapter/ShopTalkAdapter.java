@@ -217,7 +217,8 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
                             } else if (item.getItemId() == R.id.action_unfollow) {
                                 listener.onUnfollowTalk(list.get(position));
                                 return true;
-                            } else if (item.getItemId() == R.id.action_delete_talk) {
+                            } else if (item.getItemId() == R.id.action_delete
+                                    || item.getItemId() == R.id.action_delete_talk) {
                                 listener.onDeleteTalk(list.get(position));
                                 return true;
                             } else if (item.getItemId() == R.id.action_report) {
