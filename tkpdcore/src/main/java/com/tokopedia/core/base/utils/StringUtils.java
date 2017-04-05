@@ -20,4 +20,12 @@ public class StringUtils {
         }
         return builder.toString();
     }
+
+    public static boolean isNotBlank(String shareUrl) {
+        return !isBlank(shareUrl);
+    }
+
+    public static boolean isBlank(String shareUrl) {
+        return shareUrl == null || shareUrl.length() == 0;
+    }
 }

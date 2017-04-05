@@ -267,5 +267,6 @@
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
+    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
 </resources>

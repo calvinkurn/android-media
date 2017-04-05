@@ -67,7 +67,6 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Accounts.GENERATE_HOST)
     Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
 
-
     @FormUrlEncoded
     @POST(TkpdBaseURL.Truecaller.VERIFY_PHONE)
     Observable<Response<TkpdResponse>> verifyPhone(@FieldMap Map<String, String> params);
@@ -83,4 +82,19 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
     Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
+    Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.VALIDATE_SIZE)
+    Observable<Response<TkpdResponse>> validateImage(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.SUBMIT_DETAIL)
+    Observable<Response<TkpdResponse>> submitImage(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Ktp.CHECK_STATUS)
+    Observable<Response<TkpdResponse>> checkStatusKtp(@FieldMap TKPDMapParam<String, Object> params);
 }

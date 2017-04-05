@@ -20,9 +20,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -38,6 +36,7 @@ import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.activity.SmartLockActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
@@ -49,9 +48,10 @@ import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -86,6 +86,7 @@ public class LoginImpl implements Login {
 
     LocalCacheHandler cacheState;
     LocalCacheHandler cacheInfo;
+    private int successLoginVia;
 
     public LoginImpl(LoginView view) {
         loginView = view;
@@ -471,7 +472,12 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getUser_id());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
-                    loginView.destroyActivity();
+                    successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
+                    if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE);
+                    }else {
+                        loginView.destroyActivity();
+                    }
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
 
                 }
@@ -518,6 +524,6 @@ public class LoginImpl implements Login {
         bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
 
-        ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_TOKEN, bundle);
+        ((SessionView) mContext).sendDataFromInternet(LOGIN_ACCOUNTS_TOKEN, bundle);
     }
 }

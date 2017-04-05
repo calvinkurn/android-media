@@ -207,7 +207,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initVar(savedInstanceState);
         getOrderData();
     }
