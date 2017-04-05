@@ -20,6 +20,8 @@ public class HistoryAwbViewItem implements Parcelable {
     private String shipmentID;
     private String shippingRefNumber;
     private boolean latest;
+    private boolean showEdit;
+    private boolean showTrack;
 
     public void setActionBy(int actionBy) {
         this.actionBy = actionBy;
@@ -96,6 +98,22 @@ public class HistoryAwbViewItem implements Parcelable {
     public HistoryAwbViewItem() {
     }
 
+    public void setShowEdit(boolean showEdit) {
+        this.showEdit = showEdit;
+    }
+
+    public boolean isShowEdit() {
+        return showEdit;
+    }
+
+    public void setShowTrack(boolean showTrack) {
+        this.showTrack = showTrack;
+    }
+
+    public boolean isShowTrack() {
+        return showTrack;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -105,26 +123,29 @@ public class HistoryAwbViewItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.actionBy);
         dest.writeString(this.actionByText);
-        dest.writeList(this.attachment);
+        dest.writeTypedList(this.attachment);
         dest.writeString(this.conversationID);
         dest.writeString(this.date);
         dest.writeString(this.remark);
         dest.writeString(this.shipmentID);
         dest.writeString(this.shippingRefNumber);
         dest.writeByte(this.latest ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showEdit ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.showTrack ? (byte) 1 : (byte) 0);
     }
 
     protected HistoryAwbViewItem(Parcel in) {
         this.actionBy = in.readInt();
         this.actionByText = in.readString();
-        this.attachment = new ArrayList<Attachment>();
-        in.readList(this.attachment, Attachment.class.getClassLoader());
+        this.attachment = in.createTypedArrayList(Attachment.CREATOR);
         this.conversationID = in.readString();
         this.date = in.readString();
         this.remark = in.readString();
         this.shipmentID = in.readString();
         this.shippingRefNumber = in.readString();
         this.latest = in.readByte() != 0;
+        this.showEdit = in.readByte() != 0;
+        this.showTrack = in.readByte() != 0;
     }
 
     public static final Creator<HistoryAwbViewItem> CREATOR = new Creator<HistoryAwbViewItem>() {

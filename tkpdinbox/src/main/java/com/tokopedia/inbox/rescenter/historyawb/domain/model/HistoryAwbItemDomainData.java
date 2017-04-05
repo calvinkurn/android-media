@@ -15,6 +15,8 @@ public class HistoryAwbItemDomainData {
     private String conversationID;
     private String shipmentID;
     private String shippingRefNumber;
+    private boolean buttonEdit;
+    private boolean buttonTrack;
 
     public void setActionBy(int actionBy) {
         this.actionBy = actionBy;
@@ -78,5 +80,21 @@ public class HistoryAwbItemDomainData {
 
     public String getShippingRefNumber() {
         return shippingRefNumber;
+    }
+
+    public void setButtonEdit(boolean buttonEdit) {
+        this.buttonEdit = buttonEdit;
+    }
+
+    public boolean isButtonEdit() {
+        return buttonEdit;
+    }
+
+    public void setButtonTrack(boolean buttonTrack) {
+        this.buttonTrack = buttonTrack;
+    }
+
+    public boolean isButtonTrack() {
+        return buttonTrack;
     }
 }

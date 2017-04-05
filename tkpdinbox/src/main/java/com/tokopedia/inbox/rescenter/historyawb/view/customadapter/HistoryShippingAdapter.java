@@ -102,12 +102,14 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         } else {
             holder.attachment.setVisibility(View.GONE);
         }
+        holder.actionTrack.setVisibility(item.isShowTrack() ? View.VISIBLE : View.GONE);
         holder.actionTrack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fragmentView.onActionTrackClick(item.getShipmentID(), item.getShippingRefNumber());
             }
         });
+        holder.actionEdit.setVisibility(item.isShowEdit() ? View.VISIBLE : View.GONE);
         holder.actionEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

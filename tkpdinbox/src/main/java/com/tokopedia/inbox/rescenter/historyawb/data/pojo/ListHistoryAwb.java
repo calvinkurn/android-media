@@ -27,7 +27,9 @@ public class ListHistoryAwb {
     @SerializedName("remark")
     private String remark;
     @SerializedName("attachments")
-    private List<ListHistoryAwb.Attachments> attachments;
+    private List<Attachments> attachments;
+    @SerializedName("button")
+    private Button button;
 
     public String getResConvId() {
         return resConvId;
@@ -93,12 +95,20 @@ public class ListHistoryAwb {
         this.remark = remark;
     }
 
-    public List<ListHistoryAwb.Attachments> getAttachments() {
+    public List<Attachments> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<ListHistoryAwb.Attachments> attachments) {
+    public void setAttachments(List<Attachments> attachments) {
         this.attachments = attachments;
+    }
+
+    public Button getButton() {
+        return button;
+    }
+
+    public void setButton(Button button) {
+        this.button = button;
     }
 
     public static class Attachments {
@@ -121,6 +131,29 @@ public class ListHistoryAwb {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+    }
+
+    public static class Button {
+        @SerializedName("editResi")
+        private int editResi;
+        @SerializedName("trackResi")
+        private int trackResi;
+
+        public int getEditResi() {
+            return editResi;
+        }
+
+        public void setEditResi(int editResi) {
+            this.editResi = editResi;
+        }
+
+        public int getTrackResi() {
+            return trackResi;
+        }
+
+        public void setTrackResi(int trackResi) {
+            this.trackResi = trackResi;
         }
     }
 }
