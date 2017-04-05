@@ -126,7 +126,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     public void sendCategory(String departementId) {
         browseProductActivityModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
-        fetchCategoriesHeader(departementId);
+        fetchCategoriesHeader(departementId, categoryLevel.size()+1);
     }
 
     @Override
@@ -967,9 +967,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
         discoveryInteractor.getHotListBanner(query);
-    }
+    }c
 
-    private void fetchCategoriesHeader(final String departementId) {
+    private void fetchCategoriesHeader(final String departementId, final int level) {
         showLoading(true);
         discoveryInteractor.setDiscoveryListener(new DiscoveryListener() {
             @Override
@@ -982,7 +982,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        fetchCategoriesHeader(departementId);
+                        fetchCategoriesHeader(departementId, level);
                     }
                 });
             }
@@ -1007,7 +1007,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             }
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        discoveryInteractor.getCategoryHeader(departementId);
+        discoveryInteractor.getCategoryHeader(departementId, level);
     }
 
 
@@ -1109,7 +1109,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         void onQueryChanged(String query);
     }
 
-    public void renderNewCategoryLevel(String departementId, String name) {
+    public void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null && name!=null) {
             browseProductActivityModel.setDepartmentId(departementId);
             toolbar.setTitle(name);
@@ -1119,14 +1119,17 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, parentFragment.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
-            parentFragment.setupWithTabViewPager();
+            if (isBack && parentFragment!=null) {
+                parentFragment.renderCategories(discoveryInteractor.
+                        getCategoryHeaderCache(categoryLevel.size()+1).getData());
+            }
         }
     }
 
     public void renderLowerCategoryLevel(Child child) {
         categoryLevel.push(new SimpleCategory(browseProductActivityModel.getDepartmentId(),getIntent().getStringExtra(EXTRA_TITLE)));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
-        renderNewCategoryLevel(child.getId(),child.getName());
+        renderNewCategoryLevel(child.getId(),child.getName(),false);
 
     }
 
@@ -1141,7 +1144,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         } else if (categoryLevel.size()>0) {
             SimpleCategory simpleCategory = categoryLevel.pop();
             getIntent().putExtra(EXTRA_TITLE,simpleCategory.getName());
-            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName());
+            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName(),true);
         } else {
             finish();
         }
