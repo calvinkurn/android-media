@@ -321,11 +321,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    if (!isAlreadyHavePhonePrefixInView) {
-                        this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                                category.getId(),
-                                category.getAttributes().getValidatePrefix());
-                    }
+                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                            category.getId(),
+                            category.getAttributes().getValidatePrefix());
                 } else {
                     isAlreadyHavePhonePrefixInView = false;
                     hideFormAndImageOperator();
@@ -344,6 +342,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextClear() {
+        LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+        rechargePresenter.clearRechargePhonebookCache();
         hideFormAndImageOperator();
     }
 
@@ -667,7 +667,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
             renderLastOrder();
         } else {
-            hideFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         }
     }
 
@@ -678,12 +678,16 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
                 showFormAndImageOperator();
             } else {
-                if (!rechargeEditText.getText().toString().trim().equals("")) {
-                    showFormAndImageOperator();
-                } else {
-                    hideFormAndImageOperator();
-                }
+                handlingAppearanceFormAndImageOperator();
             }
+        }
+    }
+
+    private void handlingAppearanceFormAndImageOperator() {
+        if (!rechargeEditText.getText().toString().trim().equals("")) {
+            showFormAndImageOperator();
+        } else {
+            hideFormAndImageOperator();
         }
     }
 

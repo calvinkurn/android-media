@@ -52,4 +52,6 @@ public interface LoginView extends BaseView {
     void showError(String string);
 
     void triggerSaveAccount();
+
+    void setSmartLock(int rcRead);
 }

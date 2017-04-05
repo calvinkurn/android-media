@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -63,6 +64,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void startInstopedActivity(Context context) {
         InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
     }
 
     @Override

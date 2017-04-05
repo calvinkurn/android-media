@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.ViewPager;
@@ -41,7 +40,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.model.NetworkParam;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.BrowseProductParent;
 import com.tokopedia.discovery.presenter.browseparent.BrowseProductParentImpl;
 import com.tokopedia.discovery.view.BrowseProductParentView;
@@ -85,55 +84,43 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         return null;
     }
 
-    public DiscoveryActivityPresenter discoveryActivityPresenter = new DiscoveryActivityPresenter.DiscoveryActivityPresenterImpl() {
-        @Override
-        public BrowseProductActivityModel getBrowseProductActivityModel() {
-            FragmentActivity activity = BrowseParentFragment.this.getActivity();
-            if (activity != null && activity instanceof DiscoveryActivityPresenter) {
-                return ((DiscoveryActivityPresenter) activity).getBrowseProductActivityModel();
+    @Override
+    public List<Breadcrumb> getProductBreadCrumb() {
+        try {
+            Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
+            switch (viewPager.getCurrentItem()) {
+                case 0:
+                    if (fragment instanceof ProductFragment) {
+                        return presenter.getBreadCrumb();
+                    }
+                case 1:
+                    if (fragment instanceof CatalogFragment) {
+                        BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
+                        return catalogModel.result.breadcrumb;
+                    }
+                default:
+                    return new ArrayList<Breadcrumb>();
+
             }
+        } catch (Exception e) {
             return null;
         }
+    }
 
-        @Override
-        public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
-            return presenter.getDataForBrowseProduct(firstTimeOnly);
-        }
+    @Override
+    public boolean checkHasFilterAttrIsNull(int activeTab) {
+        return ((BrowseView) getActivity()).checkHasFilterAttrIsNull(activeTab);
+    }
 
-        @Override
-        public NetworkParam.Product getProductParam() {
-            return presenter.getProductParam();
-        }
+    @Override
+    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
+        return presenter.getDataForBrowseProduct(firstTimeOnly);
+    }
 
-        @Override
-        public List<Breadcrumb> getProductBreadCrumb() {
-            try {
-                Fragment fragment = browserSectionsPagerAdapter.getItem(viewPager.getCurrentItem());
-                switch (viewPager.getCurrentItem()) {
-                    case 0:
-                        if (fragment instanceof ProductFragment) {
-                            return presenter.getBreadCrumb();
-                        }
-                    case 1:
-                        if (fragment instanceof CatalogFragment) {
-                            BrowseCatalogModel catalogModel = ((CatalogFragment) fragment).getDataModel();
-                            return catalogModel.result.breadcrumb;
-                        }
-                    default:
-                        return new ArrayList<Breadcrumb>();
-
-                }
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        @Override
-        public boolean checkHasFilterAttrIsNull(int activeTab) {
-            return ((BrowseProductActivity) getActivity()).checkHasFilterAttrIsNull(activeTab);
-        }
-    };
-
+    @Override
+    public NetworkParam.Product getProductParam() {
+        return presenter.getProductParam();
+    }
 
     public static BrowseParentFragment newInstance(BrowseProductActivityModel browseProductActivityModel) {
         return newInstance(browseProductActivityModel, 0);
@@ -250,7 +237,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 
     @Override
@@ -262,7 +249,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
         }
         if (uri.contains("/p/")) {
-            if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
                 BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
                 browseProductActivity.resetBrowseProductActivityModel();
                 BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
@@ -325,7 +312,7 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             @Override
             public void onPageSelected(int position) {
                 Log.d(TAG, MESSAGE_TAG + " >> position >> " + position);
-                if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+                if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
 
                 }
 
@@ -462,10 +449,5 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     @Override
     public Context getContext() {
         return super.getContext();
-    }
-
-    @Override
-    public DiscoveryActivityPresenter getActivityPresenter() {
-        return discoveryActivityPresenter;
     }
 }

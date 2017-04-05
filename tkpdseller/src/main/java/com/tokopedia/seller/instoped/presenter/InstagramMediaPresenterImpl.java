@@ -35,7 +35,6 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
 
     public static final int FAILED_LOAD_IMAGE = -1;
     public static final int MAXIMUM_IMAGE_SELECTED = -2;
-    private int maxItemCount = -1;
     private int itemCount = 0;
     private SparseArray<InstagramMediaModel> selectedModel = new SparseArray<>();
     private InstagramMediaFragmentView instagramMediaView;
@@ -213,9 +212,7 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
             isLoading = false;
             mediaModels.addAll(getMediaModelsFromResult(data));
             instagramMediaView.initAdapter(mediaModels);
-            if (maxItemCount == -1) {
-                updateMaxCount(20);
-            }
+            updateMaxCount(instagramMediaView.getMaxItem());
             if (nextMaxId == null) {
                 hasLoadMore = false;
             } else {
@@ -228,14 +225,13 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
 
     @Override
     public void updateMaxCount(int instaMediacount) {
-        maxItemCount = instaMediacount;
-        instagramMediaView.updateTitleView(itemCount, maxItemCount);
+        instagramMediaView.updateTitleView(itemCount, instaMediacount);
     }
 
     @Override
     public void updateItemSelection(boolean increment, int pos) {
         if (increment) {
-            if (itemCount == maxItemCount) {
+            if (itemCount == instagramMediaView.getMaxItem()) {
                 instagramMediaView.onMessageError(MAXIMUM_IMAGE_SELECTED, context.getString(R.string.maximum_instoped_limit));
             } else {
                 itemCount++;
@@ -245,7 +241,7 @@ public class InstagramMediaPresenterImpl implements InstagramMedia {
             itemCount--;
             selectedModel.remove(pos);
         }
-        instagramMediaView.updateTitleView(itemCount, maxItemCount);
+        instagramMediaView.updateTitleView(itemCount, instagramMediaView.getMaxItem());
         instagramMediaView.loadDataChange();
 
 

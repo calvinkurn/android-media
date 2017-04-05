@@ -55,10 +55,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         super(view);
     }
 
-    public BrowseProductActivityModel getBrowseProductActivityModel() {
-        return browseProductActivityModel;
-    }
-
     @Override
     public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
         return browseProductModel;
@@ -272,7 +268,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             view.setCurrentTabs(0);
                         }
                     }
-                    if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
+                    if(view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);

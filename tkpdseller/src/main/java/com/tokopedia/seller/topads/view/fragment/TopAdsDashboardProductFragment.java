@@ -103,15 +103,23 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
+    boolean adStatusChanged = false;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            if (adStatusChanged) {
-                loadData();
-            }
+            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
         }
         super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adStatusChanged) {
+            loadData();
+            adStatusChanged = false;
+        }
     }
 
     @Override

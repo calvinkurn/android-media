@@ -182,4 +182,6 @@
     <dimen name="viewpager_margin">-42dp</dimen>
     <dimen name="slider_margin">22dp</dimen>
     <dimen name="banner_margin">2dp</dimen>
+    <dimen name="drop_down_indicator_width">10dp</dimen>
+    <dimen name="drop_down_indicator_height">5dp</dimen>
 </resources>
