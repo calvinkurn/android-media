@@ -8,9 +8,9 @@ import org.json.JSONObject;
  */
 public class WholesalePrice {
 
-    private static final String KEY_QUANTITY_MIN = "quantityMinFormat";
-    private static final String KEY_QUANTITY_MAX = "quantityMaxFormat";
-    private static final String KEY_PRICE = "priceFormat";
+    private static final String KEY_QUANTITY_MIN = "quantity_min_format";
+    private static final String KEY_QUANTITY_MAX = "quantity_max_format";
+    private static final String KEY_PRICE = "price_format";
 
     private String quantityMinFormat;
     private String quantityMaxFormat;

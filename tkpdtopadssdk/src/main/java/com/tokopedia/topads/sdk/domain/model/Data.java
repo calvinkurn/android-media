@@ -17,6 +17,7 @@ public class Data {
     private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
+    private static final String KEY_APPLINK = "applinks";
 
     private String id;
     private String adRefKey;
@@ -27,6 +28,7 @@ public class Data {
     private String shopClickUrl;
     private Shop shop;
     private Product product;
+    private String applink;
 
     public Data(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)) {
@@ -55,6 +57,9 @@ public class Data {
         }
         if(!object.isNull(KEY_SHOP)) {
             setShop(new Shop(object.getJSONObject(KEY_SHOP)));
+        }
+        if(!object.isNull(KEY_APPLINK)) {
+            setApplink(object.getString(KEY_APPLINK));
         }
     }
 
@@ -128,5 +133,13 @@ public class Data {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
     }
 }

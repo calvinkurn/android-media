@@ -17,17 +17,17 @@ public class Product {
     private static final String KEY_NAME = "name";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_URI = "uri";
-    private static final String KEY_RELATIVE_URI = "relativeUri";
-    private static final String KEY_PRICE_FORMAT = "priceFormat";
-    private static final String KEY_COUNT_TALK_FORMAT = "countTalkFormat";
-    private static final String KEY_COUNT_REVIEW_FORMAT = "countReviewFormat";
+    private static final String KEY_RELATIVE_URI = "relative_uri";
+    private static final String KEY_PRICE_FORMAT = "price_format";
+    private static final String KEY_COUNT_TALK_FORMAT = "count_talk_format";
+    private static final String KEY_COUNT_REVIEW_FORMAT = "count_review_format";
     private static final String KEY_CATEGORY = "category";
-    private static final String KEY_PRODUCT_PREORDER = "productPreorder";
-    private static final String KEY_PRODUCT_WHOLESALE = "productWholesale";
-    private static final String KEY_FREERETURN = "freeReturn";
-    private static final String KEY_PRODUCT_CASHBACK = "productCashback";
-    private static final String KEY_PRODUCT_CASHBACK_RATE = "productCashbackRate";
-    private static final String KEY_WHOLESALE_PRICE = "wholesalePrice";
+    private static final String KEY_PRODUCT_PREORDER = "product_preorder";
+    private static final String KEY_PRODUCT_WHOLESALE = "product_wholesale";
+    private static final String KEY_FREERETURN = "free_feturn";
+    private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
+    private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
+    private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
     private static final String KEY_LABELS = "labels";
 
     private String id;
