@@ -56,6 +56,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.discovery.BuildConfig;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
@@ -540,7 +541,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void renderUpperCategoryLevel(SimpleCategory simpleCategory) {
         browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
-        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
+        renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(),true);
     }
 
     @Override
@@ -550,9 +551,9 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
         if (parentFragment!=null) {
             ObjContainer objContainer = data.getModel2();
-            CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer
-                    = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
-            CategoriesHadesModel body = categoriesHadesContainer.body();
+            CategoryHadesModel.CategoriesHadesContainer categoriesHadesContainer
+                    = (CategoryHadesModel.CategoriesHadesContainer) objContainer;
+            CategoryHadesModel body = categoriesHadesContainer.body();
             if (browseModel !=null && body !=null && body.getData() !=null) {
                 browseModel.categotyHeader = body.getData();
                 parentFragment.renderCategories(browseModel.categotyHeader);
@@ -640,10 +641,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
-            if (isBack && parentFragment!=null) {
-                parentFragment.renderCategories(discoveryInteractor.
-                        getCategoryHeaderCache(categoryLevel.size()+1).getData());
-            }
+//            if (isBack && parentFragment!=null) {
+//                parentFragment.renderCategories(discoveryInteractor.
+//                        getCategoryHeaderCache(categoryLevel.size()+1).getData());
+//            }
         }
     }
 
@@ -663,10 +664,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             } else {
                 discoverySearchView.closeSearch();
             }
-        } else if (categoryLevel.size()>0) {
-            SimpleCategory simpleCategory = categoryLevel.pop();
-            getIntent().putExtra(EXTRA_TITLE,simpleCategory.getName());
-            renderNewCategoryLevel(simpleCategory.getId(),simpleCategory.getName(),true);
         } else {
             browsePresenter.onBackPressed();
         }

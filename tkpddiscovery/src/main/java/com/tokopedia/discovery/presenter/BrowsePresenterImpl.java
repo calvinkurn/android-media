@@ -493,7 +493,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        discoveryInteractor.getCategoryHeader(departementId);
+        discoveryInteractor.getCategoryHeader(departementId,categoryLevel.size()+1);
     }
 
     @Override
