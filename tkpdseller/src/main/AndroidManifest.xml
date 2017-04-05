@@ -200,7 +200,7 @@
 
         <activity
             android:name=".product.view.activity.CategoryPickerActivity"
-            android:label="title_activity_category_picker" />
+            android:label="@string/title_activity_category_picker" />
 
         <activity android:name=".product.view.activity.EtalasePickerActivity"
             android:label="@string/title_activity_etalase_picker" />
