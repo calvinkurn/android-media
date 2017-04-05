@@ -174,7 +174,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         Intent intent = getIntent();
         if(intent != null ) {
             instagramMediaModelSparseArray
-                    = Parcels.unwrap(intent.getParcelableExtra(PRODUCT_SOC_MED_DATA));
+                    = Parcels.unwrap(intent.getParcelableExtra(GalleryActivity.PRODUCT_SOC_MED_DATA));
 
             //[START] convert instagram model to new models
             imageModels = new ArrayList<>();
@@ -485,7 +485,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements
                 } else {
                     int emptyPicture = 6 - ((AddProductFragment)fragment).countPicture();
                     Log.i(TAG, messageTAG + " max photo will get : " + emptyPicture);
-                    GalleryActivity.moveToImageGallery(this, position);
+                    GalleryActivity.moveToImageGallery(this, position, emptyPicture);
                 }
                 break;
             case DialogFragmentImageAddProduct.ADD_DESCRIPTION:
