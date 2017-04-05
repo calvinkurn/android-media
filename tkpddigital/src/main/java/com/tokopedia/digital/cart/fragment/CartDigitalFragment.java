@@ -570,6 +570,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void interruptRequestTokenVerification() {
+        navigateToActivityRequest(
+                OtpVerificationActivity.newInstance(getActivity()),
+                OtpVerificationActivity.REQUEST_CODE
+        );
+    }
+
+    @Override
     public void onClickButtonNext() {
         presenter.processToCheckout();
     }
