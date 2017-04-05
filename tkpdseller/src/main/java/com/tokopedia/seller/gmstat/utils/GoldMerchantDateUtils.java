@@ -15,6 +15,7 @@ import java.util.Locale;
 public class GoldMerchantDateUtils {
     private static final Locale locale = new Locale("in", "ID");
     private static final String TAG = "GoldMerchantDateUtils";
+    public static final String YYYY_M_MDD = "yyyyMMdd";
 
     public static String getDateWithYear(int date, String[] monthNames) {
         List<String> dateRaw = getDateRaw(date);
@@ -98,7 +99,7 @@ public class GoldMerchantDateUtils {
     }
 
     public static String getDateFormatForInput(long timeInMillis) {
-        return getDateFormatForInput(timeInMillis, "yyyyMMdd");
+        return getDateFormatForInput(timeInMillis, YYYY_M_MDD);
     }
 
     public static String getDateFormatForInput(long timeInMillis, String format) {

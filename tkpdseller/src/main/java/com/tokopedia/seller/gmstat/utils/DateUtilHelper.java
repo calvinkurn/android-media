@@ -3,6 +3,7 @@ package com.tokopedia.seller.gmstat.utils;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.DatePickerActivity;
@@ -45,11 +46,7 @@ public class DateUtilHelper {
 
     public void onClick(Fragment fragment, boolean isForceSelection) {
         Intent intent = new Intent(fragment.getActivity(), DatePickerActivity.class);
-        Calendar maxCalendar = Calendar.getInstance();
-        maxCalendar.add(Calendar.DATE, -1);
-        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        maxCalendar.set(Calendar.MINUTE, 59);
-        maxCalendar.set(Calendar.SECOND, 59);
+        Calendar maxCalendar = getMaxCalendar();
 
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         Date minDate = new Date();
@@ -58,12 +55,7 @@ public class DateUtilHelper {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Calendar minCalendar = Calendar.getInstance();
-        minCalendar.setTime(minDate);
-        minCalendar.set(Calendar.HOUR_OF_DAY, 0);
-        minCalendar.set(Calendar.MINUTE, 0);
-        minCalendar.set(Calendar.SECOND, 0);
-        minCalendar.set(Calendar.MILLISECOND, 0);
+        Calendar minCalendar = getMinCalendar(minDate);
 
         intent.putExtra(DatePickerConstant.EXTRA_START_DATE, sDate);
         intent.putExtra(DatePickerConstant.EXTRA_END_DATE, eDate);
@@ -81,11 +73,30 @@ public class DateUtilHelper {
         fragment.startActivityForResult(intent, MOVE_TO_SET_DATE);
     }
 
+    @NonNull
+    private Calendar getMinCalendar(Date minDate) {
+        Calendar minCalendar = Calendar.getInstance();
+        minCalendar.setTime(minDate);
+        minCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        minCalendar.set(Calendar.MINUTE, 0);
+        minCalendar.set(Calendar.SECOND, 0);
+        minCalendar.set(Calendar.MILLISECOND, 0);
+        return minCalendar;
+    }
+
+    @NonNull
+    private Calendar getMaxCalendar() {
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        maxCalendar.set(Calendar.MINUTE, 59);
+        maxCalendar.set(Calendar.SECOND, 59);
+        return maxCalendar;
+    }
+
     private ArrayList<PeriodRangeModel> getPeriodRangeList(Context context) {
         ArrayList<PeriodRangeModel> periodRangeList = new ArrayList<>();
         Calendar startCalendar = Calendar.getInstance();
         Calendar endCalendar = Calendar.getInstance();
-        endCalendar.add(Calendar.DATE, -1);
         startCalendar.add(Calendar.DATE, -1);
         periodRangeList.add(new PeriodRangeModel(startCalendar.getTimeInMillis(), startCalendar.getTimeInMillis(), context.getString(R.string.yesterday)));
         startCalendar = Calendar.getInstance();

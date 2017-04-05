@@ -87,7 +87,7 @@
                             app:cardCornerRadius="2dp"
                             app:cardElevation="4dp">
 
-                            <com.tokopedia.sellerapp.home.view.TransactionView3
+                            <com.tokopedia.sellerapp.home.view.TransactionView
                                 android:id="@+id/seller_home_transaction_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />

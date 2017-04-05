@@ -314,9 +314,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             public void onRefresh(View view) {
                 dismissSnackbar();
 
-                if (adapter.getDataSize() > 0) {
-
-                } else {
+                if (adapter.getDataSize() < 0) {
                     adapter.clear();
                     adapter.notifyDataSetChanged();
 
@@ -372,9 +370,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
             public void onRetryCliked() {
                 dismissSnackbar();
 
-                if (adapter.getDataSize() > 0) {
-
-                } else {
+                if (adapter.getDataSize() < 0) {
                     adapter.clear();
                     adapter.notifyDataSetChanged();
 

@@ -57,8 +57,6 @@ public class SellerReputationActivity extends BaseActivity implements SellerRepu
                     SellerReputationFragment.createInstance(),
                     SellerReputationFragment.TAG
             );
-        } else {
-            // do nothing
         }
     }
 
@@ -83,7 +81,6 @@ public class SellerReputationActivity extends BaseActivity implements SellerRepu
     @Override
     protected void onPause() {
         super.onPause();
-//        networkDemo.setSellerReputationActivity(null);
     }
 
     @Override

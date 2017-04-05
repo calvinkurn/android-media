@@ -141,34 +141,6 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
         return position == list.size();
     }
 
-    private View.OnClickListener onNotesClicked(final ViewHolder holder) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setPositiveButton("Salin", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String textHolderNote = holder.description.getText().toString();
-                        ClipboardManager clipBoard = (ClipboardManager) context.getSystemService(context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("simple text", textHolderNote);
-                        clipBoard.setPrimaryClip(clip);
-                    }
-                });
-                builder.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                Dialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
-            }
-        };
-    }
-
     @Override
     public int getItemCount() {
         return list.size() + super.getItemCount();

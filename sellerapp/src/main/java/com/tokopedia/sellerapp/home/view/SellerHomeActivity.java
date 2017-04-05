@@ -134,7 +134,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     LinearLayout announcementTicker;
 
     @BindView(R.id.seller_home_transaction_view)
-    TransactionView3 sellerHomeTransactionView;
+    TransactionView sellerHomeTransactionView;
 
     @BindView(R.id.activity_seller_home)
     CoordinatorLayout activitySellerHome;

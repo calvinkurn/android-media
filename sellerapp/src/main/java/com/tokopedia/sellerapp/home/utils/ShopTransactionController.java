@@ -26,6 +26,10 @@ import rx.schedulers.Schedulers;
 
 public class ShopTransactionController extends BaseNetworkController {
 
+    public static final String DEADLINE = "deadline";
+    public static final String STATUS = "status";
+    public static final String PAGE = "page";
+    public static final String PER_PAGE = "per_page";
     private MyShopOrderService myShopOrderService;
 
     public ShopTransactionController(MyShopOrderService myShopOrderService, Context context, Gson gson) {
@@ -40,10 +44,10 @@ public class ShopTransactionController extends BaseNetworkController {
     public static HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
         HashMap<String, String> params = new NonNullStringMap();
         if (deadline > 0)
-            params.put("deadline", Integer.toString(deadline));
-        params.put("status", filter);
-        params.put("page", Integer.toString(page));
-        params.put("per_page", "10");
+            params.put(DEADLINE, Integer.toString(deadline));
+        params.put(STATUS, filter);
+        params.put(PAGE, Integer.toString(page));
+        params.put(PER_PAGE, "10");
         return params;
     }
 

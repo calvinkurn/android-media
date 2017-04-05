@@ -30,6 +30,9 @@ import static com.tokopedia.seller.util.ShopNetworkController.RequestParamFactor
  */
 
 public class ShopNetworkController extends BaseNetworkController {
+    public static final String SHOP_ID = "shop_id";
+    public static final String SHOW_ALL = "show_all";
+    public static final String SHOP_DOMAIN = "shop_domain";
     private ShopService shopService;
 
     public ShopNetworkController(Context context, ShopService shopService, Gson gson) {
@@ -58,7 +61,6 @@ public class ShopNetworkController extends BaseNetworkController {
                         if (response.isSuccessful()) {
                             if (!response.body().isError()) {
                                 String stringData = response.body().getStringData();
-                                Log.d("STUART", "getShopInfo : onNext : " + stringData);
                                 ShopModel shopModel = gson.fromJson(stringData, ShopModel.class);
                                 getShopInfo.onSuccess(shopModel);
                             } else {
@@ -82,7 +84,6 @@ public class ShopNetworkController extends BaseNetworkController {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         String stringData = response.body().getStringData();
-                        Log.d("STUART", "getShopInfo : onNext : " + stringData);
                         shopModel = gson.fromJson(stringData, ShopModel.class);
                     } else {
                         throw new MessageErrorException(response.body().getErrorMessages().get(0));
@@ -113,7 +114,6 @@ public class ShopNetworkController extends BaseNetworkController {
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         String stringData = response.body().getStringData();
-                        Log.d("STUART", "getShopInfo : onNext : " + stringData);
                         shopModel = gson.fromJson(stringData, ShopModel.class);
                     } else {
                         throw new MessageErrorException(response.body().getErrorMessages().get(0));
@@ -142,10 +142,10 @@ public class ShopNetworkController extends BaseNetworkController {
 
     public Map<String, String> paramShopInfo(ShopInfoParam shopInfoParam) {
         Map<String, String> params = new TKPDMapParam<>();
-        params.put("shop_id", shopInfoParam.shopId);
+        params.put(SHOP_ID, shopInfoParam.shopId);
         if (shopInfoParam.shopDomain != null)
-            params.put("shop_domain", shopInfoParam.shopDomain);
-        params.put("show_all", "1");
+            params.put(SHOP_DOMAIN, shopInfoParam.shopDomain);
+        params.put(SHOW_ALL, "1");
         return params;
     }
 
