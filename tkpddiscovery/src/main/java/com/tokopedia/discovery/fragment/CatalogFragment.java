@@ -217,6 +217,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void initAdapter() {
+        if (browseCatalogAdapter != null) {
+            return;
+        }
         browseCatalogAdapter = new BrowseCatalogAdapter(getActivity().getApplicationContext(), browseCatalogModelList);
         browseCatalogAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);

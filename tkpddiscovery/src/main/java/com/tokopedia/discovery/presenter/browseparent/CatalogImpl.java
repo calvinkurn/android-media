@@ -102,9 +102,7 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.initAdapter();
-        }
+        view.initAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }

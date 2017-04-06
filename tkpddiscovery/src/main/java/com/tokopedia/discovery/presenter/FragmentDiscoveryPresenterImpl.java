@@ -280,9 +280,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.setupAdapter();
-        }
+        view.setupAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }
