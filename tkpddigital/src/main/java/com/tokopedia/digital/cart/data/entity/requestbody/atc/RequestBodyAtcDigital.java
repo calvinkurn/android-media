@@ -16,16 +16,8 @@ public class RequestBodyAtcDigital {
     @Expose
     private Attributes attributes;
 
-    public String getType() {
-        return type;
-    }
-
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Attributes getAttributes() {
-        return attributes;
     }
 
     public void setAttributes(Attributes attributes) {

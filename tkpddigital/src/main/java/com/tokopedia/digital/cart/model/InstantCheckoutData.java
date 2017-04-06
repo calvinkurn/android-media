@@ -82,15 +82,16 @@ public class InstantCheckoutData implements Parcelable {
         this.stringQuery = in.readString();
     }
 
-    public static final Creator<InstantCheckoutData> CREATOR = new Creator<InstantCheckoutData>() {
-        @Override
-        public InstantCheckoutData createFromParcel(Parcel source) {
-            return new InstantCheckoutData(source);
-        }
+    public static final Creator<InstantCheckoutData> CREATOR =
+            new Creator<InstantCheckoutData>() {
+                @Override
+                public InstantCheckoutData createFromParcel(Parcel source) {
+                    return new InstantCheckoutData(source);
+                }
 
-        @Override
-        public InstantCheckoutData[] newArray(int size) {
-            return new InstantCheckoutData[size];
-        }
-    };
+                @Override
+                public InstantCheckoutData[] newArray(int size) {
+                    return new InstantCheckoutData[size];
+                }
+            };
 }

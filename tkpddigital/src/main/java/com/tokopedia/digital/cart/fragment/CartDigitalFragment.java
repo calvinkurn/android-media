@@ -152,11 +152,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         ICartMapperData cartMapperData = new CartMapperData();
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-        presenter = new CartDigitalPresenter(this, new CartDigitalInteractor(
-                compositeSubscription, new CartDigitalRepository(digitalEndpointService, cartMapperData),
-                new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
-                new CheckoutRepository(digitalEndpointService, cartMapperData)
-        ));
+        presenter = new CartDigitalPresenter(
+                this,
+                new CartDigitalInteractor(
+                        compositeSubscription,
+                        new CartDigitalRepository(digitalEndpointService, cartMapperData),
+                        new VoucherDigitalRepository(digitalEndpointService, cartMapperData),
+                        new CheckoutRepository(digitalEndpointService, cartMapperData))
+        );
     }
 
     @Override
@@ -591,12 +594,10 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             String message = data.getStringExtra(OtpVerificationActivity.EXTRA_MESSAGE);
             switch (resultCode) {
                 case OtpVerificationActivity.RESULT_OTP_VERIFIED:
-                    Log.d(TAG, "OTP VERIFIED");
                     presenter.processPatchOtpCart();
                     if (message != null) showToastMessage(message);
                     break;
                 default:
-                    Log.d(TAG, "OTP NOT VERIFIED");
                     if (message != null) closeViewWithMessageAlert(message);
                     else closeView();
                     break;

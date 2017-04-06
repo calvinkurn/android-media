@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Nabilla Sabbaha on 3/7/2017.
+ * @author by Nabilla Sabbaha on 3/7/2017.
  */
 
 public class VoucherAttributeDigital implements Parcelable {
@@ -61,15 +61,16 @@ public class VoucherAttributeDigital implements Parcelable {
         this.message = in.readString();
     }
 
-    public static final Parcelable.Creator<VoucherAttributeDigital> CREATOR = new Parcelable.Creator<VoucherAttributeDigital>() {
-        @Override
-        public VoucherAttributeDigital createFromParcel(Parcel source) {
-            return new VoucherAttributeDigital(source);
-        }
+    public static final Parcelable.Creator<VoucherAttributeDigital> CREATOR =
+            new Parcelable.Creator<VoucherAttributeDigital>() {
+                @Override
+                public VoucherAttributeDigital createFromParcel(Parcel source) {
+                    return new VoucherAttributeDigital(source);
+                }
 
-        @Override
-        public VoucherAttributeDigital[] newArray(int size) {
-            return new VoucherAttributeDigital[size];
-        }
-    };
+                @Override
+                public VoucherAttributeDigital[] newArray(int size) {
+                    return new VoucherAttributeDigital[size];
+                }
+            };
 }

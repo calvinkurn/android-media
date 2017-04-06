@@ -74,7 +74,6 @@ public class Parameter {
     @Expose
     private int pid;
 
-
     public String getMerchantCode() {
         return merchantCode;
     }

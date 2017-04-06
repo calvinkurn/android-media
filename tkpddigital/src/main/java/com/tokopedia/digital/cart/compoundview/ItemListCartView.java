@@ -14,7 +14,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Nabilla Sabbaha on 3/1/2017.
+ * @author by Nabilla Sabbaha on 3/1/2017.
  */
 
 public class ItemListCartView extends RelativeLayout {
@@ -40,7 +40,7 @@ public class ItemListCartView extends RelativeLayout {
     }
 
     private void init(Context context) {
-        LayoutInflater.from(context).inflate(R.layout.item_list_checkout, this, true);
+        LayoutInflater.from(context).inflate(R.layout.item_list_checkout_digital_module, this, true);
         ButterKnife.bind(this);
     }
 

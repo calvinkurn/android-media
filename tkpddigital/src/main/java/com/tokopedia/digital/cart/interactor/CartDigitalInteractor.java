@@ -3,7 +3,7 @@ package com.tokopedia.digital.cart.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.cart.domain.ICheckoutRepository;
 import com.tokopedia.digital.cart.domain.IVoucherDigitalRepository;

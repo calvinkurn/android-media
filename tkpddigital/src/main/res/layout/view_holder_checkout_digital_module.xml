@@ -29,7 +29,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
-                    android:text="Harga"
+                    android:text="@string/label_price_cart_digital"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/text_size_medium"
                     android:textStyle="bold"/>
@@ -63,7 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".5"
-                    android:text="Total Pembayaran"
+                    android:text="@string/label_total_payment_cart_digital"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/text_size_l_medium"
                     android:textStyle="bold"/>
@@ -89,7 +89,7 @@
         android:layout_below="@+id/total_pembayaran"
         android:background="@drawable/btn_buy"
         android:gravity="center"
-        android:text="LANJUT"
+        android:text="@string/label_btn_next_cart_digital"
         android:textColor="@color/white"
         android:textSize="@dimen/font_small"
         android:textStyle="bold"/>

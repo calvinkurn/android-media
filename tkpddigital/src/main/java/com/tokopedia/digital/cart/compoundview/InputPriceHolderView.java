@@ -16,7 +16,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Nabilla Sabbaha on 3/3/2017.
+ * @author by Nabilla Sabbaha on 3/3/2017.
  */
 
 public class InputPriceHolderView extends LinearLayout {
@@ -54,7 +54,7 @@ public class InputPriceHolderView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_input_price, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_input_price_digital_module, this, true);
         ButterKnife.bind(this);
     }
 

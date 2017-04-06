@@ -10,7 +10,7 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
-import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.digital.cart.data.entity.response.ResponsePatchOtpSuccess;
 import com.tokopedia.digital.cart.data.mapper.ICartMapperData;
@@ -43,8 +43,10 @@ public class CartDigitalRepository implements ICartDigitalRepository {
 
 
     @Override
-    public Observable<CartDigitalInfoData> patchOtpCart(RequestBodyOtpSuccess requestBodyOtpSuccess,
-                                                        final TKPDMapParam<String, String> paramGetCart) {
+    public Observable<CartDigitalInfoData> patchOtpCart(
+            RequestBodyOtpSuccess requestBodyOtpSuccess,
+            final TKPDMapParam<String, String> paramGetCart
+    ) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyOtpSuccess));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);

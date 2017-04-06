@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Nabilla Sabbaha on 3/1/2017.
+ * @author by Nabilla Sabbaha on 3/1/2017.
  */
 
 public class AttributesDigital implements Parcelable {
@@ -157,15 +157,16 @@ public class AttributesDigital implements Parcelable {
         this.userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<AttributesDigital> CREATOR = new Parcelable.Creator<AttributesDigital>() {
-        @Override
-        public AttributesDigital createFromParcel(Parcel source) {
-            return new AttributesDigital(source);
-        }
+    public static final Parcelable.Creator<AttributesDigital> CREATOR =
+            new Parcelable.Creator<AttributesDigital>() {
+                @Override
+                public AttributesDigital createFromParcel(Parcel source) {
+                    return new AttributesDigital(source);
+                }
 
-        @Override
-        public AttributesDigital[] newArray(int size) {
-            return new AttributesDigital[size];
-        }
-    };
+                @Override
+                public AttributesDigital[] newArray(int size) {
+                    return new AttributesDigital[size];
+                }
+            };
 }

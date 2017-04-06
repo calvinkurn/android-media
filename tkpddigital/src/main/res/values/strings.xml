@@ -24,4 +24,7 @@
     <string name="label_or_call_otp_digital_module">atau</string>
     <string name="label_btn_re_request_otp_digital_module">Kirim Ulang Kode Verifikasi</string>
     <string name="label_hint_input_otp_digital_module">Masukkan Kode Verifikasi</string>
+    <string name="label_price_cart_digital">Harga</string>
+    <string name="label_total_payment_cart_digital">Total Pembayaran</string>
+    <string name="label_btn_next_cart_digital">LANJUT</string>
 </resources>

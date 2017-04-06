@@ -15,7 +15,7 @@ import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Cart;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Data;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.Relationships;
 import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.digital.cart.data.entity.requestbody.topcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.cart.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.cart.listener.IDigitalCartView;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
@@ -125,8 +125,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
         requestBodyOtpSuccess.setType("cart");
         requestBodyOtpSuccess.setId(checkoutDataParameter.getCartId());
-        com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes attributes =
-                new com.tokopedia.digital.cart.data.entity.requestbody.topcart.Attributes();
+        com.tokopedia.digital.cart.data.entity.requestbody.otpcart.Attributes attributes =
+                new com.tokopedia.digital.cart.data.entity.requestbody.otpcart.Attributes();
         attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         requestBodyOtpSuccess.setAttributes(attributes);

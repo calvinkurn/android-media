@@ -9,7 +9,6 @@ import java.util.List;
 /**
  * @author anggaprasetiyo on 3/3/17.
  */
-
 public class Attributes {
 
     @SerializedName("user_id")
@@ -44,68 +43,32 @@ public class Attributes {
         this.userId = userId;
     }
 
-    public int getProductId() {
-        return productId;
-    }
-
     public void setProductId(int productId) {
         this.productId = productId;
-    }
-
-    public int getUserId() {
-        return userId;
-    }
-
-    public int getDeviceId() {
-        return deviceId;
     }
 
     public void setDeviceId(int deviceId) {
         this.deviceId = deviceId;
     }
 
-    public boolean isInstantCheckout() {
-        return instantCheckout;
-    }
-
     public void setInstantCheckout(boolean instantCheckout) {
         this.instantCheckout = instantCheckout;
-    }
-
-    public String getIpAddress() {
-        return ipAddress;
     }
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
-    public String getUserAgent() {
-        return userAgent;
-    }
-
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
     }
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public String getWalletRefreshToken() {
-        return walletRefreshToken;
-    }
-
     public void setWalletRefreshToken(String walletRefreshToken) {
         this.walletRefreshToken = walletRefreshToken;
-    }
-
-    public List<Field> getFields() {
-        return fields;
     }
 
     public void setFields(List<Field> fields) {

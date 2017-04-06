@@ -147,15 +147,16 @@ public class CartDigitalInfoData implements Parcelable {
         this.relationships = in.readParcelable(Relationships.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CartDigitalInfoData> CREATOR = new Parcelable.Creator<CartDigitalInfoData>() {
-        @Override
-        public CartDigitalInfoData createFromParcel(Parcel source) {
-            return new CartDigitalInfoData(source);
-        }
+    public static final Parcelable.Creator<CartDigitalInfoData> CREATOR =
+            new Parcelable.Creator<CartDigitalInfoData>() {
+                @Override
+                public CartDigitalInfoData createFromParcel(Parcel source) {
+                    return new CartDigitalInfoData(source);
+                }
 
-        @Override
-        public CartDigitalInfoData[] newArray(int size) {
-            return new CartDigitalInfoData[size];
-        }
-    };
+                @Override
+                public CartDigitalInfoData[] newArray(int size) {
+                    return new CartDigitalInfoData[size];
+                }
+            };
 }

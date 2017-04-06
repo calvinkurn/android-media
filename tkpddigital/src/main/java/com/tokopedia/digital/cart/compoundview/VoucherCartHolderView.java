@@ -18,7 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Nabilla Sabbaha on 2/27/2017.
+ * @author by Nabilla Sabbaha on 2/27/2017.
  */
 
 public class VoucherCartHolderView extends RelativeLayout {
@@ -63,7 +63,7 @@ public class VoucherCartHolderView extends RelativeLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_voucher_digital_module, this, true);
         ButterKnife.bind(this);
         actionVoucher();
     }

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nabilla Sabbaha on 3/1/2017.
+ * @author by Nabilla Sabbaha on 3/1/2017.
  */
 
 public class CartAdditionalInfo implements Parcelable {
@@ -55,15 +55,16 @@ public class CartAdditionalInfo implements Parcelable {
         in.readList(this.cartItemDigitalList, CartItemDigital.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CartAdditionalInfo> CREATOR = new Parcelable.Creator<CartAdditionalInfo>() {
-        @Override
-        public CartAdditionalInfo createFromParcel(Parcel source) {
-            return new CartAdditionalInfo(source);
-        }
+    public static final Parcelable.Creator<CartAdditionalInfo> CREATOR =
+            new Parcelable.Creator<CartAdditionalInfo>() {
+                @Override
+                public CartAdditionalInfo createFromParcel(Parcel source) {
+                    return new CartAdditionalInfo(source);
+                }
 
-        @Override
-        public CartAdditionalInfo[] newArray(int size) {
-            return new CartAdditionalInfo[size];
-        }
-    };
+                @Override
+                public CartAdditionalInfo[] newArray(int size) {
+                    return new CartAdditionalInfo[size];
+                }
+            };
 }

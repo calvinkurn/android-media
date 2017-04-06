@@ -58,15 +58,16 @@ public class Relationships implements Parcelable {
         this.relationOperator = in.readParcelable(Relation.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Relationships> CREATOR = new Parcelable.Creator<Relationships>() {
-        @Override
-        public Relationships createFromParcel(Parcel source) {
-            return new Relationships(source);
-        }
+    public static final Parcelable.Creator<Relationships> CREATOR =
+            new Parcelable.Creator<Relationships>() {
+                @Override
+                public Relationships createFromParcel(Parcel source) {
+                    return new Relationships(source);
+                }
 
-        @Override
-        public Relationships[] newArray(int size) {
-            return new Relationships[size];
-        }
-    };
+                @Override
+                public Relationships[] newArray(int size) {
+                    return new Relationships[size];
+                }
+            };
 }

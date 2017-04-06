@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Nabilla Sabbaha on 3/7/2017.
+ * @author by Nabilla Sabbaha on 3/7/2017.
  */
 
 public class VoucherDigital implements Parcelable {
@@ -73,15 +73,16 @@ public class VoucherDigital implements Parcelable {
         this.cart = in.readParcelable(Relation.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<VoucherDigital> CREATOR = new Parcelable.Creator<VoucherDigital>() {
-        @Override
-        public VoucherDigital createFromParcel(Parcel source) {
-            return new VoucherDigital(source);
-        }
+    public static final Parcelable.Creator<VoucherDigital> CREATOR =
+            new Parcelable.Creator<VoucherDigital>() {
+                @Override
+                public VoucherDigital createFromParcel(Parcel source) {
+                    return new VoucherDigital(source);
+                }
 
-        @Override
-        public VoucherDigital[] newArray(int size) {
-            return new VoucherDigital[size];
-        }
-    };
+                @Override
+                public VoucherDigital[] newArray(int size) {
+                    return new VoucherDigital[size];
+                }
+            };
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.digital.cart.data.entity.requestbody.topcart;
+package com.tokopedia.digital.cart.data.entity.requestbody.otpcart;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -16,16 +16,8 @@ public class Attributes {
     @Expose
     private String userAgent;
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
-    }
-
-    public String getUserAgent() {
-        return userAgent;
     }
 
     public void setUserAgent(String userAgent) {

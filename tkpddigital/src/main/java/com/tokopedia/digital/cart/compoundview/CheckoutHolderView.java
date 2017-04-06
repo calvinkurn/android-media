@@ -28,19 +28,16 @@ public class CheckoutHolderView extends RelativeLayout {
 
     public CheckoutHolderView(Context context) {
         super(context);
-//        if (isInEditMode()) return;
         initView(context);
     }
 
     public CheckoutHolderView(Context context, AttributeSet attrs) {
         super(context, attrs);
-//        if (isInEditMode()) return;
         initView(context);
     }
 
     public CheckoutHolderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-//        if (isInEditMode()) return;
         initView(context);
     }
 

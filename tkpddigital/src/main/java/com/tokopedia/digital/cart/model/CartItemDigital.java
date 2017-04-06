@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Nabilla Sabbaha on 2/28/2017.
+ * @author by Nabilla Sabbaha on 2/28/2017.
  */
 public class CartItemDigital implements Parcelable {
 
@@ -50,15 +50,16 @@ public class CartItemDigital implements Parcelable {
         this.value = in.readString();
     }
 
-    public static final Parcelable.Creator<CartItemDigital> CREATOR = new Parcelable.Creator<CartItemDigital>() {
-        @Override
-        public CartItemDigital createFromParcel(Parcel source) {
-            return new CartItemDigital(source);
-        }
+    public static final Parcelable.Creator<CartItemDigital> CREATOR =
+            new Parcelable.Creator<CartItemDigital>() {
+                @Override
+                public CartItemDigital createFromParcel(Parcel source) {
+                    return new CartItemDigital(source);
+                }
 
-        @Override
-        public CartItemDigital[] newArray(int size) {
-            return new CartItemDigital[size];
-        }
-    };
+                @Override
+                public CartItemDigital[] newArray(int size) {
+                    return new CartItemDigital[size];
+                }
+            };
 }

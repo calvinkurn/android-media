@@ -21,7 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Nabilla Sabbaha on 2/28/2017.
+ * @author by Nabilla Sabbaha on 2/28/2017.
  */
 
 public class ItemCartHolderView extends RelativeLayout {
@@ -61,7 +61,7 @@ public class ItemCartHolderView extends RelativeLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_item, this, true);
+        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_item_digital_module, this, true);
         ButterKnife.bind(this);
         setView();
     }
@@ -84,7 +84,7 @@ public class ItemCartHolderView extends RelativeLayout {
 
     public void renderDataMainInfo(List<CartItemDigital> cartItemDigitals) {
         layoutMainInfo.removeAllViews();
-        for (CartItemDigital itemcart: cartItemDigitals) {
+        for (CartItemDigital itemcart : cartItemDigitals) {
             addViewMainInfo(itemcart);
         }
     }
@@ -147,14 +147,14 @@ public class ItemCartHolderView extends RelativeLayout {
     private void showAdditionalInfo() {
         layoutAdditionalInfo.setVisibility(VISIBLE);
         buttonDetail.setText(context.getString(R.string.link_tutup));
-        buttonDetail.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.page_1, 0);
+        buttonDetail.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.page_1, 0);
         additionalInfoShowed = true;
     }
 
     private void hideAdditionalInfo() {
         layoutAdditionalInfo.setVisibility(GONE);
         buttonDetail.setText(context.getString(R.string.link_lihat_detail));
-        buttonDetail.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.page_2, 0);
+        buttonDetail.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.page_2, 0);
         additionalInfoShowed = false;
     }
 

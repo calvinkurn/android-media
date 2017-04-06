@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.payment.model.TopPayBaseModel;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * @author anggaprasetiyo on 3/9/17.
@@ -59,10 +58,6 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
         this.stringQuery = stringQuery;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
 
     @Override
     public int describeContents() {
@@ -89,17 +84,18 @@ public class CheckoutDigitalData implements Parcelable, TopPayBaseModel {
         this.stringQuery = in.readString();
     }
 
-    public static final Parcelable.Creator<CheckoutDigitalData> CREATOR = new Parcelable.Creator<CheckoutDigitalData>() {
-        @Override
-        public CheckoutDigitalData createFromParcel(Parcel source) {
-            return new CheckoutDigitalData(source);
-        }
+    public static final Parcelable.Creator<CheckoutDigitalData> CREATOR =
+            new Parcelable.Creator<CheckoutDigitalData>() {
+                @Override
+                public CheckoutDigitalData createFromParcel(Parcel source) {
+                    return new CheckoutDigitalData(source);
+                }
 
-        @Override
-        public CheckoutDigitalData[] newArray(int size) {
-            return new CheckoutDigitalData[size];
-        }
-    };
+                @Override
+                public CheckoutDigitalData[] newArray(int size) {
+                    return new CheckoutDigitalData[size];
+                }
+            };
 
     @Override
     public String getRedirectUrlToPass() {

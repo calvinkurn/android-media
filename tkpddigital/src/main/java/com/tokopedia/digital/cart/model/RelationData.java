@@ -47,15 +47,16 @@ public class RelationData implements Parcelable {
         this.id = in.readString();
     }
 
-    public static final Parcelable.Creator<RelationData> CREATOR = new Parcelable.Creator<RelationData>() {
-        @Override
-        public RelationData createFromParcel(Parcel source) {
-            return new RelationData(source);
-        }
+    public static final Parcelable.Creator<RelationData> CREATOR =
+            new Parcelable.Creator<RelationData>() {
+                @Override
+                public RelationData createFromParcel(Parcel source) {
+                    return new RelationData(source);
+                }
 
-        @Override
-        public RelationData[] newArray(int size) {
-            return new RelationData[size];
-        }
-    };
+                @Override
+                public RelationData[] newArray(int size) {
+                    return new RelationData[size];
+                }
+            };
 }

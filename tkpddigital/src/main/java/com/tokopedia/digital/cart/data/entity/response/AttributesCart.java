@@ -3,8 +3,6 @@ package com.tokopedia.digital.cart.data.entity.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import java.util.List;
 
 /**
@@ -60,84 +58,16 @@ public class AttributesCart {
         return clientNumber;
     }
 
-    public void setClientNumber(String clientNumber) {
-        this.clientNumber = clientNumber;
-    }
-
     public String getPrice() {
         return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public long getPricePlain() {
-        return pricePlain;
-    }
-
-    public void setPricePlain(long pricePlain) {
-        this.pricePlain = pricePlain;
-    }
-
-    public boolean isInstantCheckout() {
-        return instantCheckout;
-    }
-
-    public void setInstantCheckout(boolean instantCheckout) {
-        this.instantCheckout = instantCheckout;
-    }
-
-    public String getSmsState() {
-        return smsState;
-    }
-
-    public void setSmsState(String smsState) {
-        this.smsState = smsState;
-    }
-
-    public UserInputPrice getUserInputPrice() {
-        return userInputPrice;
-    }
-
-    public void setUserInputPrice(UserInputPrice userInputPrice) {
-        this.userInputPrice = userInputPrice;
     }
 
     public String getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public boolean isNeedOtp() {
-        return needOtp;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public List<MainInfo> getMainInfo() {
-        return mainInfo;
-    }
-
-    public void setMainInfo(List<MainInfo> mainInfo) {
-        this.mainInfo = mainInfo;
-    }
-
-    public List<AdditionalInfo> getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     public String getCategoryName() {
@@ -152,8 +82,31 @@ public class AttributesCart {
         return icon;
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
+    public long getPricePlain() {
+        return pricePlain;
+    }
+
+    public boolean isInstantCheckout() {
+        return instantCheckout;
+    }
+
+    public boolean isNeedOtp() {
+        return needOtp;
+    }
+
+    public String getSmsState() {
+        return smsState;
+    }
+
+    public UserInputPrice getUserInputPrice() {
+        return userInputPrice;
+    }
+
+    public List<MainInfo> getMainInfo() {
+        return mainInfo;
+    }
+
+    public List<AdditionalInfo> getAdditionalInfo() {
+        return additionalInfo;
     }
 }

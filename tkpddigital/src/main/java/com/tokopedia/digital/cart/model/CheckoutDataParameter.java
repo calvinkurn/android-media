@@ -42,11 +42,11 @@ public class CheckoutDataParameter implements Parcelable {
         return cartId;
     }
 
-    public void setCartId(String cartId) {
+    private void setCartId(String cartId) {
         this.cartId = cartId;
     }
 
-    public void setVoucherCode(String voucherCode) {
+    private void setVoucherCode(String voucherCode) {
         this.voucherCode = voucherCode;
     }
 
@@ -54,7 +54,7 @@ public class CheckoutDataParameter implements Parcelable {
         return transactionAmount;
     }
 
-    public void setTransactionAmount(long transactionAmount) {
+    private void setTransactionAmount(long transactionAmount) {
         this.transactionAmount = transactionAmount;
     }
 
@@ -62,7 +62,7 @@ public class CheckoutDataParameter implements Parcelable {
         return needOtp;
     }
 
-    public void setNeedOtp(boolean needOtp) {
+    private void setNeedOtp(boolean needOtp) {
         this.needOtp = needOtp;
     }
 
@@ -70,7 +70,7 @@ public class CheckoutDataParameter implements Parcelable {
         return ipAddress;
     }
 
-    public void setIpAddress(String ipAddress) {
+    private void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
 
@@ -78,7 +78,7 @@ public class CheckoutDataParameter implements Parcelable {
         return userAgent;
     }
 
-    public void setUserAgent(String userAgent) {
+    private void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
     }
 
@@ -86,7 +86,7 @@ public class CheckoutDataParameter implements Parcelable {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    private void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
@@ -94,7 +94,7 @@ public class CheckoutDataParameter implements Parcelable {
         return walletRefreshToken;
     }
 
-    public void setWalletRefreshToken(String walletRefreshToken) {
+    private void setWalletRefreshToken(String walletRefreshToken) {
         this.walletRefreshToken = walletRefreshToken;
     }
 
@@ -102,7 +102,7 @@ public class CheckoutDataParameter implements Parcelable {
         return relationType;
     }
 
-    public void setRelationType(String relationType) {
+    private void setRelationType(String relationType) {
         this.relationType = relationType;
     }
 
@@ -110,7 +110,7 @@ public class CheckoutDataParameter implements Parcelable {
         return relationId;
     }
 
-    public void setRelationId(String relationId) {
+    private void setRelationId(String relationId) {
         this.relationId = relationId;
     }
 
@@ -234,16 +234,17 @@ public class CheckoutDataParameter implements Parcelable {
         this.needOtp = in.readByte() != 0;
     }
 
-    public static final Creator<CheckoutDataParameter> CREATOR = new Creator<CheckoutDataParameter>() {
-        @Override
-        public CheckoutDataParameter createFromParcel(Parcel source) {
-            return new CheckoutDataParameter(source);
-        }
+    public static final Creator<CheckoutDataParameter> CREATOR =
+            new Creator<CheckoutDataParameter>() {
+                @Override
+                public CheckoutDataParameter createFromParcel(Parcel source) {
+                    return new CheckoutDataParameter(source);
+                }
 
-        @Override
-        public CheckoutDataParameter[] newArray(int size) {
-            return new CheckoutDataParameter[size];
-        }
-    };
+                @Override
+                public CheckoutDataParameter[] newArray(int size) {
+                    return new CheckoutDataParameter[size];
+                }
+            };
 
 }
