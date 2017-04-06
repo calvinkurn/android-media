@@ -9,9 +9,10 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
+import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import rx.Observable;
-import rx.functions.Func2;
+import rx.functions.Func3;
 
 
 /**
@@ -22,34 +23,59 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
     private GetWishlistUsecase getWishlistUsecase;
+    private final GetTopAdsShopUseCase getTopAdsShopUseCase;
 
     public GetFavoriteAndWishlistUsecase(ThreadExecutor threadExecutor,
                                          PostExecutionThread postExecutionThread,
                                          GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                         GetWishlistUsecase getWishlistUsecase) {
+                                         GetWishlistUsecase getWishlistUsecase,
+                                         GetTopAdsShopUseCase getTopAdsShopUseCase) {
         super(threadExecutor, postExecutionThread);
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
         this.getWishlistUsecase = getWishlistUsecase;
+        this.getTopAdsShopUseCase = getTopAdsShopUseCase;
     }
 
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
-        return Observable.zip(getWishlist(), getFavoriteShop(),
-                new Func2<DomainWishlist, FavoriteShop, DataFavorite>() {
+//        return Observable.zip(getWishlist(), getFavoriteShop(),
+//                new Func2<DomainWishlist, FavoriteShop, DataFavorite>() {
+//
+//                    @Override
+//                    public DataFavorite call(DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
+//                        return validateDataFavorite(domainWishlist, favoriteShop);
+//                    }
+//                });
+        return Observable.zip(getWishlist(), getTopAdsShop(), getFavoriteShop(),
+                new Func3<DomainWishlist, TopAdsShop, FavoriteShop, DataFavorite>() {
 
                     @Override
-                    public DataFavorite call(DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
-                        return validateDataFavorite(domainWishlist, favoriteShop);
+                    public DataFavorite call(DomainWishlist domainWishlist,
+                                             TopAdsShop adsShop, FavoriteShop favoriteShop) {
+
+                        return validateDataFavorite(domainWishlist, adsShop, favoriteShop);
                     }
                 });
     }
 
+
     @NonNull
     private DataFavorite validateDataFavorite(DomainWishlist domainWishlist,
-                                              FavoriteShop favoriteShop) {
+                                              TopAdsShop adsShop, FavoriteShop favoriteShop) {
+
+        if (domainWishlist.isNetworkError()
+                && adsShop.isNetworkError()
+                && favoriteShop.isNetworkError()
+                && domainWishlist.getData() == null
+                && adsShop.getTopAdsShopItemList() == null
+                && favoriteShop.getData() == null) {
+
+            throw new RuntimeException("all network error");
+        }
 
         DataFavorite dataFavorite = new DataFavorite();
         dataFavorite.setWishListData(domainWishlist);
+        dataFavorite.setTopAdsShop(adsShop);
         dataFavorite.setFavoriteShop(favoriteShop);
         return dataFavorite;
     }
@@ -66,5 +92,9 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
         return getWishlistUsecase.createObservable(params);
     }
 
-
+    private Observable<TopAdsShop> getTopAdsShop() {
+        RequestParams requestParams = GetTopAdsShopUseCase.defaultParams();
+        requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
+        return getTopAdsShopUseCase.createObservable(requestParams);
+    }
 }

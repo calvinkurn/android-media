@@ -24,6 +24,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
@@ -88,8 +89,8 @@ public class FragmentFavorite extends BaseDaggerFragment
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         favoritePresenter.attachView(this);
-        favoritePresenter.loadDataWishlistAndFavorite();
-
+//        favoritePresenter.loadDataWishlistAndFavorite();
+        checkImpressionOncreate();
         return parentView;
     }
 
@@ -128,9 +129,10 @@ public class FragmentFavorite extends BaseDaggerFragment
             if (isVisibleToUser && isAdded() && getActivity() != null) {
                 if (isAdapterNotEmpty()) {
                     validateMessageError();
+                } else {
+                    favoritePresenter.loadDataWishlistAndFavorite();
                 }
                 ScreenTracking.screen(getScreenName());
-                favoritePresenter.loadDataTopAdsShop();
             } else {
                 if (messageSnackbar != null && messageSnackbar.isShown()) {
                     messageSnackbar.hideRetrySnackbar();
@@ -215,6 +217,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void showWishlistFavorite(List<Visitable> dataFavorite) {
         favoriteAdapter.hideLoading();
+        favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);
     }
 
@@ -253,15 +256,20 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void showErrorLoadData() {
-        NetworkErrorHelper.showEmptyState(getContext(),
-                mainContent,
-                new NetworkErrorHelper.RetryClickedListener() {
+        if (isAdapterNotEmpty()) {
+            showTopadsShopFailedMessage();
+            validateMessageError();
+        } else {
+            NetworkErrorHelper.showEmptyState(getContext(),
+                    mainContent,
+                    new NetworkErrorHelper.RetryClickedListener() {
 
-                    @Override
-                    public void onRetryClicked() {
-                        favoritePresenter.refreshAllDataFavoritePage();
-                    }
-                });
+                        @Override
+                        public void onRetryClicked() {
+                            favoritePresenter.refreshAllDataFavoritePage();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -362,6 +370,19 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private boolean isAdapterNotEmpty() {
         return favoriteAdapter.getItemCount() > 0;
+    }
+
+    private void checkImpressionOncreate() {
+        if (getActivity() instanceof ParentIndexHome) {
+            if (((ParentIndexHome) getActivity()).getViewPager() != null) {
+                if (!isAdapterNotEmpty()
+                        && ((ParentIndexHome) getActivity())
+                        .getViewPager().getCurrentItem() == 2) {
+
+                    favoritePresenter.loadDataWishlistAndFavorite();
+                }
+            }
+        }
     }
 
 }

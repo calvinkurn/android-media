@@ -57,8 +57,11 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
                                               FavoriteShop favoriteShop) {
 
         if (domainWishlist.isNetworkError()
-                || adsShop.isNetworkError()
-                || favoriteShop.isNetworkError()) {
+                && adsShop.isNetworkError()
+                && favoriteShop.isNetworkError()
+                && domainWishlist.getData() == null
+                && adsShop.getTopAdsShopItemList() == null
+                && favoriteShop.getData() == null) {
             throw new RuntimeException("all network error");
         }
 

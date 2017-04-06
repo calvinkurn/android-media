@@ -80,10 +80,11 @@ public class FavoriteFactory {
 
 
     Observable<TopAdsShop> getTopAdsShop(TKPDMapParam<String, Object> params) {
-        return Observable.concat(
-                getLocalTopAdsShopObservable(),
-                getCloudTopAdsShopObservable(params))
-                .first(isLocalTopAdsShopValid());
+
+        return getCloudTopAdsShopObservable(params)
+                .onExceptionResumeNext(
+                        getLocalTopAdsShopObservable()
+                                .doOnNext(setTopAdsShopErrorNetwork()).first());
 
     }
 
@@ -116,10 +117,7 @@ public class FavoriteFactory {
         CloudTopAdsShopDataSource topAdsShopDataSource
                 = new CloudTopAdsShopDataSource(context, gson, topAdsService);
 
-        return topAdsShopDataSource.getTopAdsShop(params)
-                .onExceptionResumeNext(
-                        getLocalTopAdsShopObservable()
-                                .doOnNext(setTopAdsShopErrorNetwork()).first());
+        return topAdsShopDataSource.getTopAdsShop(params);
     }
 
 

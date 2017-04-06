@@ -95,11 +95,18 @@ public class FavoriteModule {
     @FavoriteScope
     @Provides
     GetFavoriteAndWishlistUsecase provideFavoriteWishlitUsecase(
-            ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-            GetFavoriteShopUsecase getFavoriteShopUsecase, GetWishlistUsecase getWishlistUse) {
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            GetFavoriteShopUsecase getFavoriteShopUsecase,
+            GetWishlistUsecase getWishlistUse,
+            GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         return new GetFavoriteAndWishlistUsecase(
-                threadExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUse);
+                threadExecutor,
+                postExecutionThread,
+                getFavoriteShopUsecase,
+                getWishlistUse,
+                getTopAdsShopUseCase);
     }
 
 

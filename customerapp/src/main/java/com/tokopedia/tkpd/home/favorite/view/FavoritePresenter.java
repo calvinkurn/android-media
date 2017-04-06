@@ -143,6 +143,7 @@ public class FavoritePresenter
         } else {
             getView().dismissFavoriteShopFailedMessage();
         }
+
     }
 
 
@@ -152,6 +153,7 @@ public class FavoritePresenter
         } else {
             getView().dismissWishlistFailedMessage();
         }
+
     }
 
     private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
@@ -195,16 +197,18 @@ public class FavoritePresenter
             if (dataFavorite.getWishListData() != null) {
                 validateNetworkWishlist(dataFavorite.getWishListData());
 
-                if (dataFavorite.getWishListData().getData() != null) {
-                    if (dataFavorite.getWishListData().getData().size() > 0) {
-                        dataFavoriteItemList.add(
-                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-                    } else {
-                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
-                    }
-                } else {
-                    dataFavoriteItemList.add(new EmptyWishlistViewModel());
-                }
+//                if (dataFavorite.getWishListData().getData() != null) {
+//                    if (dataFavorite.getWishListData().getData().size() > 0) {
+//                        dataFavoriteItemList.add(
+//                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+//                    } else {
+//                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
+//                    }
+//                } else {
+//                    dataFavoriteItemList.add(new EmptyWishlistViewModel());
+//                }
+                dataFavoriteItemList.add(
+                        favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
             } else {
                 dataFavoriteItemList.add(new EmptyWishlistViewModel());
             }
@@ -212,6 +216,13 @@ public class FavoritePresenter
     }
 
     private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            getView().showRefreshLoading();
+        }
+
         @Override
         public void onCompleted() {
 
@@ -227,14 +238,18 @@ public class FavoritePresenter
 
         @Override
         public void onNext(DataFavorite dataFavorite) {
+            getView().hideRefreshLoading();
             getView().showWishlistFavorite(getDataFavoriteViewModel(dataFavorite));
+            getView().validateMessageError();
         }
 
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
             addWishlist(dataFavorite, elementList);
+            addTopAdsShop(dataFavorite, elementList);
             addFavoriteShop(dataFavorite, elementList);
+
             return elementList;
         }
     }
@@ -339,6 +354,7 @@ public class FavoritePresenter
             addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
             getView().hideRefreshLoading();
+            getView().validateMessageError();
             pagingHandler.resetPage();
         }
     }
