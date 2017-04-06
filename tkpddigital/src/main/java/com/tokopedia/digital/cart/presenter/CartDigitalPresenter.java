@@ -25,6 +25,7 @@ import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.utils.DeviceUtil;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -153,7 +154,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionCheckout(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -200,7 +201,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionInstantCheckout(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -247,7 +248,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionCheckVoucher(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -297,7 +298,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                     view.renderErrorNoConnectionAddToCart(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
-                } else if (e instanceof SocketTimeoutException) {
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
                     /* Ini kalau timeout */
                     view.renderErrorTimeoutConnectionAddToCart(
                             ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
@@ -343,7 +344,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionGetCartData(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
@@ -388,7 +389,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof UnknownHostException) {
+                if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
                     view.renderErrorNoConnectionGetCartData(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL

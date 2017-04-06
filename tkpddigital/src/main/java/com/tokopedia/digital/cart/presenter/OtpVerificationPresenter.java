@@ -10,6 +10,7 @@ import com.tokopedia.digital.cart.interactor.OtpVerificationInteractor;
 import com.tokopedia.digital.cart.listener.IOtpVerificationView;
 import com.tokopedia.digital.cart.model.OtpData;
 
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
@@ -86,7 +87,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 view.hideProgressLoading();
                 if (e instanceof SocketTimeoutException) {
                     view.renderErrorTimeoutReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof UnknownHostException) {
+                } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     view.renderErrorNoConnectionReRequestSmsOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
@@ -119,7 +120,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 view.hideProgressLoading();
                 if (e instanceof SocketTimeoutException) {
                     view.renderErrorTimeoutFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof UnknownHostException) {
+                } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     view.renderErrorNoConnectionFirstRequestSmsOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
@@ -152,7 +153,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 view.hideProgressLoading();
                 if (e instanceof SocketTimeoutException) {
                     view.renderErrorTimeoutRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof UnknownHostException) {
+                } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     view.renderErrorNoConnectionRequestCallOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
@@ -185,7 +186,7 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                 e.printStackTrace();
                 if (e instanceof SocketTimeoutException) {
                     view.renderErrorTimeoutVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
-                } else if (e instanceof UnknownHostException) {
+                } else if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     view.renderErrorNoConnectionVerifyOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
