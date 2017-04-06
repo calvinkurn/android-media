@@ -28,6 +28,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -93,6 +94,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             mOnQueryListener = new OnQueryListener() {
                                 @Override
                                 public void onQuerySubmit(String query) {
+                                    CommonUtils.dumper("onQuerySubmit : " +query);
                                     subscriber.onNext(String.valueOf(query));
                                 }
                             };
@@ -239,9 +241,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         @Override
         public void onNext(String keyword) {
             getView().showListPlaces();
-            if (!isLoadingPlaces) {
+            CommonUtils.dumper("onNext : " +keyword);
+//            if (!isLoadingPlaces) {
+                CommonUtils.dumper("proc : " + keyword);
                 getPlacesAndRenderViewByKeyword(keyword);
-            }
+//            }
         }
     }
 
@@ -293,6 +297,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
                     @Override
                     public void onNext(ArrayList<AutocompletePrediction> results) {
+                        CommonUtils.dumper("res : " + results.size());
                         ArrayList<Visitable> addresses = new ArrayList<>();
                         for (AutocompletePrediction autocompletePrediction : results) {
                             PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
