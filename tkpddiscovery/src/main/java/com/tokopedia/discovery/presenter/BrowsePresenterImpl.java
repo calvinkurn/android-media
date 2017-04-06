@@ -21,7 +21,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -292,19 +292,19 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         gridType = GRID_2;
                         gridIcon = R.drawable.ic_grid_default;
                         gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_DEFAULT);
                         break;
                     case GRID_2:
                         gridType = GRID_3;
                         gridIcon = R.drawable.ic_grid_box;
                         gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_BOX);
                         break;
                     case GRID_3:
                         gridType = GRID_1;
                         gridIcon = R.drawable.ic_list;
                         gridTitleResId = R.string.list;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_LIST);
                         break;
                     default:
                         gridIcon = R.drawable.ic_grid_default;
@@ -329,7 +329,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                             .build();
                     if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         shareData.setType(ShareData.CATEGORY_TYPE);
-                        shareData.setDescription(browseModel.getDepartmentId());
+                        shareData.setDescription(browseModel.getParentDepartement()+","
+                                +browseModel.getDepartmentId());
                     }
                     browseView.startShareActivity(shareData);
                 }
@@ -501,9 +502,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     case DiscoveryListener.CATEGORY_HEADER:
 
                         ObjContainer objContainer = data.getModel2();
-                        CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer
-                                = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
-                        CategoriesHadesModel body = categoriesHadesContainer.body();
+                        CategoryHadesModel.CategoriesHadesContainer categoriesHadesContainer
+                                = (CategoryHadesModel.CategoriesHadesContainer) objContainer;
+                        CategoryHadesModel body = categoriesHadesContainer.body();
 
                         if (browseModel != null && body != null && body.getData() != null) {
                             browseModel.categoryHeader = body.getData();
@@ -826,8 +827,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
                                 UnifyTracking.eventDiscoveryFilter(item.getString("label"));
-                                if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                                    UnifyTracking.eventFilterCategory(item.getString("label"));
+                                if (browseModel.getSource().equals(BrowseProductRouter.
+                                        VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    UnifyTracking.eventFilterCategory(browseModel.getParentDepartement(),
+                                            item.getString("label"));
                                 }
                             }
                             break;
@@ -861,7 +864,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
                     UnifyTracking.eventDiscoverySort(item.getString("label"));
                     if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        UnifyTracking.eventSortCategory(item.getString("label"));
+                        UnifyTracking.eventSortCategory(browseModel.getParentDepartement(),
+                                item.getString("label"));
                     }
                     break;
                 }

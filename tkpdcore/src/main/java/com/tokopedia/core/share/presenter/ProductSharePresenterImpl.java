@@ -36,7 +36,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareBBM(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.BBM);
+           shareCategory(data,AppEventTracking.SOCIAL_MEDIA.BBM);
         } else {
             UnifyTracking.eventShare(
                     data.getSource() != null ? data.getSource() : "",
@@ -51,7 +51,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareFb(final ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.FACEBOOK
@@ -75,7 +75,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareTwitter(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.TWITTER);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.TWITTER);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.TWITTER
@@ -97,7 +97,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareWhatsApp(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.WHATSHAPP
@@ -112,7 +112,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareLine(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.LINE);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.LINE);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.LINE
@@ -127,7 +127,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void sharePinterest(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.PINTEREST);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.PINTEREST
@@ -147,7 +147,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareMore(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.OTHER);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.OTHER);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.OTHER
@@ -166,7 +166,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareInstagram(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.INSTAGRAM
@@ -186,7 +186,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareGPlus(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
+            shareCategory(data,AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         } else {
             UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS
@@ -208,6 +208,14 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void setFacebookCache() {
         facebookCache.setExpire(3600);
+    }
+
+    @Override
+    public void shareCategory(ShareData data, String media) {
+        String[] shareParam = data.getSplittedDescription(",");
+        if (shareParam.length==2) {
+            UnifyTracking.eventShareCategory(shareParam[0],shareParam[1]+"-"+media);
+        }
     }
 
 

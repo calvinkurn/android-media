@@ -158,7 +158,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory();
+                    UnifyTracking.eventShowMoreCategory(((IntermediaryActivity) getActivity()).getDepartmentId());
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9,childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);

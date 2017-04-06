@@ -62,55 +62,55 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLevelCategory( String label){
+    public static void eventLevelCategory(String parentCat, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_LEVEL,
                 label
         ).getEvent());
     }
 
-    public static void eventShowMoreCategory(){
+    public static void eventShowMoreCategory(String parentCat){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_MORE,
                 AppEventTracking.EventLabel.CATEGORY_SHOW_MORE
         ).getEvent());
     }
 
-    public static void eventSortCategory(String label){
+    public static void eventSortCategory(String parentCat, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_SORT,
                 label
         ).getEvent());
     }
 
-    public static void eventFilterCategory(String label){
+    public static void eventFilterCategory(String parentCat, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_FILTER,
                 label
         ).getEvent());
     }
 
-    public static void eventDisplayCategory(String label){
+    public static void eventDisplayCategory(String parentCat, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_DISLPAY,
                 label
         ).getEvent());
     }
 
-    public static void eventShareCategory(String label){
+    public static void eventShareCategory(String parentCat, String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
-                AppEventTracking.Category.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
                 AppEventTracking.Action.CATEGORY_SHARE,
                 label
         ).getEvent());

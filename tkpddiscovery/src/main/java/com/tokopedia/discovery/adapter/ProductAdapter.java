@@ -446,7 +446,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UnifyTracking.eventShowMoreCategory();
+                        UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -528,7 +528,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UnifyTracking.eventShowMoreCategory();
+                        UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -793,6 +793,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         }
 
+        public Data getCategoryHeader() {
+            return categoryHeader;
+        }
+
+        public void setCategoryHeader(Data categoryHeader) {
+            this.categoryHeader = categoryHeader;
+        }
+
         public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth,
                                    DefaultCategoryAdapter.CategoryListener listener, String totalProduct,
                                    ScrollListener scrollListener) {
@@ -826,6 +834,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private CategoryHeaderRevampModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
+        }
+
+        public Data getCategoryHeader() {
+            return categoryHeader;
+        }
+
+        public void setCategoryHeader(Data categoryHeader) {
+            this.categoryHeader = categoryHeader;
         }
 
         public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth,

@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.nishikino.model;
 
+import android.util.Log;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ public class EventTracking {
     }
 
     public EventTracking(String event, String category, String action, String label) {
+        Log.d("alifa", "EventTracking: "+event+ " "+ category+ " "+ action+ " "+ label);
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
         this.eventTracking.put("eventAction", action);

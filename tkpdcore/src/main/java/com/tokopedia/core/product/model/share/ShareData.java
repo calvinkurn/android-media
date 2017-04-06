@@ -166,6 +166,13 @@ public class ShareData implements Parcelable {
         return renderedUrl;
     }
 
+    public String[] getSplittedDescription(String splitWith) {
+        if (description.contains(splitWith))
+            return  description.split(splitWith);
+        else
+            return new String[0];
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -239,5 +246,6 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             return shareData;
         }
+
     }
 }
