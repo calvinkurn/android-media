@@ -31,7 +31,7 @@ import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter {
 
     private final HistoryActionFragmentView fragmentView;
-    private final GetHistoryActionUseCase historyActionUseCase;
+    private final GetHistoryActionUseCase getHistoryActionUseCase;
 
     public HistoryActionFragmentImpl(Context context, HistoryActionFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -72,7 +72,7 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyActionUseCase
+        this.getHistoryActionUseCase
                 = new GetHistoryActionUseCase(jobExecutor, uiThread, resCenterRepository);
 
     }
@@ -80,12 +80,21 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        historyActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
+        getHistoryActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
     }
 
     @Override
     public void refreshPage() {
         onFirstTimeLaunch();
+    }
+
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        getHistoryActionUseCase.unsubscribe();
     }
 
 }

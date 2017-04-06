@@ -213,4 +213,9 @@ public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFr
         NetworkErrorHelper.showSnackbar(getActivity());
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }

@@ -8,4 +8,6 @@ public interface HistoryActionFragmentPresenter {
     void onFirstTimeLaunch();
 
     void refreshPage();
+
+    void setOnDestroyView();
 }

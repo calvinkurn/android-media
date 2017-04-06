@@ -43,7 +43,7 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
 
     private final HistoryShippingFragmentView fragmentView;
     private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
-    private final HistoryAwbUseCase historyAwbUseCase;
+    private final HistoryAwbUseCase getHistoryAwbUseCase;
 
     public HistoryShippingFragmentImpl(Context context, HistoryShippingFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -84,7 +84,7 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyAwbUseCase
+        this.getHistoryAwbUseCase
                 = new HistoryAwbUseCase(jobExecutor, uiThread, resCenterRepository);
 
         this.trackAwbReturProductUseCase
@@ -95,7 +95,7 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
         fragmentView.showInpuNewShippingAwb(false);
-        historyAwbUseCase.execute(RequestParams.EMPTY, new HistoryAwbSubsriber(fragmentView));
+        getHistoryAwbUseCase.execute(RequestParams.EMPTY, new HistoryAwbSubsriber(fragmentView));
     }
 
     @Override
@@ -177,4 +177,15 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
             return viewModels;
         }
     }
+
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        getHistoryAwbUseCase.unsubscribe();
+        trackAwbReturProductUseCase.unsubscribe();
+    }
+
 }

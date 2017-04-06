@@ -88,4 +88,13 @@ public class ProductDetailFragmentImpl implements ProductDetailFragmentContract.
         requestParams.putString(GetProductDetailUseCase.PARAM_TROUBLE_ID, viewListener.getTroubleID());
         return requestParams;
     }
+
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        getProductDetailUseCase.unsubscribe();
+    }
 }

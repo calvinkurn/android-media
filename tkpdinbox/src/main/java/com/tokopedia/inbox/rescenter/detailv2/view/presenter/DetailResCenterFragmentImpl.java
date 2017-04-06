@@ -229,4 +229,20 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         return params;
     }
 
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        getResCenterDetailUseCase.unsubscribe();
+        trackAwbReturProductUseCase.unsubscribe();
+        cancelResolutionUseCase.unsubscribe();
+        askHelpResolutionUseCase.unsubscribe();
+        finishReturSolutionUseCase.unsubscribe();
+        acceptAdminSolutionUseCase.unsubscribe();
+        acceptSolutionUseCase.unsubscribe();
+        inputAddressUseCase.unsubscribe();
+    }
+
 }

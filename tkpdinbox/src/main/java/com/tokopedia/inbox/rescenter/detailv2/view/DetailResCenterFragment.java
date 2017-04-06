@@ -542,4 +542,10 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
         showLoadingDialog(false);
         showTimeOutMessage();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }

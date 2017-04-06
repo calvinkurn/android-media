@@ -9,6 +9,8 @@ import com.tokopedia.inbox.rescenter.product.view.model.ProductDetailViewData;
 public interface ProductDetailFragmentContract {
     interface Presenter {
         void onFirstTimeLaunched();
+
+        void setOnDestroyView();
     }
 
     interface ViewListener {

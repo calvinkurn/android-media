@@ -307,4 +307,9 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }

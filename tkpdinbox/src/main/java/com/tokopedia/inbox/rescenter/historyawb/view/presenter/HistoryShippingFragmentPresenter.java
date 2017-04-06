@@ -10,4 +10,6 @@ public interface HistoryShippingFragmentPresenter {
     void doActionTrack(String shippingRefNumber, String shipmentID);
 
     void refreshPage();
+
+    void setOnDestroyView();
 }

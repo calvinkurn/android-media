@@ -8,4 +8,6 @@ public interface ListProductFragmentPresenter {
     void onFirstTimeLaunch();
 
     void refreshPage();
+
+    void setOnDestroyView();
 }

@@ -88,4 +88,12 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
         onFirstTimeLaunch();
     }
 
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        historyAddressUseCase.unsubscribe();
+    }
 }

@@ -220,4 +220,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
                 }
         );
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }

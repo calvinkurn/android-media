@@ -8,4 +8,6 @@ public interface HistoryAddressFragmentPresenter {
     void onFirstTimeLaunch();
 
     void refreshPage();
+
+    void setOnDestroyView();
 }

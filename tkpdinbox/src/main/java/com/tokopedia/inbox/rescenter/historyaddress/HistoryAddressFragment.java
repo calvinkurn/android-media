@@ -213,4 +213,9 @@ public class HistoryAddressFragment extends BasePresenterFragment<HistoryAddress
         NetworkErrorHelper.showSnackbar(getActivity());
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }

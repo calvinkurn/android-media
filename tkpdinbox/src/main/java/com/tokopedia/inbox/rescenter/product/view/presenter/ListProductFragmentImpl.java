@@ -31,7 +31,7 @@ import com.tokopedia.inbox.rescenter.product.view.subscriber.ListProductSubsribe
 public class ListProductFragmentImpl implements ListProductFragmentPresenter {
 
     private final ListProductFragmentView fragmentView;
-    private final GetListProductUseCase historyActionUseCase;
+    private final GetListProductUseCase getListProductUseCase;
 
     public ListProductFragmentImpl(Context context, ListProductFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -72,7 +72,7 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
         ResCenterRepository resCenterRepository
                 = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
 
-        this.historyActionUseCase
+        this.getListProductUseCase
                 = new GetListProductUseCase(jobExecutor, uiThread, resCenterRepository);
 
     }
@@ -80,7 +80,7 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        historyActionUseCase.execute(RequestParams.EMPTY, new ListProductSubsriber(fragmentView));
+        getListProductUseCase.execute(RequestParams.EMPTY, new ListProductSubsriber(fragmentView));
     }
 
     @Override
@@ -88,4 +88,12 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
         onFirstTimeLaunch();
     }
 
+    @Override
+    public void setOnDestroyView() {
+        unSubscibeObservable();
+    }
+
+    private void unSubscibeObservable() {
+        getListProductUseCase.unsubscribe();
+    }
 }

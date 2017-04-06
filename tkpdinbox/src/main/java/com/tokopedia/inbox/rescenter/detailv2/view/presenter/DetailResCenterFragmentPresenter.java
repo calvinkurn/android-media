@@ -25,4 +25,6 @@ public interface DetailResCenterFragmentPresenter {
     void inputAddressAcceptSolution(String addressId);
 
     void inputAddressAcceptAdminSolution(String addressId);
+
+    void setOnDestroyView();
 }

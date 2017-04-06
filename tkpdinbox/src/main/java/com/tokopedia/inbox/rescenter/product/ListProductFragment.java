@@ -218,4 +218,9 @@ public class ListProductFragment extends BasePresenterFragment<ListProductFragme
         NetworkErrorHelper.showSnackbar(getActivity());
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.setOnDestroyView();
+    }
 }
