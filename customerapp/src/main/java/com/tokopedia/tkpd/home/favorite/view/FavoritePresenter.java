@@ -15,19 +15,15 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlist
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
-import com.tokopedia.tkpd.home.favorite.domain.model.DataWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShopItem;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
-import com.tokopedia.tkpd.home.favorite.domain.model.WishListBadge;
+import com.tokopedia.tkpd.home.favorite.view.viewmodel.DataFavoriteMapper;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.EmptyWishlistViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistItem;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +46,7 @@ public class FavoritePresenter
     private final AddFavoriteShopUseCase addFavoriteShopUseCase;
     private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
     private final GetFavoriteShopUsecase getFavoriteShopUsecase;
+    private DataFavoriteMapper favoriteMapper;
     private PagingHandler pagingHandler;
 
     @Inject
@@ -57,13 +54,15 @@ public class FavoritePresenter
                       GetTopAdsShopUseCase getTopAdsShopUseCase,
                       AddFavoriteShopUseCase addFavoriteShopUseCase,
                       GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
-                      GetFavoriteShopUsecase getFavoriteShopUsecase) {
+                      GetFavoriteShopUsecase getFavoriteShopUsecase,
+                      DataFavoriteMapper favoriteMapper) {
 
         this.getFavoriteAndWishlistUsecase = getFavoriteAndWishlistUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
         this.addFavoriteShopUseCase = addFavoriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
+        this.favoriteMapper = favoriteMapper;
 
         pagingHandler = new PagingHandler();
     }
@@ -138,57 +137,73 @@ public class FavoritePresenter
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
     }
 
-    private FavoriteShopViewModel prepareDataFavoriteShop(FavoriteShopItem favoriteShop) {
-        FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
-        favoriteShopViewModel.setShopId(favoriteShop.getId());
-        favoriteShopViewModel.setShopName(favoriteShop.getName());
-        favoriteShopViewModel.setShopAvatarImageUrl(favoriteShop.getIconUri());
-        favoriteShopViewModel.setShopLocation(favoriteShop.getLocation());
-        favoriteShopViewModel.setFavoriteShop(favoriteShop.isFav());
-        return favoriteShopViewModel;
+    private void validateNetworkFavoriteshop(DataFavorite dataFavorite) {
+        if (dataFavorite.getFavoriteShop().isNetworkError()) {
+            getView().showFavoriteShopFailedMessage();
+        } else {
+            getView().dismissFavoriteShopFailedMessage();
+        }
     }
 
-    private WishlistViewModel prepareDataWishlist(DomainWishlist wishListData) {
-        WishlistViewModel wishlistViewModel = new WishlistViewModel();
-        ArrayList<WishlistItem> wishlistItems = new ArrayList<>();
-        if (wishListData != null && wishListData.getData() != null) {
-            for (DataWishlist dataWishlist : wishListData.getData()) {
-                WishlistItem wishlistItem = new WishlistItem();
-                wishlistItem.setName(dataWishlist.getName());
-                wishlistItem.setPrice(dataWishlist.getPrice());
-                wishlistItem.setShopName(dataWishlist.getShop_name());
-                wishlistItem.setProductId(dataWishlist.getId());
-                wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
-                ArrayList<String> badges = new ArrayList<>();
-                for (WishListBadge badge : dataWishlist.getBadges()) {
-                    badges.add(badge.getImgUrl());
+
+    private void validateNetworkWishlist(DomainWishlist domainWishlist) {
+        if (domainWishlist.isNetworkError()) {
+            getView().showWishlistFailedMessage();
+        } else {
+            getView().dismissWishlistFailedMessage();
+        }
+    }
+
+    private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null
+                && dataFavorite.getFavoriteShop() != null) {
+
+            validateNetworkFavoriteshop(dataFavorite);
+            if (dataFavorite.getFavoriteShop().getData() != null) {
+                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+                if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+                    for (FavoriteShopItem favoriteShopItem
+                            : dataFavorite.getFavoriteShop().getData()) {
+
+                        favoriteShopItem.setIsFav(true);
+                        dataFavoriteItemList.add(
+                                favoriteMapper.prepareDataFavoriteShop(favoriteShopItem));
+                    }
                 }
-                wishlistItem.setBadgeImageUrl(badges);
-                wishlistItems.add(wishlistItem);
+            }
+
+        }
+    }
+
+    private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null) {
+            validateNetworkTopAdsShop(dataFavorite.getTopAdsShop());
+            if (dataFavorite.getTopAdsShop() != null
+                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null
+                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
+
+                dataFavoriteItemList
+                        .add(favoriteMapper
+                                .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
             }
         }
-        wishlistViewModel.setWishlistItems(wishlistItems);
-        return wishlistViewModel;
     }
 
-    private TopAdsShopViewModel prepareDataTopAdsShop(TopAdsShop adsShop) {
-        TopAdsShopViewModel shopViewModel = new TopAdsShopViewModel();
-        ArrayList<TopAdsShopItem> shopItems = new ArrayList<>();
-        for (com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShopItem item
-                : adsShop.getTopAdsShopItemList()) {
-            TopAdsShopItem shopItem = new TopAdsShopItem();
-            shopItem.setShopId(item.getShopId());
-            shopItem.setShopDomain(item.getShopDomain());
-            shopItem.setShopName(item.getShopName());
-            shopItem.setAdKey(item.getAdRefKey());
-            shopItem.setShopClickUrl(item.getShopClickUrl());
-            shopItem.setShopCoverUrl(item.getShopImageCover());
-            shopItem.setShopImageUrl(item.getShopImageUrl());
-            shopItem.setShopLocation(item.getShopLocation());
-            shopItems.add(shopItem);
+    private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null
+                && dataFavorite.getWishListData() != null) {
+
+            validateNetworkWishlist(dataFavorite.getWishListData());
+
+            if (dataFavorite.getWishListData().getData() != null) {
+                if (dataFavorite.getWishListData().getData().size() > 0) {
+                    dataFavoriteItemList.add(
+                            favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+                } else {
+                    dataFavoriteItemList.add(new EmptyWishlistViewModel());
+                }
+            }
         }
-        shopViewModel.setAdsShopItems(shopItems);
-        return shopViewModel;
     }
 
     private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
@@ -214,45 +229,24 @@ public class FavoritePresenter
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
 
-            if (dataFavorite != null
-                    && dataFavorite.getWishListData() != null) {
+//            if (dataFavorite != null
+//                    && dataFavorite.getWishListData() != null) {
+//
+//                validateWishlistNetwork(dataFavorite);
+//
+//                if (dataFavorite.getWishListData().getData() != null) {
+//                    if (dataFavorite.getWishListData().getData().size() > 0) {
+//                        elementList.add(
+//                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+//                    } else {
+//                        elementList.add(new EmptyWishlistViewModel());
+//                    }
+//                }
+//            }
 
-                if (dataFavorite.getWishListData().isNetworkError()) {
-                    getView().showWishlistFailedMessage();
-                } else {
-                    getView().dismissWishlistFailedMessage();
-                }
+            addWishlist(dataFavorite, elementList);
 
-                if (dataFavorite.getWishListData().getData() != null) {
-                    if (dataFavorite.getWishListData().getData().size() > 0) {
-                        elementList.add(prepareDataWishlist(dataFavorite.getWishListData()));
-                    } else {
-                        elementList.add(new EmptyWishlistViewModel());
-                    }
-                }
-            }
-
-            if (dataFavorite != null
-                    && dataFavorite.getFavoriteShop() != null) {
-
-                if (dataFavorite.getFavoriteShop().isNetworkError()) {
-                    getView().showFavoriteShopFailedMessage();
-                } else {
-                    getView().dismissFavoriteShopFailedMessage();
-                }
-                if (dataFavorite.getFavoriteShop().getData() != null) {
-                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
-                    if (dataFavorite.getFavoriteShop().getData().size() > 0) {
-                        for (FavoriteShopItem favoriteShopItem
-                                : dataFavorite.getFavoriteShop().getData()) {
-
-                            favoriteShopItem.setIsFav(true);
-                            elementList.add(prepareDataFavoriteShop(favoriteShopItem));
-                        }
-                    }
-                }
-
-            }
+            addFavoriteShop(dataFavorite, elementList);
             return elementList;
         }
     }
@@ -307,22 +301,26 @@ public class FavoritePresenter
 
         @Override
         public void onNext(TopAdsShop topAdsShop) {
-            if (topAdsShop != null) {
-                if (topAdsShop.isNetworkError()) {
-                    getView().showTopadsShopFailedMessage();
-                } else {
-                    getView().dismissTopadsShopFailedMessage();
-                }
-                getView().validateMessageError();
-            }
+            validateNetworkTopAdsShop(topAdsShop);
             if (isTopAdsShopListNotEmpty(topAdsShop)) {
-                getView().addTopAdsShop(prepareDataTopAdsShop(topAdsShop));
+                getView().addTopAdsShop(favoriteMapper.prepareDataTopAdsShop(topAdsShop));
             }
         }
 
         private boolean isTopAdsShopListNotEmpty(TopAdsShop topAdsShop) {
             return topAdsShop.getTopAdsShopItemList() != null
                     && topAdsShop.getTopAdsShopItemList().size() > 0;
+        }
+    }
+
+    private void validateNetworkTopAdsShop(TopAdsShop topAdsShop) {
+        if (topAdsShop != null) {
+            if (topAdsShop.isNetworkError()) {
+                getView().showTopadsShopFailedMessage();
+            } else {
+                getView().dismissTopadsShopFailedMessage();
+            }
+            getView().validateMessageError();
         }
     }
 
@@ -349,93 +347,18 @@ public class FavoritePresenter
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
 
-            if (dataFavorite != null
-                    && dataFavorite.getWishListData() != null) {
+            addWishlist(dataFavorite, dataFavoriteItemList);
 
-                if (dataFavorite.getWishListData().isNetworkError()) {
-                    getView().showWishlistFailedMessage();
-                } else {
-                    getView().dismissWishlistFailedMessage();
-                }
-
-                if (dataFavorite.getWishListData().getData() != null) {
-                    if (dataFavorite.getWishListData().getData().size() > 0) {
-                        dataFavoriteItemList.add(
-                                prepareDataWishlist(dataFavorite.getWishListData()));
-                    } else {
-                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
-                    }
-                }
-            }
-
-//            if (dataFavorite != null && dataFavorite.getWishListData() != null
-//                    && dataFavorite.getWishListData().getData() != null) {
-//
-//                dataFavoriteItemList.add(prepareDataWishlist(dataFavorite.getWishListData()));
-//            }
-
-//            if (dataFavorite != null
-//                    && dataFavorite.getTopAdsShop() != null
-//                    && dataFavorite.getFavoriteShop().getData() != null) {
-//                dataFavoriteItemList.add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
-//            }
-
-            if (dataFavorite != null && dataFavorite.getTopAdsShop() != null) {
-                if (dataFavorite.getTopAdsShop().isNetworkError()) {
-                    getView().showTopadsShopFailedMessage();
-                } else {
-                    getView().dismissTopadsShopFailedMessage();
-                }
-                getView().validateMessageError();
-
-                if (dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null) {
-                    if (dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
-
-                        dataFavoriteItemList
-                                .add(prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
-                    }
-                }
-            }
+            addTopAdsShop(dataFavorite, dataFavoriteItemList);
 
 
-//            if (dataFavorite != null
-//                    && dataFavorite.getFavoriteShop() != null
-//                    && dataFavorite.getFavoriteShop().getData() != null) {
-//
-//                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
-//
-//                for (FavoriteShopItem favoriteShopItem : dataFavorite.getFavoriteShop().getData()) {
-//                    favoriteShopItem.setIsFav(true);
-//                    dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
-//                }
-//            }
-
-            if (dataFavorite != null
-                    && dataFavorite.getFavoriteShop() != null) {
-
-                if (dataFavorite.getFavoriteShop().isNetworkError()) {
-                    getView().showFavoriteShopFailedMessage();
-                } else {
-                    getView().dismissFavoriteShopFailedMessage();
-                }
-                if (dataFavorite.getFavoriteShop().getData() != null) {
-                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
-                    if (dataFavorite.getFavoriteShop().getData().size() > 0) {
-                        for (FavoriteShopItem favoriteShopItem
-                                : dataFavorite.getFavoriteShop().getData()) {
-
-                            favoriteShopItem.setIsFav(true);
-                            dataFavoriteItemList.add(prepareDataFavoriteShop(favoriteShopItem));
-                        }
-                    }
-                }
-
-            }
+            addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
             getView().hideRefreshLoading();
             pagingHandler.resetPage();
         }
     }
+
 
     private class LoadMoreSubscriber extends Subscriber<FavoriteShop> {
 
@@ -454,20 +377,10 @@ public class FavoritePresenter
         public void onNext(FavoriteShop favoriteShop) {
             if (favoriteShop.isDataValid()) {
                 setNextPaging(favoriteShop.getPagingModel());
-
-                List<Visitable> elementList = prepareListFavoriteShop(favoriteShop);
+                List<Visitable> elementList = favoriteMapper.prepareListFavoriteShop(favoriteShop);
                 getView().showMoreDataFavoriteShop(elementList);
             }
         }
 
-        @NonNull
-        private List<Visitable> prepareListFavoriteShop(FavoriteShop favoriteShop) {
-            List<Visitable> elementList = new ArrayList<>();
-            for (FavoriteShopItem favoriteShopItem : favoriteShop.getData()) {
-                favoriteShopItem.setIsFav(true);
-                elementList.add(prepareDataFavoriteShop(favoriteShopItem));
-            }
-            return elementList;
-        }
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.home.favorite.domain.interactor;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -44,13 +46,27 @@ public class GetAllDataFavoriteUseCase extends UseCase<DataFavorite> {
             public DataFavorite call(DomainWishlist domainWishlist,
                                      TopAdsShop adsShop, FavoriteShop favoriteShop) {
 
-                DataFavorite dataFavorite = new DataFavorite();
-                dataFavorite.setWishListData(domainWishlist);
-                dataFavorite.setTopAdsShop(adsShop);
-                dataFavorite.setFavoriteShop(favoriteShop);
-                return dataFavorite;
+                return validateDataFavorite(domainWishlist, adsShop, favoriteShop);
             }
         });
+    }
+
+    @NonNull
+    private DataFavorite validateDataFavorite(DomainWishlist domainWishlist,
+                                              TopAdsShop adsShop,
+                                              FavoriteShop favoriteShop) {
+
+        if (domainWishlist.isNetworkError()
+                || adsShop.isNetworkError()
+                || favoriteShop.isNetworkError()) {
+            throw new RuntimeException("all network error");
+        }
+
+        DataFavorite dataFavorite = new DataFavorite();
+        dataFavorite.setWishListData(domainWishlist);
+        dataFavorite.setTopAdsShop(adsShop);
+        dataFavorite.setFavoriteShop(favoriteShop);
+        return dataFavorite;
     }
 
 
