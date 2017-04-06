@@ -86,15 +86,10 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             startActivity(intent);
             finish();
         } else {
-            Intent intentPhoneActivation = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-            Intent intentCreateshop = SellerRouter.getAcitivityShopCreateEdit(this);
-            intentCreateshop.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intentCreateshop.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                    SellerRouter.ShopSettingConstant.LOG_OUT);
-            startActivities(new Intent[]{
-                    intentCreateshop,
-                    intentPhoneActivation});
+            startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
     }
 
