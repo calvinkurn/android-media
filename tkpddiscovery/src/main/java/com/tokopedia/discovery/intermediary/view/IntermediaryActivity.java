@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -32,8 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class IntermediaryActivity extends BasePresenterActivity implements IntermediaryCategoryAdapter.CategoryListener
-        , MenuItemCompat.OnActionExpandListener{
+public class IntermediaryActivity extends BasePresenterActivity implements
+        IntermediaryCategoryAdapter.CategoryListener, MenuItemCompat.OnActionExpandListener{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
@@ -142,7 +143,8 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
         if (isFinishing()) return;
         AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
         if (fragment instanceof BrowseParentFragment) {
-            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+            params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL |
+                    AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
             CommonUtils.hideKeyboard(this, getCurrentFocus());
         } else {
             params.setScrollFlags(0);
@@ -183,6 +185,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements Inter
                 BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 child.getCategoryName()
         );
+        UnifyTracking.eventLevelCategoryIntermediary(departmentId,child.getCategoryId());
     }
 
     @Override

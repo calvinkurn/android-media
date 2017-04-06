@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -39,11 +40,14 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private List<HotListModel> hotListModelList = new ArrayList<>();
     private final int homeMenuWidth;
     private final Context context;
+    private final String categoryId;
 
-    public HotListItemAdapter(List<HotListModel> hotListModelList, int homeMenuWidth, Context context) {
+    public HotListItemAdapter(List<HotListModel> hotListModelList, int homeMenuWidth,
+                              Context context, String categoryId) {
         this.hotListModelList = hotListModelList;
         this.homeMenuWidth = homeMenuWidth;
         this.context = context;
+        this.categoryId = categoryId;
     }
 
     @Override
@@ -77,6 +81,7 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
                 Bundle bundle = new Bundle();
                 bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS,
                         URLParser.getPathSegment(1,hotListModel.getUrl()));

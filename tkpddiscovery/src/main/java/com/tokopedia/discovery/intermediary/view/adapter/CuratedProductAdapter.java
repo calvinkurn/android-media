@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -22,6 +23,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.entity.categoriesHades.CuratedProduct;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -51,12 +53,17 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<ProductModel> productModelList;
     private final int homeMenuWidth;
+    private final CuratedProductAdapter.OnItemClickListener onItemClickListener;
+    private final String curatedName;
     Context context;
 
-    CuratedProductAdapter(Context context, List<ProductModel> productModelList, int homeMenuWidth) {
+    CuratedProductAdapter(Context context, List<ProductModel> productModelList, int homeMenuWidth,
+                          CuratedProductAdapter.OnItemClickListener onItemClickListener,String curatedName) {
         this.productModelList = productModelList;
         this.homeMenuWidth = homeMenuWidth;
         this.context = context;
+        this.onItemClickListener = onItemClickListener;
+        this.curatedName = curatedName;
     }
 
     @Override
@@ -78,8 +85,14 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int i) {
         ViewHolderProductitem itemViewHolder = (ViewHolderProductitem) holder;
-        ProductModel productModel = productModelList.get(i);
+        final ProductModel productModel = productModelList.get(i);
         itemViewHolder.bindData(productModel,itemViewHolder);
+        itemViewHolder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClicked(productModel,curatedName);
+            }
+        });
 
 
     }
@@ -106,6 +119,8 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView location;
         @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
+        @BindView(R2.id.container)
+        RelativeLayout container;
 
         private Context context;
         private ProductModel data;
@@ -155,17 +170,10 @@ public class CuratedProductAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
         }
 
-        @OnClick(R2.id.container)
-        public void onClick() {
-            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
-                    Integer.toString(data.getId()));
-            context.startActivity(intent);
-        }
-
     }
 
     public interface OnItemClickListener {
-        void onItemClicked(ProductModel productModel);
+        void onItemClicked(ProductModel productModel, String curatedName);
     }
 
 

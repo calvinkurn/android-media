@@ -28,11 +28,14 @@ public class CurationAdapter extends
     private final Context context;
     private List<CuratedSectionModel> dataList;
     private int homeMenuWidth;
+    private final CuratedProductAdapter.OnItemClickListener onProductItemClickListener;
 
-    public CurationAdapter(Context context) {
+    public CurationAdapter(Context context,
+                           CuratedProductAdapter.OnItemClickListener onProductItemClickListener) {
 
         this.context = context;
         this.dataList = Collections.emptyList();
+        this.onProductItemClickListener = onProductItemClickListener;
     }
 
 
@@ -48,7 +51,8 @@ public class CurationAdapter extends
     public void onBindViewHolder(CurationAdapter.ItemRowHolder itemRowHolder, int i) {
         final CuratedSectionModel curatedSectionModel = dataList.get(i);
         CuratedProductAdapter itemAdapter = new CuratedProductAdapter(context,
-                curatedSectionModel.getProducts(),homeMenuWidth);
+                curatedSectionModel.getProducts(),homeMenuWidth,onProductItemClickListener
+                ,curatedSectionModel.getTitle());
 
         itemRowHolder.itemTitle.setText(curatedSectionModel.getTitle());
         itemRowHolder.recycler_view_list.setHasFixedSize(true);

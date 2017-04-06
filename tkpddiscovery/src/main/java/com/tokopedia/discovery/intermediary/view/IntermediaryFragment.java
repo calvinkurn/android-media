@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.intermediary.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.widgets.DividerItemDecoration;
@@ -38,6 +40,7 @@ import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
+import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
 import com.tokopedia.discovery.intermediary.view.adapter.CuratedProductAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
@@ -55,7 +58,8 @@ import butterknife.OnClick;
  * Created by alifa on 3/24/17.
  */
 
-public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View {
+public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
+    CuratedProductAdapter.OnItemClickListener{
 
     @BindView(R2.id.image_header)
     ImageView imageHeader;
@@ -184,7 +188,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList) {
         curationRecyclerView.setHasFixedSize(true);
         curationRecyclerView.setNestedScrollingEnabled(false);
-        curationAdapter = new CurationAdapter(getActivity());
+        curationAdapter = new CurationAdapter(getActivity(),this);
         curationAdapter.setHomeMenuWidth(getCategoryWidth());
         curationRecyclerView.setLayoutManager(
                 new NonScrollLinearLayoutManager(getActivity(),
@@ -200,7 +204,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void renderHotList(List<HotListModel> hotListModelList) {
         cardViewHotList.setVisibility(View.VISIBLE);
 
-        HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,getCategoryWidth(),getActivity());
+        HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,
+                getCategoryWidth(),getActivity(),((IntermediaryActivity) getActivity()).getDepartmentId());
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
@@ -271,5 +276,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 ((IntermediaryActivity) getActivity()).getCategoryName()
         );
     }
+
+    @Override
+    public void onItemClicked(ProductModel productModel, String curatedName) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                Integer.toString(productModel.getId()));
+        getActivity().startActivity(intent);
+        UnifyTracking.eventCuratedIntermediary(((IntermediaryActivity) getActivity()).getDepartmentId(),
+                curatedName,productModel.getName());
+    }
+
 
 }

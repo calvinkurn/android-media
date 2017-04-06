@@ -106,6 +106,7 @@ public interface AppEventTracking {
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
         String CATEGORY_PAGE = "clickKategori";
+        String INTERMEDIARY_PAGE = "clickIntermediary";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String EVENT_OTP = "OTPSuccess";
     }
@@ -164,6 +165,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
         String CATEGORY_PAGE = "Category Page";
+        String INTERMEDIAR_PAGE = "IntermediaryPage";
         String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
@@ -209,6 +211,8 @@ public interface AppEventTracking {
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
+        String CURATED = "Curated";
+        String HOTLIST = "Hotlist";
         String CATEGORY_MORE = "Category Breakdown";
         String CATEGORY_SORT = "Bottom Navigation - Sort";
         String CATEGORY_FILTER = "Bottom Navigation - Filter";

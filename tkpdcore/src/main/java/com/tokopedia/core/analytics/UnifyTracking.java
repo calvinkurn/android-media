@@ -71,6 +71,34 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventLevelCategoryIntermediary(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label
+        ).getEvent());
+    }
+
+    public static void eventHotlistIntermediary(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.HOTLIST,
+                label
+        ).getEvent());
+    }
+
+    public static void eventCuratedIntermediary(String parentCat, String curatedProductName,
+                                                String productName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CURATED + " " +curatedProductName,
+                productName
+        ).getEvent());
+    }
+
     public static void eventShowMoreCategory(String parentCat){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
