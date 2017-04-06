@@ -1,7 +1,5 @@
 package com.tokopedia.payment.listener;
 
-import android.support.annotation.StringRes;
-
 import com.tokopedia.payment.model.PaymentPassData;
 
 /**
@@ -31,7 +29,7 @@ public interface ITopPayView {
 
     void backStackAction();
 
-    String getStringFromResource(@StringRes int resId);
+    String getStringFromResource(int resId);
 
     PaymentPassData getPaymentPassData();
 }

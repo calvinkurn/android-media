@@ -20,10 +20,6 @@ android {
         }
     }
 
-    dataBinding {
-        enabled true
-    }
-
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -38,12 +34,5 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-//    compile rootProject.ext.supportLibDependencies.recyclerViewV7
-//    compile rootProject.ext.supportLibDependencies.supportV4
-//    compile rootProject.ext.supportLibDependencies.appCompactV7
-//    compile rootProject.ext.supportLibDependencies.supportV13
-//    compile rootProject.ext.supportLibDependencies.design
-//    compile rootProject.ext.supportLibDependencies.cardViewV7
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:support-annotations:25.3.0'
 }

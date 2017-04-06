@@ -16,7 +16,8 @@
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
             android:padding="12dp"
-            android:src="@drawable/ic_arrow_back_white"/>
+            android:src="@drawable/ic_arrow_back_white"
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@+id/tv_title"
@@ -28,7 +29,7 @@
             android:layout_toStartOf="@+id/btn_close"
             android:gravity="center"
             android:maxLines="1"
-            android:text="Tokopedia"
+            android:text="@string/app_name"
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
 

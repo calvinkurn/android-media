@@ -99,15 +99,16 @@ public class PaymentPassData implements Parcelable {
         this.transactionId = in.readString();
     }
 
-    public static final Creator<PaymentPassData> CREATOR = new Creator<PaymentPassData>() {
-        @Override
-        public PaymentPassData createFromParcel(Parcel source) {
-            return new PaymentPassData(source);
-        }
+    public static final Creator<PaymentPassData> CREATOR =
+            new Creator<PaymentPassData>() {
+                @Override
+                public PaymentPassData createFromParcel(Parcel source) {
+                    return new PaymentPassData(source);
+                }
 
-        @Override
-        public PaymentPassData[] newArray(int size) {
-            return new PaymentPassData[size];
-        }
-    };
+                @Override
+                public PaymentPassData[] newArray(int size) {
+                    return new PaymentPassData[size];
+                }
+            };
 }

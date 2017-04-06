@@ -48,6 +48,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
         return intent;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +108,7 @@ public class TopPayActivity extends Activity implements ITopPayView {
     }
 
     private void initView() {
-        setContentView(R.layout.scrooge_payment);
+        setContentView(R.layout.activity_top_pay_payment_module);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         btnBack = findViewById(R.id.btn_back);
         btnClose = findViewById(R.id.btn_close);

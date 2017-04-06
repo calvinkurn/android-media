@@ -119,6 +119,7 @@ public class ScroogeWebView extends WebView {
             view.stopLoading();
         }
 
+        @SuppressWarnings("deprecation")
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
             return super.shouldInterceptRequest(view, url);
