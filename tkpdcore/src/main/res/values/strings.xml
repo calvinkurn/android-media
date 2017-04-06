@@ -1909,5 +1909,6 @@ di Tokopedia Sekarang!</string>
     <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
+    <string name="label_buyer_trouble">Kendala Pembeli</string>
 
 </resources>
