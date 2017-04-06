@@ -23,7 +23,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.otp.data.factory.OtpSourceFactory;
 import com.tokopedia.core.otp.data.repository.OtpRepositoryImpl;
@@ -238,17 +237,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void renderErrorNoConnectionReRequestSmsOtp(String messageErrorNoConnection) {
-        View view = findViewById(android.R.id.content);
-        if (view != null)
-            NetworkErrorHelper.showEmptyState(
-                    this, view, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.processReRequestSmsOtp();
-                        }
-                    }
-            );
-        else showToastMessage(messageErrorNoConnection);
+        showToastMessage(messageErrorNoConnection);
     }
 
     @Override
@@ -281,17 +270,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void renderErrorNoConnectionFirstRequestSmsOtp(String messageErrorNoConnection) {
-        View view = findViewById(android.R.id.content);
-        if (view != null)
-            NetworkErrorHelper.showEmptyState(
-                    this, view, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.processFirstRequestSmsOtp();
-                        }
-                    }
-            );
-        else showToastMessage(messageErrorNoConnection);
+        closeWithResultOtpCanceled(messageErrorNoConnection);
     }
 
     @Override
@@ -324,17 +303,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void renderErrorNoConnectionRequestCallOtp(String messageErrorNoConnection) {
-        View view = findViewById(android.R.id.content);
-        if (view != null)
-            NetworkErrorHelper.showEmptyState(
-                    this, view, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.processRequestCallOtp();
-                        }
-                    }
-            );
-        else showToastMessage(messageErrorNoConnection);
+        showToastMessage(messageErrorNoConnection);
     }
 
     @Override
@@ -363,17 +332,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void renderErrorNoConnectionVerifyOtp(String messageErrorNoConnection) {
-        View view = findViewById(android.R.id.content);
-        if (view != null)
-            NetworkErrorHelper.showEmptyState(
-                    this, view, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.processVerifyOtp();
-                        }
-                    }
-            );
-        else showToastMessage(messageErrorNoConnection);
+        showToastMessage(messageErrorNoConnection);
     }
 
     @Override
@@ -518,6 +477,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         finish();
     }
 
+    @SuppressWarnings("unused")
     private void closeWithResultOtpUnVerified(String message) {
         Intent intent = new Intent().putExtra(EXTRA_MESSAGE, message);
         setResult(RESULT_OTP_UNVERIFIED, intent);

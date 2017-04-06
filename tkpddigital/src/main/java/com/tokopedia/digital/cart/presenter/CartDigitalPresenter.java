@@ -151,6 +151,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 view.hideProgressLoading();
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
@@ -326,7 +327,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 } else {
                     view.renderAddToCartData(cartDigitalInfoData);
                 }
-                //  view.renderCartDigitalInfoData(cartDigitalInfoData);
             }
         };
     }

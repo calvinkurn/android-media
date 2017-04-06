@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
@@ -433,14 +434,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionCheckVoucher(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                message, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.processCheckVoucher();
-                    }
-                }
-        ).showRetrySnackbar();
+        showSnackBarAlert(message);
+    }
+
+    private void showSnackBarAlert(String message) {
+        View view = getView();
+        if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -468,13 +469,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionCheckout(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.processToCheckout();
-                    }
-                }).showRetrySnackbar();
+        showSnackBarAlert(message);
     }
 
     @Override
@@ -503,13 +498,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorNoConnectionInstantCheckout(String message) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.processToInstantCheckout();
-                    }
-                }).showRetrySnackbar();
+        closeViewWithMessageAlert(message);
     }
 
     @Override
