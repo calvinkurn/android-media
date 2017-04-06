@@ -72,22 +72,22 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
         return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
             @Override
             public void onSkipVerification() {
-                setIntentTarget();
+                setIntentTarget(Activity.RESULT_CANCELED);
             }
 
 
             @Override
             public void onSuccessVerification() {
-                setIntentTarget();
+                setIntentTarget(Activity.RESULT_OK);
             }
         };
     }
 
-    private void setIntentTarget() {
+    private void setIntentTarget(int result) {
         if (isTaskRoot()) {
             goToManageProfile();
         } else {
-            setResult(Activity.RESULT_CANCELED);
+            setResult(result);
             finish();
         }
     }

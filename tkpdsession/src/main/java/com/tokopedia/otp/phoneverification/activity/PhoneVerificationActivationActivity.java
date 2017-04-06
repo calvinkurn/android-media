@@ -73,17 +73,17 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
         return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
             @Override
             public void onSkipVerification() {
-                setIntentTarget();
+                setIntentTarget(Activity.RESULT_CANCELED);
             }
 
             @Override
             public void onSuccessVerification() {
-                setIntentTarget();
+                setIntentTarget(Activity.RESULT_OK);
             }
         };
     }
 
-    private void setIntentTarget() {
+    private void setIntentTarget(int result) {
         if (isTaskRoot()
                 && GlobalConfig.isSellerApp()
                 && isHasShop()) {
@@ -94,7 +94,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
         } else if (isTaskRoot()) {
             goToConsumerHome();
         } else {
-            setResult(Activity.RESULT_OK);
+            setResult(result);
             finish();
         }
     }
