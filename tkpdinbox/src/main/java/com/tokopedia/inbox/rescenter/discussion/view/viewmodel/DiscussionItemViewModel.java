@@ -2,6 +2,9 @@ package com.tokopedia.inbox.rescenter.discussion.view.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.Spanned;
+
+import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,8 +55,8 @@ public class DiscussionItemViewModel implements Parcelable{
         }
     };
 
-    public String getMessage() {
-        return message;
+    public Spanned getMessage() {
+        return MethodChecker.fromHtml(message);
     }
 
     public void setMessage(String message) {
