@@ -116,7 +116,7 @@ public class MyDiscussionDataBinder extends DataBinder<MyDiscussionDataBinder.Vi
     private void openProductPreview(ArrayList<AttachmentViewModel> list, int position) {
         ArrayList<String> imageUrls = new ArrayList<>();
         for (AttachmentViewModel model : list) {
-            imageUrls.add(model.getImgThumb());
+            imageUrls.add(model.getImgLarge());
         }
         Intent intent = new Intent(context, PreviewProductImage.class);
         Bundle bundle = new Bundle();

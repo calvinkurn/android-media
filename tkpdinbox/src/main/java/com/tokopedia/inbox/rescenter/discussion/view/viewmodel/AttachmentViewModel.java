@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class AttachmentViewModel implements Parcelable{
 
     String imgThumb;
+    String imgLarge;
     String url;
     private String fileLoc;
 
@@ -20,6 +21,7 @@ public class AttachmentViewModel implements Parcelable{
         imgThumb = in.readString();
         url = in.readString();
         fileLoc = in.readString();
+        imgLarge = in.readString();
     }
 
     public static final Creator<AttachmentViewModel> CREATOR = new Creator<AttachmentViewModel>() {
@@ -58,6 +60,14 @@ public class AttachmentViewModel implements Parcelable{
         this.fileLoc = fileLoc;
     }
 
+    public String getImgLarge() {
+        return imgLarge;
+    }
+
+    public void setImgLarge(String imgLarge) {
+        this.imgLarge = imgLarge;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -68,5 +78,7 @@ public class AttachmentViewModel implements Parcelable{
         dest.writeString(imgThumb);
         dest.writeString(url);
         dest.writeString(fileLoc);
+        dest.writeString(imgLarge);
+
     }
 }

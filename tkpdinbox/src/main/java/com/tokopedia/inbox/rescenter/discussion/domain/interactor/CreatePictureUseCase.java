@@ -115,17 +115,4 @@ public class CreatePictureUseCase extends UseCase<CreatePictureModel> {
         return requestBodyMap;
     }
 
-    private RequestBody getUploadImageFile(RequestParams requestParams) {
-        File file = null;
-        try {
-            file = ImageUploadHandler.writeImageToTkpdPath(
-                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
-            );
-        } catch (IOException e) {
-            throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
-        }
-        return RequestBody.create(MediaType.parse("image/*"),
-                file);
-    }
-
 }

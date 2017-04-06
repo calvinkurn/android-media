@@ -187,6 +187,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         for (AttachmentData attachmentData : listAttachment) {
             AttachmentViewModel attachmentViewModel = new AttachmentViewModel();
             attachmentViewModel.setImgThumb(attachmentData.getFileUrl());
+            attachmentViewModel.setImgLarge(attachmentData.getRealFileUrl());
             list.add(attachmentViewModel);
         }
 
