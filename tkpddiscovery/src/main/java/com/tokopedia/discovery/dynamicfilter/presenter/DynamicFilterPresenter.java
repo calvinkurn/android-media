@@ -28,6 +28,7 @@ public interface DynamicFilterPresenter {
     String EXTRA_FILTER_CATEGORY_LIST = "EXTRA_FILTER_CATEGORY_LIST";
     String EXTRA_FILTER_SOURCE = "EXTRA_FILTER_SOURCE";
     String EXTRA_FROM_CATEGORY = "EXTRA_FROM_CATEGORY";
+    String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
 
     void fetchExtras(Intent intent);
 
@@ -36,4 +37,6 @@ public interface DynamicFilterPresenter {
     List<Filter> getFilterCategory();
 
     String getCurrentCategory();
+
+    String getDepartmentId();
 }
