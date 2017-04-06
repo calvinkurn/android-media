@@ -11,9 +11,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.seller.product.utils.ConverterUtils;
 
 /**
  * Created by nathan on 04/05/17.
@@ -28,8 +26,6 @@ public class SpinnerTextView extends FrameLayout {
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selection;
-
-    private ArrayAdapter<String> adapter;
 
     public SpinnerTextView(Context context) {
         super(context);
@@ -63,11 +59,8 @@ public class SpinnerTextView extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         textInputLayout.setHint(hintText);
-        if (entries != null) {
-            adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, convert(entries));
-            textAutoComplete.setAdapter(adapter);
-            textAutoComplete.setListSelection(selection);
-        }
+        updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+        textAutoComplete.setListSelection(selection);
         invalidate();
         requestLayout();
     }
@@ -92,6 +85,20 @@ public class SpinnerTextView extends FrameLayout {
         requestLayout();
     }
 
+    public void setEntries(String[] entries) {
+        updateEntries(entries);
+        invalidate();
+        requestLayout();
+    }
+
+    private void updateEntries(String[] entries) {
+        if (entries != null) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, entries);
+            textAutoComplete.setAdapter(adapter);
+            textAutoComplete.setListSelection(selection);
+        }
+    }
+
     private int getSelectionIndex() {
         String text = textAutoComplete.getText().toString();
         for (int i = 0; i < entries.length; i++) {
@@ -103,11 +110,4 @@ public class SpinnerTextView extends FrameLayout {
         return -1;
     }
 
-    private List<String> convert(CharSequence[] charSequenceArray) {
-        List<String> list = new ArrayList<>();
-        for (CharSequence charSequence: charSequenceArray) {
-            list.add(charSequence.toString());
-        }
-        return list;
-    }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/LabelLayoutWithoutBorder"
+    android:gravity="bottom"
+    android:orientation="horizontal">
+
+    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+        android:id="@+id/spinner_text_view_count"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout_count"
+        style="@style/TextInputLayout"
+        android:layout_width="0dp"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginStart="@dimen/margin_vs"
+        android:layout_weight="4">
+
+        <EditText
+            android:id="@+id/edit_text_count"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:inputType="number"
+            android:text="@string/product_default_count_text" />
+
+    </android.support.design.widget.TextInputLayout>
+</LinearLayout>

@@ -158,4 +158,11 @@
         <attr name="spinner_entries" format="reference"/>
         <attr name="spinner_values" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="SpinnerCountInputView">
+        <attr name="spinner_count_entries" format="reference"/>
+        <attr name="spinner_count_values" format="reference"/>
+        <attr name="spinner_count_selection" format="integer"/>
+        <attr name="spinner_count_hint" format="string"/>
+    </declare-styleable>
 </resources>
