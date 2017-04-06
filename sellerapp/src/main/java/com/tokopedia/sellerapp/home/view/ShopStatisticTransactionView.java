@@ -7,9 +7,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopTxStats;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopTxStats;
 
 import java.util.HashMap;
 import java.util.Map;

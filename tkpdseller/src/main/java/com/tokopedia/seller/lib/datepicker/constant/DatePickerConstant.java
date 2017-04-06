@@ -22,6 +22,7 @@ public class DatePickerConstant {
     public static final String EXTRA_MAX_DATE_RANGE = "EXTRA_MAX_DATE_RANGE";
     public static final String EXTRA_DATE_PERIOD_LIST = "EXTRA_DATE_PERIOD_LIST";
     public static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
+    public static final String EXTRA_FORCE_DISPLAY_SELECTION = "EXTRA_FORCE_DISPLAY_SELECTION";
 
     public static final int SELECTION_TYPE_PERIOD_DATE = 0;
     public static final int SELECTION_TYPE_CUSTOM_DATE = 1;

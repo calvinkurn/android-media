@@ -12,14 +12,15 @@ import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.SellerMainApplication;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
 import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 import java.util.List;
 
@@ -285,18 +286,19 @@ public class ShopController extends BaseController{
         }
     }
 
-    public interface ListenerGetTicker{
-        void onSuccess(Ticker.Tickers[] tickers);
-        void onError();
-    }
-
-    private Observable<Response<Ticker>> getTicker(){
+    private Observable<Response<Ticker>> getTicker() {
         TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
 
         return tickerApiSeller.getTickers(
                 SessionHandler.getLoginID(SellerMainApplication.getAppContext()),
                 TickerApiSeller.size,
                 TickerApiSeller.FILTER_SELLERAPP_ANDROID_DEVICE);
+    }
+
+    public interface ListenerGetTicker {
+        void onSuccess(Ticker.Tickers[] tickers);
+
+        void onError();
     };
 
 }
