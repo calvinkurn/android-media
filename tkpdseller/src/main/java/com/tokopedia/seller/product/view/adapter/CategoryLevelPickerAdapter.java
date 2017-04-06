@@ -44,9 +44,7 @@ public class CategoryLevelPickerAdapter extends BaseLinearRecyclerViewAdapter {
                 break;
             default:
                 super.onBindViewHolder(holder, position);
-
         }
-
     }
 
     @Override
