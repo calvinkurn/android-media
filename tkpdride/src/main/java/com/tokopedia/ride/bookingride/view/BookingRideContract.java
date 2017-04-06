@@ -70,5 +70,7 @@ public interface BookingRideContract {
         void actionMyLocation();
 
         void handleEnableLocationDialogResult(int resultCode);
+
+        void actionMapDragStopped(double latitude, double longitude);
     }
 }

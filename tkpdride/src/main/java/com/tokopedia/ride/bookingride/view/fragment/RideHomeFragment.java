@@ -300,8 +300,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         if (!isAlreadySelectDestination) {
             double latitude = mGoogleMap.getCameraPosition().target.latitude;
             double longitude = mGoogleMap.getCameraPosition().target.longitude;
-            String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getActivity(), latitude, longitude);
-            renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+            mPresenter.actionMapDragStopped(latitude, longitude);
         }
         //animate marker to lift down
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();

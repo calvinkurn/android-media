@@ -40,6 +40,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -424,19 +425,41 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionAutoDetectLocation() {
         if (mCurrentLocation != null) {
-            String currentAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                    mCurrentLocation.getLatitude(),
-                    mCurrentLocation.getLongitude()
-            );
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    try {
+                        subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                                mCurrentLocation.getLatitude(),
+                                mCurrentLocation.getLongitude()
+                        ));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+                    }
+                }
+            }).subscribe(new Subscriber<String>() {
+                @Override
+                public void onCompleted() {
 
-            PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-            placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
-            placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
-            placePassViewModel.setTitle(currentAddress);
-            //placePassViewModel.setPlaceId(mCurrentLocation);
-            placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
-            placePassViewModel.setAddress(currentAddress);
-            getView().onPlaceSelectedFound(placePassViewModel);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                }
+
+                @Override
+                public void onNext(String currentAddress) {
+                    PlacePassViewModel placePassViewModel = new PlacePassViewModel();
+                    placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
+                    placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
+                    placePassViewModel.setTitle(currentAddress);
+                    //placePassViewModel.setPlaceId(mCurrentLocation);
+                    placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
+                    placePassViewModel.setAddress(currentAddress);
+                    getView().onPlaceSelectedFound(placePassViewModel);
+                }
+            });
         } else {
             getView().showMessage("Location not setted");
         }

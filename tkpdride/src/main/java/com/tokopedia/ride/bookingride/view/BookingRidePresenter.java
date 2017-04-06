@@ -38,6 +38,7 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -197,14 +198,41 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
         //set source as current location
-        String sourceAddress = GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivityContext(), mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        PlacePassViewModel placeVm = new PlacePassViewModel();
-        placeVm.setAddress(sourceAddress);
-        placeVm.setLatitude(mCurrentLocation.getLatitude());
-        placeVm.setLongitude(mCurrentLocation.getLongitude());
-        placeVm.setTitle(sourceAddress);
-        placeVm.setType(PlacePassViewModel.TYPE.OTHER);
-        getView().setSourceLocation(placeVm);
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                            mCurrentLocation.getLatitude(),
+                            mCurrentLocation.getLongitude()
+                    ));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+                }
+            }
+        }).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String sourceAddress) {
+                PlacePassViewModel placeVm = new PlacePassViewModel();
+                placeVm.setAddress(sourceAddress);
+                placeVm.setLatitude(mCurrentLocation.getLatitude());
+                placeVm.setLongitude(mCurrentLocation.getLongitude());
+                placeVm.setTitle(sourceAddress);
+                placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+                getView().setSourceLocation(placeVm);
+            }
+        });
+
     }
 
     public Location getFuzedLocation() {
@@ -353,5 +381,37 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
     public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
         return Observable.create(new PendingResultObservable<>(result));
+    }
+
+    @Override
+    public void actionMapDragStopped(final double latitude, final double longitude) {
+        Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                try {
+                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+                            latitude,
+                            longitude
+                    ));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    subscriber.onNext(String.valueOf(latitude) + ", " + String.valueOf(longitude));
+                }
+            }
+        }).subscribe(new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String sourceAddress) {
+                getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+            }
+        });
     }
 }
