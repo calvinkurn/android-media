@@ -277,7 +277,14 @@
     <string name="deadline">Jatuh Tempo</string>
     <string name="highest_transaction_price">Nilai Transaksi Tertinggi</string>
     <string name="lowest_transaction_price">Nilai Transaksi Terendah</string>
-    <string name="message_dialog_accept_oppurtunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli</string>
+    <string name="message_dialog_accept_opportunity">Dengan klik tombol “Setuju” anda menyetujui bahwa barang yang akan anda kirim sesuai dengan pesanan pembeli</string>
     <string name="action_agree">Setuju</string>
     <string name="action_back">Kembali</string>
+    <string name="title_opportunity_detail">Peluang Baru</string>
+    <string name="cashback">Cashback :</string>
+    <string name="respond_deadline">Batas Respon :</string>
+    <string name="destination_city">Kota Tujuan :</string>
+    <string name="shipping">Pengiriman :</string>
+    <string name="title_quantity">Jumlah :</string>
+    <string name="item">barang</string>
 </resources>

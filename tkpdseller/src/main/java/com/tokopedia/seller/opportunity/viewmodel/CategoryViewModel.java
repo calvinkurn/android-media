@@ -9,7 +9,10 @@ import java.util.List;
 public class CategoryViewModel {
     int categoryId;
     String categoryName;
+    int parent;
+    int isHidden;
     int treeLevel;
+    String identifier;
     List<CategoryViewModel> listChild;
 
     public int getCategoryId() {
@@ -42,5 +45,29 @@ public class CategoryViewModel {
 
     public void setListChild(List<CategoryViewModel> listChild) {
         this.listChild = listChild;
+    }
+
+    public int getParent() {
+        return parent;
+    }
+
+    public void setParent(int parent) {
+        this.parent = parent;
+    }
+
+    public int getIsHidden() {
+        return isHidden;
+    }
+
+    public void setIsHidden(int isHidden) {
+        this.isHidden = isHidden;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 }

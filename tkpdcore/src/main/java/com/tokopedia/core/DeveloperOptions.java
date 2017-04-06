@@ -25,6 +25,7 @@ import com.tokopedia.core.network.TkpdNetworkURLHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -68,7 +69,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
 
         vGoTochuck = (TextView) findViewById(R.id.goto_chuck);
         toggleChuck = (CheckBox) findViewById(R.id.toggle_chuck);
-
+        vCustomIntent = (TextView) findViewById(R.id.custom_intent);
         initListener();
         initView();
 
@@ -126,6 +127,14 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
             @Override
             public void oneOnClick(View view) {
                 startActivity(Chuck.getLaunchIntent(getApplicationContext()));
+            }
+        });
+        vCustomIntent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = SellerRouter.getActivitySellingTransaction(DeveloperOptions.this);
+                intent.putExtra("tab", 5);
+                startActivity(intent);
             }
         });
 

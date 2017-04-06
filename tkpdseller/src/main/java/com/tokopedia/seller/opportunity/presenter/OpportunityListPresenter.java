@@ -9,11 +9,7 @@ import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 public interface OpportunityListPresenter {
     void getOpportunity();
 
-    void loadMore();
-
-    void onRefresh();
-
-    void onDestroyView();
+    void unsubscribeObservable();
 
     void setParamQuery(String query);
 
@@ -24,4 +20,6 @@ public interface OpportunityListPresenter {
     void getParamShippingType(String shippingParam);
 
     GetOpportunityListParam getPass();
+
+    void getFilter();
 }

@@ -671,7 +671,7 @@ public class TkpdBaseURL {
     public static class Replacement {
         public static final String URL_REPLACEMENT = BASE_ORDER_APP + "";
         public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/opportunity_list";
-        public static final String PATH_GET_CATEGORY = "v1/order/replacement/category_list";
+        public static final String PATH_GET_CATEGORY = "v4/order/replacement/category_list";
 
 
         public static final String PATH_ACCEPT_REPLACEMENT = "asd";

@@ -15,41 +15,44 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-import com.tokopedia.seller.opportunity.customview.OppurtunityDetailButtonView;
-import com.tokopedia.seller.opportunity.customview.OppurtunityDetailProductView;
-import com.tokopedia.seller.opportunity.customview.OppurtunityDetailStatusView;
-import com.tokopedia.seller.opportunity.customview.OppurtunityDetailSummaryView;
-import com.tokopedia.seller.opportunity.listener.OppurtunityView;
+import com.tokopedia.seller.opportunity.OpportunityDetailActivity;
+import com.tokopedia.seller.opportunity.customview.OpportunityDetailButtonView;
+import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
+import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;
+import com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView;
+import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
-import com.tokopedia.seller.opportunity.presenter.OppurtunityImpl;
-import com.tokopedia.seller.opportunity.presenter.OppurtunityPresenter;
-
-import butterknife.BindView;
+import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
+import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
 /**
  * Created by hangnadi on 2/27/17.
  */
 
-public class OppurtunityDetailFragment extends BasePresenterFragment<OppurtunityPresenter>
-        implements OppurtunityView {
+public class OpportunityDetailFragment extends BasePresenterFragment<OpportunityPresenter>
+        implements OpportunityView {
 
     private static final int STATUS_SUCCESS = 1900;
     private static final int STATUS_ERROR_MESSAGE = 1901;
     private static final int STATUS_ERROR_NETWORK = 1902;
     private static final int STATUS_ERROR_UNKNOWN = 1903;
     private static final int STATUS_TIMEOUT = 1904;
+    private static final int RESULT_DELETED = 8881;
 
-    @BindView(R2.id.customview_oppurtunity_detail_button_view)
-    OppurtunityDetailButtonView buttonView;
-    @BindView(R2.id.customview_oppurtunity_detail_status_view)
-    OppurtunityDetailStatusView statusView;
-    @BindView(R2.id.customview_oppurtunity_detail_product_view)
-    OppurtunityDetailProductView productView;
-    @BindView(R2.id.customview_oppurtunity_detail_summary_view)
-    OppurtunityDetailSummaryView summaryView;
+    OpportunityDetailButtonView buttonView;
+    OpportunityDetailStatusView statusView;
+    OpportunityDetailProductView productView;
+    OpportunityDetailSummaryView summaryView;
 
     private ActionViewData actionViewData;
+    private OpportunityItemViewModel data;
+
+    public static Fragment createInstance(Bundle bundle) {
+        OpportunityDetailFragment fragment = new OpportunityDetailFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public ActionViewData getActionViewData() {
@@ -61,18 +64,19 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
         this.actionViewData = actionViewData;
     }
 
-    public OppurtunityDetailFragment() {
+    public OpportunityDetailFragment() {
     }
 
     @Override
     public void onActionDeleteClicked() {
-
+        getActivity().setResult(RESULT_DELETED);
+        getActivity().finish();
     }
 
     @Override
-    public void onActionSubmitClicked() {
+    public void onActionConfirmClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.message_dialog_accept_oppurtunity);
+        builder.setMessage(R.string.message_dialog_accept_opportunity);
         builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -96,12 +100,6 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
         startActivity(SnapShotProduct.createIntent(getActivity(), productId));
     }
 
-    public static Fragment createInstance() {
-        OppurtunityDetailFragment fragment = new OppurtunityDetailFragment();
-        Bundle bundle = new Bundle();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -130,7 +128,7 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
 
     @Override
     protected void initialPresenter() {
-        presenter = new OppurtunityImpl(getActivity(), this);
+        presenter = new OpportunityImpl(getActivity(), this);
     }
 
     @Override
@@ -145,13 +143,29 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_oppurtunity_detail;
+        return R.layout.fragment_opportunity_detail;
     }
 
     @Override
     protected void initView(View view) {
+        buttonView = (OpportunityDetailButtonView)
+                view.findViewById(R.id.customview_opportunity_detail_button_view);
+        statusView = (OpportunityDetailStatusView)
+                view.findViewById(R.id.customview_opportunity_detail_status_view);
+        productView = (OpportunityDetailProductView)
+                view.findViewById(R.id.customview_opportunity_detail_product_view);
+        summaryView = (OpportunityDetailSummaryView)
+                view.findViewById(R.id.customview_opportunity_detail_summary_view);
 
+        data = getArguments().getParcelable(OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
+        if (data != null) {
+            statusView.renderData(data);
+            productView.renderData(data);
+            summaryView.renderData(data);
+            buttonView.renderData(data);
+        }
     }
+
 
     @Override
     protected void setViewListener() {
@@ -172,7 +186,7 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
     }
 
     @Override
-    public void setOnAcceptOppurtunityComplete() {
+    public void setOnAcceptOpportunityComplete() {
         switch (generateActionStatus()) {
             case STATUS_SUCCESS:
                 setOnActionSuccess();
@@ -192,6 +206,11 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
             default:
                 break;
         }
+    }
+
+    @Override
+    public String getOpportunityId() {
+        return data.getOrderOrderId();
     }
 
     private void setOnActionSuccess() {
@@ -248,7 +267,7 @@ public class OppurtunityDetailFragment extends BasePresenterFragment<Oppurtunity
                     return STATUS_TIMEOUT;
                 } else if (actionViewData.getMessageError() == null) {
                     return STATUS_ERROR_MESSAGE;
-                } else if (actionViewData.getErrorCode() == 0){
+                } else if (actionViewData.getErrorCode() == 0) {
                     return STATUS_ERROR_NETWORK;
                 }
             }

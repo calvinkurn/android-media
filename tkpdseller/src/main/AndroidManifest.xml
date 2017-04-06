@@ -17,7 +17,8 @@
         <activity
             android:name=".selling.view.activity.ActivitySellingTransaction"
             android:label="@string/title_activity_shop_transaction_new"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".OrderHistoryView"
             android:label="@string/title_activity_order_history_view"
@@ -176,6 +177,11 @@
             android:name=".opportunity.OpportunityFilterActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".opportunity.OpportunityDetailActivity"
+            android:label="@string/title_opportunity_detail"
+            android:screenOrientation="portrait" />
+
         <service
             android:name=".myproduct.service.ProductService"
             android:exported="false" />
@@ -197,7 +203,7 @@
         <activity
             android:name=".topads.view.activity.TopAdsAddProductListActivity"
             android:label="@string/title_activity_top_ads_list"
-            android:theme="@style/Theme.Tokopedia3"/>
+            android:theme="@style/Theme.Tokopedia3" />
 
         <service
             android:name="com.tokopedia.seller.selling.SellingService"

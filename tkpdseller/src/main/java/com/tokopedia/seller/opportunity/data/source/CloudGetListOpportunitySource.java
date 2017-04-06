@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
@@ -27,6 +28,8 @@ public class CloudGetListOpportunitySource {
     }
 
     public Observable<OpportunityModel> getOpportunityList(TKPDMapParam<String, Object> params) {
-        return opportunityService.getApi().getOpportunityList(params).map(mapper);
+        return opportunityService.getApi()
+                .getOpportunityList(AuthUtil.generateParamsNetwork2(context, params))
+                .map(mapper);
     }
 }

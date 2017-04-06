@@ -14,19 +14,21 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.OpportunitySortActivity;
-import com.tokopedia.seller.opportunity.OppurtunityDetailActivity;
+import com.tokopedia.seller.opportunity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityListPageViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
 
 import java.util.ArrayList;
 
@@ -44,20 +46,23 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
-    private static final int REQUEST_CODE_OPPURTUNITY_DETAIL = 2017;
+    private static final int REQUEST_CODE_OPPORTUNITY_DETAIL = 2017;
 
     private static final int DEFAULT_CATEGORY_SELECTED = 1;
     RecyclerView opportunityList;
     TextView headerInfo;
     SearchView searchView;
+    View footer;
     View filterButton;
     View sortButton;
 
-    OpportunityListAdapter adapter;
-    LinearLayoutManager layoutManager;
-    RefreshHandler refreshHandler;
+    private OpportunityListAdapter adapter;
+    private LinearLayoutManager layoutManager;
+    private RefreshHandler refreshHandler;
+    private LocalCacheHandler cacheHandler;
+    private PagingHandler pagingHandler;
 
-    LocalCacheHandler cacheHandler;
+    OpportunityFilterViewModel filterData;
 
     public static Fragment newInstance() {
         return new OpportunityListFragment();
@@ -69,9 +74,20 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+
+        } else {
+            filterData = new OpportunityFilterViewModel();
+        }
+    }
+
+    @Override
     protected void onFirstTimeLaunched() {
         KeyboardHandler.DropKeyboard(getActivity(), searchView);
         presenter.getOpportunity();
+        presenter.getFilter();
     }
 
     @Override
@@ -91,8 +107,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialPresenter() {
-        presenter = new OpportunityListPresenterImpl(this
-        );
+        presenter = new OpportunityListPresenterImpl(this);
     }
 
     @Override
@@ -117,6 +132,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         searchView = (SearchView) view.findViewById(R.id.search);
         filterButton = view.findViewById(R.id.filter);
         sortButton = view.findViewById(R.id.sort);
+        footer = view.findViewById(R.id.footer);
 
         adapter = OpportunityListAdapter.createInstance(onGoToDetail());
         layoutManager = new LinearLayoutManager(getActivity());
@@ -141,7 +157,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                presenter.onRefresh();
+                pagingHandler.resetPage();
+                presenter.getOpportunity();
             }
         };
     }
@@ -150,12 +167,15 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new OpportunityListAdapter.OpportunityListener() {
             @Override
             public void goToDetail(OpportunityItemViewModel opportunityItemViewModel) {
-                Intent intent = OppurtunityDetailActivity.createIntent(getActivity(), opportunityItemViewModel);
-                startActivityForResult(intent, REQUEST_CODE_OPPURTUNITY_DETAIL);
+                Intent intent = OpportunityDetailActivity.createIntent(getActivity(), opportunityItemViewModel);
+                startActivityForResult(intent, REQUEST_CODE_OPPORTUNITY_DETAIL);
             }
         };
     }
 
+    private boolean hasNextPage() {
+        return pagingHandler.CheckNextPage();
+    }
 
     @Override
     protected void setViewListener() {
@@ -168,8 +188,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 if (!refreshHandler.isRefreshing()
                         && adapter.getList().size() != 0
                         && lastItemPosition == visibleItem
-                        && !adapter.isLoading())
-                    presenter.loadMore();
+                        && !adapter.isLoading()
+                        && hasNextPage())
+                    presenter.getOpportunity();
             }
         });
 
@@ -195,7 +216,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialVar() {
-
+        pagingHandler = new PagingHandler();
     }
 
     @Override
@@ -214,20 +235,29 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     @Override
-    public void onSuccessGetOpportunity(OpportunityListPageViewModel viewModel) {
+    public void onSuccessGetOpportunity(OpportunityViewModel viewModel) {
+        setPaging(viewModel.getPagingHandlerModel());
         finishLoadingList();
         finishRefresh();
-        adapter.setList(viewModel.getOpportunityViewModel().getListOpportunity());
-
-        setFooter(viewModel);
+        adapter.showEmpty(false);
+        adapter.setList(viewModel.getListOpportunity());
+        if (adapter.getList().size() == 0) {
+            adapter.showEmptyFull(true);
+        }
     }
 
-    private void setFooter(OpportunityListPageViewModel viewModel) {
-        setFilter(viewModel);
-        setSort(viewModel);
+    private void setPaging(PagingHandler.PagingHandlerModel pagingModel) {
+        if (pagingHandler.getPage() == 1) {
+            adapter.getList().clear();
+        }
+        pagingHandler.setHasNext(checkHasNext(pagingModel));
     }
 
-    private void setSort(OpportunityListPageViewModel viewModel) {
+    private boolean checkHasNext(PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        return !pagingHandlerModel.getUriNext().equals("0") && !pagingHandlerModel.getUriNext().equals("");
+    }
+
+    private void setSort(OpportunityFilterViewModel viewModel) {
 
         final ArrayList<String> listSort = new ArrayList<>();
         for (SortingTypeViewModel sortItem : viewModel.getListSortingType()) {
@@ -245,7 +275,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     }
 
-    private void setFilter(OpportunityListPageViewModel viewModel) {
+    private void setFilter(OpportunityFilterViewModel viewModel) {
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -309,6 +339,38 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return "";
     }
 
+    @Override
+    public boolean isFilterEmpty() {
+        return filterData != null
+                && (
+                (filterData.getListCategory() == null || (filterData != null && filterData.getListCategory().size() == 0))
+                        || (filterData.getListSortingType() == null || (filterData != null && filterData.getListSortingType().size() == 0))
+                        || (filterData.getListShippingType() == null || (filterData != null && filterData.getListShippingType().size() == 0))
+        );
+    }
+
+    @Override
+    public int getPage() {
+        return pagingHandler.getPage();
+    }
+
+    @Override
+    public void onSuccessGetFilter(OpportunityFilterViewModel opportunityFilterViewModel) {
+        footer.setVisibility(View.VISIBLE);
+        setFilter(opportunityFilterViewModel);
+        setSort(opportunityFilterViewModel);
+    }
+
+    @Override
+    public void onErrorGetFilter(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getFilter();
+            }
+        }).showRetrySnackbar();
+    }
+
     private void finishLoadingList() {
         if (adapter.isLoading()) {
             adapter.showLoading(false);
@@ -338,7 +400,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.onDestroyView();
+        presenter.unsubscribeObservable();
         cacheHandler = null;
     }
 

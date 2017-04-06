@@ -5,11 +5,11 @@ import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 /**
  * Created by hangnadi on 2/27/17.
  */
-public interface OppurtunityView {
+public interface OpportunityView {
 
     void onActionDeleteClicked();
 
-    void onActionSubmitClicked();
+    void onActionConfirmClicked();
 
     void onActionSeeDetailProduct(String productId);
 
@@ -17,6 +17,7 @@ public interface OppurtunityView {
 
     void setActionViewData(ActionViewData actionViewData);
 
-    void setOnAcceptOppurtunityComplete();
+    void setOnAcceptOpportunityComplete();
 
+    String getOpportunityId();
 }

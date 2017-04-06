@@ -1,9 +1,12 @@
 package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nisie on 3/7/17.
  */
-public class OrderDetailViewModel {
+public class OrderDetailViewModel implements Parcelable{
 
     private String detailInsurancePrice;
     private String detailOpenAmount;
@@ -37,6 +40,56 @@ public class OrderDetailViewModel {
     private String detailPrintAddressUri;
     private String detailPdf;
     private int detailOrderStatus;
+
+    public OrderDetailViewModel() {
+    }
+
+    protected OrderDetailViewModel(Parcel in) {
+        detailInsurancePrice = in.readString();
+        detailOpenAmount = in.readString();
+        detailDropshipName = in.readString();
+        detailTotalAddFee = in.readString();
+        detailPartialOrder = in.readString();
+        detailQuantity = in.readInt();
+        detailProductPriceIdr = in.readString();
+        detailInvoice = in.readString();
+        detailShippingPriceIdr = in.readString();
+        detailFreeReturn = in.readString();
+        detailPdfPath = in.readString();
+        detailFreeReturnMsg = in.readString();
+        detailAdditionalFeeIdr = in.readString();
+        detailProductPrice = in.readString();
+        detailPreorder = in.readParcelable(DetailPreorderViewModel.class.getClassLoader());
+        detailCancelRequest = in.readParcelable(DetailCancelRequestViewModel.class.getClassLoader());
+        detailForceInsurance = in.readString();
+        detailOpenAmountIdr = in.readString();
+        detailAdditionalFee = in.readString();
+        detailDropshipTelp = in.readString();
+        detailOrderId = in.readInt();
+        detailTotalAddFeeIdr = in.readString();
+        detailOrderDate = in.readString();
+        detailShippingPrice = in.readString();
+        detailPayDueDate = in.readString();
+        detailTotalWeight = in.readString();
+        detailInsurancePriceIdr = in.readString();
+        detailPdfUri = in.readString();
+        detailShipRefNum = in.readString();
+        detailPrintAddressUri = in.readString();
+        detailPdf = in.readString();
+        detailOrderStatus = in.readInt();
+    }
+
+    public static final Creator<OrderDetailViewModel> CREATOR = new Creator<OrderDetailViewModel>() {
+        @Override
+        public OrderDetailViewModel createFromParcel(Parcel in) {
+            return new OrderDetailViewModel(in);
+        }
+
+        @Override
+        public OrderDetailViewModel[] newArray(int size) {
+            return new OrderDetailViewModel[size];
+        }
+    };
 
     public String getDetailInsurancePrice() {
         return detailInsurancePrice;
@@ -292,5 +345,46 @@ public class OrderDetailViewModel {
 
     public void setDetailOrderStatus(int detailOrderStatus) {
         this.detailOrderStatus = detailOrderStatus;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(detailInsurancePrice);
+        dest.writeString(detailOpenAmount);
+        dest.writeString(detailDropshipName);
+        dest.writeString(detailTotalAddFee);
+        dest.writeString(detailPartialOrder);
+        dest.writeInt(detailQuantity);
+        dest.writeString(detailProductPriceIdr);
+        dest.writeString(detailInvoice);
+        dest.writeString(detailShippingPriceIdr);
+        dest.writeString(detailFreeReturn);
+        dest.writeString(detailPdfPath);
+        dest.writeString(detailFreeReturnMsg);
+        dest.writeString(detailAdditionalFeeIdr);
+        dest.writeString(detailProductPrice);
+        dest.writeParcelable(detailPreorder, flags);
+        dest.writeParcelable(detailCancelRequest, flags);
+        dest.writeString(detailForceInsurance);
+        dest.writeString(detailOpenAmountIdr);
+        dest.writeString(detailAdditionalFee);
+        dest.writeString(detailDropshipTelp);
+        dest.writeInt(detailOrderId);
+        dest.writeString(detailTotalAddFeeIdr);
+        dest.writeString(detailOrderDate);
+        dest.writeString(detailShippingPrice);
+        dest.writeString(detailPayDueDate);
+        dest.writeString(detailTotalWeight);
+        dest.writeString(detailInsurancePriceIdr);
+        dest.writeString(detailPdfUri);
+        dest.writeString(detailShipRefNum);
+        dest.writeString(detailPrintAddressUri);
+        dest.writeString(detailPdf);
+        dest.writeInt(detailOrderStatus);
     }
 }

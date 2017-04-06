@@ -16,16 +16,16 @@ import rx.Observable;
 
 public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
 
-    public static final String USER_ID = "user_id";
     public static final String PER_PAGE = "per_page";
     public static final String PAGE = "page";
+    public static final String QUERY = "query";
     public static final String CAT_1 = "cat_1";
     public static final String CAT_2 = "cat_2";
     public static final String CAT_3 = "cat_3";
     public static final String SHIP_TYPE = "ship_type";
     public static final String ORDER_BY = "order_by";
-    public static final String DEVICE_ID = "device_id";
-    public static final String OS_TYPE = "os_type";
+
+    public static final String DEFAULT_PER_PAGE = "10";
 
     private final ReplacementRepository repository;
 

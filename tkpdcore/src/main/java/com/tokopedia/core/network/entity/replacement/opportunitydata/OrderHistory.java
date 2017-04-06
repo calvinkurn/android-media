@@ -17,7 +17,7 @@ public class OrderHistory {
     private String historyOrderStatus;
     @SerializedName("history_comments")
     @Expose
-    private int historyComments;
+    private String historyComments;
     @SerializedName("history_action_by")
     @Expose
     private String historyActionBy;
@@ -52,11 +52,11 @@ public class OrderHistory {
         this.historyOrderStatus = historyOrderStatus;
     }
 
-    public int getHistoryComments() {
+    public String getHistoryComments() {
         return historyComments;
     }
 
-    public void setHistoryComments(int historyComments) {
+    public void setHistoryComments(String historyComments) {
         this.historyComments = historyComments;
     }
 

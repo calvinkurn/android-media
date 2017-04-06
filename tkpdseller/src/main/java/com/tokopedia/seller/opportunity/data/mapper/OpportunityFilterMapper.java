@@ -1,7 +1,7 @@
 package com.tokopedia.seller.opportunity.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.replacement.OpportunityCategoryData;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
 

@@ -1,9 +1,12 @@
 package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nisie on 3/7/17.
  */
-public class OrderProductViewModel {
+public class OrderProductViewModel implements Parcelable{
 
     private int orderDeliverQuantity;
     private int productWeightUnit;
@@ -24,6 +27,43 @@ public class OrderProductViewModel {
     private int productRejectQuantity;
     private String productUrl;
     private String productName;
+
+    public OrderProductViewModel() {
+    }
+
+    protected OrderProductViewModel(Parcel in) {
+        orderDeliverQuantity = in.readInt();
+        productWeightUnit = in.readInt();
+        orderDetailId = in.readInt();
+        productStatus = in.readString();
+        productId = in.readInt();
+        productCurrentWeight = in.readString();
+        productPicture = in.readString();
+        productPrice = in.readString();
+        productDescription = in.readString();
+        productNormalPrice = in.readString();
+        productPriceCurrency = in.readString();
+        productNotes = in.readString();
+        orderSubtotalPrice = in.readString();
+        productQuantity = in.readInt();
+        productWeight = in.readString();
+        orderSubtotalPriceIdr = in.readString();
+        productRejectQuantity = in.readInt();
+        productUrl = in.readString();
+        productName = in.readString();
+    }
+
+    public static final Creator<OrderProductViewModel> CREATOR = new Creator<OrderProductViewModel>() {
+        @Override
+        public OrderProductViewModel createFromParcel(Parcel in) {
+            return new OrderProductViewModel(in);
+        }
+
+        @Override
+        public OrderProductViewModel[] newArray(int size) {
+            return new OrderProductViewModel[size];
+        }
+    };
 
     public int getOrderDeliverQuantity() {
         return orderDeliverQuantity;
@@ -175,5 +215,33 @@ public class OrderProductViewModel {
 
     public void setProductName(String productName) {
         this.productName = productName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(orderDeliverQuantity);
+        dest.writeInt(productWeightUnit);
+        dest.writeInt(orderDetailId);
+        dest.writeString(productStatus);
+        dest.writeInt(productId);
+        dest.writeString(productCurrentWeight);
+        dest.writeString(productPicture);
+        dest.writeString(productPrice);
+        dest.writeString(productDescription);
+        dest.writeString(productNormalPrice);
+        dest.writeString(productPriceCurrency);
+        dest.writeString(productNotes);
+        dest.writeString(orderSubtotalPrice);
+        dest.writeInt(productQuantity);
+        dest.writeString(productWeight);
+        dest.writeString(orderSubtotalPriceIdr);
+        dest.writeInt(productRejectQuantity);
+        dest.writeString(productUrl);
+        dest.writeString(productName);
     }
 }

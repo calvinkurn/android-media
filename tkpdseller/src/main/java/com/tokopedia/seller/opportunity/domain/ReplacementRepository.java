@@ -18,4 +18,7 @@ public interface ReplacementRepository {
 
     Observable<OpportunityCategoryModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters);
 
+    Observable<OpportunityCategoryModel> getOpportunityCategoryFromLocal();
+
+
 }

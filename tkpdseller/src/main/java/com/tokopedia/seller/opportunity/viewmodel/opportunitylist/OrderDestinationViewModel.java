@@ -1,9 +1,12 @@
 package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nisie on 3/7/17.
  */
-public class OrderDestinationViewModel {
+public class OrderDestinationViewModel implements Parcelable{
 
     private int receiverPhoneIsTokopedia;
     private String receiverName;
@@ -14,6 +17,33 @@ public class OrderDestinationViewModel {
     private String addressStreet;
     private String addressCity;
     private String addressProvince;
+
+    public OrderDestinationViewModel() {
+    }
+
+    protected OrderDestinationViewModel(Parcel in) {
+        receiverPhoneIsTokopedia = in.readInt();
+        receiverName = in.readString();
+        addressCountry = in.readString();
+        addressPostal = in.readString();
+        addressDistrict = in.readString();
+        receiverPhone = in.readString();
+        addressStreet = in.readString();
+        addressCity = in.readString();
+        addressProvince = in.readString();
+    }
+
+    public static final Creator<OrderDestinationViewModel> CREATOR = new Creator<OrderDestinationViewModel>() {
+        @Override
+        public OrderDestinationViewModel createFromParcel(Parcel in) {
+            return new OrderDestinationViewModel(in);
+        }
+
+        @Override
+        public OrderDestinationViewModel[] newArray(int size) {
+            return new OrderDestinationViewModel[size];
+        }
+    };
 
     public int getReceiverPhoneIsTokopedia() {
         return receiverPhoneIsTokopedia;
@@ -85,5 +115,23 @@ public class OrderDestinationViewModel {
 
     public void setAddressProvince(String addressProvince) {
         this.addressProvince = addressProvince;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(receiverPhoneIsTokopedia);
+        dest.writeString(receiverName);
+        dest.writeString(addressCountry);
+        dest.writeString(addressPostal);
+        dest.writeString(addressDistrict);
+        dest.writeString(receiverPhone);
+        dest.writeString(addressStreet);
+        dest.writeString(addressCity);
+        dest.writeString(addressProvince);
     }
 }

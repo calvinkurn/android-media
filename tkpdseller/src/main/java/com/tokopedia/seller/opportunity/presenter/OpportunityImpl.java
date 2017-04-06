@@ -10,7 +10,7 @@ import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFact
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
-import com.tokopedia.seller.opportunity.listener.OppurtunityView;
+import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 
 import java.io.IOException;
@@ -18,12 +18,12 @@ import java.io.IOException;
 /**
  * Created by hangnadi on 2/27/17.
  */
-public class OppurtunityImpl implements OppurtunityPresenter {
+public class OpportunityImpl implements OpportunityPresenter {
 
-    private final OppurtunityView view;
+    private final OpportunityView view;
     private final AcceptReplacementUseCase acceptReplacementUseCase;
 
-    public OppurtunityImpl(Context context, OppurtunityView view) {
+    public OpportunityImpl(Context context, OpportunityView view) {
         this.view = view;
         ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
                 new ActionReplacementSourceFactory(context),
@@ -36,27 +36,27 @@ public class OppurtunityImpl implements OppurtunityPresenter {
 
     @Override
     public void setOnSubmitClickListener() {
-        acceptReplacementUseCase.execute(getAcceptOppurtunityParams(),
-                new AcceptOppurtunitySubscriber(view));
+        acceptReplacementUseCase.execute(getAcceptOpportunityParams(),
+                new AcceptOpportunitySubscriber(view));
     }
 
-    private RequestParams getAcceptOppurtunityParams() {
+    private RequestParams getAcceptOpportunityParams() {
         RequestParams params = RequestParams.create();
-        params.putString(AcceptReplacementUseCase.PARAMS_ID, "");
+        params.putString(AcceptReplacementUseCase.PARAMS_ID, view.getOpportunityId());
         return params;
     }
 
-    private class AcceptOppurtunitySubscriber extends rx.Subscriber<AcceptReplacementModel> {
+    private class AcceptOpportunitySubscriber extends rx.Subscriber<AcceptReplacementModel> {
 
-        private final OppurtunityView view;
+        private final OpportunityView view;
 
-        public AcceptOppurtunitySubscriber(OppurtunityView view) {
+        public AcceptOpportunitySubscriber(OpportunityView view) {
             this.view = view;
         }
 
         @Override
         public void onCompleted() {
-            view.setOnAcceptOppurtunityComplete();
+            view.setOnAcceptOpportunityComplete();
         }
 
         @Override

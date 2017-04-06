@@ -1,12 +1,15 @@
 package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by nisie on 3/1/17.
  */
 
-public class OpportunityItemViewModel {
+public class OpportunityItemViewModel implements Parcelable{
 
     private int orderReplacementId;
     private int orderOrderId;
@@ -24,6 +27,40 @@ public class OpportunityItemViewModel {
     private OrderLastViewModel orderLast;
     private List<OrderHistoryViewModel> orderHistory;
     private OrderDestinationViewModel orderDestination;
+
+    public OpportunityItemViewModel() {
+    }
+
+    protected OpportunityItemViewModel(Parcel in) {
+        orderReplacementId = in.readInt();
+        orderOrderId = in.readInt();
+        orderPaymentAt = in.readString();
+        orderExpiredAt = in.readString();
+        orderCashbackIdr = in.readString();
+        orderCashback = in.readString();
+        orderCustomer = in.readParcelable(OrderCustomerViewModel.class.getClassLoader());
+        orderPayment = in.readParcelable(OrderPaymentViewModel.class.getClassLoader());
+        orderDetail = in.readParcelable(OrderDetailViewModel.class.getClassLoader());
+        orderDeadline = in.readParcelable(OrderDeadlineViewModel.class.getClassLoader());
+        orderShop = in.readParcelable(OrderShopViewModel.class.getClassLoader());
+        orderProducts = in.createTypedArrayList(OrderProductViewModel.CREATOR);
+        orderShipment = in.readParcelable(OrderShipmentViewModel.class.getClassLoader());
+        orderLast = in.readParcelable(OrderLastViewModel.class.getClassLoader());
+        orderHistory = in.createTypedArrayList(OrderHistoryViewModel.CREATOR);
+        orderDestination = in.readParcelable(OrderDestinationViewModel.class.getClassLoader());
+    }
+
+    public static final Creator<OpportunityItemViewModel> CREATOR = new Creator<OpportunityItemViewModel>() {
+        @Override
+        public OpportunityItemViewModel createFromParcel(Parcel in) {
+            return new OpportunityItemViewModel(in);
+        }
+
+        @Override
+        public OpportunityItemViewModel[] newArray(int size) {
+            return new OpportunityItemViewModel[size];
+        }
+    };
 
     public int getOrderReplacementId() {
         return orderReplacementId;
@@ -151,5 +188,30 @@ public class OpportunityItemViewModel {
 
     public void setOrderDestination(OrderDestinationViewModel orderDestination) {
         this.orderDestination = orderDestination;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(orderReplacementId);
+        dest.writeInt(orderOrderId);
+        dest.writeString(orderPaymentAt);
+        dest.writeString(orderExpiredAt);
+        dest.writeString(orderCashbackIdr);
+        dest.writeString(orderCashback);
+        dest.writeParcelable(orderCustomer, flags);
+        dest.writeParcelable(orderPayment, flags);
+        dest.writeParcelable(orderDetail, flags);
+        dest.writeParcelable(orderDeadline, flags);
+        dest.writeParcelable(orderShop, flags);
+        dest.writeTypedList(orderProducts);
+        dest.writeParcelable(orderShipment, flags);
+        dest.writeParcelable(orderLast, flags);
+        dest.writeTypedList(orderHistory);
+        dest.writeParcelable(orderDestination, flags);
     }
 }

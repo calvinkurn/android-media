@@ -1,10 +1,13 @@
 package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by nisie on 3/21/17.
  */
 
-public class OrderHistoryViewModel {
+public class OrderHistoryViewModel implements Parcelable{
 
     private String historyStatusDate;
     private String historyStatusDateFull;
@@ -13,6 +16,31 @@ public class OrderHistoryViewModel {
     private String historyActionBy;
     private String historyBuyerStatus;
     private String historySellerStatus;
+
+    public OrderHistoryViewModel() {
+    }
+
+    protected OrderHistoryViewModel(Parcel in) {
+        historyStatusDate = in.readString();
+        historyStatusDateFull = in.readString();
+        historyOrderStatus = in.readString();
+        historyComments = in.readString();
+        historyActionBy = in.readString();
+        historyBuyerStatus = in.readString();
+        historySellerStatus = in.readString();
+    }
+
+    public static final Creator<OrderHistoryViewModel> CREATOR = new Creator<OrderHistoryViewModel>() {
+        @Override
+        public OrderHistoryViewModel createFromParcel(Parcel in) {
+            return new OrderHistoryViewModel(in);
+        }
+
+        @Override
+        public OrderHistoryViewModel[] newArray(int size) {
+            return new OrderHistoryViewModel[size];
+        }
+    };
 
     public String getHistoryStatusDate() {
         return historyStatusDate;
@@ -68,5 +96,21 @@ public class OrderHistoryViewModel {
 
     public void setHistorySellerStatus(String historySellerStatus) {
         this.historySellerStatus = historySellerStatus;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(historyStatusDate);
+        dest.writeString(historyStatusDateFull);
+        dest.writeString(historyOrderStatus);
+        dest.writeString(historyComments);
+        dest.writeString(historyActionBy);
+        dest.writeString(historyBuyerStatus);
+        dest.writeString(historySellerStatus);
     }
 }

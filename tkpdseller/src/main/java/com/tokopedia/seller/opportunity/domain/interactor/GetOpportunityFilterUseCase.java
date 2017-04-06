@@ -20,6 +20,8 @@ public class GetOpportunityFilterUseCase extends UseCase<OpportunityCategoryMode
     public static final String DEVICE_ID = "device_id";
     public static final String OS_TYPE = "os_type";
 
+    public static final String FILTER_CACHE = "OPPORTUNITY_FILTER_CACHE";
+
     private final ReplacementRepository repository;
 
     public GetOpportunityFilterUseCase(ThreadExecutor threadExecutor,
@@ -32,5 +34,7 @@ public class GetOpportunityFilterUseCase extends UseCase<OpportunityCategoryMode
     @Override
     public Observable<OpportunityCategoryModel> createObservable(RequestParams requestParams) {
         return repository.getOpportunityCategoryFromNetwork(requestParams.getParameters());
+//        return repository.getOpportunityCategoryFromLocal()
+//                .switchIfEmpty(repository.getOpportunityCategoryFromNetwork(requestParams.getParameters()));
     }
 }
