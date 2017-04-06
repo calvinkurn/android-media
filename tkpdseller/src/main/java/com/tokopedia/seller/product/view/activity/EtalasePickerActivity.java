@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,6 +29,8 @@ public class EtalasePickerActivity
         EtalasePickerFragmentListener,
         AddEtalaseDialogListener {
 
+    public static final String ETALASE_ID = "ETALASE_ID";
+    public static final String ETALASE_NAME = "ETALASE_NAME";
     private FragmentManager fragmentManager;
     private EtalasePickerComponent component;
 
@@ -68,6 +72,15 @@ public class EtalasePickerActivity
     public void openAddNewEtalaseDialog() {
         AddEtalaseDialog dialog = new AddEtalaseDialog();
         dialog.show(fragmentManager, AddEtalaseDialog.TAG);
+    }
+
+    @Override
+    public void selectEtalase(Integer etalaseId, String etalaseName) {
+        Intent intent = new Intent();
+        intent.putExtra(ETALASE_ID, etalaseId);
+        intent.putExtra(ETALASE_NAME, etalaseName);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override

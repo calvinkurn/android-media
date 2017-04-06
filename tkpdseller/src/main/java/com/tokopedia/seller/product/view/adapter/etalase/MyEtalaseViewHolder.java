@@ -14,13 +14,30 @@ import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 
 class MyEtalaseViewHolder extends RecyclerView.ViewHolder {
     private final TextView itemName;
+    private MyEtalaseViewModel viewModel;
 
-    public MyEtalaseViewHolder(View view) {
+    public MyEtalaseViewHolder(View view, final EtalasePickerAdapterListener listener) {
         super(view);
         itemName = (TextView) view.findViewById(R.id.etalase_picker_item_name);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                MyEtalaseViewModel viewModel = getEtalaseViewModel();
+                listener.selectEtalase(viewModel.getEtalaseId(), viewModel.getEtalaseName());
+            }
+        });
+    }
+
+    private MyEtalaseViewModel getEtalaseViewModel() {
+        if (viewModel == null){
+            throw new RuntimeException("ViewModel still empty");
+        }
+        return viewModel;
     }
 
     public void renderView(MyEtalaseViewModel etalaseViewModel) {
         itemName.setText(etalaseViewModel.getEtalaseName());
+        this.viewModel = etalaseViewModel;
     }
 }

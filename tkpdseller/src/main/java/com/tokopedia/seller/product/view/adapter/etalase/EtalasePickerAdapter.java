@@ -42,7 +42,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(viewType, parent, false);
-        return new MyEtalaseViewHolder(view);
+        return new MyEtalaseViewHolder(view, listener);
     }
 
     @NonNull
@@ -50,13 +50,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(viewType, parent, false);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.openAddNewEtalaseDialog();
-            }
-        });
-        return new AddEtalaseViewHolder(view);
+        return new AddEtalaseViewHolder(view, listener);
     }
 
     @Override

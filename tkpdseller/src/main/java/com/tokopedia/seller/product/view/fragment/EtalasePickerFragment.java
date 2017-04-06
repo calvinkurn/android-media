@@ -182,4 +182,9 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     public void openAddNewEtalaseDialog() {
         listener.openAddNewEtalaseDialog();
     }
+
+    @Override
+    public void selectEtalase(Integer etalaseId, String etalaseName) {
+        listener.selectEtalase(etalaseId, etalaseName);
+    }
 }

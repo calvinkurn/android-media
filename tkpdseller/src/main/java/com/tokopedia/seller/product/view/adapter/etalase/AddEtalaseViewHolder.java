@@ -8,8 +8,14 @@ import android.view.View;
  */
 
 class AddEtalaseViewHolder extends RecyclerView.ViewHolder {
-    public AddEtalaseViewHolder(View view) {
+    public AddEtalaseViewHolder(View view, final EtalasePickerAdapterListener listener) {
         super(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.openAddNewEtalaseDialog();
+            }
+        });
     }
 
 }
