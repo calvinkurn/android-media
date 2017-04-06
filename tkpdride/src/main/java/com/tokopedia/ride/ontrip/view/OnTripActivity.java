@@ -10,13 +10,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.google.android.gms.gcm.PeriodicTask;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
 import permissions.dispatcher.NeedsPermission;
@@ -72,15 +69,19 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
 
     private void addFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.add(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.add(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void setupToolbar() {

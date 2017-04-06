@@ -98,15 +98,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.add(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.add(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void replaceFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override

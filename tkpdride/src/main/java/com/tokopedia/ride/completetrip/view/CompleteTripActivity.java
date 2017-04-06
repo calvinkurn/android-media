@@ -40,9 +40,11 @@ public class CompleteTripActivity extends BaseActivity {
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.add(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.add(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     private void setupToolbar() {

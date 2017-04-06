@@ -20,4 +20,5 @@
     <string name="btn_text_retry">Retry</string>
     <string name="en_route">On Trip</string>
     <string name="driver_cancelled_ride_message">Drivcer Cancelled your request.</string>
+    <string name="no_uber_valid_location">This service is available for Indonesia only.</string>
 </resources>

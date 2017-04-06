@@ -420,9 +420,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(containerViewId, fragment);
-        fragmentTransaction.commit();
+        if (!getActivity().isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(containerViewId, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
