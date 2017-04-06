@@ -73,63 +73,55 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
         return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
             @Override
             public void onSkipVerification() {
-                if (isTaskRoot()
-                        && GlobalConfig.isSellerApp()
-                        && isHasShop()) {
-                    Intent intent = SellerAppRouter.getSellerHomeActivity(PhoneVerificationActivationActivity.this);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                } else if (isTaskRoot()
-                        && GlobalConfig.isSellerApp()) {
-                    Intent intent = SellerRouter.getAcitivityShopCreateEdit(PhoneVerificationActivationActivity.this);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                            SellerRouter.ShopSettingConstant.LOG_OUT);
-                    startActivity(intent);
-                    finish();
-                } else if (isTaskRoot()) {
-                    Intent intent = HomeRouter.getHomeActivityInterfaceRouter(PhoneVerificationActivationActivity.this);
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                    startActivity(intent);
-                } else {
-                    setResult(Activity.RESULT_CANCELED);
-                    finish();
-                }
+                setIntentTarget();
             }
 
             @Override
             public void onSuccessVerification() {
-                if (isTaskRoot()
-                        && GlobalConfig.isSellerApp()
-                        && isHasShop()) {
-                    Intent intent = SellerAppRouter.getSellerHomeActivity(PhoneVerificationActivationActivity.this);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-                } else if (isTaskRoot()
-                        && GlobalConfig.isSellerApp()) {
-                    Intent intent = SellerRouter.getAcitivityShopCreateEdit(PhoneVerificationActivationActivity.this);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                            SellerRouter.ShopSettingConstant.LOG_OUT);
-                    startActivity(intent);
-                    finish();
-                } else if (isTaskRoot()) {
-                    Intent intent = HomeRouter.getHomeActivityInterfaceRouter(PhoneVerificationActivationActivity.this);
-                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                            HomeRouter.INIT_STATE_FRAGMENT_FEED);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
+                setIntentTarget();
             }
         };
+    }
+
+    private void setIntentTarget() {
+        if (isTaskRoot()
+                && GlobalConfig.isSellerApp()
+                && isHasShop()) {
+            goToSellerHome();
+        } else if (isTaskRoot()
+                && GlobalConfig.isSellerApp()) {
+            goToSellerShopCreateEdit();
+        } else if (isTaskRoot()) {
+            goToConsumerHome();
+        } else {
+            setResult(Activity.RESULT_OK);
+            finish();
+        }
+    }
+
+    private void goToSellerHome() {
+        Intent intent = SellerAppRouter.getSellerHomeActivity(PhoneVerificationActivationActivity.this);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToConsumerHome() {
+        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(PhoneVerificationActivationActivity.this);
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_FEED);
+        startActivity(intent);
+        finish();
+    }
+
+    private void goToSellerShopCreateEdit() {
+        Intent intent = SellerRouter.getAcitivityShopCreateEdit(PhoneVerificationActivationActivity.this);
+        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
+                SellerRouter.ShopSettingConstant.LOG_OUT);
+        startActivity(intent);
+        finish();
     }
 
     private boolean isHasShop() {

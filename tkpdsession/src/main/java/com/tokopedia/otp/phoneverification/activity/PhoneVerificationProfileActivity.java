@@ -72,29 +72,30 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
         return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
             @Override
             public void onSkipVerification() {
-                if (isTaskRoot()) {
-                    Intent intent = new Intent(PhoneVerificationProfileActivity.this,
-                            ManagePeopleProfileActivity.class);
-                    startActivityForResult(intent, 0);
-                } else {
-                    setResult(Activity.RESULT_CANCELED);
-                    finish();
-                }
+                setIntentTarget();
             }
 
 
             @Override
             public void onSuccessVerification() {
-                if (isTaskRoot()) {
-                    Intent intent = new Intent(PhoneVerificationProfileActivity.this,
-                            ManagePeopleProfileActivity.class);
-                    startActivityForResult(intent, 0);
-                } else {
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
+                setIntentTarget();
             }
         };
+    }
+
+    private void setIntentTarget() {
+        if (isTaskRoot()) {
+            goToManageProfile();
+        } else {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+    }
+
+    private void goToManageProfile() {
+        Intent intent = new Intent(PhoneVerificationProfileActivity.this,
+                ManagePeopleProfileActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     @Override
