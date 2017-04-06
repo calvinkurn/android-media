@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/LabelLayoutWithoutBorder"
+    android:gravity="bottom">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_layout"
+        style="@style/TextInputLayout">
+
+        <AutoCompleteTextView
+            android:id="@+id/edit_text_spinner"
+            style="@style/EditText"
+            android:layout_width="match_parent"
+            android:drawableEnd="@drawable/ic_rec_down_set_date"
+            android:drawableRight="@drawable/ic_rec_down_set_date"
+            android:textIsSelectable="true"
+            android:inputType="none" />
+
+    </android.support.design.widget.TextInputLayout>
+</FrameLayout>

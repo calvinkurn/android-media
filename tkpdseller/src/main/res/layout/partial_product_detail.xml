@@ -9,7 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:count_hint="@string/product_label_minimum_buy"/>
+        app:count_hint="@string/product_label_minimum_buy" />
+
+    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+        android:id="@+id/spinner_text_view_stock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spinner_entries="@array/product_stock_status_entries"
+        app:spinner_hint="@string/product_label_status"
+        app:spinner_selection="0" />
 
     <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
         android:id="@+id/label_view_shop_window"
@@ -20,4 +28,26 @@
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
         app:title="@string/product_label_shop_window" />
+
+    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+        android:id="@+id/spinner_text_view_condition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:spinner_entries="@array/product_condition_entries"
+        app:spinner_hint="@string/product_label_condition" />
+
+    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+        android:id="@+id/spinner_text_view_insurance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spinner_entries="@array/product_insurance_entries"
+        app:spinner_hint="@string/product_label_insurance" />
+
+    <com.tokopedia.seller.product.view.widget.SpinnerTextView
+        android:id="@+id/spinner_text_view_free_returns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:spinner_entries="@array/product_free_returns_entries"
+        app:spinner_hint="@string/product_label_free_returns" />
 </LinearLayout>

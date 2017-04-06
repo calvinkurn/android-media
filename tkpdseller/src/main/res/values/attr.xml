@@ -151,4 +151,11 @@
         <attr name="count_hint" format="string"/>
         <attr name="count_value" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="SpinnerTextView">
+        <attr name="spinner_hint" format="string"/>
+        <attr name="spinner_selection" format="integer"/>
+        <attr name="spinner_entries" format="reference"/>
+        <attr name="spinner_values" format="reference"/>
+    </declare-styleable>
 </resources>

@@ -278,8 +278,13 @@
     <string name="product_label_choose">Pilih</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_status">Status</string>
+    <string name="product_label_condition">Kondisi</string>
+    <string name="product_label_insurance">Asuransi</string>
+    <string name="product_label_free_returns">Free Returns</string>
     <string name="product_default_count_text">0</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
+
     <string name="etalase_picker_add_new_etalase">+ Tambah Etalase</string>
     <string name="etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
     <string name="etalase_picker_add_etalase_add_button_dialog">Tambah</string>
@@ -287,4 +292,24 @@
     <string name="etalase_picker_add_etalase_name_hint">Nama Etalase</string>
     <string name="etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
 
+    <string-array name="product_currency_entries">
+        <item>Rp</item>
+        <item>$</item>
+    </string-array>
+    <string-array name="product_stock_status_entries">
+        <item>Stock Tersedia</item>
+        <item>Stock Kosong</item>
+    </string-array>
+    <string-array name="product_condition_entries">
+        <item>Baru</item>
+        <item>Bekas</item>
+    </string-array>
+    <string-array name="product_insurance_entries">
+        <item>Opsional</item>
+        <item>Ya</item>
+    </string-array>
+    <string-array name="product_free_returns_entries">
+        <item>Opsional</item>
+        <item>Ya</item>
+    </string-array>
 </resources>
