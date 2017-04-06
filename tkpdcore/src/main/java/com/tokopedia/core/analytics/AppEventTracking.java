@@ -107,6 +107,7 @@ public interface AppEventTracking {
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
         String CATEGORY_PAGE = "clickKategori";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
+        String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
     }
 
@@ -216,6 +217,7 @@ public interface AppEventTracking {
         String CATEGORY_SHARE = "Bottom Navigation - Share";
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
+        String RECEIVED = "received";
     }
 
     interface EventLabel {
@@ -361,6 +363,8 @@ public interface AppEventTracking {
         String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
         String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
         String CATEGORY_SHOW_MORE = "Lihat Lainnya";
+        String TOPADS_LOW_CREDIT = "Top Ads Below 20k";
+        String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
     }
 
     interface SOCIAL_MEDIA {

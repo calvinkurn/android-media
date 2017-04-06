@@ -15,14 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.listeners.ActionClickListener;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
@@ -504,25 +503,25 @@ public class TopAdsAddProductListFragment extends BasePresenterFragment
                             break;
                         default:
                             gmNetworkErrorHelper.showSnackbar(errorMessage,
-                                    getString(R.string.try_again), new ActionClickListener() {
-                            @Override
-                            public void onActionClicked(Snackbar snackbar) {
-                                Toast.makeText(
-                                        TopAdsAddProductListFragment.this.getActivity(),
-                                        errorMessage,
-                                        Toast.LENGTH_SHORT
-                                ).show();
+                                    getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
+                                        @Override
+                                        public void onRetryClicked() {
+                                            Toast.makeText(
+                                                    TopAdsAddProductListFragment.this.getActivity(),
+                                                    errorMessage,
+                                                    Toast.LENGTH_SHORT
+                                            ).show();
 
-                                dismissSnackbar();
+                                            dismissSnackbar();
 
-                                refreshHandler.setRefreshing(true);
+                                            refreshHandler.setRefreshing(true);
 
-                                topAdsAddProductListPresenter.setNetworkStatus(
-                                        TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
-                                loadMoreNetworkCall();
-                            }
-                        }, getActivity());
-                        break;
+                                            topAdsAddProductListPresenter.setNetworkStatus(
+                                                    TopAdsAddProductListPresenter.NetworkStatus.RETRYNETWORKCALL);
+                                            loadMoreNetworkCall();
+                                        }
+                                    }, getActivity());
+                            break;
                     }
 
                     if (topAdsProductListAdapter != null

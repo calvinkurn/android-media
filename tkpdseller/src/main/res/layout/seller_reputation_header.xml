@@ -1,0 +1,83 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/seller_reputation_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text_header_reputation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="17dp"
+        tools:text="wewe" />
+
+    <com.tokopedia.seller.home.view.ReputationView
+        android:id="@+id/seller_reputation_header_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_header_reputation"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="3dp"
+        app:default_layout="@layout/reputation_item_view_reputation" />
+
+    <RelativeLayout
+        android:id="@+id/rl_reputation_point_calculation"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_below="@id/seller_reputation_header_view"
+        android:layout_marginTop="17dp">
+
+        <View
+            android:id="@+id/separator_top"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentTop="true"
+            android:background="#e0e0e0" />
+
+        <TextView
+            android:id="@+id/reputation_point_calculation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:text="@string/perhitungan_poin_reputasi"
+            android:textColor="@color/black_fifty_four_percent"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/calendar_arrow_icon"
+            android:layout_width="8dp"
+            android:layout_height="16dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/reputation_point_calculation"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="17dp"
+            android:layout_marginRight="17dp"
+            android:layout_marginTop="3dp"
+            app:srcCompat="@drawable/ic_arrow_right" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#e0e0e0" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/separator_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:layout_below="@id/rl_reputation_point_calculation"
+        android:background="@color/white_fifty_percent" />
+
+</RelativeLayout>

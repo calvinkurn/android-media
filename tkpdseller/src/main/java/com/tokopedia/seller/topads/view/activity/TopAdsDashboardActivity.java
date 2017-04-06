@@ -11,7 +11,9 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
@@ -149,7 +151,18 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     @Override
     protected void setActionVar() {
+        actionSendAnalyticsIfFromPushNotif();
+    }
 
+    private void actionSendAnalyticsIfFromPushNotif() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Constants.EXTRA_FROM_PUSH)) {
+            if (intent.getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
+                UnifyTracking.eventOpenTopadsPushNotification(
+                        getIntent().getStringExtra(UnifyTracking.EXTRA_LABEL)
+                );
+            }
+        }
     }
 
     @Override

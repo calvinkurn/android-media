@@ -216,7 +216,7 @@ public class BuildAndShowNotification {
         if (configuration.isVibrate() && configuration.isBell()) {
             notif.defaults |= Notification.DEFAULT_VIBRATE;
         }
-        mNotificationManager.notify(100, notif);
+        mNotificationManager.notify(configuration.getNotificationId(), notif);
     }
 
     private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {

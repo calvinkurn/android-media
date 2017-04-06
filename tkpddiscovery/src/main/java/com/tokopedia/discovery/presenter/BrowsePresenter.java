@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.discovery.model.DataValue;
-import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 
 /**
  * Created by HenryPri on 29/03/17.
@@ -15,7 +13,6 @@ import com.tokopedia.discovery.activity.BrowseProductActivity;
 
 public interface BrowsePresenter {
     void initPresenterData(Bundle savedInstanceState, Intent intent);
-    void restorePresenterData();
     void disposePresenterData();
 
     void onSaveInstanceState(Bundle outState);

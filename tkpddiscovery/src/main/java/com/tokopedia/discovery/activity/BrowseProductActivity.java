@@ -37,6 +37,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
@@ -81,9 +82,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public static final String GRID_TYPE_EXTRA = "GRID_TYPE_EXTRA";
     public static final int REQUEST_SORT = 121;
     private static final String SEARCH_ACTION_INTENT = BuildConfig.APPLICATION_ID+".SEARCH";
-    private static final int BOTTOM_BAR_GRID_ICON_POSITION = 2;
+    private static final int BOTTOM_BAR_GRID_TYPE_ITEM_POSITION = 2;
 
     private int gridIcon = R.drawable.ic_grid_default;
+    private int gridTitleRes = R.string.grid;
     private FragmentManager fragmentManager;
     private BrowsePresenter browsePresenter;
     private MenuItem searchItem;
@@ -116,10 +118,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void initDiscoverySearchView() {
+    public void initDiscoverySearchView(String lastQuery) {
         discoverySearchView.setActivity(this);
         discoverySearchView.setOnQueryTextListener(this);
         discoverySearchView.setOnSearchViewListener(this);
+        discoverySearchView.setLastQuery(lastQuery);
     }
 
     @Override
@@ -187,12 +190,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void onSearchViewClosed() {
         bottomNavigation.restoreBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(true);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        browsePresenter.restorePresenterData();
     }
 
     @Override
@@ -385,11 +382,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void openFilter(DataValue filterAttribute,
                            String source,
                            String parentDepartment,
+                           String departmentId,
                            Map<String, String> filters) {
         DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                 filters, getProductBreadCrumb(),
                 filterAttribute.getFilter(),
-                parentDepartment, source);
+                parentDepartment, source, departmentId);
     }
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {
@@ -402,7 +400,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.grid), gridIcon));
+        items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
         return items;
     }
@@ -508,19 +506,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void renderCategoriesHeader(BrowseProductActivityModel browseModel, Pair<String, ? extends ObjContainer> data) {
+    public void renderCategoriesHeader(Data categoryHeader) {
         BrowseParentFragment parentFragment = (BrowseParentFragment)
                 fragmentManager.findFragmentById(R.id.container);
 
-        if (parentFragment!=null) {
-            ObjContainer objContainer = data.getModel2();
-            CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer
-                    = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
-            CategoriesHadesModel body = categoriesHadesContainer.body();
-            if (browseModel !=null && body !=null && body.getData() !=null) {
-                browseModel.categotyHeader = body.getData();
-                parentFragment.renderCategories(browseModel.categotyHeader);
-            }
+        if (parentFragment != null) {
+            parentFragment.renderCategories(categoryHeader);
         }
     }
 
@@ -530,11 +521,19 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void changeBottomBarGridIcon(int gridIconResId, String gridTitle) {
+    public void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId) {
         gridIcon = gridIconResId;
-        bottomNavigation.getItem(BOTTOM_BAR_GRID_ICON_POSITION).setTitle(gridTitle);
-        bottomNavigation.getItem(BOTTOM_BAR_GRID_ICON_POSITION).setDrawable(gridIconResId);
-        bottomNavigation.refresh();
+        gridTitleRes = gridTitleResId;
+        if (isBottomBarItemReady(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION)) {
+            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setTitle(getString(gridTitleResId));
+            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setDrawable(gridIconResId);
+            bottomNavigation.refresh();
+        }
+    }
+
+    private boolean isBottomBarItemReady(int itemIndex) {
+        return itemIndex < bottomNavigation.getItemsCount() &&
+                bottomNavigation.getItem(itemIndex) != null;
     }
 
     @Override
