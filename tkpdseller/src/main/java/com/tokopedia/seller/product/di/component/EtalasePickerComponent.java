@@ -1,8 +1,11 @@
 package com.tokopedia.seller.product.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.di.scope.EtalasePickerScope;
+import com.tokopedia.seller.product.domain.MyEtalaseRepository;
 
 import dagger.Component;
 
@@ -12,4 +15,11 @@ import dagger.Component;
 @EtalasePickerScope
 @Component(modules = EtalasePickerModule.class, dependencies = AppComponent.class)
 public interface EtalasePickerComponent {
+
+    MyEtalaseRepository myEtalaseRepository();
+
+    ThreadExecutor threadExecutor();
+
+    PostExecutionThread postExecutionThread();
+
 }
