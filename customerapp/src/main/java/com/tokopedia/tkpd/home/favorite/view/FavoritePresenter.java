@@ -190,18 +190,23 @@ public class FavoritePresenter
     }
 
     private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null
-                && dataFavorite.getWishListData() != null) {
+        if (dataFavorite != null) {
 
-            validateNetworkWishlist(dataFavorite.getWishListData());
+            if (dataFavorite.getWishListData() != null) {
+                validateNetworkWishlist(dataFavorite.getWishListData());
 
-            if (dataFavorite.getWishListData().getData() != null) {
-                if (dataFavorite.getWishListData().getData().size() > 0) {
-                    dataFavoriteItemList.add(
-                            favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+                if (dataFavorite.getWishListData().getData() != null) {
+                    if (dataFavorite.getWishListData().getData().size() > 0) {
+                        dataFavoriteItemList.add(
+                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+                    } else {
+                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
+                    }
                 } else {
                     dataFavoriteItemList.add(new EmptyWishlistViewModel());
                 }
+            } else {
+                dataFavoriteItemList.add(new EmptyWishlistViewModel());
             }
         }
     }
@@ -228,24 +233,7 @@ public class FavoritePresenter
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
-
-//            if (dataFavorite != null
-//                    && dataFavorite.getWishListData() != null) {
-//
-//                validateWishlistNetwork(dataFavorite);
-//
-//                if (dataFavorite.getWishListData().getData() != null) {
-//                    if (dataFavorite.getWishListData().getData().size() > 0) {
-//                        elementList.add(
-//                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-//                    } else {
-//                        elementList.add(new EmptyWishlistViewModel());
-//                    }
-//                }
-//            }
-
             addWishlist(dataFavorite, elementList);
-
             addFavoriteShop(dataFavorite, elementList);
             return elementList;
         }
@@ -346,12 +334,8 @@ public class FavoritePresenter
         @Override
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
-
             addWishlist(dataFavorite, dataFavoriteItemList);
-
             addTopAdsShop(dataFavorite, dataFavoriteItemList);
-
-
             addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
             getView().hideRefreshLoading();
