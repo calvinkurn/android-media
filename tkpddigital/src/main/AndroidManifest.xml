@@ -8,6 +8,7 @@
         <activity
             android:name=".cart.activity.CartDigitalActivity"
             android:label="@string/title_activity_cart_digital_module"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"/>
 
         <activity

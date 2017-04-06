@@ -590,6 +590,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void forceHideSoftKeyboardVoucherInput() {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+    }
+
+    @Override
+    public void forceShowSoftKeyboardVoucherInput() {
+        KeyboardHandler.showSoftKeyboard(getActivity());
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OtpVerificationActivity.REQUEST_CODE) {

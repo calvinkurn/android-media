@@ -94,7 +94,11 @@ public class VoucherCartHolderView extends RelativeLayout {
                     if (actionListener != null) {
                         hideHolderVoucher();
                         editTextVoucher.setText("");
+                        actionListener.forceHideSoftKeyboardVoucherInput();
                     }
+                } else {
+                    editTextVoucher.requestFocus();
+                    if (actionListener != null) actionListener.forceShowSoftKeyboardVoucherInput();
                 }
                 holderInputVoucher.setVisibility(isChecked ? VISIBLE : GONE);
             }
@@ -160,5 +164,9 @@ public class VoucherCartHolderView extends RelativeLayout {
 
     public interface ActionListener {
         void onVoucherCheckButtonClicked();
+
+        void forceHideSoftKeyboardVoucherInput();
+
+        void forceShowSoftKeyboardVoucherInput();
     }
 }
