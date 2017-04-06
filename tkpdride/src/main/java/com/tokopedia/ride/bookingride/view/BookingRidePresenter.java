@@ -314,6 +314,8 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     public void actionMyLocation() {
         if (!getView().isAlreadySelectDestination()) {
             setSourceAsCurrentLocation();
+        } else {
+            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
     }
 
