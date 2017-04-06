@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.view.adapter.etalase;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
 
@@ -37,7 +39,8 @@ class MyEtalaseViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void renderView(MyEtalaseViewModel etalaseViewModel) {
-        itemName.setText(etalaseViewModel.getEtalaseName());
+        Spanned etalaseName = Html.fromHtml(etalaseViewModel.getEtalaseName());
+        itemName.setText(etalaseName);
         this.viewModel = etalaseViewModel;
     }
 }
