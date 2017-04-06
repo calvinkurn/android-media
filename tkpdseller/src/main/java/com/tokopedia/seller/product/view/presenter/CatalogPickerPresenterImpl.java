@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import rx.Subscriber;
 
 /**
- * @author sebastianuskh on 4/3/17.
+ * @author hendry on 4/3/17.
  */
 
 public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
@@ -18,7 +18,6 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
 
     @Override
     public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
-        getView().showLoadingDialog();
         fetchCatalogDataUseCase.execute(
             FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
             new Subscriber<CatalogDataModel>() {
@@ -29,12 +28,14 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().dismissLoadingDialog();
+                    getView().showError(e);
                 }
 
                 @Override
                 public void onNext(CatalogDataModel catalogDataModel) {
-                    getView().dismissLoadingDialog();
+                    getView().successFetchData(
+                            catalogDataModel.getResult().getCatalogs(),
+                            catalogDataModel.getResult().getTotalRecord());
                 }
             });
     }

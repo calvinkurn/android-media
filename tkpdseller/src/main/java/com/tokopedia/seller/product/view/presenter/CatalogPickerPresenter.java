@@ -5,7 +5,7 @@ import com.tokopedia.seller.product.view.fragment.CatalogPickerView;
 import com.tokopedia.seller.product.view.fragment.CategoryPickerView;
 
 /**
- * @author sebastianuskh on 4/3/17.
+ * @author hendry on 4/3/17.
  */
 
 public abstract class CatalogPickerPresenter extends BaseDaggerPresenter<CatalogPickerView>{

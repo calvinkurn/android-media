@@ -32,7 +32,7 @@ public class FetchCatalogDataUseCase extends UseCase<CatalogDataModel>{
     public Observable<CatalogDataModel> createObservable(RequestParams requestParams) {
         String q = requestParams.getString("q", "");
         int sc = requestParams.getInt("sc", 0);
-        int start = requestParams.getInt("start", 1);
+        int start = requestParams.getInt("start", 0);
         int rows = requestParams.getInt("rows", 20);
         return catalogRepository.fetchCatalog(q, sc, start, rows);
     }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:background="@drawable/selector_selected_gray">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/image_catalog"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        tools:src="@mipmap/ic_launcher"/>
+    <TextView
+        android:id="@+id/text_catalog_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        tools:text="@string/title_catalog"/>
+
+</LinearLayout>

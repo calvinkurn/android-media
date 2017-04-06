@@ -44,16 +44,12 @@ public class CatalogCloud {
         }
         param.put(ProductNetworkConstant.PARAM_Q, keyword);
         param.put(ProductNetworkConstant.PARAM_DEVICE, ProductNetworkConstant.VALUE_SOURCE_ANDROID);
-
-        if (start!= 0) {
-            param.put(ProductNetworkConstant.PARAM_START, String.valueOf(start));
-        }
+        param.put(ProductNetworkConstant.PARAM_START, String.valueOf(start));
 
         if (rows!= 0) {
             param.put(ProductNetworkConstant.PARAM_ROWS, String.valueOf(rows));
         }
 
-        param.put(ProductNetworkConstant.PARAM_ROWS, ProductNetworkConstant.VALUE_SOURCE_ANDROID);
         return api.getCatalog(param);
     }
 }
