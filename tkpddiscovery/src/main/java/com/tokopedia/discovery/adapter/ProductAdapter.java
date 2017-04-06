@@ -108,7 +108,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
-                    category = activity.getIntent().getStringExtra(EXTRA_TITLE);
+                    category = activity.getBrowseProductActivityModel().getDepartmentId();
                     source = "directory";
                     break;
                 default:
@@ -121,10 +121,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, category);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
+                        R.layout.listview_product_item_list,
+                        parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, category);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
+                        R.layout.listview_product_item_grid, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
