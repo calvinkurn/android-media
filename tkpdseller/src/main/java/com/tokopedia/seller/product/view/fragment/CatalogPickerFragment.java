@@ -87,7 +87,7 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.category_picker_fragment_layout, container, false);
+        View view = inflater.inflate(R.layout.catalog_picker_fragment_layout, container, false);
         setupRecyclerView(view);
         presenter.attachView(this);
         presenter.fetchCatalogData(keyword, departmentId, 0, ROWS);
