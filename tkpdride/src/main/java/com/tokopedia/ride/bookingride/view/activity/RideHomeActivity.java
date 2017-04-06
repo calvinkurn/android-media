@@ -116,12 +116,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination) {
-        UberProductFragment productFragment = (UberProductFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
-        if (productFragment != null) {
-            productFragment.updateProductList(source, destination);
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof UberProductFragment) {
+            UberProductFragment productFragment = (UberProductFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+            if (productFragment != null) {
+                productFragment.updateProductList(source, destination);
+            }
         } else {
-            productFragment = UberProductFragment.newInstance(source, destination);
-            addFragment(R.id.bottom_container, productFragment);
+            UberProductFragment productFragment = UberProductFragment.newInstance(source, destination);
+            replaceFragment(R.id.bottom_container, productFragment);
         }
     }
 

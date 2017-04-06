@@ -65,6 +65,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     getView().hideNotActivatedTokoCashLayout();
                 } else {
                     // not activated tokocash
+                    getView().hideProgress();
                     getView().hideTopupTokoCashButton();
                     getView().hideConfirmButton();
 
