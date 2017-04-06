@@ -5,9 +5,6 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
-import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -18,7 +15,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/6/17.
  */
 
-public class AddNewEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
+public class AddNewEtalaseUseCase extends UseCase<Boolean>{
 
     public static final String NEW_ETALASE_NAME = "NEW_ETALASE_NAME";
     private final MyEtalaseRepository myEtalaseRepository;
@@ -37,14 +34,13 @@ public class AddNewEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
     }
 
     @Override
-    public Observable<List<MyEtalaseDomainModel>> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         String etalaseName = requestParams.getString(NEW_ETALASE_NAME, "");
         if (etalaseName.isEmpty()){
             throw new RuntimeException("Adding etalase name with empty name");
         }
         return Observable.just(etalaseName)
-                .flatMap(new AddNewEtalase())
-                .flatMap(new FetchEtalase());
+                .flatMap(new AddNewEtalase());
     }
 
     private class AddNewEtalase implements Func1<String, Observable<Boolean>> {
@@ -54,10 +50,4 @@ public class AddNewEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
         }
     }
 
-    private class FetchEtalase implements Func1<Boolean, Observable<List<MyEtalaseDomainModel>>> {
-        @Override
-        public Observable<List<MyEtalaseDomainModel>> call(Boolean aBoolean) {
-            return myEtalaseRepository.fetchMyEtalase();
-        }
-    }
 }

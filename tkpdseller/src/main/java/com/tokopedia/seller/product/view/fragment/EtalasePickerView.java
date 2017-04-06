@@ -10,15 +10,27 @@ import java.util.List;
  */
 
 public interface EtalasePickerView extends CustomerView {
-    void showLoading();
+    void refreshEtalaseData();
 
-    void dismissLoading();
+    void showListLoading();
 
-    void showEmptyEtalase();
+    void dismissListLoading();
 
     void clearEtalaseList();
+
+    void showListRetry();
+
+    void dismissListRetry();
 
     void renderEtalaseList(List<MyEtalaseViewModel> etalases);
 
     void addNewEtalase(String newEtalaseName);
+
+    void showLoadingDialog();
+
+    void dismissLoadingDialog();
+
+    void showError(String localizedMessage);
+
+    void showRetryAddNewEtalase(String newEtalaseName);
 }

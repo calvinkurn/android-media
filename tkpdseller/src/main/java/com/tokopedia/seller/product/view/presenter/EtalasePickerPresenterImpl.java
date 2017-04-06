@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
@@ -27,17 +28,18 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
     public void fetchEtalaseData(String shopId) {
         checkViewAttached();
-        getView().showLoading();
+        getView().clearEtalaseList();
+        getView().dismissListRetry();
+        getView().showListLoading();
         fetchMyEtalaseUseCase.execute(RequestParams.EMPTY, new FetchEtalaseDataSubscriber());
     }
 
     @Override
     public void addNewEtalase(String newEtalaseName) {
         checkViewAttached();
-        getView().clearEtalaseList();
-        getView().showLoading();
+        getView().showLoadingDialog();
         RequestParams requestParam = AddNewEtalaseUseCase.generateRequestParam(newEtalaseName);
-        addNewEtalaseUseCase.execute(requestParam, new AddNewEtalaseSubscribe());
+        addNewEtalaseUseCase.execute(requestParam, new AddNewEtalaseSubscribe(newEtalaseName));
     }
 
     private class FetchEtalaseDataSubscriber extends Subscriber<List<MyEtalaseDomainModel>> {
@@ -49,20 +51,26 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
-            getView().dismissLoading();
-            getView().showEmptyEtalase();
+            getView().dismissListLoading();
+            getView().showListRetry();
 
         }
 
         @Override
         public void onNext(List<MyEtalaseDomainModel> etalases) {
             checkViewAttached();
-            getView().dismissLoading();
+            getView().dismissListLoading();
             getView().renderEtalaseList(MyEtalaseDomainToView.map(etalases));
         }
     }
 
-    private class AddNewEtalaseSubscribe extends Subscriber<List<MyEtalaseDomainModel>> {
+    private class AddNewEtalaseSubscribe extends Subscriber<Boolean> {
+        private final String newEtalaseName;
+
+        private AddNewEtalaseSubscribe(String newEtalaseName) {
+            this.newEtalaseName = newEtalaseName;
+        }
+
         @Override
         public void onCompleted() {
 
@@ -71,15 +79,19 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
-            getView().dismissLoading();
-            getView().showEmptyEtalase();
+            getView().dismissLoadingDialog();
+            if (e instanceof FailedToAddEtalaseException){
+                getView().showError(e.getLocalizedMessage());
+            } else {
+                getView().showRetryAddNewEtalase(newEtalaseName);
+            }
         }
 
         @Override
-        public void onNext(List<MyEtalaseDomainModel> etalases) {
+        public void onNext(Boolean aBoolean) {
             checkViewAttached();
-            getView().dismissLoading();
-            getView().renderEtalaseList(MyEtalaseDomainToView.map(etalases));
+            getView().dismissLoadingDialog();
+            getView().refreshEtalaseData();
         }
     }
 }

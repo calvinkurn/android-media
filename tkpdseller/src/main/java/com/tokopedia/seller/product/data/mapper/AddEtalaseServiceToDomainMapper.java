@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
+import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
 import com.tokopedia.seller.product.data.source.cloud.model.addetalase.AddEtalaseServiceModel;
 
 import rx.functions.Func1;
@@ -13,7 +14,7 @@ public class AddEtalaseServiceToDomainMapper implements Func1<AddEtalaseServiceM
     public Boolean call(AddEtalaseServiceModel serviceModel) {
         if (serviceModel.getData().getIsSuccess() == 0){
             if (serviceModel.getMessageError() != null && !serviceModel.getMessageError().isEmpty()){
-                throw new RuntimeException(serviceModel.getMessageError().get(1));
+                throw new FailedToAddEtalaseException(serviceModel.getMessageError().get(0));
             } else {
                 throw new RuntimeException("Unknown Error");
             }
