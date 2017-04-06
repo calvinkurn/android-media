@@ -24,7 +24,7 @@ public class ReplacementActService extends AuthService<ReplacementActApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.Replacement.URL_REPLACEMENT_ACTION;
+        return TkpdBaseURL.Replacement.URL_REPLACEMENT;
     }
 
     @Override

@@ -673,9 +673,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/opportunity_list";
         public static final String PATH_GET_CATEGORY = "v4/order/replacement/category_list";
 
-
-        public static final String PATH_ACCEPT_REPLACEMENT = "asd";
+        public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
         public static final String PATH_DELETE_REPLACEMENT = "asdasd";
-        public static final String URL_REPLACEMENT_ACTION = BASE_ORDER_APP + "api/v1/wallet/";
     }
 }

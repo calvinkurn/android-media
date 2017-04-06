@@ -3,7 +3,7 @@ package com.tokopedia.seller.opportunity.data.factory;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
-import com.tokopedia.seller.opportunity.data.mapper.AcceptReplacementMapper;
+import com.tokopedia.seller.opportunity.data.mapper.AcceptOpportunityMapper;
 import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource;
 
 /**
@@ -13,11 +13,11 @@ public class ActionReplacementSourceFactory {
 
     private final Context context;
     private ReplacementActService actService;
-    private AcceptReplacementMapper acceptMapper;
+    private AcceptOpportunityMapper acceptMapper;
 
     public ActionReplacementSourceFactory(Context context) {
         this.context = context;
-        this.acceptMapper = new AcceptReplacementMapper();
+        this.acceptMapper = new AcceptOpportunityMapper();
         this.actService = new ReplacementActService();
     }
 

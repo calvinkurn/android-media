@@ -5,6 +5,10 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
@@ -12,8 +16,11 @@ import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImp
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
+import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -35,7 +42,8 @@ public class OpportunityImpl implements OpportunityPresenter {
     }
 
     @Override
-    public void setOnSubmitClickListener() {
+    public void acceptOpportunity() {
+        view.showLoadingProgress();
         acceptReplacementUseCase.execute(getAcceptOpportunityParams(),
                 new AcceptOpportunitySubscriber(view));
     }
@@ -46,44 +54,10 @@ public class OpportunityImpl implements OpportunityPresenter {
         return params;
     }
 
-    private class AcceptOpportunitySubscriber extends rx.Subscriber<AcceptReplacementModel> {
 
-        private final OpportunityView view;
-
-        public AcceptOpportunitySubscriber(OpportunityView view) {
-            this.view = view;
-        }
-
-        @Override
-        public void onCompleted() {
-            view.setOnAcceptOpportunityComplete();
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            if (e instanceof IOException) {
-                view.setActionViewData(mappingTimeout());
-            }
-        }
-
-        @Override
-        public void onNext(AcceptReplacementModel acceptReplacementModel) {
-            view.setActionViewData(mappingAcceptReplacementViewModel(acceptReplacementModel));
-        }
+    @Override
+    public void unsubscribeObservable() {
+        acceptReplacementUseCase.unsubscribe();
     }
 
-    private ActionViewData mappingTimeout() {
-        ActionViewData data = new ActionViewData();
-        data.setSuccess(false);
-        data.setTimeOut(true);
-        return data;
-    }
-
-    private ActionViewData mappingAcceptReplacementViewModel(AcceptReplacementModel model) {
-        ActionViewData data = new ActionViewData();
-        data.setSuccess(model.isSuccess());
-        data.setErrorCode(model.getErrorCode());
-        data.setMessageError(model.getErrorMessage());
-        return data;
-    }
 }

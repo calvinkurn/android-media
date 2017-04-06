@@ -62,8 +62,6 @@ public class GetOpportunitySubscriber extends rx.Subscriber<com.tokopedia.seller
 
     @Override
     public void onError(Throwable e) {
-        CommonUtils.dumper("NISNIS error" + e.toString());
-
         if (e instanceof UnknownHostException) {
             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.msg_no_connection));
         } else if (e instanceof SocketTimeoutException) {

@@ -13,11 +13,13 @@ public interface OpportunityView {
 
     void onActionSeeDetailProduct(String productId);
 
-    ActionViewData getActionViewData();
-
-    void setActionViewData(ActionViewData actionViewData);
-
-    void setOnAcceptOpportunityComplete();
-
     String getOpportunityId();
+
+    void showLoadingProgress();
+
+    void onSuccessTakeOpportunity(ActionViewData actionViewData);
+
+    String getString(int resId);
+
+    void onErrorTakeOpportunity(String errorMessage);
 }

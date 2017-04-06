@@ -6,9 +6,7 @@ package com.tokopedia.seller.opportunity.presentation;
 
 public class ActionViewData {
     private boolean success;
-    private boolean timeOut;
-    private int errorCode;
-    private String messageError;
+    private String message;
 
     public void setSuccess(boolean success) {
         this.success = success;
@@ -18,27 +16,11 @@ public class ActionViewData {
         return success;
     }
 
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public void setMessageError(String messageError) {
-        this.messageError = messageError;
-    }
-
-    public String getMessageError() {
-        return messageError;
-    }
-
-    public void setTimeOut(boolean timeOut) {
-        this.timeOut = timeOut;
-    }
-
-    public boolean isTimeOut() {
-        return timeOut;
+    public String getMessage() {
+        return message;
     }
 }

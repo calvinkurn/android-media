@@ -5,6 +5,7 @@ package com.tokopedia.seller.opportunity.data;
  */
 public class AcceptReplacementModel {
 
+    private String message;
     private boolean success;
     private String errorMessage;
     private int errorCode;
@@ -31,5 +32,13 @@ public class AcceptReplacementModel {
 
     public int getErrorCode() {
         return errorCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

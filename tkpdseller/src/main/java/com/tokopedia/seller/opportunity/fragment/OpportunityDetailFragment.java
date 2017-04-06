@@ -9,10 +9,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.OpportunityDetailActivity;
@@ -33,17 +33,13 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 public class OpportunityDetailFragment extends BasePresenterFragment<OpportunityPresenter>
         implements OpportunityView {
 
-    private static final int STATUS_SUCCESS = 1900;
-    private static final int STATUS_ERROR_MESSAGE = 1901;
-    private static final int STATUS_ERROR_NETWORK = 1902;
-    private static final int STATUS_ERROR_UNKNOWN = 1903;
-    private static final int STATUS_TIMEOUT = 1904;
     private static final int RESULT_DELETED = 8881;
 
     OpportunityDetailButtonView buttonView;
     OpportunityDetailStatusView statusView;
     OpportunityDetailProductView productView;
     OpportunityDetailSummaryView summaryView;
+    TkpdProgressDialog progressDialog;
 
     private ActionViewData actionViewData;
     private OpportunityItemViewModel data;
@@ -52,16 +48,6 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         OpportunityDetailFragment fragment = new OpportunityDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public ActionViewData getActionViewData() {
-        return actionViewData;
-    }
-
-    @Override
-    public void setActionViewData(ActionViewData actionViewData) {
-        this.actionViewData = actionViewData;
     }
 
     public OpportunityDetailFragment() {
@@ -80,7 +66,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.setOnSubmitClickListener();
+                presenter.acceptOpportunity();
                 dialogInterface.dismiss();
             }
         });
@@ -186,94 +172,39 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     }
 
     @Override
-    public void setOnAcceptOpportunityComplete() {
-        switch (generateActionStatus()) {
-            case STATUS_SUCCESS:
-                setOnActionSuccess();
-                break;
-            case STATUS_ERROR_MESSAGE:
-                setOnActionServerError();
-                break;
-            case STATUS_ERROR_NETWORK:
-                setOnActionNetworkError();
-                break;
-            case STATUS_ERROR_UNKNOWN:
-                setOnActionUnknownError();
-                break;
-            case STATUS_TIMEOUT:
-                setOnActionTimeOut();
-                break;
-            default:
-                break;
-        }
+    public String getOpportunityId() {
+        return String.valueOf(data.getOrderReplacementId());
     }
 
     @Override
-    public String getOpportunityId() {
-        return data.getOrderOrderId();
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.showDialog();
     }
 
-    private void setOnActionSuccess() {
-
+    @Override
+    public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
+        finishLoadingProgress();
+        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
     }
 
-    private void setOnActionServerError() {
-        NetworkErrorHelper.showSnackbar(getActivity(), actionViewData.getMessageError());
+    @Override
+    public void onErrorTakeOpportunity(String errorMessage) {
+        finishLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    private void setOnActionNetworkError() {
-        new ErrorHandler(new ErrorListener() {
-            @Override
-            public void onUnknown() {
-                setOnActionUnknownError();
-            }
-
-            @Override
-            public void onTimeout() {
-                setOnActionTimeOut();
-            }
-
-            @Override
-            public void onServerError() {
-                setOnActionUnknownError();
-            }
-
-            @Override
-            public void onBadRequest() {
-                setOnActionUnknownError();
-            }
-
-            @Override
-            public void onForbidden() {
-                setOnActionUnknownError();
-            }
-        }, actionViewData.getErrorCode());
+    private void finishLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
-    private void setOnActionTimeOut() {
-        setOnActionUnknownError();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.unsubscribeObservable();
     }
-
-    private void setOnActionUnknownError() {
-        NetworkErrorHelper.showSnackbar(getActivity());
-    }
-
-    private int generateActionStatus() {
-        if (actionViewData != null) {
-            if (actionViewData.isSuccess()) {
-                return STATUS_SUCCESS;
-            } else {
-                if (actionViewData.isTimeOut()) {
-                    return STATUS_TIMEOUT;
-                } else if (actionViewData.getMessageError() == null) {
-                    return STATUS_ERROR_MESSAGE;
-                } else if (actionViewData.getErrorCode() == 0) {
-                    return STATUS_ERROR_NETWORK;
-                }
-            }
-        }
-
-        return STATUS_ERROR_UNKNOWN;
-    }
-
 }
