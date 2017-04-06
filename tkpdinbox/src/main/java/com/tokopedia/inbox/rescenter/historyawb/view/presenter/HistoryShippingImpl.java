@@ -17,10 +17,11 @@ public class HistoryShippingImpl implements HistoryShipping {
 
     @Override
     public void generateFragment() {
-        viewListener.setHistoryShippingFragment(HistoryShippingFragment.createInstance(generateExtras()));
-    }
-
-    private String generateExtras() {
-        return viewListener.getResolutionID();
+        viewListener.setHistoryShippingFragment(
+                HistoryShippingFragment.createInstance(
+                        viewListener.getResolutionID(),
+                        viewListener.isAllowInputNewShippingAwb()
+                )
+        );
     }
 }

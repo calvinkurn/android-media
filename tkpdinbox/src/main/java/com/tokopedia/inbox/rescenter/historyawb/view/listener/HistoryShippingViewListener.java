@@ -17,4 +17,8 @@ public interface HistoryShippingViewListener {
     void setHistoryShippingFragment(Fragment fragment);
 
     Fragment getFragment();
+
+    void setAllowInputNewShippingAwb(boolean allowInputNewShippingAwb);
+
+    boolean isAllowInputNewShippingAwb();
 }

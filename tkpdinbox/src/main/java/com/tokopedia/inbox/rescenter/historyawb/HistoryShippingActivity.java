@@ -20,16 +20,19 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
         implements HistoryShippingViewListener {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private static final String EXTRA_PARAM_ALLOW_INPUT_NEW_SHIPPING_AWB = "is_allow_input_shipping_new_awb";
     private static final String TAG_HISTORY_SHIPPING_FRAGMENT =
             HistoryShippingFragment.class.getSimpleName();
 
     private Fragment fragment;
     private String resolutionID;
+    private boolean allowInputNewShippingAwb;
 
-    public static Intent newInstance(Context context, String resolutionID) {
+    public static Intent newInstance(Context context, String resolutionID, boolean allowInputNewShippingAwb) {
         Intent intent = new Intent(context, HistoryShippingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putBoolean(EXTRA_PARAM_ALLOW_INPUT_NEW_SHIPPING_AWB, allowInputNewShippingAwb);
         intent.putExtras(bundle);
         return intent;
     }
@@ -42,6 +45,16 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
     @Override
     public void setResolutionID(String resolutionID) {
         this.resolutionID = resolutionID;
+    }
+
+    @Override
+    public void setAllowInputNewShippingAwb(boolean allowInputNewShippingAwb) {
+        this.allowInputNewShippingAwb = allowInputNewShippingAwb;
+    }
+
+    @Override
+    public boolean isAllowInputNewShippingAwb() {
+        return allowInputNewShippingAwb;
     }
 
     @Override
@@ -62,6 +75,7 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
     @Override
     protected void setupBundlePass(Bundle extras) {
         setResolutionID(extras.getString(EXTRA_PARAM_RESOLUTION_ID));
+        setAllowInputNewShippingAwb(extras.getBoolean(EXTRA_PARAM_ALLOW_INPUT_NEW_SHIPPING_AWB));
     }
 
     @Override

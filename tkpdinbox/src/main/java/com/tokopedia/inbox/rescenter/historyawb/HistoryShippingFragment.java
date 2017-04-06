@@ -32,6 +32,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
+    private static final String EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB = "extra_allow_input_shipping";
     private static final int REQUEST_EDIT_SHIPPING = 12345;
     private static final int REQUEST_INPUT_SHIPPING = 54321;
     private RecyclerView recyclerview;
@@ -40,11 +41,13 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     private String resolutionID;
     private ArrayList<HistoryAwbViewItem> viewData;
     private TkpdProgressDialog normalLoading;
+    private boolean allowInputNewShippingAwb;
 
-    public static Fragment createInstance(String resolutionID) {
+    public static Fragment createInstance(String resolutionID, boolean allowInputShippingAwb) {
         HistoryShippingFragment fragment = new HistoryShippingFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_PARAM_RESOLUTION_ID, resolutionID);
+        bundle.putBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB, allowInputShippingAwb);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -134,12 +137,14 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     @Override
     public void onSaveState(Bundle state) {
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
+        state.putBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB, isAllowInputNewShippingAwb());
         state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
+        setAllowInputNewShippingAwb(savedState.getBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB));
         setViewData(savedState.<HistoryAwbViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
     }
 
@@ -161,6 +166,7 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     @Override
     protected void setupArguments(Bundle arguments) {
         setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
+        setAllowInputNewShippingAwb(arguments.getBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB));
     }
 
     @Override
@@ -199,7 +205,15 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
 
     @Override
     public void showInpuNewShippingAwb(boolean param) {
-        actionAddShippig.setVisibility(param ? View.VISIBLE : View.GONE);
+        actionAddShippig.setVisibility(param && isAllowInputNewShippingAwb() ? View.VISIBLE : View.GONE);
+    }
+
+    public boolean isAllowInputNewShippingAwb() {
+        return allowInputNewShippingAwb;
+    }
+
+    public void setAllowInputNewShippingAwb(boolean allowInputNewShippingAwb) {
+        this.allowInputNewShippingAwb = allowInputNewShippingAwb;
     }
 
     @Override

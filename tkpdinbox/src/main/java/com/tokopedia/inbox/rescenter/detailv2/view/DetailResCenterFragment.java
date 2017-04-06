@@ -454,7 +454,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     public void setOnActionAwbHistoryClick() {
-        startActivityForResult(HistoryShippingActivity.newInstance(getActivity(), getResolutionID()), REQUEST_INPUT_SHIPPING);
+        startActivityForResult(
+                HistoryShippingActivity.newInstance(
+                        getActivity(),
+                        getResolutionID(),
+                        getViewData().getButtonData().isShowInputAwb()
+                ),
+                REQUEST_INPUT_SHIPPING
+        );
     }
 
     @Override
