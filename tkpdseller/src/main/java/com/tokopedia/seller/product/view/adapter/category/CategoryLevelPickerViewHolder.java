@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.adapter;
+package com.tokopedia.seller.product.view.adapter.category;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;

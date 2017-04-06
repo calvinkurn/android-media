@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.adapter;
+package com.tokopedia.seller.product.view.adapter.category;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,10 +16,13 @@ import java.util.List;
  * @author sebastianuskh on 4/4/17.
  */
 
-public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
+public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter implements CategoryParentViewHolder.CategoryParentViewHolderListener {
     private static final int CATEGORY_PARENT = 1000;
     private static final int CATEGORY_ITEM = 2000;
+    private static final int UNSELECTED = -1;
+    public static final int SELECTED_ITEM_COUNT = 1;
     private List<CategoryViewModel> data;
+    private int selected = UNSELECTED;
 
     public CategoryPickerAdapter() {
         data = new ArrayList<>();
@@ -48,14 +51,17 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.category_parent_view_holder, parent, false);
-        return new CategoryParentViewHolder(view);
+        return new CategoryParentViewHolder(view, this);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case CATEGORY_PARENT:
-                ((CategoryParentViewHolder)holder).renderData(data.get(position));
+                boolean isNotSelected = selected == UNSELECTED;
+                int modifiedPos = isNotSelected ? position : selected;
+                ((CategoryParentViewHolder)holder)
+                        .renderData(data.get(modifiedPos), position, isNotSelected);
                 break;
             case CATEGORY_ITEM:
                 ((CategoryItemViewHolder)holder).renderData(data.get(position));
@@ -78,11 +84,27 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemCount() {
-        return data.size() + super.getItemCount();
+        if (selected == UNSELECTED) {
+            return data.size() + super.getItemCount();
+        } else {
+            return SELECTED_ITEM_COUNT;
+        }
     }
 
     public void renderItems(List<CategoryViewModel> map) {
         data = map;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void selectParent(int selected) {
+        this.selected = selected;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void unselectParent() {
+        this.selected = UNSELECTED;
         notifyDataSetChanged();
     }
 }

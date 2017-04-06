@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.adapter;
+package com.tokopedia.seller.product.view.adapter.category;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,11 +16,11 @@ import java.util.List;
  * @author sebastianuskh on 4/6/17.
  */
 
-public class CategoryLevelPickerAdapter extends BaseLinearRecyclerViewAdapter {
+public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int LEVEL_CATEGORY_VIEW = 1000;
     private final List<List<CategoryViewModel>> data;
 
-    public CategoryLevelPickerAdapter() {
+    public CategoryPickerLevelAdapter() {
         data = new ArrayList<>();
     }
 

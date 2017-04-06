@@ -12,6 +12,7 @@
         android:layout_centerVertical="true" />
 
     <ImageView
+        android:id="@+id/category_picker_chevron"
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_alignParentEnd="true"

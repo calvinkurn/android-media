@@ -14,8 +14,7 @@ import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
-import com.tokopedia.seller.product.view.adapter.CategoryLevelPickerAdapter;
-import com.tokopedia.seller.product.view.adapter.CategoryPickerAdapter;
+import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
 
@@ -33,7 +32,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Inject
     CategoryPickerPresenter presenter;
 
-    private CategoryLevelPickerAdapter adapter;
+    private CategoryPickerLevelAdapter adapter;
 
     public static CategoryPickerFragment createInstance() {
         return new CategoryPickerFragment();
@@ -68,7 +67,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     private void setupRecyclerView(View view) {
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CategoryLevelPickerAdapter();
+        adapter = new CategoryPickerLevelAdapter();
         categoryRecyclerView.setAdapter(adapter);
     }
 
