@@ -242,9 +242,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupAdapter() {
-        if (productAdapter != null) {
-            return;
-        }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
