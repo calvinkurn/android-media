@@ -23,4 +23,9 @@ public class MyEtalaseRepositoryImpl implements MyEtalaseRepository {
     public Observable<List<MyEtalaseDomainModel>> fetchMyEtalase() {
         return myEtalaseDataSource.fetchMyEtalase();
     }
+
+    @Override
+    public Observable<Boolean> addNewEtalase(String newEtalaseName) {
+        return myEtalaseDataSource.addNewEtalase(newEtalaseName);
+    }
 }

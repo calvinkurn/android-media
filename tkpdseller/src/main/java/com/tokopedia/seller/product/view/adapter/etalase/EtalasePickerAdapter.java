@@ -53,7 +53,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.addNewEtalase();
+                listener.openAddNewEtalaseDialog();
             }
         });
         return new AddEtalaseViewHolder(view);
@@ -90,5 +90,9 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
     public void renderData(List<MyEtalaseViewModel> etalases) {
         data.add(new AddEtalaseViewModel());
         data.addAll(etalases);
+    }
+
+    public void clearEtalaseList() {
+        data.clear();
     }
 }

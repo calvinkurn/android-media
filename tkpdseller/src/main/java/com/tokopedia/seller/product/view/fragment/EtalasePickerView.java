@@ -14,5 +14,11 @@ public interface EtalasePickerView extends CustomerView {
 
     void dismissLoading();
 
+    void showEmptyEtalase();
+
+    void clearEtalaseList();
+
     void renderEtalaseList(List<MyEtalaseViewModel> etalases);
+
+    void addNewEtalase(String newEtalaseName);
 }

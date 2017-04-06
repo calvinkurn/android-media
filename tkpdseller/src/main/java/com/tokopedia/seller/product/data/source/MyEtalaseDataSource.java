@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.source;
 
+import com.tokopedia.seller.product.data.mapper.AddEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.mapper.MyEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.source.cloud.MyEtalaseCloud;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
@@ -26,5 +27,11 @@ public class MyEtalaseDataSource {
         return myEtalaseCloud
                 .fetchMyEtalaseList()
                 .map(new MyEtalaseServiceToDomainMapper());
+    }
+
+    public Observable<Boolean> addNewEtalase(String newEtalaseName) {
+        return myEtalaseCloud
+                .addNewEtalase(newEtalaseName)
+                .map(new AddEtalaseServiceToDomainMapper());
     }
 }

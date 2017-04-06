@@ -5,5 +5,5 @@ package com.tokopedia.seller.product.view.adapter.etalase;
  */
 
 public interface EtalasePickerAdapterListener {
-    void addNewEtalase();
+    void openAddNewEtalaseDialog();
 }

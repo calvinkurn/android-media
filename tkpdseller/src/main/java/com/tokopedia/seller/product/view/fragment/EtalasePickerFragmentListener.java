@@ -5,5 +5,5 @@ package com.tokopedia.seller.product.view.fragment;
  */
 
 public interface EtalasePickerFragmentListener {
-    void addNewEtalase();
+    void openAddNewEtalaseDialog();
 }

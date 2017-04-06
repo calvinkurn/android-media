@@ -107,12 +107,27 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
+    public void showEmptyEtalase() {
+        adapter.showEmpty(true);
+    }
+
+    @Override
+    public void clearEtalaseList() {
+        adapter.clearEtalaseList();
+    }
+
+    @Override
     public void renderEtalaseList(List<MyEtalaseViewModel> etalases) {
         adapter.renderData(etalases);
     }
 
     @Override
-    public void addNewEtalase() {
-        listener.addNewEtalase();
+    public void addNewEtalase(String newEtalaseName) {
+        presenter.addNewEtalase(newEtalaseName);
+    }
+
+    @Override
+    public void openAddNewEtalaseDialog() {
+        listener.openAddNewEtalaseDialog();
     }
 }

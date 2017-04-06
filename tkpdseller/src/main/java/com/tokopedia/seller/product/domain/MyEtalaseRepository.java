@@ -12,4 +12,6 @@ import rx.Observable;
 
 public interface MyEtalaseRepository {
     Observable<List<MyEtalaseDomainModel>> fetchMyEtalase();
+
+    Observable<Boolean> addNewEtalase(String newEtalaseName);
 }

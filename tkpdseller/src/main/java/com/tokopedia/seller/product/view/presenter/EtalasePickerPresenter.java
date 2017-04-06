@@ -10,4 +10,6 @@ import com.tokopedia.seller.product.view.fragment.EtalasePickerView;
 public abstract class EtalasePickerPresenter extends BaseDaggerPresenter<EtalasePickerView>{
 
     public abstract void fetchEtalaseData(String shopId);
+
+    public abstract void addNewEtalase(String newEtalaseName);
 }
