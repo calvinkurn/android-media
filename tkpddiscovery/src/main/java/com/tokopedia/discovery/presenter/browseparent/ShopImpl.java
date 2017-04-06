@@ -96,9 +96,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.initAdapter();
-        }
+        view.initAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }
