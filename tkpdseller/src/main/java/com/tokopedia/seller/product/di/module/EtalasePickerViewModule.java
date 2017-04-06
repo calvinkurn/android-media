@@ -1,0 +1,26 @@
+package com.tokopedia.seller.product.di.module;
+
+import com.tokopedia.seller.product.di.scope.EtalasePickerViewScope;
+import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
+import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
+import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenterImpl;
+import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
+
+import dagger.Module;
+import dagger.Provides;
+
+/**
+ * @author sebastianuskh on 4/5/17.
+ */
+@EtalasePickerViewScope
+@Module
+public class EtalasePickerViewModule {
+
+    @EtalasePickerViewScope
+    @Provides
+    EtalasePickerPresenter provideEtalasePickerPresenter(FetchMyEtalaseUseCase fetchMyEtalaseUseCase, AddNewEtalaseUseCase addNewEtalaseUseCase){
+        return new EtalasePickerPresenterImpl(fetchMyEtalaseUseCase, addNewEtalaseUseCase);
+    }
+
+}
+

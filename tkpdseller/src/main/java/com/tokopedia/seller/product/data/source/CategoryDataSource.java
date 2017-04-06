@@ -8,7 +8,7 @@ import com.tokopedia.seller.product.data.source.cloud.CategoryCloud;
 import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.domain.model.CategoryGroupDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class CategoryDataSource {
         this.categoryCloud = categoryCloud;
     }
 
-    public Observable<List<CategoryGroupDomainModel>> fetchCategory() {
+    public Observable<List<CategoryDomainModel>> fetchCategory() {
         return categoryDataManager.fetchFromDatabase()
                 .map(new CheckDatabaseNotNull())
                 .onErrorResumeNext(fetchDataFromNetwork())

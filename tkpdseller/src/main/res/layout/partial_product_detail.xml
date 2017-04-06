@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.seller.product.view.widget.CountInputView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:count_hint="@string/product_label_minimum_buy"/>
+
+    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+        android:id="@+id/label_view_shop_window"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:content="@string/product_label_choose"
+        app:content_color="@color/tkpd_main_green"
+        app:label_show_arrow="true"
+        app:title="@string/product_label_shop_window" />
+</LinearLayout>

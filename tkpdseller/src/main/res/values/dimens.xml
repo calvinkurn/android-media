@@ -27,6 +27,9 @@
     <dimen name="gmstat_margin_bottom_double">16dp</dimen>
     <dimen name="gmstat_padding_item_top_transaction">6dp</dimen>
 
+    <!-- Product -->
+    <dimen name="product_margin_cards">@dimen/top_ads_dashboard_margin_cards</dimen>
+
     <!-- ChartView -->
 
     <!-- Axis thickness-->

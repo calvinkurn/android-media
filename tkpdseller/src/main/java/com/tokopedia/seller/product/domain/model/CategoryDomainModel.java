@@ -6,7 +6,7 @@ import java.util.List;
  * @author sebastianuskh on 4/4/17.
  */
 
-public class CategoryGroupDomainModel {
+public class CategoryDomainModel {
 
     private int id;
 
@@ -16,7 +16,7 @@ public class CategoryGroupDomainModel {
 
     private int weight;
 
-    private List<CategoryGroupDomainModel> child;
+    private List<CategoryDomainModel> child;
 
     public int getId() {
         return id;
@@ -50,11 +50,11 @@ public class CategoryGroupDomainModel {
         this.weight = weight;
     }
 
-    public List<CategoryGroupDomainModel> getChild() {
+    public List<CategoryDomainModel> getChild() {
         return child;
     }
 
-    public void setChild(List<CategoryGroupDomainModel> child) {
+    public void setChild(List<CategoryDomainModel> child) {
         this.child = child;
     }
 }
