@@ -17,7 +17,7 @@ public class CategoryViewMapper {
             CategoryViewModel viewModel = new CategoryViewModel();
             viewModel.setName(domainModel.getName());
             viewModel.setId(domainModel.getId());
-            viewModel.setChild(map(domainModel.getChild()));
+            viewModel.setHasChild(domainModel.isHasChild());
             viewModels.add(viewModel);
         }
         return viewModels;

@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.FetchCategoryDataUseCase;
+import com.tokopedia.seller.product.domain.interactor.FetchCategoryLevelOneUseCase;
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 import com.tokopedia.seller.product.view.mapper.CategoryViewMapper;
 
@@ -14,21 +14,21 @@ import rx.Subscriber;
  */
 
 public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
-    private final FetchCategoryDataUseCase fetchCategoryDataUseCase;
+    private final FetchCategoryLevelOneUseCase fetchCategoryLevelOneUseCase;
 
-    public CategoryPickerPresenterImpl(FetchCategoryDataUseCase fetchCategoryDataUseCase) {
-        this.fetchCategoryDataUseCase = fetchCategoryDataUseCase;
+    public CategoryPickerPresenterImpl(FetchCategoryLevelOneUseCase fetchCategoryLevelOneUseCase) {
+        this.fetchCategoryLevelOneUseCase = fetchCategoryLevelOneUseCase;
     }
 
     @Override
-    public void fetchCategoryData() {
+    public void fetchCategoryLevelOne() {
         checkViewAttached();
         getView().showLoadingDialog();
-        fetchCategoryDataUseCase.execute(RequestParams.EMPTY, new FetchCategoryDataSubscriber());
+        fetchCategoryLevelOneUseCase.execute(RequestParams.EMPTY, new FetchCategoryLevelOneSubscriber());
 
     }
 
-    private class FetchCategoryDataSubscriber extends Subscriber<List<CategoryDomainModel>> {
+    private class FetchCategoryLevelOneSubscriber extends Subscriber<List<CategoryDomainModel>> {
         @Override
         public void onCompleted() {
 
@@ -44,7 +44,6 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         public void onNext(List<CategoryDomainModel> domainModel) {
             checkViewAttached();
             getView().dismissLoadingDialog();
-
             getView().renderCategory(CategoryViewMapper.map(domainModel));
 
 

@@ -18,7 +18,7 @@ public class CategoryServiceToDbMapper implements Func1<CategoryServiceModel, Li
     public List<CategoryDataBase> call(CategoryServiceModel serviceModel) {
         List<Category> categories = serviceModel.getData().getCategories();
 
-        return mapCategories(categories, -1);
+        return mapCategories(categories, CategoryDataBase.LEVEL_ONE_PARENT);
     }
 
     private List<CategoryDataBase> mapCategories(List<Category> categories, int parent) {
@@ -40,7 +40,10 @@ public class CategoryServiceToDbMapper implements Func1<CategoryServiceModel, Li
         dbModel.setIdentifier(category.getIdentifier());
         dbModel.setName(category.getName());
         dbModel.setParentId(parent);
-        if (category.getChild() != null && !category.getChild().isEmpty()){
+        dbModel.setWeight(category.getWeight());
+        boolean hasChild = category.getChild() != null && !category.getChild().isEmpty();
+        dbModel.setHasChild(hasChild);
+        if (hasChild){
             dbModels.addAll(mapCategories(category.getChild(), Integer.parseInt(category.getId())));
         }
         dbModels.add(dbModel);

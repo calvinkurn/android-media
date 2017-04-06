@@ -13,5 +13,7 @@ import rx.Observable;
 public interface CategoryRepository {
     Observable<Boolean> checkVersion();
 
-    Observable<List<CategoryDomainModel>> fetchCategory();
+    Observable<Boolean> checkCategoryAvailable();
+
+    Observable<List<CategoryDomainModel>> fetchCategoryLevelOne();
 }

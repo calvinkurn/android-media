@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.domain.model;
 
-import java.util.List;
-
 /**
  * @author sebastianuskh on 4/4/17.
  */
@@ -13,10 +11,7 @@ public class CategoryDomainModel {
     private String name;
 
     private String identifier;
-
-    private int weight;
-
-    private List<CategoryDomainModel> child;
+    private boolean hasChild;
 
     public int getId() {
         return id;
@@ -42,19 +37,11 @@ public class CategoryDomainModel {
         this.identifier = identifier;
     }
 
-    public int getWeight() {
-        return weight;
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
-    public List<CategoryDomainModel> getChild() {
-        return child;
-    }
-
-    public void setChild(List<CategoryDomainModel> child) {
-        this.child = child;
+    public boolean isHasChild() {
+        return hasChild;
     }
 }

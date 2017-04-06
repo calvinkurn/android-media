@@ -9,7 +9,7 @@ import java.util.List;
 public class CategoryViewModel {
     private String name;
     private int id;
-    private List<CategoryViewModel> child;
+    private boolean hasChild;
 
     public void setName(String name) {
         this.name = name;
@@ -17,10 +17,6 @@ public class CategoryViewModel {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setChild(List<CategoryViewModel> child) {
-        this.child = child;
     }
 
     public String getName() {
@@ -31,7 +27,11 @@ public class CategoryViewModel {
         return id;
     }
 
-    public List<CategoryViewModel> getChild() {
-        return child;
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
     }
 }

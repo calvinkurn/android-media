@@ -32,36 +32,41 @@ public class CategoryDataSource {
         this.categoryCloud = categoryCloud;
     }
 
-    public Observable<List<CategoryDomainModel>> fetchCategory() {
+    public Observable<Boolean> checkCategoryAvailable() {
         return categoryDataManager.fetchFromDatabase()
                 .map(new CheckDatabaseNotNull())
-                .onErrorResumeNext(fetchDataFromNetwork())
-                .map(new CategoryDataToDomainMapper());
+                .onErrorResumeNext(fetchDataFromNetwork());
     }
 
     @NonNull
-    private Observable<List<CategoryDataBase>> fetchDataFromNetwork() {
+    private Observable<Boolean> fetchDataFromNetwork() {
         return categoryCloud.fetchDataFromNetwork()
             .map(new CategoryServiceToDbMapper())
             .map(new StoreDataToDatabase());
     }
 
-    private class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, List<CategoryDataBase>> {
+    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne() {
+        return categoryDataManager
+                .fetchCategoryFromParent(CategoryDataBase.LEVEL_ONE_PARENT)
+                .map(new CategoryDataToDomainMapper());
+    }
+
+    private class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, Boolean> {
         @Override
-        public List<CategoryDataBase> call(List<CategoryDataBase> categoryDataBases) {
+        public Boolean call(List<CategoryDataBase> categoryDataBases) {
             if(categoryDataBases == null || categoryDataBases.isEmpty()){
                 throw new RuntimeException("");
             }
-            return categoryDataBases;
+            return true;
         }
     }
 
-    private class StoreDataToDatabase implements Func1<List<CategoryDataBase>, List<CategoryDataBase>> {
+    private class StoreDataToDatabase implements Func1<List<CategoryDataBase>, Boolean> {
 
         @Override
-        public List<CategoryDataBase> call(List<CategoryDataBase> categoryDataBases) {
+        public Boolean call(List<CategoryDataBase> categoryDataBases) {
             categoryDataManager.storeData(categoryDataBases);
-            return categoryDataBases;
+            return true;
         }
     }
 }

@@ -32,7 +32,12 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Observable<List<CategoryDomainModel>> fetchCategory() {
-        return categoryDataSource.fetchCategory();
+    public Observable<Boolean> checkCategoryAvailable() {
+        return categoryDataSource.checkCategoryAvailable();
+    }
+
+    @Override
+    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne() {
+        return categoryDataSource.fetchCategoryLevelOne();
     }
 }

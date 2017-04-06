@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
@@ -73,7 +72,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     private void initVar() {
-        presenter.fetchCategoryData();
+        presenter.fetchCategoryLevelOne();
     }
 
     @Override

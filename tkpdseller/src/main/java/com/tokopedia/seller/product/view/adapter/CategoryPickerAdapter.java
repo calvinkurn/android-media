@@ -69,8 +69,7 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter {
     public int getItemViewType(int position) {
         if (data.isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
-        } else if (data.get(position).getChild() != null
-                && !data.get(position).getChild().isEmpty()){
+        } else if (data.get(position).isHasChild()){
             return CATEGORY_PARENT;
         } else {
             return CATEGORY_ITEM;

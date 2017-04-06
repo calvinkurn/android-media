@@ -19,22 +19,22 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryDataUseCase extends UseCase<List<CategoryDomainModel>>{
+public class FetchCategoryLevelOneUseCase extends UseCase<List<CategoryDomainModel>>{
 
     private final CategoryRepository categoryRepository;
 
     @Inject
-    public FetchCategoryDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
+    public FetchCategoryLevelOneUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
         super(threadExecutor, postExecutionThread);
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
-
         return Observable.just(true)
                 .flatMap(new CheckVersion())
-                .flatMap(new FetchCategory());
+                .flatMap(new CheckCategoryAvailable())
+                .flatMap(new FetchCategoryLevelOne());
     }
 
     private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
@@ -44,10 +44,17 @@ public class FetchCategoryDataUseCase extends UseCase<List<CategoryDomainModel>>
         }
     }
 
-    private class FetchCategory implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
+    private class CheckCategoryAvailable implements Func1<Boolean, Observable<Boolean>> {
+        @Override
+        public Observable<Boolean> call(Boolean aBoolean) {
+            return categoryRepository.checkCategoryAvailable();
+        }
+    }
+
+    private class FetchCategoryLevelOne implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
         @Override
         public Observable<List<CategoryDomainModel>> call(Boolean aBoolean) {
-            return categoryRepository.fetchCategory();
+            return categoryRepository.fetchCategoryLevelOne();
         }
     }
 }
