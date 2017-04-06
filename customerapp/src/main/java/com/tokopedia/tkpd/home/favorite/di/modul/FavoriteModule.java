@@ -44,7 +44,8 @@ public class FavoriteModule {
                                            MojitoService mojitoService,
                                            GlobalCacheManager cacheManager) {
 
-        return new FavoriteFactory(context, gson, serviceVersion4, topAdsService, mojitoService, cacheManager);
+        return new FavoriteFactory(
+                context, gson, serviceVersion4, topAdsService, mojitoService, cacheManager);
     }
 
     @FavoriteScope
@@ -78,7 +79,8 @@ public class FavoriteModule {
                                                             GetFavoriteShopUsecase favUseCase,
                                                             GetWishlistUsecase wishlistUseCase,
                                                             GetTopAdsShopUseCase topAdsShopUseCase){
-        return new GetAllDataFavoriteUseCase(threadExecutor,  postExecutor,  favUseCase,  wishlistUseCase, topAdsShopUseCase);
+        return new GetAllDataFavoriteUseCase(
+                threadExecutor, postExecutor, favUseCase, wishlistUseCase, topAdsShopUseCase);
     }
 
     @FavoriteScope

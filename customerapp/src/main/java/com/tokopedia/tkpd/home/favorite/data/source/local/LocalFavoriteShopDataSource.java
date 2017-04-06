@@ -22,7 +22,8 @@ public class LocalFavoriteShopDataSource {
     private Gson gson;
     private GlobalCacheManager cacheManager;
 
-    public LocalFavoriteShopDataSource(Context context, Gson gson, GlobalCacheManager cacheManager) {
+    public LocalFavoriteShopDataSource(Context context,
+                                       Gson gson, GlobalCacheManager cacheManager) {
         this.context = context;
         this.gson = gson;
         this.cacheManager = cacheManager;

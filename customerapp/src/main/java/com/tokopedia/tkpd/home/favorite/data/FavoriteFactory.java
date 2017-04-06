@@ -53,7 +53,7 @@ public class FavoriteFactory {
 
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistNetworkError()));
+                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
 
     }
 
@@ -62,7 +62,7 @@ public class FavoriteFactory {
     Observable<DomainWishlist> getFreshWishlist(TKPDMapParam<String, Object> param) {
         return cloudWishlistObservable(param)
                 .onExceptionResumeNext(
-                        localWishlistObservable().doOnNext(setWishlistNetworkError()));
+                        localWishlistObservable().doOnNext(setWishlistErrorNetwork()));
     }
 
     Observable<FavoriteShop> getFavoriteShop(TKPDMapParam<String, String> param) {
@@ -75,7 +75,7 @@ public class FavoriteFactory {
     Observable<FavoriteShop> getFavoriteShopFirstPage(TKPDMapParam<String, String> params) {
         return getCloudFavoriteObservable(params)
                 .onExceptionResumeNext(
-                        getLocalFavoriteObservable().doOnNext(setFavoriteNetworkError()));
+                        getLocalFavoriteObservable().doOnNext(setFavoriteErrorNetwork()));
     }
 
 
@@ -93,7 +93,7 @@ public class FavoriteFactory {
 
         return topAdsShopDataSource.getTopAdsShop(params)
                 .onExceptionResumeNext(
-                        getLocalTopAdsShopObservable().doOnNext(setTopAdsShopNetworkError()));
+                        getLocalTopAdsShopObservable().doOnNext(setTopAdsShopErrorNetwork()));
     }
 
     Observable<FavShop> postFavShop(TKPDMapParam<String, String> param) {
@@ -119,7 +119,7 @@ public class FavoriteFactory {
         return topAdsShopDataSource.getTopAdsShop(params)
                 .onExceptionResumeNext(
                         getLocalTopAdsShopObservable()
-                                .doOnNext(setTopAdsShopNetworkError()).first());
+                                .doOnNext(setTopAdsShopErrorNetwork()).first());
     }
 
 
@@ -147,7 +147,7 @@ public class FavoriteFactory {
         return new LocalWishlistDataSource(context, gson, cacheManager).getWishlist();
     }
 
-    private Action1<DomainWishlist> setWishlistNetworkError() {
+    private Action1<DomainWishlist> setWishlistErrorNetwork() {
         return new Action1<DomainWishlist>() {
             @Override
             public void call(DomainWishlist domainWishlist) {
@@ -156,7 +156,7 @@ public class FavoriteFactory {
         };
     }
 
-    private Action1<FavoriteShop> setFavoriteNetworkError() {
+    private Action1<FavoriteShop> setFavoriteErrorNetwork() {
         return new Action1<FavoriteShop>() {
             @Override
             public void call(FavoriteShop favoriteShop) {
@@ -166,7 +166,7 @@ public class FavoriteFactory {
     }
 
     @NonNull
-    private Action1<TopAdsShop> setTopAdsShopNetworkError() {
+    private Action1<TopAdsShop> setTopAdsShopErrorNetwork() {
         return new Action1<TopAdsShop>() {
             @Override
             public void call(TopAdsShop topAdsShop) {

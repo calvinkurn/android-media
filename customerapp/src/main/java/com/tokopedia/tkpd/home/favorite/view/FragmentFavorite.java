@@ -51,6 +51,8 @@ public class FragmentFavorite extends BaseDaggerFragment
         implements FavoriteContract.View, FavoriteClickListener,
         SwipeRefreshLayout.OnRefreshListener {
 
+    private static final long DURATION_ANIMATOR = 1000;
+
     @BindView(R.id.index_favorite_recycler_view)
     RecyclerView recyclerView;
     @BindView(R.id.swipe_refresh_layout)
@@ -59,17 +61,13 @@ public class FragmentFavorite extends BaseDaggerFragment
     ProgressBar progressBar;
     @BindView(R.id.main_content)
     RelativeLayout mainContent;
-    LinearLayoutManager layoutManager;
-    DefaultItemAnimator animator;
 
     @Inject
     FavoritePresenter favoritePresenter;
 
-    private static final long DURATION_ANIMATOR = 1000;
     private Unbinder unbinder;
     private FavoriteAdapter favoriteAdapter;
     private EndlessRecyclerviewListener recylerviewScrollListener;
-
     private SnackbarRetry messageSnackbar;
     private boolean isWishlistNetworkFailed;
     private boolean isFavoriteShopNetworkFailed;
@@ -79,7 +77,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
@@ -95,7 +92,6 @@ public class FragmentFavorite extends BaseDaggerFragment
 
         return parentView;
     }
-
 
     @Override
     public void onDestroyView() {
@@ -327,10 +323,24 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     private void prepareView() {
 
+        initRecyclerview();
+        swipeToRefresh.setOnRefreshListener(this);
+        messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        favoritePresenter.refreshAllDataFavoritePage();
+                    }
+                });
+
+    }
+
+    private void initRecyclerview() {
         FavoriteAdapterTypeFactory typeFactoryForList = new FavoriteAdapterTypeFactory(this);
-        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         favoriteAdapter = new FavoriteAdapter(typeFactoryForList, new ArrayList<Visitable>());
-        animator = new DefaultItemAnimator();
+        DefaultItemAnimator animator = new DefaultItemAnimator();
         animator.setAddDuration(DURATION_ANIMATOR);
         recylerviewScrollListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
@@ -341,17 +351,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(animator);
         recyclerView.setAdapter(favoriteAdapter);
-
         recyclerView.addOnScrollListener(recylerviewScrollListener);
-        swipeToRefresh.setOnRefreshListener(this);
-
-        messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        favoritePresenter.refreshAllDataFavoritePage();
-                    }
-                });
 
     }
 
