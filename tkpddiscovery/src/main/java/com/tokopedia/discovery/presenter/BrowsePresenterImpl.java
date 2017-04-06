@@ -161,7 +161,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP:
-                toolbarTitle = "";
+                toolbarTitle = browseModel.getQ();
+                searchQuery = toolbarTitle;
                 isToolbarClickable = true;
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
@@ -177,7 +178,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
         }
 
         browseView.initToolbar(toolbarTitle, isToolbarClickable);
-        browseView.initDiscoverySearchView();
+        browseView.initDiscoverySearchView(searchQuery);
 
         cacheGTM = new LocalCacheHandler(context, KEY_GTM);
 

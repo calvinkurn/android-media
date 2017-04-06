@@ -118,10 +118,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void initDiscoverySearchView() {
+    public void initDiscoverySearchView(String lastQuery) {
         discoverySearchView.setActivity(this);
         discoverySearchView.setOnQueryTextListener(this);
         discoverySearchView.setOnSearchViewListener(this);
+        discoverySearchView.setLastQuery(lastQuery);
     }
 
     @Override
