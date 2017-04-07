@@ -13,10 +13,12 @@ import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
  * @author sebastianuskh on 4/4/17.
  */
 
-public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter implements CategoryParentViewHolder.CategoryParentViewHolderListener {
+public class CategoryPickerAdapter
+        extends BaseLinearRecyclerViewAdapter
+        implements CategoryParentViewHolder.CategoryParentViewHolderListener {
     private static final int CATEGORY_PARENT = 1000;
     private static final int CATEGORY_ITEM = 2000;
-    public static final int SELECTED_ITEM_COUNT = 1;
+    private static final int SELECTED_ITEM_COUNT = 1;
     private CategoryLevelViewModel data;
     private final CategoryPickerAdapterListener listener;
 
@@ -54,11 +56,12 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case CATEGORY_PARENT:
-                boolean isSelected = data.getSelected() != CategoryLevelViewModel.UNSELECTED;
-                int renderedPosition = isSelected ? data.getSelectedPositionFromIndex() : position;
+                int renderedPosition = getPositionRendered(position);
                 ((CategoryParentViewHolder)holder)
                         .renderData(
-                                data.getViewModels().get(renderedPosition), isSelected, data.getLevel()
+                                data.getViewModels().get(renderedPosition),
+                                isOneCategorySelected(),
+                                data.getLevel()
                         );
                 break;
             case CATEGORY_ITEM:
@@ -76,7 +79,10 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     public int getItemViewType(int position) {
         if (data.getViewModels().isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
-        } else if (data.getViewModels().get(position).isHasChild()){
+        } else if (
+                data.getViewModels()
+                        .get(getPositionRendered(position))
+                        .isHasChild()){
             return CATEGORY_PARENT;
         } else {
             return CATEGORY_ITEM;
@@ -90,6 +96,15 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
         } else {
             return SELECTED_ITEM_COUNT;
         }
+    }
+
+    private int getPositionRendered(int position) {
+        boolean isSelected = isOneCategorySelected();
+        return isSelected ? data.getSelectedPositionFromIndex() : position;
+    }
+
+    private boolean isOneCategorySelected() {
+        return data.getSelected() != CategoryLevelViewModel.UNSELECTED;
     }
 
     public void renderItems(CategoryLevelViewModel map) {
