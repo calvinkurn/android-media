@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/LabelLayoutWithoutBorder"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="bottom">
 
     <android.support.design.widget.TextInputLayout
@@ -13,8 +14,8 @@
             android:layout_width="match_parent"
             android:drawableEnd="@drawable/ic_rec_down_set_date"
             android:drawableRight="@drawable/ic_rec_down_set_date"
-            android:textIsSelectable="true"
-            android:inputType="none" />
+            android:inputType="none"
+            android:textIsSelectable="true" />
 
     </android.support.design.widget.TextInputLayout>
 </FrameLayout>

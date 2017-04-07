@@ -5,6 +5,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <LinearLayout
+        style="@style/LabelLayoutWithoutBorder"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.TopAds.Body.Gray"
+            android:text="@string/product_label_product_info" />
+
+    </LinearLayout>
+
     <FrameLayout style="@style/LabelLayoutWithoutBorder">
 
         <android.support.design.widget.TextInputLayout

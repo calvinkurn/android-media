@@ -271,6 +271,7 @@
     <string name="next">Selanjutnya</string>
 
     <!-- Product -->
+    <string name="product_label_product_info">Info Produk</string>
     <string name="product_label_name">Nama Produk</string>
     <string name="product_label_catalog">Katalog</string>
     <string name="product_label_category">Kategori</string>
