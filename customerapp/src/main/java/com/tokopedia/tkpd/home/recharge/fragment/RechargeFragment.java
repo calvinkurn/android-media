@@ -147,6 +147,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private Boolean showPrice = true;
     private int currentPosition;
     private Unbinder unbinder;
+    private RadioGroup radGroup;
     //endregion
 
     public static RechargeFragment newInstance(Category category, int position) {
@@ -309,11 +310,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (temp.length() >= 3) {
                 String phonePrefix = temp.substring(0, temp.length() <= 4 ? temp.length() : 4);
                 if (s.length() >= 3) {
-                    if (!isAlreadyHavePhonePrefixInView) {
-                        this.rechargePresenter.validatePhonePrefix(phonePrefix,
-                                category.getId(),
-                                category.getAttributes().getValidatePrefix());
-                    }
+                    this.rechargePresenter.validatePhonePrefix(phonePrefix,
+                            category.getId(),
+                            category.getAttributes().getValidatePrefix());
                 } else {
                     isAlreadyHavePhonePrefixInView = false;
                     hideFormAndImageOperator();
@@ -332,6 +331,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextClear() {
+        LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+        rechargePresenter.clearRechargePhonebookCache();
         hideFormAndImageOperator();
     }
 
@@ -463,6 +464,20 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             for (int i = 0; i < productList.size(); i++) {
                 if (productList.get(i).getId().equals(lastProductId)) {
                     spnNominal.setSelection(i);
+                }
+            }
+        }
+    }
+
+    private void checkRadioButtonBasedOnLastOrder(List<RechargeOperatorModel> operators, RadioGroup radioGroup) {
+        if (lastOrder != null && lastOrder.getData() != null
+                && lastOrder.getData().getAttributes() != null && radioGroup != null) {
+            for (int i = 0; i < operators.size(); i++) {
+                if (operators.get(i).operatorId == lastOrder.getData().getAttributes().getOperator_id()) {
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
+                    selectedOperator = operators.get(radGroup.getChildAt(i).getId());
+                    rechargePresenter.validateWithOperator(
+                            category.getId(), String.valueOf(selectedOperator.operatorId));
                 }
             }
         }
@@ -606,7 +621,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         spnOperator.setVisibility(View.GONE);
         radGroupContainer.setVisibility(View.VISIBLE);
 
-        RadioGroup radGroup = new RadioGroup(getActivity());
+        radGroup = new RadioGroup(getActivity());
         radGroupContainer.addView(radGroup);
         radGroup.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -621,6 +636,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
         radGroup.check(radGroup.getChildAt(0).getId());
         selectedOperator = operators.get(radGroup.getChildAt(0).getId());
+        checkRadioButtonBasedOnLastOrder(operators, radGroup);
         selectedOperatorId = Integer.toString(selectedOperator.operatorId);
         minLengthDefaultOperator = selectedOperator.minimumLength;
         radGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -628,9 +644,11 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 hideFormAndImageOperator();
                 rechargeEditText.setEmptyString();
+                selectedProduct = null;
                 selectedOperator = operators.get(i);
                 selectedOperatorId = Integer.toString(operators.get(i).operatorId);
                 minLengthDefaultOperator = selectedOperator.minimumLength;
+                rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
             }
         });
     }
@@ -654,7 +672,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
             renderLastOrder();
         } else {
-            hideFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         }
     }
 
@@ -663,14 +681,24 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         if (lastOrder != null && lastOrder.getData() != null && category != null) {
             if (lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
                 rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
+            }
+            handlingAppearanceFormAndImageOperator();
+        }
+    }
+
+    private void handlingAppearanceFormAndImageOperator() {
+        if (rechargeEditText != null && !rechargeEditText.getText().toString().trim().equals("")) {
+            if (isAlreadyHavePhonePrefixInView) {
                 showFormAndImageOperator();
             } else {
-                if (!rechargeEditText.getText().toString().trim().equals("")) {
+                if (selectedOperator != null && selectedOperator.showProduct) {
                     showFormAndImageOperator();
                 } else {
-                    hideFormAndImageOperator();
+                    hideFormAndShowImageOperator();
                 }
             }
+        } else {
+            hideFormAndImageOperator();
         }
     }
 
@@ -704,7 +732,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             if (isAlreadyHavePhonePrefixInView) {
                 setTextToEditTextOrSetVisibilityForm();
             } else {
-                hideFormAndImageOperator();
+                handlingAppearanceFormAndImageOperator();
             }
             setPhoneBookVisibility();
 

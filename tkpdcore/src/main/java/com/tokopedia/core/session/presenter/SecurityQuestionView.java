@@ -15,6 +15,7 @@ public interface SecurityQuestionView extends BaseView {
     String SECURITY_1_KEY = "security_1";
     String SECURITY_2_KEY = "security_2";
     String USER_ID_KEY = "user_id";
+    String EMAIL = "email";
     String TAG = "MNORMANSYAH";
     String messageTAG = "SecurityQuestionView : ";
 

@@ -44,6 +44,7 @@ public class TkpdCache {
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
+    public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
 
 
     public static void clearAllCache(Context context) {

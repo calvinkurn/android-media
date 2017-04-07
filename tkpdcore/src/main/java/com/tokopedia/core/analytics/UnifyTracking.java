@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class UnifyTracking extends TrackingUtils {
 
+    public static final String EXTRA_LABEL = "label";
+
     public static void eventHomeTab(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE,
@@ -1330,6 +1332,60 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickPopularSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_POPULAR,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickRecentSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_RECENT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickHotListSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_HOTLIST,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteShopSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteCategory(String catId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CATEGORY,
+                catId + " | " + label
+        ).getEvent());
+    }
+
     public static void eventClickGMSwitcher(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.TOP_SELLER,
@@ -1341,6 +1397,42 @@ public class UnifyTracking extends TrackingUtils {
 
 
     public static void eventPersonalizedClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSlideBannerClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SLIDE_BANNER,
+                AppEventTracking.Category.SLIDER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventPushNotifLowTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_LOW_CREDIT
+        ).getEvent());
+    }
+
+    public static void eventPushNotifSuccessTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
+        ).getEvent());
+    }
+
+    public static void eventOpenTopadsPushNotification(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,

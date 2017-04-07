@@ -2,23 +2,20 @@ package com.tokopedia.discovery.search;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.discovery.search.domain.DeleteParam;
 import com.tokopedia.discovery.search.domain.SearchParam;
 import com.tokopedia.discovery.search.domain.interactor.DeleteSearchUseCase;
-import com.tokopedia.discovery.search.domain.interactor.SearchDataInteractor;
 import com.tokopedia.discovery.search.domain.interactor.SearchUseCase;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -135,6 +132,9 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
+            if (e instanceof UnknownHostException) {
+                getView().showNetworkErrorMessage();
+            }
         }
 
         @Override

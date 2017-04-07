@@ -37,4 +37,15 @@
     <string name="server_error_problem">Masalah Server Error</string>
     <string name="application_version_text">Versi Aplikasi:</string>
     <string name="send_email">Kirim Email</string>
+    <string name="title_change_phone_number_request">Pengajuan Ubah Nomor Ponsel</string>
+    <string name="info_change_phone_number_request">Mohon untuk melampirkan foto KTP dan foto halaman pertama buku tabungan yang sudah terdaftar.</string>
+    <string name="id_photo">Foto KTP</string>
+    <string name="info_id_photo">Pastikan data KTP Anda terlihat jelas di foto.</string>
+    <string name="saving_book_photo_or_transaction_proof">Foto Buku Tabungan atau Bukti Transaksi</string>
+    <string name="info_bank_account">Pastikan data terlihat jelas di foto. Bila tidak mempunyai buku tabungan, dapat diganti dengan bukti transaksi di Tokopedia.</string>
+    <string name="pick_file_here">Pilih file Anda di sini</string>
+    <string name="waiting_data_checking_process">Menunggu Proses Pengecekan Data</string>
+    <string name="info_change_phone_number_request_2">Permintaan akan di proses dalam 1 x 24 jam, silakan mengikuti petunjuk perubahan di email Anda.</string>
+    <string name="info_change_phone_number">Kami akan memproses pengajuan perubahan nomor ponsel Anda dalam waktu 1 x 24 jam. Silahkan mengikuti petunjuk perubahan di email Anda.</string>
+    <string name="default_error_upload_image">Gagal mengupload gambar</string>
 </resources>
