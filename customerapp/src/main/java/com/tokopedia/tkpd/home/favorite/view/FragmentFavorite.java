@@ -89,7 +89,7 @@ public class FragmentFavorite extends BaseDaggerFragment
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         favoritePresenter.attachView(this);
-//        favoritePresenter.loadDataWishlistAndFavorite();
+//        favoritePresenter.loadInitialData();
         checkImpressionOncreate();
         return parentView;
     }
@@ -130,7 +130,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                 if (isAdapterNotEmpty()) {
                     validateMessageError();
                 } else {
-                    favoritePresenter.loadDataWishlistAndFavorite();
+                    favoritePresenter.loadInitialData();
                 }
                 ScreenTracking.screen(getScreenName());
             } else {
@@ -379,7 +379,7 @@ public class FragmentFavorite extends BaseDaggerFragment
                         && ((ParentIndexHome) getActivity())
                         .getViewPager().getCurrentItem() == 2) {
 
-                    favoritePresenter.loadDataWishlistAndFavorite();
+                    favoritePresenter.loadInitialData();
                 }
             }
         }

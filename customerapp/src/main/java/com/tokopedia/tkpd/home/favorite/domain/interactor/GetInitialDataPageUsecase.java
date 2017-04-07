@@ -19,17 +19,18 @@ import rx.functions.Func3;
  * @author Kulomady on 1/19/17.
  */
 
-public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
+public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
     private GetWishlistUsecase getWishlistUsecase;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
 
-    public GetFavoriteAndWishlistUsecase(ThreadExecutor threadExecutor,
-                                         PostExecutionThread postExecutionThread,
-                                         GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                         GetWishlistUsecase getWishlistUsecase,
-                                         GetTopAdsShopUseCase getTopAdsShopUseCase) {
+    public GetInitialDataPageUsecase(ThreadExecutor threadExecutor,
+                                     PostExecutionThread postExecutionThread,
+                                     GetFavoriteShopUsecase getFavoriteShopUsecase,
+                                     GetWishlistUsecase getWishlistUsecase,
+                                     GetTopAdsShopUseCase getTopAdsShopUseCase) {
+
         super(threadExecutor, postExecutionThread);
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
         this.getWishlistUsecase = getWishlistUsecase;
@@ -38,14 +39,6 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
 
     @Override
     public Observable<DataFavorite> createObservable(RequestParams requestParams) {
-//        return Observable.zip(getWishlist(), getFavoriteShop(),
-//                new Func2<DomainWishlist, FavoriteShop, DataFavorite>() {
-//
-//                    @Override
-//                    public DataFavorite call(DomainWishlist domainWishlist, FavoriteShop favoriteShop) {
-//                        return validateDataFavorite(domainWishlist, favoriteShop);
-//                    }
-//                });
         return Observable.zip(getWishlist(), getTopAdsShop(), getFavoriteShop(),
                 new Func3<DomainWishlist, TopAdsShop, FavoriteShop, DataFavorite>() {
 
@@ -70,7 +63,7 @@ public class GetFavoriteAndWishlistUsecase extends UseCase<DataFavorite> {
                 && adsShop.getTopAdsShopItemList() == null
                 && favoriteShop.getData() == null) {
 
-            throw new RuntimeException("all network error");
+            throw new RuntimeException("all request network error");
         }
 
         DataFavorite dataFavorite = new DataFavorite();

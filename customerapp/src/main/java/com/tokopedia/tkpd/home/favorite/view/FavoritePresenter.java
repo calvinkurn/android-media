@@ -11,7 +11,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.model.DataFavorite;
@@ -41,7 +41,7 @@ public class FavoritePresenter
 
     private static final String TAG = "FavoritePresenter";
 
-    private final GetFavoriteAndWishlistUsecase getFavoriteAndWishlistUsecase;
+    private final GetInitialDataPageUsecase getInitialDataPageUsecase;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
     private final AddFavoriteShopUseCase addFavoriteShopUseCase;
     private final GetAllDataFavoriteUseCase getAllDataFavoriteUseCase;
@@ -50,14 +50,14 @@ public class FavoritePresenter
     private PagingHandler pagingHandler;
 
     @Inject
-    FavoritePresenter(GetFavoriteAndWishlistUsecase getFavoriteAndWishlistUsecase,
+    FavoritePresenter(GetInitialDataPageUsecase getInitialDataPageUsecase,
                       GetTopAdsShopUseCase getTopAdsShopUseCase,
                       AddFavoriteShopUseCase addFavoriteShopUseCase,
                       GetAllDataFavoriteUseCase getAllDataFavoriteUseCase,
                       GetFavoriteShopUsecase getFavoriteShopUsecase,
                       DataFavoriteMapper favoriteMapper) {
 
-        this.getFavoriteAndWishlistUsecase = getFavoriteAndWishlistUsecase;
+        this.getInitialDataPageUsecase = getInitialDataPageUsecase;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
         this.addFavoriteShopUseCase = addFavoriteShopUseCase;
         this.getAllDataFavoriteUseCase = getAllDataFavoriteUseCase;
@@ -75,7 +75,7 @@ public class FavoritePresenter
     @Override
     public void detachView() {
         super.detachView();
-        getFavoriteAndWishlistUsecase.unsubscribe();
+        getInitialDataPageUsecase.unsubscribe();
         getTopAdsShopUseCase.unsubscribe();
         getAllDataFavoriteUseCase.unsubscribe();
         getFavoriteShopUsecase.unsubscribe();
@@ -83,9 +83,9 @@ public class FavoritePresenter
     }
 
     @Override
-    public void loadDataWishlistAndFavorite() {
-        getFavoriteAndWishlistUsecase.execute(
-                RequestParams.EMPTY, new FavoriteAndWishlistSubscriber());
+    public void loadInitialData() {
+        getInitialDataPageUsecase.execute(
+                RequestParams.EMPTY, new InitialDataSubscriber());
     }
 
     @Override
@@ -137,7 +137,7 @@ public class FavoritePresenter
         pagingHandler.setHasNext(PagingHandler.CheckHasNext(pagingModel));
     }
 
-    private void validateNetworkFavoriteshop(DataFavorite dataFavorite) {
+    private void validateFavoriteShopErrorNetwork(DataFavorite dataFavorite) {
         if (dataFavorite.getFavoriteShop().isNetworkError()) {
             getView().showFavoriteShopFailedMessage();
         } else {
@@ -147,7 +147,7 @@ public class FavoritePresenter
     }
 
 
-    private void validateNetworkWishlist(DomainWishlist domainWishlist) {
+    private void validateWishlistErrorNetwork(DomainWishlist domainWishlist) {
         if (domainWishlist.isNetworkError()) {
             getView().showWishlistFailedMessage();
         } else {
@@ -160,10 +160,11 @@ public class FavoritePresenter
         if (dataFavorite != null
                 && dataFavorite.getFavoriteShop() != null) {
 
-            validateNetworkFavoriteshop(dataFavorite);
+            validateFavoriteShopErrorNetwork(dataFavorite);
             if (dataFavorite.getFavoriteShop().getData() != null) {
                 setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
                 if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+
                     for (FavoriteShopItem favoriteShopItem
                             : dataFavorite.getFavoriteShop().getData()) {
 
@@ -193,20 +194,8 @@ public class FavoritePresenter
 
     private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
         if (dataFavorite != null) {
-
             if (dataFavorite.getWishListData() != null) {
-                validateNetworkWishlist(dataFavorite.getWishListData());
-
-//                if (dataFavorite.getWishListData().getData() != null) {
-//                    if (dataFavorite.getWishListData().getData().size() > 0) {
-//                        dataFavoriteItemList.add(
-//                                favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-//                    } else {
-//                        dataFavoriteItemList.add(new EmptyWishlistViewModel());
-//                    }
-//                } else {
-//                    dataFavoriteItemList.add(new EmptyWishlistViewModel());
-//                }
+                validateWishlistErrorNetwork(dataFavorite.getWishListData());
                 dataFavoriteItemList.add(
                         favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
             } else {
@@ -215,7 +204,7 @@ public class FavoritePresenter
         }
     }
 
-    private class FavoriteAndWishlistSubscriber extends Subscriber<DataFavorite> {
+    private class InitialDataSubscriber extends Subscriber<DataFavorite> {
 
         @Override
         public void onStart() {
@@ -232,6 +221,7 @@ public class FavoritePresenter
         public void onError(Throwable e) {
             Log.e(TAG, "onError: ", e);
             if (isViewAttached()) {
+                getView().hideRefreshLoading();
                 getView().showErrorLoadData();
             }
         }

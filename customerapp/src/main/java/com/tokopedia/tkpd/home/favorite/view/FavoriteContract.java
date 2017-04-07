@@ -63,7 +63,7 @@ interface FavoriteContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loadDataWishlistAndFavorite();
+        void loadInitialData();
 
         void loadDataTopAdsShop();
 

@@ -23,7 +23,6 @@ import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
 
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -99,18 +98,6 @@ public class FavoriteFactory {
 
     Observable<FavShop> postFavShop(TKPDMapParam<String, String> param) {
         return new CloudFavoriteShopDataSource(context, gson, serviceV4).postFavoriteShop(param);
-    }
-
-    private Func1<TopAdsShop, Boolean> isLocalTopAdsShopValid() {
-        return new Func1<TopAdsShop, Boolean>() {
-            @Override
-            public Boolean call(TopAdsShop topAdsShop) {
-                return topAdsShop != null
-                        && topAdsShop.isDataValid()
-                        && topAdsShop.getTopAdsShopItemList() != null
-                        && topAdsShop.getTopAdsShopItemList().size() > 0;
-            }
-        };
     }
 
     private Observable<TopAdsShop> getCloudTopAdsShopObservable(TKPDMapParam<String, Object> params) {

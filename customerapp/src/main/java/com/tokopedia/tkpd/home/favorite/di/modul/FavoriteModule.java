@@ -19,7 +19,7 @@ import com.tokopedia.tkpd.home.favorite.di.scope.FavoriteScope;
 import com.tokopedia.tkpd.home.favorite.domain.FavoriteRepository;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.AddFavoriteShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteAndWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
@@ -94,14 +94,14 @@ public class FavoriteModule {
 
     @FavoriteScope
     @Provides
-    GetFavoriteAndWishlistUsecase provideFavoriteWishlitUsecase(
+    GetInitialDataPageUsecase provideFavoriteWishlitUsecase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             GetFavoriteShopUsecase getFavoriteShopUsecase,
             GetWishlistUsecase getWishlistUse,
             GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
-        return new GetFavoriteAndWishlistUsecase(
+        return new GetInitialDataPageUsecase(
                 threadExecutor,
                 postExecutionThread,
                 getFavoriteShopUsecase,
