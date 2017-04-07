@@ -272,7 +272,8 @@ public class ChangePhoneNumberRequestFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data != null
+        if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
                 && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ID)) {
@@ -288,7 +289,8 @@ public class ChangePhoneNumberRequestFragment
             idPhoto.setVisibility(View.VISIBLE);
             loadImageToImageView(idPhoto, data.getStringExtra(ImageGallery.EXTRA_URL));
             presenter.setIdImage(data.getStringExtra(ImageGallery.EXTRA_URL));
-        } else if (data != null
+        } else if (imageUploadHandler != null
+                && imageUploadHandler.getCameraFileloc() != null
                 && requestCode == ImageUploadHandler.REQUEST_CODE
                 && (resultCode == Activity.RESULT_OK)
                 && uploadType.equals(UPLOAD_ACCOUNT_BOOK)) {
