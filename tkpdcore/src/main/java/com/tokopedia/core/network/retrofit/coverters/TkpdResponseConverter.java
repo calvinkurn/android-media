@@ -20,7 +20,8 @@ public class TkpdResponseConverter extends Converter.Factory {
     private static final MediaType MEDIA_TYPE = MediaType.parse("text/plain");
 
     @Override
-    public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
+    public Converter<ResponseBody, ?> responseBodyConverter(Type type,
+                                                            Annotation[] annotations,
                                                             Retrofit retrofit) {
         if (TkpdResponse.class == type) {
             return new Converter<ResponseBody, TkpdResponse>() {
@@ -34,8 +35,10 @@ public class TkpdResponseConverter extends Converter.Factory {
     }
 
     @Override
-    public Converter<?, RequestBody> requestBodyConverter(Type type, Annotation[] parameterAnnotations,
-                                                          Annotation[] methodAnnotations, Retrofit retrofit) {
+    public Converter<?, RequestBody> requestBodyConverter(Type type,
+                                                          Annotation[] parameterAnnotations,
+                                                          Annotation[] methodAnnotations,
+                                                          Retrofit retrofit) {
         if (TkpdResponse.class == type) {
             return new Converter<TkpdResponse, RequestBody>() {
                 @Override

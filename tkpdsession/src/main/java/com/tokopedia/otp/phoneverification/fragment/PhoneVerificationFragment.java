@@ -30,7 +30,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -49,8 +48,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
 
 /**
  * Created by nisie on 2/22/17.

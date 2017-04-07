@@ -5,8 +5,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.util.RouterUtils;
 
 import java.lang.reflect.Constructor;
