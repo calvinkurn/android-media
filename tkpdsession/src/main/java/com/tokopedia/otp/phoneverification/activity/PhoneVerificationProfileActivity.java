@@ -1,10 +1,17 @@
 package com.tokopedia.otp.phoneverification.activity;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationProfileFragment;
 import com.tokopedia.session.R;
@@ -49,7 +56,7 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
 
 
         PhoneVerificationProfileFragment fragmentHeader = PhoneVerificationProfileFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance();
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener());
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
             fragmentTransaction.add(R.id.container_header, fragmentHeader, fragmentHeader.getClass().getSimpleName());
@@ -59,6 +66,36 @@ public class PhoneVerificationProfileActivity extends BasePresenterActivity {
         }
         fragmentTransaction.commit();
 
+    }
+
+    private PhoneVerificationFragment.PhoneVerificationFragmentListener getPhoneVerificationListener() {
+        return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
+            @Override
+            public void onSkipVerification() {
+                setIntentTarget(Activity.RESULT_CANCELED);
+            }
+
+
+            @Override
+            public void onSuccessVerification() {
+                setIntentTarget(Activity.RESULT_OK);
+            }
+        };
+    }
+
+    private void setIntentTarget(int result) {
+        if (isTaskRoot()) {
+            goToManageProfile();
+        } else {
+            setResult(result);
+            finish();
+        }
+    }
+
+    private void goToManageProfile() {
+        Intent intent = new Intent(PhoneVerificationProfileActivity.this,
+                ManagePeopleProfileActivity.class);
+        startActivityForResult(intent, 0);
     }
 
     @Override

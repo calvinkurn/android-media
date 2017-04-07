@@ -18,37 +18,37 @@ public class BaseNetworkErrorHandlerImpl extends BaseNetworkErrorHandler {
     }
 
     @Override
-    protected void showDialog(Context context) {
+    public void showDialog(Context context) {
         NetworkErrorHelper.showDialog(context, listener);
     }
 
     @Override
-    protected SnackbarRetry createSnackbarWithAction(Activity activity) {
+    public SnackbarRetry createSnackbarWithAction(Activity activity) {
         return NetworkErrorHelper.createSnackbarWithAction(activity, listener);
     }
 
     @Override
-    protected SnackbarRetry createSnackbarWithAction(Activity activity, String message) {
+    public SnackbarRetry createSnackbarWithAction(Activity activity, String message) {
         return NetworkErrorHelper.createSnackbarWithAction(activity,message,listener);
     }
 
     @Override
-    protected void showSnackbar(Activity activity) {
+    public void showSnackbar(Activity activity) {
         NetworkErrorHelper.showSnackbar(activity);
     }
 
     @Override
-    protected void showSnackbar(Activity activity, String error) {
+    public void showSnackbar(Activity activity, String error) {
         NetworkErrorHelper.showSnackbar(activity,error);
     }
 
     @Override
-    protected void showEmptyState(Context context, View rootview) {
+    public void showEmptyState(Context context, View rootview) {
         NetworkErrorHelper.showEmptyState(context, rootview, listener);
     }
 
     @Override
-    protected void showDialogCustomMSG(Context context, String message) {
+    public void showDialogCustomMSG(Context context, String message) {
         NetworkErrorHelper.showDialogCustomMSG(context, listener, message);
     }
 }

@@ -34,8 +34,8 @@ import butterknife.ButterKnife;
  */
 public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHolder> {
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.message)
         TextView message;
@@ -46,32 +46,34 @@ public class MyMessageDataBinder extends DataBinder<MyMessageDataBinder.ViewHold
         @BindView(R2.id.date)
         TextView date;
 
-        public ViewHolder(View itemView) {
+        @BindView(R2.id.main)
+        View main;
+
+        public ViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnCreateContextMenuListener(this);
+            message.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, final View v, ContextMenu.ContextMenuInfo menuInfo) {
+                    MenuItem actionCopy = menu.add(v.getId(), R.id.action_copy, 99, R.string.menu_copy);
+                    actionCopy.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int i = item.getItemId();
+                            if (i == R.id.action_copy) {
+                                ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                                ClipData clip = ClipData.newPlainText("label", message.getText());
+                                clipboard.setPrimaryClip(clip);
+                                return true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    });
+                }
+            });
         }
 
-        @Override
-        public void onCreateContextMenu(ContextMenu contextMenu,
-                                        View view,
-                                        ContextMenu.ContextMenuInfo contextMenuInfo) {
-            MenuItem actionCopy = contextMenu.add(view.getId(), R.id.action_copy, 99, R.string.menu_copy);
-            actionCopy.setOnMenuItemClickListener(this);
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem menuItem) {
-            int i = menuItem.getItemId();
-            if (i == R.id.action_copy) {
-                ClipboardManager clipboard = (ClipboardManager) itemView.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("label", message.getText());
-                clipboard.setPrimaryClip(clip);
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 
     ArrayList<InboxMessageDetailItem> list;
