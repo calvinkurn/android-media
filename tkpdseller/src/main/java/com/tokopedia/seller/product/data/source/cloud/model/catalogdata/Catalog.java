@@ -11,7 +11,7 @@ public class Catalog {
 
     @SerializedName("catalog_id")
     @Expose
-    private Integer catalogId;
+    private int catalogId;
     @SerializedName("catalog_name")
     @Expose
     private String catalogName;
@@ -32,13 +32,13 @@ public class Catalog {
     private String catalogDescription;
     @SerializedName("catalog_count_product")
     @Expose
-    private Integer catalogCountProduct;
+    private int catalogCountProduct;
 
-    public Integer getCatalogId() {
+    public int getCatalogId() {
         return catalogId;
     }
 
-    public void setCatalogId(Integer catalogId) {
+    public void setCatalogId(int catalogId) {
         this.catalogId = catalogId;
     }
 
@@ -90,11 +90,11 @@ public class Catalog {
         this.catalogDescription = catalogDescription;
     }
 
-    public Integer getCatalogCountProduct() {
+    public int getCatalogCountProduct() {
         return catalogCountProduct;
     }
 
-    public void setCatalogCountProduct(Integer catalogCountProduct) {
+    public void setCatalogCountProduct(int catalogCountProduct) {
         this.catalogCountProduct = catalogCountProduct;
     }
 

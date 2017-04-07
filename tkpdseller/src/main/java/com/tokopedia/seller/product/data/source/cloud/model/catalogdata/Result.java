@@ -22,7 +22,7 @@ public class Result {
     private Paging paging;
     @SerializedName("total_record")
     @Expose
-    private Integer totalRecord;
+    private int totalRecord;
     @SerializedName("catalogs")
     @Expose
     private List<Catalog> catalogs = null;
@@ -54,11 +54,11 @@ public class Result {
         this.paging = paging;
     }
 
-    public Integer getTotalRecord() {
+    public int getTotalRecord() {
         return totalRecord;
     }
 
-    public void setTotalRecord(Integer totalRecord) {
+    public void setTotalRecord(int totalRecord) {
         this.totalRecord = totalRecord;
     }
 
