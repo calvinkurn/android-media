@@ -71,12 +71,9 @@ public class CatalogImpl extends Catalog implements DiscoveryListener {
         discoveryInteractor.getCatalogs(NetworkParam.generateCatalogQuery(catalog));
     }
 
-
     @Override
     public void initData(@NonNull Context context) {
-        if (!isAfterRotate) {
-            view.setupRecyclerView();
-        }
+        view.setupRecyclerView();
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
     }
 

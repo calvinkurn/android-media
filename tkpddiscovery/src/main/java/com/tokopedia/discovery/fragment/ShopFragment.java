@@ -124,6 +124,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setupRecyclerView() {
+        if (list_shop.getAdapter() != null) {
+            return;
+        }
         list_shop.setLayoutManager(gridLayoutManager);
         list_shop.setAdapter(browseShopAdapter);
         list_shop.addOnScrollListener(new RecyclerView.OnScrollListener() {

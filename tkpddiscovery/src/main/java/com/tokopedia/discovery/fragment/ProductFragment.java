@@ -242,6 +242,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupAdapter() {
+        if (productAdapter != null) {
+            return;
+        }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -280,7 +283,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void setupRecyclerView() {
+    public boolean setupRecyclerView() {
+        if (mRecyclerView.getAdapter() != null) {
+            return false;
+        }
         mRecyclerView.setAdapter(productAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -300,7 +306,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             }
         });
         changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
-
+        return true;
     }
 
     @Override
