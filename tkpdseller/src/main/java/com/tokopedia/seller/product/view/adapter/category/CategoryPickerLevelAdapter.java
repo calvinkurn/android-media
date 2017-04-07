@@ -43,7 +43,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case LEVEL_CATEGORY_VIEW:
-                ((CategoryLevelPickerViewHolder)holder).renderData(data.get(position), position);
+                ((CategoryLevelPickerViewHolder)holder).renderData(data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -66,7 +66,8 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     }
 
     public void addLevelItem(List<CategoryViewModel> map) {
-        data.add(new CategoryLevelViewModel(map));
+        int level = data.size();
+        data.add(new CategoryLevelViewModel(map, level));
         notifyDataSetChanged();
 
     }

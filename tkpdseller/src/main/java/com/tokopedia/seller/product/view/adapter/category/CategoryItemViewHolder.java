@@ -8,7 +8,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 /**
- * Created by sebastianuskh on 4/4/17.
+ * @author sebastianuskh on 4/4/17.
  */
 
 class CategoryItemViewHolder extends RecyclerView.ViewHolder {

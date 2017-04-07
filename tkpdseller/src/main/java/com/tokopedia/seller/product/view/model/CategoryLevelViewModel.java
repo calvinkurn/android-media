@@ -10,11 +10,17 @@ public class CategoryLevelViewModel {
     public static final int UNSELECTED = -1;
 
     private final List<CategoryViewModel> viewModels;
+    private final int level;
     private int selected;
 
-    public CategoryLevelViewModel(List<CategoryViewModel> map) {
+    public CategoryLevelViewModel(List<CategoryViewModel> map, int level) {
         viewModels = map;
         selected = UNSELECTED;
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public List<CategoryViewModel> getViewModels() {

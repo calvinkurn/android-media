@@ -25,7 +25,7 @@ class CategoryLevelPickerViewHolder extends RecyclerView.ViewHolder {
         levelRecyclerView.setAdapter(adapter);
     }
 
-    public void renderData(CategoryLevelViewModel categoryViewModels, int level) {
-        adapter.renderItems(categoryViewModels, level);
+    public void renderData(CategoryLevelViewModel categoryViewModels) {
+        adapter.renderItems(categoryViewModels);
     }
 }

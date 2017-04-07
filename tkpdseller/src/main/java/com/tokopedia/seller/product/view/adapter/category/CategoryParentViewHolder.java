@@ -15,25 +15,23 @@ import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 class CategoryParentViewHolder extends RecyclerView.ViewHolder {
     private final TextView categoryName;
-    private final CategoryParentViewHolderListener listener;
     private final ImageView imageChevron;
     private final Context context;
     private int index;
     private boolean isNotSelected;
 
-    public CategoryParentViewHolder(View view, CategoryParentViewHolderListener listener) {
+    public CategoryParentViewHolder(View view, final CategoryParentViewHolderListener listener) {
         super(view);
         context = view.getContext();
         categoryName = (TextView) view.findViewById(R.id.category_name);
         imageChevron = (ImageView) view.findViewById(R.id.category_picker_chevron);
-        this.listener = listener;
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isNotSelected) {
-                    CategoryParentViewHolder.this.listener.selectParent(getIndex());
+                    listener.selectParent(getIndex());
                 } else {
-                    CategoryParentViewHolder.this.listener.unselectParent();
+                    listener.unselectParent();
                 }
             }
         });

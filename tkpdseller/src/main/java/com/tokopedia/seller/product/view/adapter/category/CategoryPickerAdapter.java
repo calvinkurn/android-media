@@ -19,7 +19,6 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     public static final int SELECTED_ITEM_COUNT = 1;
     private CategoryLevelViewModel data;
     private final CategoryPickerAdapterListener listener;
-    private int level;
 
     public CategoryPickerAdapter(CategoryPickerAdapterListener listener) {
         this.listener = listener;
@@ -56,9 +55,9 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
         switch (getItemViewType(position)){
             case CATEGORY_PARENT:
                 boolean isNotSelected = data.getSelected() == CategoryLevelViewModel.UNSELECTED;
-                int modifiedPos = isNotSelected ? position : data.getSelected();
+                int renderedPosition = isNotSelected ? position : data.getSelected();
                 ((CategoryParentViewHolder)holder)
-                        .renderData(data.getViewModels().get(modifiedPos), position, isNotSelected);
+                        .renderData(data.getViewModels().get(renderedPosition), position, isNotSelected);
                 break;
             case CATEGORY_ITEM:
                 ((CategoryItemViewHolder)holder).renderData(data.getViewModels().get(position));
@@ -88,9 +87,8 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
         }
     }
 
-    public void renderItems(CategoryLevelViewModel map, int level) {
+    public void renderItems(CategoryLevelViewModel map) {
         data = map;
-        this.level = level;
         notifyDataSetChanged();
     }
 
@@ -104,7 +102,7 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     @Override
     public void unselectParent() {
         data.setSelected(CategoryLevelViewModel.UNSELECTED);
-        this.listener.unselectParent(level);
+        this.listener.unselectParent(data.getLevel());
         notifyDataSetChanged();
     }
 }

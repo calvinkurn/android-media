@@ -89,8 +89,8 @@ public class CategoryPickerFragment
     }
 
     @Override
-    public void renderCategory(List<CategoryViewModel> map) {
-        adapter.addLevelItem(map);
+    public void renderCategory(List<CategoryViewModel> listCategory) {
+        adapter.addLevelItem(listCategory);
     }
 
     @Override
