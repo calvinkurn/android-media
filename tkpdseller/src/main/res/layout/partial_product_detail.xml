@@ -16,20 +16,20 @@
 
     </LinearLayout>
 
-    <com.tokopedia.seller.product.view.widget.SpinnerCountInputView
+    <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
         android:id="@+id/spinner_count_input_view_price"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_count_entries="@array/product_currency_entries"
         app:spinner_count_hint="@string/product_label_product_price" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerCountInputView
+    <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
         android:id="@+id/spinner_count_input_view_weight"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_count_entries="@array/product_weight_entries"
         app:spinner_count_hint="@string/product_label_product_weight" />
 
-    <com.tokopedia.seller.product.view.widget.CountInputView
+    <com.tokopedia.seller.product.view.widget.CounterInputView
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:count_hint="@string/product_label_minimum_buy" />

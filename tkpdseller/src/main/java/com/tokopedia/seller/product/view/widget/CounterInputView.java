@@ -9,14 +9,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 
 /**
  * Created by nathan on 04/05/17.
  */
 
-public class CountInputView extends FrameLayout {
+public class CounterInputView extends FrameLayout {
 
     private DecimalInputView decimalInputView;
     private ImageButton minusImageButton;
@@ -25,27 +24,27 @@ public class CountInputView extends FrameLayout {
     private String hintText;
     private String valueText;
 
-    public CountInputView(Context context) {
+    public CounterInputView(Context context) {
         super(context);
         init();
     }
 
-    public CountInputView(Context context, AttributeSet attrs) {
+    public CounterInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public CountInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CounterInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.CountInputView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.CounterInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.CountInputView_count_hint);
-            valueText = styledAttributes.getString(R.styleable.CountInputView_count_value);
+            hintText = styledAttributes.getString(R.styleable.CounterInputView_count_hint);
+            valueText = styledAttributes.getString(R.styleable.CounterInputView_count_value);
         } finally {
             styledAttributes.recycle();
         }

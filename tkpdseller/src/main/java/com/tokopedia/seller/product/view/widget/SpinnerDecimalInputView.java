@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
@@ -15,7 +14,7 @@ import com.tokopedia.seller.product.utils.ConverterUtils;
  * Created by nathan on 04/05/17.
  */
 
-public class SpinnerCountInputView extends FrameLayout {
+public class SpinnerDecimalInputView extends FrameLayout {
 
     private DecimalInputView decimalInputView;
     private SpinnerTextView spinnerTextView;
@@ -25,29 +24,29 @@ public class SpinnerCountInputView extends FrameLayout {
     private CharSequence[] values;
     private int selection;
 
-    public SpinnerCountInputView(Context context) {
+    public SpinnerDecimalInputView(Context context) {
         super(context);
         init();
     }
 
-    public SpinnerCountInputView(Context context, AttributeSet attrs) {
+    public SpinnerDecimalInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public SpinnerCountInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SpinnerDecimalInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCountInputView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerDecimalInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.SpinnerCountInputView_spinner_count_hint);
-            selection = styledAttributes.getInt(R.styleable.SpinnerCountInputView_spinner_count_selection, 0);
-            entries = styledAttributes.getTextArray(R.styleable.SpinnerCountInputView_spinner_count_entries);
-            values = styledAttributes.getTextArray(R.styleable.SpinnerCountInputView_spinner_count_values);
+            hintText = styledAttributes.getString(R.styleable.SpinnerDecimalInputView_spinner_count_hint);
+            selection = styledAttributes.getInt(R.styleable.SpinnerDecimalInputView_spinner_count_selection, 0);
+            entries = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_count_entries);
+            values = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_count_values);
         } finally {
             styledAttributes.recycle();
         }

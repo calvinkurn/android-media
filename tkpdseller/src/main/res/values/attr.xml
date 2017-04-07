@@ -150,7 +150,7 @@
         <attr name="hint" format="string"/>
         <attr name="value" format="string"/>
     </declare-styleable>
-    <declare-styleable name="CountInputView">
+    <declare-styleable name="CounterInputView">
         <attr name="count_hint" format="string"/>
         <attr name="count_value" format="string"/>
     </declare-styleable>
@@ -162,7 +162,7 @@
         <attr name="spinner_values" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="SpinnerCountInputView">
+    <declare-styleable name="SpinnerDecimalInputView">
         <attr name="spinner_count_entries" format="reference"/>
         <attr name="spinner_count_values" format="reference"/>
         <attr name="spinner_count_selection" format="integer"/>
