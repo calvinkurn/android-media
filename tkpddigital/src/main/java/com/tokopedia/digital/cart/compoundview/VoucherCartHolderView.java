@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.compoundview;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,7 +143,7 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     private boolean isEditTextVoucherEmpty() {
-        return editTextVoucher.getText().toString().equals("");
+        return TextUtils.isEmpty(editTextVoucher.getText().toString());
     }
 
     @NotNull

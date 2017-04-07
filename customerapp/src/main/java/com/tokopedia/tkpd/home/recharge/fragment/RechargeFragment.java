@@ -187,7 +187,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
                     if (intent.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = intent.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                        if (message != null && !message.isEmpty()) {
+                        if (TextUtils.isEmpty(message)) {
                             NetworkErrorHelper.showSnackbar(getActivity(), message);
                         }
                     }

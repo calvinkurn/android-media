@@ -2,6 +2,7 @@ package com.tokopedia.digital.cart.compoundview;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -92,8 +93,12 @@ public class InputPriceHolderView extends LinearLayout {
 
     private boolean isUserInputValid(String userInput, long minPayment, long maxPayment) {
         long priceInput = 0;
-        if (!userInput.equals("")) {
-            priceInput = Long.parseLong(userInput);
+        if (TextUtils.isEmpty(userInput)) {
+            try {
+                priceInput = Long.parseLong(userInput);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
         }
         return (priceInput > minPayment && priceInput < maxPayment);
     }

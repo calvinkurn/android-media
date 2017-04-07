@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.services;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.retrofit.HttpClient;
+import com.tokopedia.core.network.retrofit.HttpClientFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public abstract class EndpointService<T> {
 
     public EndpointService() {
         OkHttpClient.Builder okHttpClientBuilder =
-                HttpClient.getInstanceOkHttpClient().newBuilder();
+                HttpClientFactory.getInstanceOkHttpClient().newBuilder();
 
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);

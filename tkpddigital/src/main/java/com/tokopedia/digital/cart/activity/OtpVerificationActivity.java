@@ -358,7 +358,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
 
     @Override
     public void onBackPressed() {
-        closeWithResultOtpCanceled("Verifikasi kode keamanan dibatalkan");
+        closeWithResultOtpCanceled(getString(R.string.message_otp_verification_cancelled));
     }
 
     @Override

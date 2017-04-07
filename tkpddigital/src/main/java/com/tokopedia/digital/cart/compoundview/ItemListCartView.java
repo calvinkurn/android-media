@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.compoundview;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
@@ -47,6 +48,6 @@ public class ItemListCartView extends RelativeLayout {
     public void bindView(CartItemDigital cartItemDigital) {
         label.setText(cartItemDigital.getLabel());
         value.setText(cartItemDigital.getValue());
-        label.setVisibility(cartItemDigital.getLabel().equals("") ? GONE : VISIBLE);
+        label.setVisibility(TextUtils.isEmpty(cartItemDigital.getLabel()) ? GONE : VISIBLE);
     }
 }
