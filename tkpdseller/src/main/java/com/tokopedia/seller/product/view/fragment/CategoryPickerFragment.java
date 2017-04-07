@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewCompone
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapterListener;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
 
@@ -32,15 +33,22 @@ public class CategoryPickerFragment
         extends BaseDaggerFragment
         implements CategoryPickerView, CategoryPickerLevelAdapterListener {
     public static final String TAG = "CategoryPickerFragment";
+    public static final int INIT_UNSELECTED = -1;
+    public static final String INIT_SELECTED = "INIT_SELECTED";
 
     @Inject
     CategoryPickerPresenter presenter;
 
     private CategoryPickerLevelAdapter adapter;
     private CategoryPickerFragmentListener listener;
+    private int initSelected;
 
-    public static CategoryPickerFragment createInstance() {
-        return new CategoryPickerFragment();
+    public static CategoryPickerFragment createInstance(int currentSelected) {
+        CategoryPickerFragment categoryPickerFragment = new CategoryPickerFragment();
+        Bundle args = new Bundle();
+        args.putInt(INIT_SELECTED, currentSelected);
+        categoryPickerFragment.setArguments(args);
+        return categoryPickerFragment;
     }
 
     @Override
@@ -63,6 +71,13 @@ public class CategoryPickerFragment
         }
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        initSelected = bundle.getInt(INIT_SELECTED, INIT_UNSELECTED);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -71,6 +86,12 @@ public class CategoryPickerFragment
         presenter.attachView(this);
         initVar();
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
     }
 
     private void setupRecyclerView(View view) {
@@ -100,8 +121,17 @@ public class CategoryPickerFragment
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public void onSuccessFetchAllCategoryData() {
+        if (initSelected == INIT_UNSELECTED){
+            presenter.fetchCategoryLevelOne();
+        } else {
+            presenter.fetchCategoryFromSelected(initSelected);
+        }
+    }
+
+    @Override
+    public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
+        adapter.render(categoryLevelDomainModels);
     }
 
     @Override
@@ -112,5 +142,10 @@ public class CategoryPickerFragment
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         listener.selectSetCategory(listCategory);
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

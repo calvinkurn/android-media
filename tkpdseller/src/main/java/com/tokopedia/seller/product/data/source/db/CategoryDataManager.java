@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase_Table;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
 
 import java.util.List;
 
@@ -32,19 +33,18 @@ public class CategoryDataManager {
 
     }
 
-    public Observable<List<CategoryDataBase>> fetchCategoryFromParent(int parentId) {
+    public List<CategoryDataBase> fetchCategoryFromParent(int parentId) {
         ConditionGroup conditionGroup = ConditionGroup.clause()
                 .and(CategoryDataBase_Table.parentId.eq(parentId));
-        return Observable.just(new Select()
+        return new Select()
                 .from(CategoryDataBase.class)
                 .where(conditionGroup)
                 .orderBy(CategoryDataBase_Table.weight, true)
-                .queryList()
-        );
+                .queryList();
     }
 
-    public Observable<List<CategoryDataBase>> fetchFromDatabase() {
-        return Observable.just(new Select().from(CategoryDataBase.class).queryList());
+    public List<CategoryDataBase> fetchFromDatabase() {
+        return new Select().from(CategoryDataBase.class).queryList();
     }
 
     public void storeData(List<CategoryDataBase> categoryDataBases) {
@@ -60,5 +60,12 @@ public class CategoryDataManager {
             database.endTransaction();
         }
 
+    }
+
+    public CategoryDataBase fetchCategoryWithId(int selectedId) {
+        return new Select()
+                .from(CategoryDataBase.class)
+                .where(CategoryDataBase_Table.id.like(selectedId))
+                .querySingle();
     }
 }

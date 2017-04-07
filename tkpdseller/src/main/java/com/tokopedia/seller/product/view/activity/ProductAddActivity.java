@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import org.parceler.Parcels;
@@ -35,6 +34,7 @@ public class ProductAddActivity extends TActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProductAddActivity.this, CategoryPickerActivity.class);
+                intent.putExtra(CategoryPickerActivity.CATEGORY_ID_INIT_SELECTED, 1791);
                 startActivityForResult(intent, 1000);
             }
         });

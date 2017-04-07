@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.domain;
 
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface CategoryRepository {
     Observable<Boolean> checkCategoryAvailable();
 
     Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(int parent);
+
+    Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(int initSelected);
 }

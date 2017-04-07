@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import java.util.List;
@@ -15,4 +16,8 @@ public interface CategoryPickerView extends CustomerView {
     void dismissLoadingDialog();
 
     void renderCategory(List<CategoryViewModel> map);
+
+    void onSuccessFetchAllCategoryData();
+
+    void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels);
 }

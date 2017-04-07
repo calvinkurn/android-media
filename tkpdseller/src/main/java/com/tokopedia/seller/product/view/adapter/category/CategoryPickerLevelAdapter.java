@@ -66,7 +66,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     }
 
     public void addLevelItem(List<CategoryViewModel> map) {
-        int level = data.size();
+        int level = map.size() - 1;
         data.add(new CategoryLevelViewModel(map, level));
         notifyDataSetChanged();
 
@@ -93,5 +93,10 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
             listSelectedCategory.add(levelViewModel.getSelectedModel());
         }
         listener.selectSetCategory(listSelectedCategory);
+    }
+
+    public void render(List<CategoryLevelViewModel> categoryLevelDomainModels) {
+        data.addAll(categoryLevelDomainModels);
+        notifyDataSetChanged();
     }
 }

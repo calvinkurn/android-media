@@ -33,7 +33,9 @@ public class CategoryDataSource {
     }
 
     public Observable<Boolean> checkCategoryAvailable() {
-        return categoryDataManager.fetchFromDatabase()
+        return Observable
+                .just(true)
+                .map(new FetchFromDatabase())
                 .map(new CheckDatabaseNotNull())
                 .onErrorResumeNext(fetchDataFromNetwork());
     }
@@ -43,12 +45,6 @@ public class CategoryDataSource {
         return categoryCloud.fetchDataFromNetwork()
             .map(new CategoryServiceToDbMapper())
             .map(new StoreDataToDatabase());
-    }
-
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(int parent) {
-        return categoryDataManager
-                .fetchCategoryFromParent(parent)
-                .map(new CategoryDataToDomainMapper());
     }
 
     private class CheckDatabaseNotNull implements Func1<List<CategoryDataBase>, Boolean> {
@@ -67,6 +63,13 @@ public class CategoryDataSource {
         public Boolean call(List<CategoryDataBase> categoryDataBases) {
             categoryDataManager.storeData(categoryDataBases);
             return true;
+        }
+    }
+
+    private class FetchFromDatabase implements Func1<Boolean, List<CategoryDataBase>> {
+        @Override
+        public List<CategoryDataBase> call(Boolean aBoolean) {
+            return categoryDataManager.fetchFromDatabase();
         }
     }
 }

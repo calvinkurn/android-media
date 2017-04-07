@@ -4,6 +4,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.seller.product.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.seller.product.data.source.CategoryDataSource;
 import com.tokopedia.seller.product.data.source.CategoryVersionDataSource;
+import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
@@ -22,8 +23,9 @@ public class CategoryPickerModule {
     @CategoryPickerScope
     @Provides
     CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
-                                                 CategoryDataSource categoryDataSource){
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource);
+                                                 CategoryDataSource categoryDataSource,
+                                                 FetchCategoryDataSource fetchCategoryDataSource){
+        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
     }
 
     @CategoryPickerScope

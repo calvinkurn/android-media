@@ -29,6 +29,7 @@ public class CategoryPickerActivity
         extends TActivity
         implements CategoryPickerFragmentListener, HasComponent<CategoryPickerComponent>{
 
+    public static final String CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED";
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
@@ -39,7 +40,13 @@ public class CategoryPickerActivity
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
         initInjection();
-        inflateCategoryFragment();
+        int currentSelected =
+                getIntent()
+                        .getIntExtra(
+                                CATEGORY_ID_INIT_SELECTED,
+                                CategoryPickerFragment.INIT_UNSELECTED
+                        );
+        inflateCategoryFragment(currentSelected);
 
     }
 
@@ -52,10 +59,10 @@ public class CategoryPickerActivity
 
     }
 
-    private void inflateCategoryFragment() {
+    private void inflateCategoryFragment(int currentSelected) {
         Fragment fragment = fragmentManager.findFragmentByTag(CategoryPickerFragment.TAG);
         if (fragment == null) {
-            fragment = CategoryPickerFragment.createInstance();
+            fragment = CategoryPickerFragment.createInstance(currentSelected);
         }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, CategoryPickerFragment.TAG);
