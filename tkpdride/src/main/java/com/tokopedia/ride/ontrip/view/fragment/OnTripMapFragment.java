@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -598,11 +599,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.qc_launcher))
                 .setProgress(0, 0, true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setContentTitle(getResources().getString(R.string.notification_title_finding_uber));
-
-        // Issue the notification here.
-        // Sets an ID for the notification
-        int mNotificationId = 001;
 
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
