@@ -16,15 +16,15 @@ import java.util.List;
 class CategoryLevelPickerViewHolder extends RecyclerView.ViewHolder {
     private final CategoryPickerAdapter adapter;
 
-    public CategoryLevelPickerViewHolder(View view) {
+    public CategoryLevelPickerViewHolder(View view, CategoryPickerAdapterListener listener) {
         super(view);
         RecyclerView levelRecyclerView = (RecyclerView) view.findViewById(R.id.level_recycler_view);
         levelRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        adapter = new CategoryPickerAdapter();
+        adapter = new CategoryPickerAdapter(listener);
         levelRecyclerView.setAdapter(adapter);
     }
 
-    public void renderData(List<CategoryViewModel> categoryViewModels) {
-        adapter.renderItems(categoryViewModels);
+    public void renderData(List<CategoryViewModel> categoryViewModels, int level) {
+        adapter.renderItems(categoryViewModels, level);
     }
 }

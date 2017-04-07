@@ -21,10 +21,13 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     private static final int CATEGORY_ITEM = 2000;
     private static final int UNSELECTED = -1;
     public static final int SELECTED_ITEM_COUNT = 1;
-    private List<CategoryViewModel> data;
+    private final List<CategoryViewModel> data;
     private int selected = UNSELECTED;
+    private final CategoryPickerAdapterListener listener;
+    private int level;
 
-    public CategoryPickerAdapter() {
+    public CategoryPickerAdapter(CategoryPickerAdapterListener listener) {
+        this.listener = listener;
         data = new ArrayList<>();
     }
 
@@ -91,20 +94,24 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
         }
     }
 
-    public void renderItems(List<CategoryViewModel> map) {
-        data = map;
+    public void renderItems(List<CategoryViewModel> map, int level) {
+        data.clear();
+        data.addAll(map);
+        this.level = level;
         notifyDataSetChanged();
     }
 
     @Override
     public void selectParent(int selected) {
         this.selected = selected;
+        this.listener.selectParent(data.get(selected).getId());
         notifyDataSetChanged();
     }
 
     @Override
     public void unselectParent() {
         this.selected = UNSELECTED;
+        this.listener.unselectParent(level);
         notifyDataSetChanged();
     }
 }

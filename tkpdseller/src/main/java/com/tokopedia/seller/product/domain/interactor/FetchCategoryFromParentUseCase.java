@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
@@ -19,22 +20,37 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryLevelOneUseCase extends UseCase<List<CategoryDomainModel>>{
+public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainModel>>{
 
+    private static final int UNSELECTED = -2;
+    public static final String CATEGORY_PARENT = "CATEGORY_PARENT";
     private final CategoryRepository categoryRepository;
 
     @Inject
-    public FetchCategoryLevelOneUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
+    public FetchCategoryFromParentUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
         super(threadExecutor, postExecutionThread);
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
+        int parent = requestParams.getInt(CATEGORY_PARENT, UNSELECTED);
         return Observable.just(true)
                 .flatMap(new CheckVersion())
                 .flatMap(new CheckCategoryAvailable())
-                .flatMap(new FetchCategoryLevelOne());
+                .flatMap(new FetchCategoryLevelOne(parent));
+    }
+
+    public static RequestParams generateLevelOne() {
+        RequestParams requestParam = RequestParams.create();
+        requestParam.putInt(CATEGORY_PARENT, CategoryDataBase.LEVEL_ONE_PARENT);
+        return requestParam;
+    }
+
+    public static RequestParams generateFromParent(int categoryId) {
+        RequestParams requestParam = RequestParams.create();
+        requestParam.putInt(CATEGORY_PARENT, categoryId);
+        return requestParam;
     }
 
     private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
@@ -52,9 +68,15 @@ public class FetchCategoryLevelOneUseCase extends UseCase<List<CategoryDomainMod
     }
 
     private class FetchCategoryLevelOne implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
+        private final int parent;
+
+        private FetchCategoryLevelOne(int parent) {
+            this.parent = parent;
+        }
+
         @Override
         public Observable<List<CategoryDomainModel>> call(Boolean aBoolean) {
-            return categoryRepository.fetchCategoryLevelOne();
+            return categoryRepository.fetchCategoryLevelOne(parent);
         }
     }
 }

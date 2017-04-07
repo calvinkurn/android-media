@@ -16,11 +16,13 @@ import java.util.List;
  * @author sebastianuskh on 4/6/17.
  */
 
-public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter {
+public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter implements CategoryPickerAdapterListener {
     private static final int LEVEL_CATEGORY_VIEW = 1000;
     private final List<List<CategoryViewModel>> data;
+    private final CategoryPickerLevelAdapterListener listener;
 
-    public CategoryPickerLevelAdapter() {
+    public CategoryPickerLevelAdapter(CategoryPickerLevelAdapterListener listener) {
+        this.listener = listener;
         data = new ArrayList<>();
     }
 
@@ -30,7 +32,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter {
             View view = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.category_picker_level_view_layout, parent, false);
-            return new CategoryLevelPickerViewHolder(view);
+            return new CategoryLevelPickerViewHolder(view, this);
         } else {
             return super.onCreateViewHolder(parent, viewType);
         }
@@ -40,7 +42,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case LEVEL_CATEGORY_VIEW:
-                ((CategoryLevelPickerViewHolder)holder).renderData(data.get(position));
+                ((CategoryLevelPickerViewHolder)holder).renderData(data.get(position), position);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -66,5 +68,19 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter {
         data.add(map);
         notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void selectParent(int categoryId) {
+        listener.selectParent(categoryId);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void unselectParent(int level) {
+        for (int i = data.size() - 1; i > level; i--){
+            data.remove(i);
+        }
+        notifyDataSetChanged();
     }
 }

@@ -37,7 +37,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne() {
-        return categoryDataSource.fetchCategoryLevelOne();
+    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(int parent) {
+        return categoryDataSource.fetchCategoryLevelOne(parent);
     }
 }

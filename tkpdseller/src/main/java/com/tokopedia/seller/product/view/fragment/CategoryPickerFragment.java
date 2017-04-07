@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
+import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapterListener;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
 
@@ -26,7 +27,9 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerFragment extends BaseDaggerFragment implements CategoryPickerView{
+public class CategoryPickerFragment
+        extends BaseDaggerFragment
+        implements CategoryPickerView, CategoryPickerLevelAdapterListener {
     public static final String TAG = "CategoryPickerFragment";
 
     @Inject
@@ -67,7 +70,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     private void setupRecyclerView(View view) {
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CategoryPickerLevelAdapter();
+        adapter = new CategoryPickerLevelAdapter(this);
         categoryRecyclerView.setAdapter(adapter);
     }
 
@@ -93,5 +96,10 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void selectParent(int categoryId) {
+        presenter.fetchCategoryWithParent(categoryId);
     }
 }

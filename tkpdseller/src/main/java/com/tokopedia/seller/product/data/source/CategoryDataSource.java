@@ -45,9 +45,9 @@ public class CategoryDataSource {
             .map(new StoreDataToDatabase());
     }
 
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne() {
+    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(int parent) {
         return categoryDataManager
-                .fetchCategoryFromParent(CategoryDataBase.LEVEL_ONE_PARENT)
+                .fetchCategoryFromParent(parent)
                 .map(new CategoryDataToDomainMapper());
     }
 
