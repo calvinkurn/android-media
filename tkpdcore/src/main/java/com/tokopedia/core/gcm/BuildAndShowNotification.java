@@ -124,8 +124,21 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-        } else {
+        } else if(!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())){
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
+        } else {
+
+            mBuilder.setLargeIcon(
+                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+            );
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notif = mBuilder.build();
+            if (configuration.isVibrate() && configuration.isBell()) {
+                notif.defaults |= Notification.DEFAULT_VIBRATE;
+            }
+            mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
         }
     }
 

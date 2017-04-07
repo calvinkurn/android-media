@@ -57,6 +57,11 @@ import permissions.dispatcher.RuntimePermissions;
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
 
+    public interface PhoneVerificationFragmentListener{
+        void onSkipVerification();
+        void onSuccessVerification();
+    }
+
     private static final String FORMAT = "%02d";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String HAS_PHONE_VERIF_TIMER = "HAS_PHONE_VERIF_TIMER";
@@ -77,9 +82,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     IncomingSmsReceiver smsReceiver;
     TkpdProgressDialog progressDialog;
     LocalCacheHandler cacheHandler;
+    PhoneVerificationFragmentListener listener;
 
-    public static PhoneVerificationFragment createInstance() {
-        return new PhoneVerificationFragment();
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        fragment.setPhoneVerificationListener(listener);
+        return fragment;
     }
 
     public PhoneVerificationFragment() {
@@ -87,6 +95,9 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         this.smsReceiver.setListener(this);
     }
 
+    public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
+        this.listener = listener;
+    }
 
     private void findView(View view) {
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
@@ -296,8 +307,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                getActivity().finish();
+                listener.onSkipVerification();
             }
         });
 
@@ -356,8 +366,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void onSuccessVerifyPhoneNumber() {
         SessionHandler.setIsMSISDNVerified(true);
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        listener.onSuccessVerification();
 
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }

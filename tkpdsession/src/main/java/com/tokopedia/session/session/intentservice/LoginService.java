@@ -12,6 +12,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -30,7 +31,6 @@ import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.session.model.LoginEmailModel;
 import com.tokopedia.session.session.model.LoginThirdModel;
@@ -434,6 +434,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 params.put(Login.SOCIAL_TYPE, String.valueOf(accountsParameter.getSocialType()));
                 if (Parcels.unwrap(parcelable) instanceof LoginFacebookViewModel) {
                     LoginFacebookViewModel loginFacebookViewModel = Parcels.unwrap(parcelable);
+                    accountsParameter.setEmail(loginFacebookViewModel.getEmail());
                     params.put(Login.SOCIAL_ID, loginFacebookViewModel.getFbId());
                     params.put(Login.EMAIL_ACCOUNTS, loginFacebookViewModel.getEmail());
                     params.put(Login.FULL_NAME, loginFacebookViewModel.getFullName());
@@ -441,6 +442,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                     params.put(Login.GENDER_ACCOUNTS, loginFacebookViewModel.getGender());
                 } else if (Parcels.unwrap(parcelable) instanceof LoginGoogleModel) {
                     LoginGoogleModel loginGoogleModel = Parcels.unwrap(parcelable);
+                    accountsParameter.setEmail(loginGoogleModel.getEmail());
                     params.put(Login.SOCIAL_ID, loginGoogleModel.getGoogleId());
                     params.put(Login.EMAIL_ACCOUNTS, loginGoogleModel.getEmail());
                     params.put(Login.PICTURE_ACCOUNTS, loginGoogleModel.getImageUrl());
