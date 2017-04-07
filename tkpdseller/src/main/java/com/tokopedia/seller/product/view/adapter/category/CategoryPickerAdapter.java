@@ -54,13 +54,18 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case CATEGORY_PARENT:
-                boolean isNotSelected = data.getSelected() == CategoryLevelViewModel.UNSELECTED;
-                int renderedPosition = isNotSelected ? position : data.getSelected();
+                boolean isSelected = data.getSelected() != CategoryLevelViewModel.UNSELECTED;
+                int renderedPosition = isSelected ? data.getSelectedPositionFromIndex() : position;
                 ((CategoryParentViewHolder)holder)
-                        .renderData(data.getViewModels().get(renderedPosition), position, isNotSelected, data.getLevel());
+                        .renderData(
+                                data.getViewModels().get(renderedPosition), isSelected, data.getLevel()
+                        );
                 break;
             case CATEGORY_ITEM:
-                ((CategoryItemViewHolder)holder).renderData(data.getViewModels().get(position), data.getLevel());
+                ((CategoryItemViewHolder)holder)
+                        .renderData(
+                                data.getViewModels().get(position), false, data.getLevel()
+                        );
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -93,9 +98,9 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     }
 
     @Override
-    public void selectParent(int selected) {
-        data.setSelected(selected);
-        this.listener.selectParent(data.getViewModels().get(selected).getId());
+    public void selectParent(int selectedId) {
+        data.setSelected(selectedId);
+        this.listener.selectParent(selectedId);
         notifyDataSetChanged();
     }
 

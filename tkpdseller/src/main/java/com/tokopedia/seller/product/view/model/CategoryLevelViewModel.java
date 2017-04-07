@@ -34,4 +34,15 @@ public class CategoryLevelViewModel {
     public void setSelected(int selected) {
         this.selected = selected;
     }
+
+    public int getSelectedPositionFromIndex() {
+        int selectedPositionFromIndex = UNSELECTED;
+        for (int i = 0; i < viewModels.size(); i ++){
+            if (viewModels.get(i).getId() == selected){
+                selectedPositionFromIndex = i;
+                break;
+            }
+        }
+        return selectedPositionFromIndex;
+    }
 }
