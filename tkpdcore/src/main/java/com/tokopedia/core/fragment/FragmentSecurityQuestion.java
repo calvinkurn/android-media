@@ -161,7 +161,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save last input by user
-        if (presenter.isSecurityQuestion() && presenter.isValidForm(vAnswer.getText())) {
+        if (presenter.isSecurityQuestion() && presenter.isValidForm(vAnswer.getText().toString())) {
             presenter.saveAnswer(vAnswer.getText().toString());// this is for rotation
         }
         if (presenter.isOtp() && presenter.isValidForm(vInputOtp.getText().toString())) {
