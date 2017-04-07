@@ -254,15 +254,18 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case "no_drivers_available":
+                getView().cancelFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().clearRideConfiguration();
                 getView().showNoDriverAvailableDialog();
                 break;
             case "processing":
+                getView().showFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
                 break;
             case "accepted":
+                getView().cancelFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
@@ -270,6 +273,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 break;
             case "arriving":
+                getView().cancelFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
@@ -277,6 +281,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
+                getView().cancelFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
@@ -284,14 +289,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
                 break;
             case "driver_canceled":
+                getView().cancelFindingUberNotification();
                 getView().renderDriverCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "rider_canceled":
+                getView().cancelFindingUberNotification();
                 getView().renderRiderCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "completed":
+                getView().cancelFindingUberNotification();
                 getView().renderCompletedRequest(result);
                 getView().clearRideConfiguration();
                 break;

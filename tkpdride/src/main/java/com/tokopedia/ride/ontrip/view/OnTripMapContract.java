@@ -76,6 +76,10 @@ public interface OnTripMapContract {
         void renderRiderCanceledRequest(RideRequest result);
 
         void showNoDriverAvailableDialog();
+
+        void showFindingUberNotification();
+
+        void cancelFindingUberNotification();
     }
 
     interface Presenter extends CustomerPresenter<View>{

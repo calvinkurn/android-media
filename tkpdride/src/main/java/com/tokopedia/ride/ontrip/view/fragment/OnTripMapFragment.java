@@ -6,18 +6,21 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
@@ -67,6 +70,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 import static com.tokopedia.ride.ontrip.view.OnTripActivity.TASK_TAG_PERIODIC;
 
@@ -77,6 +81,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
+
+    private final int FINDING_UBER_NOTIFICATION_ID = 0001;
+
+
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
@@ -455,7 +463,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showNoDriverAvailableDialog() {
-
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("driver_not_found");
         if (previousDialog != null) {
@@ -582,5 +589,32 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void showRequestRideStatus(String message) {
         processingDescription.setVisibility(View.VISIBLE);
         processingDescription.setText(message);
+    }
+
+    @Override
+    public void showFindingUberNotification() {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.qc_launcher))
+                .setProgress(0, 0, true)
+                .setContentTitle(getResources().getString(R.string.notification_title_finding_uber));
+
+        // Issue the notification here.
+        // Sets an ID for the notification
+        int mNotificationId = 001;
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
+    }
+
+    @Override
+    public void cancelFindingUberNotification() {
+        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(FINDING_UBER_NOTIFICATION_ID);
     }
 }

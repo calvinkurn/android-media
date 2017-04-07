@@ -76,7 +76,7 @@ public class RideRequestEntityMapper {
         if (entity != null) {
             driver = new Driver();
             driver.setName(entity.getName());
-            driver.setPhoneNumber(entity.getName());
+            driver.setPhoneNumber(entity.getPhoneNumber());
             driver.setPictureUrl(entity.getPictureUrl());
             driver.setRating(entity.getRating());
             driver.setSmsNumber(entity.getSmsNumber());
