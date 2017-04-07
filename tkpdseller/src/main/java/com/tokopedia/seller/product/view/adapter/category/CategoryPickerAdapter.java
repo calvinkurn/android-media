@@ -15,7 +15,7 @@ import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 
 public class CategoryPickerAdapter
         extends BaseLinearRecyclerViewAdapter
-        implements CategoryParentViewHolder.CategoryParentViewHolderListener {
+        implements CategoryParentViewHolder.CategoryParentViewHolderListener, CategoryItemViewHolder.CategoryItemViewHolderListener {
     private static final int CATEGORY_PARENT = 1000;
     private static final int CATEGORY_ITEM = 2000;
     private static final int SELECTED_ITEM_COUNT = 1;
@@ -42,7 +42,7 @@ public class CategoryPickerAdapter
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.category_item_view_holder, parent, false);
-        return new CategoryItemViewHolder(view);
+        return new CategoryItemViewHolder(view, this);
     }
 
     private RecyclerView.ViewHolder getParentViewHolder(ViewGroup parent) {
@@ -100,7 +100,7 @@ public class CategoryPickerAdapter
 
     private int getPositionRendered(int position) {
         boolean isSelected = isOneCategorySelected();
-        return isSelected ? data.getSelectedPositionFromIndex() : position;
+        return isSelected ? data.getSelectedPosition() : position;
     }
 
     private boolean isOneCategorySelected() {
@@ -124,5 +124,11 @@ public class CategoryPickerAdapter
         data.setSelected(CategoryLevelViewModel.UNSELECTED);
         this.listener.unselectParent(data.getLevel());
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void selectItemCategory(int selectedId) {
+        data.setSelected(selectedId);
+        listener.selectCategoryItem();
     }
 }

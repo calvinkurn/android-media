@@ -35,7 +35,7 @@ public class CategoryLevelViewModel {
         this.selected = selected;
     }
 
-    public int getSelectedPositionFromIndex() {
+    public int getSelectedPosition() {
         int selectedPositionFromIndex = UNSELECTED;
         for (int i = 0; i < viewModels.size(); i ++){
             if (viewModels.get(i).getId() == selected){
@@ -44,5 +44,14 @@ public class CategoryLevelViewModel {
             }
         }
         return selectedPositionFromIndex;
+    }
+
+    public CategoryViewModel getSelectedModel() {
+        for (CategoryViewModel viewModel : viewModels){
+            if (viewModel.getId() == selected){
+                return viewModel;
+            }
+        }
+        throw new RuntimeException("Selected item not found");
     }
 }

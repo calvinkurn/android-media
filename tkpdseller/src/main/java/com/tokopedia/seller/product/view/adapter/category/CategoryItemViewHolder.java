@@ -16,8 +16,19 @@ import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 class CategoryItemViewHolder extends CategoryPickerViewHolder {
 
-    public CategoryItemViewHolder(View view) {
+    public CategoryItemViewHolder(View view, final CategoryItemViewHolderListener listener) {
         super(view);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.selectItemCategory(getCategoryId());
+            }
+        });
+    }
+
+    public interface CategoryItemViewHolderListener{
+
+        void selectItemCategory(int categoryId);
     }
 
 }

@@ -12,12 +12,18 @@ import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragmentListener;
+import com.tokopedia.seller.product.view.model.CategoryViewModel;
+
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerActivity extends TActivity implements HasComponent<CategoryPickerComponent>{
+public class CategoryPickerActivity
+        extends TActivity
+        implements CategoryPickerFragmentListener, HasComponent<CategoryPickerComponent>{
 
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
@@ -54,5 +60,10 @@ public class CategoryPickerActivity extends TActivity implements HasComponent<Ca
     @Override
     public CategoryPickerComponent getComponent() {
         return component;
+    }
+
+    @Override
+    public void selectSetCategory(List<CategoryViewModel> listCategory) {
+
     }
 }

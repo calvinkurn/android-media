@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,15 +37,10 @@ public class CategoryPickerFragment
     CategoryPickerPresenter presenter;
 
     private CategoryPickerLevelAdapter adapter;
+    private CategoryPickerFragmentListener listener;
 
     public static CategoryPickerFragment createInstance() {
         return new CategoryPickerFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -55,6 +51,16 @@ public class CategoryPickerFragment
                 .categoryPickerViewModule(new CategoryPickerViewModule())
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CategoryPickerFragmentListener){
+            this.listener = (CategoryPickerFragmentListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement CategoryPickerFragmentListener");
+        }
     }
 
     @Nullable
@@ -101,5 +107,10 @@ public class CategoryPickerFragment
     @Override
     public void selectParent(int categoryId) {
         presenter.fetchCategoryWithParent(categoryId);
+    }
+
+    @Override
+    public void selectSetCategory(List<CategoryViewModel> listCategory) {
+        listener.selectSetCategory(listCategory);
     }
 }

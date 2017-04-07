@@ -8,4 +8,6 @@ public interface CategoryPickerAdapterListener {
     void selectParent(int categoryId);
 
     void unselectParent(int level);
+
+    void selectCategoryItem();
 }

@@ -85,4 +85,13 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
         }
         notifyDataSetChanged();
     }
+
+    @Override
+    public void selectCategoryItem() {
+        List<CategoryViewModel> listSelectedCategory = new ArrayList<>();
+        for (CategoryLevelViewModel levelViewModel : data){
+            listSelectedCategory.add(levelViewModel.getSelectedModel());
+        }
+        listener.selectSetCategory(listSelectedCategory);
+    }
 }

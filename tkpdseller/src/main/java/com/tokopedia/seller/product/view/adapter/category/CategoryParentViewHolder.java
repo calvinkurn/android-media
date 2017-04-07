@@ -23,7 +23,7 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
                 if (isSelected) {
                     listener.unselectParent();
                 } else {
-                    listener.selectParent(getIndex());
+                    listener.selectParent(getCategoryId());
                 }
             }
         });
