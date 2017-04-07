@@ -286,7 +286,7 @@
     <string name="product_label_condition">Kondisi</string>
     <string name="product_label_insurance">Asuransi</string>
     <string name="product_label_free_returns">Free Returns</string>
-    <string name="product_default_count_text">0</string>
+    <string name="product_default_counter_text">0</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
 
     <string name="etalase_picker_add_new_etalase">+ Tambah Etalase</string>

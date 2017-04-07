@@ -19,20 +19,20 @@
     <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
         android:id="@+id/spinner_count_input_view_price"
         style="@style/LabelLayoutWithoutBorder"
-        app:spinner_count_entries="@array/product_currency_entries"
-        app:spinner_count_hint="@string/product_label_product_price" />
+        app:spinner_decimal_entries="@array/product_currency_entries"
+        app:spinner_decimal_hint="@string/product_label_product_price" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
         android:id="@+id/spinner_count_input_view_weight"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:spinner_count_entries="@array/product_weight_entries"
-        app:spinner_count_hint="@string/product_label_product_weight" />
+        app:spinner_decimal_entries="@array/product_weight_entries"
+        app:spinner_decimal_hint="@string/product_label_product_weight" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:count_hint="@string/product_label_minimum_buy" />
+        app:counter_hint="@string/product_label_minimum_buy" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_stock"

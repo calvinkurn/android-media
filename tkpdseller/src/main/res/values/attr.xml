@@ -147,14 +147,13 @@
         <attr name="default_limit" format="float" />
     </declare-styleable>
     <declare-styleable name="DecimalInputView">
-        <attr name="hint" format="string"/>
-        <attr name="value" format="string"/>
+        <attr name="decimal_input_hint" format="string"/>
+        <attr name="decimal_input_text" format="string"/>
     </declare-styleable>
     <declare-styleable name="CounterInputView">
-        <attr name="count_hint" format="string"/>
-        <attr name="count_value" format="string"/>
+        <attr name="counter_hint" format="string"/>
+        <attr name="counter_text" format="string"/>
     </declare-styleable>
-
     <declare-styleable name="SpinnerTextView">
         <attr name="spinner_hint" format="string"/>
         <attr name="spinner_selection" format="integer"/>
@@ -163,9 +162,9 @@
     </declare-styleable>
 
     <declare-styleable name="SpinnerDecimalInputView">
-        <attr name="spinner_count_entries" format="reference"/>
-        <attr name="spinner_count_values" format="reference"/>
-        <attr name="spinner_count_selection" format="integer"/>
-        <attr name="spinner_count_hint" format="string"/>
+        <attr name="spinner_decimal_entries" format="reference"/>
+        <attr name="spinner_decimal_values" format="reference"/>
+        <attr name="spinner_decimal_selection" format="integer"/>
+        <attr name="spinner_decimal_hint" format="string"/>
     </declare-styleable>
 </resources>

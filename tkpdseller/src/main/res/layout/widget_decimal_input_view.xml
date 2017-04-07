@@ -12,7 +12,8 @@
             android:id="@+id/edit_text"
             style="@style/EditText"
             android:layout_width="match_parent"
-            android:inputType="number" />
+            android:inputType="number"
+            android:text="@string/product_default_counter_text"/>
 
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

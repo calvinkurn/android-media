@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -46,8 +45,8 @@ public class DecimalInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DecimalInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.DecimalInputView_hint);
-            valueText = styledAttributes.getString(R.styleable.DecimalInputView_value);
+            hintText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_hint);
+            valueText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_text);
         } finally {
             styledAttributes.recycle();
         }

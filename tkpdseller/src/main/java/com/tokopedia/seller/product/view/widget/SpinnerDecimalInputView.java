@@ -43,10 +43,10 @@ public class SpinnerDecimalInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerDecimalInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.SpinnerDecimalInputView_spinner_count_hint);
-            selection = styledAttributes.getInt(R.styleable.SpinnerDecimalInputView_spinner_count_selection, 0);
-            entries = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_count_entries);
-            values = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_count_values);
+            hintText = styledAttributes.getString(R.styleable.SpinnerDecimalInputView_spinner_decimal_hint);
+            selection = styledAttributes.getInt(R.styleable.SpinnerDecimalInputView_spinner_decimal_selection, 0);
+            entries = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_decimal_entries);
+            values = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_decimal_values);
         } finally {
             styledAttributes.recycle();
         }

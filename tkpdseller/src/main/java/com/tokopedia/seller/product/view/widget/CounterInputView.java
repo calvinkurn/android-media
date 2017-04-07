@@ -43,8 +43,8 @@ public class CounterInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.CounterInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.CounterInputView_count_hint);
-            valueText = styledAttributes.getString(R.styleable.CounterInputView_count_value);
+            hintText = styledAttributes.getString(R.styleable.CounterInputView_counter_hint);
+            valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
         } finally {
             styledAttributes.recycle();
         }
