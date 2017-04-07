@@ -65,7 +65,6 @@ public class SpinnerTextView extends FrameLayout {
         if (entries != null) {
             updateEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
-        textAutoComplete.setListSelection(selection);
         invalidate();
         requestLayout();
     }
@@ -75,11 +74,10 @@ public class SpinnerTextView extends FrameLayout {
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         textAutoComplete = (AutoCompleteTextView) view.findViewById(R.id.edit_text_spinner);
         textAutoComplete.setOnKeyListener(null);
-        textAutoComplete.setOnTouchListener(new OnTouchListener() {
+        textAutoComplete.setOnClickListener(new OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 ((AutoCompleteTextView) view).showDropDown();
-                return false;
             }
         });
     }
@@ -100,7 +98,7 @@ public class SpinnerTextView extends FrameLayout {
         if (entries != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, entries);
             textAutoComplete.setAdapter(adapter);
-            textAutoComplete.setListSelection(selection);
+            textAutoComplete.setText(entries[selection]);
         }
     }
 
@@ -114,5 +112,4 @@ public class SpinnerTextView extends FrameLayout {
         }
         return -1;
     }
-
 }

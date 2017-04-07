@@ -8,12 +8,13 @@
         android:id="@+id/text_input_layout"
         style="@style/TextInputLayout">
 
-        <AutoCompleteTextView
+        <com.tokopedia.seller.product.view.widget.SpinnerAutoComplete
             android:id="@+id/edit_text_spinner"
             style="@style/EditText"
             android:layout_width="match_parent"
             android:drawableEnd="@drawable/ic_chevron_down"
             android:drawableRight="@drawable/ic_chevron_down"
+            android:focusable="false"
             android:inputType="none"
             android:textIsSelectable="true" />
 

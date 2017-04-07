@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="bottom"
@@ -10,11 +9,13 @@
         android:id="@+id/spinner_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <com.tokopedia.seller.product.view.widget.DecimalInputView
         android:id="@+id/decimal_input_view"
-        android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="4"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_vs"
+        android:layout_marginStart="@dimen/padding_vs"
+        android:layout_weight="4" />
 </LinearLayout>
