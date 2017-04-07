@@ -1449,4 +1449,13 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventSmartLock(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
+                label
+        ).getEvent());
+    }
 }
