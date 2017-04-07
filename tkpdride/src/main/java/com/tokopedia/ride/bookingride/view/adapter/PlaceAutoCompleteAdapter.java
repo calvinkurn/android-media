@@ -60,6 +60,11 @@ public class PlaceAutoCompleteAdapter extends RecyclerView.Adapter<AbstractViewH
         notifyDataSetChanged();
     }
 
+    public void addElements(List<Visitable> data) {
+        mVisitables.addAll(data);
+        notifyDataSetChanged();
+    }
+
     public void clearData() {
         mVisitables.clear();
     }

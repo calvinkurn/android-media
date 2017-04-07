@@ -1,7 +1,6 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;

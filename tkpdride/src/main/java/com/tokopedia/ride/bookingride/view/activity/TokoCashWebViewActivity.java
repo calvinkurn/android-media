@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.net.http.SslError;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core.webview.fragment.BaseWebViewClient;
 import com.tokopedia.ride.R;

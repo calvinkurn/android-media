@@ -12,8 +12,9 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
-import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+import com.tokopedia.ride.bookingride.view.BookingRidePresenter;
+import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;
 import com.tokopedia.ride.common.place.data.PlaceDataStoreFactory;
@@ -27,9 +28,6 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
-import com.tokopedia.ride.bookingride.view.BookingRidePresenter;
-import com.tokopedia.ride.common.network.RideInterceptor;
 
 import java.util.concurrent.TimeUnit;
 

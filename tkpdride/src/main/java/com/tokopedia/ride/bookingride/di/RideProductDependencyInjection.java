@@ -14,6 +14,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
+import com.tokopedia.ride.bookingride.view.UberProductContract;
+import com.tokopedia.ride.bookingride.view.UberProductPresenter;
+import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
 import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
@@ -21,9 +24,6 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.bookingride.view.UberProductContract;
-import com.tokopedia.ride.bookingride.view.UberProductPresenter;
-import com.tokopedia.ride.common.network.RideInterceptor;
 
 import java.util.concurrent.TimeUnit;
 

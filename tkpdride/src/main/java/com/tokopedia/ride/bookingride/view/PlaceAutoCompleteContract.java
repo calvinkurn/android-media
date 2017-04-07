@@ -3,8 +3,11 @@ package com.tokopedia.ride.bookingride.view;
 import android.app.Activity;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public interface PlaceAutoCompleteContract {
 
         void hideWorkLocationButton();
 
+        RequestParams getPeopleAddressParam();
 
         void hideListPlaces();
 
@@ -45,10 +49,26 @@ public interface PlaceAutoCompleteContract {
         void resetSearch();
 
         void onPlaceSelectedFound(PlacePassViewModel placePassViewModel);
+
+        void setPagingConfiguration(PeopleAddressPaging paging);
+
+        void setActiveMarketplaceSource();
+
+        void setActiveGooglePlaceSource();
+
+        void renderMorePlacesList(ArrayList<Visitable> addresses);
+
+        void resetMarketplacePaging();
+
+        boolean isActiveMarketPlaceSource();
+
+        boolean isActiveGooglePlaceSource();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
+
+        void actionGetPeopleAddresses(boolean isLoadMore);
 
         void actionQueryPlacesByKeyword(String keyword);
 
@@ -64,6 +84,6 @@ public interface PlaceAutoCompleteContract {
 
         void onStart();
 
-        void onPlaceSelected(String addressId);
+        void onPlaceSelected(PlaceAutoCompeleteViewModel addressId);
     }
 }

@@ -9,14 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.ride.R;
-import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 
 import java.util.Collections;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alvarisi on 3/23/17.

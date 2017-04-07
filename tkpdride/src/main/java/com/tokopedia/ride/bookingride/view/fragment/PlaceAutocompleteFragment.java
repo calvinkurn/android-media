@@ -11,50 +11,43 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.common.data.DataBufferUtils;
-import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.AutocompletePredictionBuffer;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.places.Places;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.rxjava.RxUtils;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.di.PlaceAutoCompleteDependencyInjection;
+import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.model.PeopleAddressPaging;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
-import com.tokopedia.ride.bookingride.view.PlaceAutoCompletePresenter;
-import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
-import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
+import com.tokopedia.ride.bookingride.view.adapter.EndlessRecyclerViewScrollListener;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
+import com.tokopedia.ride.bookingride.view.adapter.PlaceAutoCompleteAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteAdapterTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.factory.PlaceAutoCompleteTypeFactory;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAutoCompleteContract.View,
         GoogleApiClient.OnConnectionFailedListener,
@@ -62,8 +55,10 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     private static final String TAG = "addressautocomplete";
 
     private PlaceAutoCompleteAdapter mAdapter;
-
     private PlaceAutoCompleteContract.Presenter mPresenter;
+    private EndlessRecyclerViewScrollListener mEndlessRecyclerViewScrollListener;
+    private PeopleAddressPaging peopleAddressPaging;
+    private boolean isMarketPlaceSource;
 
     @BindView(R2.id.cabs_autocomplete_edit_text)
     EditText mAutocompleteEditText;
@@ -94,9 +89,16 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        peopleAddressPaging = new PeopleAddressPaging();
+        peopleAddressPaging.setPage(1);
+    }
+
+    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = new PlaceAutoCompletePresenter();
+        mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter();
         mPresenter.attachView(this);
         mPresenter.initialize();
 
@@ -108,15 +110,19 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
-                mPresenter.actionQueryPlacesByKeyword(String.valueOf(s));
+                if (TextUtils.isEmpty(s)) {
+                    mPresenter.actionGetPeopleAddresses(false);
+                }
+                else {
+                    mPresenter.actionQueryPlacesByKeyword(String.valueOf(s));
+                }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                CommonUtils.dumper("af : " + mAutocompleteEditText.getText().toString());
             }
         });
-
 
         PlaceAutoCompleteTypeFactory placeAutoCompleteTypeFactory = new PlaceAutoCompleteAdapterTypeFactory(this);
         mAdapter = new PlaceAutoCompleteAdapter(placeAutoCompleteTypeFactory);
@@ -124,7 +130,24 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mAutoCompleteRecylerView.setLayoutManager(layoutManager);
         mAutoCompleteRecylerView.setHasFixedSize(true);
+
+        mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                actionOnLoadMoreDetected(page);
+            }
+        };
+        mAutoCompleteRecylerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);
         mAutoCompleteRecylerView.setAdapter(mAdapter);
+    }
+
+    private void actionOnLoadMoreDetected(int page) {
+        if (isMarketPlaceSource) {
+            if (!TextUtils.isEmpty(peopleAddressPaging.getNextUrl()) && !String.valueOf(peopleAddressPaging.getNextUrl()).equalsIgnoreCase("0")) {
+                peopleAddressPaging.setPage(page);
+                mPresenter.actionGetPeopleAddresses(true);
+            }
+        }
     }
 
     @Override
@@ -151,7 +174,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void onPlaceSelected(PlaceAutoCompeleteViewModel address) {
-        mPresenter.onPlaceSelected(address.getAddressId());
+        mPresenter.onPlaceSelected(address);
     }
 
     @Override
@@ -273,5 +296,60 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @OnClick(R2.id.cabs_autocomplete_work_box)
     public void actionWorkButtonClicked() {
         mPresenter.actionWorkLocation();
+    }
+
+    @Override
+    public RequestParams getPeopleAddressParam() {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(GetPeopleAddressesUseCase.PARAM_PAGE, peopleAddressPaging.getPage());
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_QUERY, "");
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_ORDER_BY, String.valueOf(1));
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
+    }
+
+    @Override
+    public void setPagingConfiguration(PeopleAddressPaging paging) {
+        peopleAddressPaging.setNextUrl(paging.getNextUrl());
+    }
+
+    @Override
+    public void setActiveMarketplaceSource() {
+        isMarketPlaceSource = true;
+    }
+
+    @Override
+    public void setActiveGooglePlaceSource() {
+        isMarketPlaceSource = false;
+    }
+
+    @Override
+    public void renderMorePlacesList(ArrayList<Visitable> addresses) {
+        mAutoCompleteRecylerView.setAdapter(mAdapter);
+        mAdapter.addElements(addresses);
+    }
+
+    @Override
+    public void resetMarketplacePaging() {
+        if (peopleAddressPaging == null) peopleAddressPaging = new PeopleAddressPaging();
+        peopleAddressPaging.setPage(1);
+        peopleAddressPaging.setNextUrl(String.valueOf(0));
+    }
+
+    @Override
+    public boolean isActiveMarketPlaceSource() {
+        return isMarketPlaceSource;
+    }
+
+    @Override
+    public boolean isActiveGooglePlaceSource() {
+        return !isMarketPlaceSource;
     }
 }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -36,6 +37,9 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
+import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
@@ -48,11 +52,9 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-import rx.subscriptions.Subscriptions;
 
 /**
  * Created by alvarisi on 3/15/17.
@@ -68,12 +70,14 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     private LocationRequest mLocationRequest;
     private OnQueryListener mOnQueryListener;
+    private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
     }
 
-    public PlaceAutoCompletePresenter() {
+    public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase) {
+        mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
     }
 
     @Override
@@ -104,17 +108,61 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             .observeOn(new UIThread().getScheduler())
                             .subscribe(new AutoCompletePlaceTextChanged())
             );
+            actionGetPeopleAddresses(false);
         }
 
 //                .subscribeOn(Schedulers.from(threadExecutor))
 //                .observeOn(postExecutionThread.getScheduler())
     }
 
+    @Override
+    public void actionGetPeopleAddresses(final boolean isLoadMore) {
+        getView().showAutoDetectLocationButton();
+        getView().setActiveMarketplaceSource();
+        mGetPeopleAddressesUseCase.execute(getView().getPeopleAddressParam(), new Subscriber<PeopleAddressWrapper>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(PeopleAddressWrapper wrapper) {
+                if (!getView().isActiveMarketPlaceSource()) return;
+                ArrayList<Visitable> addresses = new ArrayList<>();
+                for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
+                    if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
+                        PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                        address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
+                        address.setTitle(String.valueOf(peopleAddress.getAddressName()));
+                        address.setAddressId(peopleAddress.getAddressId());
+                        address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
+                        address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
+                        address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
+                        addresses.add(address);
+                    }
+                }
+                getView().showListPlaces();
+                getView().setPagingConfiguration(wrapper.getPaging());
+                if (!isLoadMore) {
+                    getView().renderPlacesList(addresses);
+                }else {
+                    getView().renderMorePlacesList(addresses);
+                }
+                getView().hideAutoCompleteLoadingCross();
+            }
+        });
+    }
+
     private void prepareInitialView() {
         getView().hideAutoCompleteLoadingCross();
         getView().showAutoDetectLocationButton();
-        getView().showHomeLocationButton();
-        getView().showWorkLocationButton();
+        getView().hideHomeLocationButton();
+        getView().hideWorkLocationButton();
         getView().hideListPlaces();
     }
 
@@ -191,6 +239,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         getView().hideAutoDetectLocationButton();
         getView().hideHomeLocationButton();
         getView().hideWorkLocationButton();
+        getView().resetMarketplacePaging();
+        if (TextUtils.isEmpty(keyword)) return;
         if (mOnQueryListener != null) {
             mOnQueryListener.onQuerySubmit(keyword);
         }
@@ -264,6 +314,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void getPlacesAndRenderViewByKeyword(String keyword) {
+        getView().setActiveGooglePlaceSource();
         isLoadingPlaces = true;
         LatLngBounds bounds = null;
         if (mCurrentLocation != null) {
@@ -297,6 +348,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
                     @Override
                     public void onNext(ArrayList<AutocompletePrediction> results) {
+                        if (!getView().isActiveGooglePlaceSource()) return;
                         CommonUtils.dumper("res : " + results.size());
                         ArrayList<Visitable> addresses = new ArrayList<>();
                         for (AutocompletePrediction autocompletePrediction : results) {
@@ -304,6 +356,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
                             address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
                             address.setAddressId(autocompletePrediction.getPlaceId());
+                            address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
                             addresses.add(address);
                         }
                         getView().renderPlacesList(addresses);
@@ -403,28 +456,39 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     @Override
-    public void onPlaceSelected(String addressId) {
-        Places.GeoDataApi.getPlaceById(mGoogleApiClient, addressId)
-                .setResultCallback(new ResultCallback<PlaceBuffer>() {
-                    @Override
-                    public void onResult(PlaceBuffer places) {
-                        if (places.getStatus().isSuccess() && places.getCount() > 0) {
-                            final Place myPlace = places.get(0);
-                            PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                            placePassViewModel.setLatitude(myPlace.getLatLng().latitude);
-                            placePassViewModel.setLongitude(myPlace.getLatLng().longitude);
-                            placePassViewModel.setTitle((String) myPlace.getName());
-                            placePassViewModel.setPlaceId(myPlace.getId());
-                            placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
-                            placePassViewModel.setAddress(String.valueOf(myPlace.getAddress()));
-                            getView().onPlaceSelectedFound(placePassViewModel);
-                        } else {
-                            getView().showMessage("Place not Found");
-                            Log.e(TAG, "Place not found");
+    public void onPlaceSelected(PlaceAutoCompeleteViewModel adress) {
+        if (adress.getType() == PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE) {
+            Places.GeoDataApi.getPlaceById(mGoogleApiClient, adress.getAddressId())
+                    .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                        @Override
+                        public void onResult(PlaceBuffer places) {
+                            if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                                final Place myPlace = places.get(0);
+                                PlacePassViewModel placePassViewModel = new PlacePassViewModel();
+                                placePassViewModel.setLatitude(myPlace.getLatLng().latitude);
+                                placePassViewModel.setLongitude(myPlace.getLatLng().longitude);
+                                placePassViewModel.setTitle((String) myPlace.getName());
+                                placePassViewModel.setPlaceId(myPlace.getId());
+                                placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
+                                placePassViewModel.setAddress(String.valueOf(myPlace.getAddress()));
+                                getView().onPlaceSelectedFound(placePassViewModel);
+                            } else {
+                                getView().showMessage("Place not Found");
+                                Log.e(TAG, "Place not found");
+                            }
+                            places.release();
                         }
-                        places.release();
-                    }
-                });
+                    });
+        } else {
+            PlacePassViewModel placePassViewModel = new PlacePassViewModel();
+            placePassViewModel.setLatitude(adress.getLatitude());
+            placePassViewModel.setLongitude(adress.getLongitude());
+            placePassViewModel.setTitle(adress.getTitle());
+            placePassViewModel.setPlaceId(adress.getAddressId());
+            placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
+            placePassViewModel.setAddress(adress.getAddress());
+            getView().onPlaceSelectedFound(placePassViewModel);
+        }
     }
 
     @Override

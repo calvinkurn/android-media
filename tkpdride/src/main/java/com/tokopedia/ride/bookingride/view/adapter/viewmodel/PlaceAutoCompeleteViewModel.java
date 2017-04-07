@@ -11,6 +11,9 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
     private String title;
     private String addressId;
     private String address;
+    private double latitude;
+    private double longitude;
+    private TYPE type;
 
     public PlaceAutoCompeleteViewModel() {
     }
@@ -42,5 +45,34 @@ public class PlaceAutoCompeleteViewModel implements Visitable<PlaceAutoCompleteT
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public TYPE getType() {
+        return type;
+    }
+
+    public void setType(TYPE type) {
+        this.type = type;
+    }
+
+    public enum TYPE {
+        MARKETPLACE_PLACE,
+        GOOGLE_PLACE
     }
 }

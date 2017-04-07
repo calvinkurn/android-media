@@ -33,7 +33,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
