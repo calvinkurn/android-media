@@ -3,12 +3,17 @@ package com.tokopedia.seller.topads.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.view.Window;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
+
+import java.io.IOException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 /**
  * @author normansyahputa on 2/16/17.
@@ -37,6 +42,18 @@ public class ViewUtils {
             errorMessage = ((ResponseErrorException) t).getErrorList().get(0).getDetail();
         }
         return errorMessage;
+    }
+
+    public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
+        if (t instanceof UnknownHostException) {
+            return context.getString(R.string.msg_no_connection);
+        } else if (t instanceof SocketTimeoutException) {
+            return context.getString(R.string.default_request_error_timeout);
+        } else if (t instanceof IOException) {
+            return context.getString(R.string.default_request_error_internal_server);
+        } else {
+            return context.getString(R.string.default_request_error_unknown);
+        }
     }
 
     public static String getClickBudgetError(Context context, float clickBudget) {

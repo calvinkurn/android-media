@@ -205,6 +205,11 @@
         <activity android:name=".product.view.activity.EtalasePickerActivity"
             android:label="@string/title_activity_etalase_picker" />
 
+        <activity
+            android:name=".product.view.activity.CatalogPickerActivity"
+            android:label="@string/title_activity_catalog_picker"
+            android:exported="true"/>
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false" />

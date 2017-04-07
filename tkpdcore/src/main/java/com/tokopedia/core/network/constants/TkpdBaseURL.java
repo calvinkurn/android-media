@@ -508,7 +508,8 @@ public class TkpdBaseURL {
     }
 
     public static class Ace {
-        public static final String URL_SEARCH = ACE_DOMAIN + "search/";
+        public static final String PATH_SEARCH = "search/";
+        public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
 
         public static final String PATH_CATALOG_SHOP_LIST = "catalog/product";
         public static final String PATH_SEARCH_SHOP = "shop";
