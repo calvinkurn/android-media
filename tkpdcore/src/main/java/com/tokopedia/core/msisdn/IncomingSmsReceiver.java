@@ -52,7 +52,8 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
         String senderNum = currentMessage.getDisplayOriginatingAddress();
         String message = currentMessage.getDisplayMessageBody();
 
-        return senderNum.equals("Tokopedia") || message.startsWith("Tokopedia");
+        return (senderNum!= null && senderNum.equals("Tokopedia")) ||
+                (message != null && message.startsWith("Tokopedia"));
     }
 
     public void registerSmsReceiver(Context context) {
