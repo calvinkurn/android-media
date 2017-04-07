@@ -39,14 +39,12 @@ import java.util.ArrayList;
 public class OpportunityListFragment extends BasePresenterFragment<OpportunityListPresenter>
         implements OpportunityListView {
 
-    private static final int REQUEST_OPEN_DETAIL = 123;
     public static final int REQUEST_SORT = 101;
     public static final int REQUEST_FILTER = 102;
-
+    private static final int REQUEST_CODE_OPPORTUNITY_DETAIL = 2017;
 
     private static final String CACHE_SEEN_OPPORTUNITY = "CACHE_SEEN_OPPORTUNITY";
     private static final java.lang.String HAS_SEEN_OPPORTUNITY = "HAS_SEEN_OPPORTUNITY";
-    private static final int REQUEST_CODE_OPPORTUNITY_DETAIL = 2017;
 
     private static final int DEFAULT_CATEGORY_SELECTED = 1;
     RecyclerView opportunityList;
@@ -379,9 +377,18 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL && resultCode == Activity.RESULT_OK) {
             // refresh the list
 
+        } else if (requestCode == REQUEST_CODE_OPPORTUNITY_DETAIL
+                && resultCode == OpportunityDetailFragment.RESULT_DELETED
+                && data != null) {
+            OpportunityItemViewModel viewModel = data.getParcelableExtra(
+                    OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
+            adapter.getList().remove(viewModel.getPosition());
+            if (adapter.getList().size() == 0)
+                adapter.showEmptyFull(true);
+            adapter.notifyDataSetChanged();
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS Sort" + data.getExtras().getInt(OpportunitySortFragment.SELECTED_POSITION));
             setSortActive();

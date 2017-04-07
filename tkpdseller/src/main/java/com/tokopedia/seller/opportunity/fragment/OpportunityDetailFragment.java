@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -33,7 +34,7 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityIte
 public class OpportunityDetailFragment extends BasePresenterFragment<OpportunityPresenter>
         implements OpportunityView {
 
-    private static final int RESULT_DELETED = 8881;
+    public static final int RESULT_DELETED = 8881;
 
     OpportunityDetailButtonView buttonView;
     OpportunityDetailStatusView statusView;
@@ -55,7 +56,8 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onActionDeleteClicked() {
-        getActivity().setResult(RESULT_DELETED);
+        Intent intent = getActivity().getIntent();
+        getActivity().setResult(RESULT_DELETED, intent);
         getActivity().finish();
     }
 

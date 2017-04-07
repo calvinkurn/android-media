@@ -99,6 +99,7 @@ public class OpportunityListAdapter extends BaseLinearRecyclerViewAdapter{
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                list.get(position).setPosition(position);
                 listener.goToDetail(list.get(position));
 
             }

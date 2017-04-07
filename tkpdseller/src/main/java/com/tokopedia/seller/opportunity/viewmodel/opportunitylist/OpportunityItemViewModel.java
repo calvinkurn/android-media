@@ -27,6 +27,7 @@ public class OpportunityItemViewModel implements Parcelable{
     private OrderLastViewModel orderLast;
     private List<OrderHistoryViewModel> orderHistory;
     private OrderDestinationViewModel orderDestination;
+    private int position;
 
     public OpportunityItemViewModel() {
     }
@@ -48,6 +49,7 @@ public class OpportunityItemViewModel implements Parcelable{
         orderLast = in.readParcelable(OrderLastViewModel.class.getClassLoader());
         orderHistory = in.createTypedArrayList(OrderHistoryViewModel.CREATOR);
         orderDestination = in.readParcelable(OrderDestinationViewModel.class.getClassLoader());
+        position = in.readInt();
     }
 
     public static final Creator<OpportunityItemViewModel> CREATOR = new Creator<OpportunityItemViewModel>() {
@@ -213,5 +215,14 @@ public class OpportunityItemViewModel implements Parcelable{
         dest.writeParcelable(orderLast, flags);
         dest.writeTypedList(orderHistory);
         dest.writeParcelable(orderDestination, flags);
+        dest.writeInt(position);
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }
