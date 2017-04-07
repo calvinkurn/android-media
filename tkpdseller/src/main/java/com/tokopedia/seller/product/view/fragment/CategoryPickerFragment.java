@@ -75,7 +75,7 @@ public class CategoryPickerFragment
     }
 
     private void initVar() {
-        presenter.fetchCategoryLevelOne();
+        presenter.fetchAllCategoryData();
     }
 
     @Override

@@ -11,4 +11,6 @@ public abstract class CategoryPickerPresenter extends BaseDaggerPresenter<Catego
     public abstract void fetchCategoryLevelOne();
 
     public abstract void fetchCategoryWithParent(int categoryId);
+
+    public abstract void fetchAllCategoryData();
 }

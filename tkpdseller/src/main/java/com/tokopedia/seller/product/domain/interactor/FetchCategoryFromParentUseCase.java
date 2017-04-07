@@ -35,10 +35,8 @@ public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainM
     @Override
     public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
         int parent = requestParams.getInt(CATEGORY_PARENT, UNSELECTED);
-        return Observable.just(true)
-                .flatMap(new CheckVersion())
-                .flatMap(new CheckCategoryAvailable())
-                .flatMap(new FetchCategoryLevelOne(parent));
+        return Observable.just(parent)
+                .flatMap(new FetchCategoryLevelOne());
     }
 
     public static RequestParams generateLevelOne() {
@@ -53,29 +51,9 @@ public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainM
         return requestParam;
     }
 
-    private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
+    private class FetchCategoryLevelOne implements Func1<Integer, Observable<List<CategoryDomainModel>>> {
         @Override
-        public Observable<Boolean> call(Boolean aBoolean) {
-            return categoryRepository.checkVersion();
-        }
-    }
-
-    private class CheckCategoryAvailable implements Func1<Boolean, Observable<Boolean>> {
-        @Override
-        public Observable<Boolean> call(Boolean aBoolean) {
-            return categoryRepository.checkCategoryAvailable();
-        }
-    }
-
-    private class FetchCategoryLevelOne implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
-        private final int parent;
-
-        private FetchCategoryLevelOne(int parent) {
-            this.parent = parent;
-        }
-
-        @Override
-        public Observable<List<CategoryDomainModel>> call(Boolean aBoolean) {
+        public Observable<List<CategoryDomainModel>> call(Integer parent) {
             return categoryRepository.fetchCategoryLevelOne(parent);
         }
     }
