@@ -75,9 +75,12 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     Snackbar snackbar;
 
     LocalCacheHandler isNotFirstRun;
+    Spannable spannable;
 
     List<LoginProviderModel.ProvidersBean> listProvider;
     private String backgroundUrl;
+    String sourceString = "Belum punya akun? "+ "Daftar";
+    private ClickableSpan clickableSpan;
 
     public static WelcomeFragment createInstance(Bundle bundle) {
         WelcomeFragment fragment = new WelcomeFragment();
@@ -109,6 +112,15 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                         | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        spannable.setSpan(clickableSpan
+                , sourceString.indexOf("Daftar")
+                , sourceString.length()
+                ,0);
+
+        register.setText(spannable, TextView.BufferType.SPANNABLE);
+        register.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
     @Override
@@ -158,42 +170,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
                 startActivity(intent);
-//                getActivity().finish();
             }
         });
-//
-//        register.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//            }
-//        });
-
-        String sourceString = "Belum punya akun? "+ "Daftar";
-
-        Spannable spannable = new SpannableString(sourceString);
-
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-                                  Intent intent = SessionRouter.getLoginActivityIntent(context);
-                                  intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                                  intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
-                                  startActivity(intent);
-                              }
-
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                              }
-                          }
-                , sourceString.indexOf("Daftar")
-                , sourceString.length()
-                ,0);
-
-        register.setText(spannable, TextView.BufferType.SPANNABLE);
-        register.setMovementMethod(LinkMovementMethod.getInstance());
-
         isNotFirstRun = new LocalCacheHandler(getActivity(), "FirstRun");
 
         if(isNotFirstRun.getBoolean("firstRun").equals(false)){
@@ -201,6 +179,24 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
             isNotFirstRun.applyEditor();
             showPopUp();
         }
+
+        spannable = new SpannableString(sourceString);
+
+        clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = SessionRouter.getLoginActivityIntent(context);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+                startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setUnderlineText(true);
+                ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+            }
+        };
     }
 
     private void showPopUp() {

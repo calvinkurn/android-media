@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.view.Menu;
@@ -16,7 +17,9 @@ import android.view.MenuItem;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -27,7 +30,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.myproduct.ProductActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.dialog.DialogToEtalase;
 import com.tokopedia.core.product.facade.NetworkParam;
@@ -62,10 +64,18 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static com.raizlabs.android.dbflow.config.FlowLog.Level.D;
+import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
 
 /**
  * ProductDetailPresenterImpl
@@ -74,15 +84,21 @@ import java.util.Map;
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
+    public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
+    private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
+    private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private ProductDetailView viewListener;
     private RetrofitInteractor retrofitInteractor;
     private CacheInteractor cacheInteractor;
     private int counter = 0;
+    LocalCacheHandler cacheHandler;
+    DateFormat df;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener) {
         this.viewListener = viewListener;
         this.retrofitInteractor = new RetrofitInteractorImpl();
         this.cacheInteractor = new CacheInteractorImpl();
+        this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
     }
 
     @Override
@@ -220,8 +236,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public void processToEditProduct(@NonNull Context context, @NonNull Bundle bundle) {
         boolean isEdit = bundle.getBoolean("is_edit");
         String productId = bundle.getString("product_id");
-        Intent intent = ProductActivity.moveToEditFragment(context, isEdit, productId);
-        viewListener.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
+        viewListener.moveToEditFragment(isEdit, productId);
     }
 
     @Override
@@ -377,38 +392,72 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void requestPromoteProduct(@NonNull final Context context,
                                       @NonNull final ProductDetailData product) {
-        retrofitInteractor.promoteProduct(context,
-                NetworkParam.paramPromote(product.getInfo().getProductId()),
-                new RetrofitInteractor.PromoteProductListener() {
-                    @Override
-                    public void onSuccess(ProductDinkData data) {
-                        String productName = data.getProductName();
-                        if (productName == null) productName = "WS BELUM SIAP";
-                        if (data.getIsDink() == 1) {
-                            String msg = context.getResources()
-                                    .getString(R.string.toast_success_promo1)
-                                    + " "
-                                    + MethodChecker.fromHtml(productName)
-                                    + " "
-                                    + context.getResources()
-                                    .getString(R.string.toast_success_promo2);
-                            viewListener.showToastMessage(msg);
-                        } else {
-                            String msg = context.getResources()
-                                    .getString(R.string.toast_promo_error)
-                                    + " "
-                                    + MethodChecker.fromHtml(productName)
-                                    + "\n"
-                                    + data.getExpiry();
-                            viewListener.showToastMessage(msg);
-                        }
-                    }
+        cacheHandler = new LocalCacheHandler(context, CACHE_PROMOTION_PRODUCT);
 
-                    @Override
-                    public void onError(String error) {
-                        viewListener.showToastMessage(error);
-                    }
-                });
+        if (cacheHandler.isExpired()) {
+            viewListener.showProgressLoading();
+            retrofitInteractor.promoteProduct(context,
+                    NetworkParam.paramPromote(product.getInfo().getProductId()),
+                    new RetrofitInteractor.PromoteProductListener() {
+                        @Override
+                        public void onSuccess(ProductDinkData data) {
+                            viewListener.hideProgressLoading();
+                            String productName = data.getProductName();
+                            if (productName == null) productName = "WS BELUM SIAP";
+                            cacheHandler.putString(PRODUCT_NAME, productName);
+                            if (data.getIsDink() == 1) {
+                                String msg = context.getResources()
+                                        .getString(R.string.toast_success_promo1)
+                                        + " "
+                                        + MethodChecker.fromHtml(productName)
+                                        + " "
+                                        + context.getResources()
+                                        .getString(R.string.toast_success_promo2);
+                                viewListener.showToastMessage(msg);
+                            } else {
+                                String msg = context.getResources().getString(R.string.toast_promo_error1)
+                                        + " "
+                                        + MethodChecker.fromHtml(productName)
+                                        + "\n"
+                                        + data.getExpiry()
+                                        + "\n"
+                                        + context.getResources().getString(R.string.toast_promo_error2);
+
+                                viewListener.showToastMessage(msg);
+                            }
+
+                            String expireDate = data.getExpiry();
+                            cacheHandler.putString(DATE_EXPIRE, data.getExpiry());
+                            Date expireD;
+
+                            try {
+                                expireD = df.parse(expireDate);
+                                Long curr_time = System.currentTimeMillis() / 1000;
+                                Long expireTime = expireD.getTime() / 1000;
+                                cacheHandler.setExpire(Integer.parseInt(String.valueOf(expireTime - curr_time)));
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(String error) {
+                            viewListener.hideProgressLoading();
+                            viewListener.showToastMessage(error);
+                        }
+                    });
+        } else {
+            String msg = context.getResources()
+                    .getString(R.string.toast_promo_error1)
+                    + " "
+                    + MethodChecker.fromHtml(cacheHandler.getString(PRODUCT_NAME,""))
+                    + "\n"
+                    + cacheHandler.getString(DATE_EXPIRE,"")
+                    + "\n"
+                    + context.getResources().getString(R.string.toast_promo_error2);
+            viewListener.showToastMessage(msg);
+        }
     }
 
     @Override
@@ -452,6 +501,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void onDestroyView(@NonNull Context context) {
         retrofitInteractor.unSubscribeObservable();
+        cacheHandler = null;
+        df = null;
     }
 
     @Override

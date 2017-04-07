@@ -376,13 +376,6 @@ public class ProductList extends V2BaseFragment {
                         )
                 );
             }
-
-            @Override
-            public void onSpinnerEtalaseClick() {
-                if (getActivity() != null) {
-                    CommonUtils.dumper("GAv4 clicked spinner etalase shops");
-                }
-            }
         };
     }
 
@@ -540,6 +533,26 @@ public class ProductList extends V2BaseFragment {
         adapter.notifyDataSetChanged();
         adapter.addLoading();
         productShopParam.setPage(1);
+        facadeShopProd.unsubscribeGetShopProduct();
+        facadeShopProd.getShopProduct(productShopParam);
+    }
+
+    public void refreshProductListFromOffStore() {
+        productModel.list.clear();
+        GetShopProductParam newProductParam = new GetShopProductParam();
+        if (etalaseNameList.size() > 1) {
+            int selectedEtalase = etalaseNameList.indexOf(getString(R.string.title_all_etalase));
+            newProductParam.setSelectedEtalase(selectedEtalase == -1 ? 0 : selectedEtalase);
+        }else{
+            newProductParam.setSelectedEtalase(0);
+        }
+        newProductParam.setListState(productShopParam.getListState());
+        productShopParam = newProductParam;
+        adapter.setListType(productShopParam.getListState());
+        adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
+        adapter.notifyDataSetChanged();
+        adapter.addLoading();
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);
     }
 
@@ -554,10 +567,12 @@ public class ProductList extends V2BaseFragment {
         productModel.list.clear();
         adapter.notifyDataSetChanged();
         adapter.addLoading();
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(getShopProductParam);
     }
 
     private void getProductNextPage() {
+        facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);
     }
 

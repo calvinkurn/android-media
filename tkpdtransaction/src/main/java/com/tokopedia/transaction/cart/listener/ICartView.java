@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.transaction.base.IBaseView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
+import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.GatewayList;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
@@ -30,7 +31,7 @@ public interface ICartView extends IBaseView {
 
     void renderPaymentGatewayOption(List<GatewayList> gatewayList);
 
-    void renderVisibleLoyaltyBalance(String loyaltyAmountIDR);
+    void renderVisibleLoyaltyBalance(String loyaltyAmountIDR, String loyaltyPoint);
 
     void renderInvisibleLoyaltyBalance();
 
@@ -72,6 +73,8 @@ public interface ICartView extends IBaseView {
 
     void renderErrorDefaultInitialCartInfo(String messageError);
 
+    void renderCheckboxDonasi(CartDonation donation);
+
     void setCheckoutCartToken(String token);
 
     List<CartItemEditable> getItemCartListCheckoutData();
@@ -79,6 +82,8 @@ public interface ICartView extends IBaseView {
     String getVoucherCodeCheckoutData();
 
     boolean isCheckoutDataUseVoucher();
+
+    String getDonationValue();
 
     CheckoutData.Builder getCheckoutDataBuilder();
 

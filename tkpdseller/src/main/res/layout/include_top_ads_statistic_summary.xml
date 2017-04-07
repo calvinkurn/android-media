@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/LabelLayout"
+    style="@style/LabelLayoutWithBorder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
@@ -11,11 +11,11 @@
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
-    android:paddingTop="0dp">
+    android:paddingTop="0.5dp">
 
     <RelativeLayout
         android:id="@+id/layout_date"
-        style="@style/LabelLayout">
+        style="@style/LabelLayoutWithoutBorder">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -23,18 +23,19 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_calendar_grey"/>
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/arrow_left"
             android:layout_width="@dimen/topads_arrow_left_width"
             android:layout_height="@dimen/topads_arrow_left_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_left"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_arrow_right"/>
 
         <TextView
             android:id="@+id/text_view_range_date"
-            style="@style/TextView.TopAdsDate"
+            style="@style/TextView.TopAds.Title.Green"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/topads_arrow_left_margin"
             android:layout_marginRight="@dimen/topads_arrow_left_margin"

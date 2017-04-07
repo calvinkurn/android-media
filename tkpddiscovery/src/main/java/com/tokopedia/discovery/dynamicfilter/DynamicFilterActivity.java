@@ -101,6 +101,13 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         fragmentManager = getSupportFragmentManager();
         dynamicFilterPresenter = new DynamicFilterPresenterImpl(this);
         dynamicFilterPresenter.fetchExtras(getIntent());
+        if (selectedPositions.isEmpty()) {
+            setCurrentSelectedCategoryAsChecked();
+        }
+    }
+
+    private void setCurrentSelectedCategoryAsChecked() {
+        selectedPositions.put(dynamicFilterPresenter.getDepartmentId(), true);
     }
 
     @Override
@@ -119,7 +126,6 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
 
     @Override
     public void setFragmentForFirstTime3(List<Filter> data) {
-        setFragmentBasedOnData(Filter.createCategory());
         Fragment dynamicFilterListFragment = DynamicFilterListFragment.newInstance2(data);
         setFragment(dynamicFilterListFragment, DynamicFilterListView.FRAGMENT_TAG, R.id.dynamic_filter_list);
     }
@@ -127,11 +133,21 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     @Override
     public void setFragmentBasedOnData(Filter data) {
         if (data.getTitle().equals(Filter.TITLE_CATEGORY)) {
-            DynamicFilterCategoryFragment categoryFragment =
-                    DynamicFilterCategoryFragment.newInstance(
-                            dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
-                            dynamicFilterPresenter.getCurrentCategory());
-            setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            if (dynamicFilterPresenter.getCurrentCategory()!=null && dynamicFilterPresenter.getCurrentCategory().equals("0") ||
+                    dynamicFilterPresenter.getCurrentCategory()!=null && dynamicFilterPresenter.getCurrentCategory().equals("")) {
+                DynamicFilterCategoryFragment categoryFragment =
+                        DynamicFilterCategoryFragment.newInstance(
+                                dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
+                                dynamicFilterPresenter.getCurrentCategory(),false);
+                setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            } else {
+                DynamicFilterCategoryFragment categoryFragment =
+                        DynamicFilterCategoryFragment.newInstance(
+                                dynamicFilterPresenter.getBreadCrumb(), dynamicFilterPresenter.getFilterCategory(),
+                                dynamicFilterPresenter.getCurrentCategory(),true);
+                setFragment(categoryFragment, DynamicFilterCategoryFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
+            }
+
         } else {
             setFragment(DynamicFilterOtherFragment.newInstance(data), DynamicFilterOtherFragment.FRAGMENT_TAG, R.id.dynamic_filter_detail);
         }
@@ -283,7 +299,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public static void moveTo(FragmentActivity fragmentActivity, Map<String, String> filterList,
                               List<Breadcrumb> productBreadCrumbList,
                               List<Filter> filterCategoryList,
-                              String currentCategory, String source) {
+                              String currentCategory, String source,
+                              String departmentId) {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, DynamicFilterActivity.class);
             intent.putExtra(DynamicFilterView.EXTRA_FILTERS, Parcels.wrap(filterList));
@@ -291,6 +308,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
             intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterCategoryList));
             intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_SOURCE, source);
             intent.putExtra(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
+            intent.putExtra(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
             fragmentActivity.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
         }

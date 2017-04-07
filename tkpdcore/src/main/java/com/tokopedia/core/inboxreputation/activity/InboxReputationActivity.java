@@ -7,17 +7,19 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.adapter.SectionsPagerAdapter;
 import com.tokopedia.core.inboxreputation.fragment.InboxReputationFragment;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationView;
+import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -33,15 +35,27 @@ import butterknife.BindView;
 public class InboxReputationActivity extends DrawerPresenterActivity
         implements InboxReputationView {
 
-    private static final int OFFSCREEN_PAGE_LIMIT = 2;
     public static final String REVIEW_ALL = "inbox-reputation";
     public static final String REVIEW_PRODUCT = "inbox-reputation-my-product";
     public static final String REVIEW_USER = "inbox-reputation-my-review";
+    public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
+    private static final int OFFSCREEN_PAGE_LIMIT = 2;
+    public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
+    TkpdFragmentWrapper sellerReputationFragment;
 
     @BindView(R2.id.pager)
     ViewPager viewPager;
     @BindView(R2.id.indicator)
     TabLayout indicator;
+
+    private boolean goToReputationHistory;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        goToReputationHistory = getIntent().getBooleanExtra(GO_TO_REPUTATION_HISTORY, false);
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     public String getScreenName() {
@@ -68,6 +82,10 @@ public class InboxReputationActivity extends DrawerPresenterActivity
     @Override
     protected void initView() {
         super.initView();
+        if (getApplicationContext() != null && getApplicationContext() instanceof SellerFragmentReputation) {
+            SellerFragmentReputation applicationContext = (SellerFragmentReputation) getApplicationContext();
+            sellerReputationFragment = applicationContext.getSellerReputationFragment(this);
+        }
         drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_REVIEW);
         viewPager.setAdapter(getViewPagerAdapter());
         viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
@@ -75,8 +93,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
 
         if (GlobalConfig.isSellerApp()) {
-            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-            indicator.setVisibility(View.GONE);
+            indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product_seller)));
+            if (sellerReputationFragment != null) {
+                indicator.addTab(indicator.newTab().setText(sellerReputationFragment.getHeader()));
+            }
+            if(goToReputationHistory){
+                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+            }
         } else {
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
             indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
@@ -95,6 +118,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
+            fragmentList.add(sellerReputationFragment.getTkpdFragment());
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_ALL));
             fragmentList.add(InboxReputationFragment.createInstance(REVIEW_PRODUCT));
@@ -139,7 +163,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity
         if (isTaskRoot() && GlobalConfig.isSellerApp()) {
             startActivity(SellerAppRouter.getSellerHomeActivity(this));
             finish();
-        } else if (isTaskRoot()){
+        } else if (isTaskRoot()) {
             startActivity(HomeRouter.getHomeActivity(this));
             finish();
         }

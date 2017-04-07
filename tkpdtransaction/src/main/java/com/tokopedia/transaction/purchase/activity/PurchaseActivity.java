@@ -9,7 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.gcm.FCMMessagingService;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -30,7 +31,7 @@ import butterknife.BindView;
  * @author by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
-        TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
+        TxSummaryFragment.OnCenterMenuClickListener, NotificationReceivedListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
     @BindView(R2.id.pager)
@@ -42,6 +43,12 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private int drawerPosition;
     private String stateTxFilterID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     protected int setDrawerPosition() {

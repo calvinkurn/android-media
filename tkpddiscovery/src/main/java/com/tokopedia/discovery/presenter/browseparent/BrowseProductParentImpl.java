@@ -11,16 +11,16 @@ import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.adapter.browseparent.BrowserSectionsPagerAdapter;
-import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.BrowseParentFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
@@ -38,6 +38,10 @@ import java.util.Map;
  */
 public class BrowseProductParentImpl extends BrowseProductParent implements DiscoveryListener {
 
+    private static final int PAGER_THREE_TAB_SHOP_POSITION = 2;
+    private static final int PAGER_THREE_TAB_CATALOG_POSITION = 1;
+    private static final int PAGER_THREE_TAB_PRODUCT_POSITION = 0;
+
     private DiscoveryInteractor discoveryInteractor;
     private static final String TAG = BrowseProductParentImpl.class.getSimpleName();
     // this will get for product only
@@ -49,10 +53,6 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
 
     public BrowseProductParentImpl(BrowseProductParentView view) {
         super(view);
-    }
-
-    public BrowseProductActivityModel getBrowseProductActivityModel() {
-        return browseProductActivityModel;
     }
 
     @Override
@@ -238,7 +238,16 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         } else {
                             view.setupWithTabViewPager();
                         }
-                        view.setCurrentTabs(browseProductActivityModel.getActiveTab());
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_SHOP)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_SHOP_POSITION);
+                        } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG)) {
+                            view.setCurrentTabs(PAGER_THREE_TAB_CATALOG_POSITION);
+                        } else {
+                            view.setCurrentTabs(PAGER_THREE_TAB_PRODUCT_POSITION);
+                        }
+                        if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                            view.setupCategory(browseProductModel);
+                        }
                     } else if (source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT)) {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
@@ -247,6 +256,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         view.initSectionAdapter(visibleTab);
                         view.setupWithTabViewPager();
+                        view.setupCategory(browseProductModel);
                     } else {
                         visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, view.VISIBLE_ON);
                         visibleTab.put(BrowserSectionsPagerAdapter.TOKO, view.VISIBLE_ON);
@@ -258,8 +268,8 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             view.setCurrentTabs(0);
                         }
                     }
-                    if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
-                        discoveryInteractor.getDynamicAttribute(view.getContext(), BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT, browseProductActivityModel.getDepartmentId());
+                    if(view.checkHasFilterAttrIsNull(index)) {
+                        discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);
                 } else {

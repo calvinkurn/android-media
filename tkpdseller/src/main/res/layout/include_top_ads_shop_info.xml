@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/LabelLayout"
+    style="@style/LabelLayoutWithBorder"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -9,8 +9,9 @@
 
     <ImageView
         android:id="@+id/image_view_shop_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:src="@drawable/icon_penjualan"/>
 
     <LinearLayout
@@ -23,19 +24,21 @@
 
         <TextView
             android:id="@+id/text_view_shop_title"
-            style="@style/TextView.TopAdsShopTitle"
+            style="@style/TextView.TopAds.Body.Black.Bold"
             android:text="@string/top_ads_statistic_info_default_value"/>
 
         <TextView
             android:id="@+id/text_view_deposit_desc"
-            style="@style/TextView.TopAdsShopContent"
+            android:maxLines="3"
+            style="@style/TextView.TopAds.Body.Gray"
             android:text="@string/top_ads_statistic_info_default_value"/>
     </LinearLayout>
 
     <ImageButton
+        android:scaleType="fitXY"
         android:id="@+id/image_button_add_deposit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/topads_dashboard_size_image_plus"
+        android:layout_height="@dimen/topads_dashboard_size_image_plus"
         android:background="@null"
         android:src="@drawable/ic_add_green"/>
 </LinearLayout>

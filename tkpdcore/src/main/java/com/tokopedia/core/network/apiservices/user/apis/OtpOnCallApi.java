@@ -6,8 +6,11 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import java.util.Map;
 
 import retrofit2.Response;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -19,7 +22,8 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
 
 public interface OtpOnCallApi {
 
-    @GET(TkpdBaseURL.User.PATH_OTP_WITH_CALL)
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOTPWithCall(@Header(HEADER_USER_ID) String userId,
-                                                          @QueryMap Map<String, String> params);
+                                                          @FieldMap Map<String, String> params);
 }

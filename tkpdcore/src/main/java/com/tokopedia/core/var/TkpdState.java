@@ -71,12 +71,13 @@ public class TkpdState {
         public static final int CONTACT_US = 41;
         public static final int REPORT = 42;
         public static final int LOGOUT = 43;
-        public static final int SELLER_INDEX_HOME = 44;
+        public static final int SELLER_INDEX_HOME = TkpdState.DrawerPosition.INDEX_HOME;
         public static final int REGISTER_INITIAL = 45;
         public static final int SELLER_GM_SUBSCRIBE = 46;
         public static final int SELLER_GM_SUBSCRIBE_EXTEND = 47;
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
+        public static final int GOLD_MERCHANT = 50;
     }
 
     public class Application {
@@ -326,7 +327,19 @@ public class TkpdState {
         public static final int GCM_PURCHASE_REJECTED = 304;
         public static final int GCM_PURCHASE_DELIVERED = 305;
         public static final int GCM_PURCHASE_DISPUTE = 306;
+        public static final int GCM_PURCHASE_CONFIRM_SHIPPING = 307;
+        public static final int GCM_PURCHASE_FINISH = 308;
+        public static final int GCM_PURCHASE_FINISH_REMINDER = 309;
+        public static final int GCM_PURCHASE_NEW_ORDER = 310;
+        public static final int GCM_PURCHASE_AUTO_CANCEL_2D = 311;
+        public static final int GCM_PURCHASE_REJECTED_SHIPPING = 312;
+        public static final int GCM_PURCHASE_AUTO_CANCEL_4D = 313;
         public static final int GCM_NEWORDER = 401;
+        public static final int GCM_ORDER_INVALID_RESI = 402;
+        public static final int GCM_ORDER_FINISH_SELLER = 403;
+        public static final int GCM_ORDER_CANCEL_2D_SELLER = 404;
+        public static final int GCM_ORDER_CANCEL_4D_SELLER = 405;
+        public static final int GCM_ORDER_DELIVERED_SELLER = 406;
         public static final int GCM_DRAWER_UPDATE = 501;
         public static final int GCM_NOTIF_UPDATE = 502;
         public static final int GCM_CART_UPDATE = 503;
@@ -356,6 +369,8 @@ public class TkpdState {
         public static final int GCM_SHOP = 1006;
         public static final int GCM_WISHLIST = 1007;
         public static final int GCM_VERIFICATION = 1008;
+        public static final int GCM_TOPADS_BELOW_20K = 1100;
+        public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
     }
 
     public class RecyclerView {
@@ -374,6 +389,8 @@ public class TkpdState {
         public static final int VIEW_TOP_ADS_4 = 999;
         public static final int VIEW_BANNER_HOT_LIST = 998;
         public static final int VIEW_TOP_ADS_LIST = 997;
+        public static final int VIEW_CATEGORY_HEADER = 996;
+        public static final int VIEW_CATEGORY_REVAMP_HEADER = 995;
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
@@ -441,5 +458,38 @@ public class TkpdState {
     public class Geolocation {
         public static final String defaultLatitude = "-6.1753924";
         public static final String defaultLongitude = "106.8249641";
+    }
+
+    public class ProductService {
+        /* BROADCAST INTENT FILTER */
+        public static final String BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT";
+
+        /* TYPE */
+        public static final String SERVICE_TYPE = "SERVICE_TYPE";
+        public static final int ADD_PRODUCT = 10;
+        public static final int ADD_PRODUCT_WITHOUT_IMAGE = 11;
+        public static final int EDIT_PRODUCT = 12;
+        public static final int DELETE_PRODUCT = 13;
+        public static final int INVALID_TYPE = -1;
+
+
+        /* STATUS */
+        public static final String STATUS_FLAG = "STATUS_FLAG";
+        public static final int STATUS_RUNNING = 1;
+        public static final int STATUS_DONE = 2;
+        public static final int STATUS_ERROR = 3;
+
+        /* DATA */
+        public static final String PRODUCT_DB_ID = "PRODUCT_DB_ID";
+        public static final long NO_PRODUCT_DB = -1;
+        public static final String PRODUCT_POS = "PRODUCT_POS";
+        public static final int NO_PRODUCT_POS = -1;
+        public static final String PRODUCT_ID = "PRODUCT_ID";
+        public static final int NO_PRODUCT_ID = -1;
+        public static final String MESSAGE_ERROR_FLAG = "MESSAGE_ERROR_FLAG";
+        public static final String INVALID_MESSAGE_ERROR = "default";
+
+
+
     }
 }

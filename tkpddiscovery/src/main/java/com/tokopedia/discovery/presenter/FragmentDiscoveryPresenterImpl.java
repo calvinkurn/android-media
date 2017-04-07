@@ -8,16 +8,15 @@ import android.util.Log;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
-import com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
 import com.tokopedia.discovery.interactor.DiscoveryInteractorImpl;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
@@ -71,9 +70,9 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         switch (TAG) {
             case ProductFragment.TAG:
                 int startIndexForQuery = view.getStartIndexForQuery(TAG);
-                if (context != null && context instanceof DiscoveryActivityPresenter) {
+                if (context != null && context instanceof BrowseView) {
 
-                    NetworkParam.Product productParam = ((DiscoveryActivityPresenter) context).getProductParam();
+                    NetworkParam.Product productParam = ((BrowseView) context).getProductParam();
 
                     Log.d(TAG, "Product Params " + productParam.toString());
                     if (productParam == null)
@@ -98,9 +97,9 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         switch (TAG) {
             case ProductFragment.TAG:
                 int startIndexForQuery = view.getStartIndexForQuery(TAG);
-                if (context != null && context instanceof DiscoveryActivityPresenter) {
+                if (context != null && context instanceof BrowseView) {
 
-                    NetworkParam.Product productParam = ((DiscoveryActivityPresenter) context).getProductParam();
+                    NetworkParam.Product productParam = ((BrowseView) context).getProductParam();
 
                     Log.d(TAG, getMessageTAG() + productParam);
                     if (productParam == null)
@@ -114,11 +113,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                     if(productParam.extraFilter != null){
                         topAds.extraFilter = productParam.extraFilter;
                     }
-                    if(context != null && context instanceof DiscoveryActivityPresenter){
-                        topAds.src = ((DiscoveryActivityPresenter) context).getBrowseProductActivityModel().getAdSrc();
-                    } else {
-                        topAds.src = TopAdsApi.SRC_BROWSE_PRODUCT;
-                    }
+
+                    topAds.src = ((BrowseView) context).getBrowseProductActivityModel().getAdSrc();
 
                     Log.d(TAG, "getTopAds page "+page);
                     if(spanCount < 3) {// spanCount 1 and 2
@@ -159,15 +155,20 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     @Override
     public void sendGTMNoResult(Context context) {
-        BrowseProductModel browseProductModel = ((DiscoveryActivityPresenter) context).getDataForBrowseProduct(!isAfterRotate);
+        BrowseProductModel browseProductModel = ((BrowseView) context).getDataForBrowseProduct(!isAfterRotate);
         if (browseProductModel != null) {
             if (browseProductModel.result.products == null || browseProductModel.result.products.length == 0) {
-                NetworkParam.Product params = ((DiscoveryActivityPresenter) context).getProductParam();
+                NetworkParam.Product params = ((BrowseView) context).getProductParam();
                 if (params != null) {
                     UnifyTracking.eventDiscoveryNoResult(params.q);
                 }
             }
         }
+    }
+
+    @Override
+    public void getCategoryHeader(String categoryId) {
+
     }
 
     @Override
@@ -189,8 +190,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 // below indicate for the first time
                 if (!isAfterRotate) {
                     view.setupRecyclerView();
-                    if (context != null && context instanceof DiscoveryActivityPresenter) {
-                        browseProductModel = ((DiscoveryActivityPresenter) context).getDataForBrowseProduct(!isAfterRotate);
+                    if (context != null && context instanceof BrowseView) {
+                        browseProductModel = ((BrowseView) context).getDataForBrowseProduct(!isAfterRotate);
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);
                         if (browseProductModel == null || browseProductModel.result.products == null)
@@ -201,8 +202,11 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
-                        } else {
-                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                        } else if(browseProductModel!=null
+                                && browseProductModel.header != null
+                                && listPagingHandlerModelPair.getModel1() !=null
+                                && listPagingHandlerModelPair.getModel2() !=null){
+                            processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -246,8 +250,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(productItems, pagingHandlerModel);
+    public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
     }
 
     public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
@@ -307,7 +311,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         switch (type) {
             case DiscoveryListener.BROWSE_PRODUCT:
                 Context context = this.context.get();
-                if (context != null && context instanceof DiscoveryActivityPresenter) {
+                if (context != null && context instanceof BrowseView) {
                     BrowseProductModel.BrowseProductContainer temp = (BrowseProductModel.BrowseProductContainer) data.getModel2();
                     browseProductModel = temp.body();
                     Pair<List<ProductItem>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseProductModel(browseProductModel);

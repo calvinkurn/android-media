@@ -3,8 +3,11 @@ package com.tokopedia.tkpd.home.presenter;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
@@ -21,6 +24,9 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
+import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
+import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
 import org.parceler.Parcels;
 
@@ -41,6 +47,7 @@ import rx.subscriptions.CompositeSubscription;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public class WishListImpl implements WishList {
+    private static final String TAG = WishListImpl.class.getSimpleName();
     WishListView wishListView;
 
     List<RecyclerViewItem> data = new ArrayList<>();
@@ -57,16 +64,25 @@ public class WishListImpl implements WishList {
 
     MojitoAuthService mojitoAuthService;
 
-    List<Wishlist> dataWishlist = new ArrayList<>();
+    SearchWishlistUsecase searchWishlistUsecase;
 
-    public WishListImpl(WishListView wishListView) {
+    List<Wishlist> dataWishlist = new ArrayList<>();
+    RequestParams params = RequestParams.create();
+
+    public WishListImpl(WishListView wishListView, SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
+        this.searchWishlistUsecase = searchWishlistUsecase;
         mPaging = new WishlistPaging();
         wishlist = new FavoritePart1Service();
         cache = new CacheHomeInteractorImpl();
         mojitoService = new MojitoService();
         compositeSubscription = new CompositeSubscription();
         mojitoAuthService = new MojitoAuthService();
+
+    }
+
+    private com.tokopedia.core.base.common.service.MojitoService initNewMojitoService() {
+        return null;
     }
 
 
@@ -124,10 +140,20 @@ public class WishListImpl implements WishList {
     @Override
     public void loadMore(Context context) {
         wishListView.setPullEnabled(false);
-        if (mPaging.CheckNextPage()) {
+        if(mPaging.getPagination().getNextUrl().contains("search") && mPaging.CheckNextPage()){
+            searchWishlistLoadMore();
+        } else if (mPaging.CheckNextPage()) {
             mPaging.nextPage();
             fetchDataFromInternet(context);
         }
+    }
+
+    @Override
+    public void searchWishlistLoadMore() {
+        wishListView.setPullEnabled(false);
+        mPaging.nextPage();
+        params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
+        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
     @Override
@@ -155,7 +181,7 @@ public class WishListImpl implements WishList {
 
     @Override
     public void fetchDataFromInternet(final Context context) {
-        Observable<Response<WishlistData>> observable = mojitoService.getApi().getWishlist(
+        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
                 SessionHandler.getLoginID(context),
                 10,
                 mPaging.getPage()
@@ -169,7 +195,7 @@ public class WishListImpl implements WishList {
 
             @Override
             public void onError(Throwable e) {
-                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()){
+                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
                     wishListView.displayPull(false);
                 }
                 wishListView.displayErrorNetwork(false);
@@ -194,7 +220,6 @@ public class WishListImpl implements WishList {
             data.clear();
         }
         wishListView.displayPull(false);
-
         dataWishlist.addAll(wishlistData.getWishlist());
         data.addAll(convertToProductItemList(wishlistData.getWishlist()));
         mPaging.setPagination(wishlistData.getPaging());
@@ -210,12 +235,14 @@ public class WishListImpl implements WishList {
         wishListView.loadDataChange();
         wishListView.displayMainContent(true);
         wishListView.displayLoading(false);
+        wishListView.clearSearch();
     }
 
     @Override
     public void deleteWishlist(final Context context, String productId) {
         wishListView.showProgressDialog();
-        Observable<Response<Void>> observable = mojitoAuthService.getApi().deleteWishlist(productId);
+        Observable<Response<Void>> observable = mojitoAuthService.getApi()
+                .deleteWishlist(productId, SessionHandler.getLoginID(context));
 
         Subscriber<Response<Void>> subscriber = new Subscriber<Response<Void>>() {
             @Override
@@ -264,6 +291,21 @@ public class WishListImpl implements WishList {
     }
 
     @Override
+    public boolean isLoadedFirstPage() {
+        return mPaging.getPage() >= 1;
+    }
+
+    @Override
+    public void searchWishlist(String query) {
+        mPaging.resetPage();
+        String userId = wishListView.getUserId();
+        params.putString(SearchWishlistUsecase.KEY_USER_ID, userId);
+        params.putString(SearchWishlistUsecase.KEY_QUERY, query);
+        params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
+        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
+    }
+
+    @Override
     public void subscribe() {
         RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
     }
@@ -272,6 +314,61 @@ public class WishListImpl implements WishList {
     public void unSubscribe() {
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         cache.unSubscribeObservable();
+    }
+
+    @Override
+    public void fetchDataAfterClearSearch(Context context) {
+        mPaging.resetPage();
+        params = RequestParams.create();
+        Observable<Response<WishlistData>> observable = mojitoAuthService.getApi().getWishlist(
+                SessionHandler.getLoginID(context),
+                10,
+                mPaging.getPage()
+        );
+
+        Subscriber<Response<WishlistData>> subscriber = new Subscriber<Response<WishlistData>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
+                    wishListView.displayPull(false);
+                }
+                wishListView.displayErrorNetwork(false);
+            }
+
+            @Override
+            public void onNext(Response<WishlistData> response) {
+                WishlistData wishlistData = response.body();
+                data.clear();
+                dataWishlist.addAll(wishlistData.getWishlist());
+                data.addAll(convertToProductItemList(wishlistData.getWishlist()));
+                mPaging.setPagination(wishlistData.getPaging());
+                wishListView.loadDataChange();
+                wishListView.displayMainContent(true);
+
+                if (mPaging.CheckNextPage()) {
+                    wishListView.displayLoadMore(true);
+                } else {
+                    wishListView.displayLoadMore(false);
+                }
+                wishListView.setPullEnabled(true);
+            }
+        };
+
+        compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void refreshDataOnSearch(CharSequence query) {
+        mPaging.resetPage();
+        searchWishlist(query.toString());
     }
 
     @Override
@@ -330,8 +427,46 @@ public class WishListImpl implements WishList {
             @Override
             public void run() {
                 wishListView.dismissProgressDialog();
-                wishListView.onSuccessDeleteWishlist();
+                wishListView.onSuccessDeleteWishlist(params.getString(SearchWishlistUsecase.KEY_QUERY, ""));
             }
         }, CacheDuration.onSecond(5));
+    }
+
+    private class SearchWishlistSubscriber extends Subscriber<DataWishlist> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+        }
+
+        @Override
+        public void onNext(DataWishlist wishlist) {
+            WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
+            if(mPaging.getPage() == 1 || wishlist.getWishlists().size() == 0) {
+                data.clear();
+                dataWishlist.clear();
+            }
+            wishListView.displayPull(false);
+            dataWishlist.addAll(wishlistData.getWishlist());
+            data.addAll(convertToProductItemList(wishlistData.getWishlist()));
+            mPaging.setPagination(wishlistData.getPaging());
+            if (mPaging.CheckNextPage()) {
+                wishListView.displayLoadMore(true);
+            } else {
+                wishListView.displayLoadMore(false);
+            }
+            wishListView.setPullEnabled(true);
+            wishListView.loadDataChange();
+            wishListView.displayMainContent(true);
+            wishListView.displayLoading(false);
+        }
+
+        private WishlistData convertToDataWishlistViewModel(DataWishlist dataWishlist) {
+            return new WishlistViewModelMapper(dataWishlist).getWishlistData();
+        }
     }
 }

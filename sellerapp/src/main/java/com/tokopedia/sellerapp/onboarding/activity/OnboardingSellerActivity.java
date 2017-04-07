@@ -7,16 +7,16 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.tokopedia.core.msisdn.activity.MsisdnActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
-import com.tokopedia.session.session.activity.Login;
 
-public class OnboardingSellerActivity extends OnboardingActivity{
+public class OnboardingSellerActivity extends OnboardingActivity {
+    private static final int REQUEST_ACTIVATE_PHONE_SELLER = 900;
     private SessionHandler sessionHandler;
 
     @Override
@@ -45,7 +45,8 @@ public class OnboardingSellerActivity extends OnboardingActivity{
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         setFlowAnimation();
         try {
-            setIndicatorColor(ContextCompat.getColor(this, R.color.orange), ContextCompat.getColor(this, R.color.orange_300));
+            setIndicatorColor(ContextCompat.getColor(this, R.color.orange),
+                    ContextCompat.getColor(this, R.color.orange_300));
         } catch (NoSuchMethodError error) {
             Log.d(getClass().getSimpleName(), error.toString());
         }
@@ -72,21 +73,24 @@ public class OnboardingSellerActivity extends OnboardingActivity{
 
     @Override
     public void onDonePressed() {
-        if (isUserHasShop()) {
-            startActivity(new Intent(this, SellerHomeActivity.class));
-        } else if (SessionHandler.isMsisdnVerified()){
+        if (isUserHasShop() && SessionHandler.isMsisdnVerified()) {
+            startActivity(new Intent(this, SellerHomeActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+        } else if (SessionHandler.isMsisdnVerified()) {
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
+            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
+                    SellerRouter.ShopSettingConstant.LOG_OUT);
             startActivity(intent);
+            finish();
         } else {
-            Intent intent = new Intent(this, MsisdnActivity.class);
+            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
                     SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
-        finish();
     }
 
     @Override
@@ -102,6 +106,26 @@ public class OnboardingSellerActivity extends OnboardingActivity{
     }
 
     private boolean isUserHasShop() {
-        return !TextUtils.isEmpty(sessionHandler.getShopID()) && !sessionHandler.getShopID().equals("0");
+        return !TextUtils.isEmpty(sessionHandler.getShopID())
+                && !sessionHandler.getShopID().equals("0");
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER && isUserHasShop()) {
+            startActivity(new Intent(this, SellerHomeActivity.class)
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+        } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
+            Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
+            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
+                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            startActivity(intent);
+            finish();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

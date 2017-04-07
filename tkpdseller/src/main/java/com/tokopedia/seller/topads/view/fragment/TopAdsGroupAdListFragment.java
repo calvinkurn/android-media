@@ -5,11 +5,12 @@ import android.content.Intent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.GroupAd;
-import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsGroupAdListPresenterImpl;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsGroupAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsFilterGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
@@ -32,6 +33,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     protected void searchAd() {
+        super.searchAd();
         presenter.searchAd(startDate, endDate, keyword, status, page);
     }
 
@@ -47,7 +49,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     protected void initialVar() {
         super.initialVar();
         int totalProductAd = getActivity().getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, Integer.MIN_VALUE);
-        if (totalProductAd >= 0) {
+        if (totalProductAd > 0) {
             TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
             emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_title_promo_text));
             emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_not_empty_text));
@@ -59,7 +61,7 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
 
     @Override
     public void onClicked(Ad ad) {
-        if(ad instanceof GroupAd){
+        if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
             intent.putExtra(TopAdsExtraConstant.EXTRA_AD, (GroupAd) ad);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
@@ -67,8 +69,25 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
+    protected void goToFilter() {
+        Intent intent = new Intent(getActivity(), TopAdsFilterGroupActivity.class);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+        startActivityForResult(intent, REQUEST_CODE_AD_FILTER);
+    }
+
+    @Override
     public void onEmptyContentItemTextClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == REQUEST_CODE_AD_FILTER && intent != null) {
+            status = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
+            searchAd();
+        }
     }
 }

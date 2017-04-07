@@ -170,6 +170,24 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         attachmentButton.setOnClickListener(onAttachmentClicked());
         viewReputation.setOnClickListener(onReputationClicked());
         mainList.addOnScrollListener(onScroll());
+        mainList.addOnLayoutChangeListener(onKeyboardShows());
+    }
+
+    private View.OnLayoutChangeListener onKeyboardShows() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                       int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if ( bottom < oldBottom) {
+                    mainList.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            scrollToBottom();
+                        }
+                    }, 100);
+                }
+            }
+        };
     }
 
     private View.OnClickListener onReputationClicked() {
@@ -271,15 +289,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.app_bar);
 
         if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
-            toolbar.removeAllViews();
-            View toolbarLayout = getActivity().getLayoutInflater().inflate(R.layout.custom_action_bar_subtitle, null);
-            TextView title = (TextView) toolbarLayout.findViewById(R.id.actionbar_title);
-            title.setText(inboxMessageDetail.getOpponent().getUserName());
-            TextView subTitle = (TextView) toolbarLayout.findViewById(R.id.actionbar_subtitle);
-            subTitle.setText(inboxMessageDetail.getOpponent().getUserLabel());
-            toolbar.addView(toolbarLayout);
+            toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
+            toolbar.setSubtitle(inboxMessageDetail.getOpponent().getUserLabel());
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
         if (inboxMessageDetail.getTextareaReply() != 1) {

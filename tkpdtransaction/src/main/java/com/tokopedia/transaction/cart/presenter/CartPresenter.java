@@ -68,19 +68,20 @@ public class CartPresenter implements ICartPresenter {
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
                 handleThrowableCartInfo(e);
             }
 
             @Override
             public void onNext(ResponseTransform<CartData> responseTransform) {
                 CartData cartData = responseTransform.getData();
-                view.renderVisibleMainCartContainer();
                 try {
                     processCartAnalytics(cartData);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
+                view.renderVisibleMainCartContainer();
             }
         });
     }
@@ -160,7 +161,8 @@ public class CartPresenter implements ICartPresenter {
                 new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
                 }.getType()
         );
-        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>(){}.getType());
+        String checkout = afGSON.toJson(checkoutAnalytics, new TypeToken<Checkout>() {
+        }.getType());
 
         LocalCacheHandler cache = view.getLocalCacheHandlerNotificationData();
 
@@ -427,6 +429,7 @@ public class CartPresenter implements ICartPresenter {
 
         String depositCheckout = view.getDepositCheckoutData();
         checkoutDataBuilder.usedDeposit(depositCheckout.replaceAll("\\D+", ""));
+        checkoutDataBuilder.donationValue(view.getDonationValue());
 
         for (int i = 0, cartItemEditablesSize = cartItemEditables.size();
              i < cartItemEditablesSize; i++) {
@@ -587,6 +590,7 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void processRenderViewCartData(CartData data) {
+        view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
             view.renderErrorEmptyCart();
             return;
@@ -598,7 +602,8 @@ public class CartPresenter implements ICartPresenter {
         view.renderTotalPaymentWithLoyalty(data.getGrandTotalIdr());
         view.renderPaymentGatewayOption(data.getGatewayList());
         if (data.getLpAmount() != 0)
-            view.renderVisibleLoyaltyBalance(data.getLpAmountIdr());
+            view.renderVisibleLoyaltyBalance(data.getLpAmountIdr(),
+                    String.valueOf(data.getLpAmount()));
         else view.renderInvisibleLoyaltyBalance();
         view.renderTotalPaymentWithoutLoyalty(data.getGrandTotalWithoutLPIDR());
         view.renderCartListData(data.getCartItemList());
@@ -619,7 +624,5 @@ public class CartPresenter implements ICartPresenter {
             view.renderInvisibleErrorPaymentCart();
         }
         view.renderButtonCheckVoucherListener();
-
-
     }
 }

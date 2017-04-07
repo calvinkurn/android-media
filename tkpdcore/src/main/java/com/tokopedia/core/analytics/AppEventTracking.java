@@ -81,6 +81,8 @@ public interface AppEventTracking {
         String BUY = "clickBuy";
         String MESSAGE_SHOP = "clickMessageShop";
         String FAVORITE_SHOP = "clickFavoriteShop";
+        String TOP_SELLER = "clickTopSeller";
+        String SLIDE_BANNER = "sliderBanner";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -96,6 +98,17 @@ public interface AppEventTracking {
         String DEPOSIT = "clickSaldo";
         String OTP = "clickOTP";
         String TOP_PICKS = "clickToppicks";
+        String OFFICIAL_STORE = "clickOfficialStore";
+        String CLICK_GM_STAT = "clickGMStat";
+        String LOAD_GM_STAT = "loadGMStat";
+        String SCROLL_GM_STAT = "scrollGMStat";
+        String CLICK_ADD_PRODUCT = "clickAddProduct";
+        String CLICK_INSTOPED = "clickInstoped";
+        String CLICK_MANAGE_PRODUCT = "clickManageProduct";
+        String CATEGORY_PAGE = "clickKategori";
+        String OPEN_PUSH_NOTIFICATION = "openPushNotification";
+        String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
+        String EVENT_OTP = "OTPSuccess";
     }
 
     interface Category {
@@ -142,13 +155,25 @@ public interface AppEventTracking {
         String GOLD_MERCHANT = "Gold Merchant";
         String DEPOSIT = "Saldo";
         String OTP = "OTP";
+        String SECURITY_QUESTION = "Security Question";
         String TOP_PICKS_HOME = "Toppicks Home";
         String TOP_PICKS = "Toppicks";
         String CATALOG = "Katalog";
+        String FULLY_LOAD = "Fully Loaded";
+        String GM_STAT = "GM Stat";
+        String GM_STATISTIC_PRODUCT = "GM Statistic - Product";
+        String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
+        String MANAGE_PRODUCT = "Manage Product";
+        String CATEGORY_PAGE = "Category Page";
+        String CATEGORY_PRODUCT = "Kategori";
+        String GM_SWITCHER = "GM Switcher";
+        String PUSH_NOTIFICATION = "Push Notification";
+        String SLIDER = "Slider";
     }
 
     interface Action {
         String CLICK = "Click";
+        String CLICK_CHANNEL = "Click Channel";
         String SEARCH = "Search";
         String VIEW = "View";
         String VIEW_RECENT = "View Recent";
@@ -174,6 +199,25 @@ public interface AppEventTracking {
         String SUBSCRIBE = "Subscribe";
         String ERROR = "Error";
         String SUCCESS = "Success";
+        String LOAD = "Load";
+        String SCROLL = "Scroll";
+        String SEARCH_POPULAR = "Popular Search";
+        String SEARCH_RECENT = "Recent Search";
+        String SEARCH_HOTLIST = "Search HotList";
+        String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
+        String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
+        String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
+
+        String PRODUCT_CATEGORY = "Click Product";
+        String CATEGORY_LEVEL = "Category";
+        String CATEGORY_MORE = "Category Breakdown";
+        String CATEGORY_SORT = "Bottom Navigation - Sort";
+        String CATEGORY_FILTER = "Bottom Navigation - Filter";
+        String CATEGORY_DISLPAY = "Bottom Navigation - Display";
+        String CATEGORY_SHARE = "Bottom Navigation - Share";
+        String OPEN = "Open";
+        String OTP_SUCCESS = "OTP Success";
+        String RECEIVED = "received";
     }
 
     interface EventLabel {
@@ -294,6 +338,33 @@ public interface AppEventTracking {
         String CANCEL = "Cancel";
         String DETAILS = "Details";
         String ORDER_DETAIL = "Order Detail";
+        String OFFICIAL_STORE = "Official Store - ";
+        String STATISTIC = "Statistic";
+        String STATISTIC_PAGE = "Statistic Page";
+        String ONE_HUNDRED_PERCENT = "100%";
+        String ADD_PRODUCT = "Add Product";
+        String ADD_PRODUCT_PLUS = "Add Product - Plus";
+        String ADD_PRODUCT_TOP = "Add Product - Top";
+        String INSTOPED = "Instoped";
+        String CHANGE_PRICE_PRODUCT_LIST = "Ubah Harga - Product List";
+        String CHANGE_PRICE_DROP_DOWN = "Ubah Harga - Dropdown";
+        String COPY_PRODUCT = "Copy";
+        String OPEN_TOP_SELLER = "Open TopSeller - ";
+        String OPEN_APP = "Open App";
+        String DOWNLOAD_APP = "Download App";
+        String OTP = "OTP";
+
+        String CHANGE_CATEGORY_PRODUCT_GEAR = "Ganti Kategori - Gear Menu";
+        String CHANGE_CATEGORY_PRODUCT_TOPMENU = "Ganti Kategori - Top Menu";
+        String CHANGE_ETALASE_PRODUCT_GEAR = "Ganti Etalase - Gear Menu";
+        String CHANGE_ETALASE_PRODUCT_TOPMENU = "Ganti Etalase - Top Menu";
+        String CHANGE_INSURANCE_PRODUCT_GEAR = "Ganti Asuransi - Gear Menu";
+        String CHANGE_INSURANCE_PRODUCT_TOPMENU = "Ganti Asuransi - Top Menu";
+        String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
+        String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
+        String CATEGORY_SHOW_MORE = "Lihat Lainnya";
+        String TOPADS_LOW_CREDIT = "Top Ads Below 20k";
+        String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
     }
 
     interface SOCIAL_MEDIA {
@@ -309,31 +380,38 @@ public interface AppEventTracking {
     }
 
     interface GTM {
-        String GTM_ID = "GTM_ID";
+        String GA_ID = "GA_ID";
+        String GTM_ID       = "GTM_ID";
         String GTM_RESOURCE = "GTM_RESOURCE";
 
-        String LUCKY_BUYER = "msg_lucky_buyer";
-        String LUCKY_BUYER_DETAIL = "msg_lucky_buyer_detail";
-        String LUCKY_BUYER_VALID = "msg_lucky_valid";
+        String LUCKY_BUYER          = "msg_lucky_buyer";
+        String LUCKY_BUYER_DETAIL   = "msg_lucky_buyer_detail";
+        String LUCKY_BUYER_VALID    = "msg_lucky_valid";
 
-        String LUCKY_MERCHANT = "msg_lucky_merchant";
-        String LUCKY_MERCHANT_DETAIL = "msg_lucky_merchant_detail";
-        String OVERRIDE_BANNER = "is_override_url_banner";
-        String CREATE_TICKET = "is_create_ticket";
-        String REPORT = "enable_report";
-        String CONTACT_US = "disable_contactus";
-        String TICKER_SEARCH = "is_show_ticker_search";
-        String TICKER_SEARCH_TEXT = "ticker_text_search";
-        String FILTER_SORT = "sort_filter_data";
-        String EXCLUDED_URL = "excluded-url";
-        String EXCLUDED_HOST = "excluded-host";
+        String LUCKY_MERCHANT           = "msg_lucky_merchant";
+        String LUCKY_MERCHANT_DETAIL    = "msg_lucky_merchant_detail";
+        String OVERRIDE_BANNER          = "is_override_url_banner";
+        String CREATE_TICKET            = "is_create_ticket";
+        String REPORT                   = "enable_report";
+        String CONTACT_US               = "disable_contactus";
+        String TICKER_SEARCH            = "is_show_ticker_search";
+        String TICKER_SEARCH_TEXT       = "ticker_text_search";
+        String FILTER_SORT              = "sort_filter_data";
+        String EXCLUDED_URL             = "excluded-url";
+        String EXCLUDED_HOST            = "excluded-host";
 
-        String TICKER_PDP = "is_show_ticker_pdp";
-        String TICKER_PDP_TEXT = "ticker_text_pdp";
-        String TICKER_CART = "is_show_ticker_cart";
+        String TICKER_PDP       = "is_show_ticker_pdp";
+        String TICKER_PDP_TEXT  = "ticker_text_pdp";
+        String TICKER_CART      = "is_show_ticker_cart";
         String TICKER_CART_TEXT = "ticker_text_cart";
-        String TICKER_ATC = "is_show_ticker_atc";
-        String TICKER_ATC_TEXT = "ticker_text_atc";
+        String TICKER_ATC       = "is_show_ticker_atc";
+        String TICKER_ATC_TEXT  = "ticker_text_atc";
+
+        String SEARCH_RECENT                = "recent_search";
+        String SEARCH_POPULAR               = "popular_search";
+        String SEARCH_AUTOCOMPLETE          = "autocomplete";
+        String SEARCH_HOTLIST               = "hotlist";
+        String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
     }
 
     interface LOCA {

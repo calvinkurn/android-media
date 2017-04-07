@@ -1,8 +1,8 @@
 package com.tokopedia.discovery.interfaces;
 
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.util.Pair;
 
-import static com.tokopedia.core.myproduct.presenter.ImageGalleryImpl.Pair;
 
 /**
  * Created by noiz354 on 3/23/16.
@@ -19,6 +19,7 @@ public interface DiscoveryListener {
 
     int SHOW_SEARCH = -113;
     int SHOW_CATEGORY = -114;
+    int CATEGORY_HEADER = -115;
     int SHOW_DFAULT = SHOW_SEARCH;
 
     String ERRORCONTAINER = "ERROR_CONTAINER";
@@ -26,6 +27,7 @@ public interface DiscoveryListener {
     String BROWSESHOP = "BROWSE_SHOPS";
     String BROWSECATALOG = "BROWSE_CATALOGS";
     String HOTLISTBANNER = "HOTLISTBANNER";
+    String CATEGORYHEADER = "CATEGORYHEADER";
     String TOPADS_STRING = "TOPADS";
     String DYNAMICATTRIBUTE = "DYNAMICATTRIBUTE";
 

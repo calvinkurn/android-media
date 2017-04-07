@@ -20,7 +20,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
@@ -33,9 +32,11 @@ import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
+import com.tokopedia.session.register.activity.SmartLockActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
@@ -47,9 +48,10 @@ import org.parceler.Parcels;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN;
 
 /**
  * Created by m.normansyah on 04/11/2015.
@@ -57,6 +59,14 @@ import java.util.Set;
  * Modified by m.normansyah on 21-11-2015, move all download or upload to the internet
  */
 public class LoginImpl implements Login {
+
+    private static final String REMEMBER_ACC_STATE = "REMEMBER_ACC_STATE";
+    private static final String STATE = "STATE";
+    private static final String REMEMBER_ACC_INFO = "REMEMBER_ACC_INFO";
+    private static final String ACC_EMAIL = "ACC_EMAIL";
+    private static final String ACC_PASSWORD = "ACC_PASSWORD";
+    private static final String KEY_IV = "tokopedia7891234";
+
     LoginView loginView;
     LocalCacheHandler cache;
     LocalCacheHandler loginUuid;
@@ -73,6 +83,10 @@ public class LoginImpl implements Login {
     Context mContext;
 
     ArrayList<String> LoginIdList;
+
+    LocalCacheHandler cacheState;
+    LocalCacheHandler cacheInfo;
+    private int successLoginVia;
 
     public LoginImpl(LoginView view) {
         loginView = view;
@@ -107,6 +121,8 @@ public class LoginImpl implements Login {
         providerListCache = new LocalCacheHandler(mContext, PROVIDER_LIST);
         gcmHandler = new GCMHandler(context);
         sessionHandler = new SessionHandler(context);
+        cacheState = new LocalCacheHandler(mContext, REMEMBER_ACC_STATE);
+        cacheInfo = new LocalCacheHandler(mContext, REMEMBER_ACC_INFO);
     }
 
     @Override
@@ -145,41 +161,6 @@ public class LoginImpl implements Login {
     }
 
     @Override
-    public void sendGTMScreen(Context context) {
-        Nishikino.init(context).startAnalytics().sendScreen(AppScreen.SCREEN_LOGIN);
-    }
-
-    @Override
-    public void sendGTMRegisterThrougLogin() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.REGISTER_LOGIN,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.REGISTER,
-                        AppEventTracking.EventLabel.REGISTER);
-    }
-
-    @Override
-    public void sendCTAAction() {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_CLICK,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.CLICK,
-                        AppEventTracking.EventLabel.CTA);
-    }
-
-    @Override
-    public void sendGTMLoginError(String label) {
-        Nishikino.init(mContext).startAnalytics()
-                .sendButtonClick(
-                        AppEventTracking.Event.LOGIN_ERROR,
-                        AppEventTracking.Category.LOGIN,
-                        AppEventTracking.Action.LOGIN_ERROR,
-                        label);
-    }
-
-    @Override
     public void doFacebookLogin(final LoginFragment fragment, final CallbackManager callbackManager) {
         LoginManager.getInstance().logInWithReadPermissions(fragment, FacebookContainer.readPermissions);
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -207,6 +188,45 @@ public class LoginImpl implements Login {
                 loginView.showError(fragment.getActivity().getString(R.string.msg_network_error));
             }
         });
+    }
+
+    @Override
+    public void setRememberAccountState(Boolean state) {
+        cacheState.putBoolean(STATE, state);
+        cacheState.applyEditor();
+    }
+
+    @Override
+    public void saveAccountInfo(String userEmail, String userPassword) {
+        String encryptedPassword = EncoderDecoder.Encrypt(userPassword, KEY_IV);
+        cacheInfo.putString(ACC_EMAIL, userEmail);
+        cacheInfo.putString(ACC_PASSWORD, encryptedPassword);
+        cacheInfo.applyEditor();
+    }
+
+    @Override
+    public Boolean getSavedAccountState() {
+        return cacheState.getBoolean(STATE, true);
+    }
+
+    @Override
+    public String getSavedAccountEmail() {
+        return cacheInfo.getString(ACC_EMAIL, "");
+    }
+
+    @Override
+    public String getSavedAccountPassword() {
+        String encryptedPassword = cacheInfo.getString(ACC_PASSWORD, "");
+        if (encryptedPassword.equals("")) return encryptedPassword;
+        String decryptedPassword = EncoderDecoder.Decrypt(encryptedPassword,
+                KEY_IV);
+        return decryptedPassword;
+    }
+
+    @Override
+    public void clearSavedAccount() {
+        LocalCacheHandler.clearCache(mContext, REMEMBER_ACC_INFO);
+        LocalCacheHandler.clearCache(mContext, REMEMBER_ACC_STATE);
     }
 
     private void requestProfileFacebook(final LoginResult loginResult) {
@@ -451,7 +471,13 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id());
                 } else if (sessionHandler.isV4Login()) {// go back to home
-                    loginView.destroyActivity();
+                    loginView.triggerSaveAccount();
+                    successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
+                    if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE);
+                    }else {
+                        loginView.destroyActivity();
+                    }
                 } else if (data.getInt(DownloadService.VALIDATION_OF_DEVICE_ID, LoginEmailModel.INVALID_DEVICE_ID) == LoginEmailModel.INVALID_DEVICE_ID) {
 
                 }
@@ -498,6 +524,6 @@ public class LoginImpl implements Login {
         bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
         bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
 
-        ((SessionView) mContext).sendDataFromInternet(DownloadService.LOGIN_ACCOUNTS_TOKEN, bundle);
+        ((SessionView) mContext).sendDataFromInternet(LOGIN_ACCOUNTS_TOKEN, bundle);
     }
 }

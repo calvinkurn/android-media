@@ -2,10 +2,7 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import com.tokopedia.core.database.model.RechargeOperatorModel;
 import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
-import com.tokopedia.core.database.recharge.product.Category;
 import com.tokopedia.core.database.recharge.product.Product;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.status.Status;
 
@@ -22,9 +19,15 @@ public interface RechargeInteractor {
 
     void getListProductDefaultOperator(OnGetListProduct onGetListProduct, int categoryId, String operatorId);
 
+    void getDetailProductFromOperator(OnGetDetailProduct listener, int categoryId, String operatorId);
+
     void getCategoryData(OnGetCategory onGetCategory);
 
+    void getProductById(OnGetProductById listener, String categoryId, String operatorId, String productId);
+
     void getStatus(OnGetStatus onGetStatus);
+
+    void getStatusOnResume(OnGetStatus onGetStatus);
 
     void storeRecentData(RecentData recentData);
 
@@ -33,6 +36,12 @@ public interface RechargeInteractor {
     void getOperatorById(String operatorId,OnGetOperatorByIdListener listener);
 
     void getOperatorListByIds(List<Integer> operatorId,OnGetListOperatorByIdsListener listener);
+
+    interface OnGetDetailProduct {
+        void onSuccessDetailProduct(List<Product> products);
+
+        void onError(Throwable e);
+    }
 
     interface OnGetListProduct {
         void onSuccess(List<Product> listProduct);
@@ -84,6 +93,10 @@ public interface RechargeInteractor {
         void onEmpty();
     }
 
+    interface OnGetProductById {
+        void onSuccessFetchProductById(Product product);
 
+        void onError(Throwable e);
+    }
 
 }

@@ -8,22 +8,22 @@
 
     <TextView
         android:id="@+id/text_view_empty_title_text"
-        style="@style/TextView.TopAdsTitleEmptyView"
+        style="@style/TextView.TopAds.Body.Black"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/top_ads_empty_shop_title_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_text"
-        style="@style/TextView.TopAdsContentEmptyView"
+        style="@style/TextView.TopAds.Body.Gray"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
+        android:maxLines="3"
         android:text="@string/top_ads_empty_shop_content_text"/>
 
     <Button
         android:id="@+id/button_add_promo"
         style="@style/Button.TopAds.Submit.Green"
-        android:layout_width="match_parent"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"

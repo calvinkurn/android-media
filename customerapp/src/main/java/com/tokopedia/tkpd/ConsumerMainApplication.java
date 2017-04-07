@@ -2,12 +2,18 @@ package com.tokopedia.tkpd;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 
+import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
+import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -20,8 +26,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+        GlobalConfig.DEBUG = BuildConfig.DEBUG;
+        GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
         super.onCreate();
+
+        IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new DeepLinkReceiver(), intentFilter);
+        IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
+        LocalBroadcastManager.getInstance(this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
     }
 
     private void generateConsumerAppBaseUrl() {
@@ -41,6 +54,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         TkpdBaseURL.GOLD_MERCHANT_DOMAIN = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         TkpdBaseURL.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TkpdBaseURL.MOBILE_DOMAIN = ConsumerAppBaseUrl.BASE_MOBILE_DOMAIN;
+        TkpdBaseURL.BASE_CONTACT_US = ConsumerAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
     }
 
 }

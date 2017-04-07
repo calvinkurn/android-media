@@ -111,6 +111,11 @@
     <item name="icon_search_sugestion" type="id" />
     <item name="button_add_wholesale" type="id"/>
     <item name="header_wholesale" type="id"/>
+    <item name="ll_wrapper" type="id"/>
+    <item name="iv_brands" type="id"/>
+    <item name="rl_title_layout" type="id"/>
+    <item name="rv_view_list" type="id"/>
+    <item name="rv_brands_list" type="id"/>
 
     <!--ids for PDP youtube-->
     <item name="product_video_horizontal_scroll" type="id" />
@@ -122,5 +127,10 @@
     <item name="youtube_activity_thumbnail_loading_bar" type="id"/>
     <item name="youtube_activity_thumbnail_view" type="id"/>
     <item name="video_thumbnail_main_view" type="id"/>
+
+    <item name="linWrapper" type="id"/>
+    <item name="categoryTitle" type="id"/>
+    <item name="separator" type="id"/>
+    <item name="thumbnail" type="id"/>
 
 </resources>

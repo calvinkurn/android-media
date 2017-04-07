@@ -1,27 +1,26 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.MenuItem;
 import android.view.View;
 
-import com.tkpd.library.ui.floatbutton.FabSpeedDial;
-import com.tkpd.library.ui.floatbutton.ListenerFabClick;
-import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
@@ -31,17 +30,15 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment.showCreateAdsAlert;
-
 /**
  * Created by Nathaniel on 11/22/2016.
  */
 
 public class TopAdsDashboardActivity extends DrawerPresenterActivity implements TopAdsDashboardFragment.Callback {
 
-    ViewPager viewPager;
-    TabLayout tabLayout;
-    FloatingActionButton fabSpeedDial;
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+    private FloatingActionButton fabSpeedDial;
 
     private SnackbarRetry snackbarRetry;
     private TopAdsDashboardShopFragment dashboardShopFragment;
@@ -89,7 +86,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         topadsDashList.setTopAdsDashboardList(new TopAdsDashboardTabListener.TopAdsDashboardList() {
             @Override
             public void onSelected(int positon) {
-                switch (positon){
+                switch (positon) {
                     case 0:
                         fabSpeedDial.setVisibility(View.VISIBLE);
                         break;
@@ -110,12 +107,20 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
                 dashboardProductFragment.loadData();
             }
         });
+        snackbarRetry.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
         fabSpeedDial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showCreateAdsAlert(TopAdsDashboardActivity.this);
+                if(getCurrentFragment()!= null && getCurrentFragment() instanceof TopAdsDashboardProductFragment){
+                    Intent intent = new Intent(TopAdsDashboardActivity.this, TopAdsGroupNewPromoActivity.class);
+                    getCurrentFragment().startActivityForResult(intent, TopAdsDashboardProductFragment.REQUEST_CODE_AD_STATUS);
+                }
             }
         });
+    }
+
+    Fragment getCurrentFragment() {
+        return (Fragment) viewPager.getAdapter().instantiateItem(viewPager,viewPager.getCurrentItem());
     }
 
     @Override
@@ -146,7 +151,18 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
 
     @Override
     protected void setActionVar() {
+        actionSendAnalyticsIfFromPushNotif();
+    }
 
+    private void actionSendAnalyticsIfFromPushNotif() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra(Constants.EXTRA_FROM_PUSH)) {
+            if (intent.getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
+                UnifyTracking.eventOpenTopadsPushNotification(
+                        getIntent().getStringExtra(UnifyTracking.EXTRA_LABEL)
+                );
+            }
+        }
     }
 
     @Override
@@ -157,5 +173,11 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     @Override
     public void onLoadDataSuccess() {
         snackbarRetry.hideRetrySnackbar();
+    }
+
+    @Override
+    public void onCreditAdded() {
+        dashboardShopFragment.populateDeposit();
+        dashboardProductFragment.populateDeposit();
     }
 }

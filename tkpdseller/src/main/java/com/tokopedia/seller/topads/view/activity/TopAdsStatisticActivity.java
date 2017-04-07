@@ -5,27 +5,31 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.model.data.Cell;
-import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsStatisticActivityPresenterImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.data.model.data.Cell;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
+import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticActivityPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsStatisticActivityPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsStatisticPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticAvgFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsStatisticConversionFragment;
@@ -43,6 +47,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     ViewPager viewPager;
     TabLayout tabLayout;
+    SwipeToRefresh swipeToRefresh;
 
     private List<Cell> cells;
     int currentPositonPager;
@@ -63,7 +68,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsStatisticActivityPresenterImpl(this, new TopAdsProductAdInteractorImpl
-                (new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
+                (new TopAdsManagementService(new SessionHandler(this).getAccessToken(this)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(this)), this);
     }
 
     @Override
@@ -76,6 +81,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         super.initView();
         viewPager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab);
+        swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
         viewPager.setAdapter(getViewPagerAdapter());
         tabLayout.setupWithViewPager(viewPager);
         viewPager.setCurrentItem(currentPositonPager);
@@ -109,6 +115,13 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
             }
         });
         tabLayout.setOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
+        RefreshHandler refresh = new RefreshHandler(this, getWindow().getDecorView().getRootView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                swipeToRefresh.setRefreshing(true);
+                loadData();
+            }
+        });
     }
 
     protected void loadData() {
@@ -144,16 +157,19 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @NonNull
     private SnackbarRetry getSnackbarWithAction() {
-        return NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
+        SnackbarRetry snackBar = NetworkErrorHelper.createSnackbarWithAction(this, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 loadData();
             }
         });
+        snackBar.setColorActionRetry(ContextCompat.getColor(this, R.color.green_400));
+        return snackBar;
     }
 
     @Override
     public void updateDataCell(List<Cell> cells) {
+        swipeToRefresh.setRefreshing(false);
         snackbarRetry.hideRetrySnackbar();
         this.cells = cells;
         Fragment fragment = (Fragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem());
@@ -175,11 +191,12 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
     @Override
     public void dismissLoading() {
         progressDialog.dismiss();
+        swipeToRefresh.setRefreshing(false);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.promo_topads_detail, menu);
+        getMenuInflater().inflate(R.menu.menu_top_ads_statistic, menu);
         return true;
     }
 

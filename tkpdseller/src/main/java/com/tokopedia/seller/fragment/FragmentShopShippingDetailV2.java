@@ -40,6 +40,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
@@ -188,6 +189,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     public TextView pickupLocationDetail;
     @BindView(R2.id.destination_detail_location)
     public TextView deliveryLocationDetail;
+    @BindView(R2.id.ask_buyer)
+    TextView askBuyer;
 
     public static class ShippingServices {
         public String serviceName;
@@ -204,13 +207,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
-            if (isConfirmDone) {
-                finishShipping(true);
-            }
-        }
         initVar(savedInstanceState);
         getOrderData();
     }
@@ -268,6 +264,12 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initCreateView(inflater, container);
+        if (savedInstanceState != null) {
+            isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
+            if (isConfirmDone) {
+                finishShipping(true);
+            }
+        }
         _subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(_subscriptions);
         return rootView;
     }
@@ -349,7 +351,30 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                 startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
             }
         });
+        askBuyer.setOnClickListener(onAskBuyerClickListener());
         ListViewHelper.getListViewSize(productListView);
+    }
+
+    private View.OnClickListener onAskBuyerClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = InboxRouter.getSendMessageActivityIntent(getActivity());
+                Bundle bundle = new Bundle();
+                bundle.putString(InboxRouter.PARAM_USER_ID, orderShippingList.getOrderCustomer().getCustomerId());
+                bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, orderShippingList.getOrderCustomer().getCustomerName());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_SUBJECT,
+                        orderShippingList.getOrderDetail().getDetailInvoice());
+                bundle.putString(InboxRouter.PARAM_CUSTOM_MESSAGE,
+                        MethodChecker.fromHtml(
+                                getString(R.string.custom_content_message_ask_seller)
+                                        .replace("XXX",
+                                                orderShippingList.getOrderDetail().getDetailPdfUri())).toString()
+                );
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        };
     }
 
     @OnClick(R2.id.buyer_name)

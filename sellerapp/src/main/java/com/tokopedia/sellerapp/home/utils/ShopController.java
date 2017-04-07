@@ -5,19 +5,22 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.CommonListener;
+import com.tkpd.library.utils.network.ManyRequestErrorException;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.SellerMainApplication;
 import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
 import com.tokopedia.sellerapp.home.model.notification.Notification;
 import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 
 import java.util.List;
 
@@ -27,7 +30,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
+import static com.tkpd.library.utils.network.BaseNetworkController.onResponseError;
 
 /**
  * Created by normansyahputa on 8/30/16.
@@ -63,8 +66,7 @@ public class ShopController extends BaseController{
         if(gcmHandlerListener == null)
             return;
 
-        gcmHandler.commitFCMProcess(gcmHandlerListener);
-        gcmHandler.commitGCMProcess();
+        gcmHandler.actionRegisterOrUpdateDevice(gcmHandlerListener);
     }
 
     public void getShopInfo(String gcmId, String userId,
@@ -210,7 +212,7 @@ public class ShopController extends BaseController{
      * @param response
      */
     private void parseResponse(@IntRange(from=0,to=3)int index,
-                              @NonNull ShopNetworkController.CommonListener commonListener,
+                              @NonNull CommonListener commonListener,
                               @NonNull Response<TkpdResponse> response){
         switch (index){
             case 0:
@@ -219,7 +221,7 @@ public class ShopController extends BaseController{
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
                         if(response.body().getStatus()!= null && response.body().getStatus().equalsIgnoreCase("TOO_MANY_REQUEST")){
-                            throw new ShopNetworkController.ManyRequestErrorException(response.body().getErrorMessages().get(0));
+                            throw new ManyRequestErrorException(response.body().getErrorMessages().get(0));
                         }else {
                             throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
                         }
@@ -284,18 +286,19 @@ public class ShopController extends BaseController{
         }
     }
 
-    public interface ListenerGetTicker{
-        void onSuccess(Ticker.Tickers[] tickers);
-        void onError();
-    }
-
-    private Observable<Response<Ticker>> getTicker(){
+    private Observable<Response<Ticker>> getTicker() {
         TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
 
         return tickerApiSeller.getTickers(
                 SessionHandler.getLoginID(SellerMainApplication.getAppContext()),
                 TickerApiSeller.size,
                 TickerApiSeller.FILTER_SELLERAPP_ANDROID_DEVICE);
+    }
+
+    public interface ListenerGetTicker {
+        void onSuccess(Ticker.Tickers[] tickers);
+
+        void onError();
     };
 
 }

@@ -2,7 +2,10 @@ package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
@@ -17,7 +20,6 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -29,6 +31,8 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -38,12 +42,12 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class NetworkInteractorImpl implements NetworkInteractor {
     private static final String TAG = NetworkInteractorImpl.class.getSimpleName();
+    private static final String KEY_TOKOCASH_DATA = "TOKOCASH_DATA";
 
     private final PeopleService peopleService;
     private final CloverService cloverService;
     private final DepositService depositService;
     private final NotificationService notificationService;
-    private final TokoCashService tokoCashService;
     private final CompositeSubscription compositeSubscription;
 
     public NetworkInteractorImpl() {
@@ -51,7 +55,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         depositService = new DepositService();
         cloverService = new CloverService();
         notificationService = new NotificationService();
-        tokoCashService = new TokoCashService();
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -187,32 +190,20 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     @Override
     public void getTokoCash(final Context context, final TopCashListener listener) {
-        SessionHandler sessionHandler = new SessionHandler(context);
-        tokoCashService.setToken(sessionHandler.getAccessToken(context));
-        Observable<Response<TopCashItem>> observable = tokoCashService.getApi()
-                .getTokoCash();
+        Observable<TopCashItem> observable = Observable
+                .concat(getObservableFetchCacheTokoCashData(),
+                        getObservableFetchNetworkTokoCashData(context))
+                .first(isTokoCashDataAvailable());
         compositeSubscription.add(observable.subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Response<TopCashItem>>() {
-                    @Override
-                    public void onCompleted() {
+                .subscribe(fetchTokoCashSubscriber(context, listener)));
+    }
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if(e instanceof SessionExpiredException
-                                && SessionHandler.isV4Login(context)) {
-                            listener.onTokenExpire();
-                        }
-                    }
-
-                    @Override
-                    public void onNext(Response<TopCashItem> topCashItemResponse) {
-                        listener.onSuccess(topCashItemResponse.body());
-                    }
-                }));
+    @Override
+    public void updateTokoCash(final Context context, final TopCashListener listener) {
+        compositeSubscription.add(getObservableFetchNetworkTokoCashData(context)
+                .subscribe(fetchTokoCashSubscriber(context, listener)));
     }
 
     @Override
@@ -292,5 +283,96 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         return drawerHeader;
     }
 
+    private Observable<TopCashItem> getObservableFetchNetworkTokoCashData(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        TokoCashService tokoCashService = new TokoCashService(sessionHandler.getAccessToken(context));
+        return tokoCashService.getApi()
+                .getTokoCash()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<Response<TopCashItem>, Observable<TopCashItem>>() {
+                    @Override
+                    public Observable<TopCashItem> call(Response<TopCashItem> topCashItemResponse) {
+                        return Observable.just(topCashItemResponse.body());
+                    }
+                }).doOnNext(storeTokoCashItemToDatabase());
+    }
 
+    private Observable<TopCashItem> getObservableFetchCacheTokoCashData() {
+        return Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Boolean, TopCashItem>() {
+            @Override
+            public TopCashItem call(Boolean aBoolean) {
+                GlobalCacheManager cacheManager = new GlobalCacheManager();
+                return CacheUtil.convertStringToModel(cacheManager
+                        .getValueString(KEY_TOKOCASH_DATA),
+                        new TypeToken<TopCashItem>(){}.getType());
+            }
+        }).onErrorReturn(new Func1<Throwable, TopCashItem>() {
+                    @Override
+                    public TopCashItem call(Throwable throwable) {
+                        return null;
+                    }
+                });
+    }
+
+    private Action1<TopCashItem> storeTokoCashItemToDatabase() {
+        return new Action1<TopCashItem> () {
+            @Override
+            public void call(TopCashItem topCashItem) {
+                GlobalCacheManager cacheManager = new GlobalCacheManager();
+                if (topCashItem != null) {
+                    cacheManager.setKey(KEY_TOKOCASH_DATA);
+                    cacheManager.setValue(CacheUtil.convertModelToString(topCashItem,
+                            new TypeToken<TopCashItem>() {
+                            }.getType()));
+                    cacheManager.setCacheDuration(60);
+                    cacheManager.store();
+                }
+            }
+        };
+    }
+
+    private Func1<TopCashItem, Boolean> isTokoCashDataAvailable() {
+        return new Func1<TopCashItem, Boolean>() {
+            @Override
+            public Boolean call(TopCashItem topCashItem) {
+                boolean dataIsNotNull = topCashItem != null && topCashItem.getData()!= null;
+                return topCashItem != null && topCashItem.getData()!= null;
+            }
+        };
+    }
+
+    @Override
+    public void clearWalletCache() {
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.delete(KEY_TOKOCASH_DATA);
+    }
+
+    private Subscriber<TopCashItem> fetchTokoCashSubscriber(final Context context,
+                                                            final TopCashListener listener) {
+        return new Subscriber<TopCashItem>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(e instanceof SessionExpiredException
+                        && SessionHandler.isV4Login(context)) {
+                    listener.onTokenExpire();
+                }
+            }
+
+            @Override
+            public void onNext(TopCashItem topCashItemResponse) {
+                listener.onSuccess(topCashItemResponse);
+            }
+        };
+    }
 }

@@ -2,12 +2,13 @@ package com.tokopedia.discovery.view;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface FragmentBrowseProductView extends BaseView {
     int getDataSize(String TAG);
     void setupAdapter();
     void setupRecyclerView();
-    void onCallProductServiceResult2(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
     int getStartIndexForQuery(String TAG);
@@ -34,6 +35,7 @@ public interface FragmentBrowseProductView extends BaseView {
 
     void addTopAds(List<ProductItem> passProduct, int page, String tag);
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
+    void addCategoryHeader(Data category);
     BrowseProductModel getDataModel();
 
     //    int VALUES_PRODUCT_FRAGMENT_ID = 812_192;

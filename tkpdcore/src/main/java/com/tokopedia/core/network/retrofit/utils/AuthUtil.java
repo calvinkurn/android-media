@@ -43,6 +43,7 @@ public class AuthUtil {
     private static final String HEADER_X_TKPD_APP_VERSION = "X-Tkpd-App-Version";
     private static final String HEADER_CACHE_CONTROL = "cache-control";
     private static final String HEADER_PATH = "x-tkpd-path";
+    private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -50,13 +51,15 @@ public class AuthUtil {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
 
+
+
     /**
      * default key is KEY_WSV$
      */
     public static class KEY {
-        public static String KEY_WSV4 = "web_service_v4";
-        public static String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_WSV4 = "web_service_v4";
+        public static final String KEY_MOJITO = "mojito_api_v1";
+        public static final String KEY_KEROPPI = "Keroppi";
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
@@ -92,8 +95,20 @@ public class AuthUtil {
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+    public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
+                                                                     String contentType, String authKey, String dateFormat) {
 
-    public static Map<String, String> generateHeadersAccount(String authKey) {
+        String date = generateDate(dateFormat);
+        String contentMD5 = generateContentMd5(strParam);
+        String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> finalHeader = generateHeadersAccount(authKey);
+        finalHeader.put(X_TKPD_HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        return finalHeader;
+    }
+
+        public static Map<String, String> generateHeadersAccount(String authKey) {
         String clientID = "7ea919182ff";
         String clientSecret = "b36cbf904d14bbf90e7f25431595a364";
         String encodeString = clientID + ":" + clientSecret;

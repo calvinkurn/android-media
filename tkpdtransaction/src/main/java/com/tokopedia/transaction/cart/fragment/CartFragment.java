@@ -21,7 +21,9 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -32,6 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -54,6 +57,7 @@ import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
+import com.tokopedia.transaction.cart.model.cartdata.CartDonation;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartShop;
@@ -69,6 +73,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -122,6 +127,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     RecyclerView rvCart;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
+    @BindView(R2.id.cart_loyalty_point_balance)
+    TextView LoyaltyPoint;
     @BindView(R2.id.holder_loyalty_balance)
     LinearLayout holderLoyaltyBalance;
     @BindView(R2.id.et_use_deposit)
@@ -130,6 +137,12 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     LinearLayout holderUseDeposit;
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
+    @BindView(R2.id.donasi_checkbox)
+    CheckBox donasiCheckbox;
+    @BindView(R2.id.donasi_title)
+    TextView donasiTitle;
+    @BindView(R2.id.donasi_info)
+    ImageView donasiInfo;
 
     private CheckoutData.Builder checkoutDataBuilder;
     private TkpdProgressDialog progressDialogNormal;
@@ -139,6 +152,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
+    private String totalLoyaltyPoint;
+    private String donationValue;
 
     public static Fragment newInstance() {
         return new CartFragment();
@@ -196,6 +211,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setViewListener() {
+        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
         cbUseVoucher.setChecked(false);
     }
@@ -296,9 +312,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR, String loyaltyPoint) {
         this.totalLoyaltyBalance = loyaltyAmountIDR;
+        this.totalLoyaltyPoint = loyaltyPoint;
         tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
+        LoyaltyPoint.setText(": " + loyaltyPoint + " " + pluralizeGrammar("point", loyaltyPoint));
         holderLoyaltyBalance.setVisibility(View.VISIBLE);
     }
 
@@ -309,7 +327,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(final List<CartItem> cartList) {
-        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cartItemAdapter = new CartItemAdapter(this, this);
         cartItemAdapter.fillDataList(cartList);
         rvCart.setAdapter(cartItemAdapter);
@@ -420,6 +437,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public String getDonationValue() {
+        return donationValue;
+    }
+
+    @Override
     public void renderDisableErrorCheckVoucher() {
         tilEtVoucherCode.setError(null);
         tilEtVoucherCode.setErrorEnabled(false);
@@ -482,6 +504,15 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 getString(R.string.label_title_button_retry), 0,
                 getRetryErrorInitialCartInfoClickListener()
         );
+    }
+
+    @Override
+    public void renderCheckboxDonasi(CartDonation donation) {
+        setDonationValue("0");
+        donasiTitle.setText(donation.getDonationNoteTitle());
+        donasiCheckbox.setText(donation.getDonationNoteInfo());
+        donasiCheckbox.setOnCheckedChangeListener(getOnCheckedDonasiListener(donation.getDonationValue()));
+        donasiInfo.setOnClickListener(getDonasiInfoListener(donation));
     }
 
     @Override
@@ -714,7 +745,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     etVoucherCode.setText("");
                     tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
-                        renderVisibleLoyaltyBalance(totalLoyaltyBalance);
+                        renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
                 }
             }
         };
@@ -802,5 +833,66 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 }
             }
         };
+    }
+
+    public void setDonationValue(String donationValue) {
+        this.donationValue = donationValue;
+    }
+
+    @NonNull
+    private CompoundButton.OnCheckedChangeListener getOnCheckedDonasiListener(final String donationValue) {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setDonationValue(isChecked ? donationValue : "0");
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener getDonasiInfoListener(final CartDonation donation) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_donasi_info, null);
+                dialog.setContentView(view);
+                setDataDialog(dialog, view, donation);
+                dialog.show();
+            }
+        };
+    }
+
+    private void setDataDialog(final Dialog dialog, View view, CartDonation donation) {
+        TextView title = ButterKnife.findById(view, R.id.donasi_popup_title);
+        ImageView imgDonation = ButterKnife.findById(view, R.id.donasi_popup_img);
+        TextView content = ButterKnife.findById(view, R.id.donasi_popup_content);
+        ImageView closeDialog = ButterKnife.findById(view, R.id.close_popup_donasi);
+
+        Glide.with(getActivity())
+                .load(donation.getDonationPopupImg())
+                .into(imgDonation);
+        title.setText(donation.getDonationNoteTitle());
+        content.setText(donation.getDonationPopupInfo());
+        closeDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private String pluralizeGrammar(String noun, String amount) {
+        int convertedAmount;
+        try {
+            convertedAmount = Integer.parseInt(amount);
+        } catch (Exception e) {
+            convertedAmount = 0;
+        }
+        if (convertedAmount > 1) {
+            return noun+"s";
+        }
+        return noun;
     }
 }

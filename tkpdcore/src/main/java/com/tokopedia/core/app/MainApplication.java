@@ -12,6 +12,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.localytics.android.Localytics;
@@ -23,10 +24,15 @@ import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.var.NotificationVariable;
+import com.tokopedia.core.network.di.module.*;
 
 import java.util.List;
 
@@ -47,6 +53,7 @@ public class MainApplication extends TkpdMultiDexApplication {
 	private static Boolean isResetNotification = false;
 	private static Boolean isResetDrawer = false;
 	private static Boolean isResetCart = false;
+    private static Boolean isResetTickerState = true;
 	private static int currActivityState;
 	private static NotificationVariable nv;
 	private static String currActivityName;
@@ -55,7 +62,8 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static ServiceConnection hudConnection;
     public static String PACKAGE_NAME;
     public static MainApplication instance;
-    private static GlobalConfig GlobalConfig;
+
+    private DaggerAppComponent.Builder daggerBuilder;
 
     public int getApplicationType(){
         return DEFAULT_APPLICATION_TYPE;
@@ -79,7 +87,9 @@ public class MainApplication extends TkpdMultiDexApplication {
         initCrashlytics();
         initializeAnalytics();
         initANRWatchDogs();
+        initStetho();
         PACKAGE_NAME = getPackageName();
+        isResetTickerState=true;
 
         //[START] this is for dev process
 		initDB();
@@ -87,9 +97,11 @@ public class MainApplication extends TkpdMultiDexApplication {
 		initDbFlow();
 
         Localytics.autoIntegrate(this);
+
+        daggerBuilder = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .netModule(new NetModule());
     }
-
-
 
 
     public static boolean isAppIsInBackground(Context context) {
@@ -122,7 +134,6 @@ public class MainApplication extends TkpdMultiDexApplication {
      * Intialize the request manager and the image cache
      */
     private void init() {
-        RequestManager.init(this);
     }
 
     /**
@@ -171,6 +182,14 @@ public class MainApplication extends TkpdMultiDexApplication {
     public static Boolean resetCartStatus(Boolean status) {
         isResetCart = status;
         return isResetCart;
+    }
+
+    public static Boolean getIsResetTickerState() {
+        return isResetTickerState;
+    }
+
+    public static void setIsResetTickerState(Boolean isResetTickerState) {
+        MainApplication.isResetTickerState = isResetTickerState;
     }
 
     public static Boolean getNotificationStatus() {
@@ -330,12 +349,12 @@ public class MainApplication extends TkpdMultiDexApplication {
         //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
-    public static GlobalConfig getGlobalConfig() {
-        return GlobalConfig;
+    public AppComponent getApplicationComponent(ActivityModule activityModule) {
+        return daggerBuilder.activityModule(activityModule)
+                .build();
     }
 
-    public static void setGlobalConfig(GlobalConfig globalConfig) {
-        GlobalConfig = globalConfig;
+    public void initStetho() {
+        if (GlobalConfig.isAllowDebuggingTools()) Stetho.initializeWithDefaults(context);
     }
-
 }

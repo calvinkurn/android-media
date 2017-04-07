@@ -7,7 +7,6 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:content_textStyle="bold"
         app:title="@string/label_top_ads_name"/>
 
     <include layout="@layout/include_separator_horizontal"/>
@@ -17,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/topads_detail_padding_item"
+        app:switch_enable="false"
         app:title="@string/label_top_ads_status"/>
 
 </merge>

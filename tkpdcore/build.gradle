@@ -90,6 +90,14 @@ dependencies {
     compile(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    testCompile rootProject.ext.testDependencies.junit
+    testCompile rootProject.ext.testDependencies.mockitorCore
+    testCompile rootProject.ext.testDependencies.assertJ
+
     compile rootProject.ext.serviceDependencies.hockeyApp
     compile rootProject.ext.serviceDependencies.anrWatchDogs
 
@@ -108,6 +116,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
+    compile rootProject.ext.playServicesDependencies.auth
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
@@ -115,6 +124,9 @@ dependencies {
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
+    apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     compile rootProject.ext.networkDependencies.volley
     compile rootProject.ext.networkDependencies.retrofit
@@ -147,6 +159,17 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxAndroid
     compile rootProject.ext.miscDependencies.rxJava
     compile rootProject.ext.miscDependencies.rxJavaMath
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile (rootProject.ext.debugToolsDependencies.chuck) {
+        exclude group: 'com.squareup.okhttp3'
+        exclude group: 'com.squareup.okio'
+        exclude group: 'com.android.support'
+    }
+    compile rootProject.ext.debugToolsDependencies.stetho
 
 }
 
@@ -193,21 +216,14 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
-}
-/* Untuk upload ke local maven*/
-def localRepoURL = 'file://' + new File(System.getProperty('user.home')).getAbsolutePath() + '/.m2/repository'
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: localRepoURL)
-            pom.version = '1.0-DEVELOPMENT-LOCALMVN'
-            pom.groupId = 'com.tokopedia.core'
-            pom.artifactId = 'tkpdcore'
-        }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
     }
+
 }

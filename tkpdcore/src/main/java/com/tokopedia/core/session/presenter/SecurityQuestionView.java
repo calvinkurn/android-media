@@ -40,4 +40,11 @@ public interface SecurityQuestionView extends BaseView {
 
     void disableOtpButton();
 
+    void showTrueCaller(boolean b);
+
+    void showError(String error);
+
+    void onSuccessRequestOTP(String statusMessage);
+
+    String getString(int msg_no_connection);
 }

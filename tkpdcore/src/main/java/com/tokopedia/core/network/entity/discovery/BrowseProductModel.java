@@ -40,6 +40,9 @@ public class BrowseProductModel {
     @SerializedName("config")
     public Config config;
 
+    @SerializedName("header")
+    public Header header;
+
     @SerializedName("server_process_time")
     public String serverProcessTime;
 
@@ -259,6 +262,22 @@ public class BrowseProductModel {
 
         @SerializedName("max_retries")
         String maxRetries;
+    }
+
+    public static class Header {
+        @SerializedName("total_data")
+        Long totalData = 0L;
+
+        @SerializedName("process_time")
+        String processTime;
+
+        public Long getTotalData() {
+            return totalData;
+        }
+
+        public void setTotalData(Long totalData) {
+            this.totalData = totalData;
+        }
     }
 
     /**

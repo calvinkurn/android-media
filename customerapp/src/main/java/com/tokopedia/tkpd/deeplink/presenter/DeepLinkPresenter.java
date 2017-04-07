@@ -17,4 +17,5 @@ public interface DeepLinkPresenter {
 
     boolean isLandingPageWebView(Uri uri);
 
+    void checkUriLogin(Uri uriData);
 }

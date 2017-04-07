@@ -18,6 +18,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
+import com.tokopedia.core.home.adapter.ViewHolderEmptyFeed;
 import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -32,7 +33,7 @@ import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
-import com.tokopedia.tkpd.home.presenter.ProductFeed2Impl;
+import com.tokopedia.tkpd.home.feed.view.viewModel.EmptyFeedModel;
 
 import org.parceler.Parcels;
 
@@ -40,6 +41,7 @@ import java.util.List;
 
 import static com.tokopedia.core.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
 import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createEmtpyFeed;
 import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createViewHistoryProduct;
 import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createViewProductFeed;
 import static com.tokopedia.core.home.model.HistoryProductListItem.HISTORY_PRODUCT_LIST_ITEM;
@@ -51,6 +53,7 @@ import static com.tokopedia.core.var.ProductItem.PRODUCT_ITEM_TYPE;
 public class DataFeedAdapter extends ProductAdapter {
 
     public static final String TAG = DataFeedAdapter.class.getSimpleName();
+    public static final String MODEL_FLAG = "MODEL_FLAG";
     private ParentIndexHome.ChangeTabListener hotListListener;
     private HistoryProductRecyclerViewAdapter historyAdapter;
 
@@ -65,10 +68,14 @@ public class DataFeedAdapter extends ProductAdapter {
                 return createViewProductFeed(parent);
             case HISTORY_PRODUCT_LIST_ITEM:
                 return createViewHistoryProduct(parent, (HistoryProductListItem) data.get(0), historyAdapter);
+            case EmptyFeedModel.EMPTY_FEED:
+                return createEmtpyFeed(parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
+
+
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -79,10 +86,15 @@ public class DataFeedAdapter extends ProductAdapter {
             case HISTORY_PRODUCT_LIST_ITEM:
                 bindHistoryProductViewHolder((ViewHolderHistoryProduct) holder, position);
                 break;
+            case EmptyFeedModel.EMPTY_FEED:
+                bindEmptyFeedModel((ViewHolderEmptyFeed) holder, position);
+                break;
             default:
                 super.onBindViewHolder(holder, position);
         }
     }
+
+
 
     @Override
     protected boolean checkIfOffset() {
@@ -94,10 +106,15 @@ public class DataFeedAdapter extends ProductAdapter {
         switch (recyclerViewItem.getType()) {
             case PRODUCT_ITEM_TYPE:
             case HISTORY_PRODUCT_LIST_ITEM:
+            case EmptyFeedModel.EMPTY_FEED:
                 return recyclerViewItem.getType();
         }
 
         return super.isInType(recyclerViewItem);
+    }
+
+    private void bindEmptyFeedModel(ViewHolderEmptyFeed holder, int position) {
+       holder.checkFavoriteShopButton.setOnClickListener(onFindFavoriteClicked());
     }
 
     private void bindProductFeedViewHolder(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
@@ -119,10 +136,12 @@ public class DataFeedAdapter extends ProductAdapter {
 
     private void setBadges(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
         holder.badgesContainer.removeAllViews();
+        holder.badgesContainer.setVisibility(View.GONE);
         if (data.getBadges() != null)
             for (Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgesContainer);
             }
+        holder.badgesContainer.setVisibility(View.VISIBLE);
     }
 
     private void setLabels(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
@@ -234,7 +253,7 @@ public class DataFeedAdapter extends ProductAdapter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(ProductFeed2Impl.MODEL_FLAG, Parcels.wrap(data));
+        outState.putParcelable(MODEL_FLAG, Parcels.wrap(data));
     }
 
     public HistoryProductRecyclerViewAdapter getHistoryAdapter() {
@@ -264,6 +283,13 @@ public class DataFeedAdapter extends ProductAdapter {
     public boolean isHistory(int position) {
         boolean isInRange = position >= 0 && position < data.size();
         return isInRange && data.get(position) != null && data.get(position) instanceof HistoryProductListItem;
+    }
+
+    public boolean isEmptyFeed(int position) {
+        boolean isInRange = position >= 0 && position < data.size();
+
+        return isInRange && data.get(position)
+                != null && data.get(position) instanceof EmptyFeedModel;
     }
 
     private ProductPass productPass(ProductItem productItem) {

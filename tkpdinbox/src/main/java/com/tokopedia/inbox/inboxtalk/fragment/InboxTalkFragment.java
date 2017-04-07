@@ -53,10 +53,14 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     InboxTalkAdapter adapter;
     private InboxTalkFilterDialog dialog;
 
-    @BindView(R2.id.coordinator) CoordinatorLayout coordinatorLayout;
-    @BindView(R2.id.talk_list) RecyclerView recyclerView;
-    @BindView(R2.id.include_loading) ProgressBar progressBar;
-    @BindView(R2.id.fab) FloatingActionButton floatingActionButton;
+    @BindView(R2.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
+    @BindView(R2.id.talk_list)
+    RecyclerView recyclerView;
+    @BindView(R2.id.include_loading)
+    ProgressBar progressBar;
+    @BindView(R2.id.fab)
+    FloatingActionButton floatingActionButton;
     SnackbarRetry snackbarRetry;
 
 
@@ -99,7 +103,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onSaveState(Bundle state) {
-        presenter.saveState(state, items, layoutManager.findLastCompletelyVisibleItemPosition(),filterString);
+        presenter.saveState(state, items, layoutManager.findLastCompletelyVisibleItemPosition(), filterString);
     }
 
     @Override
@@ -142,7 +146,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         recyclerView.setLayoutManager(layoutManager);
         refresh = new RefreshHandler(getActivity(), view, onRefreshListener());
         displayLoading(true);
-        dialog = InboxTalkFilterDialog.Builder(getActivity(),this);
+        dialog = InboxTalkFilterDialog.Builder(getActivity(), this);
         dialog.setView();
         dialog.setListener();
     }
@@ -244,13 +248,13 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                                      int isUnread) {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        if(page==1){
+        if (page == 1) {
             refresh.finishRefresh();
             items.clear();
         }
         refresh.setPullEnabled(true);
         items.addAll(list);
-        if(!(getActivity() instanceof InboxTalkActivity))
+        if (!(getActivity() instanceof InboxTalkActivity))
             adapter.setEnableAction(false);
         else
             adapter.setEnableAction(true);
@@ -266,7 +270,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onTimeoutResponse(String error, int page) {
-        floatingActionButton.setEnabled(true);
+        floatingActionButton.setEnabled(false);
         isRequest = false;
         if (page == 1) {
             refresh.finishRefresh();
@@ -376,7 +380,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void cancelRequest() {
         floatingActionButton.setEnabled(true);
-        isRequest=false;
+        isRequest = false;
         refresh.setPullEnabled(true);
     }
 
@@ -445,13 +449,17 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case GO_TO_DETAIL:
+                if (data == null) {
+                    return;
+                }
+
                 if (resultCode == RESULT_DELETE) {
                     int position = data.getExtras().getInt("position");
                     items.remove(position);
                     adapter.notifyDataSetChanged();
                     SnackbarManager.make(getActivity(),
-                            getString(R.string.message_success_delete_talk),Snackbar.LENGTH_LONG).show();
-                }else if(resultCode == Activity.RESULT_OK){
+                            getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
+                } else if (resultCode == Activity.RESULT_OK) {
                     int position = data.getExtras().getInt("position");
                     int size = data.getExtras().getInt("total_comment");
                     int followStatus = data.getExtras().getInt("is_follow");
@@ -461,6 +469,9 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                     ((InboxTalk) items.get(position)).setTalkReadStatus(readStatus);
                     adapter.notifyDataSetChanged();
                 }
+                break;
+            default:
+                doRefresh();
                 break;
         }
 

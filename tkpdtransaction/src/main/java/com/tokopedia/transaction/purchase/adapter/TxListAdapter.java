@@ -42,8 +42,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
 
         void actionInvoice(OrderData data);
 
-        void actionUploadTx(OrderData data);
-
         void actionConfirmDeliver(OrderData data);
 
         void actionTrackOrder(OrderData data);
@@ -101,12 +99,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
             }
         });
 
-        holder.tvUploadTx.setOnClickListener(new OneOnClick() {
-            @Override
-            public void oneOnClick(View view) {
-                actionListener.actionUploadTx(item);
-            }
-        });
         holder.mainView.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
@@ -286,9 +278,6 @@ public class TxListAdapter extends ArrayAdapter<OrderData> {
                 return true;
             } else if (item.getItemId() == R.id.action_confirm_package) {
                 actionListener.actionConfirmDeliver(orderData);
-                return true;
-            } else if (item.getItemId() == R.id.action_upload) {
-                actionListener.actionUploadTx(orderData);
                 return true;
             } else if (item.getItemId() == R.id.action_open_dispute) {
                 actionListener.actionDispute(orderData, 0);
