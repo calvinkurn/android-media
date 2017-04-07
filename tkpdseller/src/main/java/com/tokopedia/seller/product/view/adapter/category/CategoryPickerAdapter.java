@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import java.util.ArrayList;
@@ -19,16 +20,13 @@ import java.util.List;
 public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter implements CategoryParentViewHolder.CategoryParentViewHolderListener {
     private static final int CATEGORY_PARENT = 1000;
     private static final int CATEGORY_ITEM = 2000;
-    private static final int UNSELECTED = -1;
     public static final int SELECTED_ITEM_COUNT = 1;
-    private final List<CategoryViewModel> data;
-    private int selected = UNSELECTED;
+    private CategoryLevelViewModel data;
     private final CategoryPickerAdapterListener listener;
     private int level;
 
     public CategoryPickerAdapter(CategoryPickerAdapterListener listener) {
         this.listener = listener;
-        data = new ArrayList<>();
     }
 
     @Override
@@ -61,13 +59,13 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case CATEGORY_PARENT:
-                boolean isNotSelected = selected == UNSELECTED;
-                int modifiedPos = isNotSelected ? position : selected;
+                boolean isNotSelected = data.getSelected() == CategoryLevelViewModel.UNSELECTED;
+                int modifiedPos = isNotSelected ? position : data.getSelected();
                 ((CategoryParentViewHolder)holder)
-                        .renderData(data.get(modifiedPos), position, isNotSelected);
+                        .renderData(data.getViewModels().get(modifiedPos), position, isNotSelected);
                 break;
             case CATEGORY_ITEM:
-                ((CategoryItemViewHolder)holder).renderData(data.get(position));
+                ((CategoryItemViewHolder)holder).renderData(data.getViewModels().get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -76,9 +74,9 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
 
     @Override
     public int getItemViewType(int position) {
-        if (data.isEmpty() || isLoading() || isRetry()) {
+        if (data.getViewModels().isEmpty() || isLoading() || isRetry()) {
             return super.getItemViewType(position);
-        } else if (data.get(position).isHasChild()){
+        } else if (data.getViewModels().get(position).isHasChild()){
             return CATEGORY_PARENT;
         } else {
             return CATEGORY_ITEM;
@@ -87,30 +85,29 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
 
     @Override
     public int getItemCount() {
-        if (selected == UNSELECTED) {
-            return data.size() + super.getItemCount();
+        if (data.getSelected() == CategoryLevelViewModel.UNSELECTED) {
+            return data.getViewModels().size() + super.getItemCount();
         } else {
             return SELECTED_ITEM_COUNT;
         }
     }
 
-    public void renderItems(List<CategoryViewModel> map, int level) {
-        data.clear();
-        data.addAll(map);
+    public void renderItems(CategoryLevelViewModel map, int level) {
+        data = map;
         this.level = level;
         notifyDataSetChanged();
     }
 
     @Override
     public void selectParent(int selected) {
-        this.selected = selected;
-        this.listener.selectParent(data.get(selected).getId());
+        data.setSelected(selected);
+        this.listener.selectParent(data.getViewModels().get(selected).getId());
         notifyDataSetChanged();
     }
 
     @Override
     public void unselectParent() {
-        this.selected = UNSELECTED;
+        data.setSelected(CategoryLevelViewModel.UNSELECTED);
         this.listener.unselectParent(level);
         notifyDataSetChanged();
     }

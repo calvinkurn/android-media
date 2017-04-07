@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter implements CategoryPickerAdapterListener {
     private static final int LEVEL_CATEGORY_VIEW = 1000;
-    private final List<List<CategoryViewModel>> data;
+    private final List<CategoryLevelViewModel> data;
     private final CategoryPickerLevelAdapterListener listener;
 
     public CategoryPickerLevelAdapter(CategoryPickerLevelAdapterListener listener) {
@@ -65,7 +66,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     }
 
     public void addLevelItem(List<CategoryViewModel> map) {
-        data.add(map);
+        data.add(new CategoryLevelViewModel(map));
         notifyDataSetChanged();
 
     }

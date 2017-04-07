@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import java.util.List;
@@ -24,7 +25,7 @@ class CategoryLevelPickerViewHolder extends RecyclerView.ViewHolder {
         levelRecyclerView.setAdapter(adapter);
     }
 
-    public void renderData(List<CategoryViewModel> categoryViewModels, int level) {
+    public void renderData(CategoryLevelViewModel categoryViewModels, int level) {
         adapter.renderItems(categoryViewModels, level);
     }
 }
