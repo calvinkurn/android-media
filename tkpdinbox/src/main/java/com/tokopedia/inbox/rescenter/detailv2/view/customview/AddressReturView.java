@@ -73,6 +73,7 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
         } else {
             addressText.setText(Html.fromHtml(data.getAddressText()));
         }
+        actionEdit.setVisibility(listener.isSeller() ? VISIBLE : GONE);
         actionEdit.setOnClickListener(new AddressReturViewOnClickListener());
         actionMoreAddress.setOnClickListener(new AddressReturViewOnClickListener());
     }
