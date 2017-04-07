@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
-import com.tokopedia.seller.product.view.model.CategoryViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author sebastianuskh on 4/4/17.
