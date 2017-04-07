@@ -61,11 +61,10 @@ public class SmartLockActivity extends AppCompatActivity implements
     private void processBundle(Bundle extras) {
         String username = extras.getString(USERNAME);
         String password = extras.getString(PASSWORD);
-        Credential credential = new Credential.Builder(username)
-                .setPassword(password)
-                .build();
-        //if else valid credential?
-        if(isValidCredential(credential)){
+        if(isValidCredential(username, password)){
+            Credential credential = new Credential.Builder(username)
+                    .setPassword(password)
+                    .build();
             saveCredential(credential);
         }else {
             goToContent();
@@ -260,7 +259,9 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     }
 
-    public boolean isValidCredential(Credential credential) {
-        return !TextUtils.isEmpty(credential.getName()) && !TextUtils.isEmpty(credential.getPassword());
+
+    private boolean isValidCredential(String username, String password) {
+        return !TextUtils.isEmpty(username) && !TextUtils.isEmpty(password);
     }
+
 }
