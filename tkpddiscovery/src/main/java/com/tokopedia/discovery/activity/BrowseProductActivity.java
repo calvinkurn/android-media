@@ -118,10 +118,11 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public void initDiscoverySearchView() {
+    public void initDiscoverySearchView(String lastQuery) {
         discoverySearchView.setActivity(this);
         discoverySearchView.setOnQueryTextListener(this);
         discoverySearchView.setOnSearchViewListener(this);
+        discoverySearchView.setLastQuery(lastQuery);
     }
 
     @Override
@@ -381,11 +382,12 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void openFilter(DataValue filterAttribute,
                            String source,
                            String parentDepartment,
+                           String departmentId,
                            Map<String, String> filters) {
         DynamicFilterActivity.moveTo(BrowseProductActivity.this,
                 filters, getProductBreadCrumb(),
                 filterAttribute.getFilter(),
-                parentDepartment, source);
+                parentDepartment, source, departmentId);
     }
 
     private List<AHBottomNavigationItem> getBottomItemsShop() {

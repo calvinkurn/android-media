@@ -80,8 +80,7 @@ public class NotificationModHandler {
     public void dismissAllActivedNotifications() {
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_ID);
-        notificationManager.cancel(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_ID);
+        notificationManager.cancelAll();
     }
 
     public static void clearCacheIfFromNotification(String category) {
