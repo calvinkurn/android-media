@@ -14,6 +14,7 @@
         android:layout_centerVertical="true" />
 
     <RadioButton
+        android:id="@+id/category_picker_radio_button"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"

@@ -66,7 +66,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     }
 
     public void addLevelItem(List<CategoryViewModel> map) {
-        int level = map.size() - 1;
+        int level = data.size();
         data.add(new CategoryLevelViewModel(map, level));
         notifyDataSetChanged();
 

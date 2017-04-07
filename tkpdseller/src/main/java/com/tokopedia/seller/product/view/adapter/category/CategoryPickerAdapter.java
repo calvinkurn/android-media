@@ -60,14 +60,15 @@ public class CategoryPickerAdapter
                 ((CategoryParentViewHolder)holder)
                         .renderData(
                                 data.getViewModels().get(renderedPosition),
-                                isOneCategorySelected(),
+                                isCategorySelectedAndParent(),
                                 data.getLevel()
                         );
                 break;
             case CATEGORY_ITEM:
+                boolean isSelected = data.getSelected() == data.getViewModels().get(position).getId();
                 ((CategoryItemViewHolder)holder)
                         .renderData(
-                                data.getViewModels().get(position), false, data.getLevel()
+                                data.getViewModels().get(position), isSelected, data.getLevel()
                         );
                 break;
             default:
@@ -91,20 +92,31 @@ public class CategoryPickerAdapter
 
     @Override
     public int getItemCount() {
-        if (data.getSelected() == CategoryLevelViewModel.UNSELECTED) {
-            return data.getViewModels().size() + super.getItemCount();
-        } else {
+        if (isCategorySelectedAndParent()) {
             return SELECTED_ITEM_COUNT;
+        } else {
+            return data.getViewModels().size() + super.getItemCount();
         }
     }
 
     private int getPositionRendered(int position) {
-        boolean isSelected = isOneCategorySelected();
-        return isSelected ? data.getSelectedPosition() : position;
+        return isCategorySelectedAndParent() ? data.getSelectedPosition() : position;
+    }
+
+    private boolean isCategorySelectedAndParent() {
+        return isOneCategorySelected() && isSelectedParent();
     }
 
     private boolean isOneCategorySelected() {
         return data.getSelected() != CategoryLevelViewModel.UNSELECTED;
+    }
+
+    private boolean isSelectedParent() {
+        try {
+            return data.getSelectedModel().isHasChild();
+        } catch (RuntimeException e){
+            return false;
+        }
     }
 
     public void renderItems(CategoryLevelViewModel map) {

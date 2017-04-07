@@ -46,7 +46,7 @@ public class CategoryLevelViewModel {
         return selectedPositionFromIndex;
     }
 
-    public CategoryViewModel getSelectedModel() {
+    public CategoryViewModel getSelectedModel() throws RuntimeException{
         for (CategoryViewModel viewModel : viewModels){
             if (viewModel.getId() == selected){
                 return viewModel;
