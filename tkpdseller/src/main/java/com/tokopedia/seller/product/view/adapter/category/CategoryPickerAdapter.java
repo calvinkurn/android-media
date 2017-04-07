@@ -57,10 +57,10 @@ public class CategoryPickerAdapter extends BaseLinearRecyclerViewAdapter impleme
                 boolean isNotSelected = data.getSelected() == CategoryLevelViewModel.UNSELECTED;
                 int renderedPosition = isNotSelected ? position : data.getSelected();
                 ((CategoryParentViewHolder)holder)
-                        .renderData(data.getViewModels().get(renderedPosition), position, isNotSelected);
+                        .renderData(data.getViewModels().get(renderedPosition), position, isNotSelected, data.getLevel());
                 break;
             case CATEGORY_ITEM:
-                ((CategoryItemViewHolder)holder).renderData(data.getViewModels().get(position));
+                ((CategoryItemViewHolder)holder).renderData(data.getViewModels().get(position), data.getLevel());
                 break;
             default:
                 super.onBindViewHolder(holder, position);

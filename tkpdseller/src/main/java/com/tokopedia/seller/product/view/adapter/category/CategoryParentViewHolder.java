@@ -2,8 +2,10 @@ package com.tokopedia.seller.product.view.adapter.category;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -37,7 +39,7 @@ class CategoryParentViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void renderData(CategoryViewModel categoryViewModel, int index, boolean isNotSelected) {
+    public void renderData(CategoryViewModel categoryViewModel, int index, boolean isNotSelected, int level) {
         this.index = index;
         this.isNotSelected = isNotSelected;
         if (isNotSelected){
@@ -56,6 +58,7 @@ class CategoryParentViewHolder extends RecyclerView.ViewHolder {
             );
         }
         categoryName.setText(categoryViewModel.getName());
+        setIndentation(level);
     }
 
     public int getIndex() {
@@ -64,6 +67,15 @@ class CategoryParentViewHolder extends RecyclerView.ViewHolder {
         } else {
             throw new RuntimeException("index is missing");
         }
+    }
+
+    public void setIndentation(int level) {
+        RelativeLayout.LayoutParams layoutParams =
+                (RelativeLayout.LayoutParams) categoryName.getLayoutParams();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dp = level * 16;
+        int marginStart = (int) ((dp * displayMetrics.density) + 0.5);
+        layoutParams.setMargins(marginStart, 0, 0,0);
     }
 
     public interface CategoryParentViewHolderListener {
