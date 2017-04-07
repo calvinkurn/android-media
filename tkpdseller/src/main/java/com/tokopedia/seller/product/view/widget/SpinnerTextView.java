@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -58,8 +59,12 @@ public class SpinnerTextView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        textInputLayout.setHint(hintText);
-        updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+        if (!TextUtils.isEmpty(hintText)) {
+            textInputLayout.setHint(hintText);
+        }
+        if (entries != null) {
+            updateEntries(ConverterUtils.convertCharSequenceToString(entries));
+        }
         textAutoComplete.setListSelection(selection);
         invalidate();
         requestLayout();

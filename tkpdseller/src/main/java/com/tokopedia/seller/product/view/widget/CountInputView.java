@@ -2,14 +2,14 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 
 /**
@@ -18,8 +18,7 @@ import com.tokopedia.seller.R;
 
 public class CountInputView extends FrameLayout {
 
-    private TextInputLayout textInputLayout;
-    private EditText countEditText;
+    private DecimalInputView decimalInputView;
     private ImageButton minusImageButton;
     private ImageButton plusImageButton;
 
@@ -55,9 +54,11 @@ public class CountInputView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        textInputLayout.setHint(hintText);
+        if (!TextUtils.isEmpty(hintText)) {
+            decimalInputView.setHint(hintText);
+        }
         if (!TextUtils.isEmpty(valueText)) {
-            countEditText.setText(valueText);
+            decimalInputView.setText(valueText);
         }
         invalidate();
         requestLayout();
@@ -65,44 +66,39 @@ public class CountInputView extends FrameLayout {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_count_input_view, this);
-        textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
-        countEditText = (EditText) view.findViewById(R.id.edit_text_count);
+        decimalInputView = (DecimalInputView) view.findViewById(R.id.decimal_input_view);
         minusImageButton = (ImageButton) view.findViewById(R.id.image_button_minus);
         plusImageButton = (ImageButton) view.findViewById(R.id.image_button_plus);
         minusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                int result = getIntValue() - 1;
+                int result = decimalInputView.getIntValue() - 1;
                 if (result >= 0) {
-                    countEditText.setText(String.valueOf(result));
+                    decimalInputView.setText(String.valueOf(result));
                 }
             }
         });
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                countEditText.setText(String.valueOf(getIntValue() + 1));
+                decimalInputView.setText(String.valueOf(decimalInputView.getIntValue() + 1));
             }
         });
     }
 
     public void setHint(String hintText) {
-        countEditText.setHint(hintText);
+        decimalInputView.setHint(hintText);
         invalidate();
         requestLayout();
     }
 
-    public void setValue(String textValue) {
-        countEditText.setText(textValue);
+    public void setText(String textValue) {
+        decimalInputView.setText(textValue);
         invalidate();
         requestLayout();
     }
 
-    public int getIntValue() {
-        return Integer.parseInt(getStringValue());
-    }
-
-    public String getStringValue() {
-        return countEditText.getText().toString();
+    public void addTextChangedListener(TextWatcher watcher) {
+        decimalInputView.addTextChangedListener(watcher);
     }
 }

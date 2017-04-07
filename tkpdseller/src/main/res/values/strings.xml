@@ -278,6 +278,7 @@
     <string name="product_label_shop_window">Etalase</string>
     <string name="product_label_choose">Pilih</string>
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
+    <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>

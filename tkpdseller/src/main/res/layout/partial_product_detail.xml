@@ -5,11 +5,20 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <!--
+    <LinearLayout
+        style="@style/LabelLayoutWithoutBorder"
+        android:background="@android:color/transparent"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TextView.TopAds.Body.Gray"
+            android:text="@string/product_label_product_about" />
+
+    </LinearLayout>
+
     <com.tokopedia.seller.product.view.widget.SpinnerCountInputView
         android:id="@+id/spinner_count_input_view_price"
         style="@style/LabelLayoutWithoutBorder"
-        android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_count_entries="@array/product_currency_entries"
         app:spinner_count_hint="@string/product_label_product_price" />
 
@@ -19,7 +28,7 @@
         android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_count_entries="@array/product_weight_entries"
         app:spinner_count_hint="@string/product_label_product_weight" />
-    -->
+
     <com.tokopedia.seller.product.view.widget.CountInputView
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
