@@ -24,6 +24,8 @@ import rx.Subscriber;
  */
 
 public class UberProductPresenter extends BaseDaggerPresenter<UberProductContract.View> implements UberProductContract.Presenter {
+    private final String VALID_CURRENCY = "IDR";
+
     private RideProductViewModelMapper mProductViewModelMapper;
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
@@ -88,6 +90,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 if (productsList.size() == 0) {
                     getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                 } else {
+                    //check if currency code of any product is not IDR, show error message
+                    for (ProductEstimate pe : productEstimates) {
+                        if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
+                            getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
+                            return;
+                        }
+                    }
+
+
                     getView().hideErrorMessage();
                     getView().showProductList();
                     getView().renderProductList(productsList);
