@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">tkpddigital</string>
+    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai voucher
+        tidak dapat dikembalikan (hangus) apabila
+        melewati masa kadaluarsa."</string>
+    <string name="kode_voucher">Kode Voucher</string>
+    <string name="error_voucher">Kode voucher tidak ditemukan</string>
+    <string name="empty_voucher">Masukkan kode voucher terlebih dahulu</string>
+    <string name="cancel_voucher">Batalkan</string>
+    <string name="use_voucher">Gunakan</string>
+    <string name="title_detail_voucher">Anda mendapatkan voucher:</string>
+    <string name="link_lihat_detail">Lihat Detail</string>
+    <string name="link_tutup">Tutup</string>
+    <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
+        dengan %2$s</string>
+    <string name="error_input_price">Jumlah nominal yang anda masukan tidak sesuai</string>
+    <string name="hint_input_price">Contoh: 422500</string>
+    <string name="lihat_detail">Lihat Detail</string>
+    <string name="title_activity_cart_digital_module">Keranjang</string>
+    <string name="alert_payment_canceled_or_failed_digital_module">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="alert_payment_canceled_digital_module">Pembayaran dibatalkan</string>
+    <string name="label_otp_verification_digital_module">Verifikasi Nomor Anda</string>
+    <string name="label_btn_call_otp_digital_module">lewat telepon</string>
+    <string name="label_or_call_otp_digital_module">atau</string>
+    <string name="label_btn_re_request_otp_digital_module">Kirim Ulang Kode Verifikasi</string>
+    <string name="label_hint_input_otp_digital_module">Masukkan Kode Verifikasi</string>
+    <string name="label_price_cart_digital">Harga</string>
+    <string name="label_total_payment_cart_digital">Total Pembayaran</string>
+    <string name="label_btn_next_cart_digital">LANJUT</string>
+</resources>

@@ -1,5 +1,5 @@
-include ':customerapp'
-include ':tkpdpayment'
+include ':customerapp', ':tkpdpayment'
+include ':tkpddigital'
 include ':tkpdcore'
 include ':tkpdinbox'
 include ':tkpddiscovery'

@@ -81,7 +81,8 @@ public class TkpdProgressDialog {
                 view.findViewById(loadingViewId).setVisibility(View.VISIBLE);
                 isShow = true;
             }
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
     }
 
     public Boolean getCancelable() {
@@ -94,7 +95,7 @@ public class TkpdProgressDialog {
         } else {
             if (progress != null) {
                 isShow = false;
-                progress.dismiss();
+                if (progress.isShowing()) progress.dismiss();
             }
         }
     }

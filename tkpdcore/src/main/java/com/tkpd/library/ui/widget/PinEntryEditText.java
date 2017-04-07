@@ -506,6 +506,10 @@ public class PinEntryEditText extends EditText {
         mOnPinEnteredListener = l;
     }
 
+    public int getmMaxLength() {
+        return mMaxLength;
+    }
+
     public interface OnPinEnteredListener {
         void onPinEntered(CharSequence str);
     }

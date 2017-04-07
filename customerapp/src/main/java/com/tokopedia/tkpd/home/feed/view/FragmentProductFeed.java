@@ -341,7 +341,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
 
-
     @Override
     public HistoryProductListItem getViewmodelHistory() {
         if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {

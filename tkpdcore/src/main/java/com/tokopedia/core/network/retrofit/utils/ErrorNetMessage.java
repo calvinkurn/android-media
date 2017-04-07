@@ -10,6 +10,7 @@ public interface ErrorNetMessage {
     String MESSAGE_ERROR_NULL_DATA = "Data kosong, ulangi beberapa saat lagi";
     String MESSAGE_ERROR_TIMEOUT = "Koneksi timeout, Mohon ulangi beberapa saat lagi";
     String MESSAGE_ERROR_NO_CONNECTION = "Tidak ada koneksi internet";
+    String MESSAGE_ERROR_NO_CONNECTION_FULL = "Tidak ada koneksi internet, silahkan coba lagi";
 
 
     String MESSAGE_ERROR_DEFAULT_SHORT = "Terjadi kesalahan";

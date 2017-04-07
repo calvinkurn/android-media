@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by stevenfredian on 5/26/16.
  */
-public class InfoModel implements Parcelable{
+public class InfoModel implements Parcelable {
 
     @SerializedName("name")
     @Expose
@@ -50,199 +50,159 @@ public class InfoModel implements Parcelable{
     @SerializedName("phone")
     @Expose
     private String phone;
+    @SerializedName("w_refresh_token")
+    @Expose
+    private String walletRefreshToken;
+
     /**
-     *
-     * @return
-     * The name
+     * @return The name
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
-     * @param name
-     * The name
+     * @param name The name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     *
-     * @return
-     * The email
+     * @return The email
      */
     public String getEmail() {
         return email;
     }
 
     /**
-     *
-     * @param email
-     * The email
+     * @param email The email
      */
     public void setEmail(String email) {
         this.email = email;
     }
 
     /**
-     *
-     * @return
-     * The loginid
+     * @return The loginid
      */
     public String getLoginid() {
         return loginid;
     }
 
     /**
-     *
-     * @param loginid
-     * The loginid
+     * @param loginid The loginid
      */
     public void setLoginid(String loginid) {
         this.loginid = loginid;
     }
 
     /**
-     *
-     * @return
-     * The from
+     * @return The from
      */
     public int getFrom() {
         return from;
     }
 
     /**
-     *
-     * @param from
-     * The from
+     * @param from The from
      */
     public void setFrom(int from) {
         this.from = from;
     }
 
     /**
-     *
-     * @return
-     * The remember
+     * @return The remember
      */
     public int getRemember() {
         return remember;
     }
 
     /**
-     *
-     * @param remember
-     * The remember
+     * @param remember The remember
      */
     public void setRemember(int remember) {
         this.remember = remember;
     }
 
     /**
-     *
-     * @return
-     * The userId
+     * @return The userId
      */
     public int getUserId() {
         return userId;
     }
 
     /**
-     *
-     * @param userId
-     * The user_id
+     * @param userId The user_id
      */
     public void setUserId(int userId) {
         this.userId = userId;
     }
 
     /**
-     *
-     * @return
-     * The bday
+     * @return The bday
      */
     public String getBday() {
         return bday;
     }
 
     /**
-     *
-     * @param bday
-     * The bday
+     * @param bday The bday
      */
     public void setBday(String bday) {
         this.bday = bday;
     }
 
     /**
-     *
-     * @return
-     * The phoneVerified
+     * @return The phoneVerified
      */
     public boolean isPhoneVerified() {
         return phoneVerified;
     }
 
     /**
-     *
-     * @param phoneVerified
-     * The phone_verified
+     * @param phoneVerified The phone_verified
      */
     public void setPhoneVerified(boolean phoneVerified) {
         this.phoneVerified = phoneVerified;
     }
 
     /**
-     *
-     * @return
-     * The roles
+     * @return The roles
      */
     public List<Integer> getRoles() {
         return roles;
     }
 
     /**
-     *
-     * @param roles
-     * The roles
+     * @param roles The roles
      */
     public void setRoles(List<Integer> roles) {
         this.roles = roles;
     }
 
     /**
-     *
-     * @return
-     * The createdPassword
+     * @return The createdPassword
      */
     public boolean isCreatedPassword() {
         return createdPassword;
     }
 
     /**
-     *
-     * @param createdPassword
-     * The created_password
+     * @param createdPassword The created_password
      */
     public void setCreatedPassword(boolean createdPassword) {
         this.createdPassword = createdPassword;
     }
 
     /**
-     *
-     * @return
-     * The createPasswordList
+     * @return The createPasswordList
      */
     public List<String> getCreatePasswordList() {
         return createPasswordList;
     }
 
     /**
-     *
-     * @param createPasswordList
-     * The create_password_list
+     * @param createPasswordList The create_password_list
      */
     public void setCreatePasswordList(List<String> createPasswordList) {
         this.createPasswordList = createPasswordList;
@@ -254,6 +214,14 @@ public class InfoModel implements Parcelable{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getWalletRefreshToken() {
+        return walletRefreshToken;
+    }
+
+    public void setWalletRefreshToken(String walletRefreshToken) {
+        this.walletRefreshToken = walletRefreshToken;
     }
 
     @Override
@@ -275,7 +243,7 @@ public class InfoModel implements Parcelable{
         dest.writeByte(this.createdPassword ? (byte) 1 : (byte) 0);
         dest.writeStringList(this.createPasswordList);
         dest.writeString(this.phone);
-
+        dest.writeString(this.walletRefreshToken);
     }
 
     public InfoModel() {
@@ -295,7 +263,7 @@ public class InfoModel implements Parcelable{
         this.createdPassword = in.readByte() != 0;
         this.createPasswordList = in.createStringArrayList();
         this.phone = in.readString();
-
+        this.walletRefreshToken = in.readString();
     }
 
     public static final Creator<InfoModel> CREATOR = new Creator<InfoModel>() {

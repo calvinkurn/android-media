@@ -261,9 +261,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
     public static boolean isLandscape(Activity context) {
-        if (getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE)
-            return true;
-        else return false;
+        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public static int getOrientation(Context context) {
@@ -271,9 +269,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
     public static boolean isLandscape(Context context) {
-        if (getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE)
-            return true;
-        else return false;
+        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public static boolean isDebug() {

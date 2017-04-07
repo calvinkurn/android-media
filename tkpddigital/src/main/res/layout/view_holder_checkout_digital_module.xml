@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/small_dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/total_pembayaran"
+        style="@style/CardViewDigital"
+        android:layout_marginBottom="@dimen/padding_small">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_small"
+            tools:ignore="UselessLeaf">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/small_dp">
+
+                <TextView
+                    android:id="@+id/tv_label_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:text="@string/label_price_cart_digital"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_value_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:gravity="end"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    tools:text="Rp. 50.000,-"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_400"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/small_dp"
+                android:paddingTop="@dimen/small_dp">
+
+                <TextView
+                    android:id="@+id/tv_label_sub_total"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:text="@string/label_total_payment_cart_digital"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/text_size_l_medium"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_value_sub_total"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:gravity="end"
+                    android:textColor="@color/deep_orange_500"
+                    android:textSize="@dimen/text_size_l_medium"
+                    android:textStyle="bold"
+                    tools:text="Rp. 50.000,-"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <TextView
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tab_height"
+        android:layout_below="@+id/total_pembayaran"
+        android:background="@drawable/btn_buy"
+        android:gravity="center"
+        android:text="@string/label_btn_next_cart_digital"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_small"
+        android:textStyle="bold"/>
+
+</RelativeLayout>

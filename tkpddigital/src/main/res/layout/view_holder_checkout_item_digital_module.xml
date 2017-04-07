@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_small">
+
+    <ImageView
+        android:id="@+id/icon_category"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginStart="@dimen/margin_med"
+        android:src="@drawable/loading_page"
+        tools:ignore="ContentDescription"/>
+
+    <TextView
+        android:id="@+id/category_name"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_marginStart="@dimen/margin_small"
+        android:layout_toEndOf="@+id/icon_category"
+        android:layout_toRightOf="@+id/icon_category"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/digital_item_title"
+        android:textSize="@dimen/font_large"
+        android:textStyle="bold"
+        tools:text="Pulsa"/>
+
+    <View
+        android:id="@+id/separator_title"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/icon_category"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/digital_separator"/>
+
+    <LinearLayout
+        android:id="@+id/holder_main_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator_title"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginRight="@dimen/margin_large"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/operator_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:textColor="@color/digital_voucher"
+            android:textSize="@dimen/font_large"
+            tools:text="Telkomsel - Simpati"/>
+
+        <LinearLayout
+            android:id="@+id/layout_main_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <LinearLayout
+            android:id="@+id/layout_additional_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/holder_main_info"
+        android:layout_marginLeft="@dimen/padding_small"
+        android:layout_marginRight="@dimen/padding_small"
+        android:background="@color/digital_separator"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/separator">
+
+        <TextView
+            android:id="@+id/button_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_small"
+            android:drawableEnd="@drawable/page_2"
+            android:drawablePadding="@dimen/margin_small"
+            android:drawableRight="@drawable/page_2"
+            android:text="@string/lihat_detail"
+            android:textColor="@color/tkpd_main_green"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
