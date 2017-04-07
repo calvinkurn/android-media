@@ -19,10 +19,6 @@ import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunitySubsc
 
 public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
-    public static final String KEY_SORT = "OPPORTUNITY_SORT_CACHE";
-    public static final String KEY_CATEGORY = "OPPORTUNITY_CATEGORY_CACHE";
-    public static final String KEY_SHIPPING_TYPE = "OPPORTUNITY_SHIPPING_TYPE_CACHE";
-
     private final OpportunityListView viewListener;
 
     private GetOpportunityUseCase getOpportunityUseCase;

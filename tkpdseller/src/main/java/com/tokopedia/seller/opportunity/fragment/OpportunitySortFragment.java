@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
 import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
@@ -19,24 +21,37 @@ import java.util.List;
 public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
 
     public static final String EXTRA_LIST_SORT = "EXTRA_LIST_SORT";
-    public static final String SELECTED_POSITION = "SELECTED_POSITION";
+    public static final String SELECTED_VALUE = "SELECTED_VALUE";
+    private static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
+    List<SortingTypeViewModel> listSort;
 
     @Override
     protected List<RadioButtonItem> getRadioButtonList() {
-        return convertToRadioButtonItem(getArguments().getStringArrayList(EXTRA_LIST_SORT));
+        if (getArguments().getParcelableArrayList(EXTRA_LIST_SORT) != null)
+            listSort = getArguments().getParcelableArrayList(EXTRA_LIST_SORT);
+        return convertToRadioButtonItem(listSort);
     }
 
-    private List<RadioButtonItem> convertToRadioButtonItem(ArrayList<String> listString) {
-        ArrayList<RadioButtonItem> listSort = new ArrayList<>();
-        for (int i = 0; i < listString.size(); i++) {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            listSort = savedInstanceState.getParcelableArrayList(ARGS_LIST_SORT);
+        else
+            listSort = new ArrayList<>();
+    }
+
+    private List<RadioButtonItem> convertToRadioButtonItem(List<SortingTypeViewModel> listSort) {
+        ArrayList<RadioButtonItem> listRadio = new ArrayList<>();
+        for (int i = 0; i < listSort.size(); i++) {
             RadioButtonItem sortItem = new RadioButtonItem();
-            sortItem.setName(listString.get(i));
+            sortItem.setName(listSort.get(i).getSortingTypeName());
             sortItem.setPosition(i);
-            sortItem.setValue(String.valueOf(i));
-            listSort.add(sortItem);
+            sortItem.setValue(String.valueOf(listSort.get(i).getSortingTypeId()));
+            listRadio.add(sortItem);
         }
         selectedAdapterPosition = 0;
-        return listSort;
+        return listRadio;
     }
 
     @Override
@@ -58,7 +73,7 @@ public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
 
     private Intent getResultIntent(RadioButtonItem radioButtonItem, int position) {
         Intent intent = new Intent();
-        intent.putExtra(SELECTED_POSITION, position);
+        intent.putExtra(SELECTED_VALUE, listSort.get(position).getSortingTypeId());
         return intent;
     }
 
@@ -66,5 +81,11 @@ public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
         OpportunitySortFragment fragment = new OpportunitySortFragment();
         fragment.setArguments(extras);
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(ARGS_LIST_SORT, new ArrayList<Parcelable>(listSort));
+        super.onSaveInstanceState(outState);
     }
 }

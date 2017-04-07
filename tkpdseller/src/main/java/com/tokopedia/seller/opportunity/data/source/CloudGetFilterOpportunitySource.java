@@ -55,21 +55,12 @@ public class CloudGetFilterOpportunitySource {
             @Override
             public void call(OpportunityCategoryModel opportunityCategoryModel) {
                 CommonUtils.dumper("NISNIS saveToCache");
-                Observable.just(opportunityCategoryModel)
-                        .observeOn(Schedulers.newThread())
-                        .subscribeOn(Schedulers.newThread())
-                        .map(new Func1<OpportunityCategoryModel, Boolean>() {
-                            @Override
-                            public Boolean call(OpportunityCategoryModel opportunityCategoryModel) {
-                                cacheManager.setKey(GetOpportunityFilterUseCase.FILTER_CACHE)
-                                        .setCacheDuration(DURATION_CACHE)
-                                        .setValue(CacheUtil.convertModelToString(opportunityCategoryModel,
-                                                new TypeToken<OpportunityCategoryModel>() {
-                                                }.getType()))
-                                        .store();
-                                return true;
-                            }
-                        });
+                cacheManager.setKey(GetOpportunityFilterUseCase.FILTER_CACHE)
+                        .setCacheDuration(DURATION_CACHE)
+                        .setValue(CacheUtil.convertModelToString(opportunityCategoryModel,
+                                new TypeToken<OpportunityCategoryModel>() {
+                                }.getType()))
+                        .store();
             }
         };
     }

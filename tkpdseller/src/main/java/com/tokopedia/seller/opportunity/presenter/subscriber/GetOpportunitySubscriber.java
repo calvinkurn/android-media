@@ -1,6 +1,5 @@
 package com.tokopedia.seller.opportunity.presenter.subscriber;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.entity.replacement.opportunitydata.DetailCancelRequest;
@@ -43,11 +42,13 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
+
 /**
  * Created by nisie on 4/5/17.
  */
 
-public class GetOpportunitySubscriber extends rx.Subscriber<com.tokopedia.seller.opportunity.data.OpportunityModel> {
+public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
 
     private final OpportunityListView viewListener;
 

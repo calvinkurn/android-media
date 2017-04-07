@@ -1,12 +1,15 @@
 package com.tokopedia.seller.opportunity.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by nisie on 3/6/17.
  */
 
-public class CategoryViewModel {
+public class CategoryViewModel implements Parcelable{
     int categoryId;
     String categoryName;
     int parent;
@@ -14,6 +17,31 @@ public class CategoryViewModel {
     int treeLevel;
     String identifier;
     List<CategoryViewModel> listChild;
+
+    public CategoryViewModel() {
+    }
+
+    protected CategoryViewModel(Parcel in) {
+        categoryId = in.readInt();
+        categoryName = in.readString();
+        parent = in.readInt();
+        isHidden = in.readInt();
+        treeLevel = in.readInt();
+        identifier = in.readString();
+        listChild = in.createTypedArrayList(CategoryViewModel.CREATOR);
+    }
+
+    public static final Creator<CategoryViewModel> CREATOR = new Creator<CategoryViewModel>() {
+        @Override
+        public CategoryViewModel createFromParcel(Parcel in) {
+            return new CategoryViewModel(in);
+        }
+
+        @Override
+        public CategoryViewModel[] newArray(int size) {
+            return new CategoryViewModel[size];
+        }
+    };
 
     public int getCategoryId() {
         return categoryId;
@@ -69,5 +97,21 @@ public class CategoryViewModel {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(categoryId);
+        dest.writeString(categoryName);
+        dest.writeInt(parent);
+        dest.writeInt(isHidden);
+        dest.writeInt(treeLevel);
+        dest.writeString(identifier);
+        dest.writeTypedList(listChild);
     }
 }

@@ -171,10 +171,12 @@
 
         <activity
             android:name=".opportunity.OpportunitySortActivity"
+            android:label="@string/title_sort_but"
             android:screenOrientation="portrait" />
 
         <activity
             android:name=".opportunity.OpportunityFilterActivity"
+            android:label="@string/title_filter_but"
             android:screenOrientation="portrait" />
 
         <activity

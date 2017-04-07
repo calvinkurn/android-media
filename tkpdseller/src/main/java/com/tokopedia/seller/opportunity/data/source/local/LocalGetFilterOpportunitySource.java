@@ -1,22 +1,21 @@
 package com.tokopedia.seller.opportunity.data.source.local;
 
-import android.content.Context;
-
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.CategoryList;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.ShippingType;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortingType;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
-import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by nisie on 3/23/17.
@@ -34,22 +33,23 @@ public class LocalGetFilterOpportunitySource {
     public Observable<OpportunityCategoryModel> getFilter() {
 
         return Observable.just(GetOpportunityFilterUseCase.FILTER_CACHE)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
                 .map(new Func1<String, OpportunityCategoryModel>() {
                     @Override
                     public OpportunityCategoryModel call(String key) {
-                        CommonUtils.dumper("NISNIS GET FILTER CACHE");
-                        try {
-                            if (getCache(key) != null)
-                                return CacheUtil.convertStringToModel(getCache(key),
-                                        new TypeToken<OpportunityCategoryModel>() {
-                                        }.getType());
-                            else return null;
-                        } catch (RuntimeException e) {
-                            return null;
-                        }
+//                        CommonUtils.dumper("NISNIS GET FILTER CACHE");
+//                        if (getCache(key) != null)
+//                            return CacheUtil.convertStringToModel(getCache(key),
+//                                    new TypeToken<OpportunityCategoryModel>() {
+//                                    }.getType());
+//                        else throw new RuntimeException("NO CACHE");
+
+                        OpportunityCategoryModel categoryModel = new OpportunityCategoryModel();
+                        OpportunityCategoryData data = new OpportunityCategoryData();
+                        createFakeCategoryData(data);
+                        createFakeSortData(data);
+                        createFakeShippingData(data);
+                        categoryModel.setOpportunityCategoryData(data);
+                        return categoryModel;
                     }
                 });
     }
@@ -57,4 +57,43 @@ public class LocalGetFilterOpportunitySource {
     private String getCache(String key) {
         return globalCacheManager.getValueString(key);
     }
+
+    private void createFakeCategoryData(OpportunityCategoryData data) {
+        List<CategoryList> categoryLists = new ArrayList<>();
+        for(int i = 0 ; i < 10 ; i++){
+            CategoryList item = new CategoryList();
+            item.setId(String.valueOf(i));
+            item.setHidden(0);
+            item.setIdentifier("asdasdasd" + i);
+            item.setTree(1);
+            item.setName("category "+ i);
+            item.setParent(1);
+            item.setChild(new ArrayList<CategoryList>());
+            categoryLists.add(item);
+        }
+        data.setCategoryList(categoryLists);
+    }
+
+    private void createFakeShippingData(OpportunityCategoryData data) {
+        List<ShippingType> shippingTypes = new ArrayList<>();
+        for(int i = 0 ; i < 5 ; i++){
+            ShippingType item = new ShippingType();
+            item.setShippingTypeID(i);
+            item.setShippingTypeName("Shipping " + i);
+            shippingTypes.add(item);
+        }
+        data.setShippingType(shippingTypes);
+    }
+
+    private void createFakeSortData(OpportunityCategoryData data) {
+        List<SortingType> sortingTypes = new ArrayList<>();
+        for(int i = 0 ; i < 5 ; i++){
+            SortingType item = new SortingType();
+            item.setSortingTypeID(i);
+            item.setSortingTypeName("Sorting " + i);
+            sortingTypes.add(item);
+        }
+        data.setSortingType(sortingTypes);
+    }
+
 }
