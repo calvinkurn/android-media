@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +17,8 @@ import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.fragment.CategoryPickerFragmentListener;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
+import org.parceler.Parcels;
+
 import java.util.List;
 
 /**
@@ -25,6 +29,7 @@ public class CategoryPickerActivity
         extends TActivity
         implements CategoryPickerFragmentListener, HasComponent<CategoryPickerComponent>{
 
+    public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
 
@@ -64,6 +69,9 @@ public class CategoryPickerActivity
 
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
-
+        Intent intent = new Intent();
+        intent.putExtra(CATEGORY_RESULT_LEVEL, Parcels.wrap(listCategory));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }
