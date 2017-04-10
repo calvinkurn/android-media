@@ -56,8 +56,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(RequestParams requestParams) {
-//        String url =  "https://" + requestParams.getString(PARAM_URL, "") + TkpdBaseURL.Upload.PATH_CONTACT_IMAGE;
-        String url =  "https://" + "up-staging.tokopedia.net" + TkpdBaseURL.Upload.PATH_CONTACT_IMAGE;
+        String url =  "https://" + requestParams.getString(PARAM_URL, "") + TkpdBaseURL.Upload.PATH_CONTACT_IMAGE;
 
         return uploadImageRepository.uploadImage(url,
                 generateRequestBody(requestParams),
