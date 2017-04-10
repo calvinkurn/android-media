@@ -56,9 +56,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         if (confirmBookingViewModel != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
-            addFragment(R.id.container, OnTripMapFragment.newInstance(bundle));
+            addFragment(R.id.container, OnTripMapFragment.newInstance(bundle), OnTripMapFragment.TAG);
         } else {
-            addFragment(R.id.container, OnTripMapFragment.newInstance());
+            addFragment(R.id.container, OnTripMapFragment.newInstance(), OnTripMapFragment.TAG);
         }
     }
 
@@ -68,6 +68,13 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     }
 
 
+    private void addFragment(int containerViewId, Fragment fragment, String tag) {
+        if (!isFinishing()) {
+            FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+            fragmentTransaction.add(containerViewId, fragment, tag);
+            fragmentTransaction.commit();
+        }
+    }
     private void addFragment(int containerViewId, Fragment fragment) {
         if (!isFinishing()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
