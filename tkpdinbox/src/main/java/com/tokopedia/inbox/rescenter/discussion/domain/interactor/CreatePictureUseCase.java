@@ -55,10 +55,8 @@ public class CreatePictureUseCase extends UseCase<CreatePictureModel> {
 
     @Override
     public Observable<CreatePictureModel> createObservable(RequestParams requestParams) {
-//        String url = "https://" + requestParams.getString(PARAM_URL, "")
-//                + TkpdBaseURL.Upload.PATH_CREATE_RESOLUTION_PICTURE_FULL;
-
-        String url =  "https://" + "up-staging.tokopedia.net" + TkpdBaseURL.Upload.PATH_CREATE_RESOLUTION_PICTURE_FULL;
+        String url = "https://" + requestParams.getString(PARAM_URL, "")
+                + TkpdBaseURL.Upload.PATH_CREATE_RESOLUTION_PICTURE_FULL;
 
         return uploadImageRepository.createImageResCenter(url,
                 generateRequestBody(requestParams)
