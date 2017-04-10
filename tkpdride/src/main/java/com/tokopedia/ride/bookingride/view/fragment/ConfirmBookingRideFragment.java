@@ -283,6 +283,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WALLET_WEB_VIEW_REQUEST_CODE) {
+            presenter.clearTokoCashCache();
             presenter.actionCheckBalance();
         }
     }

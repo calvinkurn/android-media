@@ -95,6 +95,11 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     }
 
     @Override
+    public void clearTokoCashCache() {
+        networkInteractor.clearWalletCache();
+    }
+
+    @Override
     public void actionChangeSeatCount() {
         RequestParams requestParams = getView().getParam();
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {

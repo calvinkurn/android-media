@@ -50,5 +50,7 @@ public interface ConfirmBookingContract {
         void actionChangeSeatCount();
 
         void initialize();
+
+        void clearTokoCashCache();
     }
 }
