@@ -1,6 +1,8 @@
 package com.tokopedia.ride.ontrip.view;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -15,7 +17,7 @@ import java.util.List;
  */
 
 public interface OnTripMapContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
 
         RequestParams getParam();
 
@@ -80,9 +82,15 @@ public interface OnTripMapContract {
         void showFindingUberNotification();
 
         void cancelFindingUberNotification();
+
+        void showAcceptedNotification(RideRequest result);
+
+        void hideAcceptedNotification(RideRequest result);
+
+        void updateDriverBitmapInNotification(RemoteViews remoteView, Bitmap bitmap);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
 
         void initialize();
 
@@ -95,5 +103,7 @@ public interface OnTripMapContract {
         void proccessGetCurrentRideRequest(RideRequest result);
 
         void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng);
+
+        void getDriverBitmap(RemoteViews remoteView, String imgUrl);
     }
 }

@@ -8,14 +8,17 @@ import android.app.DialogFragment;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +88,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
 
     private final int FINDING_UBER_NOTIFICATION_ID = 0001;
+    private final int ACCEPTED_UBER_NOTIFICATION_ID = 0002;
 
 
     OnTripMapContract.Presenter presenter;
@@ -116,6 +121,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     FrameLayout bottomContainer;
 
     OnFragmentInteractionListener onFragmentInteractionListener;
+
+    private NotificationManager mNotifyMgr;
+    private Notification acceptedNotification;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -165,6 +173,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mapView.getMapAsync(this);
 
         mGcmNetworkManager = GcmNetworkManager.getInstance(getActivity());
+
+        // Gets an instance of the NotificationManager service
+        mNotifyMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
 
         mReceiver = new BroadcastReceiver() {
             @Override
@@ -603,9 +614,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentTitle(getResources().getString(R.string.notification_title_finding_uber));
 
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
         mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
@@ -613,7 +621,57 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void cancelFindingUberNotification() {
+        mNotifyMgr.cancel(FINDING_UBER_NOTIFICATION_ID);
+    }
+
+    public void showAcceptedNotification(final RideRequest result) {
+        // Create remote view and set bigContentView.
+        final RemoteViews remoteView = new RemoteViews(getActivity().getPackageName(),
+                R.layout.notification_remote_view_ride_accepted);
+
+        remoteView.setTextViewText(R.id.tv_cab_name, result.getVehicle().getVehicleModel());
+        remoteView.setTextViewText(R.id.tv_cab_number, result.getVehicle().getLicensePlate());
+        remoteView.setTextViewText(R.id.tv_driver_name, result.getDriver().getName());
+        remoteView.setTextViewText(R.id.tv_driver_star, result.getDriver().getRating());
+        //remoteView.setImageViewUri(R.id.iv_driver_img, Uri.parse(result.getDriver().getPictureUrl()));
+
+
+        //add event for call to driver
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + result.getDriver().getPhoneNumber()));
+        PendingIntent callPendingIntent = PendingIntent.getService(getActivity(), 0, callIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteView.setOnClickPendingIntent(R.id.layout_call_driver, callPendingIntent);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.crux_cabs_uber_ic))
+                .setContentTitle(getString(R.string.accepted_push_title))
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating()))
+                .setCustomBigContentView(remoteView);
+
+        // Builds the notification and issues it.
+        acceptedNotification = mBuilder.build();
+        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, acceptedNotification);
+
+        //update driver botmap after downloading
+        presenter.getDriverBitmap(remoteView, result.getDriver().getPictureUrl());
+    }
+
+    @Override
+    public void hideAcceptedNotification(RideRequest result) {
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(FINDING_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(ACCEPTED_UBER_NOTIFICATION_ID);
+    }
+
+    @Override
+    public void updateDriverBitmapInNotification(RemoteViews remoteView, Bitmap bitmap) {
+        if (bitmap == null) return;
+
+        remoteView.setImageViewBitmap(R.id.iv_driver_img, bitmap);
+        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, acceptedNotification);
     }
 }

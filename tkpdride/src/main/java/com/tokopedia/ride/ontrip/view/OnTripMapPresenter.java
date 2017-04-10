@@ -2,11 +2,14 @@ package com.tokopedia.ride.ontrip.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.widget.RemoteViews;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -27,10 +30,17 @@ import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -268,6 +278,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().cancelFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
+                getView().showAcceptedNotification(result);
                 getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
@@ -340,5 +351,45 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderTripRoute(routes);
             }
         });
+    }
+
+    @Override
+    public void getDriverBitmap(final RemoteViews remoteView, final String imgUrl) {
+        Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                Bitmap bm = null;
+                try {
+                    URL aURL = new URL(imgUrl);
+                    URLConnection conn = aURL.openConnection();
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    BufferedInputStream bis = new BufferedInputStream(is);
+                    bm = BitmapFactory.decodeStream(bis);
+                    bis.close();
+                    is.close();
+                } catch (IOException e) {
+                }
+
+                subscriber.onNext(bm);
+
+            }
+        })
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        getView().updateDriverBitmapInNotification(remoteView, bitmap);
+                    }
+                });
     }
 }
