@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="margin_small">10dp</dimen>
+    <dimen name="large_dp">30dp</dimen>
+    <dimen name="top_option_h">30dp</dimen>
+    <dimen name="badge_size">18dp</dimen>
+    <dimen name="small_dp">10dp</dimen>
+    <dimen name="image_thumbnail_size">200dp</dimen>
+    <dimen name="padding_small">10dp</dimen>
+    <dimen name="padding_vs">5dp</dimen>
+    <dimen name="margin_vs">5dp</dimen>
+    <dimen name="font_large">18sp</dimen>
+</resources>
