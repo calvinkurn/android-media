@@ -182,7 +182,7 @@ LoginFragment extends Fragment implements LoginView {
 //        setRememberAccountState();
 
         String temp = getArguments().getString("login");
-        if (temp != null) {
+        if (!TextUtils.isEmpty(temp)) {
             if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
             } else if (temp.equals(DownloadService.GOOGLE)) {
