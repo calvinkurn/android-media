@@ -130,16 +130,24 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
     }
 
+    boolean adStatusChanged = false;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            if (adStatusChanged) {
-                refreshAd();
-                setResultAdDetailChanged();
-            }
+            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adStatusChanged) {
+            refreshAd();
+            setResultAdDetailChanged();
+            adStatusChanged = false;
         }
     }
 

@@ -167,4 +167,7 @@
         <attr name="spinner_decimal_selection" format="integer"/>
         <attr name="spinner_decimal_hint" format="string"/>
     </declare-styleable>
+    <declare-styleable name="ReputationView">
+        <attr name="default_layout" format="integer" />
+    </declare-styleable>
 </resources>

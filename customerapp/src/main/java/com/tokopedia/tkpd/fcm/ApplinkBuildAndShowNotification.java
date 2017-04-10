@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.fcm;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -16,6 +17,7 @@ import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactory;
 import com.tokopedia.core.gcm.notification.applink.ApplinkTypeFactoryList;
 import com.tokopedia.core.gcm.notification.applink.DiscussionPushNotificationWrapper;
 import com.tokopedia.core.gcm.notification.applink.MessagePushNotificationWrapper;
+import com.tokopedia.core.gcm.notification.applink.PromoPushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 
 import rx.Subscriber;
@@ -103,5 +105,14 @@ public class ApplinkBuildAndShowNotification {
                 discussionPushNotificationWrapper.type(applinkTypeFactory).process(context, intent, isNew);
             }
         });
+    }
+
+    public void showPromoNotification(Bundle data){
+
+        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PromoPushNotificationBuildAndShow promoPushNotificationBuildAndShow = new PromoPushNotificationBuildAndShow(data);
+        promoPushNotificationBuildAndShow.process(context, intent);
+
     }
 }

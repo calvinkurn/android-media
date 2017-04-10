@@ -46,7 +46,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public static final int PROCESS_ORDER = 1;
     private boolean isRefresh = false;
     private boolean inhibit_spinner_deadline = true;
-    private LinearLayoutManager linearLayoutManager;
     private boolean shouldRefreshList = false;
 
     public static FragmentSellingNewOrder createInstance() {
@@ -101,7 +100,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         page = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<OrderShippingList, OrderViewHolder>(OrderShippingList.class, getActivity(), R.layout.selling_order_list_item, OrderViewHolder.class) {
             @Override
             protected void populateViewHolder(OrderViewHolder viewHolder, OrderShippingList model, int position) {
@@ -177,7 +175,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     public void initView() {
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
         setRefreshPullEnable(true);
-        list.setLayoutManager(linearLayoutManager);
+        list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_order, null);
         search = ButterKnife.findById(filterLayout, R.id.search);
@@ -203,7 +201,7 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
+                presenter.onScrollList(((LinearLayoutManager)list.getLayoutManager()).findLastVisibleItemPosition() == list.getLayoutManager().getItemCount() - 1);
             }
         });
     }

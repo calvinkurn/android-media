@@ -384,8 +384,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     private void showRetry(NetworkErrorHelper.RetryClickedListener listener, String error) {
+        View view = getView();
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getActivity().getWindow().getDecorView().getRootView(),
+                view,
                 error,
                 listener);
     }
@@ -538,6 +539,22 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     @Override
+    public void renderErrorEditLocationShipmentNoConnection() {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), getView(),
+                getString(R.string.label_title_error_no_connection_initial_cart_data),
+                getString(R.string.label_transaction_error_message_try_again),
+                getString(R.string.label_title_button_retry), 0,
+                getEditShipmentRetryListener()
+        );
+    }
+
+    @Override
+    public void renderErrorEditShipmentTimeout() {
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == Activity.RESULT_OK) {
@@ -553,7 +570,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                     break;
             }
         }
-        if (resultCode == RESULT_NOT_SELECTED_DESTINATION && data != null){
+        if (resultCode == RESULT_NOT_SELECTED_DESTINATION && data != null) {
             renderResultChangeAddress(data.getExtras());
         }
     }

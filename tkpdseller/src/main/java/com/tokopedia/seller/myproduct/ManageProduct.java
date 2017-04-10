@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -141,6 +142,7 @@ public class ManageProduct extends TkpdActivity implements
     public static final String SORT_MOST_BUY = "8";
     public static final String SORT_LOWEST_PRICE = "9";
     public static final String SORT_HIGHER_PRICE = "10";
+
     public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
     public CompositeSubscription compositeSubscription = new CompositeSubscription();
     SimpleListView lvListProd;
@@ -152,7 +154,7 @@ public class ManageProduct extends TkpdActivity implements
     EditText EtalaseName;
     View footerLV;
     ImageView blurImage;
-    FabSpeedDial fabAddProduct;
+
     ManageProductPresenterImpl manageProductPresenter;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
@@ -207,6 +209,10 @@ public class ManageProduct extends TkpdActivity implements
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
+
+    FabSpeedDial fabAddProduct;
+
+
     // NEW NETWORK
     private NetworkInteractor networkInteractorImpl;
     private Gson gson;
@@ -247,7 +253,6 @@ public class ManageProduct extends TkpdActivity implements
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         lvListProd = (SimpleListView) findViewById(R.id.prod_list);
         blurImage = (ImageView) findViewById(R.id.blur_image);
-        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
 
         checkLogin();
         if (this.isFinishing()) {
@@ -277,6 +282,7 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
+
                 lvadapter.clearCheckdData();
                 lvListProd.clearChoices();
                 lvListProd.setItemChecked(-1, false);

@@ -51,20 +51,20 @@ public class InstagramAuth {
 //        mediaDialog.setOnGetInstagramMediaListener(listener);
     }
 
-    public void getMedias(FragmentManager fm){
+    public void getMedias(FragmentManager fm, int maxResult){
         if(model.accessToken == null)
-            requestAccessToken(fm);
+            requestAccessToken(fm, maxResult);
         else
-            requestMedia(fm);
+            requestMedia(fm, maxResult);
     }
 
-    private void requestAccessToken(FragmentManager fm){
+    private void requestAccessToken(FragmentManager fm, final int maxResult){
         authenticationDialog.setOnRequestAccessTokenListener(new OnRequestAccessTokenListener() {
             @Override
             public void onSuccess(String code, FragmentManager fm) {
                 try {
                     onRequestAccessTokenSuccess(code);
-                    requestMedia(fm);
+                    requestMedia(fm, maxResult);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -87,7 +87,7 @@ public class InstagramAuth {
         model.accessToken = resultJSON.getString(KEY_ACCESS_TOKEN);
     }
 
-    private void requestMedia(FragmentManager fm){
+    private void requestMedia(FragmentManager fm, int maxResult){
 //        mediaDialog.setOnRequestMediaListener(new OnRequestMediaListener() {
 //            @Override
 //            public void onRequestAccessToken(FragmentManager fm) {
@@ -95,7 +95,7 @@ public class InstagramAuth {
 //            }
 //        });
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.add_product_container, InstagramMediaFragment.createDialog(model));
+        transaction.replace(R.id.add_product_container, InstagramMediaFragment.createDialog(model, maxResult));
         transaction.commit();
 //        mediaDialog.show(fm, TAG);
     }

@@ -53,6 +53,7 @@
 
     <color name="blue_link">#07C </color>
 
+    <color name="black_seventy_percent_">#B3000000</color>
     <color name="tkpd_main_green">#42b549</color>
     <color name="accent">#ff33b5e5</color>
     <color name="dark_selectable_recycler">#CCCCCC</color>
@@ -71,6 +72,12 @@
     <color name="colorPrimaryDark">#0A8F08</color>
     <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
+
+    <color name="digital_voucher">#8a000000</color>
+    <color name="digital_voucher_notes">#61000000</color>
+    <color name="digital_separator">#1f000000</color>
+    <color name="digital_cancel">#1f000000</color>
+    <color name="digital_item_title">#b3000000</color>
 
     <color name="checkbox_text">#61000000</color>
     <color name="white_grey">#fbfbfb</color>
