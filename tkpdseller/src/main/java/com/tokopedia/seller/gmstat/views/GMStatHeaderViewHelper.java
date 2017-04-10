@@ -299,10 +299,6 @@ public class GMStatHeaderViewHelper {
         return maxCalendar;
     }
 
-    public void onClick(GMStatActivityFragment gmStatActivityFragment) {
-        onClick(gmStatActivityFragment);
-    }
-
     private ArrayList<PeriodRangeModel> getPeriodRangeList(Context context) {
         ArrayList<PeriodRangeModel> periodRangeList = new ArrayList<>();
         Calendar startCalendar = Calendar.getInstance();
