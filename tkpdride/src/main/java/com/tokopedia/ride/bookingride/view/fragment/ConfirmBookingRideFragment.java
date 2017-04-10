@@ -161,7 +161,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public void updateSeatCount(int seat) {
         confirmBookingViewModel.setSeatCount(seat);
-        presenter.actionChangeSeatCount();
+        presenter.actionGetFareAndEstimate();
     }
 
     @Override

@@ -47,7 +47,7 @@ public interface ConfirmBookingContract {
 
         void actionCheckBalance();
 
-        void actionChangeSeatCount();
+        void actionGetFareAndEstimate();
 
         void initialize();
 

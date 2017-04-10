@@ -43,7 +43,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -211,27 +214,31 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                     subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
                 }
             }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-            @Override
-            public void onNext(String sourceAddress) {
-                PlacePassViewModel placeVm = new PlacePassViewModel();
-                placeVm.setAddress(sourceAddress);
-                placeVm.setLatitude(mCurrentLocation.getLatitude());
-                placeVm.setLongitude(mCurrentLocation.getLongitude());
-                placeVm.setTitle(sourceAddress);
-                placeVm.setType(PlacePassViewModel.TYPE.OTHER);
-                getView().setSourceLocation(placeVm);
-            }
-        });
+                    @Override
+                    public void onNext(String sourceAddress) {
+                        PlacePassViewModel placeVm = new PlacePassViewModel();
+                        placeVm.setAddress(sourceAddress);
+                        placeVm.setLatitude(mCurrentLocation.getLatitude());
+                        placeVm.setLongitude(mCurrentLocation.getLongitude());
+                        placeVm.setTitle(sourceAddress);
+                        placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+                        getView().setSourceLocation(placeVm);
+                    }
+                });
 
     }
 

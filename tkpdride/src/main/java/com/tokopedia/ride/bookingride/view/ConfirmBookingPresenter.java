@@ -32,7 +32,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
     @Override
     public void initialize() {
-        actionCheckBalance();
+        actionGetFareAndEstimate();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
     }
 
     @Override
-    public void actionChangeSeatCount() {
+    public void actionGetFareAndEstimate() {
         RequestParams requestParams = getView().getParam();
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
             @Override
