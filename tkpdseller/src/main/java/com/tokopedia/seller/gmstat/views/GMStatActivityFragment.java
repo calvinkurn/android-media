@@ -128,7 +128,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
 
     public void onClickHeaderGMStat() {
         if (gmstatHeaderViewHelper != null) {
-            gmstatHeaderViewHelper.onClick(this, false);
+            gmstatHeaderViewHelper.onClick(getActivity(), false);
         }
     }
 
