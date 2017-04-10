@@ -16,7 +16,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.OpportunityDetailActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailButtonView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;

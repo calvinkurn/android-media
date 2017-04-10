@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity;
+package com.tokopedia.seller.opportunity.activity;
 
 import android.content.Context;
 import android.content.Intent;

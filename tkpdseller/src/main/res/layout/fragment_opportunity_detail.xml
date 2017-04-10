@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/greyish_bg"
-    tools:context=".opportunity.OpportunityDetailActivity">
+    tools:context=".opportunity.activity.OpportunityDetailActivity">
 
     <com.tokopedia.seller.opportunity.customview.OpportunityDetailButtonView
         android:layout_width="match_parent"

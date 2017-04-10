@@ -18,13 +18,15 @@ import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.OpportunityFilterActivity;
-import com.tokopedia.seller.opportunity.OpportunitySortActivity;
-import com.tokopedia.seller.opportunity.OpportunityDetailActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
+import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
@@ -278,11 +280,29 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OpportunityFilterActivity.class);
-                intent.putExtra(OpportunityFilterActivity.EXTRA_CATEGORY_SELECTED_VALUE, getSelectedFilter());
+                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), createFilterData());
                 startActivityForResult(intent, REQUEST_FILTER);
             }
         });
+    }
+
+    private OpportunityFilterActivityViewModel createFilterData() {
+        OpportunityFilterActivityViewModel viewModel = new OpportunityFilterActivityViewModel();
+        viewModel.setListCategory(filterData.getListCategory());
+        viewModel.setListShipping(filterData.getListShippingType());
+        viewModel.setListTitle(getFilterTitles());
+        return viewModel;
+    }
+
+    private ArrayList<FilterItemViewModel> getFilterTitles() {
+        ArrayList<FilterItemViewModel> listTitle = new ArrayList<>();
+        listTitle.add(new FilterItemViewModel(
+                getActivity().getString(R.string.title_category),
+                presenter.getPass().getCategory() != null && presenter.getPass().getCategory().equals("")));
+        listTitle.add(new FilterItemViewModel(
+                getActivity().getString(R.string.title_supported_shipping),
+                presenter.getPass().getShippingType() != null && presenter.getPass().getShippingType().equals("")));
+        return listTitle;
     }
 
     private int getSelectedFilter() {

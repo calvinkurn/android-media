@@ -50,4 +50,5 @@
     <dimen name="topads_dashboard_size_image_plus">30dp</dimen>
 
     <dimen name="item_space">10dp</dimen>
+    <dimen name="width_filter">128dp</dimen>
 </resources>

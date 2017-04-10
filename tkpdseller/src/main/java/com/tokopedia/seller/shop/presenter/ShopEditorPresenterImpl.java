@@ -223,7 +223,7 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
                         }
                         String jsonShopDataCache = resultData.getString(ShopEditService.JSON_SHOP_DATA_CACHE);
                         ShopSettingCache.SaveCache(ShopSettingCache.CODE_SHOP_INFO, jsonShopDataCache, context);
-                        //((BaseView) fragment).setData(type, resultData);
+                        //((BaseView) fragment).setList(type, resultData);
                         break;
                     case ShopEditServiceConstant.POST_EDIT_DATA:
                         ResponseEdit.DataBean dataBean = Parcels.unwrap(resultData.getParcelable(ShopEditService.MODEL_RESPONSE_EDIT_SHOP));

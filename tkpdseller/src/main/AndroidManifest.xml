@@ -170,17 +170,17 @@
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
-            android:name=".opportunity.OpportunitySortActivity"
+            android:name=".opportunity.activity.OpportunitySortActivity"
             android:label="@string/title_sort_but"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".opportunity.OpportunityFilterActivity"
+            android:name=".opportunity.activity.OpportunityFilterActivity"
             android:label="@string/title_filter_but"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".opportunity.OpportunityDetailActivity"
+            android:name=".opportunity.activity.OpportunityDetailActivity"
             android:label="@string/title_opportunity_detail"
             android:screenOrientation="portrait" />
 

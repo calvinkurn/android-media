@@ -24,10 +24,9 @@ public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment
 
     private int selectedCategoryValue;
 
-    public static OpportunityCategoryFragment createInstance(int status) {
+    public static OpportunityCategoryFragment createInstance(Bundle bundle) {
         OpportunityCategoryFragment fragment = new OpportunityCategoryFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(SELECTED_POSITION, status);
+        bundle.putInt(SELECTED_POSITION, 1);
         fragment.setArguments(bundle);
         return fragment;
     }

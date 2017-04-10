@@ -1,4 +1,4 @@
-package com.tokopedia.seller.opportunity;
+package com.tokopedia.seller.opportunity.activity;
 
 import android.app.FragmentTransaction;
 import android.net.Uri;
@@ -14,7 +14,8 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
  * Created by nisie on 3/6/17.
  */
 
-public class OpportunitySortActivity extends BasePresenterActivity implements TopAdsFilterContentFragment.Callback{
+public class OpportunitySortActivity extends BasePresenterActivity
+        implements TopAdsFilterContentFragment.Callback {
 
     @Override
     protected void setupURIPass(Uri data) {
