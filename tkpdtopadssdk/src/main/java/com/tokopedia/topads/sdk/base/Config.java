@@ -6,9 +6,6 @@ package com.tokopedia.topads.sdk.base;
 
 public class Config {
 
-    public static final String TOP_ADS_BASE_URL = "https://ta.tokopedia.com/promo/v1.1/display/ads";
-    public static final String TOP_ADS_INFO_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
-
+    public static final String TOPADS_URL = "https://ta.tokopedia.com/promo/v1.1/display/ads";
     public static final int ERROR_CODE_INVALID_RESPONSE = 911;
-
 }

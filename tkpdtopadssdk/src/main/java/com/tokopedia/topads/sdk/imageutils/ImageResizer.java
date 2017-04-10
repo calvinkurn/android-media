@@ -194,7 +194,7 @@ public class ImageResizer extends ImageWorker {
             addInBitmapOptions(options, cache);
         }
         Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor, null, options);
-        if (bitmap.getWidth() > 1 && bitmap.getHeight() > 1){
+        if (bitmap!=null && bitmap.getWidth() > 1 && bitmap.getHeight() > 1){
             return bitmap;
         } else {
             return null;

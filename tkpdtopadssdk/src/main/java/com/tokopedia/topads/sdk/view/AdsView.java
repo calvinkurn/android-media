@@ -29,7 +29,7 @@ public interface AdsView {
 
     void showShop();
 
-    void switchDisplayMode();
+    void setDisplayMode(int displayMode);
 
     void loadTopAds();
 

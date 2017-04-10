@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.base.adapter.Visitable;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
@@ -24,12 +24,12 @@ import java.util.List;
  * @author by errysuprayogi on 3/29/17.
  */
 
-public class TopAdsAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class TopAdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private AdapterTypeFactory typeFactory;
 
-    public TopAdsAdapter(Context context) {
+    public TopAdsItemAdapter(Context context) {
         this.list = new ArrayList<>();
         this.typeFactory = new AdapterTypeFactory(context);
     }
@@ -66,16 +66,16 @@ public class TopAdsAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.size();
     }
 
-    public void switchDisplayMode() {
+    public void switchDisplayMode(int displayMode) {
         for (int i = 0; i < list.size(); i++) {
             Visitable visitable = list.get(i);
-            if (visitable instanceof ProductListViewModel) {
+            if(displayMode == DisplayMode.GRID && visitable instanceof ProductListViewModel){
                 list.set(i, convertToProductGridViewModel(((ProductListViewModel) list.get(i)).getData()));
-            } else if (visitable instanceof ProductGridViewModel) {
+            } else if(displayMode == DisplayMode.LIST && visitable instanceof ProductGridViewModel){
                 list.set(i, convertToProductListViewModel(((ProductGridViewModel) list.get(i)).getData()));
-            } else if (visitable instanceof ShopListViewModel) {
+            } else if(displayMode == DisplayMode.GRID && visitable instanceof ShopListViewModel){
                 list.set(i, convertToShopGridViewModel(((ShopListViewModel) list.get(i)).getData()));
-            } else if (visitable instanceof ShopGridViewModel) {
+            } else if(displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel){
                 list.set(i, convertToShopListViewModel(((ShopGridViewModel) list.get(i)).getData()));
             }
         }

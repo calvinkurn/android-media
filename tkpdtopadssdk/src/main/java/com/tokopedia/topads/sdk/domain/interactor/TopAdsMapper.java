@@ -3,12 +3,12 @@ package com.tokopedia.topads.sdk.domain.interactor;
 import android.content.Context;
 
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Mapper;
 import com.tokopedia.topads.sdk.domain.model.Status;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.network.JsonResponseConverter;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
-import com.tokopedia.topads.sdk.base.Config;
 
 import org.json.JSONObject;
 

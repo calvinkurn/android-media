@@ -20,7 +20,7 @@ import java.io.IOException;
 public class CloudTopAdsDataSource implements TopAdsDataSource {
 
     private Context context;
-    private static final String BASE_URL = Config.TOP_ADS_BASE_URL;
+    private static final String BASE_URL = Config.TOPADS_URL;
     private static final String TKPD_SESSION_ID = "Tkpd-SessionId";
 
     public CloudTopAdsDataSource(Context context) {

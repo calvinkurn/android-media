@@ -14,7 +14,11 @@ import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.imageutils.ImageWorker;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.network.HttpMethod;
+import com.tokopedia.topads.sdk.network.HttpRequest;
+import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.utils.LabelLoader;
 import com.tokopedia.topads.sdk.view.FlowLayout;
@@ -74,7 +78,6 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
         shopLocation.setText(shop.getLocation());
         shopName.setText(shop.getName());
         if(shop.getBadges() !=null){
-//            BadgeLoader.initBadge(context, badgeContainer, shop.getBadges());
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
         }
     }

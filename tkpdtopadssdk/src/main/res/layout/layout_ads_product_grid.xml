@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_product_list"
+    android:background="@drawable/bg_item_list"
     android:clickable="true"
     android:padding="5dp">
 
@@ -12,7 +12,7 @@
         android:id="@+id/image_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="3dp"
+        app:cardElevation="0dp"
         app:cardUseCompatPadding="true">
 
         <com.tokopedia.topads.sdk.view.SquareImageView

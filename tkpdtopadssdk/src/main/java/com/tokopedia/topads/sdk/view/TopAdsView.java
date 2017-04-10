@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsAdapter;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsItemAdapter;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private static final String TAG = TopAdsView.class.getSimpleName();
     private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
-    private TopAdsAdapter adapter;
+    private TopAdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private TypedArray styledAttributes;
     private int displayMode = DisplayMode.GRID; // Default Display Mode
@@ -75,7 +75,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         showLoading = styledAttributes.getBoolean(R.styleable.TopAdsView_show_loading, false);
         inflate(getContext(), R.layout.layout_ads, this);
         adsHeader = (LinearLayout) findViewById(R.id.ads_header);
-        adapter = new TopAdsAdapter(getContext());
+        adapter = new TopAdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         ImageView infoView = (ImageView) findViewById(R.id.info_topads);
         infoView.setOnClickListener(this);
@@ -151,37 +151,21 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         presenter.loadTopAds();
     }
 
+    @Override
     public void setDisplayMode(int displayMode) {
         switch (displayMode){
             case DisplayMode.GRID:
+                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 break;
             case DisplayMode.LIST:
+                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 break;
         }
         this.displayMode = displayMode;
-    }
-
-    @Override
-    public void switchDisplayMode() {
-        switch (displayMode){
-            case DisplayMode.LIST:
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
-                recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
-                        GridLayoutManager.VERTICAL, false));
-                this.displayMode = DisplayMode.GRID;
-                break;
-            case DisplayMode.GRID:
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                this.displayMode = DisplayMode.LIST;
-                break;
-        }
-        adapter.switchDisplayMode();
+        adapter.switchDisplayMode(displayMode);
     }
 
     @Override
@@ -256,9 +240,4 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         this.showLoading = showLoading;
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        presenter.detachView();
-    }
 }
