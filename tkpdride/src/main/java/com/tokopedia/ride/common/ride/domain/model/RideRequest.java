@@ -17,6 +17,7 @@ public class RideRequest implements Parcelable {
     LocationLatLng pickup;
     LocationLatLng destination;
     double surgeMultiplier;
+    boolean shared;
 
     public RideRequest() {
     }
@@ -31,6 +32,7 @@ public class RideRequest implements Parcelable {
         pickup = in.readParcelable(LocationLatLng.class.getClassLoader());
         destination = in.readParcelable(LocationLatLng.class.getClassLoader());
         surgeMultiplier = in.readDouble();
+        shared = in.readByte() != 0;
     }
 
     public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
@@ -118,6 +120,14 @@ public class RideRequest implements Parcelable {
         this.destination = destination;
     }
 
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -131,8 +141,9 @@ public class RideRequest implements Parcelable {
         parcel.writeParcelable(vehicle, i);
         parcel.writeParcelable(driver, i);
         parcel.writeParcelable(location, i);
-        parcel.writeDouble(surgeMultiplier);
         parcel.writeParcelable(pickup, i);
         parcel.writeParcelable(destination, i);
+        parcel.writeDouble(surgeMultiplier);
+        parcel.writeByte((byte) (shared ? 1 : 0));
     }
 }

@@ -38,6 +38,7 @@ public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_VEHICLE = "EXTRA_VEHICLE";
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
     private static final String EXTRA_STATUS = "EXTRA_STATUS";
+    private static final String EXTRA_SHARED = "EXTRA_SHARED";
 
     @BindView(R2.id.cab_on_trip_container)
     LinearLayout driverDetailLayoutLinearLayout;
@@ -59,6 +60,8 @@ public class DriverDetailFragment extends BaseFragment {
     RelativeLayout cancelRideLayout;
     @BindView(R2.id.tv_pool_status)
     TextView poolStatusTextView;
+    @BindView(R2.id.help_layout)
+    RelativeLayout shareRideLayout;
 
     private Driver driver;
     private Vehicle vehicle;
@@ -79,12 +82,15 @@ public class DriverDetailFragment extends BaseFragment {
         bundle.putFloat(EXTRA_TIME_EST, rideRequest.getPickup().getEta());
         bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
         bundle.putString(EXTRA_PARENT_TAG, tag);
+        bundle.putBoolean(EXTRA_SHARED, rideRequest.isShared());
         fragment.setArguments(bundle);
         return fragment;
     }
 
     public interface OnFragmentInteractionListener {
         void actionCancelRide();
+
+        void actionShareEta();
     }
 
     @Override
@@ -107,7 +113,6 @@ public class DriverDetailFragment extends BaseFragment {
     public void onAttach(Context activity) {
         super.onAttach(activity);
         String tag = getArguments().getString(EXTRA_PARENT_TAG);
-        Fragment fragment = ((Activity) activity).getFragmentManager().findFragmentByTag(tag);
         if (((Activity) activity).getFragmentManager().findFragmentByTag(tag) instanceof OnFragmentInteractionListener) {
             onFragmentInteractionListener = (OnFragmentInteractionListener) ((Activity) activity).getFragmentManager().findFragmentByTag(tag);
         } else {
@@ -155,6 +160,11 @@ public class DriverDetailFragment extends BaseFragment {
             driverEtaTextView.setVisibility(View.GONE);
         }
 
+        if (getArguments().getBoolean(EXTRA_SHARED)) {
+            shareRideLayout.setVisibility(View.VISIBLE);
+        } else {
+            shareRideLayout.setVisibility(View.GONE);
+        }
 
         Glide.with(getActivity()).load(driver.getPictureUrl())
                 .asBitmap()
@@ -187,5 +197,10 @@ public class DriverDetailFragment extends BaseFragment {
     @OnClick(R2.id.layout_cancel_ride)
     public void actionCancelRideBtnClicked() {
         onFragmentInteractionListener.actionCancelRide();
+    }
+
+    @OnClick(R2.id.help_layout)
+    public void actionShareRideBtnClicked() {
+        onFragmentInteractionListener.actionShareEta();
     }
 }

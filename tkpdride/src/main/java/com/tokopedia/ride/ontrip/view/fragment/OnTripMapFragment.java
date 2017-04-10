@@ -51,6 +51,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -63,6 +65,7 @@ import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
@@ -79,8 +82,6 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 import static com.tokopedia.ride.ontrip.view.OnTripActivity.TASK_TAG_PERIODIC;
 
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
-
-
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
@@ -678,5 +679,34 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void actionCancelRide() {
         presenter.actionCancelRide();
+    }
+
+    @Override
+    public RequestParams getShareEtaParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetRideRequestMapUseCase.PARAM_REQUEST_ID, rideConfiguration.getActiveRequest());
+        return requestParams;
+    }
+
+    @Override
+    public void actionShareEta() {
+        presenter.actionShareEta();
+    }
+
+    @Override
+    public void showFailedShare() {
+
+    }
+
+    @Override
+    public void showShareDialog(String shareUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.RIDE_TYPE)
+                .setName(getString(R.string.share_ride_description))
+                .setTextContent(getString(R.string.share_ride_description))
+                .setUri(shareUrl)
+                .build();
+        Intent shareIntent = ShareActivity.getCallingRideIntent(getActivity(), shareData);
+        startActivity(shareIntent);
     }
 }

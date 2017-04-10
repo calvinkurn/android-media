@@ -29,6 +29,7 @@ import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -52,16 +53,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
+    private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
-                              GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
+                              GetOverviewPolylineUseCase getOverviewPolylineUseCase,
+                              GetRideRequestMapUseCase getRideRequestMapUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
+        this.getRideRequestMapUseCase = getRideRequestMapUseCase;
     }
 
     @Override
@@ -349,6 +353,27 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     routes.add(PolyUtil.decode(route));
                 }
                 getView().renderTripRoute(routes);
+            }
+        });
+    }
+
+    @Override
+    public void actionShareEta() {
+        getRideRequestMapUseCase.execute(getView().getShareEtaParam(), new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().showFailedShare();
+            }
+
+            @Override
+            public void onNext(String shareUrl) {
+                getView().showShareDialog(shareUrl);
             }
         });
     }

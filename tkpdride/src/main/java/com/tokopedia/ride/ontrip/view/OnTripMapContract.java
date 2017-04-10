@@ -88,6 +88,12 @@ public interface OnTripMapContract {
         void hideAcceptedNotification(RideRequest result);
 
         void updateDriverBitmapInNotification(RemoteViews remoteView, Bitmap bitmap);
+
+        RequestParams getShareEtaParam();
+
+        void showFailedShare();
+
+        void showShareDialog(String shareUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -105,5 +111,7 @@ public interface OnTripMapContract {
         void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng);
 
         void getDriverBitmap(RemoteViews remoteView, String imgUrl);
+
+        void actionShareEta();
     }
 }

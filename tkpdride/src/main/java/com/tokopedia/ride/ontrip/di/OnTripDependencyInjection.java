@@ -29,6 +29,7 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
 import java.util.concurrent.TimeUnit;
@@ -223,8 +224,33 @@ public class OnTripDependencyInjection {
 
         CreateRideRequestUseCase createRideRequestUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
         CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
+        GetRideRequestMapUseCase getRideRequestMapUseCase = injection.provideGetRideRequestMapUseCase(token, userId);
         GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
-        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase);
+        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase);
+    }
+
+    private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId){
+        return new GetRideRequestMapUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
     }
 
     public static GetCurrentDetailRideRequestUseCase createGetDetailUseCase(Context context) {

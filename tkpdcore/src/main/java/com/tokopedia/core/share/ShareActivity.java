@@ -1,5 +1,6 @@
 package com.tokopedia.core.share;
 
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,12 @@ public class ShareActivity extends TActivity implements ShareView {
 
     public static Intent createIntent(Context context, ShareData shareData) {
         Intent intent = new Intent(context, ShareActivity.class);
+        intent.putExtra(ShareData.TAG, shareData);
+        return intent;
+    }
+
+    public static Intent getCallingRideIntent(Activity activity, ShareData shareData){
+        Intent intent = new Intent(activity, ShareActivity.class);
         intent.putExtra(ShareData.TAG, shareData);
         return intent;
     }

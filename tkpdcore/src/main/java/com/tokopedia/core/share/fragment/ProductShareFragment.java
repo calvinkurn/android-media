@@ -199,6 +199,9 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
                     case ShareData.PRODUCT_TYPE:
                         tvTitle.setText("Bagikan Produk Ini!");
                         break;
+                    case ShareData.RIDE_TYPE:
+                        tvTitle.setText("Bagikan Perjalanan Ini!");
+                        break;
                 }
             }
         }

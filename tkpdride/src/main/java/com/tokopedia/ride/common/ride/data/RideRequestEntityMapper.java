@@ -32,7 +32,7 @@ public class RideRequestEntityMapper {
             rideRequest.setRequestId(entity.getRequestId());
             rideRequest.setPickup(transform(entity.getPickupd()));
             rideRequest.setDestination(transform(entity.getDestination()));
-
+            rideRequest.setShared(entity.isShared());
         }
         return rideRequest;
     }

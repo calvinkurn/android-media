@@ -7,6 +7,7 @@ import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
 
@@ -34,4 +35,6 @@ public interface BookingRideDataStore {
     Observable<ReceiptEntity> getReceipt(TKPDMapParam<String, Object> param);
 
     Observable<PromoEntity> getPromo(TKPDMapParam<String, Object> param);
+
+    Observable<RideRequestMapEntity> getRideMap(String requestId, TKPDMapParam<String, Object> parameters);
 }

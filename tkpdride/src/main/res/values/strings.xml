@@ -24,4 +24,5 @@
     <string name="notification_title_finding_uber">Finding your Uber</string>
     <string name="accepted_push_message">%1$s (%2$s stars) will pick you up in 6 minutes.</string>
     <string name="accepted_push_title">Ride Accepted</string>
+    <string name="share_ride_description">Klik link ini untuk menemukan perjalanan anda dari Tokopedia.</string>
 </resources>
