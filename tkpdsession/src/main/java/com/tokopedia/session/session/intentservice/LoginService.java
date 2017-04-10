@@ -326,9 +326,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 .doOnNext(new Action1<AccountsParameter>() {
                     @Override
                     public void call(AccountsParameter accountsParameter) {
-                        sessionHandler.setWalletRefreshToken(
-                                accountsParameter.getInfoModel().getWalletRefreshToken()
-                        );
+                        if (accountsParameter.getErrorModel() == null)
+                            sessionHandler.setWalletRefreshToken(
+                                    accountsParameter.getInfoModel().getWalletRefreshToken()
+                            );
                     }
                 })
                 .flatMap(new Func1<AccountsParameter, Observable<AccountsParameter>>() {
@@ -387,9 +388,9 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 AccountsModel accountsModel = accountsParameter.getAccountsModel();
                                 setLoginSession(accountsModel);
                                 SessionHandler.setPhoneNumber(accountsParameter.getInfoModel().getPhone());
-                                result.putString(AppEventTracking.USER_ID_KEY,accountsModel.getUserId() + "");
-                                result.putString(AppEventTracking.FULLNAME_KEY,accountsModel.getFullName());
-                                result.putString(AppEventTracking.EMAIL_KEY,accountsParameter.getEmail());
+                                result.putString(AppEventTracking.USER_ID_KEY, accountsModel.getUserId() + "");
+                                result.putString(AppEventTracking.FULLNAME_KEY, accountsModel.getFullName());
+                                result.putString(AppEventTracking.EMAIL_KEY, accountsParameter.getEmail());
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
                                 sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
 
