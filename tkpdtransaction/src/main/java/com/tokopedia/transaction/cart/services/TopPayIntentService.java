@@ -3,7 +3,6 @@ package com.tokopedia.transaction.cart.services;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;

@@ -50,6 +50,8 @@
         <item>Wanita</item>
     </string-array>
 
+    <string name="title_activity_reputation_">Reputasi Toko</string>
+
     <string name="try_again">COBA KEMBALI</string>
     <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
     <string name="message_exception_description">Terjadi kesalahan koneksi.\nSilahkan coba kembali"</string>
@@ -269,6 +271,18 @@
     <string name="top_ads_promoted_message">Produk yang sudah dipromo  tidak \ndapat dipilih</string>
     <string name="promoted">Promoted</string>
     <string name="next">Selanjutnya</string>
+    <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
+
+    <!-- reputation history -->
+    <string name="your_shop_reputation">Reputasi Toko Anda</string>
+    <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
+    <string name="perhitungan_poin_reputasi">Perhitungan Poin Reputasi</string>
+    <string name="point"> poin</string>
+    <string name="reputation_history_label_good_job">Tidak ada penalti pada periode ini</string>
+    <string name="reputation_history_label_info_no_penalty">Ubah tanggal untuk melihat penalti pada periode sebelumnya.</string>
+    <string name="reputation_history_label_change_date">Ubah Tanggal</string>
+    <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
+    <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
 
     <!-- Product -->
     <string name="product_label_product_info">Info Produk</string>

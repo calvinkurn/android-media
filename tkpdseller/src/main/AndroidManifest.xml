@@ -210,6 +210,16 @@
             android:label="@string/title_activity_catalog_picker"
             android:exported="true"/>
 
+        <activity
+            android:name=".reputation.view.activity.SellerReputationActivity"
+            android:label="@string/title_activity_reputation"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".reputation.view.activity.SellerReputationInfoActivity"
+            android:label="@string/reputation_point_calculation"
+            android:theme="@style/AppTheme" />
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false" />

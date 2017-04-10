@@ -28,6 +28,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
@@ -47,7 +49,6 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
-import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -60,10 +61,9 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 
 import org.parceler.Parcels;
 
@@ -101,7 +101,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public ProductAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
         Log.d(TAG, "ProductAdapter data " + data.size());
-        if (context !=null && context instanceof BrowseProductActivity) {
+        if (context != null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
             switch (activity.getBrowseProductActivityModel().getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
@@ -383,8 +383,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             final Context context = itemView.getContext();
             BucketListImageScroll bucketListImageScroll = new BucketListImageScroll(context);
             bucketListImageScroll.setContain(horizontalProductList);
-            if (context != null && context instanceof DiscoveryActivityPresenter) {
-                String adSrc = ((DiscoveryActivityPresenter) context).getBrowseProductActivityModel().getAdSrc();
+            if (context != null && context instanceof BrowseView) {
+                String adSrc = ((BrowseView) context).getBrowseProductActivityModel().getAdSrc();
                 bucketListImageScroll.setAdSrc(adSrc);
             } else {
                 bucketListImageScroll.setAdSrc(TopAdsApi.SRC_BROWSE_PRODUCT);
@@ -885,8 +885,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         LinearLayout badgesContainer;
 
         private Context context;
-        private String source="";
-        private String categoryId="";
+        private String source = "";
+        private String categoryId = "";
         private ProductItem data;
 
         public ViewHolderProductitem(Context context, View itemView, String source, String categoryId) {

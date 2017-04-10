@@ -101,6 +101,13 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
         fragmentManager = getSupportFragmentManager();
         dynamicFilterPresenter = new DynamicFilterPresenterImpl(this);
         dynamicFilterPresenter.fetchExtras(getIntent());
+        if (selectedPositions.isEmpty()) {
+            setCurrentSelectedCategoryAsChecked();
+        }
+    }
+
+    private void setCurrentSelectedCategoryAsChecked() {
+        selectedPositions.put(dynamicFilterPresenter.getDepartmentId(), true);
     }
 
     @Override
@@ -292,7 +299,8 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
     public static void moveTo(FragmentActivity fragmentActivity, Map<String, String> filterList,
                               List<Breadcrumb> productBreadCrumbList,
                               List<Filter> filterCategoryList,
-                              String currentCategory, String source) {
+                              String currentCategory, String source,
+                              String departmentId) {
         if (fragmentActivity != null) {
             Intent intent = new Intent(fragmentActivity, DynamicFilterActivity.class);
             intent.putExtra(DynamicFilterView.EXTRA_FILTERS, Parcels.wrap(filterList));
@@ -300,6 +308,7 @@ public class DynamicFilterActivity extends AppCompatActivity implements DynamicF
             intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_CATEGORY_LIST, Parcels.wrap(filterCategoryList));
             intent.putExtra(DynamicFilterPresenter.EXTRA_FILTER_SOURCE, source);
             intent.putExtra(DynamicFilterPresenter.EXTRA_CURRENT_CATEGORY, currentCategory);
+            intent.putExtra(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID, departmentId);
             fragmentActivity.startActivityForResult(intent, REQUEST_CODE);
             fragmentActivity.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
         }

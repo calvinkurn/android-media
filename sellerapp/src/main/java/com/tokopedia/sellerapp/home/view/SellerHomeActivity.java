@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -70,13 +69,16 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -94,13 +96,11 @@ import com.tokopedia.sellerapp.home.model.notification.Notification;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingData;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingList;
 import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
-import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
 import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
 import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
@@ -134,7 +134,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     LinearLayout announcementTicker;
 
     @BindView(R.id.seller_home_transaction_view)
-    TransactionView3 sellerHomeTransactionView;
+    TransactionView sellerHomeTransactionView;
 
     @BindView(R.id.activity_seller_home)
     CoordinatorLayout activitySellerHome;
@@ -251,6 +251,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     public void goToGoldMerchant(){
 //        Toast.makeText(this, "Please implement !!!", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, GMSubscribeActivity.class));
+    }
+
+    @OnClick(R.id.seller_home_reputation_view)
+    public void goToSellerReputationHistory(){
+        Intent intent = new Intent(this, InboxReputationActivity.class);
+        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+        startActivity(intent);
     }
 
     @Override

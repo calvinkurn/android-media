@@ -23,14 +23,15 @@
             android:layout_centerVertical="true"
             android:src="@drawable/ic_calendar_grey"/>
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/arrow_left"
             android:layout_width="@dimen/topads_arrow_left_width"
             android:layout_height="@dimen/topads_arrow_left_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/arrow_left"/>
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_arrow_right"/>
 
         <TextView
             android:id="@+id/text_view_range_date"

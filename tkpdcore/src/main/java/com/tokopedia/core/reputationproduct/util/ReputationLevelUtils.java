@@ -53,9 +53,6 @@ public class ReputationLevelUtils {
         for( int i = 1 ; i <= levelMedal ; i++){
             View medal = createMedal(context, medalType);
             layout.addView(medal);
-            if(i == levelMedal) {
-                layout.setOnClickListener(onReputationClick(context, reputationPoints, medal));
-            }
         }
     }
 
@@ -77,28 +74,5 @@ public class ReputationLevelUtils {
         medal.setLayoutParams(param);
         medal.setImageResource(medalType);
         return medal;
-    }
-
-    private static View.OnClickListener onReputationClick(final Context context, final String reputationPoint, final View anchor){
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                View popup = View.inflate(context, R.layout.popup_reputation, null);
-                TextView point = (TextView)popup.findViewById(R.id.point);
-                point.setText(reputationPoint + " Poin");
-                final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                popWindow.setOutsideTouchable(true);
-                popWindow.setFocusable(false);
-                popWindow.showAsDropDown(v);
-                popWindow.setTouchInterceptor(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        popWindow.dismiss();
-                        return true;
-                    }
-                });
-            }
-        };
     }
 }
