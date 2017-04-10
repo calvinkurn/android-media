@@ -100,8 +100,6 @@ public interface OnTripMapContract {
 
         void initialize();
 
-        void goToMyLocation();
-
         void actionCancelRide();
 
         void actionRetryRideRequest(String id);

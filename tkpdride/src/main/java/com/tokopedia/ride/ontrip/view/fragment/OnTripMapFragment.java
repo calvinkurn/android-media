@@ -28,7 +28,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
@@ -108,8 +107,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     TextView tvDestination;
     @BindView(R2.id.layout_src_destination)
     View mSrcDestLayout;
-    @BindView(R2.id.iv_my_location_button)
-    ImageView myLocationButton;
     @BindView(R2.id.layout_loader)
     LinearLayout loaderLayout;
     @BindView(R2.id.cab_processing_layout)
@@ -206,7 +203,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void onStop() {
-        System.out.println("Vishal OnStop");
         super.onStop();
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
         manager.unregisterReceiver(mReceiver);
@@ -324,11 +320,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             );
         }
 
-    }
-
-    @OnClick(R2.id.iv_my_location_button)
-    public void actionMyLocationButtonClicked() {
-        presenter.goToMyLocation();
     }
 
     @OnClick(R2.id.cabs_processing_cancel_button)
