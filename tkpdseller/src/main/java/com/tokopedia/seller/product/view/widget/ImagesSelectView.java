@@ -33,6 +33,13 @@ public class ImagesSelectView extends FrameLayout {
     private int imageLimit;
     private String titleString;
 
+    OnCheckResolutionListener onCheckResolutionListener;
+
+    public interface OnCheckResolutionListener {
+        boolean isResolutionCorrect (String uri);
+        void resolutionCheckFailed(List<String> imagesStringList);
+    }
+
     public ImagesSelectView(Context context) {
         super(context);
         init();
@@ -98,11 +105,45 @@ public class ImagesSelectView extends FrameLayout {
         imageSelectorAdapter.setOnImageSelectionListener(listener);
     }
 
+    public void setOnCheckResolutionListener(OnCheckResolutionListener listener) {
+        this.onCheckResolutionListener = listener;
+    }
+
+    public void addImageString(String imageUrl){
+        if (successHandleResolution(imageUrl)){
+            imageSelectorAdapter.addImage(new ImageSelectModel(imageUrl));
+        }
+
+    }
+
+    public boolean successHandleResolution (String imageUrl){
+        if (onCheckResolutionListener == null ||
+            onCheckResolutionListener.isResolutionCorrect(imageUrl)){
+            return true;
+        }
+        else { // resolution is not correct
+            List<String>resolutionFailedString = new ArrayList<>();
+            resolutionFailedString.add(imageUrl);
+            onCheckResolutionListener.resolutionCheckFailed(resolutionFailedString);
+            return false;
+        }
+    }
+
     public void addImage(ImageSelectModel imageSelectModel){
-        imageSelectorAdapter.addImage(imageSelectModel);
+        if (successHandleResolution(imageSelectModel.getUri())){
+            imageSelectorAdapter.addImage(imageSelectModel);
+        }
     }
 
     public void addImages(List<ImageSelectModel> imageSelectModelList){
+        imageSelectorAdapter.addImages(imageSelectModelList);
+    }
+
+    public void addImagesString(List<String> imageStringList){
+        List<ImageSelectModel> imageSelectModelList = new ArrayList<>();
+        for (int i=0, sizei = imageStringList.size(); i<sizei; i++) {
+            imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+        }
         imageSelectorAdapter.addImages(imageSelectModelList);
     }
 
@@ -161,5 +202,7 @@ public class ImagesSelectView extends FrameLayout {
         imageSelectorAdapter.removeSelected(position);
     }
 
-
+    public int getRemainingEmptySlot() {
+        return imageLimit - imageSelectorAdapter.getImageSelectModelList().size();
+    }
 }

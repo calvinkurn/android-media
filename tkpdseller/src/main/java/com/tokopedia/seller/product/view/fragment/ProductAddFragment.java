@@ -4,18 +4,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,28 +49,35 @@ public class ProductAddFragment extends BaseDaggerFragment
 
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
-            public void onAddClick() {
-                // TODO show imagepicker to add images
-                // This is just to test
-                List<ImageSelectModel> imageSelectModelListToAdd = new ArrayList<>();
-                imageSelectModelListToAdd.add(
-                        new ImageSelectModel("https://upload.wikimedia.org/wikipedia/commons/4/4d/Nuvola_apps_kview.png",
-                                null, false));
-                imageSelectModelListToAdd.add(
-                        new ImageSelectModel("https://maxcdn.icons8.com/Share/icon/Logos//google_logo1600.png",
-                                null, false));
-                imagesSelectView.addImages(imageSelectModelListToAdd);
+            public void onAddClick(int position) {
+                int remainingEmptySlot = imagesSelectView.getRemainingEmptySlot();
+                GalleryActivity.moveToImageGallery(
+                        (AppCompatActivity) getActivity(), position, remainingEmptySlot);
             }
 
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
-                // TODO on item clicked
-                // show dialog to edit/change desc, make primary, remove
                 showEditImageDialog(getActivity().getSupportFragmentManager(), position,
                         imageSelectModel.isPrimary(), ProductAddFragment.this);
             }
         });
         return view;
+    }
+
+    // triggered after onActivityResult from activity
+    public void imageResultFromGallery(String imageUrl, int position) {
+        // if add image on the selected, it means "change", else "add"
+        if (position == imagesSelectView.getSelectedImageIndex()) {
+            imagesSelectView.changeImagePath(imageUrl);
+        }
+        else {
+            imagesSelectView.addImageString(imageUrl);
+        }
+    }
+
+    // triggered after onActivityResult from activity
+    public void imagesResultFromGallery(List<String> imageUrls, int position) {
+        imagesSelectView.addImagesString(imageUrls);
     }
 
 
@@ -92,17 +100,15 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     @Override
     public void clickEditImagePath(int position) {
-        // TODO open image picker to get image to change
-        // TODO test, remov below
-        imagesSelectView.changeImagePath(
-                    "https://maxcdn.icons8.com/Share/icon/Logos//google_logo1600.png");
+        GalleryActivity.moveToImageGallery(
+                (AppCompatActivity) getActivity(), position, 1 );
     }
 
     @Override
     public void clickEditImageDesc(int position) {
         // TODO open dialog to show new description
         imagesSelectView.changeImageDesc(
-                "Llllalala");
+                "New Description Here");
     }
 
     @Override

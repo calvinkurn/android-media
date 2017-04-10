@@ -51,7 +51,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     }
 
     public interface OnImageSelectionListener {
-        void onAddClick();
+        void onAddClick(int position);
 
         void onItemClick(int position, ImageSelectModel imageSelectModel);
     }
@@ -158,6 +158,10 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         return imageSelectModelList.size() + ((imageSelectModelList.size() < limit) ? 1 : 0);
     }
 
+    public List<ImageSelectModel> getImageSelectModelList() {
+        return imageSelectModelList;
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (position == imageSelectModelList.size()) {
@@ -188,14 +192,14 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         @Override
         public void onClick(View v) {
+            int position = getAdapterPosition();
             switch (getItemViewType()) {
                 case VIEW_TYPE_ADD:
                     if (onImageSelectionListener != null) {
-                        onImageSelectionListener.onAddClick();
+                        onImageSelectionListener.onAddClick(position);
                     }
                     break;
                 case VIEW_TYPE_ITEM:
-                    int position = getAdapterPosition();
                     currentSelectedIndex = position;
                     if (onImageSelectionListener != null) {
                         onImageSelectionListener.onItemClick(position,
