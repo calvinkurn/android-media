@@ -218,7 +218,7 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                 .map(new Func1<Bundle, Boolean>() {
                     @Override
                     public Boolean call(Bundle data) {
-                        Localytics.handlePushNotificationReceived(data);
+                        Localytics.tagPushReceivedEvent(data);
                         return null;
                     }
                 });
