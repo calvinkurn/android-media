@@ -1,13 +1,16 @@
 package com.tokopedia.ride.ontrip.view.fragment;
 
 
-import android.Manifest;
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
@@ -28,13 +31,9 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DriverDetailFragment extends BaseFragment {
+    private static final String EXTRA_PARENT_TAG = "EXTRA_PARENT_TAG";
     private static final String EXTRA_DRIVER = "EXTRA_DRIVER";
     private static final String EXTRA_VEHICLE = "EXTRA_VEHICLE";
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
@@ -66,24 +65,66 @@ public class DriverDetailFragment extends BaseFragment {
     private int eta;
     private String status;
 
+    private OnFragmentInteractionListener onFragmentInteractionListener;
+
     public DriverDetailFragment() {
         // Required empty public constructor
     }
 
-    public static DriverDetailFragment newInstance(RideRequest rideRequest) {
+    public static DriverDetailFragment newInstance(RideRequest rideRequest, String tag) {
         DriverDetailFragment fragment = new DriverDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_DRIVER, rideRequest.getDriver());
         bundle.putParcelable(EXTRA_VEHICLE, rideRequest.getVehicle());
         bundle.putFloat(EXTRA_TIME_EST, rideRequest.getPickup().getEta());
         bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
+        bundle.putString(EXTRA_PARENT_TAG, tag);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionCancelRide();
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_driver_detail;
+    }
+
+//    private void setInitialVariable() {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            Fragment getParentFragment = getParentFragment();
+//            if (getParentFragment() instanceof OnFragmentInteractionListener) {
+//                onFragmentInteractionListener = (OnFragmentInteractionListener) getParentFragment();
+//            } else {
+//                throw new RuntimeException("must implement OnFragmentInteractionListener");
+//            }
+//        }
+//    }
+
+    @Override
+    public void onAttach(Context activity) {
+        super.onAttach(activity);
+        String tag = getArguments().getString(EXTRA_PARENT_TAG);
+        Fragment fragment = ((Activity) activity).getFragmentManager().findFragmentByTag(tag);
+        if (((Activity) activity).getFragmentManager().findFragmentByTag(tag) instanceof OnFragmentInteractionListener) {
+            onFragmentInteractionListener = (OnFragmentInteractionListener) ((Activity) activity).getFragmentManager().findFragmentByTag(tag);
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        String tag = getArguments().getString(EXTRA_PARENT_TAG);
+        Fragment fragment = activity.getFragmentManager().findFragmentByTag(tag);
+        if (activity.getFragmentManager().findFragmentByTag(tag) instanceof OnFragmentInteractionListener) {
+            onFragmentInteractionListener = (OnFragmentInteractionListener) activity.getFragmentManager().findFragmentByTag(tag);
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -141,5 +182,10 @@ public class DriverDetailFragment extends BaseFragment {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:" + driver.getPhoneNumber()));
         startActivity(callIntent);
+    }
+
+    @OnClick(R2.id.layout_cancel_ride)
+    public void actionCancelRideBtnClicked() {
+        onFragmentInteractionListener.actionCancelRide();
     }
 }
