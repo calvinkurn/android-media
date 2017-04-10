@@ -56,16 +56,12 @@ interface FavoriteContract {
 
         void validateMessageError();
 
-        void showTopAdsProductError();
-
-
+        void showErrorAddFavoriteShop();
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void loadInitialData();
-
-        void loadDataTopAdsShop();
 
         void addFavoriteShop(android.view.View view, TopAdsShopItem shopItem);
 

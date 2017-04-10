@@ -89,13 +89,6 @@ public class FavoritePresenter
     }
 
     @Override
-    public void loadDataTopAdsShop() {
-        RequestParams defaultParams = GetTopAdsShopUseCase.defaultParams();
-        defaultParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
-        getTopAdsShopUseCase.execute(defaultParams, new TopAdsShopSubscriber());
-    }
-
-    @Override
     public void addFavoriteShop(View view, TopAdsShopItem shopItem) {
         RequestParams params = RequestParams.create();
         params.putString(AddFavoriteShopUseCase.KEY_AD, shopItem.getAdKey());
@@ -146,7 +139,6 @@ public class FavoritePresenter
 
     }
 
-
     private void validateWishlistErrorNetwork(DomainWishlist domainWishlist) {
         if (domainWishlist.isNetworkError()) {
             getView().showWishlistFailedMessage();
@@ -154,68 +146,6 @@ public class FavoritePresenter
             getView().dismissWishlistFailedMessage();
         }
 
-    }
-
-    private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
-
-        private final View view;
-        private TopAdsShopItem shopItem;
-
-        AddFavoriteShopSubscriber(View view, TopAdsShopItem shopItem) {
-            this.view = view;
-            this.shopItem = shopItem;
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-        }
-
-        @Override
-        public void onNext(FavShop favShop) {
-            view.clearAnimation();
-            if (favShop.isValid()) {
-                FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
-                favoriteShopViewModel.setShopId(shopItem.getShopId());
-                favoriteShopViewModel.setShopName(shopItem.getShopName());
-                favoriteShopViewModel.setShopAvatarImageUrl(shopItem.getShopImageUrl());
-                favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
-                favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
-                getView().addFavoriteShop(favoriteShopViewModel);
-            }
-        }
-    }
-
-
-    private class TopAdsShopSubscriber extends Subscriber<TopAdsShop> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-            getView().showTopAdsProductError();
-        }
-
-        @Override
-        public void onNext(TopAdsShop topAdsShop) {
-            validateNetworkTopAdsShop(topAdsShop);
-            if (isTopAdsShopListNotEmpty(topAdsShop)) {
-                getView().addTopAdsShop(favoriteMapper.prepareDataTopAdsShop(topAdsShop));
-            }
-        }
-
-        private boolean isTopAdsShopListNotEmpty(TopAdsShop topAdsShop) {
-            return topAdsShop.getTopAdsShopItemList() != null
-                    && topAdsShop.getTopAdsShopItemList().size() > 0;
-        }
     }
 
     private void validateNetworkTopAdsShop(TopAdsShop topAdsShop) {
@@ -352,7 +282,6 @@ public class FavoritePresenter
         }
     }
 
-
     private class LoadMoreSubscriber extends Subscriber<FavoriteShop> {
 
         @Override
@@ -375,5 +304,41 @@ public class FavoritePresenter
             }
         }
 
+    }
+
+    private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
+
+        private final View view;
+        private TopAdsShopItem shopItem;
+
+        AddFavoriteShopSubscriber(View view, TopAdsShopItem shopItem) {
+            this.view = view;
+            this.shopItem = shopItem;
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+            getView().showErrorAddFavoriteShop();
+        }
+
+        @Override
+        public void onNext(FavShop favShop) {
+            view.clearAnimation();
+            if (favShop.isValid()) {
+                FavoriteShopViewModel favoriteShopViewModel = new FavoriteShopViewModel();
+                favoriteShopViewModel.setShopId(shopItem.getShopId());
+                favoriteShopViewModel.setShopName(shopItem.getShopName());
+                favoriteShopViewModel.setShopAvatarImageUrl(shopItem.getShopImageUrl());
+                favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
+                favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
+                getView().addFavoriteShop(favoriteShopViewModel);
+            }
+        }
     }
 }

@@ -19,6 +19,7 @@ import retrofit2.Response;
  * @author Kulomady on 1/19/17.
  */
 public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, FavoriteShop> {
+    public static final String IS_SHOP_FAVORITE = "1";
     private final String defaultErrorMessage;
     private final String emptyErrorMessage;
     private final String successMessage;
@@ -80,7 +81,7 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
             favoriteShopItem.setCoverUri(shopItem.coverUri);
             favoriteShopItem.setIconUri(shopItem.iconUri);
             favoriteShopItem.setId(shopItem.id);
-            favoriteShopItem.setIsFav("1".equals(shopItem.isFav));
+            favoriteShopItem.setIsFav(IS_SHOP_FAVORITE.equals(shopItem.isFav));
             favoriteShopItem.setLocation(shopItem.location);
             favoriteShopItem.setShopClickUrl(shopItem.shopClickUrl);
             favoriteShopItem.setName(shopItem.name);

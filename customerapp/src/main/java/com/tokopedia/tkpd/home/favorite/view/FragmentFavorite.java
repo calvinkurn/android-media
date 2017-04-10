@@ -73,6 +73,8 @@ public class FragmentFavorite extends BaseDaggerFragment
     private boolean isWishlistNetworkFailed;
     private boolean isFavoriteShopNetworkFailed;
     private boolean isTopAdsShopNetworkFailed;
+    private View favoriteShopViewSelected;
+    private TopAdsShopItem shopItemSelected;
 
 
     @Override
@@ -89,7 +91,6 @@ public class FragmentFavorite extends BaseDaggerFragment
         unbinder = ButterKnife.bind(this, parentView);
         prepareView();
         favoritePresenter.attachView(this);
-//        favoritePresenter.loadInitialData();
         checkImpressionOncreate();
         return parentView;
     }
@@ -158,15 +159,19 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void showTopAdsProductError() {
-        if (favoriteAdapter.getItemCount() > 0) {
-            isTopAdsShopNetworkFailed = true;
-            validateMessageError();
-        } else {
-            isTopAdsShopNetworkFailed = false;
-            showErrorLoadData();
-        }
+    public void showErrorAddFavoriteShop() {
+        NetworkErrorHelper.createSnackbarWithAction(
+                getActivity(),
+                new NetworkErrorHelper.RetryClickedListener() {
 
+                    @Override
+                    public void onRetryClicked() {
+                        if (favoriteShopViewSelected != null && shopItemSelected != null) {
+                            favoritePresenter
+                                    .addFavoriteShop(favoriteShopViewSelected, shopItemSelected);
+                        }
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override
@@ -325,8 +330,10 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void onFavoriteShopClicked(View view, TopAdsShopItem shopItem) {
-        favoritePresenter.addFavoriteShop(view, shopItem);
+    public void onFavoriteShopClicked(View view, TopAdsShopItem shopItemSelected) {
+        favoriteShopViewSelected = view;
+        this.shopItemSelected = shopItemSelected;
+        favoritePresenter.addFavoriteShop(favoriteShopViewSelected, this.shopItemSelected);
     }
 
     private void prepareView() {
@@ -373,11 +380,12 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     private void checkImpressionOncreate() {
+        final int indexTabFavorite = 2;
         if (getActivity() instanceof ParentIndexHome) {
             if (((ParentIndexHome) getActivity()).getViewPager() != null) {
                 if (!isAdapterNotEmpty()
                         && ((ParentIndexHome) getActivity())
-                        .getViewPager().getCurrentItem() == 2) {
+                        .getViewPager().getCurrentItem() == indexTabFavorite) {
 
                     favoritePresenter.loadInitialData();
                 }

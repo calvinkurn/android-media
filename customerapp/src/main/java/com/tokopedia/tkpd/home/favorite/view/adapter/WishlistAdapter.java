@@ -16,6 +16,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistItem;
 
@@ -58,7 +59,8 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        if (data.size() > 4) return 4;
+        final int maxWishlistInAdapter = 4;
+        if (data.size() > maxWishlistInAdapter) return maxWishlistInAdapter;
         else return data.size();
     }
 
@@ -71,7 +73,7 @@ public class WishlistAdapter extends RecyclerView.Adapter<WishlistAdapter.ViewHo
                 Context context = view.getContext();
                 Bundle bundle = new Bundle();
                 Intent intent = new Intent(context, ProductInfoActivity.class);
-                bundle.putString("product_id", item.getProductId());
+                bundle.putString(ProductDetailRouter.EXTRA_PRODUCT_ID, item.getProductId());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }

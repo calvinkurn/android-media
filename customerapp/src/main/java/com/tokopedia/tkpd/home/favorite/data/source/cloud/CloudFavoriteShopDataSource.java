@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.home.favorite.data.source.cloud;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.ServiceV4;
+import com.tokopedia.core.base.utils.HttpResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -37,12 +39,22 @@ public class CloudFavoriteShopDataSource {
         TKPDMapParam<String, String> paramWithAuth = AuthUtil.generateParamsNetwork(context, param);
         if (isMustSaveToCache) {
             return serviceV4.getFavoriteShop(paramWithAuth)
-                    .doOnNext(validateError())
+                    .doOnNext(validateResponse())
                     .map(new FavoriteShopMapper(context, gson));
         } else {
             return serviceV4.getFavoriteShop(paramWithAuth)
                     .map(new FavoriteShopMapper(context, gson));
         }
+    }
+
+    @NonNull
+    private Action1<Response<String>> validateResponse() {
+        return HttpResponseValidator.validate(new HttpResponseValidator.HttpValidationListener() {
+            @Override
+            public void OnPassValidation(Response<String> response) {
+                saveResponseToCache(response);
+            }
+        });
     }
 
     public Observable<FavShop> postFavoriteShop(TKPDMapParam<String, String> param) {
@@ -59,21 +71,6 @@ public class CloudFavoriteShopDataSource {
                 .setCacheDuration(tenMinute)
                 .setValue(response.body())
                 .store();
-    }
-
-    private Action1<Response<String>> validateError() {
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> stringResponse) {
-                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
-                    throw new RuntimeException("Server Error!");
-                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
-                    throw new RuntimeException("Client Error!");
-                } else {
-                    saveResponseToCache(stringResponse);
-                }
-            }
-        };
     }
 
 }

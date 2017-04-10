@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.base.utils.HttpResponseValidator;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.var.TkpdCache;
@@ -12,7 +13,6 @@ import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -31,24 +31,14 @@ public class CloudWishlistDataStore {
 
     public Observable<DomainWishlist> getWishlist(String userId, TKPDMapParam<String, Object> param) {
         return mojitoService.getWishlist(userId, param)
-                .doOnNext(validateError())
+                .doOnNext(HttpResponseValidator
+                        .validate(new HttpResponseValidator.HttpValidationListener() {
+                            @Override
+                            public void OnPassValidation(Response<String> response) {
+                                saveResponseToCache(response);
+                            }
+                        }))
                 .map(new WishlistMapper(context, gson));
-    }
-
-
-    private Action1<Response<String>> validateError() {
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> stringResponse) {
-                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
-                    throw new RuntimeException("Server Error!");
-                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
-                    throw new RuntimeException("Client Error!");
-                } else {
-                    saveResponseToCache(stringResponse);
-                }
-            }
-        };
     }
 
     private void saveResponseToCache(Response<String> response) {
