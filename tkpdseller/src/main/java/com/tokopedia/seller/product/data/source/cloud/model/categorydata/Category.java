@@ -19,6 +19,9 @@ public class Category {
     @SerializedName("identifier")
     @Expose
     private String identifier;
+    @SerializedName("weight")
+    @Expose
+    private int weight;
     @SerializedName("parent")
     @Expose
     private Integer parent;
@@ -65,6 +68,14 @@ public class Category {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public Integer getParent() {

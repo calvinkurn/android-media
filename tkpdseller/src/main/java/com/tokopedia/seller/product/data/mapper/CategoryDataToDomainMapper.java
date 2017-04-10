@@ -16,23 +16,24 @@ public class CategoryDataToDomainMapper implements Func1<List<CategoryDataBase>,
     @Override
     public List<CategoryDomainModel> call(List<CategoryDataBase> categoryDataBases) {
 
-        return mapDomainModels(categoryDataBases, -1);
+        return mapDomainModels(categoryDataBases);
     }
 
-    private List<CategoryDomainModel> mapDomainModels(List<CategoryDataBase> categoryDataBases, int parent) {
+    public static List<CategoryDomainModel> mapDomainModels(List<CategoryDataBase> categoryDataBases) {
         List<CategoryDomainModel> domainModels = new ArrayList<>();
         for (CategoryDataBase categoryDataBase : categoryDataBases) {
-            if (categoryDataBase.getParentId() == parent){
-                CategoryDomainModel domainModel = new CategoryDomainModel();
-                domainModel.setName(categoryDataBase.getName());
-                domainModel.setId(categoryDataBase.getId());
-                domainModel.setIdentifier(categoryDataBase.getIdentifier());
-                domainModel.setChild(mapDomainModels(categoryDataBases, categoryDataBase.getId()));
-                domainModels.add(domainModel);
-            }
-
+            domainModels.add(mapDomainModel(categoryDataBase));
         }
         return domainModels;
+    }
+
+    private static CategoryDomainModel mapDomainModel(CategoryDataBase categoryDataBase) {
+        CategoryDomainModel domainModel = new CategoryDomainModel();
+        domainModel.setName(categoryDataBase.getName());
+        domainModel.setId(categoryDataBase.getId());
+        domainModel.setIdentifier(categoryDataBase.getIdentifier());
+        domainModel.setHasChild(categoryDataBase.isHasChild());
+        return domainModel;
     }
 
 }

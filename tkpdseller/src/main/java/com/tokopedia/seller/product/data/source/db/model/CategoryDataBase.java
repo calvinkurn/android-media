@@ -12,6 +12,8 @@ import com.tokopedia.seller.database.TkpdSellerDatabase;
  */
 @Table(database = TkpdSellerDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class CategoryDataBase extends BaseModel{
+    public static final int LEVEL_ONE_PARENT = -1;
+
     @PrimaryKey
     @Column
     private int id;
@@ -27,6 +29,9 @@ public class CategoryDataBase extends BaseModel{
 
     @Column
     private int parentId;
+
+    @Column
+    private boolean hasChild;
 
     public int getId() {
         return id;
@@ -66,5 +71,13 @@ public class CategoryDataBase extends BaseModel{
 
     public void setParentId(int parentId) {
         this.parentId = parentId;
+    }
+
+    public boolean isHasChild() {
+        return hasChild;
+    }
+
+    public void setHasChild(boolean hasChild) {
+        this.hasChild = hasChild;
     }
 }

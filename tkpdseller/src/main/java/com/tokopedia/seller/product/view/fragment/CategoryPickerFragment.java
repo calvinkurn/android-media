@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
-import com.tokopedia.seller.product.view.adapter.CategoryPickerAdapter;
+import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
+import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapterListener;
+import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
 
@@ -27,22 +29,26 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerFragment extends BaseDaggerFragment implements CategoryPickerView{
+public class CategoryPickerFragment
+        extends BaseDaggerFragment
+        implements CategoryPickerView, CategoryPickerLevelAdapterListener {
     public static final String TAG = "CategoryPickerFragment";
+    public static final int INIT_UNSELECTED = -1;
+    public static final String INIT_SELECTED = "INIT_SELECTED";
 
     @Inject
     CategoryPickerPresenter presenter;
 
-    private CategoryPickerAdapter adapter;
+    private CategoryPickerLevelAdapter adapter;
+    private CategoryPickerFragmentListener listener;
+    private int initSelected;
 
-    public static CategoryPickerFragment createInstance() {
-        return new CategoryPickerFragment();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    public static CategoryPickerFragment createInstance(int currentSelected) {
+        CategoryPickerFragment categoryPickerFragment = new CategoryPickerFragment();
+        Bundle args = new Bundle();
+        args.putInt(INIT_SELECTED, currentSelected);
+        categoryPickerFragment.setArguments(args);
+        return categoryPickerFragment;
     }
 
     @Override
@@ -55,6 +61,23 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         component.inject(this);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof CategoryPickerFragmentListener){
+            this.listener = (CategoryPickerFragmentListener) context;
+        } else {
+            throw new RuntimeException("Activity must implement CategoryPickerFragmentListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        initSelected = bundle.getInt(INIT_SELECTED, INIT_UNSELECTED);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -65,30 +88,60 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         return view;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.unsubscribe();
+    }
+
     private void setupRecyclerView(View view) {
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CategoryPickerAdapter();
+        adapter = new CategoryPickerLevelAdapter(this);
         categoryRecyclerView.setAdapter(adapter);
     }
 
     private void initVar() {
-        presenter.fetchCategoryData();
+        presenter.fetchAllCategoryData();
     }
 
     @Override
     public void showLoadingDialog() {
-        adapter.showLoading(true);
+        adapter.showLoadingFull(true);
     }
 
     @Override
     public void dismissLoadingDialog() {
-        adapter.showLoading(false);
+        adapter.showLoadingFull(false);
     }
 
     @Override
-    public void renderCategory(List<CategoryViewModel> map) {
-        adapter.renderItems(map);
+    public void renderCategory(List<CategoryViewModel> listCategory) {
+        adapter.addLevelItem(listCategory);
+    }
+
+    @Override
+    public void onSuccessFetchAllCategoryData() {
+        if (initSelected == INIT_UNSELECTED){
+            presenter.fetchCategoryLevelOne();
+        } else {
+            presenter.fetchCategoryFromSelected(initSelected);
+        }
+    }
+
+    @Override
+    public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
+        adapter.render(categoryLevelDomainModels);
+    }
+
+    @Override
+    public void selectParent(int categoryId) {
+        presenter.fetchCategoryWithParent(categoryId);
+    }
+
+    @Override
+    public void selectSetCategory(List<CategoryViewModel> listCategory) {
+        listener.selectSetCategory(listCategory);
     }
 
     @Override

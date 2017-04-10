@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,13 +14,23 @@ import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.DaggerCategoryPickerComponent;
 import com.tokopedia.seller.product.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragmentListener;
+import com.tokopedia.seller.product.view.model.CategoryViewModel;
+
+import org.parceler.Parcels;
+
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerActivity extends TActivity implements HasComponent<CategoryPickerComponent>{
+public class CategoryPickerActivity
+        extends TActivity
+        implements CategoryPickerFragmentListener, HasComponent<CategoryPickerComponent>{
 
+    public static final String CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED";
+    public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
 
@@ -28,7 +40,13 @@ public class CategoryPickerActivity extends TActivity implements HasComponent<Ca
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
         initInjection();
-        inflateCategoryFragment();
+        int currentSelected =
+                getIntent()
+                        .getIntExtra(
+                                CATEGORY_ID_INIT_SELECTED,
+                                CategoryPickerFragment.INIT_UNSELECTED
+                        );
+        inflateCategoryFragment(currentSelected);
 
     }
 
@@ -41,10 +59,10 @@ public class CategoryPickerActivity extends TActivity implements HasComponent<Ca
 
     }
 
-    private void inflateCategoryFragment() {
+    private void inflateCategoryFragment(int currentSelected) {
         Fragment fragment = fragmentManager.findFragmentByTag(CategoryPickerFragment.TAG);
         if (fragment == null) {
-            fragment = CategoryPickerFragment.createInstance();
+            fragment = CategoryPickerFragment.createInstance(currentSelected);
         }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, CategoryPickerFragment.TAG);
@@ -54,5 +72,13 @@ public class CategoryPickerActivity extends TActivity implements HasComponent<Ca
     @Override
     public CategoryPickerComponent getComponent() {
         return component;
+    }
+
+    @Override
+    public void selectSetCategory(List<CategoryViewModel> listCategory) {
+        Intent intent = new Intent();
+        intent.putExtra(CATEGORY_RESULT_LEVEL, Parcels.wrap(listCategory));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }

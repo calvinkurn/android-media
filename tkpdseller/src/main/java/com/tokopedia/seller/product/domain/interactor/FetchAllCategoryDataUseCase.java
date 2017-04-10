@@ -4,11 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
-import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -16,25 +12,23 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * @author sebastianuskh on 4/3/17.
+ * @author sebastianuskh on 4/7/17.
  */
-@CategoryPickerViewScope
-public class FetchCategoryDataUseCase extends UseCase<List<CategoryDomainModel>>{
 
+public class FetchAllCategoryDataUseCase extends UseCase<Boolean>{
     private final CategoryRepository categoryRepository;
 
     @Inject
-    public FetchCategoryDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
+    public FetchAllCategoryDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
         super(threadExecutor, postExecutionThread);
         this.categoryRepository = categoryRepository;
     }
 
     @Override
-    public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
-
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         return Observable.just(true)
                 .flatMap(new CheckVersion())
-                .flatMap(new FetchCategory());
+                .flatMap(new CheckCategoryAvailable());
     }
 
     private class CheckVersion implements Func1<Boolean, Observable<Boolean>> {
@@ -44,10 +38,10 @@ public class FetchCategoryDataUseCase extends UseCase<List<CategoryDomainModel>>
         }
     }
 
-    private class FetchCategory implements Func1<Boolean, Observable<List<CategoryDomainModel>>> {
+    private class CheckCategoryAvailable implements Func1<Boolean, Observable<Boolean>> {
         @Override
-        public Observable<List<CategoryDomainModel>> call(Boolean aBoolean) {
-            return categoryRepository.fetchCategory();
+        public Observable<Boolean> call(Boolean aBoolean) {
+            return categoryRepository.checkCategoryAvailable();
         }
     }
 }
