@@ -24,7 +24,7 @@ interface FavoriteContract {
 
         void refreshDataFavorite(List<Visitable> elementList);
 
-        void showWishlistFavorite(List<Visitable> dataFavorite);
+        void showInitialDataPage(List<Visitable> dataFavorite);
 
         void showMoreDataFavoriteShop(List<Visitable> elementList);
 

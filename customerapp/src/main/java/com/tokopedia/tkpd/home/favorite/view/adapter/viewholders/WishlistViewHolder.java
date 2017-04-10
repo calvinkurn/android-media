@@ -13,12 +13,15 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.home.favorite.view.adapter.WishlistAdapter;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 /**
  * @author kulomady on 1/24/17.
@@ -83,5 +86,13 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
         context.startActivity(intent);
+    }
+
+    @OnClick(R.id.find_now)
+    public void onFindNowClicked() {
+        ParentIndexHome.ChangeTabListener listener
+                = ((ParentIndexHome) context).GetHotListListener();
+
+        listener.onChangeTab(HOTLIST_TAB);
     }
 }

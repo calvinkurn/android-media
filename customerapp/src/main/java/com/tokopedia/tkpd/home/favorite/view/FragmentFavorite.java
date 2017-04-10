@@ -215,7 +215,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void showWishlistFavorite(List<Visitable> dataFavorite) {
+    public void showInitialDataPage(List<Visitable> dataFavorite) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
         favoriteAdapter.setElement(dataFavorite);

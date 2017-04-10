@@ -45,7 +45,6 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
                     @Override
                     public DataFavorite call(DomainWishlist domainWishlist,
                                              TopAdsShop adsShop, FavoriteShop favoriteShop) {
-
                         return validateDataFavorite(domainWishlist, adsShop, favoriteShop);
                     }
                 });
@@ -73,19 +72,19 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
         return dataFavorite;
     }
 
-    private Observable<FavoriteShop> getFavoriteShop() {
+    public Observable<FavoriteShop> getFavoriteShop() {
         RequestParams defaultParams = GetFavoriteShopUsecase.getDefaultParams();
         defaultParams.putBoolean(GetFavoriteShopUsecase.KEY_IS_FIRST_PAGE, true);
         return getFavoriteShopUsecase.createObservable(defaultParams);
     }
 
-    private Observable<DomainWishlist> getWishlist() {
+    public Observable<DomainWishlist> getWishlist() {
         RequestParams params = GetWishlistUsecase.getDefaultParams();
         params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
         return getWishlistUsecase.createObservable(params);
     }
 
-    private Observable<TopAdsShop> getTopAdsShop() {
+    public Observable<TopAdsShop> getTopAdsShop() {
         RequestParams requestParams = GetTopAdsShopUseCase.defaultParams();
         requestParams.putBoolean(GetTopAdsShopUseCase.KEY_IS_FORCE_REFRESH, false);
         return getTopAdsShopUseCase.createObservable(requestParams);

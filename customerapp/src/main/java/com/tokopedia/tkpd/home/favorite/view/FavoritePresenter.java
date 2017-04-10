@@ -106,7 +106,7 @@ public class FavoritePresenter
 
     @Override
     public void refreshAllDataFavoritePage() {
-        getAllDataFavoriteUseCase.execute(RequestParams.EMPTY, new DataFavoriteSubscriber());
+        getAllDataFavoriteUseCase.execute(RequestParams.EMPTY, new RefreshFavoriteSubscriber());
     }
 
     @Override
@@ -154,94 +154,6 @@ public class FavoritePresenter
             getView().dismissWishlistFailedMessage();
         }
 
-    }
-
-    private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null
-                && dataFavorite.getFavoriteShop() != null) {
-
-            validateFavoriteShopErrorNetwork(dataFavorite);
-            if (dataFavorite.getFavoriteShop().getData() != null) {
-                setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
-                if (dataFavorite.getFavoriteShop().getData().size() > 0) {
-
-                    for (FavoriteShopItem favoriteShopItem
-                            : dataFavorite.getFavoriteShop().getData()) {
-
-                        favoriteShopItem.setIsFav(true);
-                        dataFavoriteItemList.add(
-                                favoriteMapper.prepareDataFavoriteShop(favoriteShopItem));
-                    }
-                }
-            }
-
-        }
-    }
-
-    private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null) {
-            validateNetworkTopAdsShop(dataFavorite.getTopAdsShop());
-            if (dataFavorite.getTopAdsShop() != null
-                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null
-                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
-
-                dataFavoriteItemList
-                        .add(favoriteMapper
-                                .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
-            }
-        }
-    }
-
-    private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
-        if (dataFavorite != null) {
-            if (dataFavorite.getWishListData() != null) {
-                validateWishlistErrorNetwork(dataFavorite.getWishListData());
-                dataFavoriteItemList.add(
-                        favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
-            } else {
-                dataFavoriteItemList.add(new EmptyWishlistViewModel());
-            }
-        }
-    }
-
-    private class InitialDataSubscriber extends Subscriber<DataFavorite> {
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            getView().showRefreshLoading();
-        }
-
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            Log.e(TAG, "onError: ", e);
-            if (isViewAttached()) {
-                getView().hideRefreshLoading();
-                getView().showErrorLoadData();
-            }
-        }
-
-        @Override
-        public void onNext(DataFavorite dataFavorite) {
-            getView().hideRefreshLoading();
-            getView().showWishlistFavorite(getDataFavoriteViewModel(dataFavorite));
-            getView().validateMessageError();
-        }
-
-        @NonNull
-        private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
-            List<Visitable> elementList = new ArrayList<>();
-            addWishlist(dataFavorite, elementList);
-            addTopAdsShop(dataFavorite, elementList);
-            addFavoriteShop(dataFavorite, elementList);
-
-            return elementList;
-        }
     }
 
     private class AddFavoriteShopSubscriber extends Subscriber<FavShop> {
@@ -317,7 +229,98 @@ public class FavoritePresenter
         }
     }
 
-    private class DataFavoriteSubscriber extends Subscriber<DataFavorite> {
+    private void addFavoriteShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null
+                && dataFavorite.getFavoriteShop() != null) {
+
+            validateFavoriteShopErrorNetwork(dataFavorite);
+            if (dataFavorite.getFavoriteShop().getData() != null) {
+                if (dataFavorite.getFavoriteShop().getPagingModel() != null) {
+                    setNextPaging(dataFavorite.getFavoriteShop().getPagingModel());
+                }
+
+                if (dataFavorite.getFavoriteShop().getData().size() > 0) {
+
+                    for (FavoriteShopItem favoriteShopItem
+                            : dataFavorite.getFavoriteShop().getData()) {
+
+                        favoriteShopItem.setIsFav(true);
+                        dataFavoriteItemList.add(
+                                favoriteMapper.prepareDataFavoriteShop(favoriteShopItem));
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void addTopAdsShop(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null) {
+            validateNetworkTopAdsShop(dataFavorite.getTopAdsShop());
+            if (dataFavorite.getTopAdsShop() != null
+                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList() != null
+                    && dataFavorite.getTopAdsShop().getTopAdsShopItemList().size() > 0) {
+
+                dataFavoriteItemList
+                        .add(favoriteMapper
+                                .prepareDataTopAdsShop(dataFavorite.getTopAdsShop()));
+            }
+        }
+    }
+
+    private void addWishlist(DataFavorite dataFavorite, List<Visitable> dataFavoriteItemList) {
+        if (dataFavorite != null) {
+            if (dataFavorite.getWishListData() != null) {
+                validateWishlistErrorNetwork(dataFavorite.getWishListData());
+                dataFavoriteItemList.add(
+                        favoriteMapper.prepareDataWishlist(dataFavorite.getWishListData()));
+            } else {
+                dataFavoriteItemList.add(new EmptyWishlistViewModel());
+            }
+        }
+    }
+
+    private class InitialDataSubscriber extends Subscriber<DataFavorite> {
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            getView().showRefreshLoading();
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.e(TAG, "onError: ", e);
+            if (isViewAttached()) {
+                getView().hideRefreshLoading();
+                getView().showErrorLoadData();
+            }
+        }
+
+        @Override
+        public void onNext(DataFavorite dataFavorite) {
+            getView().hideRefreshLoading();
+            getView().showInitialDataPage(getDataFavoriteViewModel(dataFavorite));
+            getView().validateMessageError();
+        }
+
+        @NonNull
+        private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
+            List<Visitable> elementList = new ArrayList<>();
+            addWishlist(dataFavorite, elementList);
+            addTopAdsShop(dataFavorite, elementList);
+            addFavoriteShop(dataFavorite, elementList);
+
+            return elementList;
+        }
+    }
+
+    private class RefreshFavoriteSubscriber extends Subscriber<DataFavorite> {
         @Override
         public void onStart() {
             super.onStart();
