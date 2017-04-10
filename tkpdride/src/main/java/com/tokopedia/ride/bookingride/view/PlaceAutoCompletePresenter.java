@@ -71,6 +71,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private LocationRequest mLocationRequest;
     private OnQueryListener mOnQueryListener;
     private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
+    private CompositeSubscription compositeSubscription;
+
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
@@ -78,6 +80,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase) {
         mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -98,7 +101,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             mOnQueryListener = new OnQueryListener() {
                                 @Override
                                 public void onQuerySubmit(String query) {
-                                    CommonUtils.dumper("onQuerySubmit : " +query);
+                                    CommonUtils.dumper("onQuerySubmit : " + query);
                                     subscriber.onNext(String.valueOf(query));
                                 }
                             };
@@ -108,6 +111,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             .observeOn(new UIThread().getScheduler())
                             .subscribe(new AutoCompletePlaceTextChanged())
             );
+            getView().setActiveMarketplaceSource();
             actionGetPeopleAddresses(false);
         }
 
@@ -118,7 +122,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionGetPeopleAddresses(final boolean isLoadMore) {
         getView().showAutoDetectLocationButton();
-        getView().setActiveMarketplaceSource();
         mGetPeopleAddressesUseCase.execute(getView().getPeopleAddressParam(), new Subscriber<PeopleAddressWrapper>() {
             @Override
             public void onCompleted() {
@@ -132,7 +135,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
             @Override
             public void onNext(PeopleAddressWrapper wrapper) {
+                CommonUtils.dumper("Executed OnNext M " + getView().isActiveMarketPlaceSource());
                 if (!getView().isActiveMarketPlaceSource()) return;
+                CommonUtils.dumper("Executed OnNext M");
+                compositeSubscription.clear();
                 ArrayList<Visitable> addresses = new ArrayList<>();
                 for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
                     if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
@@ -150,7 +156,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 getView().setPagingConfiguration(wrapper.getPaging());
                 if (!isLoadMore) {
                     getView().renderPlacesList(addresses);
-                }else {
+                } else {
                     getView().renderMorePlacesList(addresses);
                 }
                 getView().hideAutoCompleteLoadingCross();
@@ -291,10 +297,10 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         @Override
         public void onNext(String keyword) {
             getView().showListPlaces();
-            CommonUtils.dumper("onNext : " +keyword);
+            CommonUtils.dumper("onNext : " + keyword);
 //            if (!isLoadingPlaces) {
-                CommonUtils.dumper("proc : " + keyword);
-                getPlacesAndRenderViewByKeyword(keyword);
+            CommonUtils.dumper("proc : " + keyword);
+            getPlacesAndRenderViewByKeyword(keyword);
 //            }
         }
     }
@@ -314,108 +320,59 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void getPlacesAndRenderViewByKeyword(String keyword) {
-        getView().setActiveGooglePlaceSource();
         isLoadingPlaces = true;
         LatLngBounds bounds = null;
         if (mCurrentLocation != null) {
             bounds = GeoLocationUtils.generateBoundary(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         }
-        getPlaceAutocompletePredictions(keyword,
-                bounds, mAutocompleteFilter).map(new Func1<AutocompletePredictionBuffer, ArrayList<AutocompletePrediction>>() {
-            @Override
-            public ArrayList<AutocompletePrediction> call(AutocompletePredictionBuffer autocompletePredictions) {
-                if (autocompletePredictions.getStatus().isSuccess()) {
-                    isLoadingPlaces = false;
-                    return DataBufferUtils.freezeAndClose(autocompletePredictions);
-                }
-                autocompletePredictions.release();
-                isLoadingPlaces = false;
-                return new ArrayList<>();
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ArrayList<AutocompletePrediction>>() {
-                    @Override
-                    public void onCompleted() {
+        compositeSubscription.add(
+                getPlaceAutocompletePredictions(keyword, bounds, mAutocompleteFilter)
+                        .map(new Func1<AutocompletePredictionBuffer, ArrayList<AutocompletePrediction>>() {
+                                 @Override
+                                 public ArrayList<AutocompletePrediction> call(AutocompletePredictionBuffer autocompletePredictions) {
+                                     if (autocompletePredictions.getStatus().isSuccess()) {
+                                         isLoadingPlaces = false;
+                                         return DataBufferUtils.freezeAndClose(autocompletePredictions);
+                                     }
+                                     autocompletePredictions.release();
+                                     isLoadingPlaces = false;
+                                     return new ArrayList<>();
+                                 }
+                             }
+                        )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<ArrayList<AutocompletePrediction>>() {
+                                       @Override
+                                       public void onCompleted() {
 
-                    }
+                                       }
 
-                    @Override
-                    public void onError(Throwable e) {
+                                       @Override
+                                       public void onError(Throwable e) {
 
-                    }
+                                       }
 
-                    @Override
-                    public void onNext(ArrayList<AutocompletePrediction> results) {
-                        if (!getView().isActiveGooglePlaceSource()) return;
-                        CommonUtils.dumper("res : " + results.size());
-                        ArrayList<Visitable> addresses = new ArrayList<>();
-                        for (AutocompletePrediction autocompletePrediction : results) {
-                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                            address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-                            address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-                            address.setAddressId(autocompletePrediction.getPlaceId());
-                            address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
-                            addresses.add(address);
-                        }
-                        getView().renderPlacesList(addresses);
-                        getView().hideAutoCompleteLoadingCross();
-                    }
-                });
-        /*ArrayList<AutocompletePrediction> results = getAutocomplete(keyword);
-        ArrayList<Visitable> addresses = new ArrayList<>();
-        for (AutocompletePrediction autocompletePrediction : results) {
-            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-            address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-            address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-            address.setAddressId(autocompletePrediction.getPlaceId());
-            addresses.add(address);
-        }
-        getView().renderPlacesList(addresses);
-        getView().hideAutoCompleteLoadingCross();*/
-    }
-
-    private Observable<ArrayList<AutocompletePrediction>> getAutocompleteObservable(String constraint) {
-        return Observable.just(constraint)
-                .map(new Func1<String, ArrayList<AutocompletePrediction>>() {
-                    @Override
-                    public ArrayList<AutocompletePrediction> call(String s) {
-                        return getAutocomplete(s);
-                    }
-                })
-                .debounce(150, TimeUnit.MICROSECONDS);
-    }
-
-    private ArrayList<AutocompletePrediction> getAutocomplete(CharSequence constraint) {
-        if (mGoogleApiClient.isConnected()) {
-            Log.i(TAG, "Starting autocomplete query for: " + constraint);
-
-
-            PendingResult<AutocompletePredictionBuffer> results =
-                    Places.GeoDataApi
-                            .getAutocompletePredictions(mGoogleApiClient, constraint.toString(),
-                                    null, mAutocompleteFilter);
-
-            AutocompletePredictionBuffer autocompletePredictions = results
-                    .await(5, TimeUnit.SECONDS);
-            final Status status = autocompletePredictions.getStatus();
-            if (!status.isSuccess()) {
-                getView().showMessage("Error contacting API: " + status.toString());
-                Log.e(TAG, "Error getting autocomplete prediction API call: " + status.toString());
-                autocompletePredictions.release();
-                isLoadingPlaces = false;
-                return new ArrayList<>();
-            }
-
-            Log.i(TAG, "Query completed. Received " + autocompletePredictions.getCount()
-                    + " predictions.");
-            isLoadingPlaces = false;
-            return DataBufferUtils.freezeAndClose(autocompletePredictions);
-        }
-        isLoadingPlaces = false;
-        Log.e(TAG, "Google API client is not connected for autocomplete query.");
-        return new ArrayList<>();
+                                       @Override
+                                       public void onNext(ArrayList<AutocompletePrediction> results) {
+                                           CommonUtils.dumper("Executed OnNext G " + getView().isActiveGooglePlaceSource());
+                                           if (!getView().isActiveGooglePlaceSource()) return;
+                                           CommonUtils.dumper("Executed OnNext G");
+                                           ArrayList<Visitable> addresses = new ArrayList<>();
+                                           for (AutocompletePrediction autocompletePrediction : results) {
+                                               PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                                               address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
+                                               address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
+                                               address.setAddressId(autocompletePrediction.getPlaceId());
+                                               address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
+                                               addresses.add(address);
+                                           }
+                                           getView().renderPlacesList(addresses);
+                                           getView().hideAutoCompleteLoadingCross();
+                                       }
+                                   }
+                        )
+        );
     }
 
     public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {

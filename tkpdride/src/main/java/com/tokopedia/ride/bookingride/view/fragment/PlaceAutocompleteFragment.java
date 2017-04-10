@@ -111,9 +111,13 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
             @Override
             public void onTextChanged(final CharSequence s, int start, int before, int count) {
                 if (TextUtils.isEmpty(s)) {
+                    CommonUtils.dumper("Executed OTC M");
+                    setActiveMarketplaceSource();
                     mPresenter.actionGetPeopleAddresses(false);
                 }
                 else {
+                    setActiveGooglePlaceSource();
+                    CommonUtils.dumper("Executed OTC G");
                     mPresenter.actionQueryPlacesByKeyword(String.valueOf(s));
                 }
             }
@@ -145,6 +149,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         if (isMarketPlaceSource) {
             if (!TextUtils.isEmpty(peopleAddressPaging.getNextUrl()) && !String.valueOf(peopleAddressPaging.getNextUrl()).equalsIgnoreCase("0")) {
                 peopleAddressPaging.setPage(page);
+                setActiveMarketplaceSource();
                 mPresenter.actionGetPeopleAddresses(true);
             }
         }
