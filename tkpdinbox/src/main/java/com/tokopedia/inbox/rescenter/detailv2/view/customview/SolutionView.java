@@ -19,7 +19,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.SolutionData;
 public class SolutionView extends BaseView<SolutionData, DetailResCenterFragmentView> {
 
     private View actionEdit;
-    private View actionDiscuss;
+    private TextView actionDiscuss;
     private TextView informationText;
     private TextView solutionText;
 
@@ -52,7 +52,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(getLayoutView(), this, true);
         actionEdit = view.findViewById(R.id.action_edit);
-        actionDiscuss = view.findViewById(R.id.action_discuss);
+        actionDiscuss = (TextView) view.findViewById(R.id.action_discuss);
         informationText = (TextView) view.findViewById(R.id.tv_last_solution_date);
         solutionText = (TextView) view.findViewById(R.id.tv_last_solution);
     }
@@ -68,6 +68,11 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
         informationText.setText(generateInformationText(data));
         solutionText.setText(data.getSolutionText());
         actionEdit.setOnClickListener(new SolutionViewOnClickListener());
+        actionDiscuss.setText(
+                getContext().getString(listener.isSeller() ?
+                        R.string.action_discuss_with_buyer : R.string.action_discuss_with_seller
+                )
+        );
         actionDiscuss.setOnClickListener(new SolutionViewOnClickListener());
         actionEdit.setVisibility(data.isEditAble() ? VISIBLE : GONE);
     }
