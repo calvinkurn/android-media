@@ -4,6 +4,7 @@
               android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/transaction_summary_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_vs"
@@ -23,7 +24,8 @@
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/transaction_summary_label">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/menu_list"
