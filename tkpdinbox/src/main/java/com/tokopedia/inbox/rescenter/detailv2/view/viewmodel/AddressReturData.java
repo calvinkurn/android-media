@@ -10,6 +10,8 @@ import android.os.Parcelable;
 public class AddressReturData implements Parcelable {
     private String addressReturDate;
     private String addressText;
+    private String addressID;
+    private String conversationID;
 
     public String getAddressReturDate() {
         return addressReturDate;
@@ -27,6 +29,25 @@ public class AddressReturData implements Parcelable {
         this.addressText = addressText;
     }
 
+    public AddressReturData() {
+    }
+
+    public String getAddressID() {
+        return addressID;
+    }
+
+    public void setAddressID(String addressID) {
+        this.addressID = addressID;
+    }
+
+    public String getConversationID() {
+        return conversationID;
+    }
+
+    public void setConversationID(String conversationID) {
+        this.conversationID = conversationID;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -36,17 +57,18 @@ public class AddressReturData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.addressReturDate);
         dest.writeString(this.addressText);
-    }
-
-    public AddressReturData() {
+        dest.writeString(this.addressID);
+        dest.writeString(this.conversationID);
     }
 
     protected AddressReturData(Parcel in) {
         this.addressReturDate = in.readString();
         this.addressText = in.readString();
+        this.addressID = in.readString();
+        this.conversationID = in.readString();
     }
 
-    public static final Parcelable.Creator<AddressReturData> CREATOR = new Parcelable.Creator<AddressReturData>() {
+    public static final Creator<AddressReturData> CREATOR = new Creator<AddressReturData>() {
         @Override
         public AddressReturData createFromParcel(Parcel source) {
             return new AddressReturData(source);

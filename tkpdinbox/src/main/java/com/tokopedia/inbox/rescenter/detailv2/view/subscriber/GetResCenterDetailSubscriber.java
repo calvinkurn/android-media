@@ -128,6 +128,8 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
                 domainModel.getPhoneReceiver()
         );
         data.setAddressReturDate(domainModel.getDate());
+        data.setConversationID(domainModel.getConversationID());
+        data.setAddressID(domainModel.getAddressID());
         return data;
     }
 
@@ -168,6 +170,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         data.setShowAcceptSolution(domainModel.getAccept() == 1);
         data.setShowAcceptAdminSolution(domainModel.getAcceptByAdmin() == 1);
         data.setAcceptProductDialogText(domainModel.getAcceptProductDialogText());
+        data.setAcceptReturSolution(domainModel.getAcceptRetur() == 1);
         return data;
     }
 

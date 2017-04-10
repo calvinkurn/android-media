@@ -31,6 +31,8 @@ public class DetailResCenterButton {
     private int acceptByAdmin;
     @SerializedName("finishAcceptText")
     private String finishAcceptText;
+    @SerializedName("acceptReturn")
+    private int acceptRetur;
 
     public int getReport() {
         return report;
@@ -126,5 +128,13 @@ public class DetailResCenterButton {
 
     public void setFinishAcceptText(String finishAcceptText) {
         this.finishAcceptText = finishAcceptText;
+    }
+
+    public int getAcceptRetur() {
+        return acceptRetur;
+    }
+
+    public void setAcceptRetur(int acceptRetur) {
+        this.acceptRetur = acceptRetur;
     }
 }

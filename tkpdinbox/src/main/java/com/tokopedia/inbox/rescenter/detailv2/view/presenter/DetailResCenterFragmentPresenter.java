@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 
+import android.app.Activity;
+
 /**
  * Created by hangnadi on 3/8/17.
  */
@@ -23,6 +25,8 @@ public interface DetailResCenterFragmentPresenter {
     void trackReturProduck(String shipmentID, String shipmentRef);
 
     void inputAddressAcceptSolution(String addressId);
+
+    void actionEditAddress(String addressId, String oldAddressId, String conversationId);
 
     void inputAddressAcceptAdminSolution(String addressId);
 

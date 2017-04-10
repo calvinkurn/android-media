@@ -11,6 +11,7 @@ import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
@@ -48,6 +49,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final AcceptAdminSolutionUseCase acceptAdminSolutionUseCase;
     private final AcceptSolutionUseCase acceptSolutionUseCase;
     private final InputAddressUseCase inputAddressUseCase;
+    private final EditAddressUseCase editAddressUseCase;
 
     public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
         this.fragmentView = fragmentView;
@@ -111,6 +113,9 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
 
         this.inputAddressUseCase
                 = new InputAddressUseCase(jobExecutor, uiThread, resCenterRepository);
+
+        this.editAddressUseCase
+                = new EditAddressUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override
@@ -226,6 +231,21 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
         params.putInt(InputAddressUseCase.PARAM_BYPASS, paramByPass);
         params.putString(InputAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
         params.putInt(InputAddressUseCase.PARAM_NEW_ADDRESS, 1);
+        return params;
+    }
+
+    @Override
+    public void actionEditAddress(String addressId, String oldAddressId, String conversationId) {
+        fragmentView.showLoadingDialog(true);
+        editAddressUseCase.execute(getEditAddressParam(addressId, oldAddressId, conversationId),
+                new ResolutionActionSubscriber(fragmentView));
+    }
+
+    private RequestParams getEditAddressParam(String addressId, String oldAddressId, String conversationId) {
+        RequestParams params = RequestParams.create();
+        params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId );
         return params;
     }
 

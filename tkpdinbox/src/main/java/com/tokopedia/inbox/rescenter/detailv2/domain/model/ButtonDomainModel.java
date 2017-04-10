@@ -17,6 +17,7 @@ public class ButtonDomainModel {
     private int accept;
     private int acceptByAdmin;
     private String acceptProductDialogText;
+    private int acceptRetur;
 
     public int getReport() {
         return report;
@@ -113,5 +114,13 @@ public class ButtonDomainModel {
 
     public void setAcceptProductDialogText(String acceptProductDialogText) {
         this.acceptProductDialogText = acceptProductDialogText;
+    }
+
+    public int getAcceptRetur() {
+        return acceptRetur;
+    }
+
+    public void setAcceptRetur(int acceptRetur) {
+        this.acceptRetur = acceptRetur;
     }
 }

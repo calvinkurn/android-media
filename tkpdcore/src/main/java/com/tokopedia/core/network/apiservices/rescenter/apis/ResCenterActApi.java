@@ -121,6 +121,10 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> inputAddressResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION)
+    Observable<Response<TkpdResponse>> editAddressResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_SUBMIT)
     Observable<Response<TkpdResponse>> replyConversationSubmit2(@FieldMap Map<String, Object> params);
 

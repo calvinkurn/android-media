@@ -83,6 +83,8 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setProvince(entity.getLast().getAddress().getProvince().getName());
         data.setReceiver(entity.getLast().getAddress().getReceiver().getName());
         data.setStreet(entity.getLast().getAddress().getStreet());
+        data.setAddressID(entity.getLast().getAddress().getAddressId());
+        data.setConversationID(entity.getLast().getAddress().getDetail().getConversationId());
         return data;
     }
 
@@ -137,6 +139,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setFinish(entity.getButton().getFinish());
         data.setAcceptByAdmin(entity.getButton().getAcceptByAdmin());
         data.setAcceptProductDialogText(entity.getButton().getFinishAcceptText());
+        data.setAcceptRetur(entity.getButton().getAcceptRetur());
         return data;
     }
 

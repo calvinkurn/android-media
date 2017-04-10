@@ -311,7 +311,11 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
             case REQUEST_EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
-//                    presenter.actionEditAddress(getActivity(), destination.getAddressId(), ahrefEditAddressURL);
+                    presenter.actionEditAddress(
+                            destination != null ? destination.getAddressId() : null,
+                            viewData.getAddressReturData().getAddressID(),
+                            viewData.getAddressReturData().getConversationID()
+                    );
                 }
                 break;
             default:

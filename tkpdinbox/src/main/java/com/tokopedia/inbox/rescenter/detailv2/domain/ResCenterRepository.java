@@ -51,5 +51,7 @@ public interface ResCenterRepository {
 
     Observable<ResolutionActionDomainData> inputAddress(TKPDMapParam<String, Object> parameters);
 
+    Observable<ResolutionActionDomainData> editAddress(TKPDMapParam<String, Object> parameters);
+
     Observable<ReplyDiscussionValidationModel> replyConversationValidation(TKPDMapParam<String, Object> parameters);
 }

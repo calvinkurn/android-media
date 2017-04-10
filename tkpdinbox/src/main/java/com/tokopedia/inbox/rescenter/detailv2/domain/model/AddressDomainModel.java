@@ -13,6 +13,8 @@ public class AddressDomainModel {
     private String postalCode;
     private String phoneReceiver;
     private String date;
+    private String addressID;
+    private String conversationID;
 
     public String getReceiver() {
         return receiver;
@@ -76,5 +78,22 @@ public class AddressDomainModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+
+    public String getAddressID() {
+        return addressID;
+    }
+
+    public void setAddressID(String addressID) {
+        this.addressID = addressID;
+    }
+
+    public String getConversationID() {
+        return conversationID;
+    }
+
+    public void setConversationID(String conversationID) {
+        this.conversationID = conversationID;
     }
 }

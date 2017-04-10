@@ -131,6 +131,12 @@ public class ResCenterRepositoryImpl implements ResCenterRepository {
     }
 
     @Override
+    public Observable<ResolutionActionDomainData> editAddress(TKPDMapParam<String, Object> parameters) {
+        return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
+                .editAddress(parameters);
+    }
+
+    @Override
     public Observable<ReplyDiscussionValidationModel> replyConversationValidation(TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory.createCloudActionResCenterDataStore()
                 .replyConversationValidation(parameters);

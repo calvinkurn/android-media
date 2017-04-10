@@ -68,6 +68,12 @@ public class CloudActionResCenterDataStore {
                 .map(resolutionCenterActionMapper);
     }
 
+    public Observable<ResolutionActionDomainData> editAddress(TKPDMapParam<String, Object> parameters) {
+        return resCenterActService.getApi()
+                .editAddressResolution2(AuthUtil.generateParamsNetwork2(context, parameters))
+                .map(resolutionCenterActionMapper);
+    }
+
     public Observable<ReplyDiscussionValidationModel> replyConversationValidation(
             TKPDMapParam<String, Object> parameters) {
         replyConversationValidationMapper.setHasAttachment(parameters.containsKey(ReplyDiscussionValidationUseCase.PARAM_PHOTOS));
