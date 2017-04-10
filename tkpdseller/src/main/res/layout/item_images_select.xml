@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.core.customwidget.SquareHImageView
+        android:id="@+id/imageview_picture"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:scaleType="fitCenter"
+        tools:src="@mipmap/ic_launcher"
+        android:layout_gravity="center_vertical"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text_mainpicture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="main picture"
+        android:background="#AA000000"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal|bottom" />
+
+</FrameLayout>

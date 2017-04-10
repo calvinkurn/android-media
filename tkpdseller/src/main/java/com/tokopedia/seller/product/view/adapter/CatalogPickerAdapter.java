@@ -78,7 +78,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
             }
         }
 
-        this.notifyItemRangeChanged(prevSize, addedSize);
+        this.notifyItemRangeInserted(prevSize, addedSize);
     }
 
     public void setMaxRows(int maxRows) {
