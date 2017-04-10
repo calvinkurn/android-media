@@ -59,7 +59,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     View loading;
     View mainView;
-//    ButtonView buttonView;
+    ButtonView buttonView;
     StatusView statusView;
     AwbReturView awbReturView;
     AddressReturView addressReturView;
@@ -171,7 +171,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     protected void initView(View view) {
         loading = view.findViewById(R.id.loading);
         mainView = view.findViewById(R.id.main_view);
-//        buttonView = (ButtonView) view.findViewById(R.id.button_view);
+        buttonView = (ButtonView) view.findViewById(R.id.button_view);
         statusView = (StatusView) view.findViewById(R.id.status_view);
         awbReturView = (AwbReturView) view.findViewById(R.id.awb_view);
         addressReturView = (AddressReturView) view.findViewById(R.id.address_retur_view);
@@ -185,7 +185,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     @Override
     protected void setViewListener() {
-//        buttonView.setListener(this);
+        buttonView.setListener(this);
         statusView.setListener(this);
         awbReturView.setListener(this);
         addressReturView.setListener(this);
@@ -242,10 +242,9 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     public void doOnInitSuccess() {
         showLoading(false);
         if (getViewData().getButtonData() != null) {
-//            buttonView.renderData(getViewData().getButtonData());
+            buttonView.renderData(getViewData().getButtonData());
         }
         if (getViewData().getStatusData() != null) {
-            statusView.setButtonData(getViewData().getButtonData());
             statusView.renderData(getViewData().getStatusData());
         }
         if (getViewData().getAwbData() != null) {
