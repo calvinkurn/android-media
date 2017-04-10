@@ -24,6 +24,7 @@
             android:layout_below="@id/iv_google_map"
             android:layout_marginBottom="4dp"
             android:layout_marginLeft="12dp"
+            android:layout_marginRight="150dp"
             android:text="21/03/2017 09:00 AM"
             android:textColor="@color/black" />
 
@@ -34,8 +35,9 @@
             android:layout_below="@id/tv_ride_start_time"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="12dp"
-            android:text="Honda Amaze"
+            android:text="Honda Amaze (XX 1234)"
             android:textColor="@color/grey_600" />
+
 
         <TextView
             android:id="@+id/tv_ride_fare"
@@ -47,6 +49,15 @@
             android:layout_marginRight="12dp"
             android:text="IDR 9.500"
             android:textColor="@color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_ride_start_time"
+            android:layout_marginRight="12dp"
+            android:text="Completed"
+            android:textColor="@color/colorPrimary" />
 
     </RelativeLayout>
 
