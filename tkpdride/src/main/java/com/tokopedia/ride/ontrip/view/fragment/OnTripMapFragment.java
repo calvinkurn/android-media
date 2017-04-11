@@ -61,7 +61,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
-import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -652,7 +651,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.crux_cabs_uber_ic))
+                .setLargeIcon(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.qc_launcher))
                 .setContentTitle(getString(R.string.accepted_push_title))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
@@ -809,7 +808,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return new OnTripActivity.BackButtonListener() {
             @Override
             public void onBackPressed() {
-                if (isScreenBlocked){
+                if (isScreenBlocked) {
                     hideContactPanel();
                 }
             }
