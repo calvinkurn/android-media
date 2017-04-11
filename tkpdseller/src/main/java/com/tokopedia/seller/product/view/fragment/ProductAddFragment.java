@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -18,14 +19,17 @@ import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
+import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
 /**
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddFragment extends BaseDaggerFragment
-        implements ImageEditDialogFragment.OnImageEditListener {
+public class ProductAddFragment extends BaseDaggerFragment {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
@@ -53,19 +57,19 @@ public class ProductAddFragment extends BaseDaggerFragment
             public void onAddClick(int position) {
                 int remainingEmptySlot = imagesSelectView.getRemainingEmptySlot();
                 GalleryActivity.moveToImageGallery(
-                        (AppCompatActivity) getActivity(), position, remainingEmptySlot);
+                        getActivity(),ProductAddFragment.this, position, remainingEmptySlot);
             }
 
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
                 showEditImageDialog(getActivity().getSupportFragmentManager(), position,
-                        imageSelectModel.isPrimary(), ProductAddFragment.this);
+                        imageSelectModel.isPrimary());
             }
         });
         imagesSelectView.setOnCheckResolutionListener(new ImagesSelectView.OnCheckResolutionListener() {
             @Override
             public boolean isResolutionCorrect(String uri) {
-                return false;
+                return true;
             }
 
             @Override
@@ -77,11 +81,64 @@ public class ProductAddFragment extends BaseDaggerFragment
     }
 
 
-    public static void showEditImageDialog(FragmentManager fm, int position, boolean isPrimary,
-                                           ImageEditDialogFragment.OnImageEditListener listener){
+    public void showEditImageDialog(FragmentManager fm, int position, boolean isPrimary){
         DialogFragment dialogFragment  = ImageEditDialogFragment.newInstance(position, isPrimary);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        ((ImageEditDialogFragment)dialogFragment).setOnImageEditListener(listener);
+        ((ImageEditDialogFragment)dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+            @Override
+            public void clickEditImagePath(int position) {
+                GalleryActivity.moveToImageGallery(
+                        (AppCompatActivity) getActivity(), position, 1 );
+            }
+
+            @Override
+            public void clickEditImageDesc(int position) {
+                String currentDescription = imagesSelectView.getImageAt(position).getDescription();
+                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
+                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
+                fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
+                    @Override
+                    public void onImageDescDialogOK(String newDescription) {
+                        imagesSelectView.changeImageDesc(newDescription);
+                    }
+                });
+            }
+
+            @Override
+            public void clickEditImagePrimary(int position) {
+                imagesSelectView.changeImagePrimary(true, position);
+            }
+
+            @Override
+            public void clickRemoveImage(int positions) {
+                imagesSelectView.removeImage();
+            }
+        });
+    }
+
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
+            int position = data.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION,
+                    GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+            String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
+            if (checkNotNull(imageUrl)) {
+                if (position == imagesSelectView.getSelectedImageIndex()) {
+                    imagesSelectView.changeImagePath(imageUrl);
+                }
+                else {
+                    imagesSelectView.addImageString(imageUrl);
+                }
+            }
+
+            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+            if(checkCollectionNotNull(imageUrls)){
+                imagesSelectView.addImagesString(imageUrls);
+            }
+        }
     }
 
     @Override
@@ -94,56 +151,5 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     }
 
-    // triggered after onActivityR Listener
-    public void changeImageDescription(String newDescription) {
-        imagesSelectView.changeImageDesc(newDescription);
-    }
 
-    /**
-     * ADD OR EDIT Image
-     */
-    // triggered after onActivityResult from activity
-    public void imageResultFromGallery(String imageUrl, int position) {
-        // if add image on the selected, it means "change", else "add"
-        if (position == imagesSelectView.getSelectedImageIndex()) {
-            imagesSelectView.changeImagePath(imageUrl);
-        }
-        else {
-            imagesSelectView.addImageString(imageUrl);
-        }
-    }
-
-    // triggered after onActivityResult from activity
-    public void imagesResultFromGallery(List<String> imageUrls, int position) {
-        imagesSelectView.addImagesString(imageUrls);
-    }
-
-    /**
-     * START EDIT IMAGE
-     */
-    @Override
-    public void clickEditImagePath(int position) {
-        GalleryActivity.moveToImageGallery(
-                (AppCompatActivity) getActivity(), position, 1 );
-    }
-
-    @Override
-    public void clickEditImageDesc(int position) {
-        String currentDescription = imagesSelectView.getImageAt(position).getDescription();
-        ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
-        fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
-    }
-
-    @Override
-    public void clickEditImagePrimary(int position) {
-        imagesSelectView.changeImagePrimary(true, position);
-    }
-
-    /**
-     * START REMOVE IMAGE
-     */
-    @Override
-    public void clickRemoveImage(int position) {
-        imagesSelectView.removeImage(position);
-    }
 }
