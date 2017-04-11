@@ -3,7 +3,6 @@ package com.tokopedia.core.product.model.share;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 import android.text.TextUtils;
 
 import com.tokopedia.core.util.MethodChecker;

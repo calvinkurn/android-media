@@ -264,13 +264,13 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         initCreateView(inflater, container);
-        _subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(_subscriptions);
         if (savedInstanceState != null) {
             isConfirmDone = savedInstanceState.getBoolean(DATAPROCESSORDER, false);
             if (isConfirmDone) {
                 finishShipping(true);
             }
         }
+        _subscriptions = RxUtils.getNewCompositeSubIfUnsubscribed(_subscriptions);
         return rootView;
     }
 

@@ -603,6 +603,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="error_sub_district">Kecamatan harus dipilih</string>
 
     <!-- Strings related to inbox -->
+    <string name="title_my_product_seller">ULASAN PEMBELI</string>
     <string name="title_my_product">PRODUK SAYA</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_message_all">INBOX</string>

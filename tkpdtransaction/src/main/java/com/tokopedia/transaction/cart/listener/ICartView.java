@@ -31,7 +31,7 @@ public interface ICartView extends IBaseView {
 
     void renderPaymentGatewayOption(List<GatewayList> gatewayList);
 
-    void renderVisibleLoyaltyBalance(String loyaltyAmountIDR);
+    void renderVisibleLoyaltyBalance(String loyaltyAmountIDR, String loyaltyPoint);
 
     void renderInvisibleLoyaltyBalance();
 

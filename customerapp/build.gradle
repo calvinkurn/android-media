@@ -227,6 +227,14 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdtopadssdk')
+    compile project(':tkpddigital')
+
+//    compile rootProject.ext.tkpdDependencies.discovery
+//    compile rootProject.ext.tkpdDependencies.transaction
+//    compile rootProject.ext.tkpdDependencies.seller
+//    compile rootProject.ext.tkpdDependencies.session
+//    compile rootProject.ext.tkpdDependencies.inbox
+
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

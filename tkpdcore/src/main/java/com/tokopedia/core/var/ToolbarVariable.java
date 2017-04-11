@@ -197,11 +197,15 @@ public class ToolbarVariable {
     public void setTitle(int res_id) {
         if (holder.titleTextView != null)
             holder.titleTextView.setText(context.getString(res_id));
+        else if (holder.toolbar != null)
+            holder.toolbar.setTitle(context.getString(res_id));
     }
 
     public void setTitle(String title) {
         if (holder.titleTextView != null)
             holder.titleTextView.setText(title);
+        else if (holder.toolbar != null)
+            holder.toolbar.setTitle(title);
     }
 
 }

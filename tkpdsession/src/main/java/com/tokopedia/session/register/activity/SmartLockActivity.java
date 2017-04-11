@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,8 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.session.R;
 
 public class SmartLockActivity extends AppCompatActivity implements
@@ -60,11 +63,14 @@ public class SmartLockActivity extends AppCompatActivity implements
     private void processBundle(Bundle extras) {
         String username = extras.getString(USERNAME);
         String password = extras.getString(PASSWORD);
-        Credential credential = new Credential.Builder(username)
-                .setPassword(password)
-                .build();
-        //if else valid credential?
-        saveCredential(credential);
+        if(isValidCredential(username, password)){
+            Credential credential = new Credential.Builder(username)
+                    .setPassword(password)
+                    .build();
+            saveCredential(credential);
+        }else {
+            goToContent();
+        }
     }
 
     protected void saveCredential(Credential credential) {
@@ -143,6 +149,7 @@ public class SmartLockActivity extends AppCompatActivity implements
                             goToContent();
                         } else {
                             Log.w(TAG, "Unrecognized status code: " + status.getStatusCode());
+                            goToContent();
                         }
                     }
                 }
@@ -203,8 +210,10 @@ public class SmartLockActivity extends AppCompatActivity implements
         } else if (requestCode == RC_SAVE) {
             Log.d(TAG, "Result code: " + resultCode);
             if (resultCode == RESULT_OK) {
+                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
                 Log.d(TAG, "Credential Save: OK");
             } else {
+                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.NEVER);
                 Log.e(TAG, "Credential Save Failed");
             }
             goToContent();
@@ -253,4 +262,10 @@ public class SmartLockActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
+    private boolean isValidCredential(String username, String password) {
+        return !TextUtils.isEmpty(username) && !TextUtils.isEmpty(password);
+    }
+
 }

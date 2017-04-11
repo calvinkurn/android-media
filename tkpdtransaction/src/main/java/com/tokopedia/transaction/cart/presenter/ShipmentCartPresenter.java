@@ -107,7 +107,13 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
         @Override
         public void onError(Throwable e) {
             view.dismisLoading();
-            view.renderErrorEditShipment(e.getMessage());
+            if (e instanceof UnknownHostException) {
+                view.renderErrorEditShipment(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT);
+            } else if (e instanceof SocketTimeoutException) {
+                view.renderErrorEditShipment(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT);
+            } else {
+                view.renderErrorEditShipment(e.getMessage());
+            }
         }
 
         @Override
@@ -147,15 +153,15 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
             e.printStackTrace();
             if (e instanceof UnknownHostException) {
                 view.renderErrorCalculateShipment(
-                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT
                 );
             } else if (e instanceof SocketTimeoutException) {
                 view.renderErrorCalculateShipment(
-                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT
                 );
             } else {
                 view.renderErrorCalculateShipment(
-                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT
                 );
             }
         }

@@ -27,7 +27,7 @@ public interface LoginView extends BaseView {
 
     LoginFragment.FocusPair validateSignIn();
 
-    void moveToFragmentSecurityQuestion(int security1, int security2, int userId);
+    void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email);
 
     void notifyAutoCompleteAdapter();
 

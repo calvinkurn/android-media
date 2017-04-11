@@ -1,13 +1,13 @@
 package com.tokopedia.transaction.purchase.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.drawer.interactor.NetworkInteractor;
+import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
+import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
 import com.tokopedia.transaction.purchase.model.TxSummaryItem;
@@ -32,6 +32,11 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
         List<Integer> countList = cache.getArrayListInteger(TkpdCache.Key.PURCHASE_COUNT);
         List<TxSummaryItem> summaryItemList = new ArrayList<>();
 
+        if(countList.size() < 1) viewListener.showLoadingError();
+        else setSummaryData(context, countList, summaryItemList);
+    }
+
+    private void setSummaryData(Context context, List<Integer> countList, List<TxSummaryItem> summaryItemList) {
         summaryItemList.add(new TxSummaryItem(
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION,
                 context.getString(R.string.payment_status),
@@ -61,20 +66,18 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
 
     @Override
     public void getNotificationFromNetwork(final Context context) {
-        NotificationVariable notif = MainApplication.getNotifInstance();
-        notif.setContext((Activity) context);
-        notif.GetNotif();
-        notif.SetOnNotifRefresh(new NotificationVariable.OnNotifRefreshListener() {
-
+        NetworkInteractor networkInteractor = new NetworkInteractorImpl();
+        networkInteractor.getNotification(context, new NetworkInteractor.NotificationListener() {
             @Override
-            public void OnNotifRefresh() {
+            public void onSuccess(NotificationItem data) {
                 getNotificationPurcase(context);
             }
 
             @Override
-            public void OnNotifRefreshStart() {
-
+            public void onError(String message) {
+                viewListener.showLoadingError();
             }
+
         });
     }
 

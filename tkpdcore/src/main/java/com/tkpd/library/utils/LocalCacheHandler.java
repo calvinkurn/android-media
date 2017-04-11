@@ -202,8 +202,7 @@ public class LocalCacheHandler {
         int interval = getInt("expired_time");
         Long time = getLong("timestamp");
         Long curr_time = System.currentTimeMillis() / 1000;
-        if ((curr_time - time) > interval) return true;
-        return false;
+        return (curr_time - time) > interval;
     }
 
     public int getRemainingTime() {

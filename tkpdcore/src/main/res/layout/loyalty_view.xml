@@ -21,7 +21,6 @@
             android:id="@+id/loyalty_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/string_tot"
             android:gravity="right"
             android:text="Rp 2.000.213,-"
             android:textColor="@color/label_color"

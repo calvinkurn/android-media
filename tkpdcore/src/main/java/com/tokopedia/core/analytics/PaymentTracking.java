@@ -3,14 +3,12 @@ package com.tokopedia.core.analytics;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.localytics.android.Localytics;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import org.json.JSONArray;
@@ -47,25 +45,6 @@ public class PaymentTracking extends TrackingUtils {
                         .tagPurchasedEvent(product);
             }
         }
-    }
-
-    public static void eventTransactionAF(Transaction cartData, ArrayList<String> productIDList, int qty, Map[] productList) {
-        JSONArray afJSON = new JSONArray(productIDList);
-        eventTransactionAF(cartData, afJSON, qty, productList);
-    }
-
-    public static void eventTransactionAF(Transaction cartData, JSONArray afJSON, int qty, Map[] productList) {
-        Map<String, Object> afValue = new HashMap<>();
-        afValue.put(AFInAppEventParameterName.REVENUE, cartData.getGrandTotalBeforeFee());
-        afValue.put(AFInAppEventParameterName.CONTENT_ID, afJSON.toString());
-        afValue.put(AFInAppEventParameterName.QUANTITY, qty);
-        afValue.put(AFInAppEventParameterName.RECEIPT_ID, cartData.getPaymentId());
-        afValue.put(AFInAppEventType.ORDER_ID, cartData.getPaymentId());
-        afValue.put(AFInAppEventParameterName.CURRENCY, "IDR");
-        afValue.put("product", productList);
-
-        getAFEngine().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        getAFEngine().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
     }
 
     /* new from TopPayActivity revamped*/
@@ -119,7 +98,6 @@ public class PaymentTracking extends TrackingUtils {
     }
 
     public static void eventCartCheckout(Checkout checkout) {
-        CommonUtils.dumper("GAv4 CHECKOUT EVENT");
         getGTMEngine()
                 .eventCheckout(checkout)
                 .sendScreen(AppScreen.SCREEN_CART_SUMMARY_CHECKOUT)

@@ -65,13 +65,13 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public String getClientIDString(){
-        try{
+    public String getClientIDString() {
+        try {
             Bundle bundle = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA).metaData;
             String clientID = GoogleAnalytics.getInstance(context).newTracker(bundle.getString(AppEventTracking.GTM.GA_ID)).get("&cid");
 
             return clientID;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }
