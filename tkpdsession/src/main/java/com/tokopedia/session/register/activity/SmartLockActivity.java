@@ -44,7 +44,7 @@ public class SmartLockActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple_fragment);
+        setContentView(R.layout.activity_smartlock);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -93,7 +93,7 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     private void resolveResult(Status status, int requestCode) {
         // We don't want to fire multiple resolutions at once since that
-        // can   result in stacked dialogs after rotation or another
+        // can result in stacked dialogs after rotation or another
         // similar event.
         if (mIsResolving) {
             Log.w(TAG, "resolveResult: already resolving.");
