@@ -65,10 +65,8 @@ public class CloudFavoriteShopDataSource {
 
 
     private void saveResponseToCache(Response<String> response) {
-        int tenMinute = 600000;
         new GlobalCacheManager()
                 .setKey(TkpdCache.Key.FAVORITE_SHOP)
-                .setCacheDuration(tenMinute)
                 .setValue(response.body())
                 .store();
     }

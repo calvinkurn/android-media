@@ -41,10 +41,8 @@ public class CloudTopAdsShopDataSource {
     }
 
     private void saveResponseToCache(Response<String> stringResponse) {
-        int tenMinute = 600000;
         new GlobalCacheManager()
                 .setKey(TkpdCache.Key.TOP_ADS_SHOP)
-                .setCacheDuration(tenMinute)
                 .setValue(stringResponse.body())
                 .store();
     }
