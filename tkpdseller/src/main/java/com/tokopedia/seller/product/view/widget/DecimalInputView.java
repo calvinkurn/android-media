@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
+import com.tokopedia.seller.util.CurrencyTextWatcher;
 
 /**
  * Created by nathan on 04/05/17.
@@ -69,7 +69,7 @@ public class DecimalInputView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_decimal_input_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         editText = (EditText) view.findViewById(R.id.edit_text);
-        addTextChangedListener(new TopAdsCurrencyTextWatcher(editText, "0"));
+        addTextChangedListener(new CurrencyTextWatcher(editText, "0"));
     }
 
     public void setHint(String hintText) {

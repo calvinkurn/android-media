@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.widget;
+package com.tokopedia.seller.util;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,12 +11,12 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
  * Created by Nathaniel on 3/3/2017.
  */
 
-public class TopAdsCurrencyTextWatcher implements TextWatcher {
+public class CurrencyTextWatcher implements TextWatcher {
 
     private EditText editText;
     private String defaultValue;
 
-    public TopAdsCurrencyTextWatcher(EditText editText, String defaultValue) {
+    public CurrencyTextWatcher(EditText editText, String defaultValue) {
         this.editText = editText;
         this.defaultValue = defaultValue;
     }
