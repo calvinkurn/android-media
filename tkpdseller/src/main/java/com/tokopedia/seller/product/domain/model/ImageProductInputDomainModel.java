@@ -9,6 +9,7 @@ import java.net.URI;
 public class ImageProductInputDomainModel {
     private String url;
     private URI uri;
+    private String description;
 
     public String getUrl() {
         return url;
@@ -16,5 +17,9 @@ public class ImageProductInputDomainModel {
 
     public URI getUri() {
         return uri;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

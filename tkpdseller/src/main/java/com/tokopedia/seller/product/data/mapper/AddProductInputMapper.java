@@ -57,11 +57,24 @@ public class AddProductInputMapper {
         return serviceModel;
     }
 
-    public static AddProductPictureInputServiceModel mapPicture(AddProductPictureInputDomainModel addProductValidationDomainModel) {
-        return null;
+    public static AddProductPictureInputServiceModel mapPicture(AddProductPictureInputDomainModel domainModel) {
+        AddProductPictureInputServiceModel serviceModel = new AddProductPictureInputServiceModel();
+        serviceModel.setDuplicate(domainModel.getDuplicate());
+        serviceModel.setProductPhoto(domainModel.getProductPhoto());
+        serviceModel.setProductPhotoDefault(domainModel.getProductPhotoDefault());
+        serviceModel.setProductPhotoDesc(domainModel.getProductPhotoDesc());
+        serviceModel.setServerId(domainModel.getServerId());
+        return serviceModel;
     }
 
     public static AddProductSubmitInputServiceModel mapSubmit(AddProductSubmitInputDomainModel domainModel) {
-        return null;
+        AddProductSubmitInputServiceModel serviceModel = new AddProductSubmitInputServiceModel();
+        serviceModel.setClickName(domainModel.getClickName());
+        serviceModel.setPostKey(domainModel.getPostKey());
+        serviceModel.setFileUploaded(domainModel.getFileUploadedTo());
+        serviceModel.setProductEtalaseName(domainModel.getProductEtalaseName());
+        serviceModel.setProductEtalseId(domainModel.getProductEtalaseId());
+        serviceModel.setProductUploadTo(domainModel.getProductUploadTo());
+        return serviceModel;
     }
 }

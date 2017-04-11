@@ -2,9 +2,9 @@ package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.cloud.UploadProductCloud;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 

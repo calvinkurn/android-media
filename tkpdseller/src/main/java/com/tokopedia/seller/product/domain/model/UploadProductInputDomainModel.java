@@ -26,7 +26,6 @@ public class UploadProductInputDomainModel {
     private String productMustInsurance;
     private String productName;
     private String productPhotoDefault;
-    private String productPhotoDescription;
     private String productPrice;
     private String productPriceCurrency;
     private String productReturnable;
@@ -191,14 +190,6 @@ public class UploadProductInputDomainModel {
         this.productPhotoDefault = productPhotoDefault;
     }
 
-    public String getProductPhotoDescription() {
-        return productPhotoDescription;
-    }
-
-    public void setProductPhotoDescription(String productPhotoDescription) {
-        this.productPhotoDescription = productPhotoDescription;
-    }
-
     public String getProductPrice() {
         return productPrice;
     }
@@ -360,5 +351,16 @@ public class UploadProductInputDomainModel {
             }
         }
         return productPhoto;
+    }
+
+    public String getProductPhotoDescription() {
+        String productPhotoDescription = "";
+        for (int i = 0; i < images.size(); i++){
+            productPhotoDescription += images.get(i).getDescription();
+            if (i + 1 < images.size()){
+                productPhotoDescription += "~";
+            }
+        }
+        return productPhotoDescription;
     }
 }
