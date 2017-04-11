@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,14 +24,20 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.di.qualifier.GlobalAuth;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
+import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
@@ -46,6 +53,12 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +67,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_DIRECTORY_VALUE;
+
 /**
  * Created by alifa on 3/24/17.
  */
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
-    CuratedProductAdapter.OnItemClickListener{
+    CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener {
+
+    @BindView(R2.id.nested_intermediary)
+    NestedScrollView nestedScrollView;
 
     @BindView(R2.id.image_header)
     ImageView imageHeader;
@@ -88,18 +107,16 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.category_view_all)
     TextView viewAllCategory;
 
+    com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
+
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
-    ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
-    boolean isUsedUnactiveChildren = false;
-
+    private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
+    private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
-
-
-
     private IntermediaryContract.Presenter presenter;
-    public static final String TAG = "INTERMEDIARY_FRAGMENT";
 
+    public static final String TAG = "INTERMEDIARY_FRAGMENT";
 
     public static IntermediaryFragment createInstance(IntermediaryCategoryAdapter.CategoryListener listener) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -127,6 +144,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         presenter.attachView(this);
         presenter.getIntermediaryCategory(((IntermediaryActivity) getActivity()).getDepartmentId());
+        topAdsView = (TopAdsView) parentView.findViewById(R.id.top_ads_view);
 
         return parentView;
     }
@@ -137,6 +155,22 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
         viewAllCategory.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderTopAds() {
+        topAdsView.setAdsItemClickListener(this);
+        topAdsView.setAdsListener(this);
+        topAdsView.setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        params.getParam().put(TopAdsParams.KEY_SRC,SRC_DIRECTORY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,((IntermediaryActivity) getActivity())
+                .getDepartmentId());
+        topAdsView.setTopAdsParams(params);
+        topAdsView.loadTopAds();
     }
 
     @Override
@@ -245,6 +279,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     }
 
+    @Override
+    public void backToTop() {
+        nestedScrollView.scrollTo(0, 0);
+    }
+
     private void showErrorEmptyState() {
         NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
                         .getFrameLayout(),
@@ -287,4 +326,33 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
 
+    @Override
+    public void onTopAdsLoaded() {
+        topAdsView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+
+    }
+
+    @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+               product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Shop shop) {
+        //TODO: this listener not used in this sprint
+    }
 }

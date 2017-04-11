@@ -29,6 +29,11 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 new IntermediarySubscirber());
     }
 
+    @Override
+    public void addFavoriteShop(String categoryId) {
+
+    }
+
     private class IntermediarySubscirber extends DefaultSubscriber<IntermediaryCategoryDomainModel> {
         @Override
         public void onCompleted() {
@@ -44,6 +49,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         @Override
         public void onNext(IntermediaryCategoryDomainModel domainModel) {
             if (isViewAttached() && domainModel.isIntermediary()) {
+                getView().renderTopAds();
                 getView().renderHeader(domainModel.getHeaderModel());
                 getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
                 getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/nested_intermediary"
     android:orientation="vertical">
 
     <LinearLayout
@@ -99,6 +101,16 @@
                 android:src="@drawable/ic_expand_less_grey_24dp"/>
 
         </LinearLayout>
+
+        <com.tokopedia.topads.sdk.view.TopAdsView
+            android:id="@+id/top_ads_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            card_view:display_type="grid"
+            card_view:show_loading="false"
+            card_view:ep="shop"
+            card_view:items="2" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@id/recycler_view_curation"

@@ -30,6 +30,8 @@ public class TopAdsParams {
     public static final String KEY_CASHBACK = "cashback";
     public static final String KEY_VARIANT = "variant";
 
+    public static final String SRC_DIRECTORY_VALUE = "directory";
+
     public static final String DEFAULT_KEY_ITEM = "2";
     public static final String DEFAULT_KEY_EP = "product";
 

@@ -144,6 +144,8 @@
     <item name="title_header_hoth" type="id"/>
     <item name="recycler_view_hot_list" type="id"/>
     <item name="category_view_all" type="id"/>
+    <item name="top_ads_view" type="id"/>
+    <item name="nested_intermediary" type="id"/>
 
 
 

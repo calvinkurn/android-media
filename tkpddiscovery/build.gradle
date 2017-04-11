@@ -90,6 +90,8 @@ dependencies {
 
     compile getTkpdCore()
 
+    compile project(':tkpdtopadssdk')
+
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 

@@ -19,6 +19,8 @@ public interface IntermediaryContract {
 
         void renderHeader(HeaderModel headerModel);
 
+        void renderTopAds();
+
         void renderCategoryChildren(List<ChildCategoryModel> childCategoryModelList);
 
         void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList);
@@ -33,10 +35,14 @@ public interface IntermediaryContract {
 
         void skipIntermediaryPage();
 
+        void backToTop();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void getIntermediaryCategory(String categoryId);
+
+        void addFavoriteShop(String categoryId);
     }
 }

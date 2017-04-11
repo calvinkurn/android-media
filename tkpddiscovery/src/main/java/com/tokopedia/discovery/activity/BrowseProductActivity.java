@@ -638,10 +638,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             ArrayMap<String, String> visibleTab = new ArrayMap<>();
             visibleTab.put(BrowserSectionsPagerAdapter.PRODUK, BrowseProductParentView.VISIBLE_ON);
             parentFragment.initSectionAdapter(visibleTab);
-//            if (isBack && parentFragment!=null) {
-//                parentFragment.renderCategories(discoveryInteractor.
-//                        getCategoryHeaderCache(categoryLevel.size()+1).getData());
-//            }
         }
     }
 
