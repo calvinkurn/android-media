@@ -1,29 +1,14 @@
 package com.tokopedia.ride.ontrip.view;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.widget.RemoteViews;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonSyntaxException;
 import com.google.maps.android.PolyUtil;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -54,9 +39,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
-    private Location mCurrentLocation;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -70,18 +52,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void initialize() {
-        if (checkPlayServices()) {
-            createLocationRequest();
-            initializeLocationService();
-            getView().showLoadingWaitingResponse();
-            getView().hideRideRequestStatus();
-            getView().hideCancelRequestButton();
+        getView().showLoadingWaitingResponse();
+        getView().hideRideRequestStatus();
+        getView().hideCancelRequestButton();
 
-            if (getView().isWaitingResponse()) {
-                getView().startPeriodicService(getView().getRequestId());
-            } else {
-                actionRideRequest(getView().getParam());
-            }
+        if (getView().isWaitingResponse()) {
+            getView().startPeriodicService(getView().getRequestId());
+        } else {
+            actionRideRequest(getView().getParam());
         }
     }
 
@@ -113,97 +91,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onNext(RideRequest rideRequest) {
                 getView().onSuccessCreateRideRequest(rideRequest);
                 getView().startPeriodicService(rideRequest.getRequestId());
-                //getView().showCancelRequestButton();
                 proccessGetCurrentRideRequest(rideRequest);
             }
         });
-    }
-
-    private boolean checkPlayServices() {
-        GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
-        int result = googleAPI.isGooglePlayServicesAvailable(getView().getActivity());
-        if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result))
-                getView().showMessage(getView().getActivity().getString(R.string.unavailable_play_service));
-            else {
-                getView().showMessage(getView().getActivity().getString(R.string.unsupported_device));
-            }
-            return false;
-        }
-        return true;
-    }
-
-    private void createLocationRequest() {
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(5000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    private void initializeLocationService() {
-        if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(getView().getActivity())
-                    .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                        @Override
-                        public void onConnected(@Nullable Bundle bundle) {
-                            if (getFuzedLocation() != null) {
-                                mCurrentLocation = getFuzedLocation();
-                                startLocationUpdates();
-
-                                getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                            } else {
-                                getView().showMessage(getView().getActivity().getString(R.string.location_permission_required));
-                            }
-                        }
-
-                        @Override
-                        public void onConnectionSuspended(int i) {
-
-                        }
-                    })
-                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                        @Override
-                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                        }
-                    })
-                    .addApi(LocationServices.API)
-                    .addApi(Places.GEO_DATA_API)
-                    .build();
-        }
-
-        mGoogleApiClient.connect();
-    }
-
-    public Location getFuzedLocation() {
-        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-                && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)) {
-            return null;
-        }
-
-        return LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-    }
-
-    private void startLocationUpdates() {
-        if ((ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
-                && (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)) {
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                mCurrentLocation = location;
-            }
-        });
-    }
-
-    @Override
-    public void goToMyLocation() {
-        getView().moveToCurrentLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
     }
 
     @Override
@@ -293,6 +183,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
                 getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
+                getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
