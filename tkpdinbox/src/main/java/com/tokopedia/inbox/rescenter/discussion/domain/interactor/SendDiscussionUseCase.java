@@ -154,6 +154,8 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
                 requestParams.getString(PARAM_ATTACHMENT_STRING, ""));
         params.putString(CreatePictureUseCase.PARAM_SERVER_ID,
                 requestParams.getString(PARAM_SERVER_ID, ""));
+        params.putString(UploadImageUseCase.PARAM_URL,
+                requestParams.getString(PARAM_UPLOAD_HOST, ""));
         return params;
     }
 
@@ -304,7 +306,7 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
         SimpleDateFormat newSdf = new SimpleDateFormat(DiscussionItemViewModel.DISCUSSION_DATE_TIME_FORMAT, id);
         String createTimeNew;
         try {
-            createTimeNew = newSdf.format(sdf.parse(createTimeOld.replace("WIB","")));
+            createTimeNew = newSdf.format(sdf.parse(createTimeOld.replace("WIB", "")));
         } catch (ParseException e) {
             createTimeNew = createTimeOld;
         }
