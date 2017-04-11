@@ -35,7 +35,6 @@ public class GetOpportunityFilterUseCase extends UseCase<OpportunityCategoryMode
                 .onErrorResumeNext(new Func1<Throwable, Observable<OpportunityCategoryModel>>() {
                     @Override
                     public Observable<OpportunityCategoryModel> call(Throwable throwable) {
-                        CommonUtils.dumper("NISNIS + ONERROR RESUME NEXT" + throwable.getLocalizedMessage());
                         return repository.getOpportunityCategoryFromNetwork(requestParams.getParameters());
                     }
                 });

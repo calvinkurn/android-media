@@ -9,7 +9,7 @@ import java.util.List;
  * Created by nisie on 3/6/17.
  */
 
-public class CategoryViewModel implements Parcelable{
+public class CategoryViewModel implements Parcelable {
     int categoryId;
     String categoryName;
     int parent;
@@ -17,6 +17,8 @@ public class CategoryViewModel implements Parcelable{
     int treeLevel;
     String identifier;
     List<CategoryViewModel> listChild;
+    boolean isExpanded;
+    private boolean isSelected;
 
     public CategoryViewModel() {
     }
@@ -29,6 +31,26 @@ public class CategoryViewModel implements Parcelable{
         treeLevel = in.readInt();
         identifier = in.readString();
         listChild = in.createTypedArrayList(CategoryViewModel.CREATOR);
+        isExpanded = in.readByte() != 0;
+        isSelected = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(categoryId);
+        dest.writeString(categoryName);
+        dest.writeInt(parent);
+        dest.writeInt(isHidden);
+        dest.writeInt(treeLevel);
+        dest.writeString(identifier);
+        dest.writeTypedList(listChild);
+        dest.writeByte((byte) (isExpanded ? 1 : 0));
+        dest.writeByte((byte) (isSelected ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<CategoryViewModel> CREATOR = new Creator<CategoryViewModel>() {
@@ -99,19 +121,19 @@ public class CategoryViewModel implements Parcelable{
         this.identifier = identifier;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isExpanded() {
+        return isExpanded;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(categoryId);
-        dest.writeString(categoryName);
-        dest.writeInt(parent);
-        dest.writeInt(isHidden);
-        dest.writeInt(treeLevel);
-        dest.writeString(identifier);
-        dest.writeTypedList(listChild);
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

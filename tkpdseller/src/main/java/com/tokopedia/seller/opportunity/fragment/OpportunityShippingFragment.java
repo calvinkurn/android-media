@@ -83,7 +83,7 @@ public class OpportunityShippingFragment extends BasePresenterFragment implement
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_recycler_view;
+        return R.layout.fragment_opportunity_shipping;
     }
 
     @Override
@@ -113,24 +113,10 @@ public class OpportunityShippingFragment extends BasePresenterFragment implement
     @Override
     public void onResume() {
         super.onResume();
-        CommonUtils.dumper("NISNIS ON RESUME");
         if ((listShipping == null || listShipping.size() == 0)
                 && getArguments().getParcelableArrayList(ARGS_SHIPPING_LIST) != null)
             listShipping = getArguments().getParcelableArrayList(ARGS_SHIPPING_LIST);
         adapter.setList(listShipping);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        CommonUtils.dumper("NISNIS onStop");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        CommonUtils.dumper("NISNIS onPause");
-
     }
 
     @Override

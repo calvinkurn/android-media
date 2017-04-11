@@ -417,7 +417,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             presenter.setParamSort(paramSort);
 
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
-            CommonUtils.dumper("NISNIS Category" + data.getExtras().getInt(OpportunityCategoryFragment.SELECTED_POSITION));
+            CommonUtils.dumper("NISNIS Shipping" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE));
+            CommonUtils.dumper("NISNIS Category" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY));
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

@@ -1,15 +1,18 @@
 package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
+import com.tokopedia.seller.opportunity.adapter.OpportunityCategoryAdapter;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
-import com.tokopedia.seller.topads.view.model.RadioButtonItem;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,112 +21,106 @@ import java.util.List;
  * Created by nisie on 3/15/17.
  */
 
-public class OpportunityCategoryFragment extends TopAdsFilterRadioButtonFragment {
+public class OpportunityCategoryFragment extends BasePresenterFragment implements OpportunityFilterActivity.FilterListener {
 
-    public static final String SELECTED_POSITION = "CATEGORY_SELECTED_POSITION";
 
-    private int selectedCategoryValue;
+    private static final String ARGS_CATEGORY_LIST = "ARGS_CATEGORY_LIST";
+    RecyclerView categoryList;
+    OpportunityCategoryAdapter adapter;
+    ArrayList<CategoryViewModel> listCategory;
 
-    public static OpportunityCategoryFragment createInstance(Bundle bundle) {
+    public OpportunityCategoryFragment() {
+        this.listCategory = new ArrayList<>();
+    }
+
+    public static Fragment createInstance(List<CategoryViewModel> listShipping) {
         OpportunityCategoryFragment fragment = new OpportunityCategoryFragment();
-        bundle.putInt(SELECTED_POSITION, 1);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARGS_CATEGORY_LIST, new ArrayList<>(listShipping));
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_filter_content_status;
+        return R.layout.fragment_opportunity_category;
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-        selectedCategoryValue = bundle.getInt(SELECTED_POSITION, selectedCategoryValue);
-    }
-
-
-    @Override
-    public String getTitle(Context context) {
-        return context.getString(R.string.filter);
+    protected void initView(View view) {
+        categoryList = (RecyclerView) view.findViewById(R.id.list);
+        categoryList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        adapter = OpportunityCategoryAdapter.createInstance((OpportunityFilterActivity) getActivity());
+        categoryList.setAdapter(adapter);
     }
 
     @Override
-    public Intent addResult(Intent intent) {
-        return intent;
+    protected void setViewListener() {
+
     }
 
     @Override
-    protected List<RadioButtonItem> getRadioButtonList() {
+    protected void initialVar() {
 
-        ArrayList<CategoryViewModel> listCategory = new ArrayList<>();
-        CategoryViewModel cat1 = new CategoryViewModel();
-        cat1.setCategoryId(1);
-        cat1.setCategoryName("Category 1");
-        cat1.setTreeLevel(1);
-
-        CategoryViewModel cat2 = new CategoryViewModel();
-        cat2.setCategoryId(2);
-        cat2.setCategoryName("Category 2");
-        cat2.setTreeLevel(2);
-
-        ArrayList<CategoryViewModel> list2 = new ArrayList<>();
-        CategoryViewModel cat11 = new CategoryViewModel();
-        cat11.setCategoryId(11);
-        cat11.setCategoryName("Category 1-1");
-        cat11.setTreeLevel(2);
-        CategoryViewModel cat12 = new CategoryViewModel();
-        cat12.setCategoryId(12);
-        cat12.setCategoryName("Category 1-2");
-        cat12.setTreeLevel(2);
-
-        list2.add(cat11);
-        list2.add(cat12);
-
-        cat1.setListChild(list2);
-
-        listCategory.add(cat1);
-        listCategory.add(cat2);
-
-        List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        for (int i = 0; i < listCategory.size(); i++) {
-            RadioButtonItem radioButtonItem = new RadioButtonItem();
-            radioButtonItem.setName(listCategory.get(i).getCategoryName());
-            radioButtonItem.setValue(String.valueOf(listCategory.get(i).getCategoryId()));
-            radioButtonItem.setPosition(i);
-            radioButtonItemList.add(radioButtonItem);
-        }
-        updateSelectedPosition(radioButtonItemList);
-        return radioButtonItemList;
-    }
-
-    private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedCategoryValue == 0) { // default to all etalase
-            selectedAdapterPosition = 0;
-            return;
-        }
-        if (selectedAdapterPosition > 0) { // has been updated for first time only
-            return;
-        }
-        for (int i = 0; i < radioButtonItemList.size(); i++) {
-            RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
-            if (Integer.valueOf(radioButtonItem.getValue()) == selectedCategoryValue) {
-                selectedAdapterPosition = i;
-                break;
-            }
-        }
     }
 
     @Override
-    public void onItemSelected(RadioButtonItem radioButtonItem, int position) {
-        super.onItemSelected(radioButtonItem, position);
-        getActivity().setResult(Activity.RESULT_OK, getResultIntent(radioButtonItem, position));
-        getActivity().finish();
+    protected void setActionVar() {
+
     }
 
-    private Intent getResultIntent(RadioButtonItem radioButtonItem, int position) {
-        Intent intent = new Intent();
-        intent.putExtra(SELECTED_POSITION, position);
-        return intent;
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
     }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if ((listCategory == null || listCategory.size() == 0)
+                && getArguments().getParcelableArrayList(ARGS_CATEGORY_LIST) != null)
+            listCategory = getArguments().getParcelableArrayList(ARGS_CATEGORY_LIST);
+        adapter.setList(listCategory);
+    }
+
+    @Override
+    public void updateData(OpportunityFilterActivityViewModel viewModel) {
+        this.listCategory = new ArrayList<>(viewModel.getListCategory());
+    }
+
 }

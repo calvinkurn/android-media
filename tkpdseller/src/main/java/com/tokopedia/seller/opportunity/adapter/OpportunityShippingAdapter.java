@@ -5,12 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nisie on 4/7/17.
@@ -20,7 +20,7 @@ public class OpportunityShippingAdapter extends RecyclerView.Adapter<Opportunity
 
     ArrayList<ShippingTypeViewModel> list;
 
-    public interface ShippingListener{
+    public interface ShippingListener {
         void onShippingSelected(ShippingTypeViewModel shippingTypeViewModel);
     }
 
@@ -52,18 +52,27 @@ public class OpportunityShippingAdapter extends RecyclerView.Adapter<Opportunity
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.checkBox.setText(list.get(position).getShippingTypeName());
+
         holder.checkBox.setChecked(list.get(position).isSelected());
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.get(position).setSelected(!list.get(position).isSelected());
+                list.get(position).setSelected(holder.checkBox.isChecked());
                 list.get(position).setPosition(position);
+
+                for (ShippingTypeViewModel viewModel : list) {
+                    if (viewModel != list.get(position))
+                        viewModel.setSelected(false);
+                }
+
                 listener.onShippingSelected(list.get(position));
                 notifyDataSetChanged();
             }
         });
+
     }
 
     @Override

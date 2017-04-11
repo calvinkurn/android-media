@@ -60,23 +60,39 @@ public class LocalGetFilterOpportunitySource {
 
     private void createFakeCategoryData(OpportunityCategoryData data) {
         List<CategoryList> categoryLists = new ArrayList<>();
-        for(int i = 0 ; i < 10 ; i++){
+        for (int i = 0; i < 10; i++) {
             CategoryList item = new CategoryList();
             item.setId(String.valueOf(i));
             item.setHidden(0);
             item.setIdentifier("asdasdasd" + i);
             item.setTree(1);
-            item.setName("category "+ i);
+            item.setName("category " + i);
             item.setParent(1);
-            item.setChild(new ArrayList<CategoryList>());
+            item.setChild(createFakeChildCategoryData(item.getName()));
             categoryLists.add(item);
         }
         data.setCategoryList(categoryLists);
     }
 
+    private List<CategoryList> createFakeChildCategoryData(String name) {
+        List<CategoryList> categoryLists = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            CategoryList item = new CategoryList();
+            item.setId(String.valueOf(i));
+            item.setHidden(0);
+            item.setIdentifier("asdasdasd" + i);
+            item.setTree(1);
+            item.setName("child " + i + " of " + name);
+            item.setParent(1);
+            item.setChild(new ArrayList<CategoryList>());
+            categoryLists.add(item);
+        }
+        return categoryLists;
+    }
+
     private void createFakeShippingData(OpportunityCategoryData data) {
         List<ShippingType> shippingTypes = new ArrayList<>();
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++) {
             ShippingType item = new ShippingType();
             item.setShippingTypeID(i);
             item.setShippingTypeName("Shipping " + i);
@@ -87,7 +103,7 @@ public class LocalGetFilterOpportunitySource {
 
     private void createFakeSortData(OpportunityCategoryData data) {
         List<SortingType> sortingTypes = new ArrayList<>();
-        for(int i = 0 ; i < 5 ; i++){
+        for (int i = 0; i < 5; i++) {
             SortingType item = new SortingType();
             item.setSortingTypeID(i);
             item.setSortingTypeName("Sorting " + i);

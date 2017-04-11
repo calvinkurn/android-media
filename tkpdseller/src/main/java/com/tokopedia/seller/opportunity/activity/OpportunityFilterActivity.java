@@ -1,5 +1,6 @@
 package com.tokopedia.seller.opportunity.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -7,15 +8,20 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.adapter.OpportunityCategoryAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityShippingAdapter;
+import com.tokopedia.seller.opportunity.fragment.OpportunityCategoryFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityShippingFragment;
+import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
+import com.tokopedia.seller.selling.presenter.Shipping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +31,8 @@ import java.util.List;
  */
 
 public class OpportunityFilterActivity extends BasePresenterActivity
-        implements OpportunityFilterAdapter.FilterListener, OpportunityShippingAdapter.ShippingListener {
+        implements OpportunityFilterAdapter.FilterListener, OpportunityShippingAdapter.ShippingListener, OpportunityCategoryAdapter.CategoryListener {
+
 
     public interface FilterListener {
         void updateData(OpportunityFilterActivityViewModel viewModel);
@@ -33,8 +40,15 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     private static final String ARGS_DATA = "OpportunityFilterActivity_ARGS_DATA";
     private static final String PARAM_FILTER_VIEW_MODEL = "PARAM_FILTER_VIEW_MODEL";
+    public static final String PARAM_SELECTED_SHIPPING_TYPE = "PARAM_SELECTED_SHIPPING_TYPE";
+    public static final String PARAM_SELECTED_CATEGORY = "PARAM_SELECTED_CATEGORY";
+
+    View saveButton;
+    View resetButton;
     private List<Fragment> listFragment;
     private OpportunityFilterActivityViewModel viewModel;
+    private String selectedShipping;
+    private String selectedCategory;
 
     public static Intent createIntent(Context context, OpportunityFilterActivityViewModel data) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
@@ -48,6 +62,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     protected void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null && savedInstanceState.getParcelable(ARGS_DATA) != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            selectedShipping = savedInstanceState.getString(PARAM_SELECTED_SHIPPING_TYPE, "");
+            selectedCategory = savedInstanceState.getString(PARAM_SELECTED_CATEGORY, "");
         } else if (getIntent().getExtras() != null &&
                 getIntent().getExtras().getParcelable(PARAM_FILTER_VIEW_MODEL) != null) {
             viewModel = getIntent().getExtras().getParcelable(PARAM_FILTER_VIEW_MODEL);
@@ -82,6 +98,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
+        saveButton = findViewById(R.id.save_button);
+        resetButton = findViewById(R.id.reset_button);
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(false);
@@ -93,8 +112,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         fragmentTransaction.replace(R.id.filter, fragment);
 
         listFragment = new ArrayList<>();
-//        listFragment.add(OpportunityCategoryFragment.createInstance(getIntent().getExtras()));
-        listFragment.add(OpportunityShippingFragment.createInstance(viewModel.getListShipping()));
+        listFragment.add(OpportunityCategoryFragment.createInstance(viewModel.getListCategory()));
         listFragment.add(OpportunityShippingFragment.createInstance(viewModel.getListShipping()));
         fragmentTransaction.replace(R.id.container, listFragment.get(0));
 
@@ -103,12 +121,39 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     protected void setViewListener() {
+        saveButton.setOnClickListener(onSaveClicked());
+        resetButton.setOnClickListener(onResetClicked());
+    }
 
+    private View.OnClickListener onResetClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                selectedCategory = "";
+//                selectedShipping = "";
+            }
+        };
+    }
+
+    private View.OnClickListener onSaveClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                Bundle extra = new Bundle();
+                extra.putString(PARAM_SELECTED_SHIPPING_TYPE, selectedShipping);
+                extra.putString(PARAM_SELECTED_CATEGORY, selectedCategory);
+                intent.putExtra(ARGS_DATA, extra);
+                setResult(Activity.RESULT_OK, intent);
+                finish();
+            }
+        };
     }
 
     @Override
     protected void initVar() {
-
+        selectedShipping = "";
+        selectedCategory = "";
     }
 
     @Override
@@ -133,12 +178,22 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(ARGS_DATA, viewModel);
+        outState.putString(PARAM_SELECTED_SHIPPING_TYPE, selectedShipping);
+        outState.putString(PARAM_SELECTED_CATEGORY, selectedCategory);
         super.onSaveInstanceState(outState);
     }
 
 
     @Override
     public void onShippingSelected(ShippingTypeViewModel shippingTypeViewModel) {
-        viewModel.getListShipping().get(shippingTypeViewModel.getPosition()).setSelected(true);
+        viewModel.getListShipping().get(shippingTypeViewModel.getPosition())
+                .setSelected(shippingTypeViewModel.isSelected());
+        selectedShipping = String.valueOf(shippingTypeViewModel.getShippingTypeId());
+    }
+
+
+    @Override
+    public void onCategorySelected(CategoryViewModel categoryViewModel) {
+        selectedShipping = String.valueOf(categoryViewModel.getCategoryId());
     }
 }

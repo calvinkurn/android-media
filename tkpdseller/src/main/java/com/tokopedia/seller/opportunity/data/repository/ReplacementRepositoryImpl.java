@@ -40,14 +40,12 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
 
     @Override
     public Observable<OpportunityCategoryModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters) {
-        CommonUtils.dumper("NISNIS getOpportunityCategoryFromNetwork");
         return opportunityDataSourceFactory.createCloudFilterReplacementSource()
                 .getFilter(parameters);
     }
 
     @Override
     public Observable<OpportunityCategoryModel> getOpportunityCategoryFromLocal() {
-        CommonUtils.dumper("NISNIS getOpportunityCategoryFromLocal");
         return opportunityDataSourceFactory.createLocalFilterReplacementSource()
                 .getFilter();
     }
