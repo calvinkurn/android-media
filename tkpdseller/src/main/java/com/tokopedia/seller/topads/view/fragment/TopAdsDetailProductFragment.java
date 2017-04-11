@@ -26,7 +26,7 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.lib.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.LabelView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -38,7 +38,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         void goToProductActivity(String productUrl);
     }
 
-    private TopAdsLabelView promoGroupLabelView;
+    private LabelView promoGroupLabelView;
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
@@ -64,7 +64,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initView(View view) {
         super.initView(view);
-        promoGroupLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_promo_group);
+        promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
         name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {

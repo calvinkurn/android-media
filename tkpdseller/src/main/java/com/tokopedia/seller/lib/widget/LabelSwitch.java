@@ -15,7 +15,7 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsLabelSwitch extends FrameLayout {
+public class LabelSwitch extends FrameLayout {
     TextView titleTextView;
     TextView switchTextView;
     SwitchCompat switchStatus;
@@ -24,27 +24,27 @@ public class TopAdsLabelSwitch extends FrameLayout {
     private String titleText;
     private boolean switchEnable;
 
-    public TopAdsLabelSwitch(Context context) {
+    public LabelSwitch(Context context) {
         super(context);
         init();
     }
 
-    public TopAdsLabelSwitch(Context context, AttributeSet attrs) {
+    public LabelSwitch(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public TopAdsLabelSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LabelSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
-            titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
-            switchEnable = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_switch_enable, false);
+            titleText = styledAttributes.getString(R.styleable.LabelView_title);
+            switchEnable = styledAttributes.getBoolean(R.styleable.LabelView_switch_enable, false);
         } finally {
             styledAttributes.recycle();
         }

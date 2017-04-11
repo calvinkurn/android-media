@@ -12,13 +12,13 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
-import com.tokopedia.seller.lib.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.LabelView;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
-    TopAdsLabelView groupSummaryLabelView;
-    TopAdsLabelView itemSummaryLabelView;
+    LabelView groupSummaryLabelView;
+    LabelView itemSummaryLabelView;
 
     int totalProductAd;
 
@@ -42,8 +42,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
-        groupSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_group_summary);
-        itemSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_item_summary);
+        groupSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_group_summary);
+        itemSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_item_summary);
         groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

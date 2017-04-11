@@ -5,7 +5,7 @@
         <attr name="date_picker_content" format="string"/>
         <attr name="date_picker_content_color" format="color"/>
     </declare-styleable>
-    <declare-styleable name="TopAdsLabelView">
+    <declare-styleable name="LabelView">
         <attr name="title" format="string"/>
         <attr name="content" format="string"/>
         <attr name="content_color" format="color"/>

@@ -18,7 +18,7 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 12/29/16.
  */
 
-public class TopAdsLabelView extends FrameLayout {
+public class LabelView extends FrameLayout {
 
     TextView titleTextView;
     TextView contentTextView;
@@ -31,32 +31,32 @@ public class TopAdsLabelView extends FrameLayout {
     private boolean contentSmall;
     private boolean showArrow;
 
-    public TopAdsLabelView(Context context) {
+    public LabelView(Context context) {
         super(context);
         init();
     }
 
-    public TopAdsLabelView(Context context, AttributeSet attrs) {
+    public LabelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public TopAdsLabelView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LabelView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TopAdsLabelView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
-            titleText = styledAttributes.getString(R.styleable.TopAdsLabelView_title);
-            valueText = styledAttributes.getString(R.styleable.TopAdsLabelView_content);
-            colorValue = styledAttributes.getColor(R.styleable.TopAdsLabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
-            contentTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_content_textStyle, Typeface.NORMAL);
-            titleTextStyleValue = styledAttributes.getInt(R.styleable.TopAdsLabelView_title_textStyle, Typeface.NORMAL);
-            contentSmall = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_content_small, false);
-            showArrow = styledAttributes.getBoolean(R.styleable.TopAdsLabelView_label_show_arrow, false);
+            titleText = styledAttributes.getString(R.styleable.LabelView_title);
+            valueText = styledAttributes.getString(R.styleable.LabelView_content);
+            colorValue = styledAttributes.getColor(R.styleable.LabelView_content_color, ContextCompat.getColor(getContext(), R.color.grey));
+            contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_content_textStyle, Typeface.NORMAL);
+            titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
+            contentSmall = styledAttributes.getBoolean(R.styleable.LabelView_content_small, false);
+            showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
         } finally {
             styledAttributes.recycle();
         }
