@@ -21,6 +21,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
+import com.tokopedia.core.gcm.Constants;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -78,9 +79,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_notification);
 
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+        bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
 
-        optionVibrate = (CustomCheckBoxPreference) findPreference("notifications_new_message_vibrate");
+        optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 //SystemPreferencesHandler.setVibrate(context, preference.get)
