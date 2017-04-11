@@ -65,7 +65,7 @@ public class UploadImageModel {
         private String filePath;
         @SerializedName("pic_id")
         @Expose
-        private Integer picId;
+        private int picId;
         @SerializedName("pic_obj")
         @Expose
         private String picObj;
@@ -78,11 +78,11 @@ public class UploadImageModel {
             this.filePath = filePath;
         }
 
-        public Integer getPicId() {
+        public int getPicId() {
             return picId;
         }
 
-        public void setPicId(Integer picId) {
+        public void setPicId(int picId) {
             this.picId = picId;
         }
 
