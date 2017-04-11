@@ -60,8 +60,7 @@
                         android:padding="2dp"
                         android:text="2\nmin"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
-                        app:srcCompat="@drawable/avd_ride_marker" />
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/tv_marker_pickup_eta"

@@ -464,6 +464,11 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
                     }
                 }
+            }).onErrorReturn(new Func1<Throwable, String>() {
+                @Override
+                public String call(Throwable throwable) {
+                    return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
+                }
             }).subscribe(new Subscriber<String>() {
                 @Override
                 public void onCompleted() {

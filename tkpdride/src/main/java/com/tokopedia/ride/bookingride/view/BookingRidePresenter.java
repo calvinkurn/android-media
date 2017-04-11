@@ -46,6 +46,7 @@ import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
@@ -213,6 +214,11 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                     e.printStackTrace();
                     subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
                 }
+            }
+        }).onErrorReturn(new Func1<Throwable, String>() {
+            @Override
+            public String call(Throwable throwable) {
+                return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
             }
         })
                 .subscribeOn(Schedulers.newThread())
@@ -400,10 +406,15 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                             latitude,
                             longitude
                     ));
-                } catch (IOException e) {
+                } catch (IOException e){
                     e.printStackTrace();
                     subscriber.onNext(String.valueOf(latitude) + ", " + String.valueOf(longitude));
                 }
+            }
+        }).onErrorReturn(new Func1<Throwable, String>() {
+            @Override
+            public String call(Throwable throwable) {
+                return String.valueOf(latitude) + ", " + String.valueOf(longitude);
             }
         }).subscribe(new Subscriber<String>() {
             @Override
@@ -413,6 +424,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
             }
 
             @Override
