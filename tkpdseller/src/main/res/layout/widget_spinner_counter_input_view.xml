@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
-    <com.tokopedia.seller.product.view.widget.DecimalInputView
-        android:id="@+id/decimal_input_view"
+    <com.tokopedia.seller.product.view.widget.CounterInputView
+        android:id="@+id/counter_input_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_vs"
