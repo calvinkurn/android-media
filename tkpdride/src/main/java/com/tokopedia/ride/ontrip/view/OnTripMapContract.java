@@ -94,6 +94,10 @@ public interface OnTripMapContract {
         void showFailedShare();
 
         void showShareDialog(String shareUrl);
+
+        void hideContactPanel();
+
+        void showContactPanel();
     }
 
     interface Presenter extends CustomerPresenter<View> {

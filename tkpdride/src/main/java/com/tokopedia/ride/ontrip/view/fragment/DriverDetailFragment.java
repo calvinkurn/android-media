@@ -91,6 +91,8 @@ public class DriverDetailFragment extends BaseFragment {
         void actionCancelRide();
 
         void actionShareEta();
+
+        void actionContactDriver(String telp);
     }
 
     @Override
@@ -185,13 +187,18 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.call_driver_layout)
     public void actionCallDriver() {
-        openCallIntent();
+//        openCallIntent();
+        onFragmentInteractionListener.actionContactDriver(driver.getPhoneNumber());
     }
 
     private void openCallIntent() {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:" + driver.getPhoneNumber()));
         startActivity(callIntent);
+    }
+
+    private void openSmsIntent(){
+
     }
 
     @OnClick(R2.id.layout_cancel_ride)

@@ -2,6 +2,8 @@ package com.tokopedia.ride.ontrip.view.fragment;
 
 
 import android.Manifest;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
@@ -20,6 +22,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +30,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -57,6 +62,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -120,11 +126,19 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     LinearLayout cancelButton;
     @BindView(R2.id.bottom_container)
     FrameLayout bottomContainer;
+    @BindView(R2.id.block_translucent_view)
+    FrameLayout blockTranslucentView;
+    @BindView(R2.id.contact_panel)
+    RelativeLayout contactPanelLayout;
+    @BindView(R2.id.tv_driver_telp)
+    TextView driverTelpTextView;
 
     OnFragmentInteractionListener onFragmentInteractionListener;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
+
+    private boolean isScreenBlocked;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -699,6 +713,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void actionContactDriver(String telp) {
+        showContactPanel();
+        driverTelpTextView.setText(telp);
+    }
+
+    @Override
     public void showShareDialog(String shareUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.RIDE_TYPE)
@@ -708,5 +728,105 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .build();
         Intent shareIntent = ShareActivity.getCallingRideIntent(getActivity(), shareData);
         startActivity(shareIntent);
+    }
+
+    @Override
+    public void hideContactPanel() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isScreenBlocked = false;
+                Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.bottom_down);
+                contactPanelLayout.startAnimation(bottomDown);
+                contactPanelLayout.setVisibility(View.GONE);
+            }
+        }, 200);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0xBB000000,
+                0x00000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blockTranslucentView.setVisibility(View.GONE);
+            }
+        }, 500);
+    }
+
+    @Override
+    public void showContactPanel() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isScreenBlocked = true;
+                Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.bottom_up);
+
+                contactPanelLayout.startAnimation(bottomUp);
+                contactPanelLayout.setVisibility(View.VISIBLE);
+            }
+        }, 500);
+
+        blockTranslucentView.setVisibility(View.VISIBLE);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0x00000000,
+                0xBB000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+    }
+
+    @OnClick(R2.id.btn_call)
+    public void actionCallBtnClicked() {
+        openCallIntent();
+    }
+
+    @OnClick(R2.id.btn_message)
+    public void actionMessageBtnClicked() {
+        openSendMessage();
+    }
+
+    @OnClick(R2.id.btn_cancel_contact)
+    public void actionCancelContactBtnClicked() {
+        hideContactPanel();
+    }
+
+    @OnClick(R2.id.block_translucent_view)
+    public void actionBlockTranslucentClicked() {
+        hideContactPanel();
+    }
+
+    private void openCallIntent() {
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
+        startActivity(callIntent);
+    }
+
+    private void openSendMessage() {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.fromParts("sms", rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber(), null))
+        );
+    }
+
+    public OnTripActivity.BackButtonListener getBackButtonListener() {
+        return new OnTripActivity.BackButtonListener() {
+            @Override
+            public void onBackPressed() {
+                if (isScreenBlocked){
+                    hideContactPanel();
+                }
+            }
+
+            @Override
+            public boolean canGoBack() {
+                return isScreenBlocked;
+            }
+        };
     }
 }

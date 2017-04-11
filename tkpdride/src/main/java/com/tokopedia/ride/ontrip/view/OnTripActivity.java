@@ -30,6 +30,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     ConfirmBookingViewModel confirmBookingViewModel;
     Toolbar mToolbar;
+    private BackButtonListener listener;
 
     public static Intent getCallingIntent(Activity activity, ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = new Intent(activity, OnTripActivity.class);
@@ -56,9 +57,13 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         if (confirmBookingViewModel != null) {
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
-            addFragment(R.id.container, OnTripMapFragment.newInstance(bundle), OnTripMapFragment.TAG);
+            OnTripMapFragment fragment = OnTripMapFragment.newInstance(bundle);
+            listener = fragment.getBackButtonListener();
+            addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         } else {
-            addFragment(R.id.container, OnTripMapFragment.newInstance(), OnTripMapFragment.TAG);
+            OnTripMapFragment fragment = OnTripMapFragment.newInstance();
+            listener = fragment.getBackButtonListener();
+            addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         }
     }
 
@@ -112,7 +117,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     @Override
     public void onBackPressed() {
         RideConfiguration rideConfiguration = new RideConfiguration();
-        if (rideConfiguration.isWaitingDriverState()) {
+        if (listener != null && listener.canGoBack()) {
+            listener.onBackPressed();
+        } else if (rideConfiguration.isWaitingDriverState()) {
             Intent intent = getIntent();
             setResult(APP_HOME_RESULT_CODE, intent);
             finish();
@@ -134,5 +141,11 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public interface BackButtonListener {
+        void onBackPressed();
+
+        boolean canGoBack();
     }
 }
