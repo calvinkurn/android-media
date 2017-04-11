@@ -21,6 +21,6 @@ public class ProductAdditionalInfoViewHolder {
 
     public ProductAdditionalInfoViewHolder(View view) {
         descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
-        descriptionEditText = (EditText) view.findViewById(R.id.spinner_counter_input_view_weight);
+        descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
     }
 }
