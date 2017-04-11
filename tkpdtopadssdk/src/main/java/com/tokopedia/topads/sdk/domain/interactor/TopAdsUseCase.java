@@ -53,7 +53,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected void onPostExecute(TopAdsModel topAdsModel) {
-                if (topAdsModel.getStatus().getErrorCode() == 0) {
+                if (topAdsModel.getError()==null && topAdsModel.getStatus().getErrorCode() == 0) {
                     List<Visitable> visitables = new ArrayList<>();
                     for (Data data : topAdsModel.getData()) {
                         if (data.getProduct() != null) {
@@ -64,8 +64,8 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                     }
                     view.displayAds(visitables);
                 } else {
-                    view.notifyAdsErrorLoaded(topAdsModel.getStatus().getErrorCode(),
-                            topAdsModel.getStatus().getMessage());
+                    view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
+                            topAdsModel.getError().getTitle());
                 }
                 view.finishLoading();
             }
