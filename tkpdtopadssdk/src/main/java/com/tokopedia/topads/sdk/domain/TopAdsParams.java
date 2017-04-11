@@ -33,7 +33,8 @@ public class TopAdsParams {
     public static final String SRC_DIRECTORY_VALUE = "directory";
 
     public static final String DEFAULT_KEY_ITEM = "2";
-    public static final String DEFAULT_KEY_EP = "product";
+    public static final String DEFAULT_KEY_EP = "none";
+    public static final String DEFAULT_KEY_DEVICE = "android";
 
 
 
@@ -44,6 +45,7 @@ public class TopAdsParams {
         param = new TKPDMapParam<>();
         param.put(KEY_ITEM, DEFAULT_KEY_ITEM);
         param.put(KEY_EP, DEFAULT_KEY_EP);
+        param.put(KEY_DEVICE, DEFAULT_KEY_DEVICE);
     }
 
     public TKPDMapParam<String, String> getParam() {

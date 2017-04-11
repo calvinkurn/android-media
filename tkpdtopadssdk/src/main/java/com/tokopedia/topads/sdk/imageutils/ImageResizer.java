@@ -177,7 +177,8 @@ public class ImageResizer extends ImageWorker {
      * that are equal to or greater than the requested width and height
      */
     public static Bitmap decodeSampledBitmapFromDescriptor(
-            FileDescriptor fileDescriptor, int reqWidth, int reqHeight, ImageCache cache) {
+            FileDescriptor fileDescriptor, int reqWidth, int reqHeight, ImageCache cache)
+            throws Exception {
 
         // First decode with inJustDecodeBounds=true to check dimensions
         final BitmapFactory.Options options = new BitmapFactory.Options();

@@ -324,6 +324,8 @@ public class ImageCache {
                     }
                 } catch (final IOException e) {
                     Log.e(TAG, "getBitmapFromDiskCache - " + e);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error Exception- " + e);
                 } finally {
                     try {
                         if (inputStream != null) {

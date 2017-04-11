@@ -10,15 +10,18 @@ import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.RecyclerViewAdapterWrapper;
+import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author by errysuprayogi on 4/10/17.
  */
 
-public class TopAdsAdapterWrapper extends RecyclerViewAdapterWrapper {
+public class TopAdsAdapterWrapper<T> extends RecyclerViewAdapterWrapper implements AdapterView {
     public static final int TYPE_PENDING = 999;
     public static final int TYPE_TOPADS = 888;
     private final Context context;
@@ -27,10 +30,10 @@ public class TopAdsAdapterWrapper extends RecyclerViewAdapterWrapper {
     private AtomicBoolean dataPending;
     private RequestToLoadMoreListener requestToLoadMoreListener;
 
-    public TopAdsAdapterWrapper(Context context, Adapter wrapped,
+    public TopAdsAdapterWrapper(Context context, Adapter wrapped, List<T> datas,
                                 RequestToLoadMoreListener requestToLoadMoreListener,
                                 @LayoutRes int pendingViewResId, boolean keepOnAppending) {
-        super(wrapped);
+        super(wrapped, datas);
         this.context = context;
         this.requestToLoadMoreListener = requestToLoadMoreListener;
         this.pendingViewResId = pendingViewResId;
@@ -38,9 +41,9 @@ public class TopAdsAdapterWrapper extends RecyclerViewAdapterWrapper {
         dataPending = new AtomicBoolean(false);
     }
 
-    public TopAdsAdapterWrapper(Context context, Adapter wrapped,
+    public TopAdsAdapterWrapper(Context context, Adapter wrapped, List<T> datas,
                                 RequestToLoadMoreListener requestToLoadMoreListener) {
-        this(context, wrapped, requestToLoadMoreListener, R.layout.item_loading, true);
+        this(context, wrapped, datas, requestToLoadMoreListener, R.layout.item_loading, true);
     }
 
     private void stopAppending() {
@@ -80,7 +83,7 @@ public class TopAdsAdapterWrapper extends RecyclerViewAdapterWrapper {
 
     @Override
     public int getItemCount() {
-        return super.getItemCount() + (keepOnAppending.get() ? 1 : 0);
+        return super.getItemCount() + 1 + (keepOnAppending.get() ? 1 : 0);
     }
 
     @Override
@@ -111,7 +114,7 @@ public class TopAdsAdapterWrapper extends RecyclerViewAdapterWrapper {
                 requestToLoadMoreListener.onLoadMoreRequested();
             }
         } else if (getItemViewType(position) == TYPE_TOPADS) {
-//            ((TopAdsViewHolder) holder).load();
+//            ((AbstractAdsViewHolder) holder).load();
         } else {
             super.onBindViewHolder(holder, position);
         }

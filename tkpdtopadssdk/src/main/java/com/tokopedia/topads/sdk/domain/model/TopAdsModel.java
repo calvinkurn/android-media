@@ -17,7 +17,9 @@ public class TopAdsModel {
     private static final String KEY_HEADER = "header";
     private static final String KEY_STATUS = "status";
     private static final String KEY_DATA = "data";
+    private static final String KEY_ERROR = "errors";
 
+    private Error error;
     private Status status;
     private Header header;
     private List<Data> data = new ArrayList<>();
@@ -26,6 +28,10 @@ public class TopAdsModel {
     }
 
     public TopAdsModel(JSONObject object) throws JSONException {
+        if(!object.isNull(KEY_ERROR)){
+            JSONObject error = object.getJSONArray(KEY_ERROR).getJSONObject(0);
+            setError(new Error(error));
+        }
         if(!object.isNull(KEY_HEADER)) {
             setHeader(new Header(object.getJSONObject(KEY_HEADER)));
         }
@@ -38,6 +44,14 @@ public class TopAdsModel {
                 data.add(new Data(dataArray.getJSONObject(i)));
             }
         }
+    }
+
+    public Error getError() {
+        return error;
+    }
+
+    public void setError(Error error) {
+        this.error = error;
     }
 
     public Status getStatus() {

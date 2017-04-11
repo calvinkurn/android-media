@@ -3,18 +3,23 @@ package com.tokopedia.topads.sdk.base.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.support.v7.widget.RecyclerView.*;
 
 /**
  * @author by errysuprayogi on 4/10/17.
  */
 
-public class RecyclerViewAdapterWrapper extends Adapter {
+public class RecyclerViewAdapterWrapper<T> extends Adapter {
 
     private final Adapter wrapped;
+    private final List<T> mData;
 
-    public RecyclerViewAdapterWrapper(Adapter wrapped) {
+    public RecyclerViewAdapterWrapper(final Adapter wrapped, List<T> datas) {
         super();
+        this.mData = datas;
         this.wrapped = wrapped;
         this.wrapped.registerAdapterDataObserver(new AdapterDataObserver() {
             public void onChanged() {
@@ -109,7 +114,7 @@ public class RecyclerViewAdapterWrapper extends Adapter {
         wrapped.onDetachedFromRecyclerView(recyclerView);
     }
 
-    public RecyclerView.Adapter getWrappedAdapter() {
+    public Adapter getWrappedAdapter() {
         return wrapped;
     }
 }
