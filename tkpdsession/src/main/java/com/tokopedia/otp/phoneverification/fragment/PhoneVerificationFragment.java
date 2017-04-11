@@ -57,8 +57,9 @@ import permissions.dispatcher.RuntimePermissions;
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
 
-    public interface PhoneVerificationFragmentListener{
+    public interface PhoneVerificationFragmentListener {
         void onSkipVerification();
+
         void onSuccessVerification();
     }
 
@@ -326,6 +327,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessRequestOtp(String status) {
+        setViewEnabled(true);
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
@@ -340,6 +342,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onErrorRequestOTP(String errorMessage) {
+        setViewEnabled(true);
         finishProgressDialog();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -364,6 +367,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessVerifyPhoneNumber() {
+        finishProgressDialog();
+        setViewEnabled(true);
         SessionHandler.setIsMSISDNVerified(true);
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
         listener.onSuccessVerification();
@@ -384,11 +389,19 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onErrorVerifyPhoneNumber(String errorMessage) {
+        setViewEnabled(true);
         finishProgressDialog();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void setViewEnabled(boolean isEnabled) {
+        requestOtpButton.setEnabled(isEnabled);
+        requestOtpCallButton.setEnabled(isEnabled);
+        verifyButton.setEnabled(isEnabled);
     }
 
     private void startTimer() {
