@@ -29,8 +29,8 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.TopAdsLabelSwitch;
+import com.tokopedia.seller.lib.widget.TopAdsLabelView;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 

@@ -43,7 +43,7 @@
         app:spinner_hint="@string/product_label_status"
         app:spinner_selection="0" />
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/label_view_shop_window"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

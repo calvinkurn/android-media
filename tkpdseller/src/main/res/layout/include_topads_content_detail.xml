@@ -6,49 +6,49 @@
     android:divider="@drawable/line_separator"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/title_price_and_schedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/label_topads_price_and_schedule"
         app:title_textStyle="bold"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/max_bid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_max_bid"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/avg_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_avg_cost"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_start"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_end"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/daily_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_daily_budget"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/title_statistic_review"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -56,35 +56,35 @@
         app:title="@string/topads_title_review_statistic"
         app:title_textStyle="bold"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/sent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_sent"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/impr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_impression"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/click"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_click"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/ctr"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_small="true"
         app:title="@string/label_top_ads_ctr"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/favorite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

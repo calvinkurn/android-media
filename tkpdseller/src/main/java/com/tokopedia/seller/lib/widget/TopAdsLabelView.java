@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.view.widget;
+package com.tokopedia.seller.lib.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

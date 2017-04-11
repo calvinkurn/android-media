@@ -26,7 +26,7 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.TopAdsLabelView;
 
 /**
  * Created by zulfikarrahman on 12/29/16.

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -11,7 +11,7 @@
 
     <include layout="@layout/include_separator_horizontal"/>
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch
+    <com.tokopedia.seller.lib.widget.TopAdsLabelSwitch
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

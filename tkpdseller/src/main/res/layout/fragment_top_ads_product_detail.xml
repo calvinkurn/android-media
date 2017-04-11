@@ -20,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/topads_detail_padding_item" />
 
-            <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+            <com.tokopedia.seller.lib.widget.TopAdsLabelView
                 android:id="@+id/label_view_promo_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

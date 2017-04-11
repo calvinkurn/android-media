@@ -13,11 +13,10 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.TopAdsLabelView;
 
 /**
  * Created by zulfikarrahman on 1/3/17.

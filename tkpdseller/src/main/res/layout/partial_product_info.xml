@@ -51,7 +51,7 @@
 
         </LinearLayout>
 
-        <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+        <com.tokopedia.seller.lib.widget.TopAdsLabelView
             android:id="@+id/label_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
     </LinearLayout>
 
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.TopAdsLabelView
         android:id="@+id/label_view_catalog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
