@@ -219,7 +219,9 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     private void goToContent() {
         setResult(getIntent().getExtras().getInt(STATE));
-        Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+        if(mGoogleApiClient.isConnected()) {
+            Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+        }
         finish();
     }
 
