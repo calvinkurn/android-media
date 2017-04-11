@@ -1532,6 +1532,8 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
+        EtalaseFilters.clear();
+        EtalaseIdFilters.clear();
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
             EtalaseFilters.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
