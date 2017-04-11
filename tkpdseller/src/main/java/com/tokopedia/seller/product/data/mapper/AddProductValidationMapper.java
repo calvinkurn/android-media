@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationResult;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
 
 import rx.functions.Func1;
@@ -11,7 +12,18 @@ import rx.functions.Func1;
 
 public class AddProductValidationMapper implements Func1<AddProductValidationServiceModel, AddProductValidationDomainModel> {
     @Override
-    public AddProductValidationDomainModel call(AddProductValidationServiceModel addProductValidationServiceModel) {
-        return null;
+    public AddProductValidationDomainModel call(AddProductValidationServiceModel serviceModel) {
+        AddProductValidationDomainModel domainModel = new AddProductValidationDomainModel();
+
+        AddProductValidationResult result = serviceModel.getAddProductValidationResult();
+        domainModel.setPostKey(result.getPostKey());
+        domainModel.setProductDesc(result.getProductDesc());
+        domainModel.setProductDest(result.getProductDest());
+        domainModel.setproductEtalase(result.getProductEtalase());
+        domainModel.setProductId(result.getProductId());
+        domainModel.setProductName(result.getProductName());
+        domainModel.setProductUrl(result.getProductUrl());
+
+        return domainModel;
     }
 }

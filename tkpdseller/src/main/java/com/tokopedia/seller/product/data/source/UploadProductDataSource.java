@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureSer
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 
 import rx.Observable;
 

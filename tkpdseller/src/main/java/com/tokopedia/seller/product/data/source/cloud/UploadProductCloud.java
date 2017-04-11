@@ -6,7 +6,7 @@ import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureSer
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import rx.Observable;
@@ -34,6 +34,6 @@ public class UploadProductCloud {
 
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
         return api.addProductSubmit(serviceModel.generateMapParam())
-                .map(new GetData<AddProductSubmitServiceModel>())
+                .map(new GetData<AddProductSubmitServiceModel>());
     }
 }
