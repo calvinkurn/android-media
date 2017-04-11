@@ -4,6 +4,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.digital.cart.interactor.IOtpVerificationInteractor;
 import com.tokopedia.digital.cart.interactor.OtpVerificationInteractor;
@@ -124,6 +127,40 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorNoConnectionFirstRequestSmsOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN);
+                        }
+                    }, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException
+                        && e.getLocalizedMessage() != null) {
+                    view.renderErrorFirstRequestSmsOtp(e.getLocalizedMessage());
                 } else {
                     view.renderErrorFirstRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
