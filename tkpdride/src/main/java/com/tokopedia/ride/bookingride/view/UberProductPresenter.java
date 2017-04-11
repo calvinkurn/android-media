@@ -78,6 +78,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProductList();
                 getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
             }
 
@@ -88,6 +89,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                 getView().hideProgress();
 
                 if (productsList.size() == 0) {
+                    getView().hideProductList();
                     getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                 } else {
                     //check if currency code of any product is not IDR, show error message

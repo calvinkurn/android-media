@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +54,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @BindView(R2.id.crux_cabs_ad_cross)
     ImageView mAdsCrossImageView;
     @BindView(R2.id.empty_product_list)
-    View mEmptyProductLinearLayout;
+    View mErrorLayout;
     @BindView(R2.id.tv_error_desc)
     TextView mErrorDescriptionTextView;
     @BindView(R2.id.empty_list_retry)
@@ -244,7 +245,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void hideProductList() {
-        mRideProductsRecyclerView.setVisibility(View.GONE);
+        if (mRideProductsRecyclerView != null) {
+            mRideProductsRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -259,7 +262,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         hideProgress();
 
         mProgreessAndErrorView.setVisibility(View.VISIBLE);
-        mEmptyProductLinearLayout.setVisibility(View.VISIBLE);
+        mErrorLayout.setVisibility(View.VISIBLE);
         mErrorDescriptionTextView.setText(message);
         if (btnText != null && !btnText.isEmpty()) {
             mRetryButtonTextView.setVisibility(View.VISIBLE);
