@@ -397,6 +397,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
+        voucherCartHolderView.setUsedVoucher(
+                voucherDigital.getAttributeVoucher().getVoucherCode(),
+                voucherDigital.getAttributeVoucher().getMessage());
         checkoutHolderView.enableVoucherDiscount(
                 voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
         );
