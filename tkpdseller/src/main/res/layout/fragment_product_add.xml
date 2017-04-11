@@ -10,6 +10,10 @@
 
         <include layout="@layout/partial_product_info" />
 
+        <include layout="@layout/partial_product_image" />
+
         <include layout="@layout/partial_product_detail" />
+
+        <include layout="@layout/partial_product_additional_info" />
     </LinearLayout>
 </ScrollView>

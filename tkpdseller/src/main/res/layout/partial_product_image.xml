@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LabelLayoutWithoutBorder"
+    android:layout_marginTop="@dimen/product_margin_cards">
+
+    <com.tokopedia.seller.product.view.widget.ImagesSelectView
+        android:id="@+id/image_select_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_select_view_height"
+        app:addPictureSrc="@drawable/addproduct"
+        app:imageLimit="5"
+        app:primaryImageString="@string/prompt_main_picture"
+        app:recyclerviewPadding="0dp"
+        app:titleString="@string/upload_product_image" />
+
+</FrameLayout>

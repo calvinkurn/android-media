@@ -296,6 +296,7 @@
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
     <string name="product_label_insurance">Asuransi</string>
