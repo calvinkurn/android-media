@@ -4,11 +4,15 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,10 +25,17 @@ public class CheckoutHolderView extends RelativeLayout {
 
     @BindView(R2.id.tv_value_price)
     TextView tvPrice;
+    @BindView(R2.id.tv_value_discount)
+    TextView tvDiscount;
+    @BindView(R2.id.holder_voucher_discount)
+    LinearLayout holderVoucherDiscount;
     @BindView(R2.id.tv_value_sub_total)
     TextView tvSubTotalPrice;
     @BindView(R2.id.btn_next)
     TextView btnNext;
+
+    private long pricePlain = 0;
+    private long voucherDiscount = 0;
 
     public CheckoutHolderView(Context context) {
         super(context);
@@ -48,7 +59,10 @@ public class CheckoutHolderView extends RelativeLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderData(final IAction actionListener, String price, String totalPrice) {
+    public void renderData(
+            final IAction actionListener, String price, String totalPrice, long pricePlain
+    ) {
+        this.pricePlain = pricePlain;
         tvPrice.setText(price);
         tvSubTotalPrice.setText(totalPrice);
         btnNext.setOnClickListener(new OnClickListener() {
@@ -58,6 +72,36 @@ public class CheckoutHolderView extends RelativeLayout {
             }
         });
     }
+
+    public void disableVoucherDiscount() {
+        voucherDiscount = 0;
+        tvDiscount.setText(getStringIdrFormat((double) this.voucherDiscount));
+        holderVoucherDiscount.setVisibility(GONE);
+        long totalPrice = pricePlain - voucherDiscount;
+        tvSubTotalPrice.setText(getStringIdrFormat((double) totalPrice));
+    }
+
+    public void enableVoucherDiscount(long voucherDiscount) {
+        this.holderVoucherDiscount.setVisibility(VISIBLE);
+        this.voucherDiscount = voucherDiscount;
+        tvDiscount.setText(getStringIdrFormat((double) this.voucherDiscount));
+        long totalPrice = pricePlain - voucherDiscount;
+        tvSubTotalPrice.setText(getStringIdrFormat((double) totalPrice));
+    }
+
+    public String getStringIdrFormat(Double value) {
+        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+        kursIndonesia.setMaximumFractionDigits(0);
+        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
+
+        formatRp.setCurrencySymbol("Rp ");
+        formatRp.setGroupingSeparator('.');
+        formatRp.setMonetaryDecimalSeparator('.');
+        kursIndonesia.setDecimalFormatSymbols(formatRp);
+
+        return kursIndonesia.format(value);
+    }
+
 
     public interface IAction {
         void onClickButtonNext();

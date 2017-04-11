@@ -15,6 +15,10 @@ public class VoucherAttributeDigital implements Parcelable {
 
     private String message;
 
+    private long discountAmountPlain;
+
+    private long cashbackAmpountPlain;
+
     public String getVoucherCode() {
         return voucherCode;
     }
@@ -39,6 +43,25 @@ public class VoucherAttributeDigital implements Parcelable {
         this.message = message;
     }
 
+    public long getDiscountAmountPlain() {
+        return discountAmountPlain;
+    }
+
+    public void setDiscountAmountPlain(long discountAmountPlain) {
+        this.discountAmountPlain = discountAmountPlain;
+    }
+
+    public long getCashbackAmpountPlain() {
+        return cashbackAmpountPlain;
+    }
+
+    public void setCashbackAmpountPlain(long cashbackAmpountPlain) {
+        this.cashbackAmpountPlain = cashbackAmpountPlain;
+    }
+
+    public VoucherAttributeDigital() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -50,27 +73,27 @@ public class VoucherAttributeDigital implements Parcelable {
         dest.writeString(this.voucherCode);
         dest.writeLong(this.userId);
         dest.writeString(this.message);
-    }
-
-    public VoucherAttributeDigital() {
+        dest.writeLong(this.discountAmountPlain);
+        dest.writeLong(this.cashbackAmpountPlain);
     }
 
     protected VoucherAttributeDigital(Parcel in) {
         this.voucherCode = in.readString();
         this.userId = in.readLong();
         this.message = in.readString();
+        this.discountAmountPlain = in.readLong();
+        this.cashbackAmpountPlain = in.readLong();
     }
 
-    public static final Parcelable.Creator<VoucherAttributeDigital> CREATOR =
-            new Parcelable.Creator<VoucherAttributeDigital>() {
-                @Override
-                public VoucherAttributeDigital createFromParcel(Parcel source) {
-                    return new VoucherAttributeDigital(source);
-                }
+    public static final Creator<VoucherAttributeDigital> CREATOR = new Creator<VoucherAttributeDigital>() {
+        @Override
+        public VoucherAttributeDigital createFromParcel(Parcel source) {
+            return new VoucherAttributeDigital(source);
+        }
 
-                @Override
-                public VoucherAttributeDigital[] newArray(int size) {
-                    return new VoucherAttributeDigital[size];
-                }
-            };
+        @Override
+        public VoucherAttributeDigital[] newArray(int size) {
+            return new VoucherAttributeDigital[size];
+        }
+    };
 }

@@ -46,6 +46,37 @@
                     tools:text="Rp. 50.000,-"/>
             </LinearLayout>
 
+
+            <LinearLayout
+                android:id="@+id/holder_voucher_discount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/small_dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_label_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:text="@string/label_discount_cart_digital"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tv_value_discount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:gravity="end"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/text_size_medium"
+                    android:textStyle="bold"
+                    tools:text="Rp. 50.000,-"/>
+            </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
