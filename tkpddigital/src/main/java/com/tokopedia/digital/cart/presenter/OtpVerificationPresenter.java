@@ -94,7 +94,41 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorNoConnectionReRequestSmsOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
-                } else {
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            view.renderErrorTimeoutReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN);
+                        }
+                    }, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException
+                        && e.getLocalizedMessage() != null) {
+                    view.renderErrorReRequestSmsOtp(e.getLocalizedMessage());
+                }else {
                     view.renderErrorReRequestSmsOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
@@ -194,6 +228,40 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorNoConnectionRequestCallOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
+                }else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            view.renderErrorTimeoutRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN);
+                        }
+                    }, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException
+                        && e.getLocalizedMessage() != null) {
+                    view.renderErrorRequestCallOtp(e.getLocalizedMessage());
                 } else {
                     view.renderErrorRequestCallOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
@@ -227,7 +295,41 @@ public class OtpVerificationPresenter implements IOtpVerificationPresenter {
                     view.renderErrorNoConnectionVerifyOtp(
                             ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
                     );
-                } else {
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(new ErrorListener() {
+                        @Override
+                        public void onUnknown() {
+                            view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                        }
+
+                        @Override
+                        public void onTimeout() {
+                            view.renderErrorTimeoutVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+
+                        }
+
+                        @Override
+                        public void onServerError() {
+                            view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+
+                        }
+
+                        @Override
+                        public void onBadRequest() {
+                            view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_SERVER);
+                        }
+
+                        @Override
+                        public void onForbidden() {
+                            view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN);
+                        }
+                    }, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException
+                        && e.getLocalizedMessage() != null) {
+                    view.renderErrorVerifyOtp(e.getLocalizedMessage());
+                }else {
                     view.renderErrorVerifyOtp(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
