@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
+import com.bignerdranch.android.multiselector.BuildConfig;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
@@ -97,9 +99,12 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     public static final String PRODUCT_SOC_MED_DATA = "PRODUCT_SOC_MED_DATA";
     public static final String IMAGE_URL = "image_url";
+    public static final String IMAGE_URLS = "image_urls";
     public static final String IMAGE_PATH_CAMERA = "IMAGE_PATH_CAMERA";
     public static final String IS_CAMERA_OPEN = "IS_CAMERA_OPEN";
     public static final String TOKOPEDIA = "Tokopedia";
+
+    public static final int RESULT_CODE	= 323;
 
     String FRAGMENT;
     int position;
@@ -304,7 +309,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     protected void onResume() {
         super.onResume();
         if (SessionHandler.isFirstTimeAskedPermissionStorage(GalleryActivity.this)
-                || shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE))
+                || (Build.VERSION.SDK_INT >= 23
+                && shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)))
             GalleryActivityPermissionsDispatcher.checkPermissionWithCheck(this);
         else
             RequestPermissionUtil.onFinishActivityIfNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -352,9 +358,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
-            intent.putExtra(GalleryBrowser.IMAGE_URL, path);
+            intent.putExtra(GalleryActivity.IMAGE_URL, path);
             intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryBrowser.RESULT_CODE, intent);
+            setResult(GalleryActivity.RESULT_CODE, intent);
             finish();
         }
     }
@@ -364,9 +370,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && checkCollectionNotNull(paths)) {
             Intent intent = new Intent();
-            intent.putStringArrayListExtra(GalleryBrowser.IMAGE_URLS, new ArrayList<String>(paths));
+            intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, new ArrayList<String>(paths));
             intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-            setResult(GalleryBrowser.RESULT_CODE, intent);
+            setResult(GalleryActivity.RESULT_CODE, intent);
             finish();
         }
     }
@@ -454,9 +460,9 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
-                                intent.putExtra("image_url", imagePathCamera);
+                                intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
                                 intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
-                                setResult(GalleryBrowser.RESULT_CODE, intent);
+                                setResult(GalleryActivity.RESULT_CODE, intent);
                                 finish();
                             }
                             break;

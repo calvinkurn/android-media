@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+                <com.tokopedia.seller.lib.widget.LabelView
                     android:id="@+id/label_view_group_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
 
                 <include layout="@layout/include_separator_horizontal"/>
 
-                <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+                <com.tokopedia.seller.lib.widget.LabelView
                     android:id="@+id/label_view_item_summary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

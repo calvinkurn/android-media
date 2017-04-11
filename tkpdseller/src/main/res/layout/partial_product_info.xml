@@ -51,7 +51,7 @@
 
         </LinearLayout>
 
-        <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+        <com.tokopedia.seller.lib.widget.LabelView
             android:id="@+id/label_view_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
     </LinearLayout>
 
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.lib.widget.LabelView
         android:id="@+id/label_view_catalog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,5 +71,21 @@
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
         app:title="@string/product_label_catalog" />
+
+    <FrameLayout
+        style="@style/LabelLayoutWithoutBorder"
+        android:layout_marginTop="@dimen/product_margin_cards">
+
+        <com.tokopedia.seller.product.view.widget.ImagesSelectView
+            android:id="@+id/image_select_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/image_select_view_height"
+            app:recyclerviewPadding="0dp"
+            app:addPictureSrc="@drawable/addproduct"
+            app:primaryImageString="@string/prompt_main_picture"
+            app:imageLimit="5"
+            app:titleString="@string/upload_product_image"/>
+
+    </FrameLayout>
 
 </LinearLayout>

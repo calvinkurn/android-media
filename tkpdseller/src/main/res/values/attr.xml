@@ -5,7 +5,7 @@
         <attr name="date_picker_content" format="string"/>
         <attr name="date_picker_content_color" format="color"/>
     </declare-styleable>
-    <declare-styleable name="TopAdsLabelView">
+    <declare-styleable name="LabelView">
         <attr name="title" format="string"/>
         <attr name="content" format="string"/>
         <attr name="content_color" format="color"/>
@@ -153,6 +153,7 @@
     <declare-styleable name="CounterInputView">
         <attr name="counter_hint" format="string"/>
         <attr name="counter_text" format="string"/>
+        <attr name="counter_show_counter_button" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="SpinnerTextView">
         <attr name="spinner_hint" format="string"/>
@@ -161,11 +162,12 @@
         <attr name="spinner_values" format="reference"/>
     </declare-styleable>
 
-    <declare-styleable name="SpinnerDecimalInputView">
+    <declare-styleable name="SpinnerCounterInputView">
         <attr name="spinner_decimal_entries" format="reference"/>
         <attr name="spinner_decimal_values" format="reference"/>
         <attr name="spinner_decimal_selection" format="integer"/>
         <attr name="spinner_decimal_hint" format="string"/>
+        <attr name="spinner_decimal_show_counter_button" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />

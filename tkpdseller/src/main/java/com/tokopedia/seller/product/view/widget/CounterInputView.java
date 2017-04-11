@@ -23,6 +23,7 @@ public class CounterInputView extends FrameLayout {
 
     private String hintText;
     private String valueText;
+    private boolean showCounterButton;
 
     public CounterInputView(Context context) {
         super(context);
@@ -45,6 +46,7 @@ public class CounterInputView extends FrameLayout {
         try {
             hintText = styledAttributes.getString(R.styleable.CounterInputView_counter_hint);
             valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
+            showCounterButton = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_show_counter_button, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -59,8 +61,14 @@ public class CounterInputView extends FrameLayout {
         if (!TextUtils.isEmpty(valueText)) {
             decimalInputView.setText(valueText);
         }
+        updateCounterButtonView(showCounterButton);
         invalidate();
         requestLayout();
+    }
+
+    public void updateCounterButtonView(boolean show) {
+        plusImageButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        minusImageButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void init() {
@@ -93,6 +101,12 @@ public class CounterInputView extends FrameLayout {
 
     public void setText(String textValue) {
         decimalInputView.setText(textValue);
+        invalidate();
+        requestLayout();
+    }
+
+    public void showCounterButton(boolean show) {
+        updateCounterButtonView(show);
         invalidate();
         requestLayout();
     }

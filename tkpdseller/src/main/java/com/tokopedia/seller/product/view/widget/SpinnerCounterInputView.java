@@ -14,39 +14,41 @@ import com.tokopedia.seller.product.utils.ConverterUtils;
  * Created by nathan on 04/05/17.
  */
 
-public class SpinnerDecimalInputView extends FrameLayout {
+public class SpinnerCounterInputView extends FrameLayout {
 
-    private DecimalInputView decimalInputView;
+    private CounterInputView counterInputView;
     private SpinnerTextView spinnerTextView;
 
     private String hintText;
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selection;
+    private boolean showCounterButton;
 
-    public SpinnerDecimalInputView(Context context) {
+    public SpinnerCounterInputView(Context context) {
         super(context);
         init();
     }
 
-    public SpinnerDecimalInputView(Context context, AttributeSet attrs) {
+    public SpinnerCounterInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public SpinnerDecimalInputView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SpinnerCounterInputView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerDecimalInputView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
-            hintText = styledAttributes.getString(R.styleable.SpinnerDecimalInputView_spinner_decimal_hint);
-            selection = styledAttributes.getInt(R.styleable.SpinnerDecimalInputView_spinner_decimal_selection, 0);
-            entries = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_decimal_entries);
-            values = styledAttributes.getTextArray(R.styleable.SpinnerDecimalInputView_spinner_decimal_values);
+            hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
+            selection = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection, 0);
+            entries = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_entries);
+            values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
+            showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -56,23 +58,24 @@ public class SpinnerDecimalInputView extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         if (!TextUtils.isEmpty(hintText)) {
-            decimalInputView.setHint(hintText);
+            counterInputView.setHint(hintText);
         }
         if (entries != null) {
             spinnerTextView.setEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
+        counterInputView.showCounterButton(showCounterButton);
         invalidate();
         requestLayout();
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_spinner_count_input_view, this);
+        View view = inflate(getContext(), R.layout.widget_spinner_counter_input_view, this);
         spinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view);
-        decimalInputView = (DecimalInputView) view.findViewById(R.id.decimal_input_view);
+        counterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view);
     }
 
     public void setHint(String hintText) {
-        decimalInputView.setHint(hintText);
+        counterInputView.setHint(hintText);
         invalidate();
         requestLayout();
     }
