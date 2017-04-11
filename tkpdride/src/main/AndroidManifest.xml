@@ -31,7 +31,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity"></activity>
+        <activity android:name=".bookingride.view.activity.TokoCashWebViewActivity" />
+        <activity
+            android:name=".history.view.RideHistoryActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
     </application>
 
 </manifest>

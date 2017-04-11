@@ -7,6 +7,7 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface BookingRideRepository {
     Observable<Promo> getPromo(TKPDMapParam<String, Object> parameters);
 
     Observable<String> getRideMap(String requestId, TKPDMapParam<String, Object> parameters);
+
+    Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters);
 }

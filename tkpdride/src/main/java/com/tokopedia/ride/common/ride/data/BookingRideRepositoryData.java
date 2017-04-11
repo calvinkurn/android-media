@@ -8,6 +8,7 @@ import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
@@ -15,6 +16,7 @@ import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
+import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.List;
 
@@ -143,6 +145,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public String call(RideRequestMapEntity rideRequestMapEntity) {
                         return rideRequestMapEntity.getHref();
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getHistories(parameters)
+                .map(new Func1<List<RideHistoryEntity>, List<RideHistory>>() {
+                    @Override
+                    public List<RideHistory> call(List<RideHistoryEntity> rideTransactionEntities) {
+                        return null;
                     }
                 });
     }
