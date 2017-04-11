@@ -24,4 +24,8 @@ public class OkHttpRetryPolicy {
         return new OkHttpRetryPolicy(45, 45, 45, 3);
     }
 
+    public static OkHttpRetryPolicy createdOkHttpNoAutoRetryPolicy() {
+        return new OkHttpRetryPolicy(45, 45, 45, 0);
+    }
+
 }
