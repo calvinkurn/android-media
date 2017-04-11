@@ -27,4 +27,5 @@
     <string name="share_ride_description">Klik link ini untuk menemukan perjalanan anda dari Tokopedia.</string>
     <string name="toolbar_title_booking">Booking Ride</string>
     <string name="booking_ride_menu_your_trips">Your Trips</string>
+    <string name="popup_cancel_ride_title">Are you sure to cancel your booking ?</string>
 </resources>

@@ -194,6 +194,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @Override
     public void renderFareEstimate(String fareId, String display, float price) {
+        if (getActivity().isFinishing()) {
+            return;
+        }
+
         confirmBookingViewModel.setFareId(fareId);
         confirmBookingViewModel.setPriceFmt(display);
         confirmBookingViewModel.setPrice(price);

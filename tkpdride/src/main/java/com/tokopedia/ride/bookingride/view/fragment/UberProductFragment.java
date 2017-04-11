@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -210,6 +209,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @OnClick(R2.id.empty_list_retry)
     public void actionRetry() {
         if (source != null) {
+            hideErrorMessageLayout();
             showProgress();
             mPresenter.actionGetRideProducts(source, destination);
         } else {
@@ -276,6 +276,13 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void hideErrorMessage() {
         if (mProgreessAndErrorView != null) {
             mProgreessAndErrorView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void hideErrorMessageLayout() {
+        if (mErrorLayout != null) {
+            mErrorLayout.setVisibility(View.VISIBLE);
         }
     }
 

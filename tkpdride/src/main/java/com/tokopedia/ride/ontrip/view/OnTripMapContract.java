@@ -81,7 +81,7 @@ public interface OnTripMapContract {
 
         void showFindingUberNotification();
 
-        void cancelFindingUberNotification();
+        void hideFindingUberNotification();
 
         void showAcceptedNotification(RideRequest result);
 
@@ -96,6 +96,8 @@ public interface OnTripMapContract {
         void showShareDialog(String shareUrl);
 
         void hideContactPanel();
+
+        void hideCancelPanel();
 
         void showContactPanel();
     }

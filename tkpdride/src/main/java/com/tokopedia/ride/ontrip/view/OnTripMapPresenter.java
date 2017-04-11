@@ -111,7 +111,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(String s) {
-                getView().showMessage(s);
+                //getView().showMessage(s);
                 getView().onSuccessCancelRideRequest();
             }
         });
@@ -158,7 +158,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case "no_drivers_available":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().clearRideConfiguration();
                 getView().showNoDriverAvailableDialog();
@@ -169,7 +169,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCancelRequestButton();
                 break;
             case "accepted":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showAcceptedNotification(result);
@@ -178,7 +178,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 break;
             case "arriving":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
@@ -187,7 +187,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderArrivingDriverEvent(result);
                 break;
             case "in_progress":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
@@ -195,17 +195,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
                 break;
             case "driver_canceled":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().renderDriverCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "rider_canceled":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().renderRiderCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "completed":
-                getView().cancelFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().renderCompletedRequest(result);
                 getView().clearRideConfiguration();
                 break;
