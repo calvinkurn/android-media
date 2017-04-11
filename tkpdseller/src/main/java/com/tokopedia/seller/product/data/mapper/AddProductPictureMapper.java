@@ -1,0 +1,17 @@
+package com.tokopedia.seller.product.data.mapper;
+
+import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureServiceModel;
+import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
+
+import rx.functions.Func1;
+
+/**
+ * @author sebastianuskh on 4/11/17.
+ */
+
+public class AddProductPictureMapper implements Func1<AddProductPictureServiceModel, AddProductPictureDomainModel> {
+    @Override
+    public AddProductPictureDomainModel call(AddProductPictureServiceModel addProductPictureServiceModel) {
+        return null;
+    }
+}

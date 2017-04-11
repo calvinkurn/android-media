@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.domain.interactor.observable;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.product.domain.AddProductRepository;
+import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.mapper.AddProductValidationToSubmitMapper;
 import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
@@ -21,10 +21,10 @@ import rx.functions.Func1;
 public class AddProductObservable
         implements Func1<UploadProductInputDomainModel,
                 Observable<AddProductDomainModel>> {
-    private final AddProductRepository addProductRepository;
+    private final UploadProductRepository uploadProductRepository;
 
-    public AddProductObservable(AddProductRepository addProductRepository) {
-        this.addProductRepository = addProductRepository;
+    public AddProductObservable(UploadProductRepository uploadProductRepository) {
+        this.uploadProductRepository = uploadProductRepository;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class AddProductObservable
     private class AddProductValidation implements Func1<UploadProductInputDomainModel, Observable<AddProductValidationDomainModel>> {
         @Override
         public Observable<AddProductValidationDomainModel> call(UploadProductInputDomainModel uploadProductInputDomainModel) {
-            return addProductRepository
+            return uploadProductRepository
                     .addProductValidation(uploadProductInputDomainModel);
         }
     }
@@ -62,7 +62,7 @@ public class AddProductObservable
     private class AddProductPicture implements Func1<AddProductPictureInputDomainModel, Observable<AddProductPictureDomainModel>> {
         @Override
         public Observable<AddProductPictureDomainModel> call(AddProductPictureInputDomainModel addProductPictureInputDomainModel) {
-            return addProductRepository
+            return uploadProductRepository
                     .addProductPicture(addProductPictureInputDomainModel);
         }
     }
@@ -79,7 +79,7 @@ public class AddProductObservable
 
         @Override
         public Observable<AddProductDomainModel> call(AddProductSubmitInputDomainModel addProductSubmitInputDomainModel) {
-            return addProductRepository
+            return uploadProductRepository
                     .addProductSubmit(addProductSubmitInputDomainModel);
         }
     }
