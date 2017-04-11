@@ -281,7 +281,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void backToTop() {
-        nestedScrollView.scrollTo(0, 0);
+        nestedScrollView.smoothScrollTo(0, 0);
     }
 
     private void showErrorEmptyState() {
@@ -329,6 +329,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onTopAdsLoaded() {
         topAdsView.setVisibility(View.VISIBLE);
+        backToTop();
     }
 
     @Override
