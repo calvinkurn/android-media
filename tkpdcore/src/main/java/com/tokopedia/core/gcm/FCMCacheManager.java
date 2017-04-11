@@ -150,53 +150,53 @@ public class FCMCacheManager {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         switch (code) {
             case TkpdState.GCMServiceState.GCM_MESSAGE:
-                return settings.getBoolean("notification_receive_pm", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PM, true);
             case TkpdState.GCMServiceState.GCM_TALK:
-                return settings.getBoolean("notification_receive_talk", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_TALK, true);
             case TkpdState.GCMServiceState.GCM_REVIEW:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_EDIT:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_REVIEW_REPLY:
-                return settings.getBoolean("notification_receive_review", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REVIEW, true);
             case TkpdState.GCMServiceState.GCM_PROMO:
-                return settings.getBoolean("notification_receive_promo", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_HOT_LIST:
-                return settings.getBoolean("notification_receive_promo", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_BUYER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_REPUTATION_EDIT_SMILEY_TO_SELLER:
-                return settings.getBoolean("notification_receive_reputation", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_REP, true);
             case TkpdState.GCMServiceState.GCM_NEWORDER:
-                return settings.getBoolean("notification_sales", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_SALES, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_VERIFIED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_ACCEPTED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_PARTIAL_PROCESSED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_REJECTED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DELIVERED:
-                return settings.getBoolean("notification_purchase", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_PURCHASE, true);
             case TkpdState.GCMServiceState.GCM_PURCHASE_DISPUTE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_SELLER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_AGREE:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_SELLER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             case TkpdState.GCMServiceState.GCM_RESCENTER_ADMIN_BUYER_REPLY:
-                return settings.getBoolean("notification_receive_rescenter", true);
+                return settings.getBoolean(Constants.Settings.NOTIFICATION_RESCENTER, true);
             default:
                 return true;
         }
