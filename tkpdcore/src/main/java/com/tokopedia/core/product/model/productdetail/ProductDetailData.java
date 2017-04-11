@@ -42,9 +42,6 @@ public class ProductDetailData implements Parcelable{
     @SerializedName("product_images")
     @Expose
     private List<ProductImage> productImages = new ArrayList<ProductImage>();
-    @SerializedName("product_campaign")
-    @Expose
-    private ProductCampaign productCampaign;
 
     public ProductDetailData() {
     }
@@ -121,14 +118,6 @@ public class ProductDetailData implements Parcelable{
         this.productImages = productImages;
     }
 
-    public ProductCampaign getProductCampaign() {
-        return productCampaign;
-    }
-
-    public void setProductCampaign(ProductCampaign productCampaign) {
-        this.productCampaign = productCampaign;
-    }
-
     protected ProductDetailData(Parcel in) {
         info = (ProductInfo) in.readValue(ProductInfo.class.getClassLoader());
         statistic = (ProductStatistic) in.readValue(ProductStatistic.class.getClassLoader());
@@ -154,7 +143,6 @@ public class ProductDetailData implements Parcelable{
         } else {
             productImages = null;
         }
-        productCampaign = (ProductCampaign) in.readValue(ProductCampaign.class.getClassLoader());
     }
 
     @Override
@@ -188,7 +176,6 @@ public class ProductDetailData implements Parcelable{
             dest.writeByte((byte) (0x01));
             dest.writeList(productImages);
         }
-        dest.writeValue(productCampaign);
     }
 
     @SuppressWarnings("unused")

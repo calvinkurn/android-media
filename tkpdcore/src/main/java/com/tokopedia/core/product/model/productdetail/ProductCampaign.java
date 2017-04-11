@@ -14,15 +14,15 @@ public class ProductCampaign implements Parcelable {
     @SerializedName("percentage_amount")
     @Expose
     private int percentageAmount;
-    @SerializedName("original_price")
+    @SerializedName("original_price_fmt")
     @Expose
-    private String originalPrice;
+    private String originalPriceFmt;
     @SerializedName("end_date")
     @Expose
     private String endDate;
-    @SerializedName("original_price_no_idr")
+    @SerializedName("original_price")
     @Expose
-    private String originalPriceNoIdr;
+    private String originalPrice;
 
     public int getPercentageAmount() {
         return percentageAmount;
@@ -32,12 +32,12 @@ public class ProductCampaign implements Parcelable {
         this.percentageAmount = percentageAmount;
     }
 
-    public String getOriginalPrice() {
-        return originalPrice;
+    public String getOriginalPriceFmt() {
+        return originalPriceFmt;
     }
 
-    public void setOriginalPrice(String originalPrice) {
-        this.originalPrice = originalPrice;
+    public void setOriginalPriceFmt(String originalPriceFmt) {
+        this.originalPriceFmt = originalPriceFmt;
     }
 
     public String getEndDate() {
@@ -48,12 +48,12 @@ public class ProductCampaign implements Parcelable {
         this.endDate = endDate;
     }
 
-    public String getOriginalPriceNoIdr() {
-        return originalPriceNoIdr;
+    public String getOriginalPrice() {
+        return originalPrice;
     }
 
-    public void setOriginalPriceNoIdr(String originalPriceNoIdr) {
-        this.originalPriceNoIdr = originalPriceNoIdr;
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
     }
 
     @Override
@@ -64,9 +64,9 @@ public class ProductCampaign implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.percentageAmount);
-        dest.writeString(this.originalPrice);
+        dest.writeString(this.originalPriceFmt);
         dest.writeString(this.endDate);
-        dest.writeString(this.originalPriceNoIdr);
+        dest.writeString(this.originalPrice);
     }
 
     public ProductCampaign() {
@@ -74,9 +74,9 @@ public class ProductCampaign implements Parcelable {
 
     protected ProductCampaign(Parcel in) {
         this.percentageAmount = in.readInt();
-        this.originalPrice = in.readString();
+        this.originalPriceFmt = in.readString();
         this.endDate = in.readString();
-        this.originalPriceNoIdr = in.readString();
+        this.originalPrice = in.readString();
     }
 
     public static final Parcelable.Creator<ProductCampaign> CREATOR = new Parcelable.Creator<ProductCampaign>() {

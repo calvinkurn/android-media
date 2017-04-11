@@ -1,13 +1,13 @@
 package com.tokopedia.core.product.customview;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.internal.LinkedTreeMap;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
@@ -17,6 +17,7 @@ import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
@@ -28,6 +29,7 @@ import butterknife.BindView;
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = HeaderInfoView.class.getSimpleName();
+    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd hh:mm:ss";
 
     @BindView(R2.id.tv_name)
     TextView tvName;
@@ -45,12 +47,16 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     TextView titleViewed;
     @BindView(R2.id.title_sold)
     TextView titleSold;
+    @BindView(R2.id.text_original_price)
+    TextView textOriginalPrice;
     @BindView(R2.id.text_discount)
     TextView textDiscount;
     @BindView(R2.id.linear_discount_timer_holder)
     LinearLayout linearDiscountTimerHolder;
     @BindView(R2.id.text_discount_timer)
     TextView textDiscountTimer;
+    @BindString(R2.string.label_discount)
+    public String discount;
     @BindString(R2.string.label_discount_timer)
     String labelPromotionTimer;
 
@@ -97,21 +103,37 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
         if(data.getCashBack() !=null && !data.getCashBack().getProductCashback().isEmpty()) {
             cashbackHolder.setVisibility(VISIBLE);
+            cashbackTextView.setVisibility(VISIBLE);
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
         }
 
-        if(data.getProductCampaign() != null && data.getProductCampaign().getOriginalPrice() != null) {
+        if(data.getInfo().getProductCampaign() != null &&
+                data.getInfo().getProductCampaign().getOriginalPriceFmt() != null) {
             cashbackHolder.setVisibility(VISIBLE);
             textDiscount.setVisibility(VISIBLE);
-            textDiscount.setText(data.getProductCampaign().getPercentageAmount());
+            textOriginalPrice.setVisibility(VISIBLE);
+
+            textOriginalPrice.setText(data.getInfo().getProductCampaign().getOriginalPriceFmt());
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+
+            textDiscount.setText(
+                    String.format(
+                            discount,
+                            data.getInfo().getProductCampaign().getPercentageAmount()
+                    )
+            );
 
             try {
-                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                long endTime = sf.parse(data.getProductCampaign().getEndDate()).getTime();
+                SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
+                long now = new Date().getTime();
+                long end = sf.parse(data.getInfo().getProductCampaign().getEndDate()).getTime();
+                long delta = end - now;
 
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
-                new CountDownTimer(endTime, 1000) {
+                new CountDownTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         textDiscountTimer.setText(

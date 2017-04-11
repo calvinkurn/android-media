@@ -86,6 +86,10 @@ public class ProductInfo implements Parcelable {
     @Expose
     private ReturnInfo returnInfo;
 
+    @SerializedName("product_campaign")
+    @Expose
+    private ProductCampaign productCampaign;
+
 
     public ProductInfo() {
     }
@@ -282,6 +286,14 @@ public class ProductInfo implements Parcelable {
         this.returnInfo = returnInfo;
     }
 
+    public ProductCampaign getProductCampaign() {
+        return productCampaign;
+    }
+
+    public void setProductCampaign(ProductCampaign productCampaign) {
+        this.productCampaign = productCampaign;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -305,6 +317,7 @@ public class ProductInfo implements Parcelable {
         productCatalogName = in.readString();
         productCatalogUrl = in.readString();
         returnInfo = (ReturnInfo) in.readValue(ReturnInfo.class.getClassLoader());
+        productCampaign = (ProductCampaign) in.readValue(ProductCampaign.class.getClassLoader());
     }
 
     @Override
@@ -351,6 +364,7 @@ public class ProductInfo implements Parcelable {
         dest.writeString(productCatalogName);
         dest.writeString(productCatalogUrl);
         dest.writeValue(returnInfo);
+        dest.writeValue(productCampaign);
     }
 
     @SuppressWarnings("unused")
