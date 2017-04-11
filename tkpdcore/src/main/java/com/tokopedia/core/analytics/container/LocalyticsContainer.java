@@ -563,4 +563,9 @@ public class LocalyticsContainer implements ILocalyticsContainer {
                 });
         executeTagEvent(observable, null);
     }
+
+    @Override
+    public void setNotificationsDisabled(boolean value) {
+        Localytics.setNotificationsDisabled(value);
+    }
 }

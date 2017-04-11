@@ -20,6 +20,7 @@ import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.gcm.Constants;
 
@@ -44,6 +45,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
+    private CustomCheckBoxPreference optionPromo;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -88,6 +90,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 return true;
             }
         });
+
+        optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
+        optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
 
     /** {@inheritDoc} */
@@ -174,6 +179,11 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 // simple string representation.
                 preference.setSummary(stringValue);
             }
+
+            if(preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO)){
+                TrackingUtils.eventLocaSetNotification(!(boolean)value);
+            }
+
             return true;
         }
     };
