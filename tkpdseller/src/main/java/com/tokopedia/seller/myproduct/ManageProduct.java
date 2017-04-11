@@ -315,14 +315,6 @@ public class ManageProduct extends TkpdActivity implements
         SortDialog = SortMenu.create();
         blurImage = (ImageView) findViewById(R.id.blur_image);
 
-        EtalaseFilters.add(getString(R.string.title_all_products));
-        EtalaseFilters.add(getString(R.string.title_all_etalase));
-        EtalaseFilters.add(getString(R.string.title_warehouse));
-        EtalaseFilters.add(getString(R.string.title_under_review));
-        EtalaseIdFilters.add("null");
-        EtalaseIdFilters.add("etalase");
-        EtalaseIdFilters.add("warehouse");
-        EtalaseIdFilters.add("pending");
         CategoriesFilter.add(getString(R.string.title_all_categories));
         CategoriesIdFilter.add("null");
 
@@ -1534,6 +1526,14 @@ public class ManageProduct extends TkpdActivity implements
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
         EtalaseFilters.clear();
         EtalaseIdFilters.clear();
+        EtalaseFilters.add(getString(R.string.title_all_products));
+        EtalaseFilters.add(getString(R.string.title_all_etalase));
+        EtalaseFilters.add(getString(R.string.title_warehouse));
+        EtalaseFilters.add(getString(R.string.title_under_review));
+        EtalaseIdFilters.add("null");
+        EtalaseIdFilters.add("etalase");
+        EtalaseIdFilters.add("warehouse");
+        EtalaseIdFilters.add("pending");
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
             EtalaseFilters.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
