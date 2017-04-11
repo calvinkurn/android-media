@@ -1546,7 +1546,8 @@ di Tokopedia Sekarang!</string>
     <string name="rating_title_5">Sangat bagus</string>
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
-    <string name="image_description">Keterangan gambar...</string>
+    <string name="image_description">Keterangan gambar...</string>s
+    <string name="image_description_2">Deskripsi gambar</string>
     <string name="deadline_prompt">"Batas waktu penilaian "</string>
     <string name="edited">(diubah)</string>
     <string name="message_smiley_prompt_bad">Apakah anda yakin memberi nilai Tidak Puas?</string>

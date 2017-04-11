@@ -1,64 +1,61 @@
 package com.tokopedia.seller.product.view.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
+import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 
-import org.parceler.Parcels;
+import java.util.ArrayList;
 
-import java.util.List;
+import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
+import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
 /**
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddActivity extends TActivity {
-
-    private TextView result;
+public class ProductAddActivity extends TActivity implements ImageDescriptionDialog.OnImageDescDialogListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_product_add);
-//        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-//                .add(R.id.container, ProductAddFragment.createInstance(), ProductAddFragment.class.getSimpleName())
-//                .commit();
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
+                .add(R.id.container, ProductAddFragment.createInstance(), ProductAddFragment.class.getSimpleName())
+                .commit();
 
-        findViewById(R.id.button_ask_etalase).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProductAddActivity.this, CategoryPickerActivity.class);
-                intent.putExtra(CategoryPickerActivity.CATEGORY_ID_INIT_SELECTED, 1791);
-                startActivityForResult(intent, 1000);
-            }
-        });
-
-        result = (TextView) findViewById(R.id.etalase_result);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000){
-            if (resultCode == Activity.RESULT_OK){
-                List<CategoryViewModel> category =
-                        Parcels.unwrap(
-                                data.getParcelableExtra(
-                                        CategoryPickerActivity.CATEGORY_RESULT_LEVEL
-                                )
-                        );
-                String test = "";
-                for (CategoryViewModel viewModel : category){
-                    test += viewModel.getName();
-                }
-                result.setText(test);
+        if (requestCode == com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY && data != null) {
+            int position = data.getIntExtra(GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION,
+                    GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION_DEFAULT);
+            String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.TAG);
+            if (checkNotNull(imageUrl) && fragment != null && fragment instanceof ProductAddFragment) {
+                ((ProductAddFragment) fragment).imageResultFromGallery(imageUrl, position);
             }
+
+            ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+            if(checkCollectionNotNull(imageUrls) && fragment != null && fragment instanceof ProductAddFragment){
+                ((ProductAddFragment) fragment).imagesResultFromGallery(imageUrls, position);
+            }
+        }
+
+    }
+
+    @Override
+    public void onImageDescDialogOK(String newDescription) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.TAG);
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            ((ProductAddFragment) fragment).changeImageDescription(newDescription);
         }
     }
 }
