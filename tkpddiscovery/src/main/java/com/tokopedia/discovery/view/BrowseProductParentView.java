@@ -40,7 +40,7 @@ public interface BrowseProductParentView extends BaseView {
     @Nullable
     List<Breadcrumb> getProductBreadCrumb();
 
-    BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly);
+    BrowseProductModel getDataForBrowseProduct();
 
     NetworkParam.Product getProductParam();
 }

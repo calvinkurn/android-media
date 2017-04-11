@@ -113,8 +113,8 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     }
 
     @Override
-    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
-        return presenter.getDataForBrowseProduct(firstTimeOnly);
+    public BrowseProductModel getDataForBrowseProduct() {
+        return presenter.getDataForBrowseProduct();
     }
 
     @Override

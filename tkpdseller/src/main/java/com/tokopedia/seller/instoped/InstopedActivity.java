@@ -11,7 +11,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
@@ -129,6 +131,9 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         return new InstagramMediaFragment.OnGetInstagramMediaListener() {
             @Override
             public void onSuccess(SparseArray<InstagramMediaModel> selectedModel) {
+
+                UnifyTracking.eventImageUploadSuccessInstagram();
+
                 // if activity has no caller, continue to build product soc med
                 if (getCallingActivity() == null) {
                     selectedModel.size();

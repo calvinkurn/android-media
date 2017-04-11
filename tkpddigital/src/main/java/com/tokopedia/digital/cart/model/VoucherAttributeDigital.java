@@ -62,7 +62,6 @@ public class VoucherAttributeDigital implements Parcelable {
     public VoucherAttributeDigital() {
     }
 
-
     @Override
     public int describeContents() {
         return 0;

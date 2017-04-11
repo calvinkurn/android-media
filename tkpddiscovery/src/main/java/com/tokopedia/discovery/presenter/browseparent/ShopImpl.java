@@ -67,9 +67,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initData(@NonNull Context context) {
-        if (!isAfterRotate) {
-            view.setupRecyclerView();
-        }
+        view.setupRecyclerView();
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
     }
 
@@ -96,9 +94,7 @@ public class ShopImpl extends Shop implements DiscoveryListener {
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.initAdapter();
-        }
+        view.initAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }

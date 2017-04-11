@@ -73,6 +73,7 @@ public class CheckoutHolderView extends RelativeLayout {
         });
     }
 
+
     public void disableVoucherDiscount() {
         voucherDiscount = 0;
         tvDiscount.setText(getStringIdrFormat((double) this.voucherDiscount));
@@ -97,9 +98,10 @@ public class CheckoutHolderView extends RelativeLayout {
         formatRp.setCurrencySymbol("Rp ");
         formatRp.setGroupingSeparator('.');
         formatRp.setMonetaryDecimalSeparator('.');
+        formatRp.setDecimalSeparator('.');
         kursIndonesia.setDecimalFormatSymbols(formatRp);
 
-        return kursIndonesia.format(value);
+        return kursIndonesia.format(value).replace(",", ".");
     }
 
 

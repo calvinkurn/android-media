@@ -19,6 +19,8 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.session.R;
 
 public class SmartLockActivity extends AppCompatActivity implements
@@ -208,8 +210,10 @@ public class SmartLockActivity extends AppCompatActivity implements
         } else if (requestCode == RC_SAVE) {
             Log.d(TAG, "Result code: " + resultCode);
             if (resultCode == RESULT_OK) {
+                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.SAVE_PASSWORD);
                 Log.d(TAG, "Credential Save: OK");
             } else {
+                UnifyTracking.eventSmartLock(AppEventTracking.EventLabel.NEVER);
                 Log.e(TAG, "Credential Save Failed");
             }
             goToContent();

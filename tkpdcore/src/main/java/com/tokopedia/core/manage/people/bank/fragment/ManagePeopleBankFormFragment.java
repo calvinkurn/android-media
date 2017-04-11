@@ -48,6 +48,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
 
     public interface DoActionListener {
         void addBankAccount(Bundle param);
+
         void editBankAccount(Bundle param);
     }
 
@@ -123,7 +124,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
         }
 
         ActSettingBankPass editParam = getArguments().getParcelable(PARAM_EDIT_BANK_ACCOUNT);
-        if(editParam != null){
+        if (editParam != null) {
             setEditParam(editParam);
         }
     }
@@ -284,7 +285,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
         finishLoading();
         setActionsEnabled(true);
         if (!resultData.getString(EXTRA_SUCCESS, "").equals("")) {
-            SnackbarManager.make(getActivity(),resultData.getString(EXTRA_SUCCESS, ""),Snackbar.LENGTH_LONG).show();
+            SnackbarManager.make(getActivity(), resultData.getString(EXTRA_SUCCESS, ""), Snackbar.LENGTH_LONG).show();
         }
         listener.finishAction();
     }
@@ -294,7 +295,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
         finishLoading();
         setActionsEnabled(true);
         if (!resultData.getString(EXTRA_SUCCESS, "").equals("")) {
-            SnackbarManager.make(getActivity(),resultData.getString(EXTRA_SUCCESS, ""),Snackbar.LENGTH_LONG).show();
+            SnackbarManager.make(getActivity(), resultData.getString(EXTRA_SUCCESS, ""), Snackbar.LENGTH_LONG).show();
         }
         listener.finishAction();
 
@@ -348,7 +349,8 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
 
         final RecyclerView lvBank = (RecyclerView) promptsView.findViewById(R.id.lv_bank);
         listBank = presenter.getListBankFromDB("");
-        bankDialogadapter = BankDialogAdapter.createAdapter(context, listBank);
+        if (bankDialogadapter == null)
+            bankDialogadapter = BankDialogAdapter.createAdapter(context, listBank);
         lvBank.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         lvBank.setAdapter(bankDialogadapter);
 
@@ -486,7 +488,7 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        if (isVisibleToUser && isAdded() && getActivity() !=null) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
         }
         super.setUserVisibleHint(isVisibleToUser);

@@ -46,7 +46,6 @@
                     tools:text="Rp. 50.000,-"/>
             </LinearLayout>
 
-
             <LinearLayout
                 android:id="@+id/holder_voucher_discount"
                 android:layout_width="match_parent"
