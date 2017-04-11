@@ -16,6 +16,8 @@ import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -36,6 +38,7 @@ import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
 import java.util.List;
@@ -374,12 +377,27 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (i == R.id.action_history) {
+            actionNavigateToHistory();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void actionNavigateToHistory() {
+        Intent intent = RideHistoryActivity.getCallingIntent(this);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_booking_ride, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

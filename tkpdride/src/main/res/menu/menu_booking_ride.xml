@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_history"
+        android:icon="@drawable/list_ride"
+        android:orderInCategory="100"
+        android:showAsAction="ifRoom"
+        android:title="@string/booking_ride_menu_your_trips" />
+</menu>

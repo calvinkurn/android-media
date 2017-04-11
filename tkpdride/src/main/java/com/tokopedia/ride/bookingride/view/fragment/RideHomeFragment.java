@@ -148,6 +148,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
             mToolbar.setTitle(getString(R.string.toolbar_title_booking));
             ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
         }
     }
 
