@@ -53,6 +53,11 @@ public class FavoriteAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addElement(int position, Visitable element) {
+        visitables.add(position, element);
+        notifyDataSetChanged();
+    }
+
     public void addElement(Visitable element) {
         visitables.add(element);
         notifyDataSetChanged();

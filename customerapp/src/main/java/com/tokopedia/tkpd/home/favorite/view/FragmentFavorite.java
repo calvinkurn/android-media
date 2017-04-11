@@ -321,7 +321,7 @@ public class FragmentFavorite extends BaseDaggerFragment
     @Override
     public void addFavoriteShop(FavoriteShopViewModel shopViewModel) {
         int favoriteShopPosition = 2;
-        favoriteAdapter.setElement(favoriteShopPosition, shopViewModel);
+        favoriteAdapter.addElement(favoriteShopPosition, shopViewModel);
     }
 
     @Override
