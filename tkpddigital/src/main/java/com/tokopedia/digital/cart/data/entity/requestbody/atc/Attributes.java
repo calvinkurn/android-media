@@ -29,12 +29,6 @@ public class Attributes {
     @SerializedName("user_agent")
     @Expose
     private String userAgent;
-    @SerializedName("access_token")
-    @Expose
-    private String accessToken;
-    @SerializedName("wallet_refresh_token")
-    @Expose
-    private String walletRefreshToken;
     @SerializedName("fields")
     @Expose
     private List<Field> fields = new ArrayList<>();
@@ -61,14 +55,6 @@ public class Attributes {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void setWalletRefreshToken(String walletRefreshToken) {
-        this.walletRefreshToken = walletRefreshToken;
     }
 
     public void setFields(List<Field> fields) {

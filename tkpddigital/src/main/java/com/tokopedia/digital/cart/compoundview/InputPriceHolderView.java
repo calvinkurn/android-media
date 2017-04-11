@@ -93,7 +93,7 @@ public class InputPriceHolderView extends LinearLayout {
 
     private boolean isUserInputValid(String userInput, long minPayment, long maxPayment) {
         long priceInput = 0;
-        if (TextUtils.isEmpty(userInput)) {
+        if (!TextUtils.isEmpty(userInput)) {
             try {
                 priceInput = Long.parseLong(userInput);
             } catch (NumberFormatException e) {

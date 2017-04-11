@@ -298,7 +298,8 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         checkoutHolderView.renderData(
                 this,
                 cartDigitalInfoData.getAttributes().getPrice(),
-                cartDigitalInfoData.getAttributes().getPrice()
+                cartDigitalInfoData.getAttributes().getPrice(),
+                cartDigitalInfoData.getAttributes().getPricePlain()
         );
         if (passData.getInstantCheckout().equals("1")) {
             pbMainLoading.setVisibility(View.VISIBLE);
@@ -396,9 +397,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void renderVoucherInfoData(VoucherDigital voucherDigital) {
         this.voucherDigitalState = voucherDigital;
-        voucherCartHolderView.setUsedVoucher(
-                voucherDigital.getAttributeVoucher().getVoucherCode(),
-                voucherDigital.getAttributeVoucher().getMessage());
+        checkoutHolderView.enableVoucherDiscount(
+                voucherDigital.getAttributeVoucher().getDiscountAmountPlain()
+        );
     }
 
     @Override
@@ -597,6 +598,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void forceShowSoftKeyboardVoucherInput() {
         KeyboardHandler.showSoftKeyboard(getActivity());
+    }
+
+    @Override
+    public void disableVoucherDiscount() {
+        checkoutHolderView.disableVoucherDiscount();
     }
 
     @Override
