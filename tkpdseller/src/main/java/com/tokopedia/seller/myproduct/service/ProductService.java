@@ -733,7 +733,7 @@ public class ProductService extends IntentService implements ProductServiceConst
                         if (primaryPic != null) {
                             PictureDB pictureDB = produk.getPictureDBs().get(0);
                             pictureDB.setPicturePrimary(1);
-                            pictureDB.setPictureImageSourceUrl(primaryPic.getResult().getFilePath());
+                            pictureDB.setPictureImageSourceUrl(inputAddProductModel.getProductSubmitModel().getData().getProductPrimaryPic());
                             pictureDB.setPictureThumbnailUrl(primaryPic.getResult().getFileThumbnail());
                             pictureDB.save();
                         }
