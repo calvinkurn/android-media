@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddActivity extends TActivity{
+public class ProductAddActivity extends TActivity implements ImageDescriptionDialog.OnImageDescDialogListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,4 +51,11 @@ public class ProductAddActivity extends TActivity{
 
     }
 
+    @Override
+    public void onImageDescDialogOK(String newDescription) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.TAG);
+        if (fragment != null && fragment instanceof ProductAddFragment) {
+            ((ProductAddFragment) fragment).changeImageDescription(newDescription);
+        }
+    }
 }

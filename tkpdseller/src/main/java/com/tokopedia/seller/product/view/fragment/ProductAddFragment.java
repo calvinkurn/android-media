@@ -13,6 +13,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
+import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
@@ -61,23 +62,18 @@ public class ProductAddFragment extends BaseDaggerFragment
                         imageSelectModel.isPrimary(), ProductAddFragment.this);
             }
         });
+        imagesSelectView.setOnCheckResolutionListener(new ImagesSelectView.OnCheckResolutionListener() {
+            @Override
+            public boolean isResolutionCorrect(String uri) {
+                return false;
+            }
+
+            @Override
+            public void resolutionCheckFailed(List<String> imagesStringList) {
+
+            }
+        });
         return view;
-    }
-
-    // triggered after onActivityResult from activity
-    public void imageResultFromGallery(String imageUrl, int position) {
-        // if add image on the selected, it means "change", else "add"
-        if (position == imagesSelectView.getSelectedImageIndex()) {
-            imagesSelectView.changeImagePath(imageUrl);
-        }
-        else {
-            imagesSelectView.addImageString(imageUrl);
-        }
-    }
-
-    // triggered after onActivityResult from activity
-    public void imagesResultFromGallery(List<String> imageUrls, int position) {
-        imagesSelectView.addImagesString(imageUrls);
     }
 
 
@@ -98,6 +94,33 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     }
 
+    // triggered after onActivityR Listener
+    public void changeImageDescription(String newDescription) {
+        imagesSelectView.changeImageDesc(newDescription);
+    }
+
+    /**
+     * ADD OR EDIT Image
+     */
+    // triggered after onActivityResult from activity
+    public void imageResultFromGallery(String imageUrl, int position) {
+        // if add image on the selected, it means "change", else "add"
+        if (position == imagesSelectView.getSelectedImageIndex()) {
+            imagesSelectView.changeImagePath(imageUrl);
+        }
+        else {
+            imagesSelectView.addImageString(imageUrl);
+        }
+    }
+
+    // triggered after onActivityResult from activity
+    public void imagesResultFromGallery(List<String> imageUrls, int position) {
+        imagesSelectView.addImagesString(imageUrls);
+    }
+
+    /**
+     * START EDIT IMAGE
+     */
     @Override
     public void clickEditImagePath(int position) {
         GalleryActivity.moveToImageGallery(
@@ -106,9 +129,9 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     @Override
     public void clickEditImageDesc(int position) {
-        // TODO open dialog to show new description
-        imagesSelectView.changeImageDesc(
-                "New Description Here");
+        String currentDescription = imagesSelectView.getImageAt(position).getDescription();
+        ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
+        fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
     }
 
     @Override
@@ -116,6 +139,9 @@ public class ProductAddFragment extends BaseDaggerFragment
         imagesSelectView.changeImagePrimary(true, position);
     }
 
+    /**
+     * START REMOVE IMAGE
+     */
     @Override
     public void clickRemoveImage(int position) {
         imagesSelectView.removeImage(position);

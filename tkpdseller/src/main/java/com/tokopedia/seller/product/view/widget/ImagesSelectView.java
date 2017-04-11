@@ -122,9 +122,9 @@ public class ImagesSelectView extends FrameLayout {
             return true;
         }
         else { // resolution is not correct
-            List<String>resolutionFailedString = new ArrayList<>();
-            resolutionFailedString.add(imageUrl);
-            onCheckResolutionListener.resolutionCheckFailed(resolutionFailedString);
+            List<String>resolutionFailedStringList = new ArrayList<>();
+            resolutionFailedStringList.add(imageUrl);
+            onCheckResolutionListener.resolutionCheckFailed(resolutionFailedStringList);
             return false;
         }
     }
@@ -189,6 +189,9 @@ public class ImagesSelectView extends FrameLayout {
 
     public ImageSelectModel getSelectedImage () {
         return imageSelectorAdapter.getSelectedImage();
+    }
+    public ImageSelectModel getImageAt (int position) {
+        return imageSelectorAdapter.getImageSelectModelList().get(position);
     }
     public int getSelectedImageIndex () {
         return imageSelectorAdapter.getSelectedImageIndex();
