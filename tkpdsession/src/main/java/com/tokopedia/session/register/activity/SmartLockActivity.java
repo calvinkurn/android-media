@@ -28,6 +28,7 @@ public class SmartLockActivity extends AppCompatActivity implements
     private static final String TAG = "SmartLock";
     public static final int RC_SAVE = 1;
     public static final int RC_READ = 3;
+    public static final int RC_SAVE_SECURITY_QUESTION = 4;
     private static final String IS_RESOLVING = "is_resolving";
     private static final String IS_REQUESTING = "is_requesting";
     public static final String USERNAME = "username";
@@ -244,6 +245,7 @@ public class SmartLockActivity extends AppCompatActivity implements
                 requestCredentials();
                 break;
             case RC_SAVE:
+            case RC_SAVE_SECURITY_QUESTION:
                 processBundle(getIntent().getExtras());
                 break;
             default:

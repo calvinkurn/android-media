@@ -146,6 +146,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
         callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
+        callingIntent.putExtra("login", "not");
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         if (GlobalConfig.isSellerApp())
             callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);

@@ -786,8 +786,10 @@ LoginFragment extends Fragment implements LoginView {
                     mEmailView.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
                     mPasswordView.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
                     accountSignIn.performClick();
-                }else if(resultCode == SmartLockActivity.RC_SAVE){
+                } else if(resultCode == SmartLockActivity.RC_SAVE){
                     destroyActivity();
+                } else if(resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+
                 }
                 break;
             default:
@@ -835,7 +837,7 @@ LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
-        if(state == SmartLockActivity.RC_SAVE ){
+        if(state == SmartLockActivity.RC_SAVE || state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
             bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString());
             bundle.putString(SmartLockActivity.PASSWORD, mPasswordView.getText().toString());
         }
