@@ -2584,9 +2584,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     public void toggleWholeSale() {
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(), "checkwholesale");
+        addProductPrice.requestFocus();
         if (!verif.getModel1()) {
             addProductPriceAlert.setError(verif.getModel2());
-            addProductPrice.requestFocus();
         } else {
             toggleWholeSaleAfterVerify();
         }
