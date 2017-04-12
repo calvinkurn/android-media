@@ -100,6 +100,10 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         this.listener = listener;
     }
 
+    public PhoneVerificationFragmentListener getListener() {
+        return listener;
+    }
+
     private void findView(View view) {
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
         skipButton = (TextView) view.findViewById(R.id.skip_button);
@@ -308,7 +312,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onSkipVerification();
+                if (listener != null)
+                    listener.onSkipVerification();
+                else {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
             }
         });
 
@@ -371,7 +380,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         setViewEnabled(true);
         SessionHandler.setIsMSISDNVerified(true);
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
-        listener.onSuccessVerification();
+        if (listener != null)
+            listener.onSuccessVerification();
+        else {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
 
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }
@@ -402,6 +416,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         requestOtpButton.setEnabled(isEnabled);
         requestOtpCallButton.setEnabled(isEnabled);
         verifyButton.setEnabled(isEnabled);
+        skipButton.setEnabled(isEnabled);
     }
 
     private void startTimer() {
@@ -467,6 +482,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void onReceiveOTP(String otpCode) {
         processOTPSMS(otpCode);
     }
+
 
     @NeedsPermission(Manifest.permission.READ_SMS)
     public void processOTPSMS(String otpCode) {
