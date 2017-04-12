@@ -94,10 +94,10 @@ public class DecimalInputView extends FrameLayout {
         return editText.getText().toString();
     }
 
-    public int getIntValue() {
+    public float getFloatValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
         valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
-        return Integer.parseInt(valueString);
+        return Float.parseFloat(valueString);
     }
 
     public EditText getEditText() {

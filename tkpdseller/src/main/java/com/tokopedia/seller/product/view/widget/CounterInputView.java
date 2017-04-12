@@ -12,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.util.CurrencyTextWatcher;
 
 /**
  * Created by nathan on 04/05/17.
@@ -103,22 +102,26 @@ public class CounterInputView extends FrameLayout {
         minusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                int result = decimalInputView.getIntValue() - 1;
-                if (result >= 0) {
-                    decimalInputView.setText(String.valueOf(result));
+                try {
+                    int result = (int) decimalInputView.getFloatValue() - 1;
+                    if (result >= 0) {
+                        decimalInputView.setText(String.valueOf(result));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                decimalInputView.setText(String.valueOf(decimalInputView.getIntValue() + 1));
+                decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
             }
         });
     }
 
     private void updateButtonState() {
-        minusImageButton.setEnabled(decimalInputView.getIntValue() > minValue);
+        minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
     }
 
     public void setHint(String hintText) {
