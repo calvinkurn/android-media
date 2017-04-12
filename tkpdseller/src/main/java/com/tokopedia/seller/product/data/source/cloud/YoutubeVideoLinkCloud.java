@@ -1,14 +1,14 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
-import com.tokopedia.seller.product.data.mapper.YoutubeVidToDomainMapper;
 import com.tokopedia.seller.product.data.source.cloud.api.YoutubeVideoLinkApi;
-import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
+import com.tokopedia.seller.product.data.source.cloud.model.youtube.YoutubeResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -17,18 +17,14 @@ import rx.Observable;
 
 public class YoutubeVideoLinkCloud {
     private YoutubeVideoLinkApi youtubeVideoLinkApi;
-    private YoutubeVidToDomainMapper youtubeVidToDomainMapper;
 
     @Inject
-    public YoutubeVideoLinkCloud(YoutubeVideoLinkApi youtubeVideoLinkApi,
-                                 YoutubeVidToDomainMapper youtubeVidToDomainMapper) {
+    public YoutubeVideoLinkCloud(YoutubeVideoLinkApi youtubeVideoLinkApi) {
         this.youtubeVideoLinkApi = youtubeVideoLinkApi;
-        this.youtubeVidToDomainMapper = youtubeVidToDomainMapper;
     }
 
-    public Observable<YoutubeVideoModel> fetchDataFromNetwork(String videoId, String keyId) {
-        return youtubeVideoLinkApi.getVideoDetail(generateParam(videoId, keyId))
-                .map(youtubeVidToDomainMapper);
+    public Observable<Response<YoutubeResponse>> fetchDataFromNetwork(String videoId, String keyId) {
+        return youtubeVideoLinkApi.getVideoDetail(generateParam(videoId, keyId));
     }
 
     private Map<String, String> generateParam(String videoId, String keyId) {

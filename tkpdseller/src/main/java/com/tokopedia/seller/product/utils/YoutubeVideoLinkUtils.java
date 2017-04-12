@@ -15,7 +15,7 @@ public class YoutubeVideoLinkUtils {
     public static final int VIDEO_ID_INDEX = 1;
     public static final String YOUTUBE_API_KEY = "AIzaSyADrnEdJGwsVM1Z6uWWnWAgZZf1sSfnIVQ";
     private static final String TAG = "YoutubeVideoLinkUtils";
-    private static final String YOUTUBE_REGEX = "http(?:s?):\\/\\/(?:www\\.)?youtu(?:be\\.com\\/watch\\?v=|\\.be\\/)([\\w\\-\\_]*)(&(amp;)?‌​[\\w\\?‌​=]*)?";
+    private static final String YOUTUBE_REGEX = "^(?:https?:\\/\\/)?(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:['\"][^<>]*>|<\\/a>))[?=&+%\\w]*";
     private final Pattern compiledPattern = Pattern.compile(YOUTUBE_REGEX, Pattern.CASE_INSENSITIVE);
     private String youtubeUrl;
     private String videoId;
@@ -33,7 +33,7 @@ public class YoutubeVideoLinkUtils {
             throw new IllegalArgumentException();
         }
 
-        this.youtubeUrl = youtubeUrl;
+        this.youtubeUrl = youtubeUrl.trim();
     }
 
     private YoutubeVideoLinkUtils() {
@@ -41,20 +41,19 @@ public class YoutubeVideoLinkUtils {
 
     private Pair<Boolean, String> isValidYoutubeUrl() {
         Matcher matcher = compiledPattern.matcher(youtubeUrl);
-        if (matcher.matches()) {
-            if (matcher.groupCount() < 2) {
-                return new Pair<>(true, matcher.group(VIDEO_ID_INDEX));
-            } else {
-                return new Pair<>(false, videoNotFound);
-            }
+        if (matcher.find()) {
+            return new Pair<>(true, matcher.group(VIDEO_ID_INDEX));
+        } else {
+            return new Pair<>(false, videoNotFound);
         }
-        return new Pair<>(false, invalidVideoUrl);
+
+//        return new Pair<>(false, invalidVideoUrl);
     }
 
-    public void saveVideoID() {
+    public String saveVideoID() {
         Pair<Boolean, String> validYoutubeUrl = isValidYoutubeUrl();
         if (validYoutubeUrl.getModel1()) {
-            videoId = validYoutubeUrl.getModel2();
+            return videoId = validYoutubeUrl.getModel2();
         } else {
             throw new IllegalArgumentException(validYoutubeUrl.getModel2());
         }

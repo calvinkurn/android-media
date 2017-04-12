@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.product.data.source.cloud.YoutubeVideoLinkCloud;
+import com.tokopedia.seller.product.data.source.YoutubeVideoLinkDataSource;
 import com.tokopedia.seller.product.domain.YoutubeVideoRepository;
 import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
 
@@ -14,15 +14,15 @@ import rx.Observable;
  */
 @ActivityScope
 public class YoutubeRepositoryImpl implements YoutubeVideoRepository {
-    private final YoutubeVideoLinkCloud youtubeVideoLinkCloud;
+    private final YoutubeVideoLinkDataSource youtubeVideoLinkDataSource;
 
     @Inject
-    public YoutubeRepositoryImpl(YoutubeVideoLinkCloud youtubeVideoLinkCloud) {
-        this.youtubeVideoLinkCloud = youtubeVideoLinkCloud;
+    public YoutubeRepositoryImpl(YoutubeVideoLinkDataSource youtubeVideoLinkDataSource) {
+        this.youtubeVideoLinkDataSource = youtubeVideoLinkDataSource;
     }
 
     @Override
     public Observable<YoutubeVideoModel> fetchYoutubeVideoInfo(String videoId, String keyId) {
-        return youtubeVideoLinkCloud.fetchDataFromNetwork(videoId, keyId);
+        return youtubeVideoLinkDataSource.fetchDataFromNetwork(videoId, keyId);
     }
 }
