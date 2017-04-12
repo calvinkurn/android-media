@@ -21,6 +21,7 @@ import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
@@ -189,6 +190,8 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showDriverCancelledRide(Context context) {
+        RideConfiguration rideConfiguration = new RideConfiguration();
+        rideConfiguration.clearActiveRequest();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
