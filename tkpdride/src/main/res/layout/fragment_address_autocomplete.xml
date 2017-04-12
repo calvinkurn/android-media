@@ -25,7 +25,10 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:layout_margin="4dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
                 android:background="@drawable/search_bg"
                 android:orientation="horizontal"
                 android:padding="5dp">
@@ -92,8 +95,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="0dp"
                 android:background="@android:color/white"
+                android:foreground="?attr/selectableItemBackground"
                 android:visibility="visible">
 
                 <ImageView
@@ -116,7 +120,7 @@
                     android:layout_toRightOf="@id/auto_detect_icon"
                     android:singleLine="true"
                     android:text="Auto-detect current location"
-                    android:textColor="#616161" />
+                    android:textColor="@color/grey_800" />
 
                 <ImageView
                     android:layout_width="wrap_content"

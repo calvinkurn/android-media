@@ -2,6 +2,7 @@ package com.tokopedia.ride.bookingride.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -25,6 +26,9 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
     TextView mPlaceTitleTextView;
     @BindView(R2.id.place_address)
     TextView mPlaceAddressTextView;
+    @BindView(R2.id.indicator)
+    ImageView mIndicator;
+
     private final ItemClickListener mItemClickListener;
     private PlaceAutoCompeleteViewModel mItem;
 
@@ -37,6 +41,11 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
     public void bind(PlaceAutoCompeleteViewModel element) {
         mPlaceTitleTextView.setText(element.getTitle());
         mPlaceAddressTextView.setText(element.getAddress());
+        if (element.getType() == PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE) {
+            mIndicator.setImageResource(R.drawable.ic_history_black_24dp);
+        } else {
+            mIndicator.setImageResource(R.drawable.ic_place_black_24dp);
+        }
         mItem = element;
     }
 
