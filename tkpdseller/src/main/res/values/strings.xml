@@ -340,4 +340,10 @@
         <item>Opsional</item>
         <item>Ya</item>
     </string-array>
+
+    <string name="video_not_found">Video tidak ditemukan</string>
+    <string name="invalid_video_url">URL video tidak benar</string>
+    <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
+    <string name="video_same_warn">Anda sudah menambahkan video ini</string>
+    <string name="insert_a_url_video">Masukkan URL Video</string>
 </resources>
