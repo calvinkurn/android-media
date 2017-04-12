@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.domain.interactor.observable;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.mapper.AddProductValidationToSubmitMapper;
+import com.tokopedia.seller.product.domain.mapper.AddProductDomainMapper;
 import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
@@ -33,7 +33,7 @@ public class AddProductObservable
     ) {
         return Observable.just(uploadProductInputDomainModel)
                 .flatMap(new AddProductValidation())
-                .flatMap(new ProcessAddProductValidation());
+                .flatMap(new ProcessAddProductValidation(uploadProductInputDomainModel));
     }
 
     private class AddProductValidation implements Func1<UploadProductInputDomainModel, Observable<AddProductValidationDomainModel>> {
@@ -45,16 +45,23 @@ public class AddProductObservable
     }
 
     private class ProcessAddProductValidation implements Func1<AddProductValidationDomainModel, Observable<AddProductDomainModel>> {
+        private final UploadProductInputDomainModel uploadProductInputDomainModel;
+
+        public ProcessAddProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel) {
+            this.uploadProductInputDomainModel = uploadProductInputDomainModel;
+        }
+
         @Override
         public Observable<AddProductDomainModel> call(AddProductValidationDomainModel addProductValidationDomainModel) {
-            if (!TextUtils.isEmpty(addProductValidationDomainModel.getPostKey())){
-                AddProductPictureInputDomainModel addProductPictureInputModel = new AddProductPictureInputDomainModel();
+            String postKey = addProductValidationDomainModel.getPostKey();
+            if (!TextUtils.isEmpty(postKey)){
+                AddProductPictureInputDomainModel addProductPictureInputModel = AddProductDomainMapper.mapUploadToPicture(uploadProductInputDomainModel);
                 return Observable.just(addProductPictureInputModel)
                         .flatMap(new AddProductPicture())
-                        .map(new ProcessAddProductPicture())
+                        .map(new ProcessAddProductPicture(uploadProductInputDomainModel, postKey))
                         .flatMap(new AddProductSubmit());
             } else {
-                return Observable.just(AddProductValidationToSubmitMapper.map(addProductValidationDomainModel));
+                return Observable.just(AddProductDomainMapper.mapValidationToSubmit(addProductValidationDomainModel));
             }
         }
     }
@@ -68,15 +75,22 @@ public class AddProductObservable
     }
 
     private class ProcessAddProductPicture implements Func1<AddProductPictureDomainModel, AddProductSubmitInputDomainModel> {
+        private final UploadProductInputDomainModel uploadProductInputDomainModel;
+        private final String postKey;
+
+        public ProcessAddProductPicture(UploadProductInputDomainModel uploadProductInputDomainModel, String postKey) {
+            this.uploadProductInputDomainModel = uploadProductInputDomainModel;
+            this.postKey = postKey;
+        }
+
         @Override
         public AddProductSubmitInputDomainModel call(AddProductPictureDomainModel addProductPictureDomainModel) {
-            return null;
+            return AddProductDomainMapper.mapUploadToSubmit(addProductPictureDomainModel, uploadProductInputDomainModel, postKey);
         }
 
     }
 
     private class AddProductSubmit implements Func1<AddProductSubmitInputDomainModel, Observable<AddProductDomainModel>> {
-
         @Override
         public Observable<AddProductDomainModel> call(AddProductSubmitInputDomainModel addProductSubmitInputDomainModel) {
             return uploadProductRepository

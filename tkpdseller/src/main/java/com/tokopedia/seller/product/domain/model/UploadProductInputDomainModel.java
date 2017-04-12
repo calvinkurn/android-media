@@ -8,14 +8,11 @@ import java.util.List;
 
 public class UploadProductInputDomainModel {
 
+    public static final String DELIMITER = "~";
     private List<ImageProductInputDomainModel> images;
+    private List<ProductWholesaleDomainModel> wholesaleList;
     private String clickName;
     private String duplicate;
-    private String productPriceOne;
-    private String productPriceTwo;
-    private String productPriceThree;
-    private String productPriceFour;
-    private String productPriceFive;
     private String productCatalogId;
     private String productCondition;
     private String productDepartmentId;
@@ -32,16 +29,6 @@ public class UploadProductInputDomainModel {
     private String productUploadTo;
     private String productWeight;
     private String productWeightUnit;
-    private String quantityMaxOne;
-    private String quantityMaxTwo;
-    private String quantityMaxThree;
-    private String quantityMaxFour;
-    private String quantityMaxFive;
-    private String quantityMinOne;
-    private String quantityMinTwo;
-    private String quantityMinThree;
-    private String quantityMinFour;
-    private String quantityMinFive;
     private String poProcessType;
     private String poProcessValue;
     private String serverId;
@@ -70,44 +57,16 @@ public class UploadProductInputDomainModel {
         this.duplicate = duplicate;
     }
 
-    public String getProductPriceOne() {
-        return productPriceOne;
+    public List<ProductWholesaleDomainModel> getProductPriceOne() {
+        return wholesaleList;
     }
 
-    public void setProductPriceOne(String productPriceOne) {
-        this.productPriceOne = productPriceOne;
+    public List<ProductWholesaleDomainModel> getWholesaleList() {
+        return wholesaleList;
     }
 
-    public String getProductPriceTwo() {
-        return productPriceTwo;
-    }
-
-    public void setProductPriceTwo(String productPriceTwo) {
-        this.productPriceTwo = productPriceTwo;
-    }
-
-    public String getProductPriceThree() {
-        return productPriceThree;
-    }
-
-    public void setProductPriceThree(String productPriceThree) {
-        this.productPriceThree = productPriceThree;
-    }
-
-    public String getProductPriceFour() {
-        return productPriceFour;
-    }
-
-    public void setProductPriceFour(String productPriceFour) {
-        this.productPriceFour = productPriceFour;
-    }
-
-    public String getProductPriceFive() {
-        return productPriceFive;
-    }
-
-    public void setProductPriceFive(String productPriceFive) {
-        this.productPriceFive = productPriceFive;
+    public void setWholesaleList(List<ProductWholesaleDomainModel> wholesaleList) {
+        this.wholesaleList = wholesaleList;
     }
 
     public String getProductCatalogId() {
@@ -238,86 +197,6 @@ public class UploadProductInputDomainModel {
         this.productWeightUnit = productWeightUnit;
     }
 
-    public String getQuantityMaxOne() {
-        return quantityMaxOne;
-    }
-
-    public void setQuantityMaxOne(String quantityMaxOne) {
-        this.quantityMaxOne = quantityMaxOne;
-    }
-
-    public String getQuantityMaxTwo() {
-        return quantityMaxTwo;
-    }
-
-    public void setQuantityMaxTwo(String quantityMaxTwo) {
-        this.quantityMaxTwo = quantityMaxTwo;
-    }
-
-    public String getQuantityMaxThree() {
-        return quantityMaxThree;
-    }
-
-    public void setQuantityMaxThree(String quantityMaxThree) {
-        this.quantityMaxThree = quantityMaxThree;
-    }
-
-    public String getQuantityMaxFour() {
-        return quantityMaxFour;
-    }
-
-    public void setQuantityMaxFour(String quantityMaxFour) {
-        this.quantityMaxFour = quantityMaxFour;
-    }
-
-    public String getQuantityMaxFive() {
-        return quantityMaxFive;
-    }
-
-    public void setQuantityMaxFive(String quantityMaxFive) {
-        this.quantityMaxFive = quantityMaxFive;
-    }
-
-    public String getQuantityMinOne() {
-        return quantityMinOne;
-    }
-
-    public void setQuantityMinOne(String quantityMinOne) {
-        this.quantityMinOne = quantityMinOne;
-    }
-
-    public String getQuantityMinTwo() {
-        return quantityMinTwo;
-    }
-
-    public void setQuantityMinTwo(String quantityMinTwo) {
-        this.quantityMinTwo = quantityMinTwo;
-    }
-
-    public String getQuantityMinThree() {
-        return quantityMinThree;
-    }
-
-    public void setQuantityMinThree(String quantityMinThree) {
-        this.quantityMinThree = quantityMinThree;
-    }
-
-    public String getQuantityMinFour() {
-        return quantityMinFour;
-    }
-
-    public void setQuantityMinFour(String quantityMinFour) {
-        this.quantityMinFour = quantityMinFour;
-    }
-
-    public String getQuantityMinFive() {
-        return quantityMinFive;
-    }
-
-    public void setQuantityMinFive(String quantityMinFive) {
-        this.quantityMinFive = quantityMinFive;
-    }
-
     public String getPoProcessType() {
         return poProcessType;
     }
@@ -347,7 +226,7 @@ public class UploadProductInputDomainModel {
         for (int i = 0; i < images.size(); i++){
             productPhoto += images.get(i).getUrl();
             if (i + 1 < images.size()){
-                productPhoto += "~";
+                productPhoto += DELIMITER;
             }
         }
         return productPhoto;
@@ -358,7 +237,7 @@ public class UploadProductInputDomainModel {
         for (int i = 0; i < images.size(); i++){
             productPhotoDescription += images.get(i).getDescription();
             if (i + 1 < images.size()){
-                productPhotoDescription += "~";
+                productPhotoDescription += DELIMITER;
             }
         }
         return productPhotoDescription;

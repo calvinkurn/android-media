@@ -2,6 +2,9 @@ package com.tokopedia.seller.product.data.source.cloud.model;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author sebastianuskh on 4/11/17.
  */
@@ -9,11 +12,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 public class AddProductValidationInputServiceModel {
     public static final String CLICK_NAME = "click_name";
     public static final String DUPLICATE = "duplicate";
-    public static final String PRD_PRC_1 = "prd_prc_1";
-    public static final String PRD_PRC_2 = "prd_prc_2";
-    public static final String PRD_PRC_3 = "prd_prc_3";
-    public static final String PRD_PRC_4 = "prd_prc_4";
-    public static final String PRD_PRC_5 = "prd_prc_5";
     public static final String PRODUCT_CATALOG_ID = "product_catalog_id";
     public static final String PRODUCT_CONDITION = "product_condition";
     public static final String PRODUCT_DEPARTMENT_ID = "product_department_id";
@@ -32,28 +30,16 @@ public class AddProductValidationInputServiceModel {
     public static final String PRODUCT_UPLOAD_TO = "product_upload_to";
     public static final String PRODUCT_WEIGHT = "product_weight";
     public static final String PRODUCT_WEIGHT_UNIT = "product_weight_unit";
-    public static final String QTY_MAX_1 = "qty_max_1";
-    public static final String QTY_MAX_2 = "qty_max_2";
-    public static final String QTY_MAX_3 = "qty_max_3";
-    public static final String QTY_MAX_4 = "qty_max_4";
-    public static final String QTY_MAX_5 = "qty_max_5";
-    public static final String QTY_MIN_1 = "qty_min_1";
-    public static final String QTY_MIN_2 = "qty_min_2";
-    public static final String QTY_MIN_3 = "qty_min_3";
-    public static final String QTY_MIN_4 = "qty_min_4";
-    public static final String QTY_MIN_5 = "qty_min_5";
     public static final String PO_PROCESS_TYPE = "po_process_type";
     public static final String PO_PROCESS_VALUE = "po_process_value";
     public static final String SERVER_ID = "server_id";
-    public static final String USER_ID = "user_id";
+    public static final String PRD_PRC_ = "prd_prc_";
+    public static final String QTY_MAX_ = "qty_max_";
+    public static final String QTY_MIN_ = "qty_min_";
 
+    private List<ProductWholesaleServiceModel> productWholesale;
     private String clickName;
     private String duplicate;
-    private String productPriceOne;
-    private String productPriceTwo;
-    private String productPriceThree;
-    private String productPriceFour;
-    private String productPriceFive;
     private String productCatalogId;
     private String productCondition;
     private String productDepartmentId;
@@ -72,16 +58,6 @@ public class AddProductValidationInputServiceModel {
     private String productUploadTo;
     private String productWeight;
     private String productWeightUnit;
-    private String quantityMaxOne;
-    private String quantityMaxTwo;
-    private String quantityMaxThree;
-    private String quantityMaxFour;
-    private String quantityMaxFive;
-    private String quantityMinOne;
-    private String quantityMinTwo;
-    private String quantityMinThree;
-    private String quantityMinFour;
-    private String quantityMinFive;
     private String poProcessType;
     private String poProcessValue;
     private String serverId;
@@ -90,11 +66,6 @@ public class AddProductValidationInputServiceModel {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(CLICK_NAME, getClickName());
         params.put(DUPLICATE, getDuplicate());
-        params.put(PRD_PRC_1, getProductPriceOne());
-        params.put(PRD_PRC_2, getProductPriceTwo());
-        params.put(PRD_PRC_3, getProductPriceThree());
-        params.put(PRD_PRC_4, getProductPriceFour());
-        params.put(PRD_PRC_5, getProductPriceFive());
         params.put(PRODUCT_CATALOG_ID, getProductCatalogId());
         params.put(PRODUCT_CONDITION, getProductCondition());
         params.put(PRODUCT_DEPARTMENT_ID, getProductDepartmentId());
@@ -113,19 +84,10 @@ public class AddProductValidationInputServiceModel {
         params.put(PRODUCT_UPLOAD_TO, getProductUploadTo());
         params.put(PRODUCT_WEIGHT, getProductWeight());
         params.put(PRODUCT_WEIGHT_UNIT, getProductWeightUnit());
-        params.put(QTY_MAX_1, getQuantityMaxOne());
-        params.put(QTY_MAX_2, getQuantityMaxTwo());
-        params.put(QTY_MAX_3, getQuantityMaxThree());
-        params.put(QTY_MAX_4, getQuantityMaxFour());
-        params.put(QTY_MAX_5, getQuantityMaxFive());
-        params.put(QTY_MIN_1, getQuantityMinOne());
-        params.put(QTY_MIN_2, getQuantityMinTwo());
-        params.put(QTY_MIN_3, getQuantityMinThree());
-        params.put(QTY_MIN_4, getQuantityMinFour());
-        params.put(QTY_MIN_5, getQuantityMinFive());
         params.put(PO_PROCESS_TYPE, getPoProcessType());
         params.put(PO_PROCESS_VALUE, getPoProcessValue());
         params.put(SERVER_ID, getServerId());
+        params.putAll(getWholesaleParams());
         return params;
     }
 
@@ -143,46 +105,6 @@ public class AddProductValidationInputServiceModel {
 
     public void setDuplicate(String duplicate) {
         this.duplicate = duplicate;
-    }
-
-    public String getProductPriceOne() {
-        return productPriceOne;
-    }
-
-    public void setProductPriceOne(String productPriceOne) {
-        this.productPriceOne = productPriceOne;
-    }
-
-    public String getProductPriceTwo() {
-        return productPriceTwo;
-    }
-
-    public void setProductPriceTwo(String productPriceTwo) {
-        this.productPriceTwo = productPriceTwo;
-    }
-
-    public String getProductPriceThree() {
-        return productPriceThree;
-    }
-
-    public void setProductPriceThree(String productPriceThree) {
-        this.productPriceThree = productPriceThree;
-    }
-
-    public String getProductPriceFour() {
-        return productPriceFour;
-    }
-
-    public void setProductPriceFour(String productPriceFour) {
-        this.productPriceFour = productPriceFour;
-    }
-
-    public String getProductPriceFive() {
-        return productPriceFive;
-    }
-
-    public void setProductPriceFive(String productPriceFive) {
-        this.productPriceFive = productPriceFive;
     }
 
     public String getProductCatalogId() {
@@ -329,86 +251,6 @@ public class AddProductValidationInputServiceModel {
         this.productWeightUnit = productWeightUnit;
     }
 
-    public String getQuantityMaxOne() {
-        return quantityMaxOne;
-    }
-
-    public void setQuantityMaxOne(String quantityMaxOne) {
-        this.quantityMaxOne = quantityMaxOne;
-    }
-
-    public String getQuantityMaxTwo() {
-        return quantityMaxTwo;
-    }
-
-    public void setQuantityMaxTwo(String quantityMaxTwo) {
-        this.quantityMaxTwo = quantityMaxTwo;
-    }
-
-    public String getQuantityMaxThree() {
-        return quantityMaxThree;
-    }
-
-    public void setQuantityMaxThree(String quantityMaxThree) {
-        this.quantityMaxThree = quantityMaxThree;
-    }
-
-    public String getQuantityMaxFour() {
-        return quantityMaxFour;
-    }
-
-    public void setQuantityMaxFour(String quantityMaxFour) {
-        this.quantityMaxFour = quantityMaxFour;
-    }
-
-    public String getQuantityMaxFive() {
-        return quantityMaxFive;
-    }
-
-    public void setQuantityMaxFive(String quantityMaxFive) {
-        this.quantityMaxFive = quantityMaxFive;
-    }
-
-    public String getQuantityMinOne() {
-        return quantityMinOne;
-    }
-
-    public void setQuantityMinOne(String quantityMinOne) {
-        this.quantityMinOne = quantityMinOne;
-    }
-
-    public String getQuantityMinTwo() {
-        return quantityMinTwo;
-    }
-
-    public void setQuantityMinTwo(String quantityMinTwo) {
-        this.quantityMinTwo = quantityMinTwo;
-    }
-
-    public String getQuantityMinThree() {
-        return quantityMinThree;
-    }
-
-    public void setQuantityMinThree(String quantityMinThree) {
-        this.quantityMinThree = quantityMinThree;
-    }
-
-    public String getQuantityMinFour() {
-        return quantityMinFour;
-    }
-
-    public void setQuantityMinFour(String quantityMinFour) {
-        this.quantityMinFour = quantityMinFour;
-    }
-
-    public String getQuantityMinFive() {
-        return quantityMinFive;
-    }
-
-    public void setQuantityMinFive(String quantityMinFive) {
-        this.quantityMinFive = quantityMinFive;
-    }
-
     public String getPoProcessType() {
         return poProcessType;
     }
@@ -431,5 +273,19 @@ public class AddProductValidationInputServiceModel {
 
     public void setServerId(String serverId) {
         this.serverId = serverId;
+    }
+
+    public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
+        this.productWholesale = productWholesale;
+    }
+
+    public TKPDMapParam<String, String> getWholesaleParams() {
+        TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
+        for (int i = 0; i < productWholesale.size(); i++){
+            wholesaleParams.put(PRD_PRC_ + i, productWholesale.get(i).getPrice());
+            wholesaleParams.put(QTY_MAX_ + i, productWholesale.get(i).getQtyMax());
+            wholesaleParams.put(QTY_MIN_ + i, productWholesale.get(i).getQtyMin());
+        }
+        return wholesaleParams;
     }
 }

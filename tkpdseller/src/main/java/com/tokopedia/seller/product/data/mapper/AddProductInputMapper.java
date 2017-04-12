@@ -3,9 +3,14 @@ package com.tokopedia.seller.product.data.mapper;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.ProductWholesaleServiceModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/11/17.
@@ -17,11 +22,7 @@ public class AddProductInputMapper {
         AddProductValidationInputServiceModel serviceModel = new AddProductValidationInputServiceModel();
         serviceModel.setClickName(domainModel.getClickName());
         serviceModel.setDuplicate(domainModel.getDuplicate());
-        serviceModel.setProductPriceOne(domainModel.getProductPriceOne());
-        serviceModel.setProductPriceTwo(domainModel.getProductPriceTwo());
-        serviceModel.setProductPriceThree(domainModel.getProductPriceThree());
-        serviceModel.setProductPriceFour(domainModel.getProductPriceFour());
-        serviceModel.setProductPriceFive(domainModel.getProductPriceFive());
+        serviceModel.setProductWholesale(mapWholesale(domainModel.getProductPriceOne()));
         serviceModel.setProductCatalogId(domainModel.getProductCatalogId());
         serviceModel.setProductCondition(domainModel.getProductCondition());
         serviceModel.setProductDepartmentId(domainModel.getProductDepartmentId());
@@ -40,21 +41,23 @@ public class AddProductInputMapper {
         serviceModel.setProductUploadTo(domainModel.getProductUploadTo());
         serviceModel.setProductWeight(domainModel.getProductWeight());
         serviceModel.setProductWeightUnit(domainModel.getProductWeightUnit());
-        serviceModel.setQuantityMaxOne(domainModel.getQuantityMaxOne());
-        serviceModel.setQuantityMaxTwo(domainModel.getQuantityMaxTwo());
-        serviceModel.setQuantityMaxThree(domainModel.getQuantityMaxThree());
-        serviceModel.setQuantityMaxFour(domainModel.getQuantityMaxFour());
-        serviceModel.setQuantityMaxFive(domainModel.getQuantityMaxFive());
-        serviceModel.setQuantityMinOne(domainModel.getQuantityMinOne());
-        serviceModel.setQuantityMinTwo(domainModel.getQuantityMinTwo());
-        serviceModel.setQuantityMinThree(domainModel.getQuantityMinThree());
-        serviceModel.setQuantityMinFour(domainModel.getQuantityMinFour());
-        serviceModel.setQuantityMinFive(domainModel.getQuantityMinFive());
         serviceModel.setPoProcessType(domainModel.getPoProcessType());
         serviceModel.setPoProcessValue(domainModel.getPoProcessValue());
         serviceModel.setServerId(domainModel.getServerId());
 
         return serviceModel;
+    }
+
+    private static List<ProductWholesaleServiceModel> mapWholesale(List<ProductWholesaleDomainModel> wholesaleDomainModelList) {
+        List<ProductWholesaleServiceModel> serviceModelList = new ArrayList<>();
+        for (ProductWholesaleDomainModel domainModel : wholesaleDomainModelList){
+            ProductWholesaleServiceModel serviceModel = new ProductWholesaleServiceModel();
+            serviceModel.setPrice(domainModel.getPrice());
+            serviceModel.setQtyMax(domainModel.getQtyMax());
+            serviceModel.setQtyMin(domainModel.getQtyMin());
+            serviceModelList.add(serviceModel);
+        }
+        return serviceModelList;
     }
 
     public static AddProductPictureInputServiceModel mapPicture(AddProductPictureInputDomainModel domainModel) {
