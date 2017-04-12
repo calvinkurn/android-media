@@ -105,6 +105,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
+    public static final String DEFAULT = "not";
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -146,7 +147,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
         callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
-        callingIntent.putExtra("login", "not");
+        callingIntent.putExtra("login", DEFAULT);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         if (GlobalConfig.isSellerApp())
             callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
