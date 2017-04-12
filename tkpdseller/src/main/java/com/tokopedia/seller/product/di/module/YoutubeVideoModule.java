@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -11,6 +14,7 @@ import com.tokopedia.seller.product.data.source.cloud.YoutubeVideoLinkCloud;
 import com.tokopedia.seller.product.data.source.cloud.api.YoutubeVideoLinkApi;
 import com.tokopedia.seller.product.domain.YoutubeVideoRepository;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
+import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,6 +26,14 @@ import retrofit2.Retrofit;
 @ActivityScope
 @Module
 public class YoutubeVideoModule {
+
+    @ActivityScope
+    @Provides
+    YoutubeVideoLinkUtils provideYoutubeVideoLinkUtils(@ApplicationContext Context context) {
+        YoutubeVideoLinkUtils youtubeVideoLinkUtils = new YoutubeVideoLinkUtils();
+        youtubeVideoLinkUtils.fillExceptionString(context);
+        return youtubeVideoLinkUtils;
+    }
 
     @ActivityScope
     @Provides
@@ -62,8 +74,10 @@ public class YoutubeVideoModule {
     @ActivityScope
     @Provides
     YoutubeVideoLinkCloud provideYoutubeVideoLinkCloud(
-            YoutubeVideoLinkApi youtubeVideoLinkApi) {
-        return new YoutubeVideoLinkCloud(youtubeVideoLinkApi);
+            YoutubeVideoLinkApi youtubeVideoLinkApi,
+            YoutubeVideoLinkUtils youtubeVideoLinkUtils
+    ) {
+        return new YoutubeVideoLinkCloud(youtubeVideoLinkApi, youtubeVideoLinkUtils);
     }
 
     @ActivityScope
