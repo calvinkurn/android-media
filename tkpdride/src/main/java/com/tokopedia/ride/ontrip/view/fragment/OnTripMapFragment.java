@@ -874,6 +874,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             public void onBackPressed() {
                 if (isScreenBlocked) {
                     hideContactPanel();
+                    hideCancelPanel();
                 }
             }
 
