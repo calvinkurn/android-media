@@ -1405,6 +1405,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventImageUploadSuccessInstagram(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_ADD_PRODUCT,
+                AppEventTracking.Category.ADD_PRODUCT,
+                AppEventTracking.Action.UPLOAD_SUCCESS,
+                AppEventTracking.EventLabel.INSTAGRAM_IMG_PICKER
+        ).getEvent());
+    }
+
     public static void eventSlideBannerClicked(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SLIDE_BANNER,
@@ -1437,6 +1446,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSmartLock(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
                 label
         ).getEvent());
     }

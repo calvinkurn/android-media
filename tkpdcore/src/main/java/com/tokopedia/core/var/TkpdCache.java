@@ -140,6 +140,7 @@ public class TkpdCache {
         public static final String FAVORITE_SHOP = "FAVORITE_SHOP";
         public static final String RECOMMEND_SHOP = "RECOMMEND_SHOP";
         public static final String FAVORITE_PAGING = "FAVORITE_PAGING";
+        public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
 
         public static final String PROMO = "PROMO";
 

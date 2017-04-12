@@ -83,6 +83,7 @@ public interface AppEventTracking {
         String FAVORITE_SHOP = "clickFavoriteShop";
         String TOP_SELLER = "clickTopSeller";
         String SLIDE_BANNER = "sliderBanner";
+        String SUCCESS_SMART_LOCK = "eventSuccessSmartLock";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -168,6 +169,7 @@ public interface AppEventTracking {
         String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
+        String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
     }
 
@@ -207,6 +209,7 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE = "Search Autocomplete";
         String SEARCH_AUTOCOMPLETE_SHOP = "Search Autocomplete Shop";
         String SEARCH_AUTOCOMPLETE_CATEGORY = "Search Autocomplete Category";
+        String UPLOAD_SUCCESS = "Success Upload";
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
@@ -282,6 +285,7 @@ public interface AppEventTracking {
         String REPORT = "Report";
         String REPORT_NOT_LOGIN = "Report - Not Login";
         String REPORT_SUCCESS = "Report Success";
+        String INSTAGRAM_IMG_PICKER = "Instagram Image Picker";
 
         String SHOP_INFO = "Shop Info";
         String SHOP_SHIPPING = "Shop Shipping";
@@ -365,6 +369,8 @@ public interface AppEventTracking {
         String CATEGORY_SHOW_MORE = "Lihat Lainnya";
         String TOPADS_LOW_CREDIT = "Top Ads Below 20k";
         String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
+        String SAVE_PASSWORD = "Save Password";
+        String NEVER = "Never";
     }
 
     interface SOCIAL_MEDIA {
