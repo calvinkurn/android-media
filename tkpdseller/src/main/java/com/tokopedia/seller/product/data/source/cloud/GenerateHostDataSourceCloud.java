@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.data.mapper.GenerateHostMapper;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
-import com.tokopedia.seller.product.data.source.cloud.model.GenerateHostModel;
+import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
 
 import rx.Observable;
 import rx.functions.Action1;
@@ -23,7 +23,7 @@ public class GenerateHostDataSourceCloud {
     private final GenerateHostApi generateHostApi;
     private final GenerateHostMapper generateHostMapper;
     private final Context context;
-    private GenerateHostModel.GenerateHost generateHost;
+    private GenerateHost generateHost;
 
     public GenerateHostDataSourceCloud(@ActivityContext Context context, GenerateHostApi generateHostApi, GenerateHostMapper generateHostMapper) {
         this.generateHostApi = generateHostApi;
@@ -31,23 +31,23 @@ public class GenerateHostDataSourceCloud {
         this.context = context;
     }
 
-    public Observable<GenerateHostModel.GenerateHost> generateHost() {
+    public Observable<GenerateHost> generateHost() {
         return Observable.just(generateHost)
                 .map(new CheckHostNotEmpty())
                 .onErrorResumeNext(fetchGenerateHostFromNetwork());
     }
 
-    private Observable<GenerateHostModel.GenerateHost> fetchGenerateHostFromNetwork() {
+    private Observable<GenerateHost> fetchGenerateHostFromNetwork() {
         return generateHostApi.generateHost(AuthUtil.generateParamsNetwork(context, getParamsGenerateHost()))
                 .flatMap(generateHostMapper)
                 .doOnNext(storeHost());
     }
 
     @NonNull
-    private Action1<GenerateHostModel.GenerateHost> storeHost() {
-        return new Action1<GenerateHostModel.GenerateHost>() {
+    private Action1<GenerateHost> storeHost() {
+        return new Action1<GenerateHost>() {
             @Override
-            public void call(GenerateHostModel.GenerateHost generateHost) {
+            public void call(GenerateHost generateHost) {
                 GenerateHostDataSourceCloud.this.generateHost = generateHost;
             }
         };
@@ -59,9 +59,9 @@ public class GenerateHostDataSourceCloud {
         return paramsGenerateHost;
     }
 
-    private class CheckHostNotEmpty implements Func1<GenerateHostModel.GenerateHost, GenerateHostModel.GenerateHost> {
+    private class CheckHostNotEmpty implements Func1<GenerateHost, GenerateHost> {
         @Override
-        public GenerateHostModel.GenerateHost call(GenerateHostModel.GenerateHost generateHost) {
+        public GenerateHost call(GenerateHost generateHost) {
             if (generateHost != null) {
                 return generateHost;
             } else {

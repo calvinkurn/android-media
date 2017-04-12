@@ -1,9 +1,6 @@
 package com.tokopedia.seller.product.domain;
 
-import com.tokopedia.seller.product.data.source.cloud.model.UploadImageModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-
-import java.net.URI;
+import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
 
 import rx.Observable;
 
@@ -12,5 +9,5 @@ import rx.Observable;
  */
 
 public interface ImageProductUploadRepository {
-    Observable<UploadImageModel.Result> uploadImageProduct(String uri);
+    Observable<ResultUploadImage> uploadImageProduct(String uri);
 }

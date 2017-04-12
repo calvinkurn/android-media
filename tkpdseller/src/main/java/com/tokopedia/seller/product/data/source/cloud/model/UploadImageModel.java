@@ -3,9 +3,6 @@ package com.tokopedia.seller.product.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by zulfikarrahman on 3/22/17.
  */
@@ -24,7 +21,7 @@ public class UploadImageModel {
     private String serverProcessTime;
     @SerializedName("result")
     @Expose
-    private Result result;
+    private ResultUploadImage result;
 
     public String getStatus() {
         return status;
@@ -50,49 +47,12 @@ public class UploadImageModel {
         this.serverProcessTime = serverProcessTime;
     }
 
-    public Result getResult() {
+    public ResultUploadImage getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(ResultUploadImage result) {
         this.result = result;
     }
 
-    public class Result {
-
-        @SerializedName("file_path")
-        @Expose
-        private String filePath;
-        @SerializedName("pic_id")
-        @Expose
-        private int picId;
-        @SerializedName("pic_obj")
-        @Expose
-        private String picObj;
-
-        public String getFilePath() {
-            return filePath;
-        }
-
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
-
-        public int getPicId() {
-            return picId;
-        }
-
-        public void setPicId(int picId) {
-            this.picId = picId;
-        }
-
-        public String getPicObj() {
-            return picObj;
-        }
-
-        public void setPicObj(String picObj) {
-            this.picObj = picObj;
-        }
-
-    }
 }

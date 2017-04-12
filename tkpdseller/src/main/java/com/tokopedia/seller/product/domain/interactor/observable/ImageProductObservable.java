@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.domain.interactor.observable;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.product.data.source.cloud.model.UploadImageModel;
+import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
@@ -47,9 +47,9 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
                 return Observable.just(imageDomainModel);
             } else {
                 return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath())
-                        .flatMap(new Func1<UploadImageModel.Result, Observable<ImageProductInputDomainModel>>() {
+                        .flatMap(new Func1<ResultUploadImage, Observable<ImageProductInputDomainModel>>() {
                             @Override
-                            public Observable<ImageProductInputDomainModel> call(UploadImageModel.Result data) {
+                            public Observable<ImageProductInputDomainModel> call(ResultUploadImage data) {
                                 return null;
                             }
                         });
