@@ -88,7 +88,7 @@ public class ListProductAdapter extends BaseLinearRecyclerViewAdapter {
     private void renderData(ListProductViewHolder holder, ListProductViewItem item) {
         ImageHandler.LoadImage(holder.productImage, item.getProductImageUrl());
         holder.productName.setText(item.getProductName());
-        holder.productName.setOnClickListener(new OnProductClick(item.getResCenterProductID()));
+        holder.itemView.setOnClickListener(new OnProductClick(item.getResCenterProductID()));
     }
 
     @Override

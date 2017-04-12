@@ -85,7 +85,7 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
     public void onBindViewHolder(ComplaintProductVH holder, int position) {
         ImageHandler.LoadImage(holder.productImage, getProductItems().get(position).getProductImageUrl());
         holder.productName.setText(getProductItems().get(position).getProductName());
-        holder.productName.setOnClickListener(new OnProductClick(getProductItems().get(position).getProductID()));
+        holder.itemView.setOnClickListener(new OnProductClick(getProductItems().get(position).getProductID()));
     }
 
     @Override
