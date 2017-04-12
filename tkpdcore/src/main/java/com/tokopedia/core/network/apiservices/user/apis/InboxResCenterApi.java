@@ -48,7 +48,7 @@ public interface InboxResCenterApi {
     @GET(TkpdBaseURL.User.PATH_GET_APPEAL_RESOLUTION_FORM)
     Observable<Response<TkpdResponse>> getAppealResolutionForm(@QueryMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.User.PATH_TRACK_SHIPPING_REF)
+    @GET(TkpdBaseURL.User.PATH_TRACK_SHIPPING_REF_V2)
     Observable<Response<TkpdResponse>> trackShippingRefv2(@QueryMap Map<String, Object> params);
 
 

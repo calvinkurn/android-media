@@ -97,31 +97,31 @@ public interface ResCenterActApi {
     Observable<Response<TkpdResponse>> editAddressResolution(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> cancelResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_REOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> reportResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN)
+    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN_V2)
     Observable<Response<TkpdResponse>> finishResolutionReturn2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> acceptAdminResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> acceptResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> inputAddressResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION)
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION_V2)
     Observable<Response<TkpdResponse>> editAddressResolution2(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded

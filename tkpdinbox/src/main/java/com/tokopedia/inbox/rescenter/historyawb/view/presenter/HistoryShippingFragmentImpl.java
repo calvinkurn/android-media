@@ -41,54 +41,54 @@ import rx.Subscriber;
 @SuppressWarnings("ALL")
 public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPresenter {
 
-    private final HistoryShippingFragmentView fragmentView;
-    private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
-    private final HistoryAwbUseCase getHistoryAwbUseCase;
+    private HistoryShippingFragmentView fragmentView;
+    private TrackAwbReturProductUseCase trackAwbReturProductUseCase;
+    private HistoryAwbUseCase getHistoryAwbUseCase;
 
     public HistoryShippingFragmentImpl(Context context, HistoryShippingFragmentView fragmentView) {
-        this.fragmentView = fragmentView;
-        String resolutionID = fragmentView.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        this.getHistoryAwbUseCase
-                = new HistoryAwbUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.trackAwbReturProductUseCase
-                = new TrackAwbReturProductUseCase(jobExecutor, uiThread, resCenterRepository);
+//        this.fragmentView = fragmentView;
+//        String resolutionID = fragmentView.getResolutionID();
+//        String accessToken = new SessionHandler(context).getAccessToken(context);
+//
+//        JobExecutor jobExecutor = new JobExecutor();
+//        UIThread uiThread = new UIThread();
+//
+//        InboxResCenterService inboxResCenterService = new InboxResCenterService();
+//
+//        ResCenterActService resCenterActService = new ResCenterActService();
+//        ResolutionService resolutionService = new ResolutionService(accessToken);
+//
+//        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
+//        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
+//        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
+//        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+//        ListProductMapper listProductMapper = new ListProductMapper();
+//        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
+//        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
+//        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
+//
+//        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
+//                resolutionService,
+//                inboxResCenterService,
+//                resCenterActService,
+//                detailResCenterMapper,
+//                historyAwbMapper,
+//                historyAddressMapper,
+//                historyActionMapper,
+//                listProductMapper,
+//                productDetailMapper,
+//                discussionResCenterMapper,
+//                loadMoreMapper
+//        );
+//
+//        ResCenterRepository resCenterRepository
+//                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
+//
+//        this.getHistoryAwbUseCase
+//                = new HistoryAwbUseCase(jobExecutor, uiThread, resCenterRepository);
+//
+//        this.trackAwbReturProductUseCase
+//                = new TrackAwbReturProductUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override

@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
@@ -16,7 +17,11 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
@@ -28,7 +33,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.SolutionView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.StatusView;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
-import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.activity.ResCenterDiscussionActivity;
@@ -40,11 +44,13 @@ import com.tokopedia.inbox.rescenter.product.ListProductActivity;
 import com.tokopedia.inbox.rescenter.product.ProductDetailActivity;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
+import javax.inject.Inject;
+
 /**
  * Created by hangnadi on 3/8/17.
  */
 
-public class DetailResCenterFragment extends BasePresenterFragment<DetailResCenterFragmentPresenter>
+public class DetailResCenterFragment extends BaseDaggerFragment
         implements DetailResCenterFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -57,6 +63,8 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     private static final int REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION = 789;
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
+
+    protected Bundle savedState;
 
     View loading;
     View mainView;
@@ -73,6 +81,9 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private String resolutionID;
     private DetailViewModel viewData;
+
+    @Inject
+    DetailResCenterFragmentImpl presenter;
 
     public static DetailResCenterFragment createInstance(String resolutionID) {
         DetailResCenterFragment fragment = new DetailResCenterFragment();
@@ -121,19 +132,23 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
+    public void setupArguments(Bundle arguments) {
+        setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return true;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        presenter.setOnFirstTimeLaunch();
+    protected int getFragmentLayout() {
+        return R.layout.fragment_detail_rescenter;
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-        state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
-        state.putParcelable(EXTRA_PARAM_VIEW_DATA, getViewData());
+    protected void onFirstTimeLaunched() {
+        presenter.setOnFirstTimeLaunch();
     }
 
     @Override
@@ -144,28 +159,9 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new DetailResCenterFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_detail_rescenter;
+    public void onSaveState(Bundle state) {
+        state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
+        state.putParcelable(EXTRA_PARAM_VIEW_DATA, getViewData());
     }
 
     @Override
@@ -197,13 +193,19 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    protected void initialVar() {
-
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER;
     }
 
     @Override
-    protected void setActionVar() {
-
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        ResolutionDetailComponent resolutionDetailComponent
+                = DaggerResolutionDetailComponent.builder()
+                .appComponent(appComponent)
+                .resolutionModule(new ResolutionModule(getResolutionID(), this))
+                .build();
+        resolutionDetailComponent.inject(this);
     }
 
     @Override

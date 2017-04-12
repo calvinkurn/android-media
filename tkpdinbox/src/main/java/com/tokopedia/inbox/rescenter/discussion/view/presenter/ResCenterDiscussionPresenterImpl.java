@@ -52,7 +52,7 @@ import java.util.ArrayList;
 
 public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPresenter {
 
-    private final ResCenterDiscussionView viewListener;
+    private ResCenterDiscussionView viewListener;
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
     private SendDiscussionUseCase sendDiscussionUseCase;
@@ -66,107 +66,107 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private Context context;
 
     public ResCenterDiscussionPresenterImpl(Context context, ResCenterDiscussionView viewListener) {
-        this.viewListener = viewListener;
-        this.context = context;
-
-        String resolutionID = viewListener.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        getDiscussionUseCase = new GetResCenterDiscussionUseCase(
-                jobExecutor, uiThread, resCenterRepository);
-
-        loadMoreUseCase = new LoadMoreDiscussionUseCase(
-                jobExecutor, uiThread, resCenterRepository
-        );
-
-        replyDiscussionValidationUseCase = new ReplyDiscussionValidationUseCase(
-                jobExecutor, uiThread, resCenterRepository
-        );
-
-        GenerateHostActService generateHostActService = new GenerateHostActService();
-
-        GenerateHostMapper generateHostMapper = new GenerateHostMapper();
-
-        UploadImageMapper uploadImageMapper = new UploadImageMapper();
-
-        CreatePictureMapper createPictureMapper = new CreatePictureMapper();
-
-        SubmitImageMapper submitImageMapper = new SubmitImageMapper();
-
-        UploadImageSourceFactory uploadImageSourceFactory = new UploadImageSourceFactory(context,
-                generateHostActService,
-                resCenterActService,
-                generateHostMapper,
-                uploadImageMapper,
-                createPictureMapper,
-                submitImageMapper
-
-        );
-
-        UploadImageRepository uploadImageRepository
-                = new UploadImageRepositoryImpl(uploadImageSourceFactory);
-
-        generateHostUseCase = new GenerateHostUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        uploadImageUseCase = new UploadImageUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        createPictureUseCase = new CreatePictureUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        replyDiscussionSubmitUseCase = new ReplyDiscussionSubmitUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        sendDiscussionUseCase = new SendDiscussionUseCase(
-                jobExecutor, uiThread,
-                generateHostUseCase,
-                replyDiscussionValidationUseCase,
-                uploadImageUseCase,
-                createPictureUseCase,
-                replyDiscussionSubmitUseCase
-
-        );
-
-        pass = new SendReplyDiscussionParam();
+//        this.viewListener = viewListener;
+//        this.context = context;
+//
+//        String resolutionID = viewListener.getResolutionID();
+//        String accessToken = new SessionHandler(context).getAccessToken(context);
+//
+//        JobExecutor jobExecutor = new JobExecutor();
+//        UIThread uiThread = new UIThread();
+//
+//        InboxResCenterService inboxResCenterService = new InboxResCenterService();
+//
+//        ResCenterActService resCenterActService = new ResCenterActService();
+//        ResolutionService resolutionService = new ResolutionService(accessToken);
+//
+//        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
+//        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
+//        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
+//        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+//        ListProductMapper listProductMapper = new ListProductMapper();
+//        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
+//        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
+//        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
+//
+//        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
+//                resolutionService,
+//                inboxResCenterService,
+//                resCenterActService,
+//                detailResCenterMapper,
+//                historyAwbMapper,
+//                historyAddressMapper,
+//                historyActionMapper,
+//                listProductMapper,
+//                productDetailMapper,
+//                discussionResCenterMapper,
+//                loadMoreMapper
+//        );
+//
+//        ResCenterRepository resCenterRepository
+//                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
+//
+//        getDiscussionUseCase = new GetResCenterDiscussionUseCase(
+//                jobExecutor, uiThread, resCenterRepository);
+//
+//        loadMoreUseCase = new LoadMoreDiscussionUseCase(
+//                jobExecutor, uiThread, resCenterRepository
+//        );
+//
+//        replyDiscussionValidationUseCase = new ReplyDiscussionValidationUseCase(
+//                jobExecutor, uiThread, resCenterRepository
+//        );
+//
+//        GenerateHostActService generateHostActService = new GenerateHostActService();
+//
+//        GenerateHostMapper generateHostMapper = new GenerateHostMapper();
+//
+//        UploadImageMapper uploadImageMapper = new UploadImageMapper();
+//
+//        CreatePictureMapper createPictureMapper = new CreatePictureMapper();
+//
+//        SubmitImageMapper submitImageMapper = new SubmitImageMapper();
+//
+//        UploadImageSourceFactory uploadImageSourceFactory = new UploadImageSourceFactory(context,
+//                generateHostActService,
+//                resCenterActService,
+//                generateHostMapper,
+//                uploadImageMapper,
+//                createPictureMapper,
+//                submitImageMapper
+//
+//        );
+//
+//        UploadImageRepository uploadImageRepository
+//                = new UploadImageRepositoryImpl(uploadImageSourceFactory);
+//
+//        generateHostUseCase = new GenerateHostUseCase(
+//                jobExecutor, uiThread, uploadImageRepository
+//        );
+//
+//        uploadImageUseCase = new UploadImageUseCase(
+//                jobExecutor, uiThread, uploadImageRepository
+//        );
+//
+//        createPictureUseCase = new CreatePictureUseCase(
+//                jobExecutor, uiThread, uploadImageRepository
+//        );
+//
+//        replyDiscussionSubmitUseCase = new ReplyDiscussionSubmitUseCase(
+//                jobExecutor, uiThread, uploadImageRepository
+//        );
+//
+//        sendDiscussionUseCase = new SendDiscussionUseCase(
+//                jobExecutor, uiThread,
+//                generateHostUseCase,
+//                replyDiscussionValidationUseCase,
+//                uploadImageUseCase,
+//                createPictureUseCase,
+//                replyDiscussionSubmitUseCase
+//
+//        );
+//
+//        pass = new SendReplyDiscussionParam();
     }
 
 

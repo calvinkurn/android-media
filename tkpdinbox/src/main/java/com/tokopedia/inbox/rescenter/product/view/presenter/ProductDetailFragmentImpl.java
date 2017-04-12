@@ -29,50 +29,50 @@ import com.tokopedia.inbox.rescenter.product.view.subscriber.GetProductDetailSub
 
 public class ProductDetailFragmentImpl implements ProductDetailFragmentContract.Presenter {
 
-    private final ProductDetailFragmentContract.ViewListener viewListener;
-    private final GetProductDetailUseCase getProductDetailUseCase;
+    private ProductDetailFragmentContract.ViewListener viewListener;
+    private GetProductDetailUseCase getProductDetailUseCase;
 
     public ProductDetailFragmentImpl(Context context, ProductDetailFragmentContract.ViewListener viewListener) {
-        this.viewListener = viewListener;
-        String resolutionID = viewListener.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        this.getProductDetailUseCase
-                = new GetProductDetailUseCase(jobExecutor, uiThread, resCenterRepository);
+//        this.viewListener = viewListener;
+//        String resolutionID = viewListener.getResolutionID();
+//        String accessToken = new SessionHandler(context).getAccessToken(context);
+//
+//        JobExecutor jobExecutor = new JobExecutor();
+//        UIThread uiThread = new UIThread();
+//
+//        InboxResCenterService inboxResCenterService = new InboxResCenterService();
+//
+//        ResCenterActService resCenterActService = new ResCenterActService();
+//        ResolutionService resolutionService = new ResolutionService(accessToken);
+//
+//        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
+//        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
+//        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
+//        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
+//        ListProductMapper listProductMapper = new ListProductMapper();
+//        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
+//        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
+//        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
+//
+//        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
+//                resolutionService,
+//                inboxResCenterService,
+//                resCenterActService,
+//                detailResCenterMapper,
+//                historyAwbMapper,
+//                historyAddressMapper,
+//                historyActionMapper,
+//                listProductMapper,
+//                productDetailMapper,
+//                discussionResCenterMapper,
+//                loadMoreMapper
+//        );
+//
+//        ResCenterRepository resCenterRepository
+//                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
+//
+//        this.getProductDetailUseCase
+//                = new GetProductDetailUseCase(jobExecutor, uiThread, resCenterRepository);
     }
 
     @Override

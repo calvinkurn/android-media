@@ -2,18 +2,18 @@ package com.tokopedia.inbox.rescenter.detailv2.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
+import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudActionResCenterDataStore;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudInboxResCenterDataSource;
 import com.tokopedia.inbox.rescenter.detailv2.data.source.CloudResCenterDataSource;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
+import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
+import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
 import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
@@ -24,10 +24,10 @@ import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 public class ResCenterDataSourceFactory {
 
     private Context context;
-    private ResolutionService resCenterService;
-    private InboxResCenterService inboxResCenterService;
+    private ResolutionApi resolutionApi;
+    private InboxResCenterApi inboxResCenterApi;
+    private ResCenterActApi resCenterActApi;
     private DetailResCenterMapper detailResCenterMapper;
-    private ResCenterActService resCenterActService;
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
     private HistoryActionMapper historyActionMapper;
@@ -37,9 +37,9 @@ public class ResCenterDataSourceFactory {
     private LoadMoreMapper loadMoreMapper;
 
     public ResCenterDataSourceFactory(Context context,
-                                      ResolutionService resCenterService,
-                                      InboxResCenterService inboxResCenterService,
-                                      ResCenterActService resCenterActService,
+                                      ResolutionApi resolutionApi,
+                                      InboxResCenterApi inboxResCenterApi,
+                                      ResCenterActApi resCenterActApi,
                                       DetailResCenterMapper detailResCenterMapper,
                                       HistoryAwbMapper historyAwbMapper,
                                       HistoryAddressMapper historyAddressMapper,
@@ -49,10 +49,10 @@ public class ResCenterDataSourceFactory {
                                       DiscussionResCenterMapper discussionResCenterMapper,
                                       LoadMoreMapper loadMoreMapper) {
         this.context = context;
-        this.resCenterService = resCenterService;
-        this.inboxResCenterService = inboxResCenterService;
+        this.resolutionApi = resolutionApi;
+        this.inboxResCenterApi = inboxResCenterApi;
+        this.resCenterActApi = resCenterActApi;
         this.detailResCenterMapper = detailResCenterMapper;
-        this.resCenterActService = resCenterActService;
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
         this.historyActionMapper = historyActionMapper;
@@ -63,7 +63,7 @@ public class ResCenterDataSourceFactory {
     }
 
     public CloudResCenterDataSource createCloudResCenterDataSource() {
-        return new CloudResCenterDataSource(context, resCenterService,
+        return new CloudResCenterDataSource(context, resolutionApi,
                 detailResCenterMapper,
                 historyAwbMapper,
                 historyAddressMapper,
@@ -75,10 +75,10 @@ public class ResCenterDataSourceFactory {
     }
 
     public CloudInboxResCenterDataSource createCloudInboxResCenterDataSource() {
-        return new CloudInboxResCenterDataSource(context, inboxResCenterService);
+        return new CloudInboxResCenterDataSource(context, inboxResCenterApi);
     }
 
     public CloudActionResCenterDataStore createCloudActionResCenterDataStore() {
-        return new CloudActionResCenterDataStore(context, resCenterActService);
+        return new CloudActionResCenterDataStore(context, resCenterActApi);
     }
 }
