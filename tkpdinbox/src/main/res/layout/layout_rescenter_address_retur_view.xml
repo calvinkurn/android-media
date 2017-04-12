@@ -75,6 +75,7 @@
             android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textIsSelectable="true"
             android:text="CGK1234567890"
             android:textSize="@dimen/font_small"
             />

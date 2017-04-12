@@ -25,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_date"
         android:layout_toRightOf="@id/indicator_container"
+        android:textIsSelectable="true"
         android:paddingBottom="@dimen/padding_small"
         android:gravity="center_vertical"
         android:maxLines="2"
