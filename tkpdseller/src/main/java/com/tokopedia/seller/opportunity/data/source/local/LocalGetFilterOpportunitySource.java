@@ -84,6 +84,22 @@ public class LocalGetFilterOpportunitySource {
             item.setTree(1);
             item.setName("child " + i + " of " + name);
             item.setParent(1);
+            item.setChild(createFakeChild2CategoryData(item.getName()));
+            categoryLists.add(item);
+        }
+        return categoryLists;
+    }
+
+    private List<CategoryList> createFakeChild2CategoryData(String name) {
+        List<CategoryList> categoryLists = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            CategoryList item = new CategoryList();
+            item.setId(String.valueOf(i));
+            item.setHidden(0);
+            item.setIdentifier("asdasdasd" + i);
+            item.setTree(1);
+            item.setName("child " + i + " of " + name);
+            item.setParent(1);
             item.setChild(new ArrayList<CategoryList>());
             categoryLists.add(item);
         }

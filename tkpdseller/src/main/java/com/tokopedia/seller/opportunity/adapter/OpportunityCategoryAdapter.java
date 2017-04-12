@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,9 @@ public class OpportunityCategoryAdapter extends RecyclerView.Adapter<RecyclerVie
 
 
     public interface CategoryListener {
-        void onCategorySelected(CategoryViewModel categoryViewModel);
+        void onCategorySelected(int position, ArrayList<CategoryViewModel> categoryViewModel);
+
+        void onCategoryExpanded(int position, ArrayList<CategoryViewModel> categoryViewModel);
     }
 
     public class ParentViewHolder extends RecyclerView.ViewHolder {
@@ -94,40 +97,64 @@ public class OpportunityCategoryAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private void bindChildViewHolder(ChildViewHolder holder, final int position) {
         holder.checkBox.setText(list.get(position).getCategoryName());
+        holder.checkBox.setChecked(list.get(position).isSelected());
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 list.get(position).setSelected(!list.get(position).isSelected());
-                listener.onCategorySelected(list.get(position));
+                for (CategoryViewModel viewModel : list) {
+                    if (viewModel != list.get(position))
+                        viewModel.setSelected(false);
+                }
+                listener.onCategorySelected(position, list);
+                notifyDataSetChanged();
             }
         });
     }
 
     private void bindParentViewHolder(ParentViewHolder holder, final int position) {
         holder.title.setText(list.get(position).getCategoryName());
+
         holder.title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (list.get(position).isExpanded()) {
-                    list.removeAll(list.get(position).getListChild());
+                    collapseGroup(position);
                 } else {
-                    list.addAll(position + 1, list.get(position).getListChild());
+                    expandGroup(position);
                 }
-
-                removeChildren(list, position);
-                notifyDataSetChanged();
+                listener.onCategoryExpanded(position, list);
             }
         });
 
     }
 
-    private void removeChildren(ArrayList<CategoryViewModel> list, int position) {
-        for (int i = list.size(); i == 0; i--) {
-            if (i - 1 != position
-                    && list.get(i - 1).isExpanded()) {
-                list.removeAll(list.get(i - 1).getListChild());
+    private void expandGroup(int position) {
+        list.get(position).setExpanded(true);
+        list.addAll(position + 1, list.get(position).getListChild());
+        notifyDataSetChanged();
+
+    }
+
+    private void collapseGroup(int position) {
+        list.get(position).setExpanded(false);
+        for (int i = position + 1; i <= position + getAllOpenChild(position); i++) {
+            if (list.get(i).isExpanded()) {
+                collapseGroup(i);
             }
+            list.remove(position + 1);
         }
+        notifyDataSetChanged();
+    }
+
+    private int getAllOpenChild(int position) {
+        int size = list.get(position).getListChild().size();
+        for (CategoryViewModel viewModel : list.get(position).getListChild()) {
+            if (viewModel.getListChild().size() > 0 &&
+                    viewModel.isExpanded())
+                size += viewModel.getListChild().size();
+        }
+        return list.get(position).getListChild().size();
     }
 
     public void setList(ArrayList<CategoryViewModel> list) {

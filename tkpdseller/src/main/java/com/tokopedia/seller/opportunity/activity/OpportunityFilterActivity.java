@@ -21,7 +21,6 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityShippingFragment;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
-import com.tokopedia.seller.selling.presenter.Shipping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,14 +185,40 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     public void onShippingSelected(ShippingTypeViewModel shippingTypeViewModel) {
+        selectedShipping = "";
         viewModel.getListShipping().get(shippingTypeViewModel.getPosition())
                 .setSelected(shippingTypeViewModel.isSelected());
-        selectedShipping = String.valueOf(shippingTypeViewModel.getShippingTypeId());
+        if (shippingTypeViewModel.isSelected())
+            selectedShipping = String.valueOf(shippingTypeViewModel.getShippingTypeId());
+
+        viewModel.getListTitle().get(1).setActive(!selectedShipping.equals(""));
+        updateFilterTitleFragment();
+    }
+
+    private void updateFilterTitleFragment() {
+        ((OpportunityFilterFragment) getFragmentManager().findFragmentById(R.id.filter))
+                .updateData(viewModel);
     }
 
 
     @Override
-    public void onCategorySelected(CategoryViewModel categoryViewModel) {
-        selectedShipping = String.valueOf(categoryViewModel.getCategoryId());
+    public void onCategorySelected(int position, ArrayList<CategoryViewModel> listCategory) {
+        selectedCategory = "";
+        viewModel.setListCategory(listCategory);
+        for (CategoryViewModel model : viewModel.getListCategory()) {
+            if (model.isSelected()) {
+                selectedCategory = String.valueOf(listCategory.get(position).getCategoryId());
+                break;
+            }
+        }
+
+        viewModel.getListTitle().get(0).setActive(!selectedCategory.equals(""));
+        updateFilterTitleFragment();
+
+    }
+
+    @Override
+    public void onCategoryExpanded(int position, ArrayList<CategoryViewModel> listCategory) {
+        viewModel.setListCategory(listCategory);
     }
 }

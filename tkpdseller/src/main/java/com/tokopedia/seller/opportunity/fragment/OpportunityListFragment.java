@@ -161,10 +161,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                pagingHandler.resetPage();
-                presenter.getOpportunity();
+                resetOpportunityList();
             }
         };
+    }
+
+    private void resetOpportunityList() {
+        pagingHandler.resetPage();
+        presenter.getOpportunity();
     }
 
     private OpportunityListAdapter.OpportunityListener onGoToDetail() {
@@ -202,7 +206,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public boolean onQueryTextSubmit(String query) {
                 presenter.setParamQuery(query);
-                presenter.getOpportunity();
+                resetOpportunityList();
                 return false;
             }
 
@@ -210,7 +214,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
                     presenter.setParamQuery("");
-                    presenter.getOpportunity();
+                    resetOpportunityList();
                 }
                 return false;
             }

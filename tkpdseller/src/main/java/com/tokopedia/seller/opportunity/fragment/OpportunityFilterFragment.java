@@ -11,6 +11,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * Created by nisie on 4/7/17.
  */
 
-public class OpportunityFilterFragment extends BasePresenterFragment {
+public class OpportunityFilterFragment extends BasePresenterFragment implements OpportunityFilterActivity.FilterListener {
 
     private static final String ARGS_LIST_TITLE = "ARGS_LIST_TITLE";
     RecyclerView opportunityFilter;
@@ -32,6 +33,7 @@ public class OpportunityFilterFragment extends BasePresenterFragment {
     public static OpportunityFilterFragment createInstance(ArrayList<FilterItemViewModel> listTitle) {
         OpportunityFilterFragment fragment = new OpportunityFilterFragment();
         Bundle bundle = new Bundle();
+        listTitle.get(0).setSelected(true);
         bundle.putParcelableArrayList(ARGS_LIST_TITLE, listTitle);
         fragment.setArguments(bundle);
         return fragment;
@@ -105,5 +107,10 @@ public class OpportunityFilterFragment extends BasePresenterFragment {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void updateData(OpportunityFilterActivityViewModel viewModel) {
+        adapter.setList(viewModel.getListTitle());
     }
 }

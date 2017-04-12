@@ -17,7 +17,7 @@ public class GetOpportunityUseCase extends UseCase<OpportunityModel> {
 
     public static final String PER_PAGE = "per_page";
     public static final String PAGE = "page";
-    public static final String QUERY = "query";
+    public static final String QUERY = "search";
     public static final String CAT_1 = "cat_1";
     public static final String CAT_2 = "cat_2";
     public static final String CAT_3 = "cat_3";
