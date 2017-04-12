@@ -7,19 +7,17 @@
 
     <com.tokopedia.seller.product.view.widget.DecimalInputView
         android:id="@+id/decimal_input_view"
-        android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="1"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
 
     <ImageButton
         android:id="@+id/image_button_minus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/checkbox_top_ads" />
+        style="@style/ImageButton.Counter"
+        android:src="@drawable/bg_button_counter_minus" />
 
     <ImageButton
         android:id="@+id/image_button_plus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/checkbox_top_ads" />
+        style="@style/ImageButton.Counter"
+        android:src="@drawable/bg_button_counter_plus" />
 </LinearLayout>
