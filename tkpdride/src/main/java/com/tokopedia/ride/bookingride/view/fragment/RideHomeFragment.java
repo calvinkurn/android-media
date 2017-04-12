@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Animatable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -153,13 +154,18 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     }
 
     private void setViewListener() {
-        if (getArguments() != null)
+        if (getArguments() != null) {
             if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
                 if (mSource != null && mDestination != null) {
                     setSourceLocationText(mSource.getTitle());
                     setDestinationLocationText(mDestination.getTitle());
                 }
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mMarkerTimeBackgroundImage.setImageResource(R.drawable.avd_ride_marker);
+        }
     }
 
     @Override
