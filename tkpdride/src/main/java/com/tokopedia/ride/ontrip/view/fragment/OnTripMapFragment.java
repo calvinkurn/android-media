@@ -128,6 +128,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     RelativeLayout contactPanelLayout;
     @BindView(R2.id.tv_driver_telp)
     TextView driverTelpTextView;
+    @BindView(R2.id.cancel_panel)
+    RelativeLayout cancelPanelLayout;
 
     OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -337,9 +339,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick(R2.id.cabs_processing_cancel_button)
     public void actionCancelButtonClicked() {
-        presenter.actionCancelRide();
+        showCancelPanel();
     }
-
 
     @Override
     public RequestParams getCancelParams() {
@@ -625,7 +626,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void cancelFindingUberNotification() {
+    public void hideFindingUberNotification() {
         mNotifyMgr.cancel(FINDING_UBER_NOTIFICATION_ID);
     }
 
@@ -682,7 +683,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void actionCancelRide() {
-        presenter.actionCancelRide();
+        showCancelPanel();
     }
 
     @Override
@@ -749,6 +750,57 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void hideCancelPanel() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isScreenBlocked = false;
+                Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.bottom_down);
+                cancelPanelLayout.startAnimation(bottomDown);
+                cancelPanelLayout.setVisibility(View.GONE);
+            }
+        }, 200);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0xBB000000,
+                0x00000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blockTranslucentView.setVisibility(View.GONE);
+            }
+        }, 500);
+    }
+
+    public void showCancelPanel() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                isScreenBlocked = true;
+                Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
+                        R.anim.bottom_up);
+
+                cancelPanelLayout.startAnimation(bottomUp);
+                cancelPanelLayout.setVisibility(View.VISIBLE);
+            }
+        }, 500);
+
+        blockTranslucentView.setVisibility(View.VISIBLE);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0x00000000,
+                0xBB000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
+    }
+
+    @Override
     public void showContactPanel() {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -785,6 +837,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.btn_cancel_contact)
     public void actionCancelContactBtnClicked() {
         hideContactPanel();
+    }
+
+    @OnClick(R2.id.btn_yes)
+    public void actionYesCancelBtnClicked() {
+        hideCancelPanel();
+        hideFindingUberNotification();
+        presenter.actionCancelRide();
+    }
+
+    @OnClick(R2.id.btn_no)
+    public void actionNoCancelBtnClicked() {
+        hideCancelPanel();
     }
 
     @OnClick(R2.id.block_translucent_view)

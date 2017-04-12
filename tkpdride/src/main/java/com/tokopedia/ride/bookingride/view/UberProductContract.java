@@ -38,6 +38,8 @@ public interface UberProductContract {
 
         void hideErrorMessage();
 
+        void hideErrorMessageLayout();
+
         void renderFareProduct(Visitable productEstimate, String productId, int position, FareEstimate fareEstimate);
 
         void actionMinimumTimeEstResult(String timeEst);
