@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '24.1.0'
+    supportLibraryVersion = '24.2.0'
     playServiceVersion = '9.0.1'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -15,6 +15,7 @@ ext {
     tkpdTransactionVersion = '1.+'
     tkpdDiscoveryVersion = '1.+'
     tkpdDigitalVersion = '1.+'
+    tkpdTopAdsSDKVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 15
     targetSdkVersion = 24
@@ -141,7 +142,8 @@ ext {
             transaction: "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             discovery  : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
-            digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}"
+            digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
+            topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}"
     ]
 
 }

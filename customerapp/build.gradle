@@ -226,7 +226,6 @@ dependencies {
     compile project(':tkpdseller')
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
-    compile project(':tkpdtopadssdk')
     compile project(':tkpddigital')
 
 //    compile rootProject.ext.tkpdDependencies.discovery
