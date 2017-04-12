@@ -1,12 +1,10 @@
 package com.tokopedia.seller.reputation.view.adapter;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +38,7 @@ import java.util.List;
  */
 public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
     public static final int SET_DATE_MODEL_POSITION = 0;
+    public static final String KEY_LIST_DATA = "KEY_LIST_DATA";
     private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
     private static final String TAG = "SellerReputationAdapter";
     private final Context context;
@@ -54,6 +52,12 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
 
     public static SellerReputationAdapter createInstance(Context context) {
         return new SellerReputationAdapter(context);
+    }
+
+    public static SellerReputationAdapter createInstance(Activity activity, ArrayList<Parcelable> tempParcelables) {
+        SellerReputationAdapter sellerReputationAdapter = new SellerReputationAdapter(activity);
+        sellerReputationAdapter.restoreParcelable(tempParcelables);
+        return sellerReputationAdapter;
     }
 
     public void setFragment(@Nullable Fragment fragment) {
@@ -185,6 +189,42 @@ public class SellerReputationAdapter extends BaseLinearRecyclerViewAdapter {
             }
         }
         return null;
+    }
+
+    public void saveStates(Bundle savedInstanceState) {
+        savedInstanceState.putParcelableArrayList(KEY_LIST_DATA, reformatParcelable());
+    }
+
+    private ArrayList<Parcelable> reformatParcelable() {
+        ArrayList<Parcelable> parcelables = new ArrayList<>();
+        for (TypeBasedModel typeBasedModel : list) {
+            switch (typeBasedModel.getType()) {
+                case ReputationReviewModel.VIEW_DEPOSIT:
+                    parcelables.add((ReputationReviewModel) typeBasedModel);
+                    break;
+                case SetDateHeaderModel.TYPE:
+                    parcelables.add((SetDateHeaderModel) typeBasedModel);
+                    break;
+                case EmptySeparatorModel.TYPE:
+                    parcelables.add((EmptySeparatorModel) typeBasedModel);
+                    break;
+                case EmptyListModel.TYPE:
+                    parcelables.add((EmptyListModel) typeBasedModel);
+                    break;
+                default:
+                    throw new IllegalArgumentException("error in " + TAG);
+            }
+        }
+        return parcelables;
+    }
+
+    public void restoreParcelable(ArrayList<Parcelable> parcelables) {
+        for (Parcelable parcelable : parcelables) {
+            if (parcelable != null && parcelable instanceof TypeBasedModel) {
+                list.add((TypeBasedModel) parcelable);
+            }
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
