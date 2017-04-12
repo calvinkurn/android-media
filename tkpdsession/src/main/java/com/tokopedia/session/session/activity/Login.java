@@ -101,8 +101,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         , OTPResultReceiver.Receiver
         , ErrorNetworkReceiver.ReceiveListener {
 
-    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
-    private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
+    public static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
 

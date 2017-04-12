@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.CreatePasswordModel;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
@@ -470,7 +471,7 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_1(),
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id());
-                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION);
+                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter)data.get("accounts")).getEmail(), ((AccountsParameter)data.get("accounts")).getPassword());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
                     successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
