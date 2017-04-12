@@ -54,6 +54,8 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     @Override
     public void verifyPhoneNumber() {
         if (isValid()) {
+            viewListener.showProgressDialog();
+            viewListener.setViewEnabled(false);
 
             verifyPhoneNumberUseCase.execute(getVerifyPhoneNumberParam(),
                     new Subscriber<VerifyPhoneNumberModel>() {
@@ -65,7 +67,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
                         @Override
                         public void onError(Throwable e) {
                             if (e instanceof UnknownHostException) {
-                                viewListener.onErrorRequestOTP(
+                                viewListener.onErrorVerifyPhoneNumber(
                                         viewListener.getString(R.string.msg_no_connection));
                             } else if (e instanceof RuntimeException &&
                                     e.getLocalizedMessage() != null &&
@@ -132,6 +134,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     @Override
     public void requestOtp() {
         if (isValid()) {
+            viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
             requestOtpUseCase.execute(getRequestOTPParam(), new Subscriber<RequestOtpModel>() {
@@ -202,6 +205,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
     @Override
     public void requestOtpWithCall() {
         if (isValid()) {
+            viewListener.setViewEnabled(false);
             viewListener.showProgressDialog();
 
             requestOtpUseCase.execute(getRequestOTPWithCallParam(), new Subscriber<RequestOtpModel>() {
