@@ -205,7 +205,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                presenter.setParamQuery(query);
+                presenter.getPass().setQuery(query);
                 resetOpportunityList();
                 return false;
             }
@@ -213,7 +213,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (newText.length() == 0) {
-                    presenter.setParamQuery("");
+                    presenter.getPass().setQuery("");
                     resetOpportunityList();
                 }
                 return false;
@@ -417,12 +417,20 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             adapter.notifyDataSetChanged();
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS Sort " + data.getExtras().getInt(OpportunitySortFragment.SELECTED_VALUE));
-            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
-            presenter.setParamSort(paramSort);
+            String paramSort = String.valueOf(data.getExtras().getInt(OpportunitySortFragment.SELECTED_VALUE));
+            presenter.getPass().setSort(paramSort);
+            resetOpportunityList();
 
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS Shipping" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE));
             CommonUtils.dumper("NISNIS Category" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY));
+
+            String shippingType = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE,"");
+            String category = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY,"");
+            presenter.getPass().setShippingType(shippingType);
+            presenter.getPass().setCategory(category);
+            resetOpportunityList();
+
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBar;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunityCategoryAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
@@ -19,6 +20,7 @@ import com.tokopedia.seller.opportunity.fragment.OpportunityCategoryFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterFragment;
 import com.tokopedia.seller.opportunity.fragment.OpportunityShippingFragment;
 import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 
@@ -128,10 +130,35 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                selectedCategory = "";
-//                selectedShipping = "";
+                resetCategory(viewModel.getListCategory());
+                resetShipping(viewModel.getListShipping());
+                resetTitle(viewModel.getListTitle());
+                updateFilterTitleFragment();
             }
         };
+    }
+
+    private void resetTitle(ArrayList<FilterItemViewModel> listTitle) {
+        for (int i = 0; i < listTitle.size(); i++) {
+            listTitle.get(i).setActive(false);
+            if (listTitle.get(i).isSelected())
+                onFilterClicked(i);
+        }
+    }
+
+    private void resetShipping(List<ShippingTypeViewModel> listShipping) {
+        for (ShippingTypeViewModel shipping : listShipping) {
+            shipping.setSelected(false);
+        }
+    }
+
+    private void resetCategory(List<CategoryViewModel> listCategory) {
+        for (CategoryViewModel category : listCategory) {
+            if (category.getListChild().size() > 0)
+                resetCategory(category.getListChild());
+            else
+                category.setSelected(false);
+        }
     }
 
     private View.OnClickListener onSaveClicked() {
@@ -139,10 +166,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                Bundle extra = new Bundle();
-                extra.putString(PARAM_SELECTED_SHIPPING_TYPE, selectedShipping);
-                extra.putString(PARAM_SELECTED_CATEGORY, selectedCategory);
-                intent.putExtra(ARGS_DATA, extra);
+                intent.putExtra(PARAM_SELECTED_SHIPPING_TYPE, selectedShipping);
+                intent.putExtra(PARAM_SELECTED_CATEGORY, selectedCategory);
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }

@@ -122,5 +122,7 @@ public class OpportunityShippingFragment extends BasePresenterFragment implement
     @Override
     public void updateData(OpportunityFilterActivityViewModel viewModel) {
         this.listShipping = new ArrayList<>(viewModel.getListShipping());
+        if (adapter != null)
+            adapter.setList(listShipping);
     }
 }

@@ -121,6 +121,8 @@ public class OpportunityCategoryFragment extends BasePresenterFragment implement
     @Override
     public void updateData(OpportunityFilterActivityViewModel viewModel) {
         this.listCategory = new ArrayList<>(viewModel.getListCategory());
+        if (adapter != null)
+            adapter.setList(listCategory);
     }
 
 }

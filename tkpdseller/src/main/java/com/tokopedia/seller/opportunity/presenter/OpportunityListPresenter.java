@@ -11,14 +11,6 @@ public interface OpportunityListPresenter {
 
     void unsubscribeObservable();
 
-    void setParamQuery(String query);
-
-    void setParamSort(String sortParam);
-
-    void setParamCategory(String categoryParam);
-
-    void getParamShippingType(String shippingParam);
-
     GetOpportunityListParam getPass();
 
     void getFilter();

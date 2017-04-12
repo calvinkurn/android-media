@@ -4,11 +4,11 @@ package com.tokopedia.seller.opportunity.domain.param;
  * Created by nisie on 3/2/17.
  */
 public class GetOpportunityListParam {
-    String page;
-    String query;
-    String sort;
-    String category;
-    String shippingType;
+    private String page;
+    private String query;
+    private String sort;
+    private String category;
+    private String shippingType;
 
     public String getPage() {
         return page;

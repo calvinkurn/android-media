@@ -71,26 +71,6 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     }
 
     @Override
-    public void setParamQuery(String query) {
-        opportunityParam.setQuery(query);
-    }
-
-    @Override
-    public void setParamSort(String sortParam) {
-        opportunityParam.setSort(sortParam);
-    }
-
-    @Override
-    public void setParamCategory(String categoryParam) {
-        opportunityParam.setCategory(categoryParam);
-    }
-
-    @Override
-    public void getParamShippingType(String shippingParam) {
-        opportunityParam.setShippingType(shippingParam);
-    }
-
-    @Override
     public GetOpportunityListParam getPass() {
         return opportunityParam;
     }
