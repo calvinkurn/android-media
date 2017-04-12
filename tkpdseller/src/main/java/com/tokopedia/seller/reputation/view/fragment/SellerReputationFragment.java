@@ -5,13 +5,16 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
@@ -55,6 +58,7 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsAddProductListPresenter;
 import com.tokopedia.seller.util.ShopNetworkController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -99,11 +103,37 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
     private int appBarLayoutHeight;
     private CoordinatorLayout.LayoutParams orignalLp;
 
+    /**
+     * this is used due to limitation of
+     * {@link BasePresenterFragment}
+     */
+    private ArrayList<Parcelable> tempParcelables;
+
     public static SellerReputationFragment createInstance() {
         SellerReputationFragment fragment = new SellerReputationFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (adapter != null) {
+            adapter.saveStates(outState);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        /**
+         * this is limitation due to {@link BasePresenterFragment}
+         */
+        if (savedInstanceState != null) {
+            tempParcelables = savedInstanceState.getParcelableArrayList(
+                    SellerReputationAdapter.KEY_LIST_DATA);
+        }
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -362,7 +392,11 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     protected void initialVar() {
-        adapter = SellerReputationAdapter.createInstance(getActivity());
+        if (tempParcelables != null) {
+            adapter = SellerReputationAdapter.createInstance(getActivity(), tempParcelables);
+        } else {
+            adapter = SellerReputationAdapter.createInstance(getActivity());
+        }
         adapter.setFragment(this);
         TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
@@ -651,6 +685,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+
         // get header - index 0
         SetDateHeaderModel headerModel = adapter.getHeaderModel();
         // reformat view model

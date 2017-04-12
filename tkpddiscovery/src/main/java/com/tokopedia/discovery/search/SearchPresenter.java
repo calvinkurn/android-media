@@ -13,10 +13,9 @@ import com.tokopedia.discovery.search.view.SearchContract;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.DefaultViewModel;
 import com.tokopedia.discovery.search.view.adapter.viewmodel.ShopViewModel;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Subscriber;
@@ -133,6 +132,9 @@ public class SearchPresenter extends BaseDaggerPresenter<SearchContract.View>
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
+            if (e instanceof UnknownHostException) {
+                getView().showNetworkErrorMessage();
+            }
         }
 
         @Override

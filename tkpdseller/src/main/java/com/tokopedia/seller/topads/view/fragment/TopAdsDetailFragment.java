@@ -59,7 +59,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    protected Ad adFromIntent;
+    private Ad ad;
     protected String adId;
 
     protected abstract void refreshAd();
@@ -106,7 +106,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
@@ -155,9 +155,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void loadData() {
         showLoading();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
-        if (adFromIntent != null) {
-            onAdLoaded(adFromIntent);
-            adFromIntent = null;
+        if (ad != null) {
+            onAdLoaded(ad);
         } else {
             refreshAd();
         }
@@ -197,8 +196,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onAdLoaded(Ad ad) {
+        this.ad = ad;
         hideLoading();
         loadAdDetail(ad);
+        getActivity().invalidateOptionsMenu();
     }
 
     private void hideLoading() {
@@ -217,6 +218,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             }
         });
         snackbarRetry.showRetrySnackbar();
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -337,6 +339,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_top_ads_detail, menu);
+        menu.findItem(R.id.menu_edit).setVisible(ad != null);
+        menu.findItem(R.id.menu_delete).setVisible(ad != null);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

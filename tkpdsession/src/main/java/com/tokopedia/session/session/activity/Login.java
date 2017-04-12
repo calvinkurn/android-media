@@ -434,7 +434,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 if (isFragmentCreated(SECURITY_QUESTION_TAG)) {
                     Log.d(TAG, messageTAG + FragmentSecurityQuestion.class.getSimpleName() + " is created !!!");
                     Fragment fragment = FragmentSecurityQuestion
-                            .newInstance(0, 0, "", null);
+                            .newInstance(0, 0, "", "", null);
                     moveToFragment(fragment, false, SECURITY_QUESTION_TAG, TkpdState.DrawerPosition.SECURITY_QUESTION);
                 } else {
                     Log.d(TAG, messageTAG + FragmentSecurityQuestion.class.getSimpleName() + " is not created !!!");
@@ -452,9 +452,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email) {
         Fragment fragment = FragmentSecurityQuestion
-                .newInstance(security1, security2, userId + "", null);
+                .newInstance(security1, security2, String.valueOf(userId), email, null);
         moveToFragment(fragment, false, SECURITY_QUESTION_TAG, TkpdState.DrawerPosition.SECURITY_QUESTION);
 
         // Change the header

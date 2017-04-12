@@ -30,7 +30,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -50,8 +49,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
-
 /**
  * Created by nisie on 2/22/17.
  */
@@ -59,6 +56,12 @@ import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
 @RuntimePermissions
 public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerificationPresenter>
         implements PhoneVerificationFragmentView, IncomingSmsReceiver.ReceiveSMSListener {
+
+    public interface PhoneVerificationFragmentListener {
+        void onSkipVerification();
+
+        void onSuccessVerification();
+    }
 
     private static final String FORMAT = "%02d";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
@@ -80,9 +83,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     IncomingSmsReceiver smsReceiver;
     TkpdProgressDialog progressDialog;
     LocalCacheHandler cacheHandler;
+    PhoneVerificationFragmentListener listener;
 
-    public static PhoneVerificationFragment createInstance() {
-        return new PhoneVerificationFragment();
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        fragment.setPhoneVerificationListener(listener);
+        return fragment;
     }
 
     public PhoneVerificationFragment() {
@@ -90,6 +96,13 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         this.smsReceiver.setListener(this);
     }
 
+    public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
+        this.listener = listener;
+    }
+
+    public PhoneVerificationFragmentListener getListener() {
+        return listener;
+    }
 
     private void findView(View view) {
         verifyButton = (TextView) view.findViewById(R.id.verify_button);
@@ -299,8 +312,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().setResult(Activity.RESULT_CANCELED);
-                getActivity().finish();
+                if (listener != null)
+                    listener.onSkipVerification();
+                else {
+                    getActivity().setResult(Activity.RESULT_CANCELED);
+                    getActivity().finish();
+                }
             }
         });
 
@@ -319,6 +336,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessRequestOtp(String status) {
+        setViewEnabled(true);
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
@@ -333,6 +351,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onErrorRequestOTP(String errorMessage) {
+        setViewEnabled(true);
         finishProgressDialog();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
@@ -357,10 +376,16 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessVerifyPhoneNumber() {
+        finishProgressDialog();
+        setViewEnabled(true);
         SessionHandler.setIsMSISDNVerified(true);
         SessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
-        getActivity().setResult(Activity.RESULT_OK);
-        getActivity().finish();
+        if (listener != null)
+            listener.onSuccessVerification();
+        else {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
 
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_verify_phone_number));
     }
@@ -378,11 +403,20 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onErrorVerifyPhoneNumber(String errorMessage) {
+        setViewEnabled(true);
         finishProgressDialog();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
         else
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void setViewEnabled(boolean isEnabled) {
+        requestOtpButton.setEnabled(isEnabled);
+        requestOtpCallButton.setEnabled(isEnabled);
+        verifyButton.setEnabled(isEnabled);
+        skipButton.setEnabled(isEnabled);
     }
 
     private void startTimer() {
@@ -448,6 +482,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void onReceiveOTP(String otpCode) {
         processOTPSMS(otpCode);
     }
+
 
     @NeedsPermission(Manifest.permission.READ_SMS)
     public void processOTPSMS(String otpCode) {

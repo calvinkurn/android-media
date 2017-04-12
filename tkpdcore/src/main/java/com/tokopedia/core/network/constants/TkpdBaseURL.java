@@ -37,6 +37,7 @@ public class TkpdBaseURL {
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
+    public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -616,6 +617,7 @@ public class TkpdBaseURL {
             private static final String BASE_OTP = "/otp";
             public static final String REQUEST_OTP = BASE_OTP + "/request";
             public static final String VALIDATE_OTP = BASE_OTP + "/validate";
+            public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
         }
 
         public class Image {
@@ -658,6 +660,26 @@ public class TkpdBaseURL {
 
     public static class Truecaller {
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
+
+    public static class DigitalApi {
+        public static final String VERSION = "v1.2/";
+        public static final String HMAC_KEY = "web_service_v4";
+
+        public static final String PATH_STATUS = "status";
+        public static final String PATH_CATEGORY = "category/list";
+        public static final String PATH_OPERATOR = "operator/list";
+        public static final String PATH_PRODUCT = "product/list";
+        public static final String PATH_RECENT_NUMBER = "recent-number";
+        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_SALDO = "saldo";
+        public static final String PATH_GET_CART = "cart";
+        public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
+        public static final String PATH_BANNER = "banner";
+        public static final String PATH_ORDER = "order";
+        public static final String PATH_ADD_TO_CART = "cart";
+        public static final String PATH_CHECKOUT = "checkout";
+        public static final String PATH_CHECK_VOUCHER = "voucher/check";
     }
 
     public static class HadesCategory {

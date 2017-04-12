@@ -23,6 +23,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.LoginTextView;
@@ -31,8 +32,8 @@ import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -121,6 +122,10 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         register.setText(spannable, TextView.BufferType.SPANNABLE);
         register.setMovementMethod(LinkMovementMethod.getInstance());
 
+
+        if(new SessionHandler(context).isV4Login()){
+            getActivity().finish();
+        }
     }
 
     @Override

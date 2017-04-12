@@ -55,7 +55,7 @@ public class UnifyTracking extends TrackingUtils {
 
     /* CATEGORY IMPROVEMENT*/
 
-    public static void eventProductOnCategory( String label){
+    public static void eventProductOnCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PRODUCT,
@@ -64,7 +64,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLevelCategory( String label){
+    public static void eventLevelCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -73,7 +73,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShowMoreCategory(){
+    public static void eventShowMoreCategory() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -82,7 +82,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSortCategory(String label){
+    public static void eventSortCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -91,7 +91,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFilterCategory(String label){
+    public static void eventFilterCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -100,7 +100,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDisplayCategory(String label){
+    public static void eventDisplayCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -109,7 +109,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShareCategory(String label){
+    public static void eventShareCategory(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE,
@@ -1405,6 +1405,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventImageUploadSuccessInstagram(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_ADD_PRODUCT,
+                AppEventTracking.Category.ADD_PRODUCT,
+                AppEventTracking.Action.UPLOAD_SUCCESS,
+                AppEventTracking.EventLabel.INSTAGRAM_IMG_PICKER
+        ).getEvent());
+    }
+
     public static void eventSlideBannerClicked(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SLIDE_BANNER,
@@ -1437,6 +1446,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSmartLock(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
                 label
         ).getEvent());
     }
