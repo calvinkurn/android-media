@@ -550,8 +550,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void showProductById(Product product) {
         selectedProduct = product;
         if (checkStockProduct(selectedProduct))
-            goToNativeCheckout();
-//            goToCheckout(getUrlCheckout());
+//            goToNativeCheckout();
+            goToCheckout(getUrlCheckout());
     }
 
     @Override
@@ -711,10 +711,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     hideFormAndShowImageOperator();
                 }
             }
+        } else {
+            hideFormAndImageOperator();
         }
     }
 
     private void setPhoneBookVisibility() {
+
         if (category != null && category.getAttributes() != null) {
             CategoryAttributes categoryAttributes = category.getAttributes();
             if (categoryAttributes.getUsePhonebook() && rechargeEditText != null) {
@@ -749,6 +752,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         } else {
             hideKeyboard();
+            hideFormAndImageOperator();
         }
     }
 
