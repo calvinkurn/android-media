@@ -11,11 +11,14 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.ride.deeplink.RideDeeplinkModule;
+import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
         CoreDeeplinkModule.class,
-        InboxDeeplinkModule.class
+        InboxDeeplinkModule.class,
+        RideDeeplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
@@ -25,7 +28,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader()
+                new InboxDeeplinkModuleLoader(),
+                new RideDeeplinkModuleLoader()
         );
         if (getIntent() != null) {
             Intent intent = getIntent();

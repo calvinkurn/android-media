@@ -138,7 +138,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mEndlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                actionOnLoadMoreDetected(page);
+                actionOnLoadMoreDetected(page + 1);
             }
         };
         mAutoCompleteRecylerView.addOnScrollListener(mEndlessRecyclerViewScrollListener);

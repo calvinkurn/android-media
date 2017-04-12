@@ -18,6 +18,7 @@ import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
+import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
@@ -202,7 +203,8 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader()
+                new InboxDeeplinkModuleLoader(),
+                new RideDeeplinkModuleLoader()
         );
         return deepLinkDelegate.supportsUri(applink);
     }
