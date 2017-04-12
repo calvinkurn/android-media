@@ -2,6 +2,7 @@ package com.tokopedia.core.gcm.utils;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
@@ -11,11 +12,13 @@ import android.support.annotation.Nullable;
 
 public class ActivitiesLifecycleCallbacks {
     private final Application application;
+    private final Context context;
     private Activity liveActivityOrNull;
     private Application.ActivityLifecycleCallbacks activityLifecycleCallbacks;
 
     public ActivitiesLifecycleCallbacks(Application application) {
         this.application = application;
+        context = application.getApplicationContext();
         registerActivityLifeCycle();
     }
 
@@ -58,5 +61,9 @@ public class ActivitiesLifecycleCallbacks {
 
     Application getApplication() {
         return application;
+    }
+
+    public Context getContext(){
+        return context;
     }
 }

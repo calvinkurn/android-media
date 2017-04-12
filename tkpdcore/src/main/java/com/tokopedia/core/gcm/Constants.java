@@ -20,6 +20,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
+    String ARG_NOTIFICATION_APPLINK_RIDE = "ride";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
@@ -40,5 +41,7 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+        String RIDE = "tokopedia://ride";
+        String RIDE_DETAIL = "tokopedia://ride/{request_id}";
     }
 }

@@ -6,11 +6,14 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.ChangeBounds;
@@ -26,8 +29,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -52,6 +61,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
+    public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
     private Unbinder unbinder;
@@ -74,6 +84,26 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
+    }
+
+    @DeepLink({Constants.Applinks.RIDE, Constants.Applinks.RIDE_DETAIL})
+    public static TaskStackBuilder getCallingApplinkTaskStack(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        Intent destination = new Intent(context, RideHomeActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        destination.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
     }
 
     @Override
@@ -399,5 +429,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_booking_ride, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_HOME;
     }
 }

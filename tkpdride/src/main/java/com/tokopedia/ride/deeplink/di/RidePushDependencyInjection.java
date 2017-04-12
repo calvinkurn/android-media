@@ -1,6 +1,4 @@
-package com.tokopedia.ride.completetrip.di;
-
-import android.content.Context;
+package com.tokopedia.ride.deeplink.di;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -10,7 +8,6 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
@@ -19,14 +16,10 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
-import com.tokopedia.ride.completetrip.view.CompleteTripContract;
-import com.tokopedia.ride.completetrip.view.CompleteTripPresenter;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -34,10 +27,14 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by alvarisi on 3/31/17.
+ * Created by alvarisi on 4/12/17.
  */
 
-public class CompleteTripDependencyInjection {
+public class RidePushDependencyInjection {
+
+    public RidePushDependencyInjection() {
+    }
+
     private Gson provideGson() {
         return new Gson();
     }
@@ -136,44 +133,7 @@ public class CompleteTripDependencyInjection {
                 .build();
     }
 
-    public CompleteTripDependencyInjection() {
-    }
-
-    private GetReceiptUseCase provideGetReceiptUseCase(String token, String userId) {
-        return new GetReceiptUseCase(
-                provideThreadExecutor(),
-                providePostExecutionThread(),
-                provideBookingRideRepository(
-                        provideBookingRideDataStoreFactory(
-                                provideRideApi(
-                                        provideRideRetrofit(
-                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
-                                                provideGeneratedHostConverter(),
-                                                provideTkpdResponseConverter(),
-                                                provideResponseConverter(),
-                                                provideGsonConverterFactory(provideGson()),
-                                                provideRxJavaCallAdapterFactory()
-                                        )
-                                )
-                        ),
-                        new ProductEntityMapper(),
-                        new TimeEstimateEntityMapper()
-                )
-        );
-    }
-
-    public static CompleteTripContract.Presenter createPresenter(Context context) {
-        CompleteTripDependencyInjection injection = new CompleteTripDependencyInjection();
-        SessionHandler sessionHandler = new SessionHandler(context);
-        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
-        String userId = sessionHandler.getLoginID();
-        GetReceiptUseCase getReceiptUseCase = injection.provideGetReceiptUseCase(token, userId);
-        GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
-        return new CompleteTripPresenter(getReceiptUseCase, getCurrentDetailRideRequestUseCase);
-    }
-
-    private GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
+    public GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
         return new GetCurrentDetailRideRequestUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),

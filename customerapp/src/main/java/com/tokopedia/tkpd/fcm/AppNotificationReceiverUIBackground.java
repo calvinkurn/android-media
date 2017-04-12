@@ -19,6 +19,8 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
@@ -40,8 +42,6 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseRejectedShippingNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
 
 import java.util.Map;
 
@@ -147,22 +147,35 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
                 break;
+            case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mActivitiesLifecycleCallbacks);
+                push.processReceivedNotification(data);
+                break;
+
         }
 
-        saveApplinkPushNotification(
-                category,
-                convertBundleToJsonString(data),
-                customIndex,
-                serverId,
-                new SavePushNotificationCallback()
-        );
+
     }
 
 

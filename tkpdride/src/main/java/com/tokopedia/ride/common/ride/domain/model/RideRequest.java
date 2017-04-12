@@ -8,16 +8,17 @@ import android.os.Parcelable;
  */
 
 public class RideRequest implements Parcelable {
-    String requestId;
-    String productId;
-    String status;
-    Vehicle vehicle;
-    Driver driver;
-    Location location;
-    LocationLatLng pickup;
-    LocationLatLng destination;
-    double surgeMultiplier;
-    boolean shared;
+    private String requestId;
+    private String productId;
+    private String status;
+    private Vehicle vehicle;
+    private Driver driver;
+    private Location location;
+    private LocationLatLng pickup;
+    private LocationLatLng destination;
+    private double surgeMultiplier;
+    private boolean shared;
+    private int eta;
 
     public RideRequest() {
     }
@@ -33,6 +34,7 @@ public class RideRequest implements Parcelable {
         destination = in.readParcelable(LocationLatLng.class.getClassLoader());
         surgeMultiplier = in.readDouble();
         shared = in.readByte() != 0;
+        eta = in.readInt();
     }
 
     public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
@@ -145,5 +147,14 @@ public class RideRequest implements Parcelable {
         parcel.writeParcelable(destination, i);
         parcel.writeDouble(surgeMultiplier);
         parcel.writeByte((byte) (shared ? 1 : 0));
+        parcel.writeInt(eta);
+    }
+
+    public int getEta() {
+        return eta;
+    }
+
+    public void setEta(int eta) {
+        this.eta = eta;
     }
 }

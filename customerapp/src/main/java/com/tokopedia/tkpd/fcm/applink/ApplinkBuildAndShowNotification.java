@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.fcm;
+package com.tokopedia.tkpd.fcm.applink;
 
 import android.content.Context;
 import android.content.Intent;

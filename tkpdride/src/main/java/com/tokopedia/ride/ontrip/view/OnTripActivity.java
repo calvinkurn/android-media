@@ -10,17 +10,22 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.deeplink.FcmReceiverUIForeground;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.deeplink.RidePushNotification;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
 
 @RuntimePermissions
-public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
+public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener, FcmReceiverUIForeground {
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     public static final int RIDE_HOME_RESULT_CODE = 11;
     public static final int RIDE_BOOKING_RESULT_CODE = 12;
@@ -141,6 +146,21 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onTargetNotification(Observable<RideRequest> oMessage) {
+
+    }
+
+    @Override
+    public void onMismatchTargetNotification(Observable<RideRequest> oMessage) {
+
+    }
+
+    @Override
+    public boolean matchesTarget(String key) {
+        return AppScreen.SCREEN_RIDE_ONTRIP.equalsIgnoreCase(key);
     }
 
     public interface BackButtonListener {

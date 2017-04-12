@@ -11,9 +11,6 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
-
-
-
     private AppScreen() {
 
     }
@@ -248,4 +245,6 @@ public final class AppScreen {
     public static final String EVENT_GOOD_REVIEW = "event: Good Review";
     public static final String SCREEN_VIEWED_WISHLIST_PAGE = "event : Viewed Wishlist Page";
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
+    public static final String SCREEN_RIDE_HOME = "Ride Home Page";
+    public static final String SCREEN_RIDE_ONTRIP = "Ride On Trip Page";
 }
