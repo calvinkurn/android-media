@@ -33,6 +33,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
     private TextView actionHelp;
     private TextView actionCancelResolutionVertical;
     private TextView actionInputAwbNumber;
+    private TextView actionInputAddress;
 
     public ButtonView(Context context) {
         super(context);
@@ -94,6 +95,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionHelp = (TextView) bottomSheetView.findViewById(R.id.action_help);
         actionCancelResolutionVertical = (TextView) bottomSheetView.findViewById(R.id.action_cancel_resolution);
         actionInputAwbNumber = (TextView) bottomSheetView.findViewById(R.id.action_input_awb_number);
+        actionInputAddress = (TextView) bottomSheetView.findViewById(R.id.action_input_address);
         View separator = bottomSheetView.findViewById(R.id.separator);
 
         actionEdit.setOnClickListener(new ActionEditSolutionClickListener());
@@ -102,6 +104,7 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         actionAcceptSolutionVertical.setOnClickListener(new ActionAcceptSolutionClickListener());
         actionCancelResolutionVertical.setOnClickListener(new ActionCancelResolutionClickListener());
         actionInputAwbNumber.setOnClickListener(new ActionInputAwbNumberClickListener());
+        actionInputAddress.setOnClickListener(new ActionInputAddressClickListener());
 
         actionEdit.setVisibility(
                 canEdit() || canAppealSolution() ?
@@ -133,6 +136,11 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                         VISIBLE : GONE
         );
 
+        actionInputAddress.setVisibility(
+                isShowInputAddress() ?
+                        VISIBLE : GONE
+        );
+
         separator.setVisibility(
                 actionEdit.getVisibility() == VISIBLE && actionHelp.getVisibility() == VISIBLE ?
                         VISIBLE : GONE
@@ -140,7 +148,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
         if (actionInputAwbNumber.getVisibility() == VISIBLE ||
                 actionAcceptProduct.getVisibility() == VISIBLE ||
-                actionAcceptSolutionVertical.getVisibility() == VISIBLE) {
+                actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
+                actionInputAddress.getVisibility() == VISIBLE) {
             actionCancelResolutionVertical.setBackgroundResource(R.drawable.btn_transparent_disable);
             actionCancelResolutionVertical.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         } else {
@@ -177,7 +186,8 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
                 actionAcceptSolutionVertical.getVisibility() == VISIBLE ||
                 actionCancelResolutionVertical.getVisibility() == VISIBLE ||
                 actionHelp.getVisibility() == VISIBLE ||
-                actionInputAwbNumber.getVisibility() == VISIBLE;
+                actionInputAwbNumber.getVisibility() == VISIBLE ||
+                actionInputAddress.getVisibility() == VISIBLE;
     }
 
     public void setButtonData(ButtonData buttonData) {
@@ -230,6 +240,14 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
 
     private boolean canInputAwbNumber() {
         return getButtonData().isShowInputAwb();
+    }
+
+    private boolean isShowInputAddress() {
+        return canInputAddress();
+    }
+
+    private boolean canInputAddress() {
+        return getButtonData().isShowInputAddress();
     }
 
     private class ActionAcceptSolutionClickListener implements OnClickListener {
@@ -286,6 +304,14 @@ public class ButtonView extends BaseView<ButtonData, DetailResCenterFragmentView
         public void onClick(View view) {
             dialog.dismiss();
             listener.setOnActionCancelResolutionClick();
+        }
+    }
+
+    private class ActionInputAddressClickListener implements OnClickListener {
+        @Override
+        public void onClick(View view) {
+            dialog.dismiss();
+            listener.setOnActionInputAddressClick();
         }
     }
 }

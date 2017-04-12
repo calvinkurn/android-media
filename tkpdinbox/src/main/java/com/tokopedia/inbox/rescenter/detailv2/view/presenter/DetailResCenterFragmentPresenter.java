@@ -26,6 +26,8 @@ public interface DetailResCenterFragmentPresenter {
 
     void inputAddressAcceptSolution(String addressId);
 
+    void inputAddressMigrateVersion(String addressId);
+
     void actionEditAddress(String addressId, String oldAddressId, String conversationId);
 
     void inputAddressAcceptAdminSolution(String addressId);

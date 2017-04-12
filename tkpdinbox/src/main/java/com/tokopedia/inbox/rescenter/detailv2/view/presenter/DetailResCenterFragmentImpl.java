@@ -235,6 +235,21 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     }
 
     @Override
+    public void inputAddressMigrateVersion(String addressId) {
+        fragmentView.showLoadingDialog(true);
+        inputAddressUseCase.execute(getInputAddressMigrateVersionParam(addressId),
+                new ResolutionActionSubscriber(fragmentView));
+    }
+
+    private RequestParams getInputAddressMigrateVersionParam(String addressId) {
+        RequestParams params = RequestParams.create();
+        params.putString(InputAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putString(InputAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        params.putInt(InputAddressUseCase.PARAM_NEW_ADDRESS, 1);
+        return params;
+    }
+
+    @Override
     public void actionEditAddress(String addressId, String oldAddressId, String conversationId) {
         fragmentView.showLoadingDialog(true);
         editAddressUseCase.execute(getEditAddressParam(addressId, oldAddressId, conversationId),

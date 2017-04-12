@@ -47,5 +47,6 @@
     <string name="attachment">Lampiran</string>
     <string name="no_result_res_center_discussion">Tidak ada pesan di diskusi</string>
     <string name="failed_upload_image">Gagal mengunggah gambar</string>
+    <string name="action_input_address">Masukan Alamat Pengiriman</string>
 
 </resources>

@@ -59,6 +59,19 @@
         android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/action_input_address"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_gravity="center"
+        android:background="@color/tkpd_main_green"
+        android:gravity="center"
+        android:text="@string/action_input_address"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_medium"
+        android:textStyle="bold" />
+
+    <TextView
         android:id="@+id/action_input_awb_number"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"

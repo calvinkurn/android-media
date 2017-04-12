@@ -49,13 +49,14 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_VIEW_DATA = "view_data";
-    private static final int REQUEST_EDIT_SOLUTION = 6789;
-    private static final int REQUEST_APPEAL_SOLUTION = 5;
-    private static final int REQUEST_INPUT_SHIPPING = 6;
-    private static final int REQUEST_EDIT_SHIPPING = 7;
-    private static final int REQUEST_CHOOSE_ADDRESS = 7890;
-    private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 7892;
-    private static final int REQUEST_EDIT_ADDRESS = 5678;
+    private static final int REQUEST_EDIT_SOLUTION = 123;
+    private static final int REQUEST_APPEAL_SOLUTION = 234;
+    private static final int REQUEST_INPUT_SHIPPING = 345;
+    private static final int REQUEST_EDIT_SHIPPING = 456;
+    private static final int REQUEST_CHOOSE_ADDRESS = 678;
+    private static final int REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION = 789;
+    private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
+    private static final int REQUEST_EDIT_ADDRESS = 901;
 
     View loading;
     View mainView;
@@ -308,6 +309,12 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                     presenter.inputAddressAcceptAdminSolution(destination != null ? destination.getAddressId() : null);
                 }
                 break;
+            case REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION:
+                if (resultCode == Activity.RESULT_OK) {
+                    Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
+                    presenter.inputAddressMigrateVersion(destination != null ? destination.getAddressId() : null);
+                }
+                break;
             case REQUEST_EDIT_ADDRESS:
                 if (resultCode == Activity.RESULT_OK) {
                     Destination destination = (Destination) data.getExtras().get(ManageAddressConstant.EXTRA_ADDRESS);
@@ -369,6 +376,13 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
                         }
                     }
                 });
+    }
+
+    @Override
+    public void setOnActionInputAddressClick() {
+        Intent intent = new Intent(getActivity(), ChooseAddressActivity.class);
+        intent.putExtra("resolution_center", true);
+        startActivityForResult(intent, REQUEST_CHOOSE_ADDRESS_MIGRATE_VERSION);
     }
 
     @Override
