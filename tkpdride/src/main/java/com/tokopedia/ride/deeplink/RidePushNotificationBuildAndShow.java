@@ -105,8 +105,24 @@ public class RidePushNotificationBuildAndShow {
                 }
 
                 switch (rideRequest.getStatus()){
+                    case "arriving":
                     case "accepted":
                         showRideAccepted(activitiesLifecycleCallbacks.getContext(), rideRequest);
+                        break;
+                    case "no_drivers_available":
+
+                        break;
+                    case "processing":
+
+                        break;
+                    case "in_progress":
+                        break;
+                    case "driver_canceled":
+                        showDriverCancelledRide(activitiesLifecycleCallbacks.getContext());
+                        break;
+                    case "rider_canceled":
+                        break;
+                    case "completed":
                         break;
                 }
             }
@@ -181,6 +197,11 @@ public class RidePushNotificationBuildAndShow {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentText("Book another Uber");
+
+        Bundle bundle = new Bundle();
+        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingApplinkTaskStack(context, bundle);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
 
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
