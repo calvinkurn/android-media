@@ -23,6 +23,17 @@ public class ContentDetails {
     @SerializedName("projection")
     @Expose
     private String projection;
+    @SerializedName("contentRating")
+    @Expose
+    private ContentRating contentRating;
+
+    public ContentRating getContentRating() {
+        return contentRating;
+    }
+
+    public void setContentRating(ContentRating contentRating) {
+        this.contentRating = contentRating;
+    }
 
     public String getDuration() {
         return duration;
