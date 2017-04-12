@@ -296,11 +296,14 @@
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
     <string name="product_label_insurance">Asuransi</string>
     <string name="product_label_free_returns">Free Returns</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
+    <string name="product_label_save_and_add">Simpan dan tambah</string>
+    <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
     <string name="upload_product_image">Upload Gambar Produk</string>

@@ -2,7 +2,8 @@ package com.tokopedia.seller.product.domain.interactor.observable;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.product.domain.ImageProductRepository;
+import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
@@ -18,10 +19,10 @@ import rx.functions.Func2;
 
 public class ImageProductObservable implements Func1<UploadProductInputDomainModel,
         Observable<UploadProductInputDomainModel>> {
-    private final ImageProductRepository imageProductRepository;
+    private final ImageProductUploadRepository imageProductUploadRepository;
 
-    public ImageProductObservable(ImageProductRepository imageProductRepository) {
-        this.imageProductRepository = imageProductRepository;
+    public ImageProductObservable(ImageProductUploadRepository imageProductUploadRepository) {
+        this.imageProductUploadRepository = imageProductUploadRepository;
     }
 
     @Override
@@ -45,7 +46,13 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             if (imageDomainModel.getUrl() != null && !imageDomainModel.getUrl().isEmpty()) {
                 return Observable.just(imageDomainModel);
             } else {
-                return imageProductRepository.uploadImageProduct(imageDomainModel.getUri());
+                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath())
+                        .flatMap(new Func1<ResultUploadImage, Observable<ImageProductInputDomainModel>>() {
+                            @Override
+                            public Observable<ImageProductInputDomainModel> call(ResultUploadImage data) {
+                                return null;
+                            }
+                        });
             }
 
         }
