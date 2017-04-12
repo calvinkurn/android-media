@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -406,7 +405,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                             latitude,
                             longitude
                     ));
-                } catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                     subscriber.onNext(String.valueOf(latitude) + ", " + String.valueOf(longitude));
                 }
@@ -416,21 +415,25 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
             public String call(Throwable throwable) {
                 return String.valueOf(latitude) + ", " + String.valueOf(longitude);
             }
-        }).subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        })
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            @Override
-            public void onNext(String sourceAddress) {
-                getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
-            }
-        });
+                    @Override
+                    public void onNext(String sourceAddress) {
+                        getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+                    }
+                });
     }
 }
