@@ -337,8 +337,8 @@
         <item>Ya</item>
     </string-array>
     <string-array name="product_free_returns_entries">
-        <item>Opsional</item>
         <item>Ya</item>
+        <item>Tidak</item>
     </string-array>
 
     <string name="video_not_found">Video tidak ditemukan</string>
