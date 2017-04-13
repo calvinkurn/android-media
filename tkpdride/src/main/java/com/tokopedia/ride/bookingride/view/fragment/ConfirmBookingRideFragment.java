@@ -194,7 +194,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @Override
     public void renderFareEstimate(String fareId, String display, float price) {
-        if (getActivity().isFinishing()) {
+        if (isRemoving()) {
             return;
         }
 
@@ -296,5 +296,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void onResume() {
         super.onResume();
         presenter.actionCheckBalance();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }
