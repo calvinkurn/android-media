@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.historyaddress.domain.interactor;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
@@ -17,8 +19,8 @@ public class GetHistoryAddressUseCase extends UseCase<HistoryAddressData> {
 
     private final ResCenterRepository resCenterRepository;
 
-    public GetHistoryAddressUseCase(JobExecutor jobExecutor,
-                                    UIThread uiThread, ResCenterRepository resCenterRepository) {
+    public GetHistoryAddressUseCase(ThreadExecutor jobExecutor,
+                                    PostExecutionThread uiThread, ResCenterRepository resCenterRepository) {
         super(jobExecutor, uiThread);
         this.resCenterRepository = resCenterRepository;
     }

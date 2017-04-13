@@ -42,7 +42,7 @@ import retrofit2.Retrofit;
  * Created by hangnadi on 4/11/17.
  */
 @ResolutionDetailScope
-@Module(includes = {HistoryActionModule.class})
+@Module(includes = {HistoryActionModule.class, HistoryAddressModule.class})
 public class ResolutionDetailModule {
 
     private String resolutionID;
