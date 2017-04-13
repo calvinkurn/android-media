@@ -295,6 +295,7 @@
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
+    <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
@@ -305,6 +306,7 @@
     <string name="product_label_save_and_add">Simpan dan tambah</string>
     <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
+    <string name="product_label_share">Bagikan</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
 
@@ -339,6 +341,10 @@
     <string-array name="product_free_returns_entries">
         <item>Ya</item>
         <item>Tidak</item>
+    </string-array>
+    <string-array name="product_weight_pre_order">
+        <item>Hari</item>
+        <item>Minggu</item>
     </string-array>
 
     <string name="video_not_found">Video tidak ditemukan</string>

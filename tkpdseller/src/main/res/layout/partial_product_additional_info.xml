@@ -43,4 +43,17 @@
 
     </LinearLayout>
 
+    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        android:id="@+id/spinner_counter_input_view_pre_order"
+        style="@style/LabelLayoutWithoutBorder"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:spinner_decimal_entries="@array/product_weight_pre_order"
+        app:spinner_decimal_hint="@string/product_label_time_process" />
+
+    <com.tokopedia.seller.lib.widget.LabelSwitch
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:title="@string/product_label_share" />
 </LinearLayout>

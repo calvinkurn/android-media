@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="bottom">
+    android:layout_height="wrap_content">
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/text_input_layout"
@@ -12,12 +11,26 @@
             android:id="@+id/edit_text_spinner"
             style="@style/EditText"
             android:layout_width="match_parent"
-            android:drawableEnd="@drawable/ic_arrow_down_grey"
-            android:drawablePadding="3dp"
-            android:drawableRight="@drawable/ic_arrow_down_grey"
             android:focusable="false"
             android:inputType="none"
             android:textIsSelectable="true" />
 
     </android.support.design.widget.TextInputLayout>
-</FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:src="@drawable/ic_arrow_down_grey" />
+    </LinearLayout>
+</RelativeLayout>
