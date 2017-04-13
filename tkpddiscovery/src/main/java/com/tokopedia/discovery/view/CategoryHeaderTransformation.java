@@ -13,6 +13,8 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 public class CategoryHeaderTransformation extends BitmapTransformation {
 
+    public static double CATEGORY_HEADER_CROP = 0.19;
+
     public CategoryHeaderTransformation(Context context) {
         super(context);
     }
@@ -28,12 +30,13 @@ public class CategoryHeaderTransformation extends BitmapTransformation {
 
         float scaleX = desiredWidth / originalWidth;
         float scaleY = desiredHeight / originalHeight;
-
         float scale = Math.max(scaleX, scaleY);
+
+        int crop = (int) (CATEGORY_HEADER_CROP * originalWidth);
 
         Matrix matrix = new Matrix();
         matrix.postScale(scale, scale);
-        return Bitmap.createBitmap(bitmap, 400, 0, (int) originalWidth-400, (int) originalHeight, matrix, true);
+        return Bitmap.createBitmap(bitmap, crop, 0, (int) originalWidth-crop, (int) originalHeight, matrix, true);
     }
 
     @Override
