@@ -61,7 +61,7 @@ public class RegisterStep2PresenterImpl implements RegisterStep2Presenter, Regis
 
     private void doFinishRegister() {
         compositeSubscription.add(
-                networkInteractor.finishRegister(AuthUtil.generateParamsNetwork(viewListener.getActivity(),getRegisterStep2Param()))
+                networkInteractor.doRegister(AuthUtil.generateParamsNetwork(viewListener.getActivity(),getRegisterStep2Param()))
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())

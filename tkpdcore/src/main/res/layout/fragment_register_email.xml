@@ -4,6 +4,17 @@
     android:layout_height="match_parent"
     android:background="@drawable/cards_ui_2">
 
+    <TextView
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/grey_300"
+        android:gravity="center"
+        android:padding="@dimen/padding_med"
+        android:text="@string/already_has_account_sign_in"
+        android:textColor="@color/grey_500" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -126,16 +137,5 @@
 
         </LinearLayout>
     </ScrollView>
-
-    <TextView
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/grey_300"
-        android:gravity="center"
-        android:padding="@dimen/padding_med"
-        android:text="@string/already_has_account_sign_in"
-        android:textColor="@color/grey_500" />
 
 </RelativeLayout>

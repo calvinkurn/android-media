@@ -3,10 +3,14 @@ package com.tokopedia.session.register.viewlistener;
 import android.app.Activity;
 import android.widget.EditText;
 
+import com.tokopedia.session.register.model.RegisterViewModel;
+import com.tokopedia.session.register.model.gson.RegisterResult;
+import com.tokopedia.session.register.viewmodel.RegisterEmailViewModel;
+
 /**
  * Created by nisie on 1/27/17.
  */
-public interface RegisterStep1ViewListener {
+public interface RegisterEmailViewListener {
 
     EditText getName();
 
@@ -34,8 +38,6 @@ public interface RegisterStep1ViewListener {
 
     void setActionsEnabled(boolean isEnabled);
 
-    void onErrorValidateEmail(String errorMessage);
-
     void showLoadingProgress();
 
     void dismissLoadingProgress();
@@ -48,4 +50,11 @@ public interface RegisterStep1ViewListener {
 
     void goToAutomaticLogin();
 
+    void dropKeyboard();
+
+    void onErrorRegister(String errorMessage);
+
+    void onSuccessRegister(RegisterEmailViewModel registerResult);
+
+    void setRegisterModel(RegisterViewModel registerViewModel);
 }

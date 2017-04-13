@@ -23,6 +23,9 @@ public class RegisterViewModel {
 
     private long maxDate;
     private long minDate;
+    private String name;
+    private String email;
+    private String password;
 
     public RegisterStep1ViewModel getRegisterStep1ViewModel() {
         return registerStep1ViewModel;
@@ -110,6 +113,30 @@ public class RegisterViewModel {
 
     public void setGender(int gender) {
         this.gender = gender;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
 

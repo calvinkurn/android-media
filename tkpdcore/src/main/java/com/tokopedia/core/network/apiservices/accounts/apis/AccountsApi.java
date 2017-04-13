@@ -101,4 +101,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP_EMAIL)
     Observable<Response<TkpdResponse>> requestOtpToEmail(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.DO_REGISTER)
+    Observable<Response<TkpdResponse>> registerEmail(@FieldMap Map<String, Object> params);
 }
