@@ -642,13 +642,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         //remoteView.setImageViewUri(R.id.iv_driver_img, Uri.parse(result.getDriver().getPictureUrl()));
 
 
-        //add event for call to driver
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + result.getDriver().getPhoneNumber()));
-        PendingIntent callPendingIntent = PendingIntent.getService(getActivity(), 0, callIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        remoteView.setOnClickPendingIntent(R.id.layout_call_driver, callPendingIntent);
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -658,6 +651,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating()))
                 .setCustomBigContentView(remoteView);
+
+
+
+        //add event for call to driver
+        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        callIntent.setData(Uri.parse("tel:" + result.getDriver().getPhoneNumber()));
+        PendingIntent callPendingIntent = PendingIntent.getService(getActivity(), 0, callIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        remoteView.setOnClickPendingIntent(R.id.layout_call_driver, callPendingIntent);
 
         // Builds the notification and issues it.
         acceptedNotification = mBuilder.build();

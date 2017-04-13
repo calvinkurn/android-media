@@ -35,6 +35,12 @@
         <activity
             android:name=".history.view.RideHistoryActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
+
+        <receiver android:name=".ontrip.receiver.CallDriverReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="CallDriverReceiver"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

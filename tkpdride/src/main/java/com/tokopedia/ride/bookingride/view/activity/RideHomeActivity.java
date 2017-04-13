@@ -47,6 +47,7 @@ import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
@@ -118,7 +119,16 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
         configuration = new RideConfiguration();
-        if (configuration.isWaitingDriverState()) {
+
+        /**
+         * if user open push notif with status accepted/arriving, this must be true if user pressed back button on ontripscreep
+         *  @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
+         */
+        if (configuration.isWaitingDriverState() &&
+                getIntent().getExtras() != null &&
+                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)){
+            finish();
+        }else if (configuration.isWaitingDriverState()) {
             Intent intent = OnTripActivity.getCallingIntent(this);
             startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
         }

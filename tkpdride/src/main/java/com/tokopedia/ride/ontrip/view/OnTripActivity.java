@@ -4,20 +4,29 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.FcmReceiverUIForeground;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.deeplink.RidePushNotification;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
 import permissions.dispatcher.NeedsPermission;
@@ -27,6 +36,7 @@ import rx.Observable;
 @RuntimePermissions
 public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener, FcmReceiverUIForeground {
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
+    public static String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     public static final int RIDE_HOME_RESULT_CODE = 11;
     public static final int RIDE_BOOKING_RESULT_CODE = 12;
     public static final int APP_HOME_RESULT_CODE = 13;
@@ -45,6 +55,32 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, OnTripActivity.class);
+    }
+
+    /**
+     * this should be called when user receive accepted push notif
+     * @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
+     */
+    public static TaskStackBuilder getCallingApplinkTaskStack(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+
+        Intent parentHome = new Intent(context, RideHomeActivity.class)
+                .putExtras(extras);
+
+        Intent destination = new Intent(context, OnTripActivity.class)
+                .putExtras(extras);
+
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentHome);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
     }
 
     @Override

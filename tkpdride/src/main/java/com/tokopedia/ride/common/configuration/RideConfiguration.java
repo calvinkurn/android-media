@@ -40,12 +40,15 @@ public class RideConfiguration {
 
     public boolean isWaitingDriverState() {
         RideRequestEntity entity = null;
+        PlacePassViewModel source, destination;
         try {
+            destination = cacheManager.getConvertObjData(RIDE_DESTINATION, PlacePassViewModel.class);
+            source = cacheManager.getConvertObjData(RIDE_SOURCE, PlacePassViewModel.class);
             entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
         } catch (RuntimeException e) {
             return false;
         }
-        return entity != null;
+        return entity != null && source != null && destination != null;
     }
 
     public void setActiveRequest(RideRequestEntity request) {
