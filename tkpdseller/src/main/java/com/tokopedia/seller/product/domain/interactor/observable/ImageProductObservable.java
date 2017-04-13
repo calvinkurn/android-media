@@ -47,13 +47,7 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             if (imageDomainModel.getUrl() != null && !imageDomainModel.getUrl().isEmpty()) {
                 return Observable.just(imageDomainModel);
             } else {
-                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath())
-                        .flatMap(new Func1<ResultUploadImage, Observable<ImageProductInputDomainModel>>() {
-                            @Override
-                            public Observable<ImageProductInputDomainModel> call(ResultUploadImage data) {
-                                return null;
-                            }
-                        });
+                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath());
             }
 
         }
