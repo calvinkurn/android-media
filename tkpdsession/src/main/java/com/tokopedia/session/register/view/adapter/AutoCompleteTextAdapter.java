@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.adapter;
+package com.tokopedia.session.register.view.adapter;
 
 import android.content.Context;
 import android.view.View;

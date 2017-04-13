@@ -1,6 +1,4 @@
-package com.tokopedia.session.register.viewmodel;
-
-import com.google.gson.annotations.SerializedName;
+package com.tokopedia.session.register.view.viewmodel;
 
 /**
  * Created by nisie on 4/13/17.

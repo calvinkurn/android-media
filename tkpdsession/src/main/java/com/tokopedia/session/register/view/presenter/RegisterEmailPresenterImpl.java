@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.presenter;
+package com.tokopedia.session.register.view.presenter;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,8 +10,6 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.NetworkUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.RegisterConstant;
@@ -19,10 +17,11 @@ import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
 import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
 import com.tokopedia.session.register.data.repository.RegisterEmailRepositoryImpl;
 import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
-import com.tokopedia.session.register.model.RegisterViewModel;
-import com.tokopedia.session.register.subscriber.RegisterEmailSubscriber;
-import com.tokopedia.session.register.util.RegisterUtil;
-import com.tokopedia.session.register.viewlistener.RegisterEmailViewListener;
+import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.view.subscriber.RegisterEmailSubscriber;
+import com.tokopedia.session.register.view.util.RegisterUtil;
+import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
+import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 
 /**
  * Created by nisie on 1/27/17.
@@ -92,16 +91,14 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
     }
 
     @Override
-    public void startAction(int action) {
-        switch (action) {
+    public void startAction(RegisterEmailViewModel viewModel) {
+        switch (viewModel.getAction()) {
             case GO_TO_LOGIN:
                 viewListener.goToAutomaticLogin();
                 break;
             case GO_TO_REGISTER:
-                viewListener.goToRegisterStep2();
-                break;
             case GO_TO_ACTIVATION_PAGE:
-                viewListener.goToActivationPage();
+                viewListener.goToActivationPage(viewModel);
                 break;
             case GO_TO_RESET_PASSWORD:
                 viewListener.goToAutomaticResetPassword();
@@ -111,27 +108,13 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
         }
     }
 
-    private TKPDMapParam<String, String> getValidateEmailParam() {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("email", viewListener.getEmail().getText().toString());
-        param.put("password", viewListener.getPassword().getText().toString());
-        return param;
-    }
-
-    private boolean hasInternetConnection() {
-        if (!NetworkUtil.isConnected(viewListener.getActivity())) {
-            viewListener.showSnackbar(
-                    viewListener.getString(R.string.alert_check_your_internet_connection));
-        }
-        return NetworkUtil.isConnected(viewListener.getActivity());
-    }
-
     private boolean isValidForm() {
         boolean isValid = true;
 
         String name = viewListener.getName().getText().toString();
         String email = viewListener.getEmail().getText().toString();
         String password = viewListener.getPassword().getText().toString();
+        String phone = viewListener.getPhone().getText().toString();
 
         if (TextUtils.isEmpty(password)) {
             viewListener.setPasswordError(viewListener.getString(R.string.error_field_required));
@@ -143,12 +126,12 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             sendGTMRegisterError(AppEventTracking.EventLabel.PASSWORD);
         }
 
-        if (TextUtils.isEmpty(viewListener.getPhone().getText().toString())) {
+        if (TextUtils.isEmpty(phone)) {
             viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_field_required));
             isValid = false;
             sendGTMRegisterError(AppEventTracking.EventLabel.HANDPHONE);
         } else {
-            boolean validatePhoneNumber = validatePhoneNumber(viewListener.getPhone().getText().toString().replace("-", ""));
+            boolean validatePhoneNumber = validatePhoneNumber(phone.replace("-", ""));
             if (!validatePhoneNumber) {
                 viewListener.setPhoneError(viewListener.getString(com.tokopedia.core.R.string.error_invalid_phone_number));
                 isValid = false;
@@ -156,7 +139,6 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
             }
         }
 
-        // Check for a valid name.
         if (TextUtils.isEmpty(name)) {
             viewListener.setNameError(viewListener.getString(R.string.error_field_required));
             isValid = false;

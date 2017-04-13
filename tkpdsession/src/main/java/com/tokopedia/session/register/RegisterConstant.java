@@ -11,6 +11,7 @@ public interface RegisterConstant {
     int IS_EMAIL_ACTIVE = 1;
 
     String NAME = "NAME";
+    String PHONE = "PHONE";
     String PASSWORD = "PASSWORD";
     String EMAIL = "EMAIL";
     String IS_AUTO_VERIFY = "ISAUTOVERIFY";

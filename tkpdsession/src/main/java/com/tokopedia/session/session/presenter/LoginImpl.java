@@ -37,7 +37,7 @@ import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.activity.SmartLockActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;

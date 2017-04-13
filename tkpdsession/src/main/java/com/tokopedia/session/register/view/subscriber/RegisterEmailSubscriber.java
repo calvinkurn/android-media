@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.subscriber;
+package com.tokopedia.session.register.view.subscriber;
 
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -6,11 +6,9 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.data.RegisterEmailModel;
 import com.tokopedia.session.register.data.pojo.RegisterEmailData;
-import com.tokopedia.session.register.viewmodel.RegisterEmailViewModel;
-import com.tokopedia.session.register.viewlistener.RegisterEmailViewListener;
+import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
+import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 
-import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import rx.Subscriber;

@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.activity;
+package com.tokopedia.session.register.view.activity;
 
 import android.content.Intent;
 import android.content.IntentSender;

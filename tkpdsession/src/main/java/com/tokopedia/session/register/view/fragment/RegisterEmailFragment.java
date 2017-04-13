@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.fragment;
+package com.tokopedia.session.register.view.fragment;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -23,16 +23,14 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -40,14 +38,12 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.activation.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.register.activity.RegisterEmailActivity;
-import com.tokopedia.session.register.adapter.AutoCompleteTextAdapter;
-import com.tokopedia.session.register.model.RegisterStep1ViewModel;
-import com.tokopedia.session.register.model.RegisterViewModel;
-import com.tokopedia.session.register.presenter.RegisterEmailPresenter;
-import com.tokopedia.session.register.presenter.RegisterEmailPresenterImpl;
-import com.tokopedia.session.register.viewlistener.RegisterEmailViewListener;
-import com.tokopedia.session.register.viewmodel.RegisterEmailViewModel;
+import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
+import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
+import com.tokopedia.session.register.view.presenter.RegisterEmailPresenterImpl;
+import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
+import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
@@ -84,7 +80,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     TextView registerButton;
 
     @BindView(R2.id.register_next_phone_number)
-    EditText registerNextPhoneNumber;
+    EditText phone;
 
     @BindView(R2.id.wrapper_name)
     TextInputLayout wrapperName;
@@ -106,6 +102,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @BindView(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
+
+    TkpdProgressDialog progressDialog;
 
     public static RegisterEmailFragment createInstance() {
         return new RegisterEmailFragment();
@@ -138,10 +136,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     protected void initialPresenter() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.USING_HMAC, true);
-        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
-
         presenter = new RegisterEmailPresenterImpl(this
         );
     }
@@ -206,6 +200,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         super.onViewStateRestored(savedInstanceState);
         if (savedInstanceState != null) {
             name.setText(savedInstanceState.getString(NAME, ""));
+            phone.setText(savedInstanceState.getString(PHONE, ""));
             email.setText(savedInstanceState.getString(EMAIL, ""));
             registerPassword.setText(savedInstanceState.getString(PASSWORD, ""));
         }
@@ -218,8 +213,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         email.addTextChangedListener(watcher(wrapperEmail));
         registerPassword.addTextChangedListener(watcher(wrapperPassword));
         name.addTextChangedListener(watcher(wrapperName));
-        registerNextPhoneNumber.addTextChangedListener(watcher(wrapperPhone));
-        registerNextPhoneNumber.addTextChangedListener(watcher(registerNextPhoneNumber));
+        phone.addTextChangedListener(watcher(wrapperPhone));
+        phone.addTextChangedListener(watcher(phone));
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -393,13 +388,13 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public EditText getPhone() {
-        return registerNextPhoneNumber;
+        return phone;
     }
 
     @Override
     public void setPhoneError(String errorMessage) {
         setWrapperError(wrapperPhone, errorMessage);
-        registerNextPhoneNumber.requestFocus();
+        phone.requestFocus();
     }
 
     @Override
@@ -428,18 +423,10 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     }
 
     @Override
-    public void showSnackbar(String message) {
-        if (message.equals(""))
-            NetworkErrorHelper.showSnackbar(getActivity());
-        else
-            NetworkErrorHelper.showSnackbar(getActivity(), message);
-    }
-
-    @Override
     public void setActionsEnabled(boolean isEnabled) {
 
         email.setEnabled(isEnabled);
-        registerNextPhoneNumber.setEnabled(isEnabled);
+        phone.setEnabled(isEnabled);
         name.setEnabled(isEnabled);
         registerPassword.setEnabled(isEnabled);
         registerButton.setEnabled(isEnabled);
@@ -448,28 +435,27 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void showLoadingProgress() {
         setActionsEnabled(false);
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.showDialog();
     }
 
     @Override
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.dismiss();
     }
 
     @Override
-    public void goToRegisterStep2() {
-        UnifyTracking.eventRegister(AppEventTracking.EventLabel.REGISTER_STEP_1);
-        dismissLoadingProgress();
-        RegisterStep1ViewModel pass = new RegisterStep1ViewModel();
-        pass.setName(name.getText().toString());
-        pass.setPassword(registerPassword.getText().toString());
-        pass.setEmail(email.getText().toString());
-        pass.setAutoVerify(isEmailAddressFromDevice());
-        if (getActivity() instanceof RegisterEmailActivity)
-            ((RegisterEmailActivity) getActivity()).goToStep2(pass);
-    }
+    public void goToActivationPage(RegisterEmailViewModel viewModel) {
 
-    @Override
-    public void goToActivationPage() {
+        sendLocalyticsRegisterEvent(viewModel.getUserId());
+        sendGTMRegisterEvent();
+
         dismissLoadingProgress();
         startActivity(ActivationActivity.getCallingIntent(getActivity(),
                 email.getText().toString(),
@@ -515,7 +501,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
         dismissLoadingProgress();
         setActionsEnabled(true);
-        presenter.startAction(registerResult.getAction());
+        presenter.startAction(registerResult);
 
     }
 
@@ -523,17 +509,9 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     public void setRegisterModel(RegisterViewModel registerViewModel) {
         registerViewModel.setName(name.getText().toString());
         registerViewModel.setEmail(email.getText().toString());
-        registerViewModel.setPhone(registerNextPhoneNumber.getText().toString().replace("-", ""));
+        registerViewModel.setPhone(phone.getText().toString().replace("-", ""));
         registerViewModel.setAgreedTermCondition(true);
         registerViewModel.setPassword(registerPassword.getText().toString());
-    }
-
-    private void goToRegisterActivation() {
-        startActivity(ActivationActivity.getCallingIntent(
-                getActivity(),
-                email.getText().toString(),
-                name.getText().toString()));
-        getActivity().finish();
     }
 
     private void sendLocalyticsRegisterEvent(int userId) {
@@ -599,6 +577,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(NAME, name.getText().toString());
+        outState.putString(PHONE, phone.getText().toString());
         outState.putString(EMAIL, email.getText().toString());
         outState.putString(PASSWORD, registerPassword.getText().toString());
     }

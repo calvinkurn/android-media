@@ -1,4 +1,4 @@
-package com.tokopedia.session.register.util;
+package com.tokopedia.session.register.view.util;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.session.R;

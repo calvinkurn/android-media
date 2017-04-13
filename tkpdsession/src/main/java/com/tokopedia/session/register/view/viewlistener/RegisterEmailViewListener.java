@@ -1,11 +1,10 @@
-package com.tokopedia.session.register.viewlistener;
+package com.tokopedia.session.register.view.viewlistener;
 
 import android.app.Activity;
 import android.widget.EditText;
 
-import com.tokopedia.session.register.model.RegisterViewModel;
-import com.tokopedia.session.register.model.gson.RegisterResult;
-import com.tokopedia.session.register.viewmodel.RegisterEmailViewModel;
+import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 
 /**
  * Created by nisie on 1/27/17.
@@ -34,17 +33,13 @@ public interface RegisterEmailViewListener {
 
     String getString(int resId);
 
-    void showSnackbar(String message);
-
     void setActionsEnabled(boolean isEnabled);
 
     void showLoadingProgress();
 
     void dismissLoadingProgress();
 
-    void goToRegisterStep2();
-
-    void goToActivationPage();
+    void goToActivationPage(RegisterEmailViewModel viewModel);
 
     void goToAutomaticResetPassword();
 
