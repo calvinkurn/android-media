@@ -32,6 +32,28 @@ public class ReputationLevelUtils {
     public static final int MEDAL_TYPE_3 = 3;
     public static final int MEDAL_TYPE_4 = 4;
 
+    private static boolean isDialogHidden = false;
+
+    public static void setReputationMedalsWithoutDialog(Context context, LinearLayout layout, int typeMedal,
+                                           int levelMedal, String reputationPoints){
+        int medalType = getTypeMedal(typeMedal);
+
+        layout.removeAllViews();
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        if(typeMedal == MEDAL_TYPE_0) {
+            createDefaultMedal(context, layout);
+        } else {
+            createMedalBasedOnTypeWithoutDialog(context, layout, medalType, levelMedal, reputationPoints);
+        }
+    }
+
+    private static void createMedalBasedOnTypeWithoutDialog(Context context, LinearLayout layout, int medalType, int levelMedal, String reputationPoints) {
+        for( int i = 1 ; i <= levelMedal ; i++){
+            View medal = createMedal(context, medalType);
+            layout.addView(medal);
+        }
+    }
+
     public static void setReputationMedals(Context context, LinearLayout layout, int typeMedal, int levelMedal, String reputationPoints) {
         int medalType = getTypeMedal(typeMedal);
 
@@ -53,6 +75,9 @@ public class ReputationLevelUtils {
         for( int i = 1 ; i <= levelMedal ; i++){
             View medal = createMedal(context, medalType);
             layout.addView(medal);
+            if(i == levelMedal) {
+                layout.setOnClickListener(onReputationClick(context, reputationPoints, medal));
+            }
         }
     }
 
@@ -74,5 +99,28 @@ public class ReputationLevelUtils {
         medal.setLayoutParams(param);
         medal.setImageResource(medalType);
         return medal;
+    }
+
+    private static View.OnClickListener onReputationClick(final Context context, final String reputationPoint, final View anchor){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                View popup = View.inflate(context, R.layout.popup_reputation, null);
+                TextView point = (TextView)popup.findViewById(R.id.point);
+                point.setText(reputationPoint + " Poin");
+                final PopupWindow popWindow = new PopupWindow(popup, WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                popWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                popWindow.setOutsideTouchable(true);
+                popWindow.setFocusable(false);
+                popWindow.showAsDropDown(v);
+                popWindow.setTouchInterceptor(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        popWindow.dismiss();
+                        return true;
+                    }
+                });
+            }
+        };
     }
 }
