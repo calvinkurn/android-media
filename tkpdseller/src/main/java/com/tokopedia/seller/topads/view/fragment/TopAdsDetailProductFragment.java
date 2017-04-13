@@ -42,7 +42,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
-    private MenuItem manageGroupMenuItem;
 
     public static Fragment createInstance(ProductAd productAd, String adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
@@ -149,7 +148,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
-        updateManageGroupMenu();
     }
 
     /**
@@ -185,8 +183,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
-        updateManageGroupMenu();
+        MenuItem manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
+        if (manageGroupMenuItem != null) {
+            manageGroupMenuItem.setVisible(!isHasGroupAd());
+        }
     }
 
     @Override
@@ -206,11 +206,5 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NOT_IN_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
-    }
-
-    private void updateManageGroupMenu() {
-        if (manageGroupMenuItem != null) {
-            manageGroupMenuItem.setVisible(!isHasGroupAd());
-        }
     }
 }

@@ -182,7 +182,7 @@ LoginFragment extends Fragment implements LoginView {
 //        setRememberAccountState();
 
         String temp = getArguments().getString("login");
-        if (temp != null) {
+        if (!TextUtils.isEmpty(temp)) {
             if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
             } else if (temp.equals(DownloadService.GOOGLE)) {
@@ -757,6 +757,7 @@ LoginFragment extends Fragment implements LoginView {
     public void setData(int type, Bundle data) {
         if (login != null)
             login.setData(type, data);
+
     }
 
     @Override
@@ -786,8 +787,10 @@ LoginFragment extends Fragment implements LoginView {
                     mEmailView.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
                     mPasswordView.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
                     accountSignIn.performClick();
-                }else if(resultCode == SmartLockActivity.RC_SAVE){
+                } else if(resultCode == SmartLockActivity.RC_SAVE){
                     destroyActivity();
+                } else if(resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+
                 }
                 break;
             default:
@@ -835,9 +838,22 @@ LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
-        if(state == SmartLockActivity.RC_SAVE ){
+        if(state == SmartLockActivity.RC_SAVE){
             bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString());
             bundle.putString(SmartLockActivity.PASSWORD, mPasswordView.getText().toString());
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 200);
+    }
+
+    @Override
+    public void setSmartLock(int state, String username, String password) {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if(state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+            bundle.putString(SmartLockActivity.USERNAME, username);
+            bundle.putString(SmartLockActivity.PASSWORD, password);
         }
         intent.putExtras(bundle);
         startActivityForResult(intent, 200);

@@ -57,6 +57,10 @@ public class ReportTalkDialog extends DialogFragment{
     @Override
     public void onResume() {
         super.onResume();
+        if (listener == null) {
+            dismiss();
+            return;
+        }
         AlertDialog alertDialog = (AlertDialog) getDialog();
         okButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         okButton.setOnClickListener(new View.OnClickListener() {

@@ -156,6 +156,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="@dimen/margin_small"
                             android:layout_marginRight="@dimen/margin_small"
+                            android:visibility="gone"
                             android:textSize="@dimen/fontvs"/>
 
                         <TextView

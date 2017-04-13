@@ -473,6 +473,7 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id(),
                             modelData.getEmail());
+                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter)data.get("accounts")).getEmail(), ((AccountsParameter)data.get("accounts")).getPassword());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
                     successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
