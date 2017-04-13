@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,31 @@ public class CategoryPickerActivity
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
+
+    public static void start(Activity activity, int requestCode, int depId){
+        Intent intent = createIntent(activity, depId);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void start(android.app.Fragment fragment, Context context, int requestCode, int depId){
+        Intent intent = createIntent(context, depId);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode,
+                             int depId){
+        Intent intent = createIntent(context, depId);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    private static Intent createIntent(Context context,
+                                       int departmentId){
+        Intent intent = new Intent(context, CategoryPickerActivity.class);
+        if (departmentId > 0) {
+            intent.putExtra(CATEGORY_ID_INIT_SELECTED, departmentId);
+        }
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

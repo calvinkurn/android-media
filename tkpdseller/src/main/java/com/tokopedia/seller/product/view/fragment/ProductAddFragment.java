@@ -46,7 +46,17 @@ public class ProductAddFragment extends BaseDaggerFragment {
         productImageViewHolder = new ProductImageViewHolder((AppCompatActivity)getActivity(), view);
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
+        setSubmitButtonListener(view);
         return view;
+    }
+
+    private void setSubmitButtonListener(View view) {
+        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 
