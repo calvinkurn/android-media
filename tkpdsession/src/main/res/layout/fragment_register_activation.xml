@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/grey_300"
+        android:gravity="center"
+        android:padding="@dimen/padding_med"
+        android:text="@string/activation_resend_email" />
+
+    <TextView
+        android:id="@+id/verify_button"
+        android:layout_above="@id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:background="@drawable/grey_button_rounded"
+        android:enabled="false"
+        android:gravity="center"
+        android:text="@string/title_confirm_otp"
+        android:textColor="@color/grey_600"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/verify_button">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_large"
+                android:text="@string/title_activate_account"
+                android:textColor="@color/grey_800"
+                android:textSize="@dimen/font_medium"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/activation_text"
+                android:layout_below="@id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginLeft="@dimen/margin_med"
+                android:layout_centerHorizontal="true"
+                android:layout_marginRight="@dimen/margin_med"
+                android:gravity="center"
+                tools:text="Kode aktivasi akun telah dikirimkan ke tjangjialie@gmail.com" />
+
+            <ImageView
+                android:id="@+id/register_icon"
+                android:layout_below="@id/activation_text"
+                android:layout_width="@dimen/width_icon_register"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/icon_register" />
+
+            <TextView
+                android:id="@+id/title_verify"
+                android:layout_below="@id/register_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:gravity="center"
+                android:text="@string/title_otp" />
+
+
+            <com.tkpd.library.ui.widget.PinEntryEditText
+                android:id="@+id/input_verify_code"
+                android:layout_below="@id/title_verify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_large"
+                android:layout_marginLeft="@dimen/margin_vl"
+                android:layout_marginRight="@dimen/margin_vl"
+                android:background="@null"
+                android:cursorVisible="false"
+                android:digits="1234567890"
+                android:imeOptions="actionDone"
+                android:inputType="number"
+                android:maxLength="6"
+                android:paddingBottom="@dimen/margin_small"
+                android:textIsSelectable="false"
+                android:textSize="28sp"
+                tools:text="123123"
+                app:pinLineColors="@color/pin_line_colors" />
+
+        </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

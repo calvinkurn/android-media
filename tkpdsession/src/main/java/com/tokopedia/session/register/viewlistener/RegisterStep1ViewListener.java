@@ -20,6 +20,10 @@ public interface RegisterStep1ViewListener {
 
     Activity getActivity();
 
+    EditText getPhone();
+
+    void setPhoneError(String errorMessage);
+
     void setEmailError(String messageError);
 
     void setNameError(String messageError);

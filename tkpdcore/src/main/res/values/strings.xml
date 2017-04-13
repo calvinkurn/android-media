@@ -47,7 +47,7 @@
     <!-- <string name="prompt_password">Password</string> -->
     <string name="prompt_phone">Nomor Ponsel</string>
     <string name="prompt_confirm_password">Konfirmasi kata sandi</string>
-    <string name="title_register">Daftar Sekarang!</string>
+    <string name="title_register">Daftar Sekarang di Tokopedia</string>
     <string name="title_register_wo_u">Daftar</string>
     <string name="title_register_process">Sedang mendaftar</string>
     <string name="action_sign_in">MASUK</string>

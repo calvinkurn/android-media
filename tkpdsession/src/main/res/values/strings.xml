@@ -48,4 +48,6 @@
     <string name="info_change_phone_number_request_2">Permintaan akan di proses dalam 1 x 24 jam, silakan mengikuti petunjuk perubahan di email Anda.</string>
     <string name="info_change_phone_number">Kami akan memproses pengajuan perubahan nomor ponsel Anda dalam waktu 1 x 24 jam. Silahkan mengikuti petunjuk perubahan di email Anda.</string>
     <string name="default_error_upload_image">Gagal mengupload gambar</string>
+    <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
+    <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
 </resources>

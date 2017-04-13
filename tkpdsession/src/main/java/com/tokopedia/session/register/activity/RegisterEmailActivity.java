@@ -1,6 +1,5 @@
 package com.tokopedia.session.register.activity;
 
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,7 +7,7 @@ import android.os.Bundle;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.register.fragment.RegisterStep1Fragment;
+import com.tokopedia.session.register.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.fragment.RegisterStep2Fragment;
 import com.tokopedia.session.register.model.RegisterStep1ViewModel;
 
@@ -41,7 +40,7 @@ public class RegisterEmailActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
 
-        RegisterStep1Fragment fragment = RegisterStep1Fragment.createInstance();
+        RegisterEmailFragment fragment = RegisterEmailFragment.createInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());

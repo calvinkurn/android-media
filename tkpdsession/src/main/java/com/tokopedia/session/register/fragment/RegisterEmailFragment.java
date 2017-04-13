@@ -21,7 +21,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,6 +32,7 @@ import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.activity.ActivationActivity;
@@ -67,7 +67,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 @RuntimePermissions
-public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Presenter>
+public class RegisterEmailFragment extends BasePresenterFragment<RegisterStep1Presenter>
         implements RegisterStep1ViewListener, RegisterConstant {
 
     @BindView(R2.id.register_email)
@@ -76,20 +76,11 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @BindView(R2.id.register_password)
     PasswordView registerPassword;
 
-    @BindView(R2.id.register_next_progress)
-    ProgressBar registerNextProgress;
+    @BindView(R2.id.register_button)
+    TextView registerButton;
 
-    @BindView(R2.id.register_next)
-    RelativeLayout registerNext;
-
-    @BindView(R2.id.register_next_button)
-    TextView registerNextButton;
-
-    @BindView(R2.id.register_status)
-    LinearLayout registerStatus;
-
-    @BindView(R2.id.register_status_message)
-    TextView registerStatusMessage;
+    @BindView(R2.id.register_next_phone_number)
+    EditText registerNextPhoneNumber;
 
     @BindView(R2.id.wrapper_name)
     TextInputLayout wrapperName;
@@ -100,14 +91,17 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @BindView(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
 
+    @BindView(R2.id.wrapper_phone)
+    TextInputLayout wrapperPhone;
+
     @BindView(R2.id.login_button)
     TextView loginButton;
 
     @BindView(R2.id.name)
     EditText name;
 
-    public static RegisterStep1Fragment createInstance() {
-        return new RegisterStep1Fragment();
+    public static RegisterEmailFragment createInstance() {
+        return new RegisterEmailFragment();
     }
 
     @Override
@@ -188,7 +182,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
         loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
-        registerNextButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
+        registerButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
     }
 
     @Override
@@ -208,6 +202,8 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
         email.addTextChangedListener(watcher(wrapperEmail));
         registerPassword.addTextChangedListener(watcher(wrapperPassword));
         name.addTextChangedListener(watcher(wrapperName));
+        registerNextPhoneNumber.addTextChangedListener(watcher(wrapperPhone));
+        registerNextPhoneNumber.addTextChangedListener(watcher(registerNextPhoneNumber));
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -261,8 +257,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
                 return false;
             }
         });
-        RegisterStep1FragmentPermissionsDispatcher.setupEmailAddressToEmailTextViewWithCheck(
-                RegisterStep1Fragment.this);
+        setupEmailAddressToEmailTextView();
 
         registerPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -275,7 +270,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
             }
         });
 
-        registerNextButton.setOnClickListener(new View.OnClickListener() {
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 presenter.registerNext();
@@ -306,6 +301,29 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     protected void setActionVar() {
 
+    }
+
+    private TextWatcher watcher(final EditText editText) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = CustomPhoneNumberUtil.transform(s.toString());
+                if (s.toString().length() != phone.length()) {
+                    editText.removeTextChangedListener(this);
+                    editText.setText(phone);
+                    editText.setSelection(phone.length());
+                    editText.addTextChangedListener(this);
+                }
+            }
+        };
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
@@ -357,6 +375,17 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     }
 
     @Override
+    public EditText getPhone() {
+        return registerNextPhoneNumber;
+    }
+
+    @Override
+    public void setPhoneError(String errorMessage) {
+        setWrapperError(wrapperPhone, errorMessage);
+        registerNextPhoneNumber.requestFocus();
+    }
+
+    @Override
     public void resetError() {
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
@@ -394,7 +423,7 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
 
         name.setEnabled(isEnabled);
         registerPassword.setEnabled(isEnabled);
-        registerNext.setEnabled(isEnabled);
+        registerButton.setEnabled(isEnabled);
     }
 
     @Override
@@ -406,15 +435,13 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     @Override
     public void showLoadingProgress() {
         setActionsEnabled(false);
-        registerNextProgress.setVisibility(View.VISIBLE);
-        registerNextButton.setText(getString(R.string.processing));
+        registerButton.setText(getString(R.string.processing));
     }
 
     @Override
     public void dismissLoadingProgress() {
         setActionsEnabled(true);
-        registerNextProgress.setVisibility(View.GONE);
-        registerNextButton.setText(getString(R.string.title_next));
+        registerButton.setText(getString(R.string.title_next));
     }
 
     @Override
@@ -477,8 +504,8 @@ public class RegisterStep1Fragment extends BasePresenterFragment<RegisterStep1Pr
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        RegisterStep1FragmentPermissionsDispatcher.onRequestPermissionsResult(
-                RegisterStep1Fragment.this, requestCode, grantResults);
+//        RegisterEmailFragmentPermissionsDispatcher.onRequestPermissionsResult(
+//                RegisterEmailFragment.this, requestCode, grantResults);
     }
 
     @OnShowRationale(Manifest.permission.GET_ACCOUNTS)
