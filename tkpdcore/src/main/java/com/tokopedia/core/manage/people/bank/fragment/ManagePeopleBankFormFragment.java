@@ -351,6 +351,8 @@ public class ManagePeopleBankFormFragment extends BasePresenterFragment<ManagePe
         listBank = presenter.getListBankFromDB("");
         if (bankDialogadapter == null)
             bankDialogadapter = BankDialogAdapter.createAdapter(context, listBank);
+        else
+            bankDialogadapter.setList(listBank);
         lvBank.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         lvBank.setAdapter(bankDialogadapter);
 
