@@ -383,8 +383,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-//                    goToCheckout(getUrlCheckout());
-                    goToNativeCheckout();
+                    goToCheckout(getUrlCheckout());
+//                    goToNativeCheckout();
             }
         } else {
             gotoLogin();
