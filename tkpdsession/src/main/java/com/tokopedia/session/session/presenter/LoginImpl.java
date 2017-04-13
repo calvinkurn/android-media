@@ -39,6 +39,7 @@ import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.activity.SmartLockActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
+import com.tokopedia.session.session.intentservice.LoginService;
 import com.tokopedia.session.session.interactor.LoginInteractor;
 import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.session.session.model.LoginEmailModel;
@@ -473,12 +474,12 @@ public class LoginImpl implements Login {
                             loginSecurityModel.getSecurity().getUser_check_security_2(),
                             loginSecurityModel.getUser_id(),
                             modelData.getEmail());
-                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter)data.get("accounts")).getEmail(), ((AccountsParameter)data.get("accounts")).getPassword());
+                    loginView.setSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION, ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getPassword());
                 } else if (sessionHandler.isV4Login()) {// go back to home
                     loginView.triggerSaveAccount();
                     successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
                     if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
-                        loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter)data.get("accounts")).getEmail(), ((AccountsParameter)data.get("accounts")).getPassword());
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getEmail(), ((AccountsParameter)data.get(LoginService.ACCOUNTS)).getPassword());
                     }else {
                         loginView.destroyActivity();
                     }
