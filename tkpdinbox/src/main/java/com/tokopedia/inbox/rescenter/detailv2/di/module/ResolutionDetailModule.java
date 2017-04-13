@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.detailv2.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
@@ -11,7 +10,6 @@ import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
@@ -44,13 +42,17 @@ import retrofit2.Retrofit;
  * Created by hangnadi on 4/11/17.
  */
 @ResolutionDetailScope
-@Module
-public class ResolutionModule {
+@Module(includes = {HistoryActionModule.class})
+public class ResolutionDetailModule {
 
-    private final String resolutionID;
-    private final DetailResCenterFragmentView viewListener;
+    private String resolutionID;
+    private DetailResCenterFragmentView viewListener;
 
-    public ResolutionModule(String resolutionID, DetailResCenterFragmentView viewListener) {
+    public ResolutionDetailModule(String resolutionID) {
+        this.resolutionID = resolutionID;
+    }
+
+    public ResolutionDetailModule(String resolutionID, DetailResCenterFragmentView viewListener) {
         this.resolutionID = resolutionID;
         this.viewListener = viewListener;
     }

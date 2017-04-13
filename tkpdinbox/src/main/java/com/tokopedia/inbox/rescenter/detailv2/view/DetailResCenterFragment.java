@@ -21,7 +21,7 @@ import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionModule;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AddressReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
@@ -203,7 +203,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         ResolutionDetailComponent resolutionDetailComponent
                 = DaggerResolutionDetailComponent.builder()
                 .appComponent(appComponent)
-                .resolutionModule(new ResolutionModule(getResolutionID(), this))
+                .resolutionDetailModule(new ResolutionDetailModule(getResolutionID(), this))
                 .build();
         resolutionDetailComponent.inject(this);
     }
