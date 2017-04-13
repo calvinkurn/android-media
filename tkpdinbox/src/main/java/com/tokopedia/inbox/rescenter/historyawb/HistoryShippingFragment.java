@@ -9,25 +9,32 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.HistoryAwbModule;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.historyawb.view.customadapter.HistoryShippingAdapter;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentImpl;
-import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentPresenter;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 import com.tokopedia.inbox.rescenter.shipping.activity.InputShippingActivity;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 /**
  * Created by hangnadi on 3/23/17.
  */
 
-public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippingFragmentPresenter>
+public class HistoryShippingFragment extends BaseDaggerFragment
     implements HistoryShippingFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -42,6 +49,9 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     private ArrayList<HistoryAwbViewItem> viewData;
     private TkpdProgressDialog normalLoading;
     private boolean allowInputNewShippingAwb;
+
+    @Inject
+    HistoryShippingFragmentImpl presenter;
 
     public static Fragment createInstance(String resolutionID, boolean allowInputShippingAwb) {
         HistoryShippingFragment fragment = new HistoryShippingFragment();
@@ -149,21 +159,6 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new HistoryShippingFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
     protected void setupArguments(Bundle arguments) {
         setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
         setAllowInputNewShippingAwb(arguments.getBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB));
@@ -172,6 +167,23 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_history_shipping;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_HISTORY_SHIPPING;
+    }
+
+    @Override
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        ResolutionDetailComponent resolutionDetailComponent =
+                DaggerResolutionDetailComponent.builder()
+                        .appComponent(appComponent)
+                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+                        .historyAwbModule(new HistoryAwbModule(this))
+                        .build();
+        resolutionDetailComponent.inject(this);
     }
 
     @Override
@@ -194,7 +206,8 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
     }
 
     @Override
-    protected void initialVar() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         viewData = new ArrayList<>();
         adapter = new HistoryShippingAdapter(this);
@@ -214,11 +227,6 @@ public class HistoryShippingFragment extends BasePresenterFragment<HistoryShippi
 
     public void setAllowInputNewShippingAwb(boolean allowInputNewShippingAwb) {
         this.allowInputNewShippingAwb = allowInputNewShippingAwb;
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

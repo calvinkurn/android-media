@@ -252,4 +252,5 @@ public final class AppScreen {
     public static final String SCREEN_VIDEO_PLAYER = "Video player page";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ACTION = "Resolution Center - History Action Page";
     public static final String SCREEN_RESOLUTION_CENTER_HISTORY_ADDRESS = "Resolution Center - History Address Page";
+    public static final String SCREEN_RESOLUTION_CENTER_HISTORY_SHIPPING = "Resolution Center - History Shipping Page";
 }

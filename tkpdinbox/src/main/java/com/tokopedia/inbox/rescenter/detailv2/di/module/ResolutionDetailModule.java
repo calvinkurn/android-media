@@ -42,7 +42,7 @@ import retrofit2.Retrofit;
  * Created by hangnadi on 4/11/17.
  */
 @ResolutionDetailScope
-@Module(includes = {HistoryActionModule.class, HistoryAddressModule.class})
+@Module(includes = {HistoryActionModule.class, HistoryAddressModule.class, HistoryAwbModule.class})
 public class ResolutionDetailModule {
 
     private String resolutionID;
@@ -90,18 +90,6 @@ public class ResolutionDetailModule {
             PostExecutionThread postExecutionThread,
             ResCenterRepository resCenterRepository) {
         return new GetResCenterDetailUseCase(
-                threadExecutor,
-                postExecutionThread,
-                resCenterRepository);
-    }
-
-    @ResolutionDetailScope
-    @Provides
-    TrackAwbReturProductUseCase provideTrackAwbReturProductUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ResCenterRepository resCenterRepository) {
-        return new TrackAwbReturProductUseCase(
                 threadExecutor,
                 postExecutionThread,
                 resCenterRepository);
