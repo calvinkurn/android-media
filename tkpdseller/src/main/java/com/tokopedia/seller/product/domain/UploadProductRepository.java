@@ -5,6 +5,7 @@ import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
+import com.tokopedia.seller.product.domain.model.EditProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
@@ -13,10 +14,12 @@ import rx.Observable;
  * @author sebastianuskh on 4/10/17.
  */
 
-public interface AddProductRepository {
+public interface UploadProductRepository {
     Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel);
 
     Observable<AddProductPictureDomainModel> addProductPicture(AddProductPictureInputDomainModel addProductValidationDomainModel);
 
     Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel addProductPictureDomainModel);
+
+    Observable<EditProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);
 }

@@ -1,9 +1,10 @@
 package com.tokopedia.seller.product.data.repository;
 
 
-import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.seller.product.data.mapper.UploadImageMapper;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
+import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 
 import rx.Observable;
 
@@ -19,7 +20,8 @@ public class ImageProductUploadRepositoryImpl implements ImageProductUploadRepos
     }
 
     @Override
-    public Observable<ResultUploadImage> uploadImageProduct(String imagePath) {
-        return imageProductUploadDataSource.uploadImage(imagePath);
+    public Observable<ImageProductInputDomainModel> uploadImageProduct(String imagePath) {
+        return imageProductUploadDataSource.uploadImage(imagePath)
+                .map(new UploadImageMapper());
     }
 }
