@@ -6,6 +6,8 @@ import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Ta
 
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -13,6 +15,10 @@ import rx.Observable;
  */
 
 public class ProductDraftDataManager {
+
+    @Inject
+    public ProductDraftDataManager() {
+    }
 
     public Observable<Long> saveDraft(String json){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();

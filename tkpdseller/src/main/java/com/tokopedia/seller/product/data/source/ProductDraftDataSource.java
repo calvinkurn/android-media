@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.db.ProductDraftDataManager;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -11,6 +13,7 @@ import rx.Observable;
 public class ProductDraftDataSource {
     private final ProductDraftDataManager productDraftDataManager;
 
+    @Inject
     public ProductDraftDataSource(ProductDraftDataManager productDraftDataManager) {
         this.productDraftDataManager = productDraftDataManager;
     }

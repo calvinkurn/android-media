@@ -12,7 +12,11 @@ import rx.Observable;
  */
 
 public class ProductDraftRepositoryImpl implements ProductDraftRepository {
-    private ProductDraftDataSource productDraftDataSource;
+    private final ProductDraftDataSource productDraftDataSource;
+
+    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource) {
+        this.productDraftDataSource = productDraftDataSource;
+    }
 
 
     @Override
