@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.domain.interactor;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.interactor.observable.AddProductObservable;
 import com.tokopedia.seller.product.domain.interactor.observable.ImageProductObservable;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
@@ -24,8 +25,9 @@ public class AddProductUseCase extends UploadProductUseCase<AddProductDomainMode
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ImageProductObservable imageProductObservable,
-            AddProductObservable addProductObservable) {
-        super(threadExecutor, postExecutionThread);
+            AddProductObservable addProductObservable,
+            ProductDraftRepository productDraftRepository) {
+        super(threadExecutor, postExecutionThread, productDraftRepository);
         this.imageProductObservable = imageProductObservable;
         this.addProductObservable = addProductObservable;
     }
