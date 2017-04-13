@@ -18,18 +18,14 @@ public class AddProductDomainMapper {
 
     public static AddProductPictureInputDomainModel mapUploadToPicture(UploadProductInputDomainModel uploadProductInputDomainModel) {
         AddProductPictureInputDomainModel domainModel = new AddProductPictureInputDomainModel();
-        domainModel.setDuplicate(uploadProductInputDomainModel.getDuplicate());
-        domainModel.setProductPhoto(uploadProductInputDomainModel.getProductPhoto());
-        domainModel.setProductPhotoDefault(uploadProductInputDomainModel.getProductPhotoDefault());
-        domainModel.setProductPhotoDesc(uploadProductInputDomainModel.getProductPhotoDescription());
-        domainModel.setServerId(uploadProductInputDomainModel.getServerId());
+        domainModel.setProductPhotos(uploadProductInputDomainModel.getProductPhotos());
+        domainModel.setServerId(String.valueOf(uploadProductInputDomainModel.getServerId()));
         return domainModel;
     }
 
     public static AddProductSubmitInputDomainModel mapUploadToSubmit(AddProductPictureDomainModel addProductPictureDomainModel, UploadProductInputDomainModel uploadProductInputDomainModel, String postKey) {
         AddProductSubmitInputDomainModel domainModel = new AddProductSubmitInputDomainModel();
         domainModel.setPostKey(postKey);
-        domainModel.setClickName(uploadProductInputDomainModel.getClickName());
         domainModel.setFileUploadedTo(addProductPictureDomainModel.getFileUploaded());
         domainModel.setProductEtalaseId(uploadProductInputDomainModel.getProductEtalaseId());
         domainModel.setProductEtalaseName(uploadProductInputDomainModel.getProductEtalaseName());

@@ -7,56 +7,56 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
  */
 
 public class AddProductPictureInputServiceModel {
-    private String duplicate;
-    private String productPhoto;
-    private String productPhotoDefault;
-    private String productPhotoDesc;
+    public static final String SERVER_ID = "server_id";
+    public static final String PRODUCT_PHOTO = "product_photo";
+    public static final String PRODUCT_PHOTO_DEFAULT = "product_photo_default";
+    public static final String PRODUCT_PHOTO_DESC = "product_photo_desc";
+    public static final String DELIMITER = "~";
+    private ProductPhotoListServiceModel productPhoto;
     private String serverId;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put("duplicate", getDuplicate());
-        params.put("product_photo", getProductPhoto());
-        params.put("product_photo_default", getProductPhotoDefault());
-        params.put("product_photo_desc", getProductPhotoDesc());
-        params.put("server_id", getServerId());
+        params.put(SERVER_ID, getServerId());
+        params.putAll(getPhotosParams());
         return params;
     }
 
-    public String getDuplicate() {
-        return duplicate;
+    public TKPDMapParam<String, String> getPhotosParams() {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        if (getProductPhoto().getPhotosServiceModelList().isEmpty()) {
+            String productPhotosString = "";
+            String productPhotosDefault = "";
+            String productPhotosDescriptionString = "";
+            for (int i = 0; i < getProductPhoto().getPhotosServiceModelList().size(); i++) {
+                ProductPhotoServiceModel productPhoto = getProductPhoto().getPhotosServiceModelList().get(i);
+                productPhotosString += productPhoto.getUrl();
+                productPhotosDescriptionString += productPhoto.getDescription();
+                if (productPhoto.isDefault()) {
+                    productPhotosDefault = String.valueOf(i);
+                }
+                if (i < getProductPhoto().getPhotosServiceModelList().size() - 1) {
+                    productPhotosString += DELIMITER;
+                    productPhotosDescriptionString += DELIMITER;
+                }
+            }
+            params.put(PRODUCT_PHOTO, productPhotosString);
+            params.put(PRODUCT_PHOTO_DEFAULT, productPhotosDefault);
+            params.put(PRODUCT_PHOTO_DESC, productPhotosDescriptionString);
+        }
+        return params;
     }
 
-    public String getProductPhoto() {
+    public ProductPhotoListServiceModel getProductPhoto() {
         return productPhoto;
-    }
-
-    public String getProductPhotoDefault() {
-        return productPhotoDefault;
-    }
-
-    public String getProductPhotoDesc() {
-        return productPhotoDesc;
     }
 
     public String getServerId() {
         return serverId;
     }
 
-    public void setDuplicate(String duplicate) {
-        this.duplicate = duplicate;
-    }
-
-    public void setProductPhoto(String productPhoto) {
+    public void setProductPhoto(ProductPhotoListServiceModel productPhoto) {
         this.productPhoto = productPhoto;
-    }
-
-    public void setProductPhotoDefault(String productPhotoDefault) {
-        this.productPhotoDefault = productPhotoDefault;
-    }
-
-    public void setProductPhotoDesc(String productPhotoDesc) {
-        this.productPhotoDesc = productPhotoDesc;
     }
 
     public void setServerId(String serverId) {

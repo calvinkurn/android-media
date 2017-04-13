@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.source.cloud.model;
 
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.List;
@@ -10,8 +11,6 @@ import java.util.Map;
  */
 
 public class AddProductValidationInputServiceModel {
-    public static final String CLICK_NAME = "click_name";
-    public static final String DUPLICATE = "duplicate";
     public static final String PRODUCT_CATALOG_ID = "product_catalog_id";
     public static final String PRODUCT_CONDITION = "product_condition";
     public static final String PRODUCT_DEPARTMENT_ID = "product_department_id";
@@ -32,102 +31,127 @@ public class AddProductValidationInputServiceModel {
     public static final String PRODUCT_WEIGHT_UNIT = "product_weight_unit";
     public static final String PO_PROCESS_TYPE = "po_process_type";
     public static final String PO_PROCESS_VALUE = "po_process_value";
+    public static final String PRODUCT_VIDEO_SIZE = "product_video_size";
+    public static final String PRODUCT_VIDEO_ = "product_video_";
     public static final String SERVER_ID = "server_id";
     public static final String PRD_PRC_ = "prd_prc_";
     public static final String QTY_MAX_ = "qty_max_";
     public static final String QTY_MIN_ = "qty_min_";
+    public static final String DELIMITER = "~";
 
+    private ProductPhotoListServiceModel productPhotos;
     private List<ProductWholesaleServiceModel> productWholesale;
-    private String clickName;
-    private String duplicate;
-    private String productCatalogId;
-    private String productCondition;
-    private String productDepartmentId;
+    private List<String> productVideo;
     private String productDescription;
-    private String productEtalaseId;
     private String productEtalaseName;
-    private String productMinOrder;
-    private String productMustInsurance;
     private String productName;
-    private String productPhoto;
-    private String productPhotoDefault;
-    private String productPhotoDescription;
-    private String productPrice;
-    private String productPriceCurrency;
-    private String productReturnable;
-    private String productUploadTo;
-    private String productWeight;
-    private String productWeightUnit;
-    private String poProcessType;
-    private String poProcessValue;
-    private String serverId;
+    private int productCatalogId;
+    private int productCondition;
+    private int productDepartmentId;
+    private int productEtalaseId;
+    private int productMinOrder;
+    private int productMustInsurance;
+    private int productPrice;
+    private int productPriceCurrency;
+    private int productReturnable;
+    private int productUploadTo;
+    private int productWeight;
+    private int productWeightUnit;
+    private int poProcessType;
+    private int poProcessValue;
+    private int serverId;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(CLICK_NAME, getClickName());
-        params.put(DUPLICATE, getDuplicate());
-        params.put(PRODUCT_CATALOG_ID, getProductCatalogId());
-        params.put(PRODUCT_CONDITION, getProductCondition());
-        params.put(PRODUCT_DEPARTMENT_ID, getProductDepartmentId());
-        params.put(PRODUCT_DESCRIPTION, getProductDescription());
-        params.put(PRODUCT_ETALASE_ID, getProductEtalaseId());
-        params.put(PRODUCT_ETALASE_NAME, getProductEtalaseName());
-        params.put(PRODUCT_MIN_ORDER, getProductMinOrder());
-        params.put(PRODUCT_MUST_INSURANCE, getProductMustInsurance());
         params.put(PRODUCT_NAME, getProductName());
-        params.put(PRODUCT_PHOTO, getProductPhoto());
-        params.put(PRODUCT_PHOTO_DEFAULT, getProductPhotoDefault());
-        params.put(PRODUCT_PHOTO_DESC, getProductPhotoDescription());
-        params.put(PRODUCT_PRICE, getProductPrice());
-        params.put(PRODUCT_PRICE_CURRENCY, getProductPriceCurrency());
-        params.put(PRODUCT_RETURNABLE, getProductReturnable());
-        params.put(PRODUCT_UPLOAD_TO, getProductUploadTo());
-        params.put(PRODUCT_WEIGHT, getProductWeight());
-        params.put(PRODUCT_WEIGHT_UNIT, getProductWeightUnit());
-        params.put(PO_PROCESS_TYPE, getPoProcessType());
-        params.put(PO_PROCESS_VALUE, getPoProcessValue());
-        params.put(SERVER_ID, getServerId());
+        params.put(PRODUCT_DEPARTMENT_ID, String.valueOf(getProductDepartmentId()));
+        params.put(PRODUCT_CATALOG_ID, String.valueOf(getProductCatalogId()));
+        params.put(PRODUCT_PRICE, String.valueOf(getProductPrice()));
+        params.put(PRODUCT_CONDITION, String.valueOf(getProductCondition()));
+        params.put(PRODUCT_DESCRIPTION, getProductDescription());
+        params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalaseId()));
+        params.put(PRODUCT_ETALASE_NAME, getProductEtalaseName());
+        params.put(PRODUCT_MIN_ORDER, String.valueOf(getProductMinOrder()));
+        params.put(PRODUCT_MUST_INSURANCE, String.valueOf(getProductMustInsurance()));
+        params.put(PRODUCT_PRICE_CURRENCY, String.valueOf(getProductPriceCurrency()));
+        params.put(PRODUCT_RETURNABLE, String.valueOf(getProductReturnable()));
+        params.put(PRODUCT_UPLOAD_TO, String.valueOf(getProductUploadTo()));
+        params.put(PRODUCT_WEIGHT, String.valueOf(getProductWeight()));
+        params.put(PRODUCT_WEIGHT_UNIT, String.valueOf(getProductWeightUnit()));
+        params.put(PO_PROCESS_TYPE, String.valueOf(getPoProcessType()));
+        params.put(PO_PROCESS_VALUE, String.valueOf(getPoProcessValue()));
+        params.put(SERVER_ID, String.valueOf(getServerId()));
+        params.putAll(getPhotosParams());
         params.putAll(getWholesaleParams());
+        params.putAll(getVideosParams());
         return params;
     }
 
-    public String getClickName() {
-        return clickName;
+    public TKPDMapParam<String, String> getWholesaleParams() {
+        TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
+        for (int i = 0; i < productWholesale.size(); i++) {
+            wholesaleParams.put(PRD_PRC_ + i, productWholesale.get(i).getPrice());
+            wholesaleParams.put(QTY_MAX_ + i, productWholesale.get(i).getQtyMax());
+            wholesaleParams.put(QTY_MIN_ + i, productWholesale.get(i).getQtyMin());
+        }
+        return wholesaleParams;
     }
 
-    public void setClickName(String clickName) {
-        this.clickName = clickName;
+    public TKPDMapParam<String, String> getPhotosParams() {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        if (getProductPhotos().getPhotosServiceModelList().isEmpty()) {
+            String productPhotosString = "";
+            String productPhotosDefault = "";
+            String productPhotosDescriptionString = "";
+            for (int i = 0; i < getProductPhotos().getPhotosServiceModelList().size(); i++) {
+                ProductPhotoServiceModel productPhoto = getProductPhotos().getPhotosServiceModelList().get(i);
+                productPhotosString += productPhoto.getUrl();
+                productPhotosDescriptionString += productPhoto.getDescription();
+                if (productPhoto.isDefault()) {
+                    productPhotosDefault = String.valueOf(i);
+                }
+                if (i < getProductPhotos().getPhotosServiceModelList().size() - 1) {
+                    productPhotosString += DELIMITER;
+                    productPhotosDescriptionString += DELIMITER;
+                }
+            }
+            params.put(PRODUCT_PHOTO, productPhotosString);
+            params.put(PRODUCT_PHOTO_DEFAULT, productPhotosDefault);
+            params.put(PRODUCT_PHOTO_DESC, productPhotosDescriptionString);
+        }
+        return params;
     }
 
-    public String getDuplicate() {
-        return duplicate;
+    public TKPDMapParam<String, String> getVideosParams() {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put(PRODUCT_VIDEO_SIZE, String.valueOf(getProductVideo().size()));
+        for (int i = 0; i < getProductVideo().size(); i++) {
+            params.put(PRODUCT_VIDEO_ + i, getProductVideo().get(i));
+        }
+        return params;
     }
 
-    public void setDuplicate(String duplicate) {
-        this.duplicate = duplicate;
-    }
-
-    public String getProductCatalogId() {
+    public int getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(String productCatalogId) {
+    public void setProductCatalogId(int productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
-    public String getProductCondition() {
+    public int getProductCondition() {
         return productCondition;
     }
 
-    public void setProductCondition(String productCondition) {
+    public void setProductCondition(int productCondition) {
         this.productCondition = productCondition;
     }
 
-    public String getProductDepartmentId() {
+    public int getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(String productDepartmentId) {
+    public void setProductDepartmentId(int productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -139,11 +163,11 @@ public class AddProductValidationInputServiceModel {
         this.productDescription = productDescription;
     }
 
-    public String getProductEtalaseId() {
+    public int getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(String productEtalaseId) {
+    public void setProductEtalaseId(int productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 
@@ -155,19 +179,19 @@ public class AddProductValidationInputServiceModel {
         this.productEtalaseName = productEtalaseName;
     }
 
-    public String getProductMinOrder() {
+    public int getProductMinOrder() {
         return productMinOrder;
     }
 
-    public void setProductMinOrder(String productMinOrder) {
+    public void setProductMinOrder(int productMinOrder) {
         this.productMinOrder = productMinOrder;
     }
 
-    public String getProductMustInsurance() {
+    public int getProductMustInsurance() {
         return productMustInsurance;
     }
 
-    public void setProductMustInsurance(String productMustInsurance) {
+    public void setProductMustInsurance(int productMustInsurance) {
         this.productMustInsurance = productMustInsurance;
     }
 
@@ -179,99 +203,75 @@ public class AddProductValidationInputServiceModel {
         this.productName = productName;
     }
 
-    public String getProductPhoto() {
-        return productPhoto;
-    }
-
-    public void setProductPhoto(String productPhoto) {
-        this.productPhoto = productPhoto;
-    }
-
-    public String getProductPhotoDefault() {
-        return productPhotoDefault;
-    }
-
-    public void setProductPhotoDefault(String productPhotoDefault) {
-        this.productPhotoDefault = productPhotoDefault;
-    }
-
-    public String getProductPhotoDescription() {
-        return productPhotoDescription;
-    }
-
-    public void setProductPhotoDescription(String productPhotoDescription) {
-        this.productPhotoDescription = productPhotoDescription;
-    }
-
-    public String getProductPrice() {
+    public int getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
     }
 
-    public String getProductPriceCurrency() {
+    public int getProductPriceCurrency() {
         return productPriceCurrency;
     }
 
-    public void setProductPriceCurrency(String productPriceCurrency) {
+    public void setProductPriceCurrency(int productPriceCurrency) {
         this.productPriceCurrency = productPriceCurrency;
     }
 
-    public String getProductReturnable() {
+    public int getProductReturnable() {
         return productReturnable;
     }
 
-    public void setProductReturnable(String productReturnable) {
+    public void setProductReturnable(int productReturnable) {
         this.productReturnable = productReturnable;
     }
 
-    public String getProductUploadTo() {
+    public int getProductUploadTo() {
         return productUploadTo;
     }
 
-    public void setProductUploadTo(String productUploadTo) {
+    public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 
-    public String getProductWeight() {
+    public int getProductWeight() {
         return productWeight;
     }
 
-    public void setProductWeight(String productWeight) {
+    public void setProductWeight(int productWeight) {
         this.productWeight = productWeight;
     }
 
-    public String getProductWeightUnit() {
+    public int getProductWeightUnit() {
         return productWeightUnit;
     }
 
-    public void setProductWeightUnit(String productWeightUnit) {
+    public void setProductWeightUnit(int productWeightUnit) {
         this.productWeightUnit = productWeightUnit;
     }
 
-    public String getPoProcessType() {
+    public int getPoProcessType() {
         return poProcessType;
     }
 
-    public void setPoProcessType(String poProcessType) {
+    public void setPoProcessType(int poProcessType) {
         this.poProcessType = poProcessType;
     }
 
-    public String getPoProcessValue() {
+    public int getPoProcessValue() {
         return poProcessValue;
     }
 
-    public void setPoProcessValue(String poProcessValue) {
+    public void setPoProcessValue(int poProcessValue) {
         this.poProcessValue = poProcessValue;
     }
 
-    public String getServerId() {
+    public int getServerId() {
         return serverId;
     }
 
-    public void setServerId(String serverId) {
+    public void setServerId(int serverId) {
         this.serverId = serverId;
     }
 
@@ -279,13 +279,23 @@ public class AddProductValidationInputServiceModel {
         this.productWholesale = productWholesale;
     }
 
-    public TKPDMapParam<String, String> getWholesaleParams() {
-        TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
-        for (int i = 0; i < productWholesale.size(); i++){
-            wholesaleParams.put(PRD_PRC_ + i, productWholesale.get(i).getPrice());
-            wholesaleParams.put(QTY_MAX_ + i, productWholesale.get(i).getQtyMax());
-            wholesaleParams.put(QTY_MIN_ + i, productWholesale.get(i).getQtyMin());
-        }
-        return wholesaleParams;
+    public void setProductPhotos(ProductPhotoListServiceModel productPhotos) {
+        this.productPhotos = productPhotos;
+    }
+
+    public List<ProductWholesaleServiceModel> getProductWholesale() {
+        return productWholesale;
+    }
+
+    public ProductPhotoListServiceModel getProductPhotos() {
+        return productPhotos;
+    }
+
+    public List<String> getProductVideo() {
+        return productVideo;
+    }
+
+    public void setProductVideo(List<String> productVideo) {
+        this.productVideo = productVideo;
     }
 }

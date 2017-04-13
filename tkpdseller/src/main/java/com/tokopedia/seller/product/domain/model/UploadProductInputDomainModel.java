@@ -8,88 +8,70 @@ import java.util.List;
 
 public class UploadProductInputDomainModel {
 
-    public static final String DELIMITER = "~";
-    private List<ImageProductInputDomainModel> images;
-    private List<ProductWholesaleDomainModel> wholesaleList;
-    private String clickName;
-    private String duplicate;
-    private String productCatalogId;
-    private String productCondition;
-    private String productDepartmentId;
-    private String productDescription;
-    private String productEtalaseId;
-    private String productEtalaseName;
-    private String productMinOrder;
-    private String productMustInsurance;
+    private ProductPhotoListDomainModel productPhotos;
+    private List<ProductWholesaleDomainModel> productWholesaleList;
+    private List<String> productVideos;
     private String productName;
-    private String productPhotoDefault;
-    private String productPrice;
-    private String productPriceCurrency;
-    private String productReturnable;
-    private String productUploadTo;
-    private String productWeight;
-    private String productWeightUnit;
-    private String poProcessType;
-    private String poProcessValue;
-    private String serverId;
+    private String productDescription;
+    private String productEtalaseName;
+    private int productChangePhoto;
+    private int productCatalogId;
+    private int productDepartmentId;
+    private int productCondition;
+    private int productEtalaseId;
+    private int productMinOrder;
+    private int productMustInsurance;
+    private int productPrice;
+    private int productPriceCurrency;
+    private int productReturnable;
+    private int productUploadTo;
+    private int productWeight;
+    private int productWeightUnit;
+    private int poProcessType;
+    private int poProcessValue;
+    private int serverId;
 
-    public List<ImageProductInputDomainModel> getImages() {
-        return images;
+    public ProductPhotoListDomainModel getProductPhotos() {
+        return productPhotos;
     }
 
-    public void setImages(List<ImageProductInputDomainModel> images) {
-        this.images = images;
-    }
-
-    public String getClickName() {
-        return clickName;
-    }
-
-    public void setClickName(String clickName) {
-        this.clickName = clickName;
-    }
-
-    public String getDuplicate() {
-        return duplicate;
-    }
-
-    public void setDuplicate(String duplicate) {
-        this.duplicate = duplicate;
+    public void setProductPhotos(ProductPhotoListDomainModel productPhotos) {
+        this.productPhotos = productPhotos;
     }
 
     public List<ProductWholesaleDomainModel> getProductPriceOne() {
-        return wholesaleList;
+        return productWholesaleList;
     }
 
-    public List<ProductWholesaleDomainModel> getWholesaleList() {
-        return wholesaleList;
+    public List<ProductWholesaleDomainModel> getProductWholesaleList() {
+        return productWholesaleList;
     }
 
-    public void setWholesaleList(List<ProductWholesaleDomainModel> wholesaleList) {
-        this.wholesaleList = wholesaleList;
+    public void setProductWholesaleList(List<ProductWholesaleDomainModel> productWholesaleList) {
+        this.productWholesaleList = productWholesaleList;
     }
 
-    public String getProductCatalogId() {
+    public int getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(String productCatalogId) {
+    public void setProductCatalogId(int productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
-    public String getProductCondition() {
+    public int getProductCondition() {
         return productCondition;
     }
 
-    public void setProductCondition(String productCondition) {
+    public void setProductCondition(int productCondition) {
         this.productCondition = productCondition;
     }
 
-    public String getProductDepartmentId() {
+    public int getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(String productDepartmentId) {
+    public void setProductDepartmentId(int productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -101,11 +83,11 @@ public class UploadProductInputDomainModel {
         this.productDescription = productDescription;
     }
 
-    public String getProductEtalaseId() {
+    public int getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(String productEtalaseId) {
+    public void setProductEtalaseId(int productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 
@@ -117,19 +99,19 @@ public class UploadProductInputDomainModel {
         this.productEtalaseName = productEtalaseName;
     }
 
-    public String getProductMinOrder() {
+    public int getProductMinOrder() {
         return productMinOrder;
     }
 
-    public void setProductMinOrder(String productMinOrder) {
+    public void setProductMinOrder(int productMinOrder) {
         this.productMinOrder = productMinOrder;
     }
 
-    public String getProductMustInsurance() {
+    public int getProductMustInsurance() {
         return productMustInsurance;
     }
 
-    public void setProductMustInsurance(String productMustInsurance) {
+    public void setProductMustInsurance(int productMustInsurance) {
         this.productMustInsurance = productMustInsurance;
     }
 
@@ -141,105 +123,91 @@ public class UploadProductInputDomainModel {
         this.productName = productName;
     }
 
-    public String getProductPhotoDefault() {
-        return productPhotoDefault;
-    }
-
-    public void setProductPhotoDefault(String productPhotoDefault) {
-        this.productPhotoDefault = productPhotoDefault;
-    }
-
-    public String getProductPrice() {
+    public int getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public void setProductPrice(int productPrice) {
         this.productPrice = productPrice;
     }
 
-    public String getProductPriceCurrency() {
+    public int getProductPriceCurrency() {
         return productPriceCurrency;
     }
 
-    public void setProductPriceCurrency(String productPriceCurrency) {
+    public void setProductPriceCurrency(int productPriceCurrency) {
         this.productPriceCurrency = productPriceCurrency;
     }
 
-    public String getProductReturnable() {
+    public int getProductReturnable() {
         return productReturnable;
     }
 
-    public void setProductReturnable(String productReturnable) {
+    public void setProductReturnable(int productReturnable) {
         this.productReturnable = productReturnable;
     }
 
-    public String getProductUploadTo() {
+    public int getProductUploadTo() {
         return productUploadTo;
     }
 
-    public void setProductUploadTo(String productUploadTo) {
+    public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 
-    public String getProductWeight() {
+    public int getProductWeight() {
         return productWeight;
     }
 
-    public void setProductWeight(String productWeight) {
+    public void setProductWeight(int productWeight) {
         this.productWeight = productWeight;
     }
 
-    public String getProductWeightUnit() {
+    public int getProductWeightUnit() {
         return productWeightUnit;
     }
 
-    public void setProductWeightUnit(String productWeightUnit) {
+    public void setProductWeightUnit(int productWeightUnit) {
         this.productWeightUnit = productWeightUnit;
     }
 
-    public String getPoProcessType() {
+    public int getPoProcessType() {
         return poProcessType;
     }
 
-    public void setPoProcessType(String poProcessType) {
+    public void setPoProcessType(int poProcessType) {
         this.poProcessType = poProcessType;
     }
 
-    public String getPoProcessValue() {
+    public int getPoProcessValue() {
         return poProcessValue;
     }
 
-    public void setPoProcessValue(String poProcessValue) {
+    public void setPoProcessValue(int poProcessValue) {
         this.poProcessValue = poProcessValue;
     }
 
-    public String getServerId() {
+    public int getServerId() {
         return serverId;
     }
 
-    public void setServerId(String serverId) {
+    public void setServerId(int serverId) {
         this.serverId = serverId;
     }
 
-    public String getProductPhoto() {
-        String productPhoto = "";
-        for (int i = 0; i < images.size(); i++){
-            productPhoto += images.get(i).getUrl();
-            if (i + 1 < images.size()){
-                productPhoto += DELIMITER;
-            }
-        }
-        return productPhoto;
+    public int getProductChangePhoto() {
+        return productChangePhoto;
     }
 
-    public String getProductPhotoDescription() {
-        String productPhotoDescription = "";
-        for (int i = 0; i < images.size(); i++){
-            productPhotoDescription += images.get(i).getDescription();
-            if (i + 1 < images.size()){
-                productPhotoDescription += DELIMITER;
-            }
-        }
-        return productPhotoDescription;
+    public void setProductChangePhoto(int productChangePhoto) {
+        this.productChangePhoto = productChangePhoto;
+    }
+
+    public List<String> getProductVideos() {
+        return productVideos;
+    }
+
+    public void setProductVideos(List<String> productVideos) {
+        this.productVideos = productVideos;
     }
 }

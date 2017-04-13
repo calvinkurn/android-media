@@ -4,10 +4,12 @@ import com.tokopedia.seller.product.data.mapper.AddProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductPictureMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductSubmitMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductValidationMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductMapper;
 import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
@@ -53,6 +55,8 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
 
     @Override
     public Observable<EditProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
-        return null;
+        EditProductInputServiceModel serviceModel = AddProductInputMapper.mapEdit(uploadProductInputDomainModel);
+        return uploadProductDataSource.editProduct(serviceModel)
+                .map(new EditProductMapper());
     }
 }

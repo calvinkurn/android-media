@@ -7,32 +7,25 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
  */
 
 public class AddProductSubmitInputServiceModel {
-    public static final String CLICK_NAME = "click_name";
     public static final String FILE_UPLOADED = "file_uploaded";
     public static final String POST_KEY = "post_key";
     public static final String PRODUCT_ETALASE_ID = "product_etalase_id";
     public static final String PRODUCT_ETALASE_NAME = "product_etalase_name";
     public static final String PRODUCT_UPLOAD_TO = "product_upload_to";
-    private String clickName;
     private String fileUploaded;
     private String postKey;
-    private String productEtalseId;
     private String productEtalaseName;
-    private String productUploadTo;
+    private int productEtalseId;
+    private int productUploadTo;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(CLICK_NAME, getClickName());
         params.put(FILE_UPLOADED, getFileUploaded());
         params.put(POST_KEY, getPostKey());
-        params.put(PRODUCT_ETALASE_ID, getProductEtalseId());
+        params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalseId()));
         params.put(PRODUCT_ETALASE_NAME, getProductEtalaseName());
-        params.put(PRODUCT_UPLOAD_TO, getProductUploadTo());
+        params.put(PRODUCT_UPLOAD_TO, String.valueOf(getProductUploadTo()));
         return params;
-    }
-
-    public String getClickName() {
-        return clickName;
     }
 
     public String getFileUploaded() {
@@ -43,7 +36,7 @@ public class AddProductSubmitInputServiceModel {
         return postKey;
     }
 
-    public String getProductEtalseId() {
+    public int getProductEtalseId() {
         return productEtalseId;
     }
 
@@ -51,12 +44,8 @@ public class AddProductSubmitInputServiceModel {
         return productEtalaseName;
     }
 
-    public String getProductUploadTo() {
+    public int getProductUploadTo() {
         return productUploadTo;
-    }
-
-    public void setClickName(String clickName) {
-        this.clickName = clickName;
     }
 
     public void setFileUploaded(String fileUploaded) {
@@ -67,7 +56,7 @@ public class AddProductSubmitInputServiceModel {
         this.postKey = postKey;
     }
 
-    public void setProductEtalseId(String productEtalseId) {
+    public void setProductEtalseId(int productEtalseId) {
         this.productEtalseId = productEtalseId;
     }
 
@@ -75,7 +64,7 @@ public class AddProductSubmitInputServiceModel {
         this.productEtalaseName = productEtalaseName;
     }
 
-    public void setProductUploadTo(String productUploadTo) {
+    public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 

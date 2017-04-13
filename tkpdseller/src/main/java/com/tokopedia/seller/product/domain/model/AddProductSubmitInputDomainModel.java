@@ -5,16 +5,11 @@ package com.tokopedia.seller.product.domain.model;
  */
 
 public class AddProductSubmitInputDomainModel {
-    private String clickName;
     private String postKey;
     private String fileUploadedTo;
     private String productEtalaseName;
-    private String productEtalaseId;
-    private String productUploadTo;
-
-    public String getClickName() {
-        return clickName;
-    }
+    private int productEtalaseId;
+    private int productUploadTo;
 
     public String getPostKey() {
         return postKey;
@@ -28,16 +23,12 @@ public class AddProductSubmitInputDomainModel {
         return productEtalaseName;
     }
 
-    public String getProductEtalaseId() {
+    public int getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public String getProductUploadTo() {
+    public int getProductUploadTo() {
         return productUploadTo;
-    }
-
-    public void setClickName(String clickName) {
-        this.clickName = clickName;
     }
 
     public void setPostKey(String postKey) {
@@ -52,11 +43,11 @@ public class AddProductSubmitInputDomainModel {
         this.productEtalaseName = productEtalaseName;
     }
 
-    public void setProductEtalaseId(String productEtalaseId) {
+    public void setProductEtalaseId(int productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 
-    public void setProductUploadTo(String productUploadTo) {
+    public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 }

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.seller.product.domain.ImageProductRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             UploadProductInputDomainModel uploadProductInputDomainModel
     ) {
         Observable<List<ImageProductInputDomainModel>> imageResult = Observable
-                .from(uploadProductInputDomainModel.getImages())
+                .from(uploadProductInputDomainModel.getProductPhotos().getPhotos())
                 .flatMap(new CheckImageHasUrl())
                 .toList();
         return storeImagesToModel(uploadProductInputDomainModel, imageResult);
@@ -69,7 +70,9 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
                                     UploadProductInputDomainModel uploadProductInputDomainModel,
                                     List<ImageProductInputDomainModel> imageProductInputDomainModels
                             ) {
-                                uploadProductInputDomainModel.setImages(imageProductInputDomainModels);
+                                ProductPhotoListDomainModel productPhotos = new ProductPhotoListDomainModel();
+                                productPhotos.setPhotos(imageProductInputDomainModels);
+                                uploadProductInputDomainModel.setProductPhotos(productPhotos);
                                 return uploadProductInputDomainModel;
                             }
                         });
