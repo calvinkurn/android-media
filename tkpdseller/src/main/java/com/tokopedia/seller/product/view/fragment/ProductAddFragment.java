@@ -44,7 +44,7 @@ public class ProductAddFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
         productInfoViewHolder = new ProductInfoViewHolder(this, view);
-        productImageViewHolder = new ProductImageViewHolder((AppCompatActivity)getActivity(), view);
+        productImageViewHolder = new ProductImageViewHolder(this, view);
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         return view;
@@ -60,6 +60,8 @@ public class ProductAddFragment extends BaseDaggerFragment {
             case ProductInfoViewHolder.REQUEST_CODE_CATALOG:
                 productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
                 break;
+            case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }

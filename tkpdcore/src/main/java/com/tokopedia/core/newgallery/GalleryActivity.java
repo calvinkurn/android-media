@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -24,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.bignerdranch.android.multiselector.BuildConfig;
 import com.bignerdranch.android.multiselector.ModalMultiSelectorCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
@@ -37,7 +37,6 @@ import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
@@ -146,6 +145,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         moveToImageGalleryCamera(context, position, false, maxSelection);
     }
 
+    public static void moveToImageGallery(Context context, android.app.Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection);
+    }
+
+    public static void moveToImageGallery(Context context, Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection);
+    }
+
     /**
      * Call this to get image from image gallery
      * and force open camera.
@@ -153,6 +160,29 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
      * @param context non null object
      */
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera, int maxImageSelection){
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection);
+        context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, android.app.Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection);
+        fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection);
+        fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
+    }
+
+    private static Intent createIntent(Context context, int position,
+                                       boolean forceOpenCamera,
+                                       int maxImageSelection){
         Intent imageGallery = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
@@ -160,11 +190,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         bundle.putBoolean(FORCE_OPEN_CAMERA, forceOpenCamera);
         bundle.putInt(MAX_IMAGE_SELECTION, maxImageSelection);
         imageGallery.putExtras(bundle);
-
-        //[START] This one is old one
-//        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        //[END] This one is old one
-        context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
+        return imageGallery;
     }
 
     public static File getOutputMediaFile() {
