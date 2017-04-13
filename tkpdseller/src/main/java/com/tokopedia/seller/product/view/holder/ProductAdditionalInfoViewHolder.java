@@ -5,10 +5,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
-import com.tokopedia.seller.product.view.widget.CounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
 /**
  * Created by nathan on 4/11/17.
@@ -16,11 +13,20 @@ import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 
 public class ProductAdditionalInfoViewHolder {
 
+    private final AddUrlContainerViewHolder addUrlContainerViewHolder;
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
 
     public ProductAdditionalInfoViewHolder(View view) {
         descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
+
+        addUrlContainerViewHolder = new AddUrlContainerViewHolder(view);
     }
+
+    public void addAddUrlVideModel(AddUrlVideoModel addUrlVideoModel) {
+        addUrlContainerViewHolder.addAddUrlVideModel(addUrlVideoModel);
+    }
+
+
 }

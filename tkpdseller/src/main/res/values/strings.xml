@@ -346,4 +346,8 @@
     <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
     <string name="video_same_warn">Anda sudah menambahkan video ini</string>
     <string name="insert_a_url_video">Masukkan URL Video</string>
+    <string name="add_url_video">+ Tambah URL Video</string>
+    <string name="url_video">URL Video</string>
+    <string name="error_no_video_url_name">Url Video harus diisi</string>
+    <string name="youtube_add_url_title">Tambah URL Video</string>
 </resources>

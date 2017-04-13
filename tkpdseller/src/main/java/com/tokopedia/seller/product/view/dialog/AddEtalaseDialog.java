@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 
@@ -23,9 +24,10 @@ import com.tokopedia.seller.R;
 public class AddEtalaseDialog extends DialogFragment{
 
     public static final String TAG = "AddEtalaseDialog";
-    private EditText etalaseName;
-    private TextInputLayout etalaseNameInputLayout;
-    private AddEtalaseDialogListener listener;
+    protected EditText etalaseName;
+    protected TextInputLayout etalaseNameInputLayout;
+    protected AddEtalaseDialogListener listener;
+    protected TextView etalaseTitle;
 
     @NonNull
     @Override
@@ -58,16 +60,22 @@ public class AddEtalaseDialog extends DialogFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.etalase_picker_add_new_etalase_dialog, container, false);
+        etalaseTitle = (TextView) view.findViewById(R.id.etalase_picker_add_etalase_name_title);
         etalaseName = (EditText) view.findViewById(R.id.etalase_picker_add_etalase_name_edit_text);
         etalaseNameInputLayout = (TextInputLayout) view.findViewById(R.id.etalase_picker_add_etalase_name_input_layout);
         view.findViewById(R.id.etalase_picker_add_etalase_confirm)
-                .setOnClickListener(new AddEtalaseButtonOnClick());
+                .setOnClickListener(getSaveOnClickListener());
         view.findViewById(R.id.etalase_picker_add_etalase_cancel)
                 .setOnClickListener(new CancelEtalaseButtonOnClick());
         return view;
     }
 
-    private class AddEtalaseButtonOnClick implements View.OnClickListener {
+    @NonNull
+    protected AddEtalaseButtonOnClick getSaveOnClickListener() {
+        return new AddEtalaseButtonOnClick();
+    }
+
+    protected class AddEtalaseButtonOnClick implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             String newEtalaseName = etalaseName.getText().toString();
