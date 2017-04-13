@@ -23,6 +23,24 @@
                 android:hint="@string/product_label_product_description" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_add_url_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_detail_padding_item">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/text_add_url_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_detail_padding_item"
+            android:text="@string/add_url_video"
+            android:textColor="@color/arrow_up"
+            android:textSize="@dimen/fourten_text_size" />
+
     </LinearLayout>
 
 </LinearLayout>

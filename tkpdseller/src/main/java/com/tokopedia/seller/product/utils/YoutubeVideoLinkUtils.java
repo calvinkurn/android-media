@@ -27,13 +27,10 @@ public final class YoutubeVideoLinkUtils {
     private String videoId;
     private String videoNotFound, invalidVideoUrl;
     private String videoAdultWarn;
+    private String errorNoVideoUrlName;
 
     public YoutubeVideoLinkUtils(Context context, String youtubeUrl) {
-        this(youtubeUrl);
         fillExceptionString(context);
-    }
-
-    public YoutubeVideoLinkUtils(String youtubeUrl) {
         setYoutubeUrl(youtubeUrl);
     }
 
@@ -44,7 +41,7 @@ public final class YoutubeVideoLinkUtils {
         if (youtubeUrl == null
                 || youtubeUrl.length() == 0
                 ) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(errorNoVideoUrlName);
         }
 
         this.youtubeUrl = youtubeUrl.trim();
@@ -77,6 +74,7 @@ public final class YoutubeVideoLinkUtils {
         invalidVideoUrl = context.getString(R.string.invalid_video_url);
         videoNotFound = context.getString(R.string.video_not_found);
         videoAdultWarn = context.getString(R.string.video_adult_warn);
+        errorNoVideoUrlName = context.getString(R.string.error_no_video_url_name);
     }
 
     public synchronized void checkIfVideoExists(YoutubeResponse youtubeResponse) {

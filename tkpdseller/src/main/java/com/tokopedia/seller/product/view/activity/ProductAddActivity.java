@@ -6,15 +6,15 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 
 /**
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddActivity extends TActivity implements HasComponent<AppComponent>{
-
-
+public class ProductAddActivity extends TActivity
+        implements HasComponent<AppComponent>, YoutubeAddUrlDialogListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,5 +27,14 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public void addYoutubeUrl(String youtubeUrl) {
+
+    }
+
+    public void openAddYoutubeDialog() {
+
     }
 }

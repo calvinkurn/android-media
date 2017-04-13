@@ -19,6 +19,7 @@ import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
+import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
 import javax.inject.Inject;
 
@@ -102,5 +103,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    public void add(AddUrlVideoModel addUrlVideoModel) {
+        productAdditionalInfoViewHolder.addAddUrlVideModel(addUrlVideoModel);
     }
 }
