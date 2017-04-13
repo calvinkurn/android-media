@@ -59,7 +59,7 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
     @Override
     public void init(ReputationViewModel data) {
 
-        ReputationLevelUtils.setReputationMedals(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
+        ReputationLevelUtils.setReputationMedalsWithoutDialog(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
 
         reputationPoints.setText(String.format("%s %s", data.stats.shopReputationScore, getContext().getString(R.string.point)));
     }
