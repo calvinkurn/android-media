@@ -851,7 +851,7 @@ LoginFragment extends Fragment implements LoginView {
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
-        if(state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+        if(state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE){
             bundle.putString(SmartLockActivity.USERNAME, username);
             bundle.putString(SmartLockActivity.PASSWORD, password);
         }

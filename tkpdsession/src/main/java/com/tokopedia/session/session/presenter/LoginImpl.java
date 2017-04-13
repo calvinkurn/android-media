@@ -478,7 +478,7 @@ public class LoginImpl implements Login {
                     loginView.triggerSaveAccount();
                     successLoginVia = (data.getInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE,LOGIN_ACCOUNTS_TOKEN));
                     if(successLoginVia == LOGIN_ACCOUNTS_TOKEN) {
-                        loginView.setSmartLock(SmartLockActivity.RC_SAVE);
+                        loginView.setSmartLock(SmartLockActivity.RC_SAVE, ((AccountsParameter)data.get("accounts")).getEmail(), ((AccountsParameter)data.get("accounts")).getPassword());
                     }else {
                         loginView.destroyActivity();
                     }
