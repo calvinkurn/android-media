@@ -96,7 +96,7 @@ public class SpinnerTextView extends FrameLayout {
 
     private void updateEntries(String[] entries) {
         if (entries != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, entries);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
             textAutoComplete.setText(entries[selection]);
         }

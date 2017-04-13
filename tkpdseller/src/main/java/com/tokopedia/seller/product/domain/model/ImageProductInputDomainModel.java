@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.domain.model;
 
-import java.net.URI;
+
 
 /**
  * @author sebastianuskh on 4/10/17.
@@ -8,15 +8,15 @@ import java.net.URI;
 
 public class ImageProductInputDomainModel {
     private String url;
-    private URI uri;
     private String description;
+    private String imagePath;
 
     public String getUrl() {
         return url;
     }
 
-    public URI getUri() {
-        return uri;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public String getDescription() {

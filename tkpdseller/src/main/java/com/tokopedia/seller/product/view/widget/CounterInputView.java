@@ -2,10 +2,12 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -17,12 +19,16 @@ import com.tokopedia.seller.R;
 
 public class CounterInputView extends FrameLayout {
 
+    private static final int DEFAULT_MIN_VALUE = 0;
+
     private DecimalInputView decimalInputView;
     private ImageButton minusImageButton;
     private ImageButton plusImageButton;
 
     private String hintText;
     private String valueText;
+    private int minValue;
+    private boolean showCounterButton;
 
     public CounterInputView(Context context) {
         super(context);
@@ -45,6 +51,8 @@ public class CounterInputView extends FrameLayout {
         try {
             hintText = styledAttributes.getString(R.styleable.CounterInputView_counter_hint);
             valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
+            minValue = styledAttributes.getInt(R.styleable.CounterInputView_counter_min, DEFAULT_MIN_VALUE);
+            showCounterButton = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_show_counter_button, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -59,8 +67,15 @@ public class CounterInputView extends FrameLayout {
         if (!TextUtils.isEmpty(valueText)) {
             decimalInputView.setText(valueText);
         }
+        updateCounterButtonView(showCounterButton);
+        updateButtonState();
         invalidate();
         requestLayout();
+    }
+
+    public void updateCounterButtonView(boolean show) {
+        plusImageButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        minusImageButton.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void init() {
@@ -68,21 +83,45 @@ public class CounterInputView extends FrameLayout {
         decimalInputView = (DecimalInputView) view.findViewById(R.id.decimal_input_view);
         minusImageButton = (ImageButton) view.findViewById(R.id.image_button_minus);
         plusImageButton = (ImageButton) view.findViewById(R.id.image_button_plus);
+        decimalInputView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateButtonState();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         minusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                int result = decimalInputView.getIntValue() - 1;
-                if (result >= 0) {
-                    decimalInputView.setText(String.valueOf(result));
+                try {
+                    int result = (int) decimalInputView.getFloatValue() - 1;
+                    if (result >= 0) {
+                        decimalInputView.setText(String.valueOf(result));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                decimalInputView.setText(String.valueOf(decimalInputView.getIntValue() + 1));
+                decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
             }
         });
+    }
+
+    private void updateButtonState() {
+        minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
     }
 
     public void setHint(String hintText) {
@@ -97,7 +136,17 @@ public class CounterInputView extends FrameLayout {
         requestLayout();
     }
 
+    public void showCounterButton(boolean show) {
+        updateCounterButtonView(show);
+        invalidate();
+        requestLayout();
+    }
+
     public void addTextChangedListener(TextWatcher watcher) {
         decimalInputView.addTextChangedListener(watcher);
+    }
+
+    public EditText getEditText() {
+        return decimalInputView.getEditText();
     }
 }

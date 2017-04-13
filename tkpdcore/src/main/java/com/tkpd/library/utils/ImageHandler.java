@@ -474,6 +474,14 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageFromFileFitCenter(Context context, ImageView imageView, File file) {
+
+        Glide.with(context)
+                .load(file)
+                .centerCrop()
+                .into(imageView);
+    }
+
     public static void LoadImageResize(Context context, ImageView imageView, String url, int width, int height) {
         Glide.with(context)
                 .load(url)

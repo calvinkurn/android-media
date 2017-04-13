@@ -12,11 +12,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.datepicker.widget.DatePickerLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -26,10 +24,9 @@ import com.tokopedia.seller.topads.view.dialog.DatePickerDialog;
 import com.tokopedia.seller.topads.view.dialog.TimePickerdialog;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
-import com.tokopedia.seller.topads.view.widget.TopAdsCurrencyTextWatcher;
+import com.tokopedia.seller.util.CurrencyTextWatcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -140,7 +137,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        maxPriceEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        maxPriceEditText.addTextChangedListener(new CurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onCurrencyChanged(float currencyValue) {
@@ -153,7 +150,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
-        budgetPerDayEditText.addTextChangedListener(new TopAdsCurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        budgetPerDayEditText.addTextChangedListener(new CurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
             public void onCurrencyChanged(float currencyValue) {

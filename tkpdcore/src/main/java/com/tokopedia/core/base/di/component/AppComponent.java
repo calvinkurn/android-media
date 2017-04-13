@@ -15,6 +15,7 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -42,6 +43,9 @@ public interface AppComponent {
 
     @HadesQualifier
     Retrofit hadesRetrofit();
+
+    @YoutubeQualifier
+    Retrofit youtubeRetrofit();
 
     Gson gson();
 

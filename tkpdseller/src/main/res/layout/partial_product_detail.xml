@@ -16,32 +16,41 @@
 
     </LinearLayout>
 
-    <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
-        android:id="@+id/spinner_count_input_view_price"
+    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        android:id="@+id/spinner_counter_input_view_price"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_decimal_entries="@array/product_currency_entries"
-        app:spinner_decimal_hint="@string/product_label_product_price" />
+        app:spinner_decimal_hint="@string/product_label_product_price"
+        app:spinner_decimal_show_counter_button="false" />
 
-    <com.tokopedia.seller.product.view.widget.SpinnerDecimalInputView
-        android:id="@+id/spinner_count_input_view_weight"
+    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        android:id="@+id/spinner_counter_input_view_weight"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_decimal_entries="@array/product_weight_entries"
-        app:spinner_decimal_hint="@string/product_label_product_weight" />
+        app:spinner_decimal_hint="@string/product_label_product_weight"
+        app:spinner_decimal_show_counter_button="false" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
+        android:id="@+id/counter_input_view_minimum_buy"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
-        android:id="@+id/spinner_text_view_stock"
+        android:id="@+id/spinner_text_view_stock_status"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_stock_status_entries"
         app:spinner_hint="@string/product_label_status"
         app:spinner_selection="0" />
 
-    <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+    <com.tokopedia.seller.product.view.widget.CounterInputView
+        android:id="@+id/counter_input_view_stock_total"
+        style="@style/LabelLayoutWithoutBorder"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:counter_hint="@string/product_label_stock_total" />
+
+    <com.tokopedia.seller.lib.widget.LabelView
         android:id="@+id/label_view_shop_window"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -69,24 +78,4 @@
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_free_returns_entries"
         app:spinner_hint="@string/product_label_free_returns" />
-
-    <LinearLayout
-        style="@style/LabelLayoutWithoutBorder"
-        android:layout_marginTop="@dimen/product_margin_cards"
-        android:orientation="vertical">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_description"
-            style="@style/TextInputLayout"
-            app:counterEnabled="true"
-            app:counterMaxLength="@integer/product_max_character_description">
-
-            <EditText
-                android:id="@+id/edit_text_description"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/product_label_product_description" />
-
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 </LinearLayout>
