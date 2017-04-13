@@ -11,6 +11,7 @@ import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
+import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
@@ -107,4 +108,5 @@ public class ProductInfoViewHolder {
         }
         categoryLabelView.setContent(category);
     }
+
 }
