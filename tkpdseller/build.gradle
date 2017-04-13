@@ -117,9 +117,9 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
-    compile 'com.shootr:KMNumbers:1.0.0'
-    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile rootProject.ext.miscDependencies.chips
+    compile rootProject.ext.miscDependencies.kmNumber
+    compile rootProject.ext.miscDependencies.roundCornerProgressBar
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
