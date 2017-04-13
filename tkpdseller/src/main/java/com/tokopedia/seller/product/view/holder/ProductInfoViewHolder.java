@@ -34,16 +34,14 @@ public class ProductInfoViewHolder {
     private LabelView catalogLabelView;
 
     private Fragment fragment;
-    private String name;
     private int categoryId;
     private int catalogId;
 
     public String getName() {
-        return name;
+        return nameEditText.getText().toString();
     }
 
     public void setName(String name) {
-        this.name = name;
         nameEditText.setText(name);
     }
 
