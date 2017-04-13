@@ -111,7 +111,7 @@ public class RidePushNotificationBuildAndShow {
                         showRideAccepted(activitiesLifecycleCallbacks.getContext(), rideRequest);
                         break;
                     case "no_drivers_available":
-
+                        showNoDriverFoundNotification(activitiesLifecycleCallbacks.getContext());
                         break;
                     case "processing":
 
@@ -139,10 +139,6 @@ public class RidePushNotificationBuildAndShow {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentTitle("Finding your Uber");
-
-        // Issue the notification here.
-        // Sets an ID for the notification
-
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -232,7 +228,10 @@ public class RidePushNotificationBuildAndShow {
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
-    public static void showNoDriverFoundNotification(Context context) {
+    private static void showNoDriverFoundNotification(Context context) {
+        RideConfiguration rideConfiguration = new RideConfiguration();
+        rideConfiguration.clearActiveRequest();
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -242,6 +241,11 @@ public class RidePushNotificationBuildAndShow {
                 .setContentTitle("No Driver Found")
                 .setContentText("Sorry no driver found immediately, you can try again");
 
+        Bundle bundle = new Bundle();
+        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingApplinkTaskStack(context, bundle);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -250,7 +254,7 @@ public class RidePushNotificationBuildAndShow {
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
-    protected String convertBundleToJsonString(Bundle bundle) {
+    private String convertBundleToJsonString(Bundle bundle) {
         JSONObject json = new JSONObject();
         Set<String> keys = bundle.keySet();
         for (String key : keys) {
