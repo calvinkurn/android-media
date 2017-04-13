@@ -1,16 +1,15 @@
-package com.tokopedia.seller.product.domain.model;
+package com.tokopedia.seller.product.data.source.db.model;
 
 import java.util.List;
 
 /**
- * @author sebastianuskh on 4/10/17.
+ * @author sebastianuskh on 4/13/17.
  */
 
-public class UploadProductInputDomainModel {
+public class ProductDraftModel {
 
-    private long id;
-    private ProductPhotoListDomainModel productPhotos;
-    private List<ProductWholesaleDomainModel> productWholesaleList;
+    private ProductPhotoListDraftModel productPhotos;
+    private List<ProductWholesaleDraftModel> productWholesaleList;
     private List<String> productVideos;
     private String productName;
     private String productDescription;
@@ -32,56 +31,36 @@ public class UploadProductInputDomainModel {
     private int poProcessValue;
     private int serverId;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public ProductPhotoListDomainModel getProductPhotos() {
+    public ProductPhotoListDraftModel getProductPhotos() {
         return productPhotos;
     }
 
-    public void setProductPhotos(ProductPhotoListDomainModel productPhotos) {
+    public void setProductPhotos(ProductPhotoListDraftModel productPhotos) {
         this.productPhotos = productPhotos;
     }
 
-    public List<ProductWholesaleDomainModel> getProductPriceOne() {
+    public List<ProductWholesaleDraftModel> getProductWholesaleList() {
         return productWholesaleList;
     }
 
-    public List<ProductWholesaleDomainModel> getProductWholesaleList() {
-        return productWholesaleList;
-    }
-
-    public void setProductWholesaleList(List<ProductWholesaleDomainModel> productWholesaleList) {
+    public void setProductWholesaleList(List<ProductWholesaleDraftModel> productWholesaleList) {
         this.productWholesaleList = productWholesaleList;
     }
 
-    public int getProductCatalogId() {
-        return productCatalogId;
+    public List<String> getProductVideos() {
+        return productVideos;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
-        this.productCatalogId = productCatalogId;
+    public void setProductVideos(List<String> productVideos) {
+        this.productVideos = productVideos;
     }
 
-    public int getProductCondition() {
-        return productCondition;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setProductCondition(int productCondition) {
-        this.productCondition = productCondition;
-    }
-
-    public int getProductDepartmentId() {
-        return productDepartmentId;
-    }
-
-    public void setProductDepartmentId(int productDepartmentId) {
-        this.productDepartmentId = productDepartmentId;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getProductDescription() {
@@ -92,20 +71,52 @@ public class UploadProductInputDomainModel {
         this.productDescription = productDescription;
     }
 
-    public int getProductEtalaseId() {
-        return productEtalaseId;
-    }
-
-    public void setProductEtalaseId(int productEtalaseId) {
-        this.productEtalaseId = productEtalaseId;
-    }
-
     public String getProductEtalaseName() {
         return productEtalaseName;
     }
 
     public void setProductEtalaseName(String productEtalaseName) {
         this.productEtalaseName = productEtalaseName;
+    }
+
+    public int getProductChangePhoto() {
+        return productChangePhoto;
+    }
+
+    public void setProductChangePhoto(int productChangePhoto) {
+        this.productChangePhoto = productChangePhoto;
+    }
+
+    public int getProductCatalogId() {
+        return productCatalogId;
+    }
+
+    public void setProductCatalogId(int productCatalogId) {
+        this.productCatalogId = productCatalogId;
+    }
+
+    public int getProductDepartmentId() {
+        return productDepartmentId;
+    }
+
+    public void setProductDepartmentId(int productDepartmentId) {
+        this.productDepartmentId = productDepartmentId;
+    }
+
+    public int getProductCondition() {
+        return productCondition;
+    }
+
+    public void setProductCondition(int productCondition) {
+        this.productCondition = productCondition;
+    }
+
+    public int getProductEtalaseId() {
+        return productEtalaseId;
+    }
+
+    public void setProductEtalaseId(int productEtalaseId) {
+        this.productEtalaseId = productEtalaseId;
     }
 
     public int getProductMinOrder() {
@@ -122,14 +133,6 @@ public class UploadProductInputDomainModel {
 
     public void setProductMustInsurance(int productMustInsurance) {
         this.productMustInsurance = productMustInsurance;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 
     public int getProductPrice() {
@@ -202,21 +205,5 @@ public class UploadProductInputDomainModel {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
-    }
-
-    public int getProductChangePhoto() {
-        return productChangePhoto;
-    }
-
-    public void setProductChangePhoto(int productChangePhoto) {
-        this.productChangePhoto = productChangePhoto;
-    }
-
-    public List<String> getProductVideos() {
-        return productVideos;
-    }
-
-    public void setProductVideos(List<String> productVideos) {
-        this.productVideos = productVideos;
     }
 }

@@ -22,12 +22,12 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     @Override
     public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        return productDraftDataSource.saveDraft(productDraft);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getId());
     }
 
     @Override
     public Observable<UploadProductInputDomainModel> getDraft(long productId) {
         return productDraftDataSource.getDraft(productId)
-                .map(new ProductDraftMapper());
+                .map(new ProductDraftMapper(productId));
     }
 }

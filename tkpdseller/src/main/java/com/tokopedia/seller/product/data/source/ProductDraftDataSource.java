@@ -18,8 +18,8 @@ public class ProductDraftDataSource {
         this.productDraftDataManager = productDraftDataManager;
     }
 
-    public Observable<Long> saveDraft(String productDraftDataBase){
-        return productDraftDataManager.saveDraft(productDraftDataBase);
+    public Observable<Long> saveDraft(String productDraftDataBase, long draftId){
+        return productDraftDataManager.saveDraft(productDraftDataBase, draftId);
     }
 
     public Observable<String> getDraft(long productId) {
