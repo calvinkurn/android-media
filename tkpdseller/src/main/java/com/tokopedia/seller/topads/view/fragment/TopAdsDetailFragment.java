@@ -223,6 +223,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOnAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -244,6 +245,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOffAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
