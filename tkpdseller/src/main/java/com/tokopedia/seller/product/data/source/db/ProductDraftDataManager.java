@@ -27,7 +27,7 @@ public class ProductDraftDataManager {
         return Observable.just(productDraftDataBase.getId());
     }
 
-    public Observable<String> getDraft(int productId) {
+    public Observable<String> getDraft(long productId) {
         ProductDraftDataBase productDraftDatabase =
                 new Select()
                         .from(ProductDraftDataBase.class)

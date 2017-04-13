@@ -26,7 +26,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
-    public Observable<UploadProductInputDomainModel> getDraft(int productId) {
+    public Observable<UploadProductInputDomainModel> getDraft(long productId) {
         return productDraftDataSource.getDraft(productId)
                 .map(new ProductDraftMapper());
     }

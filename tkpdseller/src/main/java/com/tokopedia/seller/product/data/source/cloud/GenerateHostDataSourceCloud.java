@@ -11,6 +11,8 @@ import com.tokopedia.seller.product.data.mapper.GenerateHostMapper;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -25,6 +27,7 @@ public class GenerateHostDataSourceCloud {
     private final Context context;
     private GenerateHost generateHost;
 
+    @Inject
     public GenerateHostDataSourceCloud(@ActivityContext Context context, GenerateHostApi generateHostApi, GenerateHostMapper generateHostMapper) {
         this.generateHostApi = generateHostApi;
         this.generateHostMapper = generateHostMapper;

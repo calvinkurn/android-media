@@ -10,6 +10,8 @@ import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.Add
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ import rx.Observable;
 public class UploadProductDataSource {
     private final UploadProductCloud uploadProductCloud;
 
+    @Inject
     public UploadProductDataSource(UploadProductCloud uploadProductCloud) {
         this.uploadProductCloud = uploadProductCloud;
     }

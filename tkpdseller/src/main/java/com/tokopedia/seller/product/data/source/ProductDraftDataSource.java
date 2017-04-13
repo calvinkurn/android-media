@@ -22,7 +22,7 @@ public class ProductDraftDataSource {
         return productDraftDataManager.saveDraft(productDraftDataBase);
     }
 
-    public Observable<String> getDraft(int productId) {
+    public Observable<String> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
     }
 }
