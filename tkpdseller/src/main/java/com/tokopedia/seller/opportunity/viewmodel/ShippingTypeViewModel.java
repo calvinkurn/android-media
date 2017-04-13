@@ -11,7 +11,6 @@ public class ShippingTypeViewModel implements Parcelable{
     int shippingTypeId;
     String shippingTypeName;
     private boolean isSelected;
-    private int position;
 
     public ShippingTypeViewModel() {
     }
@@ -26,7 +25,6 @@ public class ShippingTypeViewModel implements Parcelable{
         shippingTypeId = in.readInt();
         shippingTypeName = in.readString();
         isSelected = in.readByte() != 0;
-        position = in.readInt();
     }
 
     public static final Creator<ShippingTypeViewModel> CREATOR = new Creator<ShippingTypeViewModel>() {
@@ -65,14 +63,6 @@ public class ShippingTypeViewModel implements Parcelable{
         return isSelected;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -83,6 +73,5 @@ public class ShippingTypeViewModel implements Parcelable{
         dest.writeInt(shippingTypeId);
         dest.writeString(shippingTypeName);
         dest.writeByte((byte) (isSelected ? 1 : 0));
-        dest.writeInt(position);
     }
 }

@@ -1,43 +1,44 @@
 
 package com.tokopedia.core.network.entity.replacement.opportunitycategorydata;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 
 public class OpportunityCategoryData {
 
     @SerializedName("shippingType")
     @Expose
-    private List<ShippingType> shippingType = null;
+    private ArrayList<ShippingType> shippingType = null;
     @SerializedName("sortingType")
     @Expose
-    private List<SortingType> sortingType = null;
+    private ArrayList<SortingType> sortingType = null;
     @SerializedName("categoryList")
     @Expose
-    private List<CategoryList> categoryList = null;
+    private ArrayList<CategoryList> categoryList = null;
 
-    public List<ShippingType> getShippingType() {
+    public ArrayList<ShippingType> getShippingType() {
         return shippingType;
     }
 
-    public void setShippingType(List<ShippingType> shippingType) {
+    public void setShippingType(ArrayList<ShippingType> shippingType) {
         this.shippingType = shippingType;
     }
 
-    public List<SortingType> getSortingType() {
+    public ArrayList<SortingType> getSortingType() {
         return sortingType;
     }
 
-    public void setSortingType(List<SortingType> sortingType) {
+    public void setSortingType(ArrayList<SortingType> sortingType) {
         this.sortingType = sortingType;
     }
 
-    public List<CategoryList> getCategoryList() {
+    public ArrayList<CategoryList> getCategoryList() {
         return categoryList;
     }
 
-    public void setCategoryList(List<CategoryList> categoryList) {
+    public void setCategoryList(ArrayList<CategoryList> categoryList) {
         this.categoryList = categoryList;
     }
 

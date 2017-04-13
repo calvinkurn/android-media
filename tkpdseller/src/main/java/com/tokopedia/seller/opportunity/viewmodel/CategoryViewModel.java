@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +17,7 @@ public class CategoryViewModel implements Parcelable {
     int isHidden;
     int treeLevel;
     String identifier;
-    List<CategoryViewModel> listChild;
+    ArrayList<CategoryViewModel> listChild;
     boolean isExpanded;
     private boolean isSelected;
 
@@ -89,11 +90,11 @@ public class CategoryViewModel implements Parcelable {
         this.treeLevel = treeLevel;
     }
 
-    public List<CategoryViewModel> getListChild() {
+    public ArrayList<CategoryViewModel> getListChild() {
         return listChild;
     }
 
-    public void setListChild(List<CategoryViewModel> listChild) {
+    public void setListChild(ArrayList<CategoryViewModel> listChild) {
         this.listChild = listChild;
     }
 

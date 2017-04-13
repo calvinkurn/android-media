@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class SortingTypeViewModel implements Parcelable{
     int sortingTypeId;
     String sortingTypeName;
+    private boolean isSelected;
 
     public SortingTypeViewModel() {
     }
@@ -22,6 +23,7 @@ public class SortingTypeViewModel implements Parcelable{
     protected SortingTypeViewModel(Parcel in) {
         sortingTypeId = in.readInt();
         sortingTypeName = in.readString();
+        isSelected = in.readByte() != 0;
     }
 
     public static final Creator<SortingTypeViewModel> CREATOR = new Creator<SortingTypeViewModel>() {
@@ -52,6 +54,14 @@ public class SortingTypeViewModel implements Parcelable{
         this.sortingTypeName = sortingTypeName;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -61,5 +71,6 @@ public class SortingTypeViewModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(sortingTypeId);
         dest.writeString(sortingTypeName);
+        dest.writeByte((byte) (isSelected ? 1 : 0));
     }
 }

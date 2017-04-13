@@ -1,9 +1,10 @@
 
 package com.tokopedia.core.network.entity.replacement.opportunitycategorydata;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 
 public class CategoryList {
 
@@ -27,7 +28,7 @@ public class CategoryList {
     private String identifier;
     @SerializedName("child")
     @Expose
-    private List<CategoryList> child = null;
+    private ArrayList<CategoryList> child = null;
 
     public String getId() {
         return id;
@@ -77,11 +78,11 @@ public class CategoryList {
         this.identifier = identifier;
     }
 
-    public List<CategoryList> getChild() {
+    public ArrayList<CategoryList> getChild() {
         return child;
     }
 
-    public void setChild(List<CategoryList> child) {
+    public void setChild(ArrayList<CategoryList> child) {
         this.child = child;
     }
 

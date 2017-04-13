@@ -108,9 +108,9 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
     }
 
 
-    private List<SortingTypeViewModel> getListSortingType(
-            List<SortingType> sortingTypes) {
-        List<SortingTypeViewModel> list = new ArrayList<>();
+    private ArrayList<SortingTypeViewModel> getListSortingType(
+            ArrayList<SortingType> sortingTypes) {
+        ArrayList<SortingTypeViewModel> list = new ArrayList<>();
         for (SortingType sortingType : sortingTypes) {
             list.add(new SortingTypeViewModel(sortingType.getSortingTypeName(),
                     sortingType.getSortingTypeID()));
@@ -118,9 +118,9 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
         return list;
     }
 
-    private List<ShippingTypeViewModel> getListShippingType(
-            List<ShippingType> shippingTypes) {
-        List<ShippingTypeViewModel> list = new ArrayList<>();
+    private ArrayList<ShippingTypeViewModel> getListShippingType(
+            ArrayList<ShippingType> shippingTypes) {
+        ArrayList<ShippingTypeViewModel> list = new ArrayList<>();
         for (ShippingType shippingType : shippingTypes) {
             list.add(new ShippingTypeViewModel(shippingType.getShippingTypeName(),
                     shippingType.getShippingTypeID()));
@@ -128,8 +128,8 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
         return list;
     }
 
-    private List<CategoryViewModel> getListCategory(
-            List<CategoryList> categoryLists) {
+    private ArrayList<CategoryViewModel> getListCategory(
+            ArrayList<CategoryList> categoryLists) {
         ArrayList<CategoryViewModel> list = new ArrayList<>();
 
         for (CategoryList categoryList : categoryLists) {

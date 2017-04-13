@@ -15,9 +15,9 @@ import java.util.List;
  */
 
 public class OpportunityFilterViewModel implements Parcelable{
-    List<ShippingTypeViewModel> listShippingType;
-    List<SortingTypeViewModel> listSortingType;
-    List<CategoryViewModel> listCategory;
+    ArrayList<ShippingTypeViewModel> listShippingType;
+    ArrayList<SortingTypeViewModel> listSortingType;
+    ArrayList<CategoryViewModel> listCategory;
 
     public OpportunityFilterViewModel() {
 
@@ -41,27 +41,27 @@ public class OpportunityFilterViewModel implements Parcelable{
         }
     };
 
-    public List<ShippingTypeViewModel> getListShippingType() {
+    public ArrayList<ShippingTypeViewModel> getListShippingType() {
         return listShippingType;
     }
 
-    public void setListShippingType(List<ShippingTypeViewModel> listShippingType) {
+    public void setListShippingType(ArrayList<ShippingTypeViewModel> listShippingType) {
         this.listShippingType = listShippingType;
     }
 
-    public List<SortingTypeViewModel> getListSortingType() {
+    public ArrayList<SortingTypeViewModel> getListSortingType() {
         return listSortingType;
     }
 
-    public void setListSortingType(List<SortingTypeViewModel> listSortingType) {
+    public void setListSortingType(ArrayList<SortingTypeViewModel> listSortingType) {
         this.listSortingType = listSortingType;
     }
 
-    public List<CategoryViewModel> getListCategory() {
+    public ArrayList<CategoryViewModel> getListCategory() {
         return listCategory;
     }
 
-    public void setListCategory(List<CategoryViewModel> listCategory) {
+    public void setListCategory(ArrayList<CategoryViewModel> listCategory) {
         this.listCategory = listCategory;
     }
 

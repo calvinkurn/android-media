@@ -21,7 +21,7 @@ public class OpportunityShippingAdapter extends RecyclerView.Adapter<Opportunity
     ArrayList<ShippingTypeViewModel> list;
 
     public interface ShippingListener {
-        void onShippingSelected(ShippingTypeViewModel shippingTypeViewModel);
+        void onShippingSelected(int position, ShippingTypeViewModel shippingTypeViewModel);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -61,14 +61,13 @@ public class OpportunityShippingAdapter extends RecyclerView.Adapter<Opportunity
             @Override
             public void onClick(View v) {
                 list.get(position).setSelected(holder.checkBox.isChecked());
-                list.get(position).setPosition(position);
 
                 for (ShippingTypeViewModel viewModel : list) {
                     if (viewModel != list.get(position))
                         viewModel.setSelected(false);
                 }
 
-                listener.onShippingSelected(list.get(position));
+                listener.onShippingSelected(position,list.get(position));
                 notifyDataSetChanged();
             }
         });

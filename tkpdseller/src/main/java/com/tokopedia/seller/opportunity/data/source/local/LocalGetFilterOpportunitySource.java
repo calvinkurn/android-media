@@ -59,13 +59,17 @@ public class LocalGetFilterOpportunitySource {
     }
 
     private void createFakeCategoryData(OpportunityCategoryData data) {
-        List<CategoryList> categoryLists = new ArrayList<>();
+        ArrayList<CategoryList> categoryLists = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             CategoryList item = new CategoryList();
             item.setId(String.valueOf(i));
+
             item.setHidden(0);
             item.setIdentifier("asdasdasd" + i);
             item.setTree(1);
+
+
+
             item.setName("category " + i);
             item.setParent(1);
             item.setChild(createFakeChildCategoryData(item.getName()));
@@ -74,8 +78,8 @@ public class LocalGetFilterOpportunitySource {
         data.setCategoryList(categoryLists);
     }
 
-    private List<CategoryList> createFakeChildCategoryData(String name) {
-        List<CategoryList> categoryLists = new ArrayList<>();
+    private ArrayList<CategoryList> createFakeChildCategoryData(String name) {
+        ArrayList<CategoryList> categoryLists = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             CategoryList item = new CategoryList();
             item.setId(String.valueOf(i));
@@ -90,8 +94,8 @@ public class LocalGetFilterOpportunitySource {
         return categoryLists;
     }
 
-    private List<CategoryList> createFakeChild2CategoryData(String name) {
-        List<CategoryList> categoryLists = new ArrayList<>();
+    private ArrayList<CategoryList> createFakeChild2CategoryData(String name) {
+        ArrayList<CategoryList> categoryLists = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             CategoryList item = new CategoryList();
             item.setId(String.valueOf(i));
@@ -107,7 +111,7 @@ public class LocalGetFilterOpportunitySource {
     }
 
     private void createFakeShippingData(OpportunityCategoryData data) {
-        List<ShippingType> shippingTypes = new ArrayList<>();
+        ArrayList<ShippingType> shippingTypes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             ShippingType item = new ShippingType();
             item.setShippingTypeID(i);
@@ -118,7 +122,7 @@ public class LocalGetFilterOpportunitySource {
     }
 
     private void createFakeSortData(OpportunityCategoryData data) {
-        List<SortingType> sortingTypes = new ArrayList<>();
+        ArrayList<SortingType> sortingTypes = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             SortingType item = new SortingType();
             item.setSortingTypeID(i);

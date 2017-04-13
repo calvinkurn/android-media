@@ -7,11 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.discovery.model.Filter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunityCategoryAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
@@ -34,7 +34,6 @@ import java.util.List;
 public class OpportunityFilterActivity extends BasePresenterActivity
         implements OpportunityFilterAdapter.FilterListener, OpportunityShippingAdapter.ShippingListener, OpportunityCategoryAdapter.CategoryListener {
 
-
     public interface FilterListener {
         void updateData(OpportunityFilterActivityViewModel viewModel);
     }
@@ -43,6 +42,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     private static final String PARAM_FILTER_VIEW_MODEL = "PARAM_FILTER_VIEW_MODEL";
     public static final String PARAM_SELECTED_SHIPPING_TYPE = "PARAM_SELECTED_SHIPPING_TYPE";
     public static final String PARAM_SELECTED_CATEGORY = "PARAM_SELECTED_CATEGORY";
+    public static final String PARAM_SHIPPING_LIST = "PARAM_SHIPPING_LIST";
+    public static final String PARAM_CATEGORY_LIST = "PARAM_CATEGORY_LIST";
+
 
     View saveButton;
     View resetButton;
@@ -166,12 +168,40 @@ public class OpportunityFilterActivity extends BasePresenterActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(PARAM_SELECTED_SHIPPING_TYPE, selectedShipping);
-                intent.putExtra(PARAM_SELECTED_CATEGORY, selectedCategory);
+                intent.putExtra(PARAM_SELECTED_SHIPPING_TYPE, getSelectedShipping());
+                intent.putExtra(PARAM_SELECTED_CATEGORY, getSelectedCategory());
+                intent.putParcelableArrayListExtra(PARAM_SHIPPING_LIST, viewModel.getListShipping());
+                intent.putParcelableArrayListExtra(PARAM_CATEGORY_LIST, viewModel.getListCategory());
+
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         };
+    }
+
+    private String getSelectedCategory() {
+        if (selectedCategory.equals(""))
+            checkChildren(viewModel.getListCategory());
+        return selectedCategory;
+    }
+
+    private void checkChildren(ArrayList<CategoryViewModel> categories) {
+        for (CategoryViewModel item : categories) {
+            if (item.getListChild().size() > 0)
+                checkChildren(item.getListChild());
+            else if (item.isSelected())
+                selectedCategory = String.valueOf(item.getCategoryId());
+        }
+    }
+
+
+    public String getSelectedShipping() {
+        if (selectedShipping.equals(""))
+            for (ShippingTypeViewModel shipping : viewModel.getListShipping()) {
+                if (shipping.isSelected())
+                    selectedShipping = String.valueOf(shipping.getShippingTypeId());
+            }
+        return selectedShipping;
     }
 
     @Override
@@ -209,9 +239,9 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
 
     @Override
-    public void onShippingSelected(ShippingTypeViewModel shippingTypeViewModel) {
+    public void onShippingSelected(int position, ShippingTypeViewModel shippingTypeViewModel) {
         selectedShipping = "";
-        viewModel.getListShipping().get(shippingTypeViewModel.getPosition())
+        viewModel.getListShipping().get(position)
                 .setSelected(shippingTypeViewModel.isSelected());
         if (shippingTypeViewModel.isSelected())
             selectedShipping = String.valueOf(shippingTypeViewModel.getShippingTypeId());
