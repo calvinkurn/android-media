@@ -43,12 +43,6 @@ import retrofit2.Retrofit;
 /**
  * Created by hangnadi on 4/11/17.
  */
-//@Module(includes =
-//        {
-//                HistoryAwbModule.class, HistoryAddressModule.class, HistoryActionModule.class,
-//                ResolutionProductModule.class, ResolutionDiscussionModule.class,
-//                ResolutionActModule.class
-//        })
 @ResolutionDetailScope
 @Module
 public class ResolutionModule {
