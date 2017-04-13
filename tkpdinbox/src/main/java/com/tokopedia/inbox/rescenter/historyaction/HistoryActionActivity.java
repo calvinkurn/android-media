@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.historyaction.view.listener.HistoryAction;
 import com.tokopedia.inbox.rescenter.historyaction.view.listener.HistoryActionViewListener;
@@ -17,7 +19,7 @@ import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionI
  */
 
 public class HistoryActionActivity extends BasePresenterActivity<HistoryAction>
-        implements HistoryActionViewListener {
+        implements HistoryActionViewListener, HasComponent {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String TAG_HISTORY_SHIPPING_FRAGMENT =
@@ -102,5 +104,10 @@ public class HistoryActionActivity extends BasePresenterActivity<HistoryAction>
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }
