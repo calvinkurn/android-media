@@ -8,19 +8,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
+import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
+import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by nathan on 4/3/17.
  */
 
-public class ProductAddFragment extends BaseDaggerFragment {
+public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
@@ -29,6 +36,9 @@ public class ProductAddFragment extends BaseDaggerFragment {
     private ProductDetailViewHolder productDetailViewHolder;
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
 
+    @Inject
+    public ProductAddPresenter presenter;
+
     public static ProductAddFragment createInstance() {
         ProductAddFragment fragment = new ProductAddFragment();
         return fragment;
@@ -36,7 +46,12 @@ public class ProductAddFragment extends BaseDaggerFragment {
 
     @Override
     protected void initInjector() {
-
+        DaggerProductAddComponent
+                .builder()
+                .productAddModule(new ProductAddModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
     }
 
     @Nullable
@@ -47,7 +62,27 @@ public class ProductAddFragment extends BaseDaggerFragment {
         productImageViewHolder = new ProductImageViewHolder(this, view);
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
+        setSubmitButtonListener(view);
+
+        presenter.attachView(this);
+
         return view;
+    }
+
+    private void setSubmitButtonListener(View view) {
+        view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UploadProductInputViewModel viewModel = collectDataFromView();
+                presenter.saveDraft(viewModel);
+            }
+        });
+    }
+
+    private UploadProductInputViewModel collectDataFromView() {
+        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
+        viewModel.setProductName(productInfoViewHolder.getName());
+        return viewModel;
     }
 
 

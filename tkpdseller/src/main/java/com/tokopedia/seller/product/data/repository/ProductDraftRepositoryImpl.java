@@ -12,7 +12,11 @@ import rx.Observable;
  */
 
 public class ProductDraftRepositoryImpl implements ProductDraftRepository {
-    private ProductDraftDataSource productDraftDataSource;
+    private final ProductDraftDataSource productDraftDataSource;
+
+    public ProductDraftRepositoryImpl(ProductDraftDataSource productDraftDataSource) {
+        this.productDraftDataSource = productDraftDataSource;
+    }
 
 
     @Override
@@ -22,7 +26,7 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
-    public Observable<UploadProductInputDomainModel> getDraft(int productId) {
+    public Observable<UploadProductInputDomainModel> getDraft(long productId) {
         return productDraftDataSource.getDraft(productId)
                 .map(new ProductDraftMapper());
     }

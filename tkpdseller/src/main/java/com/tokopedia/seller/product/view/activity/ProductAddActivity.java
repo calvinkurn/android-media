@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.activity;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
@@ -12,9 +14,7 @@ import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
  */
 
 public class ProductAddActivity extends TActivity
-        implements YoutubeAddUrlDialogListener {
-
-
+        implements HasComponent<AppComponent>, YoutubeAddUrlDialogListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,8 +25,8 @@ public class ProductAddActivity extends TActivity
     }
 
     @Override
-    public void addEtalase(String newEtalaseName) {
-
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override

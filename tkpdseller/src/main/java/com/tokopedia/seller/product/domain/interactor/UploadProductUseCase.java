@@ -27,7 +27,7 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
 
     @Override
     public Observable<ReturnType> createObservable(RequestParams requestParams) {
-        int productId = requestParams.getInt(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
+        long productId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
         if (productId == UNSELECTED_PRODUCT_ID) {
             throw new RuntimeException("Input model is missing");
         }
@@ -37,19 +37,9 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
                 .flatMap(getUploadProductObservable());
     }
 
-    private boolean isInputProductNotNull(RequestParams requestParams) {
-        return requestParams.getObject(UPLOAD_PRODUCT_ID) != null;
-    }
-
-    private boolean isUploadProductDomainModel(RequestParams requestParams) {
-        return requestParams.getObject(UPLOAD_PRODUCT_ID)
-                instanceof UploadProductInputDomainModel;
-    }
-
-
-    public static RequestParams generateUploadProductParam(int productId){
+    public static RequestParams generateUploadProductParam(long productId){
         RequestParams params = RequestParams.create();
-        params.putInt(UPLOAD_PRODUCT_ID, productId);
+        params.putLong(UPLOAD_PRODUCT_ID, productId);
         return params;
     }
 
@@ -61,10 +51,10 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
     Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>>
     getImageProductObservable();
 
-    private class GetProductModelObservable implements Func1<Integer, Observable<UploadProductInputDomainModel>> {
+    private class GetProductModelObservable implements Func1<Long, Observable<UploadProductInputDomainModel>> {
         @Override
-        public Observable<UploadProductInputDomainModel> call(Integer integer) {
-            return productDraftRepository.getDraft(integer);
+        public Observable<UploadProductInputDomainModel> call(Long productId) {
+            return productDraftRepository.getDraft(productId);
         }
     }
 }

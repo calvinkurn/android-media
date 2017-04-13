@@ -8,6 +8,8 @@ import com.tokopedia.seller.product.domain.interactor.observable.ImageProductObs
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -21,6 +23,7 @@ public class AddProductUseCase extends UploadProductUseCase<AddProductDomainMode
     private final ImageProductObservable imageProductObservable;
     private final AddProductObservable addProductObservable;
 
+    @Inject
     public AddProductUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,

@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -17,6 +19,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
     private static final String UPLOAD_PRODUCT_INPUT_MODEL = "UPLOAD_PRODUCT_INPUT_MODEL";
     private final ProductDraftRepository productDraftRepository;
 
+    @Inject
     public SaveDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;

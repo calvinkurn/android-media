@@ -33,7 +33,7 @@ public class CategoryPickerFragment
         extends BaseDaggerFragment
         implements CategoryPickerView, CategoryPickerLevelAdapterListener {
     public static final String TAG = "CategoryPickerFragment";
-    public static final int INIT_UNSELECTED = -1;
+    public static final int INIT_UNSELECTED = 0;
     public static final String INIT_SELECTED = "INIT_SELECTED";
 
     @Inject

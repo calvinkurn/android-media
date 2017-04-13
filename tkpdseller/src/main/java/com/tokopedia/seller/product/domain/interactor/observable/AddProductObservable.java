@@ -11,6 +11,8 @@ import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -23,6 +25,7 @@ public class AddProductObservable
                 Observable<AddProductDomainModel>> {
     private final UploadProductRepository uploadProductRepository;
 
+    @Inject
     public AddProductObservable(UploadProductRepository uploadProductRepository) {
         this.uploadProductRepository = uploadProductRepository;
     }

@@ -42,7 +42,8 @@ public class TkpdBaseURL {
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
-        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + "v4/action/product/";
+        public static final String V4_ACTION_PRODUCT = "v4/action/product/";
+        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + V4_ACTION_PRODUCT;
         public static final String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
         public static final String URL_PROMO = BASE_DOMAIN + "v4/promo/";
         public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
@@ -499,6 +500,7 @@ public class TkpdBaseURL {
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
+        public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
 
         public static final String PATH_CREATE_RESOLUTION_PICTURE = "create_resolution_picture.pl";
         public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";
