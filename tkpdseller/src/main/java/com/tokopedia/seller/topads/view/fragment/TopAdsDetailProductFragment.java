@@ -36,6 +36,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
+        void startShowCase();
     }
 
     private TopAdsLabelView promoGroupLabelView;
@@ -148,6 +149,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
+        listener.startShowCase();
     }
 
     /**
@@ -206,5 +208,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NOT_IN_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
     }
 }

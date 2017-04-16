@@ -13,6 +13,8 @@
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
 
+    <string name="back">Kembali</string>
+
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names">
         <item>Januari</item>
@@ -281,5 +283,45 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
+
+    <string name="showcase_topads_home_title_1">TopAds Produk</string>
+    <string name="showcase_topads_home_desc_1">Kumpulan promo produk di toko Anda. Anda dapat melihat performa toko dari promo produk Anda di bawah ini</string>
+
+    <string name="showcase_topads_home_title_2">TopAds Toko</string>
+    <string name="showcase_topads_home_desc_2">Promosikan toko Anda agar semakin banyak yang memfavoritkan toko Anda</string>
+    <string name="showcase_topads_home_title_3">Tambah Kredit</string>
+    <string name="showcase_topads_home_desc_3">Tambah Kredit TopAds untuk dapat melakukan promo</string>
+    <string name="showcase_topads_home_title_4">Tanggal Statistik</string>
+    <string name="showcase_topads_home_desc_4">Pilih tanggal untuk ukur tampilan statistik promo Anda</string>
+    <string name="showcase_topads_home_title_5">Statistik Promo</string>
+    <string name="showcase_topads_home_desc_5">Pantau performa promo Anda pada tampilan statistik ini</string>
+    <string name="showcase_topads_home_title_6">Tambah Promo</string>
+    <string name="showcase_topads_home_desc_6">Klik di sini untuk menambahkan promo Anda</string>
+    <string name="showcase_topads_detail_group_title_1">Pengaturan</string>
+    <string name="showcase_topads_detail_group_desc_1">Untuk mengubah atau menghapus promo</string>
+    <string name="showcase_topads_detail_group_title_2">Pengaturan Status</string>
+    <string name="showcase_topads_detail_group_desc_2">Mengubah status aktif dan tidak aktif promo</string>
+    <string name="showcase_topads_detail_group_title_3">Info Produk</string>
+    <string name="showcase_topads_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup promo</string>
+    <string name="showcase_topads_detail_promo_title_1">Pengaturan</string>
+    <string name="showcase_topads_detail_promo_desc_1">Untuk mengubah atau menghapus promo</string>
+    <string name="showcase_topads_detail_promo_title_2">Pengaturan Status</string>
+    <string name="showcase_topads_detail_promo_desc_2">Mengubah status aktif dan tidak aktif promo</string>
+    <string name="showcase_topads_product_list_title_2">Atur Periode</string>
+    <string name="showcase_topads_product_list_desc_2">Atur dafter tampilan berdasarkan filter status atau grup</string>
+    <string name="showcase_topads_product_list_title_1">Pencarian</string>
+    <string name="showcase_topads_product_list_desc_1">Memudahkan Anda dalam mencari nama produk</string>
+    <string name="showcase_topads_product_list_title_3">Daftar Promo</string>
+    <string name="showcase_topads_product_list_desc_3">Informasi singkat promo yang telah Anda buat</string>
+    <string name="showcase_topads_product_list_title_4">Filter</string>
+    <string name="showcase_topads_product_list_desc_4">Atur daftar tampilan berdasarkan filter status atau grup</string>
+    <string name="showcase_topads_group_list_title_1">Pencarian</string>
+    <string name="showcase_topads_group_list_desc_1">Memudahkan Anda dalam mencari nama grup</string>
+    <string name="showcase_topads_group_list_title_2">Atur periode</string>
+    <string name="showcase_topads_group_list_desc_2">Atur daftar tampilan berdasarkan periode yang dipilih</string>
+    <string name="showcase_topads_group_list_title_3">Daftar Promo</string>
+    <string name="showcase_topads_group_list_desc_3">Informasi singkat promo yang telah Anda buat</string>
+    <string name="showcase_topads_group_list_title_4">Filter</string>
+    <string name="showcase_topads_group_list_desc_4">Atur daftar tampilan berdasarkan filter status atau grup</string>
 
 </resources>

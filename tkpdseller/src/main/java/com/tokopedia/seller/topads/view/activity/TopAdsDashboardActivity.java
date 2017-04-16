@@ -10,6 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -19,13 +20,17 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
+import com.tokopedia.seller.util.ShowCaseDialogFactory;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +50,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     private TopAdsDashboardProductFragment dashboardProductFragment;
     private TopAdsDatePickerPresenterImpl datePickerPresenter;
     private TopAdsDashboardTabListener topadsDashList;
+    private ShowCaseDialog showCaseDialog;
 
     @Override
     public String getScreenName() {
@@ -179,5 +185,79 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     public void onCreditAdded() {
         dashboardShopFragment.populateDeposit();
         dashboardProductFragment.populateDeposit();
+    }
+
+    @Override
+    public void startShowCase() {
+        final String showCaseTag = TopAdsDashboardActivity.class.getName();
+        if (! ShowCasePreference.hasShown(this, showCaseTag) &&
+                showCaseDialog == null) {
+            showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+
+            final ArrayList <ShowCaseObject> showCaseList = new ArrayList<>();
+            showCaseList.add(new ShowCaseObject(
+                    ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(0),
+                    getString(R.string.showcase_topads_home_title_1),
+                    getString(R.string.showcase_topads_home_desc_1),
+                    ShowCaseContentPosition.UNDEFINED,
+                    R.color.tkpd_main_green));
+
+            showCaseList.add(new ShowCaseObject(
+                    ((ViewGroup) tabLayout.getChildAt(0)).getChildAt(1),
+                    getString(R.string.showcase_topads_home_title_2),
+                    getString(R.string.showcase_topads_home_desc_2),
+                    ShowCaseContentPosition.UNDEFINED,
+                    R.color.tkpd_main_green));
+
+            viewPager.setCurrentItem(0);
+            viewPager.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (dashboardProductFragment == null) return;
+                    if (isFinishing()) return;
+                    View depositView = dashboardProductFragment.getDepositView();
+                    View calendarView = dashboardProductFragment.getCalendarView();
+                    View statisticView = dashboardProductFragment.getStatisticView();
+                    ViewGroup scrollView = dashboardProductFragment.getScrollView();
+
+                    if (depositView!= null) {
+                        showCaseList.add(new ShowCaseObject(
+                                depositView,
+                                getString(R.string.showcase_topads_home_title_3),
+                                getString(R.string.showcase_topads_home_desc_3),
+                                ShowCaseContentPosition.UNDEFINED,
+                                R.color.white,
+                                scrollView));
+                    }
+
+                    if (calendarView!= null) {
+                        showCaseList.add(new ShowCaseObject(
+                                calendarView,
+                                getString(R.string.showcase_topads_home_title_4),
+                                getString(R.string.showcase_topads_home_desc_4),
+                                ShowCaseContentPosition.UNDEFINED,
+                                R.color.white,
+                                scrollView));
+                    }
+
+                    if (statisticView!= null) {
+                        showCaseList.add(new ShowCaseObject(
+                                statisticView,
+                                getString(R.string.showcase_topads_home_title_5),
+                                getString(R.string.showcase_topads_home_desc_5),
+                                ShowCaseContentPosition.UNDEFINED,
+                                0,
+                                scrollView));
+                    }
+
+                    showCaseList.add(new ShowCaseObject(
+                            fabSpeedDial,
+                            getString(R.string.showcase_topads_home_title_6),
+                            getString(R.string.showcase_topads_home_desc_6)));
+
+                    showCaseDialog.show(TopAdsDashboardActivity.this, showCaseTag, showCaseList);
+                }
+            });
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +14,6 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
@@ -28,6 +28,11 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     private TopAdsLabelView items;
 
     private GroupAd ad;
+
+    OnTopAdsDetailGroupListener listener;
+    public interface OnTopAdsDetailGroupListener{
+        void startShowCase();
+    }
 
     public static Fragment createInstance(GroupAd groupAd, String adIs) {
         Fragment fragment = new TopAdsDetailGroupFragment();
@@ -107,6 +112,25 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
             items.setVisibleArrow(true);
             items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         }
+        listener.startShowCase();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            listener = (OnTopAdsDetailGroupListener) context;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException("must implement OnTopAdsDetailGroupListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     void onProductItemClicked() {
@@ -125,4 +149,14 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
         }
         return super.onOptionsItemSelected(item);
     }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
+    }
+
+    public View getProductView(){
+        return items;
+    }
+
 }
