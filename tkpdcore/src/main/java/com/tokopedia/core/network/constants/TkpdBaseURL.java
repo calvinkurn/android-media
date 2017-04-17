@@ -665,7 +665,7 @@ public class TkpdBaseURL {
     }
 
     public static class DigitalApi {
-        public static final String VERSION = "v1.2/";
+        public static final String VERSION = "v1.3/";
         public static final String HMAC_KEY = "web_service_v4";
 
         public static final String PATH_STATUS = "status";
