@@ -12,7 +12,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDetailGroupFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -57,54 +56,60 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailProductActivity.class.getName();
-        if (! ShowCasePreference.hasShown(this, showCaseTag) &&
-                showCaseDialog == null) {
-
-            final TopAdsDetailProductFragment topAdsDetailProductFragment =
-                    (TopAdsDetailProductFragment) getFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
-
-            if (topAdsDetailProductFragment!= null) {
-                showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
-
-                final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-
-                final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-                toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        int radius = toolbar.getHeight() / 2;
-                        showCaseList.add(
-                                new ShowCaseObject(
-                                        findViewById(android.R.id.content),
-                                        getString(R.string.showcase_topads_detail_promo_title_1),
-                                        getString(R.string.showcase_topads_detail_promo_desc_1),
-                                        ShowCaseContentPosition.UNDEFINED,
-                                        Color.WHITE)
-                                        .withCustomTarget(new int[]{ toolbar.getWidth() - radius*4/5, radius}
-                                                , radius) );
-                        View statusView = topAdsDetailProductFragment.getStatusView();
-                        if (statusView!= null) {
-                            showCaseList.add(
-                                    new ShowCaseObject(
-                                            statusView,
-                                            getString(R.string.showcase_topads_detail_promo_title_2),
-                                            getString(R.string.showcase_topads_detail_promo_desc_2),
-                                            ShowCaseContentPosition.UNDEFINED,
-                                            Color.WHITE) );
-                        }
-
-                        showCaseDialog.show(TopAdsDetailProductActivity.this,showCaseTag , showCaseList);
-
-                        if (Build.VERSION.SDK_INT < 16) {
-                            toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                        } else {
-                            toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        }
-                    }
-                });
-
-            }
-
+//        if (ShowCasePreference.hasShown(this, showCaseTag)){
+//            return;
+//        }
+        if (showCaseDialog != null) {
+            return;
         }
+
+        final TopAdsDetailProductFragment topAdsDetailProductFragment =
+                (TopAdsDetailProductFragment) getFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
+
+        if (topAdsDetailProductFragment == null) {
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar.getHeight() > 0) {
+            int radius = toolbar.getHeight() / 2;
+            showCaseList.add(
+                    new ShowCaseObject(
+                            findViewById(android.R.id.content),
+                            getString(R.string.topads_showcase_detail_promo_title_1),
+                            getString(R.string.topads_showcase_detail_promo_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE)
+                            .withCustomTarget(new int[]{toolbar.getWidth() - radius * 4 / 5, radius}
+                                    , radius));
+            View statusView = topAdsDetailProductFragment.getStatusView();
+            if (statusView != null) {
+                showCaseList.add(
+                        new ShowCaseObject(
+                                statusView,
+                                getString(R.string.topads_showcase_detail_promo_title_2),
+                                getString(R.string.topads_showcase_detail_promo_desc_2),
+                                ShowCaseContentPosition.UNDEFINED,
+                                Color.WHITE));
+            }
+            showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+            showCaseDialog.show(TopAdsDetailProductActivity.this, showCaseTag, showCaseList);
+        }
+        else {
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    startShowCase();
+                    if (Build.VERSION.SDK_INT < 16) {
+                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                }
+            });
+        }
+
     }
 }

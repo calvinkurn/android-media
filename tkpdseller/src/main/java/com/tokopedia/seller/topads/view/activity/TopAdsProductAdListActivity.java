@@ -24,7 +24,7 @@ import com.tokopedia.showcase.ShowCasePreference;
 import java.util.ArrayList;
 
 public class TopAdsProductAdListActivity extends TActivity
-        implements TopAdsAdListFragment.OnAdListFragmentListener{
+        implements TopAdsAdListFragment.OnAdListFragmentListener {
 
     private ShowCaseDialog showCaseDialog;
 
@@ -46,82 +46,85 @@ public class TopAdsProductAdListActivity extends TActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsProductAdListActivity.class.getName();
-        if (! ShowCasePreference.hasShown(this, showCaseTag) &&
-                showCaseDialog == null) {
-            final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                    (TopAdsProductAdListFragment) getFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
-            if (topAdsProductAdListFragment!= null) {
+//        if (ShowCasePreference.hasShown(this, showCaseTag)){
+//            return;
+//        }
+        if (showCaseDialog != null) {
+            return;
+        }
+        final TopAdsProductAdListFragment topAdsProductAdListFragment =
+                (TopAdsProductAdListFragment) getFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
+        if (topAdsProductAdListFragment == null) {
+            return;
+        }
 
-                final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-                if (toolbar.getHeight() > 0) {
-                    final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-                    int radius = toolbar.getHeight() / 2;
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
+        if (toolbar.getHeight() > 0) {
+            final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+            int radius = toolbar.getHeight() / 2;
 
-                    showCaseList.add(
-                            new ShowCaseObject(
-                                    findViewById(android.R.id.content),
-                                    getString(R.string.showcase_topads_product_list_title_1),
-                                    getString(R.string.showcase_topads_product_list_desc_1),
-                                    ShowCaseContentPosition.UNDEFINED,
-                                    Color.WHITE)
-                                    .withCustomTarget(new int[]{ toolbar.getWidth() - radius*5/2 , radius}
-                                            , radius) );
+            showCaseList.add(
+                    new ShowCaseObject(
+                            findViewById(android.R.id.content),
+                            getString(R.string.topads_showcase_product_list_title_1),
+                            getString(R.string.topads_showcase_product_list_desc_1),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE)
+                            .withCustomTarget(new int[]{toolbar.getWidth() - (int) (radius * 2.6), radius}
+                                    , radius));
 
-                    showCaseList.add(
-                            new ShowCaseObject(
-                                    findViewById(android.R.id.content),
-                                    getString(R.string.showcase_topads_product_list_title_2),
-                                    getString(R.string.showcase_topads_product_list_desc_2),
-                                    ShowCaseContentPosition.UNDEFINED,
-                                    Color.WHITE)
-                                    .withCustomTarget(new int[]{ toolbar.getWidth() - radius*4/5 , radius}
-                                            , radius) );
+            showCaseList.add(
+                    new ShowCaseObject(
+                            findViewById(android.R.id.content),
+                            getString(R.string.topads_showcase_product_list_title_2),
+                            getString(R.string.topads_showcase_product_list_desc_2),
+                            ShowCaseContentPosition.UNDEFINED,
+                            Color.WHITE)
+                            .withCustomTarget(new int[]{toolbar.getWidth() -(int) (radius * 0.85), radius}
+                                    , radius));
 
-                    RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
-                    recyclerView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            View itemView = topAdsProductAdListFragment.getItemRecyclerView();
-                            if (itemView!= null) {
-                                showCaseList.add(
-                                        new ShowCaseObject(
-                                                itemView,
-                                                getString(R.string.showcase_topads_product_list_title_3),
-                                                getString(R.string.showcase_topads_product_list_desc_3),
-                                                ShowCaseContentPosition.UNDEFINED,
-                                                Color.WHITE));
-                            }
+            RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    View itemView = topAdsProductAdListFragment.getItemRecyclerView();
+                    if (itemView != null) {
+                        showCaseList.add(
+                                new ShowCaseObject(
+                                        itemView,
+                                        getString(R.string.topads_showcase_product_list_title_3),
+                                        getString(R.string.topads_showcase_product_list_desc_3),
+                                        ShowCaseContentPosition.UNDEFINED,
+                                        Color.WHITE));
+                    }
 
-                            FloatingActionButton fab = topAdsProductAdListFragment.getFab();
-                            if (fab!= null) {
-                                fab.show();
-                                showCaseList.add(
-                                        new ShowCaseObject(
-                                                fab,
-                                                getString(R.string.showcase_topads_product_list_title_4),
-                                                getString(R.string.showcase_topads_product_list_desc_4)));
-                            }
+                    FloatingActionButton fab = topAdsProductAdListFragment.getFab();
+                    if (fab != null) {
+                        fab.show();
+                        showCaseList.add(
+                                new ShowCaseObject(
+                                        fab,
+                                        getString(R.string.topads_showcase_product_list_title_4),
+                                        getString(R.string.topads_showcase_product_list_desc_4)));
+                    }
 
-                            showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
-                            showCaseDialog.show(TopAdsProductAdListActivity.this, showCaseTag, showCaseList);
-                        }
-                    },300);
-
+                    showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+                    showCaseDialog.show(TopAdsProductAdListActivity.this, showCaseTag, showCaseList);
                 }
-                else {
-                    toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            startShowCase();
-                            if (Build.VERSION.SDK_INT < 16) {
-                                toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                            } else {
-                                toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            }
-                        }
-                    });
+            }, 300);
+
+        } else {
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    startShowCase();
+                    if (Build.VERSION.SDK_INT < 16) {
+                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
                 }
-            }
+            });
         }
 
     }

@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -112,18 +114,26 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
             items.setVisibleArrow(true);
             items.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         }
-        listener.startShowCase();
+        if (listener != null) {
+            listener.startShowCase();
+        }
     }
 
 
+    @TargetApi(23)
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
+        if (context instanceof  OnTopAdsDetailGroupListener) {
             listener = (OnTopAdsDetailGroupListener) context;
         }
-        catch (ClassCastException e) {
-            throw new ClassCastException("must implement OnTopAdsDetailGroupListener");
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof  OnTopAdsDetailGroupListener) {
+            listener = (OnTopAdsDetailGroupListener) activity;
         }
     }
 

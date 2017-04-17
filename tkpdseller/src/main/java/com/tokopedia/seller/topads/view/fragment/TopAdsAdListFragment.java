@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -328,12 +329,27 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         presenter.unSubscribe();
     }
 
+    @TargetApi(23)
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnAdListFragmentListener) {
             listener = (OnAdListFragmentListener) context;
         }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnAdListFragmentListener) {
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     // for show case purpose
