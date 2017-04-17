@@ -82,6 +82,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         return viewModel;
     }
 

@@ -24,7 +24,7 @@ public class ProductNetworkConstant {
     public static final String UPLOAD_SHOP_IMAGE_PATH = "upload_shop_image.pl";
     public static final String UPLOAD_IMAGE_PRODUCT_PATH = "upload_product_image.pl";
     public static final String RESOLUTION_DEFAULT_VALUE = "300";
-    public static final String LOGO_FILENAME_IMAGE_JPG = "logo\"; filename=\"image.jpg";
+    public static final String LOGO_FILENAME_IMAGE_JPG = "fileToUpload\"; filename=\"image.jpg";
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
 

@@ -18,6 +18,6 @@ import rx.Observable;
 public interface GenerateHostApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST)
+    @POST(TkpdBaseURL.Upload.V4_ACTION_GENERATE_HOST + TkpdBaseURL.Upload.PATH_GENERATE_HOST)
     Observable<Response<GenerateHostModel>> generateHost(@FieldMap Map<String, String> params);
 }

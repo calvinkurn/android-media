@@ -6,6 +6,7 @@ package com.tokopedia.seller.product.view.model.upload;
 
 public class ImageProductInputViewModel {
     private String imagePath;
+    private String imageDescription;
 
     public String getImagePath() {
         return imagePath;
@@ -13,5 +14,9 @@ public class ImageProductInputViewModel {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setImageDescription(String imageDescription) {
+        this.imageDescription = imageDescription;
     }
 }
