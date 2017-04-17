@@ -14,7 +14,6 @@ public class UploadProductInputDomainModel {
     private List<String> productVideos;
     private String productName;
     private String productDescription;
-    private String productEtalaseName;
     private double productPrice;
     private int productChangePhoto;
     private int productCatalogId;
@@ -98,14 +97,6 @@ public class UploadProductInputDomainModel {
 
     public void setProductEtalaseId(int productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
-    }
-
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductMinOrder() {

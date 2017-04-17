@@ -16,7 +16,6 @@ public class AddProductValidationInputServiceModel {
     public static final String PRODUCT_DEPARTMENT_ID = "product_department_id";
     public static final String PRODUCT_DESCRIPTION = "product_description";
     public static final String PRODUCT_ETALASE_ID = "product_etalase_id";
-    public static final String PRODUCT_ETALASE_NAME = "product_etalase_name";
     public static final String PRODUCT_MIN_ORDER = "product_min_order";
     public static final String PRODUCT_MUST_INSURANCE = "product_must_insurance";
     public static final String PRODUCT_NAME = "product_name";
@@ -43,7 +42,6 @@ public class AddProductValidationInputServiceModel {
     private List<ProductWholesaleServiceModel> productWholesale;
     private List<String> productVideo;
     private String productDescription;
-    private String productEtalaseName;
     private String productName;
     private double productPrice;
     private int productCatalogId;
@@ -63,14 +61,17 @@ public class AddProductValidationInputServiceModel {
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(PRODUCT_NAME, getProductName());
+        if (StringUtils.isNotBlank(getProductName())) {
+            params.put(PRODUCT_NAME, getProductName());
+        }
+        if (StringUtils.isNotBlank(getProductDescription())) {
+            params.put(PRODUCT_DESCRIPTION, getProductDescription());
+        }
         params.put(PRODUCT_DEPARTMENT_ID, String.valueOf(getProductDepartmentId()));
         params.put(PRODUCT_CATALOG_ID, String.valueOf(getProductCatalogId()));
         params.put(PRODUCT_PRICE, String.valueOf(getProductPrice()));
         params.put(PRODUCT_CONDITION, String.valueOf(getProductCondition()));
-        params.put(PRODUCT_DESCRIPTION, getProductDescription());
         params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalaseId()));
-        params.put(PRODUCT_ETALASE_NAME, getProductEtalaseName());
         params.put(PRODUCT_MIN_ORDER, String.valueOf(getProductMinOrder()));
         params.put(PRODUCT_MUST_INSURANCE, String.valueOf(getProductMustInsurance()));
         params.put(PRODUCT_PRICE_CURRENCY, String.valueOf(getProductPriceCurrency()));
@@ -169,14 +170,6 @@ public class AddProductValidationInputServiceModel {
 
     public void setProductEtalaseId(int productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
-    }
-
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductMinOrder() {

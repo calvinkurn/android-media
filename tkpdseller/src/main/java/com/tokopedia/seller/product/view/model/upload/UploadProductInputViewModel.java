@@ -13,7 +13,6 @@ public class UploadProductInputViewModel {
     private List<String> productVideos;
     private String productName;
     private String productDescription;
-    private String productEtalaseName;
     private double productPrice;
     private int productChangePhoto;
     private int productCatalogId;
@@ -37,7 +36,6 @@ public class UploadProductInputViewModel {
         productVideos = new ArrayList<>();
         productName = "";
         productDescription = "";
-        productEtalaseName = "";
     }
 
     public ProductPhotoListViewModel getProductPhotos() {
@@ -78,14 +76,6 @@ public class UploadProductInputViewModel {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
-    }
-
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductChangePhoto() {

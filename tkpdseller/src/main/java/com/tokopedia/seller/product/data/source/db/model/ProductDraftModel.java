@@ -25,9 +25,6 @@ public class ProductDraftModel {
     @SerializedName("product_description")
     private String productDescription;
 
-    @SerializedName("product_etalase_name")
-    private String productEtalaseName;
-
     @SerializedName("product_price")
     private double productPrice;
 
@@ -114,14 +111,6 @@ public class ProductDraftModel {
 
     public void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
-    }
-
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductChangePhoto() {
