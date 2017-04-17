@@ -47,8 +47,9 @@
         android:id="@+id/spinner_counter_input_view_pre_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:spinner_decimal_entries="@array/product_weight_pre_order"
-        app:spinner_decimal_hint="@string/product_label_time_process" />
+        app:spinner_decimal_entries="@array/product_pre_order_entries"
+        app:spinner_decimal_hint="@string/product_label_time_process"
+        app:spinner_decimal_values="@array/product_pre_order_values" />
 
     <com.tokopedia.seller.lib.widget.LabelSwitch
         android:id="@+id/status"

@@ -322,29 +322,63 @@
         <item>Gram</item>
         <item>Kg</item>
     </string-array>
+    <string-array name="product_weight_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_currency_entries">
         <item>Rp</item>
         <item>$</item>
     </string-array>
+    <string-array name="product_currency_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_stock_status_entries">
         <item>Stock Tersedia</item>
         <item>Stock Kosong</item>
     </string-array>
+    <string-array name="product_stock_status_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_condition_entries">
         <item>Baru</item>
         <item>Bekas</item>
     </string-array>
+    <string-array name="product_condition_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_insurance_entries">
         <item>Opsional</item>
         <item>Ya</item>
     </string-array>
+    <string-array name="product_insurance_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <string-array name="product_free_returns_entries">
         <item>Ya</item>
         <item>Tidak</item>
     </string-array>
-    <string-array name="product_weight_pre_order">
+    <string-array name="product_free_returns_values">
+        <item>1</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="product_pre_order_entries">
         <item>Hari</item>
         <item>Minggu</item>
+    </string-array>
+    <string-array name="product_pre_order_values">
+        <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string name="video_not_found">Video tidak ditemukan</string>
