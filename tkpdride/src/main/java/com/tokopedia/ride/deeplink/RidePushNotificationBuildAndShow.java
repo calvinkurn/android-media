@@ -70,7 +70,7 @@ public class RidePushNotificationBuildAndShow {
         getCurrentDetailRideRequestUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
     }
 
-    public void processReceivedNotification(Bundle bundle){
+    public void processReceivedNotification(Bundle bundle) {
         String processableResp = bundle.getString(Constants.ARG_NOTIFICATION_DESCRIPTION, null);
         if (processableResp == null) return;
         RidePushNotification ridePushNotification = gson
@@ -119,7 +119,7 @@ public class RidePushNotificationBuildAndShow {
                     }
                 }
 
-                switch (rideRequest.getStatus()){
+                switch (rideRequest.getStatus()) {
                     case "arriving":
                     case "accepted":
                         showRideAccepted(activitiesLifecycleCallbacks.getContext(), rideRequest);
@@ -186,7 +186,7 @@ public class RidePushNotificationBuildAndShow {
                                           @Override
                                           public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                                               remoteView.setImageViewBitmap(R.id.iv_car_details, ImageHandler.getRoundedCornerBitmap(resource, 100));
-                                              if (rideRequest.isShared()){
+                                              if (rideRequest.isShared()) {
                                                   remoteView.setViewVisibility(R.id.layout_share_eta, View.VISIBLE);
 
                                                   SessionHandler sessionHandler = new SessionHandler(context);
@@ -212,6 +212,11 @@ public class RidePushNotificationBuildAndShow {
 
                                                       @Override
                                                       public void onNext(String url) {
+                                                          Intent shareIntent = new Intent(context.getResources().getString(R.string.broadcast_share_eta));
+                                                          shareIntent.putExtra("share", url);
+                                                          PendingIntent sharePendingIntent = PendingIntent.getBroadcast(context, 0, shareIntent, 0);
+                                                          remoteView.setOnClickPendingIntent(R.id.layout_share_eta, sharePendingIntent);
+
                                                           NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                                   .setSmallIcon(R.drawable.ic_stat_notify)
                                                                   .setAutoCancel(true)
@@ -224,20 +229,10 @@ public class RidePushNotificationBuildAndShow {
                                                                   )
                                                                   .setCustomBigContentView(remoteView);
 
-
-                                                          Intent share = new Intent(Intent.ACTION_SEND);
-                                                          share.setType("text/plain");
-                                                          share.putExtra(Intent.EXTRA_SUBJECT, "Klik link ini untuk menemukan perjalanan anda dari Tokopedia.");
-                                                          share.putExtra(Intent.EXTRA_TEXT, url);
-                                                          context.startActivity(Intent.createChooser(share, "Bagikan Link!"));
-                                                          PendingIntent sharePendingIntent = PendingIntent.getService(context, 0, share, PendingIntent.FLAG_UPDATE_CURRENT);
-                                                          remoteView.setOnClickFillInIntent(R.id.layout_share_eta, share);
-
-
-
-                                                          Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                                                          callIntent.setData(Uri.parse("tel:" + rideRequest.getDriver().getPhoneNumber()));
-                                                          remoteView.setOnClickFillInIntent(R.id.layout_call_driver, callIntent);
+                                                          Intent callIntent = new Intent(context.getResources().getString(R.string.broadcast_call_driver));
+                                                          callIntent.putExtra("telp", rideRequest.getDriver().getPhoneNumber());
+                                                          PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, callIntent, 0);
+                                                          remoteView.setOnClickPendingIntent(R.id.layout_call_driver, pendingSwitchIntent);
 
                                                           Bundle bundle = new Bundle();
                                                           bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
@@ -270,7 +265,7 @@ public class RidePushNotificationBuildAndShow {
                                                           .setCustomBigContentView(remoteView);
 
 
-                                                  Intent callIntent = new Intent("CallDriverReceiver");
+                                                  Intent callIntent = new Intent(context.getResources().getString(R.string.broadcast_call_driver));
                                                   callIntent.putExtra("telp", rideRequest.getDriver().getPhoneNumber());
                                                   PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(context, 0, callIntent, 0);
 

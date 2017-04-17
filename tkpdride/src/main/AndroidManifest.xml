@@ -38,7 +38,12 @@
 
         <receiver android:name=".ontrip.receiver.CallDriverReceiver" android:exported="false">
             <intent-filter>
-                <action android:name="CallDriverReceiver"/>
+                <action android:name="com.tokopedia.tkpd.calldriver"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".ontrip.receiver.ShareEtaReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.shareeta"/>
             </intent-filter>
         </receiver>
     </application>
