@@ -1,4 +1,4 @@
-package com.tokopedia.session.activation.presenter;
+package com.tokopedia.session.activation.view.presenter;
 
 /**
  * Created by nisie on 1/31/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.session.activation.fragment;
+package com.tokopedia.session.activation.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -17,17 +17,12 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
-import com.tokopedia.session.activation.interactor.ActivationNetworkInteractorImpl;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.activation.presenter.RegisterActivationPresenter;
-import com.tokopedia.session.activation.presenter.RegisterActivationPresenterImpl;
-import com.tokopedia.session.activation.viewListener.RegisterActivationView;
-
-import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
+import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
+import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
 
 /**
  * Created by nisie on 1/31/17.
@@ -78,13 +73,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected void initialPresenter() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.USING_HMAC, true);
-        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
-
-        presenter = new RegisterActivationPresenterImpl(this,
-                new ActivationNetworkInteractorImpl(new AccountsService(bundle)),
-                new CompositeSubscription());
+        presenter = new RegisterActivationPresenterImpl(this);
     }
 
     @Override

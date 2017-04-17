@@ -35,7 +35,7 @@ import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
-import com.tokopedia.session.activation.activity.ActivationActivity;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;

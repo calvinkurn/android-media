@@ -1,4 +1,4 @@
-package com.tokopedia.session.activation.activity;
+package com.tokopedia.session.activation.view.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -9,7 +9,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-import com.tokopedia.session.activation.fragment.RegisterActivationFragment;
+import com.tokopedia.session.activation.view.fragment.RegisterActivationFragment;
 
 /**
  * Created by nisie on 2/1/17.

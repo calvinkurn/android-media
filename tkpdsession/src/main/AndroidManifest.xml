@@ -24,7 +24,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".activation.activity.ActivationActivity"
+            android:name=".activation.view.activity.ActivationActivity"
             android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />

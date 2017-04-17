@@ -61,7 +61,7 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.RESENT_ACTIVATION)
-    Observable<Response<TkpdResponse>> resentActivation(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> resentActivation(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.GENERATE_HOST)

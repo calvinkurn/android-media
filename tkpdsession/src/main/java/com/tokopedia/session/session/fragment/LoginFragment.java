@@ -57,7 +57,7 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.presenter.*;
-import com.tokopedia.session.activation.activity.ActivationActivity;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
