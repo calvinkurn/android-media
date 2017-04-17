@@ -8,8 +8,8 @@ import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.adapter.addurlvideo.AddUrlVideoAdapter;
+import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
 /**
@@ -23,13 +23,13 @@ public class AddUrlContainerViewHolder {
     private final RecyclerView recyclerViewAddUrlVideo;
     private final AddUrlVideoAdapter addUrlVideoAdapter;
     private final TextView textAddUrlVideo;
-    ProductAddActivity context;
+    YoutubeAddVideoActView context;
 
     public AddUrlContainerViewHolder(View view) {
         this.itemView = view;
 
-        if (itemView.getContext() instanceof ProductAddActivity) {
-            context = (ProductAddActivity) itemView.getContext();
+        if (itemView.getContext() instanceof YoutubeAddVideoActView) {
+            context = (YoutubeAddVideoActView) itemView.getContext();
         }
 
         recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
