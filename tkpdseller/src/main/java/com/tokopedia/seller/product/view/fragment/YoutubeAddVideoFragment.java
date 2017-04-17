@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.v4.BaseNetworkErrorHandlerImpl;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
@@ -36,6 +38,8 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     private HasComponent<YoutubeVideoComponent> parentComponent;
     private YoutubeVideoComponent component;
     private YoutubeAddVideoPresenter presenter;
+    private BaseNetworkErrorHandlerImpl baseNetworkErrorHandler;
+    private OnRetryClicked onRetryClicked;
 
     public static Fragment createInstance() {
         return new YoutubeAddVideoFragment();
@@ -67,6 +71,8 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             presenter = new YoutubeAddVideoPresenterImpl(
                     youtubeVideoUseCase,
                     youtubeVideoLinkUtils);
+            onRetryClicked = new OnRetryClicked();
+            baseNetworkErrorHandler = new BaseNetworkErrorHandlerImpl(onRetryClicked);
         }
 
         presenter.attachView(this);
@@ -99,5 +105,32 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     public void addYoutubeUrl(String youtubeUrl) {
         presenter.fetchYoutubeDescription(youtubeUrl);
+    }
+
+    @Override
+    public void showMessageError(final String videoId) {
+        onRetryClicked.setVideoid(videoId);
+        baseNetworkErrorHandler.createSnackbarWithAction(getActivity()).showRetrySnackbar();
+    }
+
+    private class OnRetryClicked implements NetworkErrorHelper.RetryClickedListener {
+        private String videoid;
+
+        OnRetryClicked() {
+        }
+
+        public String getVideoid() {
+            return videoid;
+        }
+
+        public void setVideoid(String videoid) {
+            this.videoid = videoid;
+        }
+
+        @Override
+        public void onRetryClicked() {
+            if (videoid != null && !videoid.isEmpty())
+                presenter.fetchYoutube(videoid);
+        }
     }
 }

@@ -10,4 +10,6 @@ public interface YoutubeAddVideoView extends CustomerView {
     void addAddUrlVideModel(AddUrlVideoModel addUrlVideoModel);
 
     void addYoutubeUrl(String youtubeUrl);
+
+    void showMessageError(String message);
 }

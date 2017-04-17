@@ -26,6 +26,11 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         this.youtubeVideoLinkUtils = youtubeVideoLinkUtils;
     }
 
+    public void fetchYoutube(String videoId) {
+        RequestParams requestParams = generateParam(videoId);
+        youtubeVideoUseCase.execute(requestParams, new DefaultSubscriber(videoId));
+    }
+
     public void fetchYoutubeDescription(String youtubeUrl) {
         youtubeVideoLinkUtils.setYoutubeUrl(youtubeUrl);
         String videoId = youtubeVideoLinkUtils.saveVideoID();
@@ -61,6 +66,9 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         @Override
         public void onError(Throwable e) {
             Log.i(TAG, "error here : " + e);
+            if (isViewAttached()) {
+                getView().showMessageError(videoId);
+            }
         }
 
         @Override
