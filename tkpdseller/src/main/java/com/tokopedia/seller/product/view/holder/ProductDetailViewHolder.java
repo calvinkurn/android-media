@@ -50,4 +50,12 @@ public class ProductDetailViewHolder {
             }
         });
     }
+
+    public String getPriceCurrency() {
+        return priceSpinnerCounterInputView.getSpinnerValue();
+    }
+
+    public float getPriceValue() {
+        return priceSpinnerCounterInputView.getCounterValue();
+    }
 }

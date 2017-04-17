@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
@@ -22,7 +23,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     private String hintText;
     private CharSequence[] entries;
     private CharSequence[] values;
-    private int selection;
+    private int selectionIndex;
     private boolean showCounterButton;
 
     public SpinnerCounterInputView(Context context) {
@@ -45,7 +46,7 @@ public class SpinnerCounterInputView extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
             hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
-            selection = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection, 0);
+            selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
@@ -63,6 +64,9 @@ public class SpinnerCounterInputView extends FrameLayout {
         if (entries != null) {
             spinnerTextView.setEntries(ConverterUtils.convertCharSequenceToString(entries));
         }
+        if (values != null) {
+            spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
+        }
         counterInputView.showCounterButton(showCounterButton);
         invalidate();
         requestLayout();
@@ -78,5 +82,17 @@ public class SpinnerCounterInputView extends FrameLayout {
         counterInputView.setHint(hintText);
         invalidate();
         requestLayout();
+    }
+
+    public float getCounterValue() {
+        return counterInputView.getFloatValue();
+    }
+
+    public String getSpinnerValue() {
+        return spinnerTextView.getSpinnerValue();
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
 }
