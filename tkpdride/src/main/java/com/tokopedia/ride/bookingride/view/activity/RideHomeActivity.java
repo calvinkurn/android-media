@@ -306,6 +306,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         unbinder.unbind();
     }
 
+    private void onBottomContainerChangeToProductListScreen() {
+        if (getFragmentManager().findFragmentById(R.id.top_container) instanceof RideHomeFragment){
+            RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+            if (fragment != null) {
+                fragment.enablePickLocation();
+            }
+        }
+    }
+
     @Override
     public void onBackPressed() {
         if (isSeatPanelShowed) {
@@ -315,6 +324,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
             //hideBlockTranslucentLayout();
             //hideSeatPanelLayout();
             getFragmentManager().popBackStack();
+
+            onBottomContainerChangeToProductListScreen();
 
             ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
             ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();

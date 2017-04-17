@@ -326,6 +326,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         isDisableSelectLocation = true;
     }
 
+    public void enablePickLocation(){
+        isDisableSelectLocation = false;
+    }
+
     /**
      * This function handles location alert result, initiated from Activity class
      *
