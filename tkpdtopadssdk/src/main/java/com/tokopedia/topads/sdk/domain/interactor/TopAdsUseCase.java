@@ -1,20 +1,19 @@
 package com.tokopedia.topads.sdk.domain.interactor;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 
 import com.tokopedia.topads.sdk.base.UseCase;
-import com.tokopedia.topads.sdk.base.adapter.Visitable;
+import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.data.datasource.CloudTopAdsDataSource;
 import com.tokopedia.topads.sdk.data.datasource.TopAdsDataSource;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.topads.sdk.view.AdsView;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +27,19 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
     private TopAdsDataSource dataSource;
     private String sessionId;
     private AsyncTask<TopAdsParams, Void, TopAdsModel> task;
+    private int displayMode;
 
     public TopAdsUseCase(Context context) {
         this.dataSource = new CloudTopAdsDataSource(context);
+        this.displayMode = DisplayMode.GRID;
+    }
+
+    public void setDisplayMode(int displayMode) {
+        this.displayMode = displayMode;
+    }
+
+    public int getDisplayMode() {
+        return displayMode;
     }
 
     public void setSessionId(String sessionId) {
@@ -54,18 +63,29 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
             @Override
             protected void onPostExecute(TopAdsModel topAdsModel) {
                 if (topAdsModel.getError()==null && topAdsModel.getStatus().getErrorCode() == 0) {
-                    List<Visitable> visitables = new ArrayList<>();
+                    List<Item> visitables = new ArrayList<>();
                     for (Data data : topAdsModel.getData()) {
                         if (data.getProduct() != null) {
-                            visitables.add(convertToProductViewModel(data));
+                            if(displayMode == DisplayMode.GRID) {
+                                visitables.add(ModelConverter.convertToProductGridViewModel(data));
+                            } else {
+                                visitables.add(ModelConverter.convertToProductListViewModel(data));
+                            }
                         } else if (data.getShop() != null) {
-                            visitables.add(convertToShopViewModel(data));
+                            if(displayMode == DisplayMode.GRID) {
+                                visitables.add(ModelConverter.convertToShopGridViewModel(data));
+                            }else {
+                                visitables.add(ModelConverter.convertToShopListViewModel(data));
+                            }
                         }
                     }
                     view.displayAds(visitables);
-                } else {
+                } else if(topAdsModel.getError() != null){
                     view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
                             topAdsModel.getError().getTitle());
+                } else {
+                    view.notifyAdsErrorLoaded(topAdsModel.getStatus().getErrorCode(),
+                            topAdsModel.getStatus().getMessage());
                 }
                 view.finishLoading();
             }
@@ -83,17 +103,6 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
         }
     }
 
-    private ShopGridViewModel convertToShopViewModel(Data data) {
-        ShopGridViewModel viewModel = new ShopGridViewModel();
-        viewModel.setData(data);
-        return viewModel;
-    }
-
-    private ProductGridViewModel convertToProductViewModel(Data data) {
-        ProductGridViewModel viewModel = new ProductGridViewModel();
-        viewModel.setData(data);
-        return viewModel;
-    }
 
     @Override
     public void unsubscribe() {

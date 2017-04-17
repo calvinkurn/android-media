@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter.factory;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
@@ -12,7 +13,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
  * @author by errysuprayogi on 3/29/17.
  */
 
-public interface TypeFactory {
+public interface AdsTypeFactory {
 
     int type(ProductGridViewModel viewModel);
 
@@ -22,6 +23,6 @@ public interface TypeFactory {
 
     int type(ShopListViewModel viewModel);
 
-    AbstractViewHolder createViewHolder(View view, int viewType);
+    AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
 
 }
