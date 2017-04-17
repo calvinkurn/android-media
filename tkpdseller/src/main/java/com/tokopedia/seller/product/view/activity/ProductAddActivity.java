@@ -37,4 +37,9 @@ public class ProductAddActivity extends TActivity
     public void openAddYoutubeDialog() {
 
     }
+
+    @Override
+    public void addEtalase(String newEtalaseName) {
+
+    }
 }

@@ -4,6 +4,8 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
+import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
 
 import dagger.Component;
 
@@ -14,4 +16,8 @@ import dagger.Component;
 @Component(modules = YoutubeVideoModule.class, dependencies = AppComponent.class)
 public interface YoutubeVideoComponent {
     void inject(ProductAddActivity productAddActivity);
+
+    void inject(YoutubeAddVideoActivity youtubeAddVideoActivity);
+
+    void inject(YoutubeAddVideoFragment youtubeAddVideoFragment);
 }
