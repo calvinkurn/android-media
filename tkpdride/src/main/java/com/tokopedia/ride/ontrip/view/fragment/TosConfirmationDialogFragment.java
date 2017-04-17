@@ -9,6 +9,7 @@ import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,8 +82,9 @@ public class TosConfirmationDialogFragment extends DialogFragment {
             Uri uri = Uri.parse(urlString);
             if (uri.getScheme().equals("toko")){
                 String id = null;
-                if (!uri.getQueryParameter("tos_confirmation_id").isEmpty()){
+                if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))){
                     id = uri.getQueryParameter("tos_confirmation_id");
+
                 }else if (!uri.getQueryParameter("surge_confirmation_id").isEmpty()){
                     id = uri.getQueryParameter("surge_confirmation_id");
                 }

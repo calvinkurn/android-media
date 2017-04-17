@@ -58,6 +58,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
@@ -542,11 +543,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.clear();
 
         for (List<LatLng> route : routes) {
-            mGoogleMap.addPolyline(new PolylineOptions()
+            RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+            /*mGoogleMap.addPolyline(new PolylineOptions()
                     .addAll(route)
                     .width(10)
                     .color(Color.BLACK)
-                    .geodesic(true));
+                    .geodesic(true));*/
         }
 
         //add markers on source and destination

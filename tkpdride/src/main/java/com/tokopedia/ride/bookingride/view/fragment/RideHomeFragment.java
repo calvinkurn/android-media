@@ -45,6 +45,7 @@ import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
 import com.tokopedia.ride.bookingride.view.BookingRideContract;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.animator.RouteMapAnimator;
 
 import java.util.List;
 
@@ -492,11 +493,12 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mGoogleMap.clear();
 
         for (List<LatLng> route : routes) {
-            mGoogleMap.addPolyline(new PolylineOptions()
-                    .addAll(route)
-                    .width(10)
-                    .color(Color.BLACK)
-                    .geodesic(true));
+            RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+//            mGoogleMap.addPolyline(new PolylineOptions()
+//                    .addAll(route)
+//                    .width(10)
+//                    .color(Color.BLACK)
+//                    .geodesic(true));
         }
 
         //add markers on source and destination
