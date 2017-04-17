@@ -85,7 +85,7 @@ public interface OnTripMapContract {
 
         void showAcceptedNotification(RideRequest result);
 
-        void hideAcceptedNotification(RideRequest result);
+        void hideAcceptedNotification();
 
         void updateDriverBitmapInNotification(RemoteViews remoteView, Bitmap bitmap);
 
@@ -102,6 +102,8 @@ public interface OnTripMapContract {
         void showContactPanel();
 
         void openSurgeConfirmationWebView(String tosUrl);
+
+        RequestParams getCurrentRequestParams(String requestId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -119,5 +121,7 @@ public interface OnTripMapContract {
         void getDriverBitmap(RemoteViews remoteView, String imgUrl);
 
         void actionShareEta();
+
+        void startGetRequestDetailsPeriodicService(String requestId);
     }
 }

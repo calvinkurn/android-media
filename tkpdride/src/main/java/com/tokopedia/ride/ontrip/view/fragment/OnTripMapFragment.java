@@ -11,11 +11,9 @@ import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,7 +25,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -39,8 +36,6 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.gcm.GcmNetworkManager;
-import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -69,8 +64,8 @@ import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
-import com.tokopedia.ride.ontrip.service.GetCurrentRideRequestService;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
@@ -83,7 +78,6 @@ import butterknife.OnClick;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
-import static com.tokopedia.ride.ontrip.view.OnTripActivity.TASK_TAG_PERIODIC;
 
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
         DriverDetailFragment.OnFragmentInteractionListener {
@@ -102,8 +96,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
     RideConfiguration rideConfiguration;
-    private GcmNetworkManager mGcmNetworkManager;
-    private BroadcastReceiver mReceiver;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -186,21 +178,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        mGcmNetworkManager = GcmNetworkManager.getInstance(getActivity());
-
         // Gets an instance of the NotificationManager service
         mNotifyMgr = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-
-        mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().equals(GetCurrentRideRequestService.ACTION_DONE)) {
-                    RideRequest result = intent.getParcelableExtra(GetCurrentRideRequestService.EXTRA_RESULT);
-                    Toast.makeText(context, "get detail response", Toast.LENGTH_SHORT).show();
-                    presenter.proccessGetCurrentRideRequest(result);
-                }
-            }
-        };
 
         presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
@@ -211,18 +190,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onStart() {
         super.onStart();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(GetCurrentRideRequestService.ACTION_DONE);
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.registerReceiver(mReceiver, filter);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
-        manager.unregisterReceiver(mReceiver);
-        mGcmNetworkManager.cancelAllTasks(GetCurrentRideRequestService.class);
     }
 
     private void setViewListener() {
@@ -435,16 +407,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void startPeriodicService(String requestId) {
-        System.out.println("Vishal startPeriodicService");
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_RIDE_REQUEST_RESULT, requestId);
-        PeriodicTask task = new PeriodicTask.Builder()
-                .setService(GetCurrentRideRequestService.class)
-                .setTag(TASK_TAG_PERIODIC)
-                .setExtras(bundle)
-                .setPeriod(2L)
-                .build();
-        mGcmNetworkManager.schedule(task);
+        presenter.startGetRequestDetailsPeriodicService(requestId);
     }
 
     @Override
@@ -657,12 +620,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     public void showAcceptedNotification(final RideRequest result) {
+        if (result.getVehicle() == null || result.getDriver() == null) {
+            return;
+        }
+
         // Create remote view and set bigContentView.
         final RemoteViews remoteView = new RemoteViews(getActivity().getPackageName(),
                 R.layout.notification_remote_view_ride_accepted);
 
         remoteView.setTextViewText(R.id.tv_cab_name, result.getVehicle().getVehicleModel());
         remoteView.setTextViewText(R.id.tv_cab_number, result.getVehicle().getLicensePlate());
+
         remoteView.setTextViewText(R.id.tv_driver_name, result.getDriver().getName());
         remoteView.setTextViewText(R.id.tv_driver_star, result.getDriver().getRating());
         //remoteView.setImageViewUri(R.id.iv_driver_img, Uri.parse(result.getDriver().getPictureUrl()));
@@ -695,7 +663,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void hideAcceptedNotification(RideRequest result) {
+    public void hideAcceptedNotification() {
         NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(ACCEPTED_UBER_NOTIFICATION_ID);
     }
@@ -849,6 +817,22 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 0xBB000000);
         backgroundColorAnimator.setDuration(500);
         backgroundColorAnimator.start();
+    }
+
+    @Override
+    public RequestParams getCurrentRequestParams(String requestId) {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_REQUEST_ID, requestId);
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return requestParams;
     }
 
     @OnClick(R2.id.btn_call)

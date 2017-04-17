@@ -52,18 +52,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     TextView vehicleLicenseNumberTextView;
     @BindView(R2.id.tv_vehicle_desc)
     TextView vehicleDescTextView;
-    @BindView(R2.id.tv_base_fare)
-    TextView baseFareTextView;
-    @BindView(R2.id.tv_label_distance)
-    TextView labelDistanceTextView;
-    @BindView(R2.id.tv_distance)
-    TextView distanceTextView;
-    @BindView(R2.id.label_time)
-    TextView labelTimeTextView;
-    @BindView(R2.id.tv_time)
-    TextView timeTextView;
-    @BindView(R2.id.tv_sub_total)
-    TextView subTotalTextView;
     @BindView(R2.id.tv_total_charged)
     TextView totalChargedTextView;
     @BindView(R2.id.tv_sign_up_uber)
@@ -171,12 +159,8 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @Override
     public void renderReceipt(Receipt receipt) {
-        baseFareTextView.setText(receipt.getTotalFare());
-        labelDistanceTextView.setText(receipt.getDistanceUnit());
-        distanceTextView.setText(receipt.getDistance());
-        subTotalTextView.setText(receipt.getSubtotal());
         totalChargedTextView.setText(receipt.getTotalCharged());
-        timeTextView.setText(String.valueOf(receipt.getDuratuinInMinute()));
+        totalFareTextView.setText(receipt.getTotalCharged());
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ReceiptEntity {
     @SerializedName("distance")
     @Expose
     String distance;
-    @SerializedName("distanceLabel")
+    @SerializedName("distance_label")
     @Expose
     String distanceLabel;
     @SerializedName("duration")

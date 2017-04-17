@@ -117,7 +117,6 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             @Override
             public void onNext(FareEstimate fareEstimate) {
                 getView().renderFareEstimate(fareEstimate.getFare().getFareId(), fareEstimate.getFare().getDisplay(), fareEstimate.getFare().getValue());
-                actionCheckBalance();
             }
         });
     }
