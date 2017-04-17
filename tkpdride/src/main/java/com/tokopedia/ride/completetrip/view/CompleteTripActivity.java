@@ -61,6 +61,7 @@ public class CompleteTripActivity extends BaseActivity {
         if (mToolbar != null) {
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mToolbar.setTitle(getString(R.string.title_trip_completed));
         }
     }
 
