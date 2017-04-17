@@ -28,6 +28,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFrag
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
+import com.tokopedia.inbox.rescenter.historyaction.di.module.HistoryActionModule;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
@@ -42,13 +43,7 @@ import retrofit2.Retrofit;
  * Created by hangnadi on 4/11/17.
  */
 @ResolutionDetailScope
-@Module(includes = {
-        HistoryActionModule.class,
-        HistoryAddressModule.class,
-        HistoryAwbModule.class,
-        ResolutionProductListModule.class,
-        ResolutionProductDetailModule.class
-})
+@Module
 public class ResolutionDetailModule {
 
     private String resolutionID;
@@ -183,6 +178,18 @@ public class ResolutionDetailModule {
                 threadExecutor,
                 postExecutionThread,
                 resCenterRepository);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    TrackAwbReturProductUseCase provideTrackAwbReturProductUseCase(ThreadExecutor threadExecutor,
+                                                                   PostExecutionThread postExecutionThread,
+                                                                   ResCenterRepository resCenterRepository) {
+        return new TrackAwbReturProductUseCase(
+                threadExecutor,
+                postExecutionThread,
+                resCenterRepository
+        );
     }
 
     @ResolutionDetailScope

@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.rescenter.detailv2.di.module;
+package com.tokopedia.inbox.rescenter.product.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.product.di.scope.ResolutionProductListScope;
 import com.tokopedia.inbox.rescenter.product.domain.interactor.GetListProductUseCase;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentImpl;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentView;
@@ -15,7 +15,7 @@ import dagger.Provides;
  * Created by hangnadi on 4/13/17.
  */
 
-@ResolutionDetailScope
+@ResolutionProductListScope
 @Module
 public class ResolutionProductListModule {
 
@@ -25,14 +25,14 @@ public class ResolutionProductListModule {
         this.viewListener = viewListener;
     }
 
-    @ResolutionDetailScope
+    @ResolutionProductListScope
     @Provides
     ListProductFragmentImpl provideListProductFragmentImpl(
             GetListProductUseCase getListProductUseCase) {
         return new ListProductFragmentImpl(viewListener, getListProductUseCase);
     }
 
-    @ResolutionDetailScope
+    @ResolutionProductListScope
     @Provides
     GetListProductUseCase provideGetListProductUseCase(ThreadExecutor threadExecutor,
                                                        PostExecutionThread postExecutionThread,

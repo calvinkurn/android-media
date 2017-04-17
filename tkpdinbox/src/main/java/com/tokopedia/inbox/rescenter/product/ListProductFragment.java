@@ -8,14 +8,13 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionProductListModule;
+import com.tokopedia.inbox.rescenter.product.di.component.DaggerResolutionProductListComponent;
+import com.tokopedia.inbox.rescenter.product.di.component.ResolutionProductListComponent;
+import com.tokopedia.inbox.rescenter.product.di.module.ResolutionProductListModule;
 import com.tokopedia.inbox.rescenter.product.view.customadapter.ListProductAdapter;
 import com.tokopedia.inbox.rescenter.product.view.model.ListProductViewItem;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentImpl;
@@ -156,14 +155,13 @@ public class ListProductFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        ResolutionDetailComponent resolutionDetailComponent =
-                DaggerResolutionDetailComponent.builder()
-                        .appComponent(appComponent)
-                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        ResolutionProductListComponent resolutionProductListComponent =
+                DaggerResolutionProductListComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
                         .resolutionProductListModule(new ResolutionProductListModule(this))
                         .build();
-        resolutionDetailComponent.inject(this);
+        resolutionProductListComponent.inject(this);
     }
 
     @Override

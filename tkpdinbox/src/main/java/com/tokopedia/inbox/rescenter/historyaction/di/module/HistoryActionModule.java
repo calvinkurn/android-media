@@ -1,9 +1,10 @@
-package com.tokopedia.inbox.rescenter.detailv2.di.module;
+package com.tokopedia.inbox.rescenter.historyaction.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.historyaction.di.scope.HistoryActionScope;
 import com.tokopedia.inbox.rescenter.historyaction.domain.interactor.GetHistoryActionUseCase;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentImpl;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
@@ -14,7 +15,7 @@ import dagger.Provides;
 /**
  * Created by hangnadi on 4/13/17.
  */
-@ResolutionDetailScope
+@HistoryActionScope
 @Module
 public class HistoryActionModule {
 
@@ -24,14 +25,14 @@ public class HistoryActionModule {
         this.viewListener = viewListener;
     }
 
-    @ResolutionDetailScope
+    @HistoryActionScope
     @Provides
     HistoryActionFragmentImpl provideHistoryActionFragmentPresenter(
             GetHistoryActionUseCase getHistoryActionUseCase) {
         return new HistoryActionFragmentImpl(viewListener, getHistoryActionUseCase);
     }
 
-    @ResolutionDetailScope
+    @HistoryActionScope
     @Provides
     GetHistoryActionUseCase provideGetHistoryActionUseCase(ThreadExecutor threadExecutor,
                                                            PostExecutionThread postExecutionThread,

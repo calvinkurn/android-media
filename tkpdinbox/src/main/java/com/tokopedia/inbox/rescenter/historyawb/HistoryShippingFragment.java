@@ -10,16 +10,15 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.HistoryAwbModule;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.historyawb.di.module.HistoryAwbModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
+import com.tokopedia.inbox.rescenter.historyawb.di.DaggerHistoryAwbComponent;
+import com.tokopedia.inbox.rescenter.historyawb.di.HistoryAwbComponent;
 import com.tokopedia.inbox.rescenter.historyawb.view.customadapter.HistoryShippingAdapter;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentImpl;
@@ -176,14 +175,13 @@ public class HistoryShippingFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        ResolutionDetailComponent resolutionDetailComponent =
-                DaggerResolutionDetailComponent.builder()
-                        .appComponent(appComponent)
-                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        HistoryAwbComponent historyAwbComponent =
+                DaggerHistoryAwbComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
                         .historyAwbModule(new HistoryAwbModule(this))
                         .build();
-        resolutionDetailComponent.inject(this);
+        historyAwbComponent.inject(this);
     }
 
     @Override

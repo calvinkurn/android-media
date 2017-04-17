@@ -8,14 +8,13 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.HistoryAddressModule;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.historyaddress.di.component.DaggerHistoryAddressComponent;
+import com.tokopedia.inbox.rescenter.historyaddress.di.component.HistoryAddressComponent;
+import com.tokopedia.inbox.rescenter.historyaddress.di.module.HistoryAddressModule;
 import com.tokopedia.inbox.rescenter.historyaddress.view.customadapter.HistoryAddressAdapter;
 import com.tokopedia.inbox.rescenter.historyaddress.view.model.HistoryAddressViewItem;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentImpl;
@@ -156,14 +155,13 @@ public class HistoryAddressFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        ResolutionDetailComponent resolutionDetailComponent =
-                DaggerResolutionDetailComponent.builder()
-                        .appComponent(appComponent)
-                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        HistoryAddressComponent historyAddressComponent =
+                DaggerHistoryAddressComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
                         .historyAddressModule(new HistoryAddressModule(this))
                         .build();
-        resolutionDetailComponent.inject(this);
+        historyAddressComponent.inject(this);
     }
 
     @Override

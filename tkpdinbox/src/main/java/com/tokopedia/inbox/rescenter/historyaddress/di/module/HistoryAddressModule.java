@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.rescenter.detailv2.di.module;
+package com.tokopedia.inbox.rescenter.historyaddress.di.module;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.historyaddress.di.scope.HistoryAddressScope;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.interactor.GetHistoryAddressUseCase;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentImpl;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentView;
@@ -15,7 +15,7 @@ import dagger.Provides;
  * Created by hangnadi on 4/13/17.
  */
 
-@ResolutionDetailScope
+@HistoryAddressScope
 @Module
 public class HistoryAddressModule {
 
@@ -25,14 +25,14 @@ public class HistoryAddressModule {
         this.viewListener = viewListener;
     }
 
-    @ResolutionDetailScope
+    @HistoryAddressScope
     @Provides
     HistoryAddressFragmentImpl provideHistoryAddressFragmentImpl(
             GetHistoryAddressUseCase getHistoryAddressUseCase) {
         return new HistoryAddressFragmentImpl(viewListener, getHistoryAddressUseCase);
     }
 
-    @ResolutionDetailScope
+    @HistoryAddressScope
     @Provides
     GetHistoryAddressUseCase provideGetHistoryAddressUseCase(ThreadExecutor threadExecutor,
                                                              PostExecutionThread postExecutionThread,

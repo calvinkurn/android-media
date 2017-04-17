@@ -1,15 +1,13 @@
 package com.tokopedia.inbox.rescenter.detailv2.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
+import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
-import com.tokopedia.inbox.rescenter.discussion.view.fragment.ResCenterDiscussionFragment;
-import com.tokopedia.inbox.rescenter.historyaction.HistoryActionFragment;
-import com.tokopedia.inbox.rescenter.historyaddress.HistoryAddressFragment;
-import com.tokopedia.inbox.rescenter.historyawb.HistoryShippingFragment;
-import com.tokopedia.inbox.rescenter.product.ListProductFragment;
-import com.tokopedia.inbox.rescenter.product.ProductDetailFragment;
+import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 
 import dagger.Component;
 
@@ -19,17 +17,15 @@ import dagger.Component;
 @ResolutionDetailScope
 @Component(modules = ResolutionDetailModule.class, dependencies = AppComponent.class)
 public interface ResolutionDetailComponent {
+
     void inject(DetailResCenterFragment fragment);
 
-    void inject(HistoryActionFragment fragment);
+    TrackAwbReturProductUseCase trackAwbReturProductUseCase();
 
-    void inject(HistoryAddressFragment fragment);
+    ResCenterRepository resCenterRepository();
 
-    void inject(HistoryShippingFragment fragment);
+    ThreadExecutor threadExecutor();
 
-    void inject(ListProductFragment fragment);
+    PostExecutionThread postExecutionThread();
 
-    void inject(ProductDetailFragment fragment);
-
-    void inject(ResCenterDiscussionFragment fragment);
 }

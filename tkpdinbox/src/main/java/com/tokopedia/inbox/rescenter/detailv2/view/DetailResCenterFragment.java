@@ -200,11 +200,11 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
         AppComponent appComponent = getComponent(AppComponent.class);
-        ResolutionDetailComponent resolutionDetailComponent
-                = DaggerResolutionDetailComponent.builder()
-                .appComponent(appComponent)
-                .resolutionDetailModule(new ResolutionDetailModule(getResolutionID(), this))
-                .build();
+        ResolutionDetailComponent resolutionDetailComponent =
+                DaggerResolutionDetailComponent.builder()
+                        .appComponent(appComponent)
+                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID(), this))
+                        .build();
         resolutionDetailComponent.inject(this);
     }
 

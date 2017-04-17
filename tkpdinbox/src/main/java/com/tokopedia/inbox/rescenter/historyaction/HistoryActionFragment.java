@@ -8,13 +8,13 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
-import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
-import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.historyaction.di.component.DaggerHistoryActionComponent;
+import com.tokopedia.inbox.rescenter.historyaction.di.component.HistoryActionComponent;
+import com.tokopedia.inbox.rescenter.historyaction.di.module.HistoryActionModule;
 import com.tokopedia.inbox.rescenter.historyaction.view.customadapter.HistoryActionAdapter;
 import com.tokopedia.inbox.rescenter.historyaction.view.model.HistoryActionViewItem;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentImpl;
@@ -84,13 +84,13 @@ public class HistoryActionFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        ResolutionDetailComponent resolutionDetailComponent =
-                DaggerResolutionDetailComponent.builder()
-                .appComponent(appComponent)
-                .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
-                .build();
-        resolutionDetailComponent.inject(this);
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        HistoryActionComponent historyAddressComponent =
+                DaggerHistoryActionComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
+                        .historyActionModule(new HistoryActionModule(this))
+                        .build();
+        historyAddressComponent.inject(this);
     }
 
     @Override
