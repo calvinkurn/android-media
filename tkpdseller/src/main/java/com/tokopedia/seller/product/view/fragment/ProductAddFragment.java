@@ -17,9 +17,12 @@ import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
+import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
+import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 
 import javax.inject.Inject;
 
@@ -31,10 +34,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    private ProductInfoViewHolder productInfoViewHolder;
+    private ProductScoreViewHolder productScoreViewHolder;
     private ProductImageViewHolder productImageViewHolder;
     private ProductDetailViewHolder productDetailViewHolder;
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
+    private ProductInfoViewHolder productInfoViewHolder;
 
     @Inject
     public ProductAddPresenter presenter;
@@ -63,9 +67,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         setSubmitButtonListener(view);
+        productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
         presenter.attachView(this);
-
         return view;
     }
 
@@ -108,7 +112,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return null;
     }
 
-    public void add(AddUrlVideoModel addUrlVideoModel) {
-        productAdditionalInfoViewHolder.addAddUrlVideModel(addUrlVideoModel);
+    @Override
+    public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
+        productScoreViewHolder.setValueProductScoreToView(dataScoringProductView);
+    }
+
+    @Override
+    public void updateProductScoring() {
+        presenter.getProductScoring(getValueIndicatorScoreModel());
+    }
+
+    @Override
+    public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
+        ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
+        return valueIndicatorScoreModel;
     }
 }
