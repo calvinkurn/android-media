@@ -236,7 +236,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (fabFilter.getVisibility() == View.GONE) {
             fabFilter.setVisibility(View.VISIBLE);
         }
-        if (listener!=null) {
+        if (listener!=null && adapter.getDataSize() > 0) {
             listener.startShowCase();
         }
     }
