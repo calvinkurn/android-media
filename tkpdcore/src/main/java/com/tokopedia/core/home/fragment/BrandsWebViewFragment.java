@@ -34,8 +34,6 @@ import java.net.URLEncoder;
 
 public class BrandsWebViewFragment extends Fragment {
     private static final String EXTRA_URL = "url";
-    private static final String BASE_URL = "www.tokopedia.com";
-    private static final String BASE_MOBILE_URL = "m.tokopedia.com";
     private static final String FORMAT_UTF_8 = "UTF-8";
 
     private TkpdWebView webview;
@@ -168,8 +166,8 @@ public class BrandsWebViewFragment extends Fragment {
     }
 
     private boolean overrideUrl(String url) {
-        if (((Uri.parse(url).getHost().contains(BASE_URL))
-                || Uri.parse(url).getHost().contains(BASE_MOBILE_URL))
+        if ((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()) ||
+                Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !url.endsWith(".pl")
                 && !url.contains("login")
                 && !url.contains("official-store")
