@@ -1,25 +1,6 @@
 package com.tokopedia.inbox.rescenter.product.view.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 import com.tokopedia.inbox.rescenter.product.domain.interactor.GetListProductUseCase;
 import com.tokopedia.inbox.rescenter.product.view.subscriber.ListProductSubsriber;
 
@@ -33,48 +14,10 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
     private ListProductFragmentView fragmentView;
     private GetListProductUseCase getListProductUseCase;
 
-    public ListProductFragmentImpl(Context context, ListProductFragmentView fragmentView) {
-//        this.fragmentView = fragmentView;
-//        String resolutionID = fragmentView.getResolutionID();
-//        String accessToken = new SessionHandler(context).getAccessToken(context);
-//
-//        JobExecutor jobExecutor = new JobExecutor();
-//        UIThread uiThread = new UIThread();
-//
-//        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-//
-//        ResCenterActService resCenterActService = new ResCenterActService();
-//        ResolutionService resolutionService = new ResolutionService(accessToken);
-//
-//        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-//        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-//        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-//        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-//        ListProductMapper listProductMapper = new ListProductMapper();
-//        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-//        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-//        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-//
-//        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-//                resolutionService,
-//                inboxResCenterService,
-//                resCenterActService,
-//                detailResCenterMapper,
-//                historyAwbMapper,
-//                historyAddressMapper,
-//                historyActionMapper,
-//                listProductMapper,
-//                productDetailMapper,
-//                discussionResCenterMapper,
-//                loadMoreMapper
-//        );
-//
-//        ResCenterRepository resCenterRepository
-//                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-//
-//        this.getListProductUseCase
-//                = new GetListProductUseCase(jobExecutor, uiThread, resCenterRepository);
-
+    public ListProductFragmentImpl(ListProductFragmentView fragmentView,
+                                   GetListProductUseCase getListProductUseCase) {
+        this.fragmentView = fragmentView;
+        this.getListProductUseCase = getListProductUseCase;
     }
 
     @Override

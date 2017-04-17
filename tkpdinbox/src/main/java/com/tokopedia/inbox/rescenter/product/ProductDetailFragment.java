@@ -10,19 +10,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionProductDetailModule;
 import com.tokopedia.inbox.rescenter.product.view.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.product.view.model.ProductDetailViewData;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailFragmentImpl;
 
+import javax.inject.Inject;
+
 /**
  * Created by hangnadi on 3/28/17.
  */
 
-public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFragmentContract.Presenter>
+public class ProductDetailFragment extends BaseDaggerFragment
     implements ProductDetailFragmentContract.ViewListener {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -42,6 +51,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
     private String resolutionID;
     private String troubleID;
     private ProductDetailViewData viewData;
+
+    @Inject
+    ProductDetailFragmentImpl presenter;
 
     public static Fragment createInstance(String resolutionID, String troubleID) {
         ProductDetailFragment fragment = new ProductDetailFragment();
@@ -117,18 +129,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_PRODUCT_DETAIL;
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = new ProductDetailFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+        ResolutionDetailComponent resolutionDetailComponent =
+                DaggerResolutionDetailComponent.builder()
+                        .appComponent(appComponent)
+                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+                        .resolutionProductDetailModule(new ResolutionProductDetailModule(this))
+                        .build();
+        resolutionDetailComponent.inject(this);
     }
 
     @Override
@@ -157,16 +171,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
 
     @Override
     protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
 
     }
 
