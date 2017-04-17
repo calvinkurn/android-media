@@ -207,8 +207,8 @@
 
         <activity
             android:name=".product.view.activity.CatalogPickerActivity"
-            android:label="@string/title_activity_catalog_picker"
-            android:exported="true"/>
+            android:exported="true"
+            android:label="@string/title_activity_catalog_picker" />
 
         <activity
             android:name=".reputation.view.activity.SellerReputationActivity"
@@ -218,6 +218,11 @@
         <activity
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".product.view.activity.YoutubeAddVideoActivity"
+            android:label="@string/video"
             android:theme="@style/AppTheme" />
 
         <service
