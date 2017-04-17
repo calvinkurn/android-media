@@ -196,6 +196,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void setupRecyclerView() {
+        if (list_catalog.getAdapter() != null) {
+            return;
+        }
         list_catalog.setLayoutManager(gridLayoutManager);
         list_catalog.setAdapter(browseCatalogAdapter);
         list_catalog.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -217,6 +220,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void initAdapter() {
+        if (browseCatalogAdapter != null) {
+            return;
+        }
         browseCatalogAdapter = new BrowseCatalogAdapter(getActivity().getApplicationContext(), browseCatalogModelList);
         browseCatalogAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
