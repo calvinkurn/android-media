@@ -8,3 +8,4 @@ public class WrongEditCartException extends RuntimeException {
     public WrongEditCartException(String errorMessage) {
         super(errorMessage);
     }
+}
