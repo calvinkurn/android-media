@@ -226,10 +226,11 @@ public class OnTripDependencyInjection {
         CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
         GetRideRequestMapUseCase getRideRequestMapUseCase = injection.provideGetRideRequestMapUseCase(token, userId);
         GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
-        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase);
+        GetCurrentDetailRideRequestUseCase getRideReuquestUseCase = injection.createGetDetailUseCase(context);
+        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase, getRideReuquestUseCase);
     }
 
-    private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId){
+    private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId) {
         return new GetRideRequestMapUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),

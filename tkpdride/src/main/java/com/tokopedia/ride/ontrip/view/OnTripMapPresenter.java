@@ -2,11 +2,13 @@ package com.tokopedia.ride.ontrip.view;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.JsonSyntaxException;
 import com.google.maps.android.PolyUtil;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -14,6 +16,7 @@ import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
 import java.io.BufferedInputStream;
@@ -35,20 +38,29 @@ import rx.schedulers.Schedulers;
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
 
+    public static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 3000;
+
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
+    private GetCurrentDetailRideRequestUseCase getRideRequestUseCase;
+
+    private Handler handler = new Handler();
+    private String mRequestId;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
-                              GetRideRequestMapUseCase getRideRequestMapUseCase) {
+                              GetRideRequestMapUseCase getRideRequestMapUseCase,
+                              GetCurrentDetailRideRequestUseCase getRideRequestUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
+        this.getRideRequestUseCase = getRideRequestUseCase;
     }
+
 
     @Override
     public void initialize() {
@@ -159,6 +171,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         switch (result.getStatus()) {
             case "no_drivers_available":
                 getView().hideFindingUberNotification();
+                getView().hideFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().clearRideConfiguration();
                 getView().showNoDriverAvailableDialog();
@@ -188,6 +201,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case "in_progress":
                 getView().hideFindingUberNotification();
+                getView().hideAcceptedNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
@@ -196,16 +210,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 break;
             case "driver_canceled":
                 getView().hideFindingUberNotification();
+                getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "rider_canceled":
                 getView().hideFindingUberNotification();
+                getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
             case "completed":
                 getView().hideFindingUberNotification();
+                getView().hideAcceptedNotification();
                 getView().renderCompletedRequest(result);
                 getView().clearRideConfiguration();
                 break;
@@ -267,6 +284,53 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showShareDialog(shareUrl);
             }
         });
+    }
+
+
+    /**
+     * This is a task to poll the request details api after every 2 seconds
+     */
+    private Runnable timedTask = new Runnable() {
+        @Override
+        public void run() {
+            if (getView() == null) {
+                return;
+            }
+
+
+            //request the current ride details
+            getRideRequestUseCase.execute(getView().getCurrentRequestParams(mRequestId), new Subscriber<RideRequest>() {
+                @Override
+                public void onCompleted() {
+                    CommonUtils.dumper("GetCurrentRideRequestService timedTask complete");
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                    CommonUtils.dumper("GetCurrentRideRequestService timedTask error = " + e.toString());
+                }
+
+                @Override
+                public void onNext(RideRequest s) {
+                    CommonUtils.dumper("GetCurrentRideRequestService timedTask onNext");
+
+                    //return of fragment finished on not present
+                    if (getView() == null) {
+                        return;
+                    }
+
+                    proccessGetCurrentRideRequest(s);
+                    handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                }
+            });
+        }
+    };
+
+    @Override
+    public void startGetRequestDetailsPeriodicService(String requestId) {
+        this.mRequestId = requestId;
+        handler.postDelayed(timedTask, 2000);
     }
 
     @Override
