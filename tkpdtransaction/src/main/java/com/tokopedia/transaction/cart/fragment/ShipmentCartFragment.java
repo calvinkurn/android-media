@@ -555,6 +555,11 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     }
 
     @Override
+    public void renderEditShipmentErrorSnackbar(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && resultCode == Activity.RESULT_OK) {

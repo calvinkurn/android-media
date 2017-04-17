@@ -72,4 +72,6 @@ public interface IShipmentCartView {
     void renderErrorEditLocationShipmentNoConnection();
 
     void renderErrorEditShipmentTimeout();
+
+    void renderEditShipmentErrorSnackbar(String errorMessage);
 }
