@@ -79,7 +79,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                 if (e instanceof TosConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
-                        getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
+                        if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("tos_confirm")) {
+                            getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
+                        } else if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("surge")){
+                            getView().openSurgeConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
+                        }
                     } else {
                         getView().failedToRequestRide();
                     }
@@ -126,9 +130,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     @Override
-    public void actionRetryRideRequest(String id) {
-        RequestParams requestParams = getView().getParam();
-        requestParams.putString("tos_confirmation_id", id);
+    public void actionRetryRideRequest(RequestParams requestParams) {
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {

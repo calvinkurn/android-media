@@ -100,6 +100,8 @@ public interface OnTripMapContract {
         void hideCancelPanel();
 
         void showContactPanel();
+
+        void openSurgeConfirmationWebView(String tosUrl);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -108,7 +110,7 @@ public interface OnTripMapContract {
 
         void actionCancelRide();
 
-        void actionRetryRideRequest(String id);
+        void actionRetryRideRequest(RequestParams requestParams);
 
         void proccessGetCurrentRideRequest(RideRequest result);
 

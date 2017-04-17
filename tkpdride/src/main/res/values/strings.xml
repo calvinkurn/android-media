@@ -31,4 +31,6 @@
 
     <string name="broadcast_call_driver">com.tokopedia.tkpd.calldriver</string>
     <string name="broadcast_share_eta">com.tokopedia.tkpd.shareeta</string>
+    <string name="create_request_failed_tos_confirmation">User doenst accept TOS</string>
+    <string name="create_request_failed_surge_confirm">User doenst accept surge confirmation</string>
 </resources>

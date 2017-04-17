@@ -18,6 +18,7 @@ public class TosConfirmationHttpException extends IOException {
     private String tosUrl;
     private String tosId;
     private String message;
+    private String type;
 
     public TosConfirmationHttpException() {
         super("Request data is invalid, please check message");
@@ -45,10 +46,12 @@ public class TosConfirmationHttpException extends IOException {
             TosConfirmationExceptionEntity entity = gson.fromJson(newResponseString, TosConfirmationExceptionEntity.class);
             tosId = entity.getMeta().getTosAcceptConfirmationEntity().getTosId();
             tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
-            if (entity.getErrors().size() > 0)
+            if (entity.getErrors().size() > 0) {
                 message = entity.getErrors().get(0).getTitle();
-            else
+                setType(entity.getErrors().get(0).getCode());
+            } else {
                 message = "Terjadi kesalahan";
+            }
         } catch (JsonSyntaxException exception) {
             initCause(exception);
         }
@@ -77,5 +80,13 @@ public class TosConfirmationHttpException extends IOException {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

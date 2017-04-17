@@ -89,6 +89,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
+    private static final int REQUEST_CODE_SURGE_CONFIRM_DIALOG = 1007;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
 
@@ -378,6 +379,19 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void openSurgeConfirmationWebView(String tosUrl) {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("surge_dialog");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_SURGE_CONFIRM_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "surge_dialog");
+    }
+
+    @Override
     public void failedToRequestRide() {
         getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE);
         getActivity().finish();
@@ -390,9 +404,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             case REQUEST_CODE_TOS_CONFIRM_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
                     String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
-                    presenter.actionRetryRideRequest(id);
+                    RequestParams requestParams = getParam();
+                    requestParams.putString("tos_confirmation_id", id);
+                    presenter.actionRetryRideRequest(requestParams);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(getActivity(), "User doenst accept tos", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.create_request_failed_tos_confirmation, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_CODE_SURGE_CONFIRM_DIALOG:
+                if (resultCode == Activity.RESULT_OK) {
+                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
+                    RequestParams requestParams = getParam();
+                    requestParams.putString("surge_confirmation_id", id);
+                    presenter.actionRetryRideRequest(requestParams);
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    Toast.makeText(getActivity(), R.string.create_request_failed_surge_confirm, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
@@ -651,7 +677,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating()))
                 .setCustomBigContentView(remoteView);
-
 
 
         //add event for call to driver
