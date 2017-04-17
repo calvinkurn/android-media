@@ -185,7 +185,8 @@ public class CloudShipmentCartDataStore implements IShipmentCartDataStore {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
                             } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                                throw new WrongEditCartException(response.body()
+                                        .getErrorMessages().get(0));
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {

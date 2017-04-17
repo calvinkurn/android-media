@@ -393,16 +393,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
 
     @Override
     public void renderErrorEditLocationShipment(String error) {
-        showRetry(getErrorEditLocationShipmentRetryListener(), error);
-    }
-
-    private NetworkErrorHelper.RetryClickedListener getErrorEditLocationShipmentRetryListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                actionSaveLocationShipment();
-            }
-        };
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override
