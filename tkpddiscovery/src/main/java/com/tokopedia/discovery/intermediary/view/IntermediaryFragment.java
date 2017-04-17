@@ -69,6 +69,7 @@ import butterknife.OnClick;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_DIRECTORY_VALUE;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 /**
  * Created by alifa on 3/24/17.
@@ -167,7 +168,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
-        params.getParam().put(TopAdsParams.KEY_SRC,SRC_DIRECTORY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
         params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
         topAdsView.setTopAdsParams(params);
