@@ -11,8 +11,15 @@ public class TosConfirmationMetaEntity {
     @SerializedName("tos_accept_confirmation")
     @Expose
     TosAcceptConfirmationEntity tosAcceptConfirmationEntity;
+    @SerializedName("surge_confirmation")
+    @Expose
+    SurgeConfirmationEntity surgeConfirmationEntity;
 
     public TosAcceptConfirmationEntity getTosAcceptConfirmationEntity() {
         return tosAcceptConfirmationEntity;
+    }
+
+    public SurgeConfirmationEntity getSurgeConfirmationEntity() {
+        return surgeConfirmationEntity;
     }
 }

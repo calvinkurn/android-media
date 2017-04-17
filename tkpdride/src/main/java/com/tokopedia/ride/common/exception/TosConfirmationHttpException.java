@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.exception;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.common.exception.model.TosConfirmationExceptionEntity;
 
 import org.json.JSONException;
@@ -31,8 +32,9 @@ public class TosConfirmationHttpException extends IOException {
     public TosConfirmationHttpException(String errorMessage) {
         super(errorMessage);
         String newResponseString = null;
+        JSONObject jsonObject;
         try {
-            JSONObject jsonObject = new JSONObject(errorMessage);
+            jsonObject = new JSONObject(errorMessage);
             if (jsonObject.has("data")) {
                 newResponseString = jsonObject.getString("data");
             }
@@ -42,18 +44,30 @@ public class TosConfirmationHttpException extends IOException {
         }
         Gson gson = new GsonBuilder().create();
         try {
-
             TosConfirmationExceptionEntity entity = gson.fromJson(newResponseString, TosConfirmationExceptionEntity.class);
-            tosId = entity.getMeta().getTosAcceptConfirmationEntity().getTosId();
-            tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
             if (entity.getErrors().size() > 0) {
-                message = entity.getErrors().get(0).getTitle();
-                setType(entity.getErrors().get(0).getCode());
+                switch (entity.getErrors().get(0).getCode()){
+                    case "tos_confirm":
+                        tosId = entity.getMeta().getTosAcceptConfirmationEntity().getTosId();
+                        tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
+                        message = entity.getErrors().get(0).getTitle();
+                        setType(entity.getErrors().get(0).getCode());
+                        break;
+                    case "surge":
+                        tosId = entity.getMeta().getSurgeConfirmationEntity().getSurgeConfirmationId();
+                        tosUrl = entity.getMeta().getSurgeConfirmationEntity().getHref();
+                        message = entity.getErrors().get(0).getTitle();
+                        setType(entity.getErrors().get(0).getCode());
+                        break;
+                }
+
             } else {
-                message = "Terjadi kesalahan";
+                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         } catch (JsonSyntaxException exception) {
             initCause(exception);
+        } catch (RuntimeException e){
+            initCause(e);
         }
     }
 

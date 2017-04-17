@@ -97,6 +97,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                             getView().openSurgeConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
                         }
                     } else {
+                        getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide();
                     }
                     getView().hideLoadingWaitingResponse();
