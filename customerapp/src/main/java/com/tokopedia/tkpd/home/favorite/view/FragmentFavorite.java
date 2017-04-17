@@ -28,12 +28,9 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.favorite.di.component.DaggerFavoriteComponent;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapter;
 import com.tokopedia.tkpd.home.favorite.view.adapter.FavoriteAdapterTypeFactory;
-import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.EmptyWishslistHolder;
-import com.tokopedia.tkpd.home.favorite.view.adapter.viewholders.WishlistViewHolder;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -193,26 +190,6 @@ public class FragmentFavorite extends BaseDaggerFragment
     }
 
     @Override
-    public void addTopAdsShop(TopAdsShopViewModel shopViewModel) {
-        final int indexFirstAdapter = 0;
-        final int indexSecondAdapater = 1;
-        if (isAdapterNotEmpty()) {
-            if (isFirstPositonWishlist(indexFirstAdapter)) {
-                if (favoriteAdapter.getItemCount() >= 2) {
-                    favoriteAdapter.setElement(indexSecondAdapater, shopViewModel);
-                } else {
-                    favoriteAdapter.addElement(shopViewModel);
-                }
-            } else {
-                favoriteAdapter.setElement(indexFirstAdapter, shopViewModel);
-            }
-        } else {
-            favoriteAdapter.addElement(shopViewModel);
-        }
-    }
-
-
-    @Override
     public void refreshDataFavorite(List<Visitable> elementList) {
         favoriteAdapter.hideLoading();
         favoriteAdapter.clearData();
@@ -368,11 +345,6 @@ public class FragmentFavorite extends BaseDaggerFragment
         recyclerView.setAdapter(favoriteAdapter);
         recyclerView.addOnScrollListener(recylerviewScrollListener);
 
-    }
-
-    private boolean isFirstPositonWishlist(int indexFirstAdapter) {
-        return favoriteAdapter.getItemViewType(indexFirstAdapter) == WishlistViewHolder.LAYOUT
-                || favoriteAdapter.getItemViewType(indexFirstAdapter) == EmptyWishslistHolder.LAYOUT;
     }
 
     private boolean isAdapterNotEmpty() {
