@@ -569,7 +569,7 @@ public class GMStatActivityFragment extends BasePresenterFragment implements GMF
         ProdSold prodSold = new ProdSold(getProductGraph.getProductSold());
         prodSold.percentage = getProductGraph.getDiffSold() * 100;
 
-        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate() * 100);
+        ConvRate convRate = new ConvRate(getProductGraph.getConversionRate());
         convRate.percentage = getProductGraph.getDiffConv() * 100;
 
         baseGMModels.add(successfulTransaction);
