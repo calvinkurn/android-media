@@ -30,7 +30,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
     private GetPromoUseCase getPromoUseCase;
-    private List<ProductEstimate> mProductEstimates;
 
     public UberProductPresenter(GetProductAndEstimatedUseCase getUberProductsUseCase,
                                 GetFareEstimateUseCase getFareEstimateUseCase,
@@ -84,59 +83,35 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onNext(List<ProductEstimate> productEstimates) {
-                List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
+                if (isViewAttached() && !isUnsubscribed()){
+                    List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
 
-                getView().hideProgress();
+                    getView().hideProgress();
 
-                if (productsList.size() == 0) {
-                    getView().hideProductList();
-                    getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
-                } else {
-                    //check if currency code of any product is not IDR, show error message
-                    for (ProductEstimate pe : productEstimates) {
-                        if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
-                            getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
-                            return;
+                    if (productsList.size() == 0) {
+                        getView().hideProductList();
+                        getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                    } else {
+                        //check if currency code of any product is not IDR, show error message
+                        for (ProductEstimate pe : productEstimates) {
+                            if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
+                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
+                                return;
+                            }
                         }
+
+
+                        getView().hideErrorMessage();
+                        getView().showProductList();
+                        getView().renderProductList(productsList);
+                        if (destination != null)
+                            actionGetFareProduct(source, destination, productEstimates);
+
+                        getMinimalProductEstimateAndRender(productEstimates);
                     }
-
-
-                    getView().hideErrorMessage();
-                    getView().showProductList();
-                    getView().renderProductList(productsList);
-                    if (source != null && destination != null)
-                        actionGetFareProduct(source, destination, productEstimates);
-                    mProductEstimates = productEstimates;
-
-                    getMinimalProductEstimateAndRender(productEstimates);
                 }
-            }
-        });/*
-        getProductAndEstimatedUseCase.execute(requestParams, new Subscriber<List<Product>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(List<Product> products) {
-                List<Visitable> productsList = mProductViewModelMapper.transform(products);
-
-                getView().hideProgress();
-
-                if(productsList.size() == 0){
-                    getView().showErrorMessage(R.string.no_rides_found);
-                }
-
-                getView().renderProductList(productsList);
             }
         });
-*/
     }
 
     private void getMinimalProductEstimateAndRender(List<ProductEstimate> productEstimates) {
@@ -187,7 +162,6 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-
                 if (e instanceof TosConfirmationHttpException) {
                     //show TOS Confirmation Dialog
                 } else {
@@ -199,18 +173,20 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
-                getView().hideErrorMessage();
-                getView().showProductList();
-                getView().renderFareProduct(mProductViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
+                if (isViewAttached() && !isUnsubscribed()){
+                    getView().hideErrorMessage();
+                    getView().showProductList();
+                    getView().renderFareProduct(mProductViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);
+                }
             }
         });
     }
 
     @Override
     public void detachView() {
-        super.detachView();
         getFareEstimateUseCase.unsubscribe();
         getProductAndEstimatedUseCase.unsubscribe();
         getPromoUseCase.unsubscribe();
+        super.detachView();
     }
 }

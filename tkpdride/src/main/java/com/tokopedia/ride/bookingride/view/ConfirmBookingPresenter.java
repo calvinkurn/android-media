@@ -124,8 +124,8 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
     @Override
     public void detachView() {
-        super.detachView();
         getFareEstimateUseCase.unsubscribe();
         networkInteractor.unsubscribe();
+        super.detachView();
     }
 }

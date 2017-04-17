@@ -235,13 +235,15 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
                     @Override
                     public void onNext(String sourceAddress) {
-                        PlacePassViewModel placeVm = new PlacePassViewModel();
-                        placeVm.setAddress(sourceAddress);
-                        placeVm.setLatitude(mCurrentLocation.getLatitude());
-                        placeVm.setLongitude(mCurrentLocation.getLongitude());
-                        placeVm.setTitle(sourceAddress);
-                        placeVm.setType(PlacePassViewModel.TYPE.OTHER);
-                        getView().setSourceLocation(placeVm);
+                        if (isViewAttached()){
+                            PlacePassViewModel placeVm = new PlacePassViewModel();
+                            placeVm.setAddress(sourceAddress);
+                            placeVm.setLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setTitle(sourceAddress);
+                            placeVm.setType(PlacePassViewModel.TYPE.OTHER);
+                            getView().setSourceLocation(placeVm);
+                        }
                     }
                 });
 
@@ -341,11 +343,13 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
             @Override
             public void onNext(List<String> strings) {
-                List<List<LatLng>> routes = new ArrayList<>();
-                for (String route : strings) {
-                    routes.add(PolyUtil.decode(route));
+                if (isViewAttached() && !isUnsubscribed()){
+                    List<List<LatLng>> routes = new ArrayList<>();
+                    for (String route : strings) {
+                        routes.add(PolyUtil.decode(route));
+                    }
+                    getView().renderTripRoute(routes);
                 }
-                getView().renderTripRoute(routes);
             }
         });
     }
@@ -373,26 +377,6 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
         } else {
             getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
         }
-    }
-
-    //    public Observable<PlaceLikelihoodBuffer> setSourceAsCurrentLocation(@javax.annotation.Nullable final PlaceFilter placeFilter) {
-//        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-//                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
-//                    @Override
-//                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
-//                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
-//                    }
-//                });
-//    }
-
-    public Observable<GoogleApiClient> getGoogleApiClientObservable(Api... apis) {
-        //noinspection unchecked
-        return GoogleAPIClientObservable.create(getView().getActivity(), apis);
-    }
-
-
-    public <T extends Result> Observable<T> fromPendingResult(PendingResult<T> result) {
-        return Observable.create(new PendingResultObservable<>(result));
     }
 
     @Override
@@ -432,15 +416,17 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
                     @Override
                     public void onNext(String sourceAddress) {
-                        getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+                        if (isViewAttached() && !isUnsubscribed()) {
+                            getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+                        }
                     }
                 });
     }
 
     @Override
     public void detachView() {
-        super.detachView();
         getOverviewPolylineUseCase.unsubscribe();
         mGetUberProductsUseCase.unsubscribe();
+        super.detachView();
     }
 }

@@ -35,21 +35,25 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                if (!isViewAttached()) return;
                 getView().hideGetReceiptLoading();
                 getView().showMessage(e.getMessage());
             }
 
             @Override
             public void onNext(Receipt receipt) {
-                getView().renderReceipt(receipt);
+                if (isViewAttached()) {
+                    getView().renderReceipt(receipt);
+                }
             }
         });
     }
 
     @Override
     public void detachView() {
-        super.detachView();
         getCurrentDetailRideRequestUseCase.unsubscribe();
         getReceiptUseCase.unsubscribe();
+        super.detachView();
     }
 }
