@@ -7,7 +7,9 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.ride.BuildConfig;
 import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
@@ -98,11 +100,14 @@ public class RideInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
+
         return request.newBuilder()
                 .header("Tkpd-UserId", userId)
                 .header("Authorization", oAuth)
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
+                //TODO remove skip payment
+                .header("tkpd-skip-payment", "true")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
                 .method(request.method(), request.body());
     }
@@ -115,7 +120,7 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                     String errorMessage = response.body().string();
                     throw new TosConfirmationHttpException(errorMessage);
                 default:
-                    throw new RuntimeException("Terjadi kesalahan Server");
+                    throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         }
         return response;
