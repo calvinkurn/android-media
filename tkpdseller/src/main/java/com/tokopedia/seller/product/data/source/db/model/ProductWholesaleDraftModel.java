@@ -1,35 +1,42 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author sebastianuskh on 4/13/17.
  */
 
 public class ProductWholesaleDraftModel {
-    private String price;
-    private String qtyMax;
-    private String qtyMin;
+    @SerializedName("product_wholesale_price")
+    private double price;
 
-    public String getPrice() {
+    @SerializedName("product_qty_max")
+    private int qtyMax;
+
+    @SerializedName("product_qty_min")
+    private int qtyMin;
+
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public String getQtyMax() {
+    public int getQtyMax() {
         return qtyMax;
     }
 
-    public void setQtyMax(String qtyMax) {
+    public void setQtyMax(int qtyMax) {
         this.qtyMax = qtyMax;
     }
 
-    public String getQtyMin() {
+    public int getQtyMin() {
         return qtyMin;
     }
 
-    public void setQtyMin(String qtyMin) {
+    public void setQtyMin(int qtyMin) {
         this.qtyMin = qtyMin;
     }
 }

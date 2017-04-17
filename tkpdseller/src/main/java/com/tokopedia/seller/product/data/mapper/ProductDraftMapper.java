@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.seller.product.data.source.db.model.ImageProductInputDraftModel;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftModel;
@@ -45,12 +46,12 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setProductVideos(draftModel.getProductVideos());
         domainModel.setProductName(draftModel.getProductName());
         domainModel.setProductDescription(draftModel.getProductDescription());
-        domainModel.setProductName(draftModel.getProductDescription());
         domainModel.setProductChangePhoto(draftModel.getProductChangePhoto());
         domainModel.setProductCatalogId(draftModel.getProductCatalogId());
         domainModel.setProductDepartmentId(draftModel.getProductDepartmentId());
         domainModel.setProductCondition(draftModel.getProductCondition());
         domainModel.setProductEtalaseId(draftModel.getProductEtalaseId());
+        domainModel.setProductEtalaseName(draftModel.getProductEtalaseName());
         domainModel.setProductMinOrder(draftModel.getProductMinOrder());
         domainModel.setProductMustInsurance(draftModel.getProductMustInsurance());
         domainModel.setProductPrice(draftModel.getProductPrice());
@@ -99,7 +100,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
 
     public static String mapFromDomain(UploadProductInputDomainModel domainModel) {
         ProductDraftModel productDraft = mapDomainToDraft(domainModel);
-        return CacheUtil.convertModelToString(productDraft, ProductDraftModel.class);
+        return CacheUtil.convertModelToString(productDraft, new TypeToken<ProductDraftModel>() {
+        }.getType());
     }
 
     private static ProductDraftModel mapDomainToDraft(UploadProductInputDomainModel domainModel) {
@@ -109,12 +111,12 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setProductVideos(domainModel.getProductVideos());
         draftModel.setProductName(domainModel.getProductName());
         draftModel.setProductDescription(domainModel.getProductDescription());
-        draftModel.setProductName(domainModel.getProductDescription());
         draftModel.setProductChangePhoto(domainModel.getProductChangePhoto());
         draftModel.setProductCatalogId(domainModel.getProductCatalogId());
         draftModel.setProductDepartmentId(domainModel.getProductDepartmentId());
         draftModel.setProductCondition(domainModel.getProductCondition());
         draftModel.setProductEtalaseId(domainModel.getProductEtalaseId());
+        draftModel.setProductEtalaseName(domainModel.getProductEtalaseName());
         draftModel.setProductMinOrder(domainModel.getProductMinOrder());
         draftModel.setProductMustInsurance(domainModel.getProductMustInsurance());
         draftModel.setProductPrice(domainModel.getProductPrice());

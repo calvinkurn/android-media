@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,7 +9,10 @@ import java.util.List;
  */
 
 public class ProductPhotoListDraftModel {
+    @SerializedName("product_list_photos")
     private List<ImageProductInputDraftModel> photos;
+
+    @SerializedName("product_default_picture")
     private int productDefaultPicture;
 
     public List<ImageProductInputDraftModel> getPhotos() {

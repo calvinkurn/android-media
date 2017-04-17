@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,6 +14,7 @@ public class UploadProductInputViewModel {
     private String productName;
     private String productDescription;
     private String productEtalaseName;
+    private double productPrice;
     private int productChangePhoto;
     private int productCatalogId;
     private int productDepartmentId;
@@ -20,7 +22,6 @@ public class UploadProductInputViewModel {
     private int productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
-    private int productPrice;
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
@@ -29,6 +30,15 @@ public class UploadProductInputViewModel {
     private int poProcessType;
     private int poProcessValue;
     private int serverId;
+
+    public UploadProductInputViewModel() {
+        productPhotos = new ProductPhotoListViewModel();
+        productWholesaleList = new ArrayList<>();
+        productVideos = new ArrayList<>();
+        productName = "";
+        productDescription = "";
+        productEtalaseName = "";
+    }
 
     public ProductPhotoListViewModel getProductPhotos() {
         return productPhotos;
@@ -134,11 +144,11 @@ public class UploadProductInputViewModel {
         this.productMustInsurance = productMustInsurance;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

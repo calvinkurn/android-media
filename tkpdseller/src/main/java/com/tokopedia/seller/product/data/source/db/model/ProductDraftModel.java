@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,27 +10,70 @@ import java.util.List;
 
 public class ProductDraftModel {
 
+    @SerializedName("product_photos")
     private ProductPhotoListDraftModel productPhotos;
+
+    @SerializedName("product_wholesale")
     private List<ProductWholesaleDraftModel> productWholesaleList;
+
+    @SerializedName("product_videos")
     private List<String> productVideos;
+
+    @SerializedName("product_name")
     private String productName;
+
+    @SerializedName("product_description")
     private String productDescription;
+
+    @SerializedName("product_etalase_name")
     private String productEtalaseName;
+
+    @SerializedName("product_price")
+    private double productPrice;
+
+    @SerializedName("product_change_photos")
     private int productChangePhoto;
+
+    @SerializedName("product_catalog_id")
     private int productCatalogId;
+
+    @SerializedName("product_department_id")
     private int productDepartmentId;
+
+    @SerializedName("product_condition")
     private int productCondition;
+
+    @SerializedName("product_etalase_id")
     private int productEtalaseId;
+
+    @SerializedName("product_min_order")
     private int productMinOrder;
+
+    @SerializedName("product_must_insurance")
     private int productMustInsurance;
-    private int productPrice;
+
+    @SerializedName("product_price_currency")
     private int productPriceCurrency;
+
+    @SerializedName("product_returnable")
     private int productReturnable;
+
+    @SerializedName("product_upload_to")
     private int productUploadTo;
+
+    @SerializedName("product_weight")
     private int productWeight;
+
+    @SerializedName("product_weight_unit")
     private int productWeightUnit;
+
+    @SerializedName("po_process_type")
     private int poProcessType;
+
+    @SerializedName("po_process_value")
     private int poProcessValue;
+
+    @SerializedName("server_id")
     private int serverId;
 
     public ProductPhotoListDraftModel getProductPhotos() {
@@ -135,11 +180,11 @@ public class ProductDraftModel {
         this.productMustInsurance = productMustInsurance;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

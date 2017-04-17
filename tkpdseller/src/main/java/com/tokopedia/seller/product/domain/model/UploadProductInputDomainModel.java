@@ -15,6 +15,7 @@ public class UploadProductInputDomainModel {
     private String productName;
     private String productDescription;
     private String productEtalaseName;
+    private double productPrice;
     private int productChangePhoto;
     private int productCatalogId;
     private int productDepartmentId;
@@ -22,7 +23,6 @@ public class UploadProductInputDomainModel {
     private int productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
-    private int productPrice;
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
@@ -132,11 +132,11 @@ public class UploadProductInputDomainModel {
         this.productName = productName;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

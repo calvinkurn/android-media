@@ -1,20 +1,25 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author sebastianuskh on 4/13/17.
  */
 
-class ProductPhotoListViewModel {
-    private List<ImageProductInputServiceModel> photos;
+public class ProductPhotoListViewModel {
+    private List<ImageProductInputViewModel> photos;
     private int productDefaultPicture;
 
-    public List<ImageProductInputServiceModel> getPhotos() {
+    public ProductPhotoListViewModel() {
+        photos = new ArrayList<>();
+    }
+
+    public List<ImageProductInputViewModel> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<ImageProductInputServiceModel> photos) {
+    public void setPhotos(List<ImageProductInputViewModel> photos) {
         this.photos = photos;
     }
 

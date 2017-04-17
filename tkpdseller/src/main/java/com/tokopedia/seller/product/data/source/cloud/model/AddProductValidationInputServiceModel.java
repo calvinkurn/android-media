@@ -45,13 +45,13 @@ public class AddProductValidationInputServiceModel {
     private String productDescription;
     private String productEtalaseName;
     private String productName;
+    private double productPrice;
     private int productCatalogId;
     private int productCondition;
     private int productDepartmentId;
     private int productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
-    private int productPrice;
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
@@ -90,9 +90,9 @@ public class AddProductValidationInputServiceModel {
     public TKPDMapParam<String, String> getWholesaleParams() {
         TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
         for (int i = 0; i < productWholesale.size(); i++) {
-            wholesaleParams.put(PRD_PRC_ + i, productWholesale.get(i).getPrice());
-            wholesaleParams.put(QTY_MAX_ + i, productWholesale.get(i).getQtyMax());
-            wholesaleParams.put(QTY_MIN_ + i, productWholesale.get(i).getQtyMin());
+            wholesaleParams.put(PRD_PRC_ + i, String.valueOf(productWholesale.get(i).getPrice()));
+            wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i).getQtyMax()));
+            wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i).getQtyMin()));
         }
         return wholesaleParams;
     }
@@ -203,11 +203,11 @@ public class AddProductValidationInputServiceModel {
         this.productName = productName;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 
