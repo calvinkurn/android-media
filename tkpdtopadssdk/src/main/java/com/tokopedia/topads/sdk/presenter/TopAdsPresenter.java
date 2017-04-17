@@ -34,6 +34,15 @@ public class TopAdsPresenter implements AdsPresenter {
     }
 
     @Override
+    public void setDisplayMode(int displayMode) {
+        adsUseCase.setDisplayMode(displayMode);
+    }
+
+    public int getDisplayMode(){
+        return adsUseCase.getDisplayMode();
+    }
+
+    @Override
     public void setSessionId(String sessionId) {
         adsUseCase.setSessionId(sessionId);
     }
@@ -106,4 +115,5 @@ public class TopAdsPresenter implements AdsPresenter {
                     "requesting data to the presenter");
         }
     }
+
 }

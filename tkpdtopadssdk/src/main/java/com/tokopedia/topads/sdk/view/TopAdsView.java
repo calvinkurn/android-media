@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.topads.sdk.R;
-import com.tokopedia.topads.sdk.base.adapter.Visitable;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.utils.DividerItemDecoration;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsItemAdapter;
+import com.tokopedia.topads.sdk.view.adapter.AdsItemAdapter;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private static final String TAG = TopAdsView.class.getSimpleName();
     private TopAdsPresenter presenter;
     private RecyclerView recyclerView;
-    private TopAdsItemAdapter adapter;
+    private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private TypedArray styledAttributes;
     private int displayMode = DisplayMode.GRID; // Default Display Mode
@@ -69,13 +69,12 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         initPresenter();
     }
 
-    @Override
-    public void inflateView(Context context, AttributeSet attrs, int defStyle) {
+    private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
         showLoading = styledAttributes.getBoolean(R.styleable.TopAdsView_show_loading, false);
         inflate(getContext(), R.layout.layout_ads, this);
         adsHeader = (LinearLayout) findViewById(R.id.ads_header);
-        adapter = new TopAdsItemAdapter(getContext());
+        adapter = new AdsItemAdapter(getContext());
         adapter.setItemClickListener(this);
         ImageView infoView = (ImageView) findViewById(R.id.info_topads);
         infoView.setOnClickListener(this);
@@ -92,7 +91,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void onClick(View v) {
-        if(v.getId()==R.id.info_topads){
+        if (v.getId() == R.id.info_topads) {
             TopAdsInfoDialog infoTopAds = TopAdsInfoDialog.newInstance();
             Activity activity = (Activity) getContext();
             infoTopAds.show(activity.getFragmentManager(), "INFO_TOPADS");
@@ -109,7 +108,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         presenter = new TopAdsPresenter(getContext());
         presenter.attachView(this);
         presenter.setMaxItems(styledAttributes.getInteger(R.styleable.TopAdsView_items, 2));
-        presenter.setEndpoinParam(styledAttributes.getString(R.styleable.TopAdsView_ep));
+        String ep = styledAttributes.getString(R.styleable.TopAdsView_ep);
+        presenter.setEndpoinParam((ep == null ? "0" : ep));
     }
 
     public void setAdsListener(TopAdsListener adsListener) {
@@ -125,7 +125,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         presenter.setMaxItems(items);
     }
 
-    @Override
     public void showProduct() {
         setDisplayMode(DisplayMode.GRID);
         presenter.setEndpoinParam("1");
@@ -133,7 +132,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         presenter.loadTopAds();
     }
 
-    @Override
     public void showShop() {
         setDisplayMode(DisplayMode.GRID);
         presenter.setEndpoinParam("2");
@@ -153,7 +151,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void setDisplayMode(int displayMode) {
-        switch (displayMode){
+        switch (displayMode) {
             case DisplayMode.GRID:
                 itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
@@ -169,12 +167,12 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void displayAds(List<Visitable> list) {
-        if(list.size()>0){
+    public void displayAds(List<Item> list) {
+        if (list.size() > 0) {
             adsHeader.setVisibility(VISIBLE);
         }
         adapter.setList(list);
-        if(adsListener!=null){
+        if (adsListener != null) {
             adsListener.onTopAdsLoaded();
         }
     }
@@ -187,33 +185,32 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void onProductItemClicked(int position, Data data) {
         presenter.openProductTopAds(data.getProductClickUrl(), data.getProduct());
-
     }
 
     @Override
     public void onAddFavorite(int position, Shop shop) {
-        if(adsItemClickListener !=null){
+        if (adsItemClickListener != null) {
             adsItemClickListener.onAddFavorite(shop);
         }
     }
 
     @Override
     public void notifyProductClickListener(Product product) {
-        if(adsItemClickListener !=null){
+        if (adsItemClickListener != null) {
             adsItemClickListener.onProductItemClicked(product);
         }
     }
 
     @Override
     public void notifyShopClickListener(Shop shop) {
-        if(adsItemClickListener !=null){
+        if (adsItemClickListener != null) {
             adsItemClickListener.onShopItemClicked(shop);
         }
     }
 
     @Override
     public void notifyAdsErrorLoaded(int errorCode, String message) {
-        if(adsListener!=null){
+        if (adsListener != null) {
             adsListener.onTopAdsFailToLoad(errorCode, message);
         }
     }
@@ -221,7 +218,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     @Override
     public void initLoading() {
         adsHeader.setVisibility(GONE);
-        if(!isLoading && showLoading) {
+        if (!isLoading && showLoading) {
             LayoutInflater.from(getContext()).inflate(R.layout.layout_progress, contentLayout);
             isLoading = true;
         }
@@ -229,7 +226,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void finishLoading() {
-        if(isLoading && showLoading){
+        if (isLoading && showLoading) {
             contentLayout.removeView(contentLayout.findViewById(R.id.progress_bar));
             isLoading = false;
         }
