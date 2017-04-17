@@ -155,6 +155,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
+        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
     }
 
