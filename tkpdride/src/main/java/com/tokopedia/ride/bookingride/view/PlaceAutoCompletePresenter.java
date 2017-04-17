@@ -114,9 +114,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             getView().setActiveMarketplaceSource();
             actionGetPeopleAddresses(false);
         }
-
-//                .subscribeOn(Schedulers.from(threadExecutor))
-//                .observeOn(postExecutionThread.getScheduler())
     }
 
     @Override
@@ -135,31 +132,31 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
             @Override
             public void onNext(PeopleAddressWrapper wrapper) {
-                CommonUtils.dumper("Executed OnNext M " + getView().isActiveMarketPlaceSource());
-                if (!getView().isActiveMarketPlaceSource()) return;
-                CommonUtils.dumper("Executed OnNext M");
-                compositeSubscription.clear();
-                ArrayList<Visitable> addresses = new ArrayList<>();
-                for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
-                    if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
-                        PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                        address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
-                        address.setTitle(String.valueOf(peopleAddress.getAddressName()));
-                        address.setAddressId(peopleAddress.getAddressId());
-                        address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
-                        address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
-                        address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
-                        addresses.add(address);
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (!getView().isActiveMarketPlaceSource()) return;
+                    compositeSubscription.clear();
+                    ArrayList<Visitable> addresses = new ArrayList<>();
+                    for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
+                        if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
+                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                            address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
+                            address.setTitle(String.valueOf(peopleAddress.getAddressName()));
+                            address.setAddressId(peopleAddress.getAddressId());
+                            address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
+                            address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
+                            address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
+                            addresses.add(address);
+                        }
                     }
+                    getView().showListPlaces();
+                    getView().setPagingConfiguration(wrapper.getPaging());
+                    if (!isLoadMore) {
+                        getView().renderPlacesList(addresses);
+                    } else {
+                        getView().renderMorePlacesList(addresses);
+                    }
+                    getView().hideAutoCompleteLoadingCross();
                 }
-                getView().showListPlaces();
-                getView().setPagingConfiguration(wrapper.getPaging());
-                if (!isLoadMore) {
-                    getView().renderPlacesList(addresses);
-                } else {
-                    getView().renderMorePlacesList(addresses);
-                }
-                getView().hideAutoCompleteLoadingCross();
             }
         });
     }
@@ -296,12 +293,12 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
         @Override
         public void onNext(String keyword) {
-            getView().showListPlaces();
-            CommonUtils.dumper("onNext : " + keyword);
+            if (isViewAttached() && !isUnsubscribed()) {
+                getView().showListPlaces();
 //            if (!isLoadingPlaces) {
-            CommonUtils.dumper("proc : " + keyword);
-            getPlacesAndRenderViewByKeyword(keyword);
+                getPlacesAndRenderViewByKeyword(keyword);
 //            }
+            }
         }
     }
 
@@ -350,25 +347,25 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
                                        @Override
                                        public void onError(Throwable e) {
-
+                                           e.printStackTrace();
                                        }
 
                                        @Override
                                        public void onNext(ArrayList<AutocompletePrediction> results) {
-                                           CommonUtils.dumper("Executed OnNext G " + getView().isActiveGooglePlaceSource());
-                                           if (!getView().isActiveGooglePlaceSource()) return;
-                                           CommonUtils.dumper("Executed OnNext G");
-                                           ArrayList<Visitable> addresses = new ArrayList<>();
-                                           for (AutocompletePrediction autocompletePrediction : results) {
-                                               PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
-                                               address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
-                                               address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
-                                               address.setAddressId(autocompletePrediction.getPlaceId());
-                                               address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
-                                               addresses.add(address);
+                                           if (isViewAttached() && !isUnsubscribed()) {
+                                               if (!getView().isActiveGooglePlaceSource()) return;
+                                               ArrayList<Visitable> addresses = new ArrayList<>();
+                                               for (AutocompletePrediction autocompletePrediction : results) {
+                                                   PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                                                   address.setAddress(String.valueOf(autocompletePrediction.getSecondaryText(null)));
+                                                   address.setTitle(String.valueOf(autocompletePrediction.getPrimaryText(null)));
+                                                   address.setAddressId(autocompletePrediction.getPlaceId());
+                                                   address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
+                                                   addresses.add(address);
+                                               }
+                                               getView().renderPlacesList(addresses);
+                                               getView().hideAutoCompleteLoadingCross();
                                            }
-                                           getView().renderPlacesList(addresses);
-                                           getView().hideAutoCompleteLoadingCross();
                                        }
                                    }
                         )
@@ -451,7 +448,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionAutoDetectLocation() {
         if (mCurrentLocation != null) {
-            Observable.create(new Observable.OnSubscribe<String>() {
+            compositeSubscription.add(Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     try {
@@ -477,20 +474,23 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
                 @Override
                 public void onError(Throwable e) {
+                    e.printStackTrace();
                 }
 
                 @Override
                 public void onNext(String currentAddress) {
-                    PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                    placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
-                    placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
-                    placePassViewModel.setTitle(currentAddress);
-                    //placePassViewModel.setPlaceId(mCurrentLocation);
-                    placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
-                    placePassViewModel.setAddress(currentAddress);
-                    getView().onPlaceSelectedFound(placePassViewModel);
+                    if (isViewAttached() && !isUnsubscribed()) {
+                        PlacePassViewModel placePassViewModel = new PlacePassViewModel();
+                        placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
+                        placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
+                        placePassViewModel.setTitle(currentAddress);
+                        //placePassViewModel.setPlaceId(mCurrentLocation);
+                        placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
+                        placePassViewModel.setAddress(currentAddress);
+                        getView().onPlaceSelectedFound(placePassViewModel);
+                    }
                 }
-            });
+            }));
         } else {
             getView().showMessage("Location not setted");
         }
@@ -522,7 +522,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
     @Override
     public void detachView() {
-        super.detachView();
         mGetPeopleAddressesUseCase.unsubscribe();
+        super.detachView();
     }
 }

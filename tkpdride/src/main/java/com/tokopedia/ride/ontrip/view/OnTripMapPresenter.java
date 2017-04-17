@@ -85,6 +85,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+
+                if (!isViewAttached()) return;
+
                 if (e instanceof TosConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
@@ -101,9 +105,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                getView().onSuccessCreateRideRequest(rideRequest);
-                getView().startPeriodicService(rideRequest.getRequestId());
-                proccessGetCurrentRideRequest(rideRequest);
+                if (isViewAttached()){
+                    getView().onSuccessCreateRideRequest(rideRequest);
+                    getView().startPeriodicService(rideRequest.getRequestId());
+                    proccessGetCurrentRideRequest(rideRequest);
+                }
             }
         });
     }
@@ -123,8 +129,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(String s) {
-                //getView().showMessage(s);
-                getView().onSuccessCancelRideRequest();
+                if (isViewAttached()) {
+                    getView().onSuccessCancelRideRequest();
+                }
             }
         });
 
@@ -142,6 +149,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                if (!isViewAttached()) return;
                 if (e instanceof TosConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
@@ -158,9 +167,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                proccessGetCurrentRideRequest(rideRequest);
-                getView().onSuccessCreateRideRequest(rideRequest);
-                //getView().showCancelRequestButton();
+                if (isViewAttached()){
+                    proccessGetCurrentRideRequest(rideRequest);
+                    getView().onSuccessCreateRideRequest(rideRequest);
+                }
             }
         });
     }
@@ -256,11 +266,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(List<String> strings) {
-                List<List<LatLng>> routes = new ArrayList<>();
-                for (String route : strings) {
-                    routes.add(PolyUtil.decode(route));
+                if (isViewAttached()){
+                    List<List<LatLng>> routes = new ArrayList<>();
+                    for (String route : strings) {
+                        routes.add(PolyUtil.decode(route));
+                    }
+                    getView().renderTripRoute(routes);
                 }
-                getView().renderTripRoute(routes);
             }
         });
     }
@@ -276,12 +288,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().showFailedShare();
+                if (isViewAttached()) {
+                    getView().showFailedShare();
+                }
             }
 
             @Override
             public void onNext(String shareUrl) {
-                getView().showShareDialog(shareUrl);
+                if (isViewAttached()) {
+                    getView().showShareDialog(shareUrl);
+                }
             }
         });
     }
@@ -349,6 +365,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     bis.close();
                     is.close();
                 } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
                 subscriber.onNext(bm);
@@ -364,21 +381,24 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                     @Override
                     public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onNext(Bitmap bitmap) {
-                        getView().updateDriverBitmapInNotification(remoteView, bitmap);
+                        if (isViewAttached()) {
+                            getView().updateDriverBitmapInNotification(remoteView, bitmap);
+                        }
                     }
                 });
     }
 
     @Override
     public void detachView() {
-        super.detachView();
         cancelRideRequestUseCase.unsubscribe();
         createRideRequestUseCase.unsubscribe();
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
+        super.detachView();
     }
 }
