@@ -458,8 +458,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
         dismissLoadingProgress();
         startActivity(ActivationActivity.getCallingIntent(getActivity(),
-                email.getText().toString(),
-                name.getText().toString()));
+                email.getText().toString()
+        ));
         getActivity().finish();
     }
 

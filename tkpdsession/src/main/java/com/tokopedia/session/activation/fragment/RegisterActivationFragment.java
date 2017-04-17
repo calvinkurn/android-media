@@ -3,20 +3,23 @@ package com.tokopedia.session.activation.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.view.KeyEvent;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextWatcher;
+import android.text.style.ClickableSpan;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.interactor.ActivationNetworkInteractorImpl;
 import com.tokopedia.session.register.RegisterConstant;
@@ -24,7 +27,6 @@ import com.tokopedia.session.activation.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.presenter.RegisterActivationPresenterImpl;
 import com.tokopedia.session.activation.viewListener.RegisterActivationView;
 
-import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -35,23 +37,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         implements RegisterConstant, RegisterActivationView {
 
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
-    private static final String ARGS_NAME = "ARGS_NAME";
 
-
-    @BindView(R2.id.head)
-    TextView nameEditText;
-    @BindView(R2.id.email)
-    TextView email;
-    @BindView(R2.id.resend_button)
-    TextView resendButton;
-
+    TextView activationText;
+    EditText verifyCode;
+    TextView activateButton;
+    TextView footer;
     TkpdProgressDialog progressDialog;
 
-    public static RegisterActivationFragment createInstance(String email, String name) {
+    public static RegisterActivationFragment createInstance(String email) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARGS_EMAIL, email);
-        bundle.putString(ARGS_NAME, name);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -103,37 +99,82 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.activity_activation_resent;
+        return R.layout.fragment_register_activation;
     }
 
     @Override
     protected void initView(View view) {
-        resendButton.setBackgroundResource(com.tokopedia.core.R.drawable.bg_rounded_corners);
-        nameEditText.setText("Halo,");
-        email.setText(getArguments().getString(ARGS_EMAIL, ""));
-//        SnackbarManager.make(getActivity(), "Akun anda belum diaktivasi. Cek email anda untuk mengaktivasi akun.", Snackbar.LENGTH_LONG).show();
+        activationText = (TextView) view.findViewById(R.id.activation_text);
+        verifyCode = (EditText) view.findViewById(R.id.input_verify_code);
+        activateButton = (TextView) view.findViewById(R.id.verify_button);
+        footer = (TextView) view.findViewById(R.id.footer);
+
+        String activateText = getString(R.string.activation_header_text) + " <b>" + getArguments().getString(ARGS_EMAIL, "") + "</b>";
+        activationText.setText(MethodChecker.fromHtml(activateText).toString());
+
+        Spannable spannable = new SpannableString(getString(R.string.activation_resend_email));
+
+        spannable.setSpan(new ClickableSpan() {
+                              @Override
+                              public void onClick(View view) {
+
+                              }
+
+                              @Override
+                              public void updateDrawState(TextPaint ds) {
+                                  ds.setUnderlineText(true);
+                                  ds.setColor(MethodChecker.getColor(getActivity(),
+                                          com.tokopedia.core.R.color.tkpd_main_green));
+                              }
+                          }
+                , getString(R.string.activation_resend_email).indexOf("Kirim")
+                , getString(
+                        R.string.activation_resend_email).length()
+                , 0);
+
+        footer.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
     @Override
     protected void setViewListener() {
-        resendButton.setOnClickListener(new View.OnClickListener() {
+        activateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                KeyboardHandler.DropKeyboard(getActivity(), email);
-                resendButton.setText(getString(R.string.title_resend_activation_email));
-                UnifyTracking.eventResendNotification();
+                presenter.activateAccount();
+            }
+        });
+        footer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 presenter.resendActivation();
             }
         });
 
-        email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        verifyCode.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onEditorAction(TextView v, int id, KeyEvent event) {
-                if (id == com.tokopedia.core.R.id.email || id == EditorInfo.IME_NULL) {
-                    presenter.resendActivation();
-                    return true;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 6) {
+                    activateButton.setEnabled(true);
+                    MethodChecker.setBackground(activateButton,
+                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+
+                } else {
+                    activateButton.setEnabled(false);
+                    MethodChecker.setBackground(activateButton,
+                            MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
-                return false;
             }
         });
     }
@@ -181,7 +222,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public String getEmail() {
-        return email.getText().toString();
+        return getArguments().getString(ARGS_EMAIL, "");
     }
 
     @Override

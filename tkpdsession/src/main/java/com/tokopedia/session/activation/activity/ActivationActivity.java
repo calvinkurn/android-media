@@ -18,7 +18,6 @@ import com.tokopedia.session.activation.fragment.RegisterActivationFragment;
 public class ActivationActivity extends BasePresenterActivity {
 
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
-    private static final String INTENT_EXTRA_PARAM_NAME = "INTENT_EXTRA_PARAM_NAME";
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -44,8 +43,7 @@ public class ActivationActivity extends BasePresenterActivity {
     protected void initView() {
 
         RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(
-                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL),
-                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_NAME)
+                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL)
         );
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -77,17 +75,10 @@ public class ActivationActivity extends BasePresenterActivity {
         return null;
     }
 
-    public static Intent getCallingIntent(Context context, String email, String name) {
-        Intent callingIntent = new Intent(context, ActivationActivity.class);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, name);
-        return callingIntent;
-    }
-
     public static Intent getCallingIntent(Context context, String email) {
         Intent callingIntent = new Intent(context, ActivationActivity.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, "");
         return callingIntent;
     }
+
 }

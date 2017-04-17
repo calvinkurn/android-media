@@ -5,4 +5,7 @@ package com.tokopedia.session.activation.presenter;
  */
 public interface RegisterActivationPresenter {
     void resendActivation();
+
+    void activateAccount();
+
 }

@@ -114,6 +114,11 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
     }
 
+    @Override
+    public void activateAccount() {
+
+    }
+
     private TKPDMapParam<String, String> getResendActivationParam() {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("email", viewListener.getEmail());

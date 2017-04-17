@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/footer"
@@ -33,7 +34,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/verify_button">
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@id/verify_button"
+        android:layout_alignParentStart="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -89,7 +93,7 @@
             <com.tkpd.library.ui.widget.PinEntryEditText
                 android:id="@+id/input_verify_code"
                 android:layout_below="@id/title_verify"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/width_icon_register"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_large"
                 android:layout_marginLeft="@dimen/margin_vl"
@@ -99,6 +103,7 @@
                 android:digits="1234567890"
                 android:imeOptions="actionDone"
                 android:inputType="number"
+                android:layout_centerHorizontal="true"
                 android:maxLength="6"
                 android:paddingBottom="@dimen/margin_small"
                 android:textIsSelectable="false"
