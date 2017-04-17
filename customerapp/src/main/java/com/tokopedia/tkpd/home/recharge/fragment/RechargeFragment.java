@@ -550,8 +550,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void showProductById(Product product) {
         selectedProduct = product;
         if (checkStockProduct(selectedProduct))
-//            goToNativeCheckout();
-            goToCheckout(getUrlCheckout());
+            goToNativeCheckout();
+//            goToCheckout(getUrlCheckout());
     }
 
     @Override
