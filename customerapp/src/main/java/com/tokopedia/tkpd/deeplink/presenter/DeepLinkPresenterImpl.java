@@ -35,10 +35,12 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -46,6 +48,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +72,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int INVOICE = 8;
     private static final int RECHARGE = 9;
     private static final int APPLINK = 10;
+    private static final int CATEGORY = 11;
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String DL_TOKOPEDIA_HOST = "apps.tokopedia.com";
     private static final String DF_TOKOPEDIA_HOST = "tokopedia.com";
@@ -89,6 +93,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int type = getDeepLinkType(uri);
         switch (type) {
             case HOMEPAGE:
+                return false;
+            case CATEGORY:
                 return false;
             case BROWSE:
                 return false;
@@ -136,6 +142,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_INDEX_HOME;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openHomepage();
+                    break;
+                case CATEGORY:
+                    openCategory(linkSegment);
+                    screenName = AppScreen.SCREEN_BROWSE_PRODUCT;
                     break;
                 case BROWSE:
                     openBrowseProduct(linkSegment, uriData);
@@ -471,31 +481,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
+    private void openCategory(List<String> linkSegment) {
+        String departmentId = "0";
+        String iden = linkSegment.get(1);
+        CategoryDB dep =
+                DbManagerImpl.getInstance().getCategoryDb(iden);
+        if (dep != null) {
+            departmentId = dep.getDepartmentId() + "";
+        }
+        IntermediaryActivity.moveTo(
+                context,
+                departmentId
+        );
+        context.finish();
+    }
+
+
     private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
         String departmentId = "0";
         String searchQuery = "";
+        departmentId = uriData.getQueryParameter("sc");
+        searchQuery = uriData.getQueryParameter("q");
         String source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
-        if (isSearch(linkSegment)) {
-            departmentId = uriData.getQueryParameter("sc");
-            searchQuery = uriData.getQueryParameter("q");
-            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT;
-            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-            bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
-        } else if (isCategory(linkSegment)) {
-            String iden = linkSegment.get(1);
-            for (int i = 2; i < linkSegment.size(); i++) {
-                iden = iden + "_" + linkSegment.get(i);
-            }
-            CategoryDB dep =
-                    DbManagerImpl.getInstance().getCategoryDb(iden);
-            if (dep != null) {
-                departmentId = dep.getDepartmentId() + "";
-                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
-            }
-            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-            source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
-        }
+        bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+        bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
 
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
         bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
@@ -527,6 +537,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 return INVOICE;
             else if (isHomepage(linkSegment))
                 return HOMEPAGE;
+            else if (isCategory(linkSegment))
+                return CATEGORY;
             else if (isBrowse(linkSegment))
                 return BROWSE;
             else if (isHot(linkSegment))
@@ -558,9 +570,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return uri.getQueryParameter("alk") != null;
     }
 
-    private boolean isCategory(List<String> linkSegment) {
-        return linkSegment.get(0).equals("p");
-    }
 
     private boolean isSearch(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
@@ -608,7 +617,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isBrowse(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
+                 linkSegment.get(0).equals("p")
+        );
+    }
+
+    private boolean isCategory(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (
+                 linkSegment.get(0).equals("p")
         );
     }
 
