@@ -38,7 +38,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            checkViewAttached();
         }
 
         @Override
@@ -56,12 +56,12 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            checkViewAttached();
         }
 
         @Override
         public void onNext(AddProductDomainModel addProductDomainModel) {
-
+            checkViewAttached();
         }
     }
 }

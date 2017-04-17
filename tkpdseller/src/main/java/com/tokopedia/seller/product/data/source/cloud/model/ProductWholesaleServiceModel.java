@@ -5,31 +5,31 @@ package com.tokopedia.seller.product.data.source.cloud.model;
  */
 
 public class ProductWholesaleServiceModel {
-    private String price;
-    private String qtyMax;
-    private String qtyMin;
+    private double price;
+    private int qtyMax;
+    private int qtyMin;
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public String getQtyMax() {
+    public int getQtyMax() {
         return qtyMax;
     }
 
-    public String getQtyMin() {
+    public int getQtyMin() {
         return qtyMin;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
-    public void setQtyMax(String qtyMax) {
+    public void setQtyMax(int qtyMax) {
         this.qtyMax = qtyMax;
     }
 
-    public void setQtyMin(String qtyMin) {
+    public void setQtyMin(int qtyMin) {
         this.qtyMin = qtyMin;
     }
 }

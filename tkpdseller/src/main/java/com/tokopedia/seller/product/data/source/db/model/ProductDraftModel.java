@@ -1,62 +1,124 @@
-package com.tokopedia.seller.product.domain.model;
+package com.tokopedia.seller.product.data.source.db.model;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * @author sebastianuskh on 4/10/17.
+ * @author sebastianuskh on 4/13/17.
  */
 
-public class UploadProductInputDomainModel {
+public class ProductDraftModel {
 
-    private long id;
-    private ProductPhotoListDomainModel productPhotos;
-    private List<ProductWholesaleDomainModel> productWholesaleList;
+    @SerializedName("product_photos")
+    private ProductPhotoListDraftModel productPhotos;
+
+    @SerializedName("product_wholesale")
+    private List<ProductWholesaleDraftModel> productWholesaleList;
+
+    @SerializedName("product_videos")
     private List<String> productVideos;
+
+    @SerializedName("product_name")
     private String productName;
+
+    @SerializedName("product_description")
     private String productDescription;
+
+    @SerializedName("product_price")
     private double productPrice;
+
+    @SerializedName("product_change_photos")
     private int productChangePhoto;
+
+    @SerializedName("product_catalog_id")
     private int productCatalogId;
+
+    @SerializedName("product_department_id")
     private int productDepartmentId;
+
+    @SerializedName("product_condition")
     private int productCondition;
+
+    @SerializedName("product_etalase_id")
     private int productEtalaseId;
+
+    @SerializedName("product_min_order")
     private int productMinOrder;
+
+    @SerializedName("product_must_insurance")
     private int productMustInsurance;
+
+    @SerializedName("product_price_currency")
     private int productPriceCurrency;
+
+    @SerializedName("product_returnable")
     private int productReturnable;
+
+    @SerializedName("product_upload_to")
     private int productUploadTo;
+
+    @SerializedName("product_weight")
     private int productWeight;
+
+    @SerializedName("product_weight_unit")
     private int productWeightUnit;
+
+    @SerializedName("po_process_type")
     private int poProcessType;
+
+    @SerializedName("po_process_value")
     private int poProcessValue;
+
+    @SerializedName("server_id")
     private int serverId;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public ProductPhotoListDomainModel getProductPhotos() {
+    public ProductPhotoListDraftModel getProductPhotos() {
         return productPhotos;
     }
 
-    public void setProductPhotos(ProductPhotoListDomainModel productPhotos) {
+    public void setProductPhotos(ProductPhotoListDraftModel productPhotos) {
         this.productPhotos = productPhotos;
     }
 
-    public List<ProductWholesaleDomainModel> getProductPriceOne() {
+    public List<ProductWholesaleDraftModel> getProductWholesaleList() {
         return productWholesaleList;
     }
 
-    public List<ProductWholesaleDomainModel> getProductWholesaleList() {
-        return productWholesaleList;
-    }
-
-    public void setProductWholesaleList(List<ProductWholesaleDomainModel> productWholesaleList) {
+    public void setProductWholesaleList(List<ProductWholesaleDraftModel> productWholesaleList) {
         this.productWholesaleList = productWholesaleList;
+    }
+
+    public List<String> getProductVideos() {
+        return productVideos;
+    }
+
+    public void setProductVideos(List<String> productVideos) {
+        this.productVideos = productVideos;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public String getProductDescription() {
+        return productDescription;
+    }
+
+    public void setProductDescription(String productDescription) {
+        this.productDescription = productDescription;
+    }
+
+    public int getProductChangePhoto() {
+        return productChangePhoto;
+    }
+
+    public void setProductChangePhoto(int productChangePhoto) {
+        this.productChangePhoto = productChangePhoto;
     }
 
     public int getProductCatalogId() {
@@ -67,14 +129,6 @@ public class UploadProductInputDomainModel {
         this.productCatalogId = productCatalogId;
     }
 
-    public int getProductCondition() {
-        return productCondition;
-    }
-
-    public void setProductCondition(int productCondition) {
-        this.productCondition = productCondition;
-    }
-
     public int getProductDepartmentId() {
         return productDepartmentId;
     }
@@ -83,12 +137,12 @@ public class UploadProductInputDomainModel {
         this.productDepartmentId = productDepartmentId;
     }
 
-    public String getProductDescription() {
-        return productDescription;
+    public int getProductCondition() {
+        return productCondition;
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
+    public void setProductCondition(int productCondition) {
+        this.productCondition = productCondition;
     }
 
     public int getProductEtalaseId() {
@@ -113,14 +167,6 @@ public class UploadProductInputDomainModel {
 
     public void setProductMustInsurance(int productMustInsurance) {
         this.productMustInsurance = productMustInsurance;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 
     public double getProductPrice() {
@@ -193,21 +239,5 @@ public class UploadProductInputDomainModel {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
-    }
-
-    public int getProductChangePhoto() {
-        return productChangePhoto;
-    }
-
-    public void setProductChangePhoto(int productChangePhoto) {
-        this.productChangePhoto = productChangePhoto;
-    }
-
-    public List<String> getProductVideos() {
-        return productVideos;
-    }
-
-    public void setProductVideos(List<String> productVideos) {
-        this.productVideos = productVideos;
     }
 }
