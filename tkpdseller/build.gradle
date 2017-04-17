@@ -67,7 +67,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -117,15 +117,15 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
-    compile 'com.shootr:KMNumbers:1.0.0'
-    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile rootProject.ext.miscDependencies.chips
+    compile rootProject.ext.miscDependencies.kmNumber
+    compile rootProject.ext.miscDependencies.roundCornerProgressBar
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    testCompile 'junit:junit:4.12'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+//    testCompile 'junit:junit:4.12'
+//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
 }

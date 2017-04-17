@@ -295,13 +295,18 @@
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
     <string name="product_label_product_weight">Berat Produk</string>
+    <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
     <string name="product_label_insurance">Asuransi</string>
     <string name="product_label_free_returns">Free Returns</string>
     <string name="product_label_product_description">Deskripsi Produk</string>
+    <string name="product_label_save_and_add">Simpan dan tambah</string>
+    <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
+    <string name="product_label_share">Bagikan</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
 
@@ -334,7 +339,22 @@
         <item>Ya</item>
     </string-array>
     <string-array name="product_free_returns_entries">
-        <item>Opsional</item>
         <item>Ya</item>
+        <item>Tidak</item>
     </string-array>
+    <string-array name="product_weight_pre_order">
+        <item>Hari</item>
+        <item>Minggu</item>
+    </string-array>
+
+    <string name="video_not_found">Video tidak ditemukan</string>
+    <string name="invalid_video_url">URL video tidak benar</string>
+    <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
+    <string name="video_same_warn">Anda sudah menambahkan video ini</string>
+    <string name="insert_a_url_video">Masukkan URL Video</string>
+    <string name="add_url_video">+ Tambah URL Video</string>
+    <string name="url_video">URL Video</string>
+    <string name="error_no_video_url_name">Url Video harus diisi</string>
+    <string name="youtube_add_url_title">Tambah URL Video</string>
+    <string name="video">Video</string>
 </resources>

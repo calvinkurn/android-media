@@ -1,8 +1,10 @@
 package com.tokopedia.seller.product.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.product.domain.ProductDraftRepository;
+import com.tokopedia.seller.product.domain.interactor.observable.EditProductObservable;
+import com.tokopedia.seller.product.domain.interactor.observable.ImageProductObservable;
 import com.tokopedia.seller.product.domain.model.EditProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
@@ -14,22 +16,27 @@ import rx.functions.Func1;
  */
 
 public class EditProductUseCase extends UploadProductUseCase<EditProductDomainModel>{
-    public EditProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
-        super(threadExecutor, postExecutionThread);
-    }
+    private final ImageProductObservable imageProductObservable;
+    private final EditProductObservable editProductObservable;
 
-    @Override
-    public Observable<EditProductDomainModel> createObservable(RequestParams requestParams) {
-        return null;
+    public EditProductUseCase(
+            ThreadExecutor threadExecutor,
+            PostExecutionThread postExecutionThread,
+            ImageProductObservable imageProductObservable,
+            EditProductObservable editProductObservable,
+            ProductDraftRepository productDraftRepository) {
+        super(threadExecutor, postExecutionThread, productDraftRepository);
+        this.imageProductObservable = imageProductObservable;
+        this.editProductObservable = editProductObservable;
     }
 
     @Override
     protected Func1<UploadProductInputDomainModel, Observable<EditProductDomainModel>> getUploadProductObservable() {
-        return null;
+        return editProductObservable;
     }
 
     @Override
     protected Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>> getImageProductObservable() {
-        return null;
+        return imageProductObservable;
     }
 }

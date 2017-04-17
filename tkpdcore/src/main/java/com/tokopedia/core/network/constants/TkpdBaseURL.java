@@ -19,6 +19,7 @@ public class TkpdBaseURL {
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
     public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
     public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String GOOGLE_APIS = "https://www.googleapis.com";
     public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
@@ -41,7 +42,8 @@ public class TkpdBaseURL {
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
-        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + "v4/action/product/";
+        public static final String V4_ACTION_PRODUCT = "v4/action/product/";
+        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + V4_ACTION_PRODUCT;
         public static final String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
         public static final String URL_PROMO = BASE_DOMAIN + "v4/promo/";
         public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
@@ -498,6 +500,7 @@ public class TkpdBaseURL {
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
+        public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
 
         public static final String PATH_CREATE_RESOLUTION_PICTURE = "create_resolution_picture.pl";
         public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";

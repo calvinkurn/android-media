@@ -153,6 +153,7 @@
     <declare-styleable name="CounterInputView">
         <attr name="counter_hint" format="string"/>
         <attr name="counter_text" format="string"/>
+        <attr name="counter_min" format="integer"/>
         <attr name="counter_show_counter_button" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="SpinnerTextView">
@@ -167,6 +168,7 @@
         <attr name="spinner_decimal_values" format="reference"/>
         <attr name="spinner_decimal_selection" format="integer"/>
         <attr name="spinner_decimal_hint" format="string"/>
+        <attr name="spinner_decimal_min" format="integer"/>
         <attr name="spinner_decimal_show_counter_button" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="ReputationView">

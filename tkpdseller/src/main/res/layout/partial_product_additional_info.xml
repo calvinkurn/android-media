@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/LabelLayoutWithoutBorder"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/text_input_layout_description"
+            style="@style/TextInputLayout"
+            app:counterEnabled="true"
+            app:counterMaxLength="@integer/product_max_character_description">
+
+            <EditText
+                android:id="@+id/edit_text_description"
+                style="@style/EditText"
+                android:layout_width="match_parent"
+                android:hint="@string/product_label_product_description" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_add_url_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_detail_padding_item">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/text_add_url_video"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/topads_detail_padding_item"
+            android:text="@string/add_url_video"
+            android:textColor="@color/arrow_up"
+            android:textSize="@dimen/fourten_text_size" />
+
+    </LinearLayout>
+
+    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+        android:id="@+id/spinner_counter_input_view_pre_order"
+        style="@style/LabelLayoutWithoutBorder"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:spinner_decimal_entries="@array/product_weight_pre_order"
+        app:spinner_decimal_hint="@string/product_label_time_process" />
+
+    <com.tokopedia.seller.lib.widget.LabelSwitch
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/product_margin_cards"
+        app:title="@string/product_label_share" />
+</LinearLayout>

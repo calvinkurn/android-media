@@ -44,7 +44,7 @@ public class LabelSwitch extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.LabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.LabelView_title);
-            switchEnable = styledAttributes.getBoolean(R.styleable.LabelView_switch_enable, false);
+            switchEnable = styledAttributes.getBoolean(R.styleable.LabelView_switch_enable, true);
         } finally {
             styledAttributes.recycle();
         }

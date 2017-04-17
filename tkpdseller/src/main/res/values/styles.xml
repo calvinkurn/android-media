@@ -139,6 +139,17 @@
         <item name="android:textColor">@color/text_submit_button</item>
     </style>
 
+    <style name="ImageButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="ImageButton.Counter">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+
     <style name="ImageViewStatus">
         <item name="android:layout_width">10dp</item>
         <item name="android:layout_height">10dp</item>
@@ -220,12 +231,13 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset
+        </item> <!-- this is to cater the inner margin android textInputlayout have in default -->
         <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
-    
+
     <style name="TextInputLayoutColorLine">
         <item name="colorControlNormal">@color/colorGray</item>
         <item name="colorControlActivated">@color/font_top_ads_green</item>

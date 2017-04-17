@@ -12,7 +12,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -84,7 +83,6 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.ManageProductPermissionsDispatcher;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
@@ -156,6 +154,7 @@ public class ManageProduct extends TkpdActivity implements
     ImageView blurImage;
 
     ManageProductPresenterImpl manageProductPresenter;
+    FabSpeedDial fabAddProduct;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
     private ArrayList<String> EtalaseIdFilters = new ArrayList<String>();
@@ -209,10 +208,6 @@ public class ManageProduct extends TkpdActivity implements
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
-
-    FabSpeedDial fabAddProduct;
-
-
     // NEW NETWORK
     private NetworkInteractor networkInteractorImpl;
     private Gson gson;
@@ -1604,6 +1599,12 @@ public class ManageProduct extends TkpdActivity implements
     public void onBackPressed() {
         if (lvadapter.CloseQuickEdit())
             super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(addProductReceiver);
     }
 
     @Override

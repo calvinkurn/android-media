@@ -14,6 +14,7 @@ import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 
 import dagger.Module;
 import dagger.Provides;
@@ -83,4 +84,12 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
     }
 
+
+    @YoutubeQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideYoutubeRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                           Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GOOGLE_APIS).client(okHttpClient).build();
+    }
 }

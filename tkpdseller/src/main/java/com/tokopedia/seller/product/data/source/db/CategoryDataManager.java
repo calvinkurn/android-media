@@ -9,8 +9,6 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase_Table;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
-import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
 
 import java.util.List;
 

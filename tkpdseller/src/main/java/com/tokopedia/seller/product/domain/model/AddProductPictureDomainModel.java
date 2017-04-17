@@ -5,4 +5,13 @@ package com.tokopedia.seller.product.domain.model;
  */
 
 public class AddProductPictureDomainModel {
+    private String fileUploaded;
+
+    public void setFileUploaded(String fileUploaded) {
+        this.fileUploaded = fileUploaded;
+    }
+
+    public String getFileUploaded() {
+        return fileUploaded;
+    }
 }

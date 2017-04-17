@@ -2,11 +2,15 @@ package com.tokopedia.seller.product.domain.interactor.observable;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.product.domain.ImageProductRepository;
+import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
+import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -18,10 +22,11 @@ import rx.functions.Func2;
 
 public class ImageProductObservable implements Func1<UploadProductInputDomainModel,
         Observable<UploadProductInputDomainModel>> {
-    private final ImageProductRepository imageProductRepository;
+    private final ImageProductUploadRepository imageProductUploadRepository;
 
-    public ImageProductObservable(ImageProductRepository imageProductRepository) {
-        this.imageProductRepository = imageProductRepository;
+    @Inject
+    public ImageProductObservable(ImageProductUploadRepository imageProductUploadRepository) {
+        this.imageProductUploadRepository = imageProductUploadRepository;
     }
 
     @Override
@@ -29,7 +34,7 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             UploadProductInputDomainModel uploadProductInputDomainModel
     ) {
         Observable<List<ImageProductInputDomainModel>> imageResult = Observable
-                .from(uploadProductInputDomainModel.getImages())
+                .from(uploadProductInputDomainModel.getProductPhotos().getPhotos())
                 .flatMap(new CheckImageHasUrl())
                 .toList();
         return storeImagesToModel(uploadProductInputDomainModel, imageResult);
@@ -45,7 +50,7 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             if (imageDomainModel.getUrl() != null && !imageDomainModel.getUrl().isEmpty()) {
                 return Observable.just(imageDomainModel);
             } else {
-                return imageProductRepository.uploadImageProduct(imageDomainModel.getUri());
+                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath());
             }
 
         }
@@ -69,7 +74,9 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
                                     UploadProductInputDomainModel uploadProductInputDomainModel,
                                     List<ImageProductInputDomainModel> imageProductInputDomainModels
                             ) {
-                                uploadProductInputDomainModel.setImages(imageProductInputDomainModels);
+                                ProductPhotoListDomainModel productPhotos = new ProductPhotoListDomainModel();
+                                productPhotos.setPhotos(imageProductInputDomainModels);
+                                uploadProductInputDomainModel.setProductPhotos(productPhotos);
                                 return uploadProductInputDomainModel;
                             }
                         });

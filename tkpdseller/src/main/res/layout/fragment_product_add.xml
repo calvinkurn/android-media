@@ -10,6 +10,25 @@
 
         <include layout="@layout/partial_product_info" />
 
+        <include layout="@layout/partial_product_image" />
+
         <include layout="@layout/partial_product_detail" />
+
+        <include layout="@layout/partial_product_additional_info" />
+
+        <Button
+            android:id="@+id/button_save_and_add"
+            style="@style/Button.TopAds.Submit"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/product_margin_cards"
+            android:background="@color/white"
+            android:text="@string/product_label_save_and_add"
+            android:textColor="@color/grey_400" />
+
+        <Button
+            android:id="@+id/button_save"
+            style="@style/Button.TopAds.Submit.Green"
+            android:layout_width="match_parent"
+            android:text="@string/product_label_save" />
     </LinearLayout>
 </ScrollView>
