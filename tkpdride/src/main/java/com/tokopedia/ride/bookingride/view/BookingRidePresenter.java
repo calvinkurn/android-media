@@ -436,4 +436,11 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                     }
                 });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getOverviewPolylineUseCase.unsubscribe();
+        mGetUberProductsUseCase.unsubscribe();
+    }
 }

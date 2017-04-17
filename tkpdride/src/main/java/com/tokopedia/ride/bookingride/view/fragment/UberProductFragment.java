@@ -298,4 +298,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void actionMinimumTimeEstResult(String timeEst) {
         mInteractionListener.onMinimumTimeEstCalculated(timeEst);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detachView();
+    }
 }

@@ -308,4 +308,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     }
                 });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        cancelRideRequestUseCase.unsubscribe();
+        createRideRequestUseCase.unsubscribe();
+        getOverviewPolylineUseCase.unsubscribe();
+        getRideRequestMapUseCase.unsubscribe();
+    }
 }

@@ -205,4 +205,12 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getFareEstimateUseCase.unsubscribe();
+        getProductAndEstimatedUseCase.unsubscribe();
+        getPromoUseCase.unsubscribe();
+    }
 }

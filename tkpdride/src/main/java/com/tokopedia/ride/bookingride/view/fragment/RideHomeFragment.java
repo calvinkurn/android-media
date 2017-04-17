@@ -558,4 +558,10 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     public void setMarkerText(String timeEst) {
         mMarkerTimeTextView.setText(timeEst);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detachView();
+    }
 }

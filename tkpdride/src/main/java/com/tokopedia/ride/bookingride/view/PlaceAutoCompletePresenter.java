@@ -520,5 +520,9 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
         getView().onPlaceSelectedFound(placePassViewModel);
     }
 
-
+    @Override
+    public void detachView() {
+        super.detachView();
+        mGetPeopleAddressesUseCase.unsubscribe();
+    }
 }

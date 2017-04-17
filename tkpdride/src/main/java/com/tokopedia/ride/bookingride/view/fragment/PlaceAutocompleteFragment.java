@@ -357,4 +357,10 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     public boolean isActiveGooglePlaceSource() {
         return !isMarketPlaceSource;
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mPresenter.detachView();
+    }
 }

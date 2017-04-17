@@ -183,4 +183,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

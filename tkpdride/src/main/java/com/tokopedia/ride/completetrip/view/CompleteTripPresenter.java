@@ -45,4 +45,11 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getCurrentDetailRideRequestUseCase.unsubscribe();
+        getReceiptUseCase.unsubscribe();
+    }
 }
