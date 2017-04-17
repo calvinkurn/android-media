@@ -23,6 +23,7 @@ import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
+import com.tokopedia.session.session.activity.Login;
 
 /**
  * Created by nisie on 1/31/17.
@@ -32,6 +33,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         implements RegisterConstant, RegisterActivationView {
 
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
+    private static final String ARGS_PASSWORD = "ARGS_PASSWORD";
 
     TextView activationText;
     EditText verifyCode;
@@ -215,8 +217,44 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     }
 
     @Override
+    public String getUnicode() {
+        return verifyCode.getText().toString();
+    }
+
+    @Override
+    public void onErrorActivateWithUnicode(String errorMessage) {
+        finishLoadingProgress();
+        if (errorMessage.equals(""))
+            NetworkErrorHelper.showSnackbar(getActivity());
+        else
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessActivateWithUnicode(String statusMessage) {
+        finishLoadingProgress();
+        goToAutomaticLogin();
+    }
+
+    private void goToAutomaticLogin() {
+        getActivity().finish();
+
+        startActivity(Login.getAutomaticLoginIntent(
+                getActivity(),
+                getArguments().getString(ARGS_EMAIL),
+                getArguments().getString(ARGS_PASSWORD))
+        );
+    }
+
+    @Override
     public void finishLoadingProgress() {
         if (progressDialog != null)
             progressDialog.dismiss();
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.unsubscribeObservable();
+        super.onDestroyView();
     }
 }

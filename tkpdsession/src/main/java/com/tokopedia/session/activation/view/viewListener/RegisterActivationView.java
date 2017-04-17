@@ -19,4 +19,10 @@ public interface RegisterActivationView {
     String getEmail();
 
     Activity getActivity();
+
+    String getUnicode();
+
+    void onErrorActivateWithUnicode(String errorMessage);
+
+    void onSuccessActivateWithUnicode(String statusMessage);
 }

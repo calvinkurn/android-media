@@ -74,14 +74,16 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOtp(@Header(HEADER_USER_ID) String userId,
-                                                          @FieldMap Map<String, Object> params);
+                                                  @FieldMap Map<String, Object> params);
+
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.VALIDATE_OTP)
-    Observable<Response<TkpdResponse>> validateOtp( @FieldMap TKPDMapParam<String, Object> param);
+    Observable<Response<TkpdResponse>> validateOtp(@FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
     Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
+
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
     Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
@@ -105,4 +107,9 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.DO_REGISTER)
     Observable<Response<TkpdResponse>> registerEmail(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ACTIVATE_UNICODE)
+    Observable<Response<String>> activateWithUnicode(@FieldMap Map<String, Object> params);
+
 }

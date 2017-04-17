@@ -8,10 +8,13 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.activation.data.factory.RegisterActivationFactory;
+import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
 import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
 import com.tokopedia.session.activation.data.repository.RegisterActivationRepositoryImpl;
 import com.tokopedia.session.activation.domain.RegisterActivationRepository;
+import com.tokopedia.session.activation.domain.interactor.ActivateUnicodeUseCase;
 import com.tokopedia.session.activation.domain.interactor.ResendActivationUseCase;
+import com.tokopedia.session.activation.view.subscriber.ActivateUnicodeSubscriber;
 import com.tokopedia.session.activation.view.subscriber.ResendActivationSubscriber;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
 
@@ -24,6 +27,7 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
     private final RegisterActivationView viewListener;
     private ResendActivationUseCase resendActivationUseCase;
+    private ActivateUnicodeUseCase activateUnicodeUseCase;
 
     public RegisterActivationPresenterImpl(RegisterActivationView viewListener) {
         Bundle bundle = new Bundle();
@@ -33,11 +37,13 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
         AccountsService accountsService = new AccountsService(bundle);
 
         ResendActivationMapper resendActivationMapper = new ResendActivationMapper();
+        ActivateUnicodeMapper activateUnicodeMapper = new ActivateUnicodeMapper();
         RegisterActivationFactory registerActivationFactory =
                 new RegisterActivationFactory(
                         viewListener.getActivity(),
                         accountsService,
-                        resendActivationMapper
+                        resendActivationMapper,
+                        activateUnicodeMapper
                 );
 
         RegisterActivationRepository registerActivationRepository =
@@ -45,6 +51,9 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
         this.viewListener = viewListener;
         this.resendActivationUseCase = new ResendActivationUseCase(
+                new JobExecutor(), new UIThread(), registerActivationRepository
+        );
+        this.activateUnicodeUseCase = new ActivateUnicodeUseCase(
                 new JobExecutor(), new UIThread(), registerActivationRepository
         );
     }
@@ -59,12 +68,31 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
     @Override
     public void activateAccount() {
+        viewListener.showLoadingProgress();
+        activateUnicodeUseCase.execute(getActivateUnicodeParam(),
+                new ActivateUnicodeSubscriber(viewListener));
+    }
 
+    @Override
+    public void unsubscribeObservable() {
+        resendActivationUseCase.unsubscribe();
+        activateUnicodeUseCase.unsubscribe();
+    }
+
+    private RequestParams getActivateUnicodeParam() {
+        RequestParams param = RequestParams.create();
+        param.putString(ActivateUnicodeUseCase.PARAM_EMAIL, viewListener.getEmail());
+        param.putString(ActivateUnicodeUseCase.PARAM_UNICODE, viewListener.getUnicode());
+        param.putString(ActivateUnicodeUseCase.PARAM_GRANT_TYPE,
+                ActivateUnicodeUseCase.DEFAULT_GRANT_TYPE);
+        param.putString(ActivateUnicodeUseCase.PARAM_PASSWORD_TYPE,
+                ActivateUnicodeUseCase.DEFAULT_PASSWORD_TYPE);
+        return param;
     }
 
     private RequestParams getResendActivationParam() {
         RequestParams param = RequestParams.create();
-        param.putString("email", viewListener.getEmail());
+        param.putString(ResendActivationUseCase.PARAM_EMAIL, viewListener.getEmail());
         return param;
     }
 }

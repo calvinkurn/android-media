@@ -15,6 +15,8 @@ import rx.Observable;
 
 public class ResendActivationUseCase extends UseCase<ResendActivationModel> {
 
+    public static final String PARAM_EMAIL = "email";
+
     private final RegisterActivationRepository registerActivationRepository;
 
     public ResendActivationUseCase(ThreadExecutor threadExecutor,
