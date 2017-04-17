@@ -58,4 +58,36 @@ public class ProductDetailViewHolder {
     public float getPriceValue() {
         return priceSpinnerCounterInputView.getCounterValue();
     }
+
+    public String getWeightUnit() {
+        return weightSpinnerCounterInputView.getSpinnerValue();
+    }
+
+    public int getWeightValue() {
+        return (int) weightSpinnerCounterInputView.getCounterValue();
+    }
+
+    public int getMinimumBuy() {
+        return (int) minimumBuyCounterInputView.getFloatValue();
+    }
+
+    public String getStatusStock() {
+        return stockStatusSpinnerTextView.getSpinnerValue();
+    }
+
+    public int getTotalStock() {
+        return (int) stockTotalCounterInputView.getFloatValue();
+    }
+
+    public String getCondition() {
+        return conditionSpinnerTextView.getSpinnerValue();
+    }
+
+    public String getInsurance() {
+        return insuranceSpinnerTextView.getSpinnerValue();
+    }
+
+    public String getFreeReturns() {
+        return freeReturnsSpinnerTextView.getSpinnerValue();
+    }
 }
