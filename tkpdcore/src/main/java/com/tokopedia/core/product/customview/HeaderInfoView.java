@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.product.listener.ProductDetailView;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
@@ -107,14 +108,22 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             cashbackTextView.setText(getContext().getString(R.string.value_cashback)
                     .replace("X", data.getCashBack().getProductCashback()));
         }
+    }
 
-        if(data.getInfo().getProductCampaign() != null &&
-                data.getInfo().getProductCampaign().getOriginalPriceFmt() != null) {
+    public void renderTempData(ProductPass productPass) {
+        tvName.setText(productPass.getProductName());
+        tvPrice.setText(productPass.getProductPrice());
+        setVisibility(VISIBLE);
+    }
+
+    public void renderProductCampaign(ProductCampaign data) {
+        if(data != null &&
+                data.getOriginalPrice() != null) {
             cashbackHolder.setVisibility(VISIBLE);
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            textOriginalPrice.setText(data.getInfo().getProductCampaign().getOriginalPriceFmt());
+            textOriginalPrice.setText("Rp "+data.getOriginalPrice());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
@@ -122,14 +131,14 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setText(
                     String.format(
                             discount,
-                            data.getInfo().getProductCampaign().getPercentageAmount()
+                            data.getPercentage()
                     )
             );
 
             try {
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
                 long now = new Date().getTime();
-                long end = sf.parse(data.getInfo().getProductCampaign().getEndDate()).getTime();
+                long end = sf.parse(data.getExpiredTime()).getTime();
                 long delta = end - now;
 
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
@@ -156,12 +165,5 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 ex.printStackTrace();
             }
         }
-
-    }
-
-    public void renderTempData(ProductPass productPass) {
-        tvName.setText(productPass.getProductName());
-        tvPrice.setText(productPass.getProductPrice());
-        setVisibility(VISIBLE);
     }
 }

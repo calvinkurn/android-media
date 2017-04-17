@@ -47,6 +47,7 @@ import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -756,6 +757,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             Intent intent = ((TkpdCoreRouter)getActivity().getApplication()).goToEditProduct(context, isEdit, productId);
             navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
         }
+    }
+
+    @Override
+    public void showProductCampaign(ProductCampaign productCampaign) {
+        headerInfoView.renderProductCampaign(productCampaign);
     }
 
     private void destroyVideoLayout() {

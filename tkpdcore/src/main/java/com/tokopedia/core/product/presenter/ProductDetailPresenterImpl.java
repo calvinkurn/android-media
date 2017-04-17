@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -41,6 +42,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -299,6 +301,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         }
                     });
         }
+        getProductCampaign(context, productPass.getProductId());
     }
 
     @Override
@@ -838,5 +841,21 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         if (productDetailData.getShopInfo().getShopIsGold() == 1) {
             requestVideo(context, productDetailData.getInfo().getProductId().toString());
         }
+    }
+
+    public void getProductCampaign(@NonNull Context context, @NonNull String id) {
+        retrofitInteractor.getProductCampaign(context, id,
+                new RetrofitInteractor.ProductCampaignListener() {
+                    @Override
+                    public void onSucccess(@NonNull ProductCampaign productCampaign) {
+                        viewListener.showProductCampaign(productCampaign);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        Log.d("PDP oka", error);
+                    }
+                }
+        );
     }
 }

@@ -4,6 +4,8 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -20,6 +22,7 @@ import rx.Observable;
 public interface MojitoApi {
 
     String DEVICE = "device";
+    String ID = "id";
 
     //api requirement add static header
     @Headers({
@@ -38,4 +41,9 @@ public interface MojitoApi {
             @Query("q") String query,
             @Query("page") int page,
             @Query("count") int count);
+
+    @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_DETAIL)
+    Observable<Response<ProductCampaignResponse>> getProductCampaign(
+            @Query(ID) String id
+    );
 }

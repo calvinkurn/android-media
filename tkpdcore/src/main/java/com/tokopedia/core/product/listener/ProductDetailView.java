@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -276,4 +277,6 @@ public interface ProductDetailView extends ViewListener {
     void showFullScreenError();
 
     void moveToEditFragment(boolean isEdit, String productId);
+
+    void showProductCampaign(ProductCampaign productCampaign);
 }

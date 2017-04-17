@@ -11,41 +11,41 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ProductCampaign implements Parcelable {
-    @SerializedName("percentage_amount")
+    @SerializedName("percentage")
     @Expose
-    private int percentageAmount;
-    @SerializedName("original_price_fmt")
+    private int percentage;
+    @SerializedName("discounted_price")
     @Expose
-    private String originalPriceFmt;
-    @SerializedName("end_date")
+    private String discountedPrice;
+    @SerializedName("expired_time")
     @Expose
-    private String endDate;
+    private String expiredTime;
     @SerializedName("original_price")
     @Expose
     private String originalPrice;
 
-    public int getPercentageAmount() {
-        return percentageAmount;
+    public int getPercentage() {
+        return percentage;
     }
 
-    public void setPercentageAmount(int percentageAmount) {
-        this.percentageAmount = percentageAmount;
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
     }
 
-    public String getOriginalPriceFmt() {
-        return originalPriceFmt;
+    public String getDiscountedPrice() {
+        return discountedPrice;
     }
 
-    public void setOriginalPriceFmt(String originalPriceFmt) {
-        this.originalPriceFmt = originalPriceFmt;
+    public void setDiscountedPrice(String discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
-    public String getEndDate() {
-        return endDate;
+    public String getExpiredTime() {
+        return expiredTime;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setExpiredTime(String expiredTime) {
+        this.expiredTime = expiredTime;
     }
 
     public String getOriginalPrice() {
@@ -63,9 +63,9 @@ public class ProductCampaign implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.percentageAmount);
-        dest.writeString(this.originalPriceFmt);
-        dest.writeString(this.endDate);
+        dest.writeInt(this.percentage);
+        dest.writeString(this.discountedPrice);
+        dest.writeString(this.expiredTime);
         dest.writeString(this.originalPrice);
     }
 
@@ -73,9 +73,9 @@ public class ProductCampaign implements Parcelable {
     }
 
     protected ProductCampaign(Parcel in) {
-        this.percentageAmount = in.readInt();
-        this.originalPriceFmt = in.readString();
-        this.endDate = in.readString();
+        this.percentage = in.readInt();
+        this.discountedPrice = in.readString();
+        this.expiredTime = in.readString();
         this.originalPrice = in.readString();
     }
 
