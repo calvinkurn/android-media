@@ -3,6 +3,7 @@ package com.tokopedia.ride.completetrip.view;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
@@ -23,6 +24,14 @@ public class CompleteTripActivity extends BaseActivity {
         Intent intent = new Intent(activity, CompleteTripActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        return intent;
+    }
+
+    public static Intent getCallingIntentFromPushNotification(Context activity, String requestId, DriverVehicleViewModel driverAndVehicle) {
+        Intent intent = new Intent(activity, CompleteTripActivity.class);
+        intent.putExtra(EXTRA_REQUEST_ID, requestId);
+        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }
 

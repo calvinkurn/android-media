@@ -32,11 +32,13 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.receiver.CallDriverReceiver;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,6 +140,7 @@ public class RidePushNotificationBuildAndShow {
                     case "rider_canceled":
                         break;
                     case "completed":
+                        showRideCompleted(activitiesLifecycleCallbacks.getContext(), rideRequest);
                         break;
                 }
             }
@@ -348,7 +351,28 @@ public class RidePushNotificationBuildAndShow {
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
-    public static void showRideCompleted(Context context) {
+    private static void showRideCompleted(Context context, RideRequest rideRequest) {
+        RideConfiguration rideConfiguration = new RideConfiguration();
+        if (!rideConfiguration.isWaitingDriverState()) return;
+
+        DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
+        driverAndVehicle.setDriver(rideConfiguration.getActiveRequestObj().getDriver());
+        driverAndVehicle.setVehicle(rideConfiguration.getActiveRequestObj().getVehicle());
+        rideConfiguration.clearActiveRequest();
+
+        Intent intent = CompleteTripActivity.getCallingIntentFromPushNotification(
+                context,
+                rideRequest.getRequestId(),
+                driverAndVehicle
+        );
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -356,8 +380,9 @@ public class RidePushNotificationBuildAndShow {
                 .setContentTitle("Trip Completed")
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentText("IDR 9,500");
+                .setContentText("Tap to view detail");
 
+        mBuilder.setContentIntent(pendingIntent);
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
