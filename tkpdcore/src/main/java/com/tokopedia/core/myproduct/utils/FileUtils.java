@@ -24,6 +24,11 @@ public class FileUtils {
         return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L)+new Random().nextInt(1000) + "/";
     }
 
+
+    public static String getFolderPathForUploadNoRand(String root){
+        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/";
+    }
+
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/image.jpg
      * @param root

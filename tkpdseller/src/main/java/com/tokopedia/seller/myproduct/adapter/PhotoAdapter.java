@@ -120,7 +120,7 @@ public class PhotoAdapter  extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         public void onClick(View v) {
             if(imageModel.getPath() == null) {
                 int defaultNumber = ImageModel.calculateDefaults(datas);
-                GalleryActivity.moveToImageGallery((AppCompatActivity) itemView.getContext(), position, defaultNumber);
+                GalleryActivity.moveToImageGallery((AppCompatActivity) itemView.getContext(), position, defaultNumber, false);
             }else {
                 if(itemView.getContext() instanceof DialogFragmentImageAddProduct.DFIAListener){
                     if(itemView.getContext() != null

@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.holder;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
@@ -23,26 +26,29 @@ import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 import java.util.ArrayList;
 import java.util.List;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+
 /**
  * Created by nathan on 4/11/17.
  */
 
 public class ProductImageViewHolder {
 
-    public static final int REQUEST_CODE_IMAGE = 201;
-
     private ImagesSelectView imagesSelectView;
-    private Fragment fragment;
+    private ProductAddFragment fragment;
 
-    public ProductImageViewHolder(final Fragment fragment, View view) {
+    public ProductImageViewHolder(final ProductAddFragment fragment, View view) {
         this.fragment = fragment;
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
 
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
-                int remainingEmptySlot = imagesSelectView.getRemainingEmptySlot();
-                GalleryActivity.moveToImageGallery(fragment.getActivity(), fragment, position, remainingEmptySlot);
+                fragment.goToGalleryPermissionCheck(position);
             }
 
             @Override
@@ -58,10 +64,14 @@ public class ProductImageViewHolder {
             }
 
             @Override
-            public void resolutionCheckFailed(List<String> imagesStringList) {
+            public void resolutionCheckFailed(String uri) {
 
             }
         });
+    }
+
+    public ImagesSelectView getImagesSelectView() {
+        return imagesSelectView;
     }
 
     public void showEditImageDialog(FragmentManager fm, int position, boolean isPrimary) {
@@ -70,7 +80,7 @@ public class ProductImageViewHolder {
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery((AppCompatActivity) fragment.getActivity(), position, 1);
+                GalleryActivity.moveToImageGallery((AppCompatActivity) fragment.getActivity(), position, 1, true);
             }
 
             @Override

@@ -37,7 +37,7 @@ public class ImagesSelectView extends FrameLayout {
 
     public interface OnCheckResolutionListener {
         boolean isResolutionCorrect (String uri);
-        void resolutionCheckFailed(List<String> imagesStringList);
+        void resolutionCheckFailed(String uri);
     }
 
     public ImagesSelectView(Context context) {
@@ -122,9 +122,7 @@ public class ImagesSelectView extends FrameLayout {
             return true;
         }
         else { // resolution is not correct
-            List<String>resolutionFailedStringList = new ArrayList<>();
-            resolutionFailedStringList.add(imageUrl);
-            onCheckResolutionListener.resolutionCheckFailed(resolutionFailedStringList);
+            onCheckResolutionListener.resolutionCheckFailed(imageUrl);
             return false;
         }
     }
