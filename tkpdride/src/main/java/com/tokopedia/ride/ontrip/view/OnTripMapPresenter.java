@@ -29,6 +29,8 @@ import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -93,7 +95,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
                         if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("tos_confirm")) {
                             getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
-                        } else if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("surge")){
+                        } else if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("surge")) {
                             getView().openSurgeConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
                         }
                     } else {
@@ -110,7 +112,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().onSuccessCreateRideRequest(rideRequest);
                     getView().startPeriodicService(rideRequest.getRequestId());
                     proccessGetCurrentRideRequest(rideRequest);
@@ -136,6 +138,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onNext(String s) {
                 if (isViewAttached()) {
                     getView().onSuccessCancelRideRequest();
+                    getView().clearActiveNotification();
                 }
             }
         });
@@ -170,7 +173,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     proccessGetCurrentRideRequest(rideRequest);
                     getView().onSuccessCreateRideRequest(rideRequest);
                 }
@@ -183,7 +186,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case "no_drivers_available":
-                getView().hideFindingUberNotification();
                 getView().hideFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().clearRideConfiguration();
@@ -198,7 +200,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
-                getView().showAcceptedNotification(result);
+//                getView().showAcceptedNotification(result);
                 getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
@@ -269,7 +271,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(List<String> strings) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     List<List<LatLng>> routes = new ArrayList<>();
                     for (String route : strings) {
                         routes.add(PolyUtil.decode(route));
@@ -350,6 +352,21 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     public void startGetRequestDetailsPeriodicService(String requestId) {
         this.mRequestId = requestId;
         handler.postDelayed(timedTask, 2000);
+    }
+
+    @Override
+    public void actionOnReceivePushNotification(Observable<RideRequest> rideObservable) {
+        rideObservable.subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RideRequest>() {
+                    @Override
+                    public void call(RideRequest rideRequest) {
+                        if (isViewAttached()) {
+                            proccessGetCurrentRideRequest(rideRequest);
+                        }
+                    }
+                });
     }
 
     @Override

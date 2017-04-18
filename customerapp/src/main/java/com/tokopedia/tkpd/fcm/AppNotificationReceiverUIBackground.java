@@ -169,13 +169,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mActivitiesLifecycleCallbacks);
+                RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
                 push.processReceivedNotification(data);
                 break;
-
         }
-
-
     }
 
 

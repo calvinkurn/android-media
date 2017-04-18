@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,7 +46,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -62,6 +60,7 @@ import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
@@ -76,9 +75,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.ACCEPTED_UBER_NOTIFICATION_ID;
+import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.FINDING_UBER_NOTIFICATION_ID;
 
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
         DriverDetailFragment.OnFragmentInteractionListener {
@@ -87,10 +89,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_SURGE_CONFIRM_DIALOG = 1007;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
-
-    private final int FINDING_UBER_NOTIFICATION_ID = 0001;
-    private final int ACCEPTED_UBER_NOTIFICATION_ID = 0002;
-
 
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
@@ -125,8 +123,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @BindView(R2.id.cancel_panel)
     RelativeLayout cancelPanelLayout;
 
-    OnFragmentInteractionListener onFragmentInteractionListener;
-
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
 
@@ -149,9 +145,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     public interface OnFragmentInteractionListener {
-        void actionCancelBooking();
 
-        void actionNoDriverAvailable();
     }
 
     public OnTripMapFragment() {
@@ -261,26 +255,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.animateCamera(cameraUpdate);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            onFragmentInteractionListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException("must implement fragment listener");
-        }
-    }
-
-    @Override
-    public void onAttach(Activity context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            onFragmentInteractionListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException("must implement fragment listener");
-        }
-    }
-
     private void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -331,11 +305,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void showCancelRequestButton() {
         cancelButton.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void navigateToBack() {
-        onFragmentInteractionListener.actionCancelBooking();
     }
 
     @Override
@@ -543,7 +512,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.clear();
 
         for (List<LatLng> route : routes) {
-            RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+            if (route.size() > 1) {
+                RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+            }
             /*mGoogleMap.addPolyline(new PolylineOptions()
                     .addAll(route)
                     .width(10)
@@ -837,6 +808,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return requestParams;
     }
 
+    @Override
+    public void clearActiveNotification() {
+        RidePushNotificationBuildAndShow.cancelActiveNotification(getActivity());
+    }
+
     @OnClick(R2.id.btn_call)
     public void actionCallBtnClicked() {
         openCallIntent();
@@ -902,5 +878,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    public OnTripActivity.OnUpdatedByPushNotification getUpdatedByPushListener() {
+        return new OnTripActivity.OnUpdatedByPushNotification() {
+            @Override
+            public void onUpdatedByPushNotification(Observable<RideRequest> rideRequest) {
+                presenter.actionOnReceivePushNotification(rideRequest);
+            }
+        };
     }
 }

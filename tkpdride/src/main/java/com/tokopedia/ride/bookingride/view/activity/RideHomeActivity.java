@@ -101,6 +101,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
         Intent destination = new Intent(context, RideHomeActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         destination.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);

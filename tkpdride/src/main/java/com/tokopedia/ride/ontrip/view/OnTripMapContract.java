@@ -12,6 +12,8 @@ import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by alvarisi on 3/24/17.
  */
@@ -44,8 +46,6 @@ public interface OnTripMapContract {
         void hideCancelRequestButton();
 
         void showCancelRequestButton();
-
-        void navigateToBack();
 
         void openTosConfirmationWebView(String tosUrl);
 
@@ -104,6 +104,8 @@ public interface OnTripMapContract {
         void openSurgeConfirmationWebView(String tosUrl);
 
         RequestParams getCurrentRequestParams(String requestId);
+
+        void clearActiveNotification();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -123,5 +125,7 @@ public interface OnTripMapContract {
         void actionShareEta();
 
         void startGetRequestDetailsPeriodicService(String requestId);
+
+        void actionOnReceivePushNotification(Observable<RideRequest> rideRequest);
     }
 }

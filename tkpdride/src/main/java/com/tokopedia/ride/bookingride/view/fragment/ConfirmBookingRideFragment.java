@@ -145,7 +145,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void actionSelectSeatButtonClicked() {
         if (confirmBookingViewModel.getMaxCapacity() > 1) {
             List<SeatViewModel> seatViewModels = new ArrayList<>();
-            for (int i = 1; i <= MAX_SEAT_COUNT; i++) {
+            for (int i = 1; i <= confirmBookingViewModel.getMaxCapacity(); i++) {
                 String seatTitle = null;
                 if (i == 1) {
                     seatTitle = String.format("%d Seat", i);

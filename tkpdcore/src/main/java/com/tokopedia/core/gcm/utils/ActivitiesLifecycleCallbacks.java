@@ -6,6 +6,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tkpd.library.utils.CommonUtils;
+
 /**
  * @author  by alvarisi on 1/9/17.
  */
@@ -27,24 +29,35 @@ public class ActivitiesLifecycleCallbacks {
 
         activityLifecycleCallbacks = new Application.ActivityLifecycleCallbacks() {
             @Override public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+                CommonUtils.dumper("onActivityCreated " + activity.getLocalClassName());
                 liveActivityOrNull = activity;
             }
 
-            @Override public void onActivityStarted(Activity activity) {}
+            @Override public void onActivityStarted(Activity activity) {
+                CommonUtils.dumper("onActivityStarted " + activity.getLocalClassName());
+            }
 
             @Override public void onActivityResumed(Activity activity) {
                 liveActivityOrNull = activity;
+                CommonUtils.dumper("onActivityResumed " + activity.getLocalClassName());
             }
 
             @Override public void onActivityPaused(Activity activity) {
                 liveActivityOrNull = null;
+                CommonUtils.dumper("onActivityPaused " + activity.getLocalClassName());
             }
 
-            @Override public void onActivityStopped(Activity activity) {}
+            @Override public void onActivityStopped(Activity activity) {
+                CommonUtils.dumper("onActivityStopped " + activity.getLocalClassName());
+            }
 
-            @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {}
+            @Override public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+                CommonUtils.dumper("onActivitySaveInstanceState " + activity.getLocalClassName());
+            }
 
-            @Override public void onActivityDestroyed(Activity activity) {}
+            @Override public void onActivityDestroyed(Activity activity) {
+                CommonUtils.dumper("onActivityDestroyed " + activity.getLocalClassName());
+            }
         };
 
         application.registerActivityLifecycleCallbacks(activityLifecycleCallbacks);

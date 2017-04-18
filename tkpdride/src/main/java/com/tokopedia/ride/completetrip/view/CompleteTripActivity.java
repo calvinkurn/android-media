@@ -11,9 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
 public class CompleteTripActivity extends BaseActivity {
@@ -31,6 +33,7 @@ public class CompleteTripActivity extends BaseActivity {
         Intent intent = new Intent(activity, CompleteTripActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
         intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        intent.putExtra(Constants.EXTRA_FROM_PUSH, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -21,6 +22,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
@@ -28,6 +30,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -57,16 +60,20 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 
 public class RidePushNotificationBuildAndShow {
-    private static int mNotificationId = 001;
-    private ActivitiesLifecycleCallbacks activitiesLifecycleCallbacks;
+    private static int mNotificationId = 003;
+    public static final int FINDING_UBER_NOTIFICATION_ID = 003;
+    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 003;
+    private Context mContext;
     private Gson gson;
     private GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase;
+    public static final String ACTION_DONE = "RidePushNotificationBuildAndShow#ACTION_DONE";
+    public static final String EXTRA_RIDE_RIDE_REQUEST = "EXTRA_RIDE_RIDE_REQUEST";
 
-    public RidePushNotificationBuildAndShow(ActivitiesLifecycleCallbacks application) {
-        activitiesLifecycleCallbacks = application;
+    public RidePushNotificationBuildAndShow(Context context) {
+        mContext = context;
         gson = new Gson();
-        SessionHandler sessionHandler = new SessionHandler(application.getContext());
-        String token = String.format("Bearer %s", sessionHandler.getAccessToken(application.getContext()));
+        SessionHandler sessionHandler = new SessionHandler(mContext);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(mContext));
         String userId = sessionHandler.getLoginID();
         RidePushDependencyInjection injection = new RidePushDependencyInjection();
         getCurrentDetailRideRequestUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
@@ -81,8 +88,8 @@ public class RidePushNotificationBuildAndShow {
                         RidePushNotification.class
                 );
 
-        String deviceId = GCMHandler.getRegistrationId(activitiesLifecycleCallbacks.getContext());
-        String userId = SessionHandler.getLoginID(activitiesLifecycleCallbacks.getContext());
+        String deviceId = GCMHandler.getRegistrationId(mContext);
+        String userId = SessionHandler.getLoginID(mContext);
         String hash = md5(userId + "~" + deviceId);
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_REQUEST_ID, ridePushNotification.getRequestId());
@@ -110,24 +117,19 @@ public class RidePushNotificationBuildAndShow {
 
             @Override
             public void onNext(RideRequest rideRequest) {
-                if (!activitiesLifecycleCallbacks.isAppOnBackground()) {
-                    Activity activity = activitiesLifecycleCallbacks.getLiveActivityOrNull();
-                    if (activity instanceof FcmReceiverUIForeground) {
-                        FcmReceiverUIForeground fcmReceiverUIForeground = (FcmReceiverUIForeground) activity;
-                        boolean targetScreen = fcmReceiverUIForeground.matchesTarget(AppScreen.SCREEN_RIDE_ONTRIP);
-                        if (targetScreen) {
-                            fcmReceiverUIForeground.onTargetNotification(Observable.just(rideRequest));
-                        }
-                    }
-                }
+                Intent intent = new Intent();
+                intent.setAction(ACTION_DONE);
+                intent.putExtra(EXTRA_RIDE_RIDE_REQUEST, rideRequest);
+                LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
+                manager.sendBroadcast(intent);
 
                 switch (rideRequest.getStatus()) {
                     case "arriving":
                     case "accepted":
-                        showRideAccepted(activitiesLifecycleCallbacks.getContext(), rideRequest);
+                        showRideAccepted(mContext, rideRequest);
                         break;
                     case "no_drivers_available":
-                        showNoDriverFoundNotification(activitiesLifecycleCallbacks.getContext());
+                        showNoDriverFoundNotification(mContext);
                         break;
                     case "processing":
 
@@ -135,12 +137,12 @@ public class RidePushNotificationBuildAndShow {
                     case "in_progress":
                         break;
                     case "driver_canceled":
-                        showDriverCancelledRide(activitiesLifecycleCallbacks.getContext());
+                        showDriverCancelledRide(mContext);
                         break;
                     case "rider_canceled":
                         break;
                     case "completed":
-                        showRideCompleted(activitiesLifecycleCallbacks.getContext(), rideRequest);
+                        showRideCompleted(mContext, rideRequest);
                         break;
                 }
             }
@@ -418,16 +420,9 @@ public class RidePushNotificationBuildAndShow {
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
-    private String convertBundleToJsonString(Bundle bundle) {
-        JSONObject json = new JSONObject();
-        Set<String> keys = bundle.keySet();
-        for (String key : keys) {
-            try {
-                json.put(key, bundle.getString(key));
-            } catch (JSONException e) {
-                return null;
-            }
-        }
-        return json.toString();
+    public static void cancelActiveNotification(Context context) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(mNotificationId);
     }
 }

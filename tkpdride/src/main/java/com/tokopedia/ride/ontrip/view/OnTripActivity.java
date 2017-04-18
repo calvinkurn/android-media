@@ -4,28 +4,28 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
-import com.tokopedia.ride.deeplink.FcmReceiverUIForeground;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.ride.deeplink.RidePushNotification;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
@@ -34,7 +34,7 @@ import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 
 @RuntimePermissions
-public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener, FcmReceiverUIForeground {
+public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     public static String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     public static final int RIDE_HOME_RESULT_CODE = 11;
@@ -45,7 +45,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     ConfirmBookingViewModel confirmBookingViewModel;
     Toolbar mToolbar;
-    private BackButtonListener listener;
+    private BackButtonListener backButtonListener;
+    private OnUpdatedByPushNotification onUpdatedByPushNotification;
+    private BroadcastReceiver mReceiver;
 
     public static Intent getCallingIntent(Activity activity, ConfirmBookingViewModel confirmBookingViewModel) {
         Intent intent = new Intent(activity, OnTripActivity.class);
@@ -59,6 +61,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     /**
      * this should be called when user receive accepted push notif
+     *
      * @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
      */
     public static TaskStackBuilder getCallingApplinkTaskStack(Context context, Bundle extras) {
@@ -76,6 +79,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
         Intent destination = new Intent(context, OnTripActivity.class)
                 .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
 
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(parentHome);
@@ -90,6 +94,19 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         confirmBookingViewModel = getIntent().getParcelableExtra(EXTRA_CONFIRM_BOOKING);
         OnTripActivityPermissionsDispatcher.initFragmentWithCheck(this);
         setupToolbar();
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(RidePushNotificationBuildAndShow.ACTION_DONE)) {
+                    if (onUpdatedByPushNotification != null) {
+                        RideRequest rideRequest = intent.getParcelableExtra(RidePushNotificationBuildAndShow.EXTRA_RIDE_RIDE_REQUEST);
+                        if (rideRequest != null) {
+                            onUpdatedByPushNotification.onUpdatedByPushNotification(Observable.just(rideRequest));
+                        }
+                    }
+                }
+            }
+        };
     }
 
 
@@ -99,11 +116,13 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             Bundle bundle = new Bundle();
             bundle.putParcelable(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
             OnTripMapFragment fragment = OnTripMapFragment.newInstance(bundle);
-            listener = fragment.getBackButtonListener();
+            backButtonListener = fragment.getBackButtonListener();
+            onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         } else {
             OnTripMapFragment fragment = OnTripMapFragment.newInstance();
-            listener = fragment.getBackButtonListener();
+            backButtonListener = fragment.getBackButtonListener();
+            onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         }
     }
@@ -121,6 +140,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             fragmentTransaction.commit();
         }
     }
+
     private void addFragment(int containerViewId, Fragment fragment) {
         if (!isFinishing()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
@@ -146,20 +166,10 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     }
 
     @Override
-    public void actionCancelBooking() {
-        finish();
-    }
-
-    @Override
-    public void actionNoDriverAvailable() {
-
-    }
-
-    @Override
     public void onBackPressed() {
         RideConfiguration rideConfiguration = new RideConfiguration();
-        if (listener != null && listener.canGoBack()) {
-            listener.onBackPressed();
+        if (backButtonListener != null && backButtonListener.canGoBack()) {
+            backButtonListener.onBackPressed();
         } else if (rideConfiguration.isWaitingDriverState()) {
             Intent intent = getIntent();
             setResult(APP_HOME_RESULT_CODE, intent);
@@ -185,23 +195,35 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     }
 
     @Override
-    public void onTargetNotification(Observable<RideRequest> oMessage) {
-
-    }
-
-    @Override
-    public void onMismatchTargetNotification(Observable<RideRequest> oMessage) {
-
-    }
-
-    @Override
-    public boolean matchesTarget(String key) {
-        return AppScreen.SCREEN_RIDE_ONTRIP.equalsIgnoreCase(key);
+    public String getScreenName() {
+        return AppScreen.SCREEN_RIDE_ONTRIP;
     }
 
     public interface BackButtonListener {
         void onBackPressed();
 
         boolean canGoBack();
+    }
+
+
+    public interface OnUpdatedByPushNotification {
+        void onUpdatedByPushNotification(Observable<RideRequest> rideRequest);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(RidePushNotificationBuildAndShow.ACTION_DONE);
+
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(this);
+        manager.unregisterReceiver(mReceiver);
     }
 }

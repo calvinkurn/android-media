@@ -493,13 +493,16 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         mGoogleMap.clear();
 
         for (List<LatLng> route : routes) {
-            RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+            if (route.size() > 1) {
+                RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
+            }
 //            mGoogleMap.addPolyline(new PolylineOptions()
 //                    .addAll(route)
 //                    .width(10)
 //                    .color(Color.BLACK)
 //                    .geodesic(true));
         }
+
 
         //add markers on source and destination
         mGoogleMap.addMarker(new MarkerOptions()
