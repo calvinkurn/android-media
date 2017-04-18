@@ -2,10 +2,13 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
+import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
 import rx.Subscriber;
@@ -16,10 +19,13 @@ import rx.Subscriber;
 
 public class ProductAddPresenterImpl extends ProductAddPresenter {
     private final SaveDraftProductUseCase saveDraftProductUseCase;
+    private final ProductScoringUseCase productScoringUseCase;
     private final AddProductUseCase addProductUseCase;
 
-    public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase, AddProductUseCase addProductUseCase) {
+    public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase, ProductScoringUseCase productScoringUseCase,
+                                   AddProductUseCase addProductUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
+        this.productScoringUseCase = productScoringUseCase;
         this.addProductUseCase = addProductUseCase;
     }
 
@@ -28,6 +34,34 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         UploadProductInputDomainModel domainModel = UploadProductMapper.map(viewModel);
         RequestParams requestParam = SaveDraftProductUseCase.generateUploadProductParam(domainModel);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
+    }
+
+    @Override
+    public void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+        RequestParams requestParams = ProductScoringUseCase.createRequestParams(valueIndicatorScoreModel);
+        productScoringUseCase.execute(requestParams, getSubscriberProductScoring());
+    }
+
+    public Subscriber<DataScoringProductView> getSubscriberProductScoring() {
+        return new Subscriber<DataScoringProductView>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                checkViewAttached();
+            }
+
+            @Override
+            public void onNext(DataScoringProductView dataScoringProductView) {
+                checkViewAttached();
+                if(dataScoringProductView != null) {
+                    getView().onSuccessGetScoringProduct(dataScoringProductView);
+                }
+            }
+        };
     }
 
     private class SaveDraftSubscriber extends Subscriber<Long> {
