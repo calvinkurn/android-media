@@ -20,9 +20,10 @@ public class ProductDraftDataManager {
     public ProductDraftDataManager() {
     }
 
-    public Observable<Long> saveDraft(String json){
+    public Observable<Long> saveDraft(String json, long draftId){
         ProductDraftDataBase productDraftDataBase = new ProductDraftDataBase();
         productDraftDataBase.setData(json);
+        productDraftDataBase.setId(draftId);
         productDraftDataBase.save();
         return Observable.just(productDraftDataBase.getId());
     }

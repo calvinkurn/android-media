@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,12 @@ import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
+import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
+import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 
 import javax.inject.Inject;
 
@@ -31,10 +33,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    private ProductInfoViewHolder productInfoViewHolder;
+    private ProductScoreViewHolder productScoreViewHolder;
     private ProductImageViewHolder productImageViewHolder;
     private ProductDetailViewHolder productDetailViewHolder;
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
+    private ProductInfoViewHolder productInfoViewHolder;
 
     @Inject
     public ProductAddPresenter presenter;
@@ -63,9 +66,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         setSubmitButtonListener(view);
+        productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
         presenter.attachView(this);
-
         return view;
     }
 
@@ -82,6 +85,23 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
+//        viewModel.setProductCatalogId(productInfoViewHolder.);
+        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
+        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
+//        viewModel.setProductWholesaleList();
+        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
+        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
+        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
+        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+//        viewModel.setProductEtalaseId(productDetailViewHolder.);
+        viewModel.setProductCondition(productDetailViewHolder.getCondition());
+        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
+        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
+//        viewModel youtube
+
         return viewModel;
     }
 
@@ -107,7 +127,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return null;
     }
 
-    public void add(AddUrlVideoModel addUrlVideoModel) {
-        productAdditionalInfoViewHolder.addAddUrlVideModel(addUrlVideoModel);
+    @Override
+    public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
+        productScoreViewHolder.setValueProductScoreToView(dataScoringProductView);
+    }
+
+    @Override
+    public void updateProductScoring() {
+        presenter.getProductScoring(getValueIndicatorScoreModel());
+    }
+
+    @Override
+    public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
+        ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
+        return valueIndicatorScoreModel;
     }
 }

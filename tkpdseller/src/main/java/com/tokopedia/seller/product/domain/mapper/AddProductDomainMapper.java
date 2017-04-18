@@ -28,7 +28,6 @@ public class AddProductDomainMapper {
         domainModel.setPostKey(postKey);
         domainModel.setFileUploadedTo(addProductPictureDomainModel.getFileUploaded());
         domainModel.setProductEtalaseId(uploadProductInputDomainModel.getProductEtalaseId());
-        domainModel.setProductEtalaseName(uploadProductInputDomainModel.getProductEtalaseName());
         domainModel.setProductUploadTo(uploadProductInputDomainModel.getProductUploadTo());
         return domainModel;
     }

@@ -317,34 +317,76 @@
     <string name="etalase_picker_add_etalase_name_hint">Nama Etalase</string>
     <string name="etalase_picker_add_etalase_name_empty">Nama etalase harus diisi</string>
 
+    <!-- product score -->
+    <string name="product_score_label_title">Produk skor</string>
+    <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
+    <string name="product_score_label_title_score">Skor Produk Anda </string>
+    <string name="product_score_label_minus">Kurang</string>
+    <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
+    <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>
+
 
     <string-array name="product_weight_entries">
         <item>Gram</item>
         <item>Kg</item>
     </string-array>
+    <string-array name="product_weight_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_currency_entries">
         <item>Rp</item>
         <item>$</item>
     </string-array>
+    <string-array name="product_currency_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_stock_status_entries">
         <item>Stock Tersedia</item>
         <item>Stock Kosong</item>
     </string-array>
+    <string-array name="product_stock_status_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_condition_entries">
         <item>Baru</item>
         <item>Bekas</item>
     </string-array>
+    <string-array name="product_condition_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <string-array name="product_insurance_entries">
         <item>Opsional</item>
         <item>Ya</item>
     </string-array>
+    <string-array name="product_insurance_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <string-array name="product_free_returns_entries">
         <item>Ya</item>
         <item>Tidak</item>
     </string-array>
-    <string-array name="product_weight_pre_order">
+    <string-array name="product_free_returns_values">
+        <item>1</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="product_pre_order_entries">
         <item>Hari</item>
         <item>Minggu</item>
+    </string-array>
+    <string-array name="product_pre_order_values">
+        <item>1</item>
+        <item>2</item>
     </string-array>
 
     <string name="video_not_found">Video tidak ditemukan</string>

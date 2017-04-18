@@ -191,7 +191,10 @@ public class ImagesSelectView extends FrameLayout {
         return imageSelectorAdapter.getSelectedImage();
     }
     public ImageSelectModel getImageAt (int position) {
-        return imageSelectorAdapter.getImageSelectModelList().get(position);
+        return getImageList().get(position);
+    }
+    public List<ImageSelectModel> getImageList(){
+        return imageSelectorAdapter.getImageSelectModelList();
     }
     public int getSelectedImageIndex () {
         return imageSelectorAdapter.getSelectedImageIndex();

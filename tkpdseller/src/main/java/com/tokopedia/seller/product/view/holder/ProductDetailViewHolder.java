@@ -21,7 +21,7 @@ public class ProductDetailViewHolder {
 
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
-    private CounterInputView minimumBuyCounterInputView;
+    private CounterInputView minimumOrderCounterInputView;
     private SpinnerTextView stockStatusSpinnerTextView;
     private CounterInputView stockTotalCounterInputView;
     private LabelView etalaseLabelView;
@@ -35,7 +35,7 @@ public class ProductDetailViewHolder {
         this.fragment = fragment;
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
-        minimumBuyCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_buy);
+        minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
         stockTotalCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_stock_total);
         etalaseLabelView = (LabelView) view.findViewById(R.id.label_view_shop_window);
@@ -49,5 +49,45 @@ public class ProductDetailViewHolder {
                 fragment.startActivityForResult(intent, REQUEST_CODE_ETALASE);
             }
         });
+    }
+
+    public int getPriceCurrency() {
+        return Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue());
+    }
+
+    public float getPriceValue() {
+        return priceSpinnerCounterInputView.getCounterValue();
+    }
+
+    public int getWeightUnit() {
+        return Integer.parseInt(weightSpinnerCounterInputView.getSpinnerValue());
+    }
+
+    public int getWeightValue() {
+        return (int) weightSpinnerCounterInputView.getCounterValue();
+    }
+
+    public int getMinimumOrder() {
+        return (int) minimumOrderCounterInputView.getFloatValue();
+    }
+
+    public int getStatusStock() {
+        return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
+    }
+
+    public int getTotalStock() {
+        return (int) stockTotalCounterInputView.getFloatValue();
+    }
+
+    public int getCondition() {
+        return Integer.parseInt(conditionSpinnerTextView.getSpinnerValue());
+    }
+
+    public int getInsurance() {
+        return Integer.parseInt(insuranceSpinnerTextView.getSpinnerValue());
+    }
+
+    public int getFreeReturns() {
+        return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
     }
 }

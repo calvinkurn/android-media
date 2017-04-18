@@ -495,7 +495,8 @@ public class TkpdBaseURL {
     }
 
     public static class Upload {
-        public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
+        public static final String V4_ACTION_GENERATE_HOST = "v4/action/generate-host/";
+        public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + V4_ACTION_GENERATE_HOST;
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
 

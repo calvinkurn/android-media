@@ -18,6 +18,8 @@ import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
+import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
@@ -115,5 +117,26 @@ public class ProductImageViewHolder {
                 imagesSelectView.addImagesString(imageUrls);
             }
         }
+    }
+
+    public ProductPhotoListViewModel getProductPhotos() {
+        ProductPhotoListViewModel productPhotos = new ProductPhotoListViewModel();
+        List<ImageProductInputViewModel> listImageViewModel = new ArrayList<>();
+
+        List<ImageSelectModel> selectModelList = imagesSelectView.getImageList();
+        for (int i = 0; i < selectModelList.size(); i++) {
+            ImageProductInputViewModel imageViewModel = new ImageProductInputViewModel();
+            ImageSelectModel selectModel = selectModelList.get(i);
+
+            imageViewModel.setImagePath(selectModel.getUri());
+            imageViewModel.setImageDescription(selectModel.getDescription());
+
+            if (selectModel.isPrimary()) {
+                productPhotos.setProductDefaultPicture(i);
+            }
+            listImageViewModel.add(imageViewModel);
+        }
+        productPhotos.setPhotos(listImageViewModel);
+        return productPhotos;
     }
 }

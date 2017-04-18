@@ -6,7 +6,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialogListener;
+import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 
 /**
@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
  */
 
 public class ProductAddActivity extends TActivity
-        implements HasComponent<AppComponent>, YoutubeAddUrlDialogListener{
+        implements HasComponent<AppComponent>, TextPickerDialogListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,17 +29,12 @@ public class ProductAddActivity extends TActivity
         return getApplicationComponent();
     }
 
-    @Override
-    public void addYoutubeUrl(String youtubeUrl) {
-
-    }
-
     public void openAddYoutubeDialog() {
 
     }
 
     @Override
-    public void addEtalase(String newEtalaseName) {
+    public void onTextPickerSubmitted(String newEtalaseName) {
 
     }
 }

@@ -50,7 +50,7 @@ public class ImageProductObservable implements Func1<UploadProductInputDomainMod
             if (imageDomainModel.getUrl() != null && !imageDomainModel.getUrl().isEmpty()) {
                 return Observable.just(imageDomainModel);
             } else {
-                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath());
+                return imageProductUploadRepository.uploadImageProduct(imageDomainModel.getImagePath(), "");
             }
 
         }

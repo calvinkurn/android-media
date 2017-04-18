@@ -11,8 +11,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerYoutubeVideoComponent;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
+import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialog;
-import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialogListener;
 import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
 
@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
  * @author normansyahputa on 4/17/17.
  */
 public class YoutubeAddVideoActivity extends TActivity
-        implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, YoutubeAddUrlDialogListener {
+        implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, TextPickerDialogListener {
 
     private YoutubeVideoComponent youtubeVideoComponent;
 
@@ -66,14 +66,10 @@ public class YoutubeAddVideoActivity extends TActivity
     }
 
     @Override
-    public void addEtalase(String newEtalaseName) {
-        throw new RuntimeException("dont use this !!");
-    }
-
-    @Override
-    public void addYoutubeUrl(String youtubeUrl) {
+    public void onTextPickerSubmitted(String youtubeUrl) {
         if (youtubeAddVideoFragment() != null) {
             youtubeAddVideoFragment().addYoutubeUrl(youtubeUrl);
         }
     }
+
 }

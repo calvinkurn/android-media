@@ -4,8 +4,13 @@ package com.tokopedia.seller.product.data.source.cloud.model.addproductvalidatio
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class AddProductValidationServiceModel {
 
+    @SerializedName("message_error")
+    @Expose
+    private List<String> messageError = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -18,6 +23,14 @@ public class AddProductValidationServiceModel {
     @SerializedName("result")
     @Expose
     private AddProductValidationResult addProductValidationResult;
+
+    public List<String> getMessageError() {
+        return messageError;
+    }
+
+    public void setMessageError(List<String> messageError) {
+        this.messageError = messageError;
+    }
 
     public String getStatus() {
         return status;

@@ -20,8 +20,8 @@ public class ImageProductUploadRepositoryImpl implements ImageProductUploadRepos
     }
 
     @Override
-    public Observable<ImageProductInputDomainModel> uploadImageProduct(String imagePath) {
-        return imageProductUploadDataSource.uploadImage(imagePath)
+    public Observable<ImageProductInputDomainModel> uploadImageProduct(String imagePath, String productId) {
+        return imageProductUploadDataSource.uploadImage(imagePath, productId)
                 .map(new UploadImageMapper());
     }
 }
