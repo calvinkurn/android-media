@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
@@ -47,6 +48,7 @@ public class TosConfirmationDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return inflater.inflate(R.layout.fragment_dialog_tos_confirmation, container);
     }
 
@@ -84,8 +86,7 @@ public class TosConfirmationDialogFragment extends DialogFragment {
                 String id = null;
                 if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))){
                     id = uri.getQueryParameter("tos_confirmation_id");
-
-                }else if (!uri.getQueryParameter("surge_confirmation_id").isEmpty()){
+                }else if (!TextUtils.isEmpty(uri.getQueryParameter("surge_confirmation_id"))){
                     id = uri.getQueryParameter("surge_confirmation_id");
                 }
 
@@ -142,5 +143,14 @@ public class TosConfirmationDialogFragment extends DialogFragment {
         } else {
             webviewRecharge.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
+    }
+
+    @Override
+    public void onResume() {
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+        super.onResume();
     }
 }
