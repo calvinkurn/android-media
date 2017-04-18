@@ -27,6 +27,7 @@ public class ProductNetworkConstant {
     public static final String LOGO_FILENAME_IMAGE_JPG = "fileToUpload\"; filename=\"image.jpg";
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
+    public static final String PRODUCT_ID = "product_id";
 
     public static String getUploadImageUrl(String uploadHostUrl){
         return HTTPS + uploadHostUrl + UPLOAD_IMAGE;

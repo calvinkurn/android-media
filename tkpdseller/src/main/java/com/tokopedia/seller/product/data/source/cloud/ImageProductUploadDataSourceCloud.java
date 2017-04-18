@@ -28,11 +28,11 @@ public class ImageProductUploadDataSourceCloud extends BaseImageUploadSourceClou
         this.imageProductUploadMapper = imageProductUploadMapper;
     }
 
-    public Observable<ResultUploadImage> uploadImage(GenerateHost generateHost, String pathFileImage) {
+    public Observable<ResultUploadImage> uploadImage(GenerateHost generateHost, String pathFileImage, String productId) {
         String urlUploadImage = ProductNetworkConstant.getUploadImageUrl(generateHost.getUploadHost());
         return RetrofitUtils.createRetrofit(urlUploadImage)
                 .create(ImageUploadApi.class)
-                .uploadImage(getParamsUploadImage(urlUploadImage, pathFileImage, generateHost.getServerId()))
+                .uploadImage(getParamsUploadImage(urlUploadImage, pathFileImage, generateHost.getServerId(), productId))
                 .map(imageProductUploadMapper);
     }
 }
