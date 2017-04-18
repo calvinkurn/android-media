@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.utils.ColorScoringProductHelper;
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.model.scoringproduct.IndicatorScoreView;
 
 import java.util.ArrayList;
@@ -65,7 +65,8 @@ public class IndicatorScoringAdapter extends RecyclerView.Adapter<IndicatorScori
         public void bindView(IndicatorScoreView indicatorScoreView) {
             titleScoringIndicator.setText(indicatorScoreView.getNameIndicator());
             progressScoring.setProgress(indicatorScoreView.getScore());
-            progressScoring.setProgressColor(ColorScoringProductHelper.getColorOfScore(indicatorScoreView.getIndicatorColor(),
+            progressScoring.setMax(indicatorScoreView.getMaxScoreIndicator());
+            progressScoring.setProgressColor(ScoringProductHelper.getColorOfScore(indicatorScoreView.getIndicatorColor(),
                     context));
             containerDescription.removeAllViews();
             for(String desc: indicatorScoreView.getIndicatorDescs()){
@@ -75,6 +76,8 @@ public class IndicatorScoringAdapter extends RecyclerView.Adapter<IndicatorScori
                 TextView descText = (TextView) itemViewDesc.findViewById(R.id.content_desc_product_score);
 
                 if(indicatorScoreView.getIndicatorDescs().size() > 1){
+                    imageViewDesc.setVisibility(View.VISIBLE);
+                }else{
                     imageViewDesc.setVisibility(View.GONE);
                 }
 

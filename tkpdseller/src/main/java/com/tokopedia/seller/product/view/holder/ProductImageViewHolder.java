@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.view.fragment.ProductAddView;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
@@ -34,10 +35,12 @@ public class ProductImageViewHolder {
     public static final int REQUEST_CODE_IMAGE = 201;
 
     private ImagesSelectView imagesSelectView;
+    private ProductAddView productAddView;
     private Fragment fragment;
 
-    public ProductImageViewHolder(final Fragment fragment, View view) {
+    public ProductImageViewHolder(final Fragment fragment, View view, ProductAddView productAddView) {
         this.fragment = fragment;
+        this.productAddView = productAddView;
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
 
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
@@ -96,6 +99,7 @@ public class ProductImageViewHolder {
             @Override
             public void clickRemoveImage(int positions) {
                 imagesSelectView.removeImage();
+                productAddView.updateProductScoring();
             }
         });
     }
@@ -116,6 +120,7 @@ public class ProductImageViewHolder {
             if (imageUrls != null) {
                 imagesSelectView.addImagesString(imageUrls);
             }
+            productAddView.updateProductScoring();
         }
     }
 

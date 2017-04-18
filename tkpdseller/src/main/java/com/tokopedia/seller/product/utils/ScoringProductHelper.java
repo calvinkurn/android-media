@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.utils;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 
@@ -10,7 +11,7 @@ import com.tokopedia.seller.R;
  * Created by zulfikarrahman on 4/17/17.
  */
 
-public class ColorScoringProductHelper {
+public class ScoringProductHelper {
 
     public static final String LOW_SCORE = "low-score";
     public static final String HIGH_SCORE = "high-score";
@@ -27,6 +28,19 @@ public class ColorScoringProductHelper {
                 return ContextCompat.getColor(context, R.color.medium_score_value);
             default:
                 return ContextCompat.getColor(context, R.color.low_score_value);
+        }
+    }
+
+    public static int getImageResolution(String pathFile){
+        BitmapFactory.Options bitMapOption = new BitmapFactory.Options();
+        bitMapOption.inJustDecodeBounds=true;
+        BitmapFactory.decodeFile(pathFile, bitMapOption);
+        int imageWidth = bitMapOption.outWidth;
+        int imageHeight = bitMapOption.outHeight;
+        if(imageWidth > imageHeight){
+            return imageHeight;
+        }else{
+            return imageWidth;
         }
     }
 }

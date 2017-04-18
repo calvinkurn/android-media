@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,12 +13,16 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
+import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
@@ -61,10 +66,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
-        productInfoViewHolder = new ProductInfoViewHolder(this, view);
-        productImageViewHolder = new ProductImageViewHolder(this, view);
-        productDetailViewHolder = new ProductDetailViewHolder(this, view);
-        productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
+        productInfoViewHolder = new ProductInfoViewHolder(this, view, this);
+        productImageViewHolder = new ProductImageViewHolder(this, view, this);
+        productDetailViewHolder = new ProductDetailViewHolder(this, view, this);
+        productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view, this);
         setSubmitButtonListener(view);
         productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
@@ -138,8 +143,29 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void moveToProductScoringDetail() {
+        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), getValueIndicatorScoreModel());
+        startActivity(intent);
+    }
+
     public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
         ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
+        valueIndicatorScoreModel.setLengthProductName(productInfoViewHolder.getName().length());
+        valueIndicatorScoreModel.setLengthDescProduct(productAdditionalInfoViewHolder.getDescription().length());
+
+        ProductPhotoListViewModel productPhotoListViewModel = productImageViewHolder.getProductPhotos();
+        int imageCount = productPhotoListViewModel.getPhotos().size();
+        if(imageCount > 0) {
+            ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos()
+                    .get(productPhotoListViewModel.getProductDefaultPicture());
+            valueIndicatorScoreModel.setImageResolution(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
+        }
+
+        valueIndicatorScoreModel.setImageCount(imageCount);
+        valueIndicatorScoreModel.setStockStatus(productDetailViewHolder.getTotalStock() > 0 ? true : false);
+        valueIndicatorScoreModel.setFreeReturnStatus(productDetailViewHolder.getFreeReturns() != -1 ? true : false);
         return valueIndicatorScoreModel;
     }
+
+
 }

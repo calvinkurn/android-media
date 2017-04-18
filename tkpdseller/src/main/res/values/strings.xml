@@ -320,7 +320,7 @@
     <!-- product score -->
     <string name="product_score_label_title">Produk skor</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
-    <string name="product_score_label_title_score">Skor Produk Anda </string>
+    <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
     <string name="product_score_label_minus">Kurang</string>
     <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
     <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>

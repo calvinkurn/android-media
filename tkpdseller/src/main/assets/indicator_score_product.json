@@ -36,23 +36,19 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 1,
-                "score": 10,
-                "width": 16.66
+                "score": 10
               },
               {
                 "min": 2,
-                "score": 15,
-                "width": 33.33
+                "score": 15
               },
               {
                 "min": 3,
-                "score": 25,
-                "width": 50
+                "score": 25
               }
             ]
           },
@@ -62,23 +58,19 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 1,
-                "score": 10,
-                "width": 16.66
+                "score": 10
               },
               {
                 "min": 500,
-                "score": 15,
-                "width": 33.33
+                "score": 15
               },
               {
                 "min": 700,
-                "score": 25,
-                "width": 50
+                "score": 25
               }
             ]
           }
@@ -86,17 +78,14 @@
         "color_indicator": [
           {
             "min": 0,
-            "max": 33.33,
             "color": "low-score"
           },
           {
             "min": 33.34,
-            "max": 66.66,
             "color": "medium-score"
           },
           {
             "min": 66.67,
-            "max": -1,
             "color": "high-score"
           }
         ]
@@ -111,13 +100,11 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 11,
-                "score": 5,
-                "width": 100
+                "score": 5
               }
             ]
           }
@@ -143,23 +130,19 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 1,
-                "score": 5,
-                "width": 33.33
+                "score": 5
               },
               {
                 "min": 80,
-                "score": 7,
-                "width": 66.66
+                "score": 7
               },
               {
                 "min": 200,
-                "score": 10,
-                "width": 100
+                "score": 10
               }
             ]
           }
@@ -189,13 +172,11 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 1,
-                "score": 15,
-                "width": 100
+                "score": 15
               }
             ]
           }
@@ -221,45 +202,11 @@
             "indicator_scoring": [
               {
                 "min": 0,
-                "score": 0,
-                "width": 0
+                "score": 0
               },
               {
                 "min": 1,
-                "score": 5,
-                "width": 100
-              }
-            ]
-          }
-        ],
-        "color_indicator": [
-          {
-            "min": 0,
-            "color": "low-score"
-          },
-          {
-            "min": 51,
-            "color": "high-score"
-          }
-        ]
-      },
-      {
-        "indicator_id": 6,
-        "name_indicator": "Cashback",
-        "value_indicator": [
-          {
-            "indicator_type": "use",
-            "indicator_desc": "",
-            "indicator_scoring": [
-              {
-                "min": 0,
-                "score": 0,
-                "width": 0
-              },
-              {
-                "min": 1,
-                "score": 3,
-                "width": 100
+                "score": 5
               }
             ]
           }

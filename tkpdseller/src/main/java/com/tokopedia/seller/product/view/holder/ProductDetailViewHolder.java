@@ -2,11 +2,15 @@ package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.view.fragment.ProductAddView;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
@@ -28,11 +32,13 @@ public class ProductDetailViewHolder {
     private SpinnerTextView conditionSpinnerTextView;
     private SpinnerTextView insuranceSpinnerTextView;
     private SpinnerTextView freeReturnsSpinnerTextView;
+    private ProductAddView productAddView;
 
     private Fragment fragment;
 
-    public ProductDetailViewHolder(final Fragment fragment, View view) {
+    public ProductDetailViewHolder(final Fragment fragment, View view, final ProductAddView productAddView) {
         this.fragment = fragment;
+        this.productAddView = productAddView;
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
         minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
@@ -47,6 +53,29 @@ public class ProductDetailViewHolder {
             public void onClick(View view) {
                 Intent intent = new Intent(fragment.getActivity(), EtalasePickerActivity.class);
                 fragment.startActivityForResult(intent, REQUEST_CODE_ETALASE);
+            }
+        });
+
+        freeReturnsSpinnerTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                productAddView.updateProductScoring();
+            }
+        });
+        stockTotalCounterInputView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                productAddView.updateProductScoring();
             }
         });
     }

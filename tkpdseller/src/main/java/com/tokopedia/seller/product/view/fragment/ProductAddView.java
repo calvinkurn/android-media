@@ -13,5 +13,5 @@ public interface ProductAddView extends CustomerView {
 
     void updateProductScoring();
 
-    ValueIndicatorScoreModel getValueIndicatorScoreModel();
+    void moveToProductScoringDetail();
 }

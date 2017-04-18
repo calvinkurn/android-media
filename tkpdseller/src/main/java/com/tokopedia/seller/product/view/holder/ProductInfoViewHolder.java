@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
@@ -10,6 +12,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.view.fragment.ProductAddView;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
@@ -34,6 +37,7 @@ public class ProductInfoViewHolder {
     private LabelView catalogLabelView;
 
     private Fragment fragment;
+    private ProductAddView productAddView;
     private int categoryId;
     private int catalogId;
 
@@ -53,8 +57,9 @@ public class ProductInfoViewHolder {
         this.categoryId = categoryId;
     }
 
-    public ProductInfoViewHolder(final Fragment fragment, View view) {
+    public ProductInfoViewHolder(final Fragment fragment, View view, final ProductAddView productAddView) {
         this.fragment = fragment;
+        this.productAddView = productAddView;
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         categoryLabelView = (LabelView) view.findViewById(R.id.label_view_category);
         catalogLabelView = (LabelView) view.findViewById(R.id.label_view_catalog);
@@ -68,6 +73,22 @@ public class ProductInfoViewHolder {
             @Override
             public void onClick(View view) {
                 CatalogPickerActivity.start(fragment, fragment.getActivity(), REQUEST_CODE_CATALOG, nameEditText.getText().toString(), categoryId, catalogId);
+            }
+        });
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                productAddView.updateProductScoring();
             }
         });
     }
