@@ -2,28 +2,8 @@ package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
@@ -38,13 +18,10 @@ import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscrib
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by nisie on 3/29/17.
@@ -65,7 +42,27 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private SendReplyDiscussionParam pass;
     private Context context;
 
-    public ResCenterDiscussionPresenterImpl(Context context, ResCenterDiscussionView viewListener) {
+    @Inject
+    public ResCenterDiscussionPresenterImpl(ResCenterDiscussionView viewListener,
+                                            GetResCenterDiscussionUseCase getDiscussionUseCase,
+                                            LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
+                                            SendDiscussionUseCase sendDiscussionUseCase,
+                                            ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
+                                            GenerateHostUseCase generateHostUseCase,
+                                            UploadImageUseCase uploadImageUseCase,
+                                            CreatePictureUseCase createPictureUseCase,
+                                            ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
+                                            SendReplyDiscussionParam sendReplyDiscussionParam) {
+        this.viewListener = viewListener;
+        this.getDiscussionUseCase = getDiscussionUseCase;
+        this.loadMoreUseCase = loadMoreDiscussionUseCase;
+        this.sendDiscussionUseCase = sendDiscussionUseCase;
+        this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
+        this.generateHostUseCase = generateHostUseCase;
+        this.uploadImageUseCase = uploadImageUseCase;
+        this.createPictureUseCase = createPictureUseCase;
+        this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
+        this.pass = sendReplyDiscussionParam;
 //        this.viewListener = viewListener;
 //        this.context = context;
 //

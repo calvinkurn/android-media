@@ -7,17 +7,23 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.discussion.view.fragment.ResCenterDiscussionFragment;
 
 /**
  * Created by nisie on 3/29/17.
  */
 
-public class ResCenterDiscussionActivity extends BasePresenterActivity {
+public class ResCenterDiscussionActivity extends BasePresenterActivity
+        implements HasComponent<ResolutionDetailComponent> {
 
     private static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
     private static final String PARAM_FLAG_RECEIVED = "PARAM_FLAG_RECEIVED";
+    private String resolutionId;
 
 
     public static Intent createIntent(Context context, String resolutionId, boolean flagReceived) {
@@ -50,7 +56,7 @@ public class ResCenterDiscussionActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        String resolutionId = "";
+        resolutionId = "";
         boolean flagReceived = false;
 
         if (getIntent().getExtras() != null) {
@@ -80,5 +86,13 @@ public class ResCenterDiscussionActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public ResolutionDetailComponent getComponent() {
+        return DaggerResolutionDetailComponent.builder()
+                .appComponent(getApplicationComponent())
+                .resolutionDetailModule(new ResolutionDetailModule(resolutionId))
+                .build();
     }
 }

@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
+import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -15,6 +17,7 @@ import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
 import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptAdminSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
@@ -25,10 +28,15 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDeta
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterFragmentImpl;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
+import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
+import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaction.di.module.HistoryActionModule;
 import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
@@ -232,6 +240,12 @@ public class ResolutionDetailModule {
 
     @ResolutionDetailScope
     @Provides
+    GeneratedHostActApi provideGeneratedHostActApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(GeneratedHostActApi.class);
+    }
+
+    @ResolutionDetailScope
+    @Provides
     ResolutionApi provideResolutionService(@ResolutionQualifier Retrofit retrofit) {
         return retrofit.create(ResolutionApi.class);
     }
@@ -295,4 +309,61 @@ public class ResolutionDetailModule {
     LoadMoreMapper provideLoadMoreMapper() {
         return new LoadMoreMapper();
     }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageRepository provideUploadImageRepository(UploadImageSourceFactory uploadImageSourceFactory) {
+        return new UploadImageRepositoryImpl(uploadImageSourceFactory);
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageSourceFactory provideUploadImageSourceFactory(@ActivityContext Context context,
+                                                             GeneratedHostActApi generatedHostActApi,
+                                                             ResCenterActApi resCenterActApi,
+                                                             GenerateHostMapper generateHostMapper,
+                                                             UploadImageMapper uploadImageMapper,
+                                                             CreatePictureMapper createPictureMapper,
+                                                             SubmitImageMapper submitImageMapper) {
+        return new UploadImageSourceFactory(
+                context,
+                generatedHostActApi,
+                resCenterActApi,
+                generateHostMapper,
+                uploadImageMapper,
+                createPictureMapper,
+                submitImageMapper
+        );
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GenerateHostActService provideGenerateHostActService() {
+        return new GenerateHostActService();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    GenerateHostMapper provideGenerateHostMapper() {
+        return new GenerateHostMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    UploadImageMapper provideUploadImageMapper() {
+        return new UploadImageMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    CreatePictureMapper provideCreatePictureMapper() {
+        return new CreatePictureMapper();
+    }
+
+    @ResolutionDetailScope
+    @Provides
+    SubmitImageMapper provideSubmitImageMapper() {
+        return new SubmitImageMapper();
+    }
+
 }

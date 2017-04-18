@@ -385,6 +385,8 @@ public class TkpdBaseURL {
         public static final String PATH_ACCEPT_RESOLUTION_V2 = "v4/action/resolution-center/accept_resolution.pl";
         public static final String PATH_INPUT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/input_address_resolution.pl";
         public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
+        public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
+        public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
     }
 
     public static class Search {
@@ -500,6 +502,7 @@ public class TkpdBaseURL {
         public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
+        public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
 

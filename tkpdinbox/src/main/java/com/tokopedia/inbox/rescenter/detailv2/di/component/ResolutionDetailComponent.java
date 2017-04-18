@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.detailv2.di.scope.ResolutionDetailScope;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
+import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
 import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 
@@ -23,6 +24,8 @@ public interface ResolutionDetailComponent {
     TrackAwbReturProductUseCase trackAwbReturProductUseCase();
 
     ResCenterRepository resCenterRepository();
+
+    UploadImageRepository uploadImageRepository();
 
     ThreadExecutor threadExecutor();
 

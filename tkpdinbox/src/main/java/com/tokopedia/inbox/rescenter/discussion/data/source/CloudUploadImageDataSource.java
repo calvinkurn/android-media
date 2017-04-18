@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.discussion.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
 
@@ -18,21 +18,21 @@ import rx.Observable;
 public class CloudUploadImageDataSource {
 
     private Context context;
-    private final ResCenterActService resCenterActService;
+    private final ResCenterActApi resCenterActApi;
     private final UploadImageMapper uploadImageMapper;
 
     public CloudUploadImageDataSource(Context context,
-                                      ResCenterActService resCenterActService,
+                                      ResCenterActApi resCenterActApi,
                                       UploadImageMapper uploadImageMapper) {
         this.context = context;
-        this.resCenterActService = resCenterActService;
+        this.resCenterActApi = resCenterActApi;
         this.uploadImageMapper = uploadImageMapper;
     }
 
     public Observable<UploadImageModel> uploadImage(String url,
                                                     Map<String, RequestBody> params,
                                                     RequestBody imageFile) {
-        return resCenterActService.getApi().uploadImage(
+        return resCenterActApi.uploadImage(
                 url,
                 params,
                 imageFile)

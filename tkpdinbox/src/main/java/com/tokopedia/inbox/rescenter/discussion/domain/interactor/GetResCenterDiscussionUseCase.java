@@ -1,9 +1,9 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 
@@ -17,8 +17,8 @@ public class GetResCenterDiscussionUseCase extends UseCase<DiscussionModel> {
 
     private final ResCenterRepository resCenterRepository;
 
-    public GetResCenterDiscussionUseCase(JobExecutor jobExecutor,
-                                         UIThread uiThread, ResCenterRepository resCenterRepository) {
+    public GetResCenterDiscussionUseCase(ThreadExecutor jobExecutor,
+                                         PostExecutionThread uiThread, ResCenterRepository resCenterRepository) {
         super(jobExecutor, uiThread);
         this.resCenterRepository = resCenterRepository;
     }
