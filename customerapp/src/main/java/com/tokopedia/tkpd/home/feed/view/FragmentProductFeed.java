@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,26 +18,23 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -463,7 +460,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                         onAddInstagram();
                         break;
                     case R.id.action_gallery:
-                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
+                        AppCompatActivity activity = (AppCompatActivity) getActivity();
+                        ImageGalleryEntry.moveToImageGallery(activity, 0);
                         break;
                     case R.id.action_camera:
                         onAddGallery();
@@ -475,7 +473,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void onAddGallery() {
-        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        ImageGalleryEntry.moveToImageGalleryCamera(activity);
     }
 
     private void onAddInstagram() {
