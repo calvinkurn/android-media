@@ -5,6 +5,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.util.GlobalConfig;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 /**
  * @author anggaprasetiyo on 3/6/17.
  */
@@ -12,23 +17,23 @@ import com.tokopedia.core.util.GlobalConfig;
 public class DeviceUtil {
 
     public static String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+                 en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses();
+                     enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+            return "127.0.0.1";
+        }
         return "127.0.0.1";
-//        try {
-//            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-//                 en.hasMoreElements(); ) {
-//                NetworkInterface intf = en.nextElement();
-//                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses();
-//                     enumIpAddr.hasMoreElements(); ) {
-//                    InetAddress inetAddress = enumIpAddr.nextElement();
-//                    if (!inetAddress.isLoopbackAddress()) {
-//                        return inetAddress.getHostAddress();
-//                    }
-//                }
-//            }
-//        } catch (SocketException ex) {
-//            return "";
-//        }
-//        return "";
     }
 
     private static String getDeviceName() {

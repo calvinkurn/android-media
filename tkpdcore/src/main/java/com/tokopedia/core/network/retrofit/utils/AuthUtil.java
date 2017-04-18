@@ -68,7 +68,6 @@ public class AuthUtil {
     public static Map<String, String> generateHeadersWithXUserId(
             String path, String strParam, String method, String authKey, String contentType
     ) {
-
         String date = generateDate(DATE_FORMAT);
         String contentMD5 = generateContentMd5(strParam);
         String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
@@ -77,7 +76,7 @@ public class AuthUtil {
                 + "\n" + contentMD5
                 + "\n" + contentType
                 + "\n" + date
-                + "\n" + "x-tkpd-userid:" + userId
+                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
                 + "\n" + path;
         String signature = calculateRFC2104HMAC(authString, authKey);
 
@@ -276,7 +275,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        params.put(PARAM_X_TKPD_USER_ID, userId);
+        //     params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
@@ -290,7 +289,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        params.put(PARAM_X_TKPD_USER_ID, userId);
+        //      params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
@@ -304,7 +303,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        params.put(PARAM_X_TKPD_USER_ID, userId);
+        //      params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
