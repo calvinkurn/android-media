@@ -95,7 +95,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
         viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
-//        viewModel.setProductEtalaseId(productDetailViewHolder.);
+        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
         viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
@@ -117,6 +117,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 break;
             case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
+                productDetailViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }

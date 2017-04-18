@@ -59,4 +59,10 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
             return productDraftRepository.getDraft(productId);
         }
     }
+
+    public static RequestParams generateUploadProductParam(long productId) {
+        RequestParams params = RequestParams.create();
+        params.putLong(UPLOAD_PRODUCT_ID, productId);
+        return params;
+    }
 }

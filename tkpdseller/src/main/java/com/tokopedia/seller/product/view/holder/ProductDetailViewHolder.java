@@ -30,6 +30,7 @@ public class ProductDetailViewHolder {
     private SpinnerTextView freeReturnsSpinnerTextView;
 
     private Fragment fragment;
+    private int etalaseId;
 
     public ProductDetailViewHolder(final Fragment fragment, View view) {
         this.fragment = fragment;
@@ -49,6 +50,12 @@ public class ProductDetailViewHolder {
                 fragment.startActivityForResult(intent, REQUEST_CODE_ETALASE);
             }
         });
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+        String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+        etalaseLabelView.setContent(etalaseName);
     }
 
     public int getPriceCurrency() {
@@ -89,5 +96,9 @@ public class ProductDetailViewHolder {
 
     public int getFreeReturns() {
         return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
+    }
+
+    public int getEtalaseId() {
+        return etalaseId;
     }
 }

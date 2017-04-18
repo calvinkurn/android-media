@@ -4,8 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.seller.product.constant.ProductNetworkConstant;
+import com.tokopedia.seller.product.data.source.cloud.api.ImageUploadApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
@@ -15,7 +19,9 @@ import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
 
+import retrofit2.Retrofit;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/11/17.
@@ -24,11 +30,13 @@ import rx.Observable;
 public class UploadProductCloud {
     private final UploadProductApi api;
     private final Context context;
+    private final GenerateHostDataSourceCloud generateHost;
 
     @Inject
-    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context) {
+    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context, GenerateHostDataSourceCloud generateHost) {
         this.api = api;
         this.context = context;
+        this.generateHost = generateHost;
     }
 
     public Observable<AddProductValidationServiceModel> addProductValidation(AddProductValidationInputServiceModel serviceModel) {
@@ -37,12 +45,29 @@ public class UploadProductCloud {
     }
 
     public Observable<AddProductPictureServiceModel> addProductPicture(AddProductPictureInputServiceModel serviceModel) {
-        return api.addProductPicture(AuthUtil.generateParamsNetwork(context,serviceModel.generateMapParam()))
-                .map(new GetData<AddProductPictureServiceModel>());
+        return generateHost.generateHost()
+                .flatMap(new AddProductPicture(serviceModel));
     }
 
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
         return api.addProductSubmit(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
                 .map(new GetData<AddProductSubmitServiceModel>());
+    }
+
+    private class AddProductPicture implements Func1<GenerateHost, Observable<AddProductPictureServiceModel>> {
+        private final AddProductPictureInputServiceModel serviceModel;
+
+        public AddProductPicture(AddProductPictureInputServiceModel serviceModel) {
+            this.serviceModel = serviceModel;
+        }
+
+        @Override
+        public Observable<AddProductPictureServiceModel> call(GenerateHost generateHost) {
+            String uploadHost = ProductNetworkConstant.getUploadImageUrl(generateHost.getUploadHost());
+            return RetrofitUtils.createRetrofit(uploadHost)
+                    .create(ImageUploadApi.class)
+                    .addProductPicture(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
+                    .map(new GetData<AddProductPictureServiceModel>());
+        }
     }
 }

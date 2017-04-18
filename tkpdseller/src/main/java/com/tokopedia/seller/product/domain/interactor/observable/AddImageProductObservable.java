@@ -64,17 +64,18 @@ public class AddImageProductObservable implements Func1<UploadProductInputDomain
                         imageResult,
                         new Func2<UploadProductInputDomainModel,
                                 List<ImageProcessDomainModel>,
-                                UploadProductInputDomainModel>()
-                        {
+                                UploadProductInputDomainModel>() {
                             @Override
                             public UploadProductInputDomainModel call(
                                     UploadProductInputDomainModel uploadProductInputDomainModel,
                                     List<ImageProcessDomainModel> imageProductInputDomainModels
                             ) {
-                                uploadProductInputDomainModel.setServerId(imageProductInputDomainModels.get(0).getServerId());
-                                ProductPhotoListDomainModel productPhotos = uploadProductInputDomainModel.getProductPhotos();
-                                productPhotos.setPhotos(mapImageProcess(imageProductInputDomainModels));
-                                uploadProductInputDomainModel.setProductPhotos(productPhotos);
+                                if (!imageProductInputDomainModels.isEmpty()) {
+                                    uploadProductInputDomainModel.setServerId(imageProductInputDomainModels.get(0).getServerId());
+                                    ProductPhotoListDomainModel productPhotos = uploadProductInputDomainModel.getProductPhotos();
+                                    productPhotos.setPhotos(mapImageProcess(imageProductInputDomainModels));
+                                    uploadProductInputDomainModel.setProductPhotos(productPhotos);
+                                }
                                 return uploadProductInputDomainModel;
                             }
                         });
@@ -82,7 +83,7 @@ public class AddImageProductObservable implements Func1<UploadProductInputDomain
 
     private List<ImageProductInputDomainModel> mapImageProcess(List<ImageProcessDomainModel> imageProductInputDomainModels) {
         List<ImageProductInputDomainModel> inputDomainModels = new ArrayList<>();
-        for (ImageProcessDomainModel domainModel : imageProductInputDomainModels){
+        for (ImageProcessDomainModel domainModel : imageProductInputDomainModels) {
             ImageProductInputDomainModel inputDomainModel = new ImageProductInputDomainModel();
             inputDomainModel.setUrl(domainModel.getUrl());
             inputDomainModels.add(inputDomainModel);
