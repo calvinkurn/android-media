@@ -117,7 +117,8 @@ public class ProductAddFragment extends BaseDaggerFragment
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
         viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
 //        viewModel youtube
-
+        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
+        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderDay());
         return viewModel;
     }
 
