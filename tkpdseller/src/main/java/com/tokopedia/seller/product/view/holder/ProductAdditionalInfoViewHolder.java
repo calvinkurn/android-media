@@ -28,5 +28,7 @@ public class ProductAdditionalInfoViewHolder {
         addUrlContainerViewHolder.addAddUrlVideModel(addUrlVideoModel);
     }
 
-
+    public String getDescription() {
+        return descriptionEditText.getText().toString();
+    }
 }

@@ -21,7 +21,8 @@
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_decimal_entries="@array/product_currency_entries"
         app:spinner_decimal_hint="@string/product_label_product_price"
-        app:spinner_decimal_show_counter_button="false" />
+        app:spinner_decimal_show_counter_button="false"
+        app:spinner_decimal_values="@array/product_currency_values"/>
 
     <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
         android:id="@+id/spinner_counter_input_view_weight"
@@ -33,7 +34,7 @@
         app:spinner_decimal_values="@array/product_weight_values" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
-        android:id="@+id/counter_input_view_minimum_buy"
+        android:id="@+id/counter_input_view_minimum_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy" />

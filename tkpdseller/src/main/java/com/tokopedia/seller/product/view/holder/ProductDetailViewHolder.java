@@ -21,7 +21,7 @@ public class ProductDetailViewHolder {
 
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
-    private CounterInputView minimumBuyCounterInputView;
+    private CounterInputView minimumOrderCounterInputView;
     private SpinnerTextView stockStatusSpinnerTextView;
     private CounterInputView stockTotalCounterInputView;
     private LabelView etalaseLabelView;
@@ -35,7 +35,7 @@ public class ProductDetailViewHolder {
         this.fragment = fragment;
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
-        minimumBuyCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_buy);
+        minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
         stockTotalCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_stock_total);
         etalaseLabelView = (LabelView) view.findViewById(R.id.label_view_shop_window);
@@ -51,43 +51,43 @@ public class ProductDetailViewHolder {
         });
     }
 
-    public String getPriceCurrency() {
-        return priceSpinnerCounterInputView.getSpinnerValue();
+    public int getPriceCurrency() {
+        return Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue());
     }
 
     public float getPriceValue() {
         return priceSpinnerCounterInputView.getCounterValue();
     }
 
-    public String getWeightUnit() {
-        return weightSpinnerCounterInputView.getSpinnerValue();
+    public int getWeightUnit() {
+        return Integer.parseInt(weightSpinnerCounterInputView.getSpinnerValue());
     }
 
     public int getWeightValue() {
         return (int) weightSpinnerCounterInputView.getCounterValue();
     }
 
-    public int getMinimumBuy() {
-        return (int) minimumBuyCounterInputView.getFloatValue();
+    public int getMinimumOrder() {
+        return (int) minimumOrderCounterInputView.getFloatValue();
     }
 
-    public String getStatusStock() {
-        return stockStatusSpinnerTextView.getSpinnerValue();
+    public int getStatusStock() {
+        return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
     }
 
     public int getTotalStock() {
         return (int) stockTotalCounterInputView.getFloatValue();
     }
 
-    public String getCondition() {
-        return conditionSpinnerTextView.getSpinnerValue();
+    public int getCondition() {
+        return Integer.parseInt(conditionSpinnerTextView.getSpinnerValue());
     }
 
-    public String getInsurance() {
-        return insuranceSpinnerTextView.getSpinnerValue();
+    public int getInsurance() {
+        return Integer.parseInt(insuranceSpinnerTextView.getSpinnerValue());
     }
 
-    public String getFreeReturns() {
-        return freeReturnsSpinnerTextView.getSpinnerValue();
+    public int getFreeReturns() {
+        return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
     }
 }

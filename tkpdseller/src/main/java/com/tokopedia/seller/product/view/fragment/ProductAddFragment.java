@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +85,23 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
+//        viewModel.setProductCatalogId(productInfoViewHolder.);
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
+        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
+//        viewModel.setProductWholesaleList();
+        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
+        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
+        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
+        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+//        viewModel.setProductEtalaseId(productDetailViewHolder.);
+        viewModel.setProductCondition(productDetailViewHolder.getCondition());
+        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
+        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
+//        viewModel youtube
+
         return viewModel;
     }
 

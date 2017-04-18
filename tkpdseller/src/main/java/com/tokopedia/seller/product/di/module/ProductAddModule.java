@@ -8,6 +8,7 @@ import com.tokopedia.core.base.di.scope.ActivityScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
@@ -68,13 +69,13 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
-    GenerateHostApi provideGenerateHostApi(@WsV4Qualifier Retrofit retrofit){
+    GenerateHostApi provideGenerateHostApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(GenerateHostApi.class);
     }
 
     @ProductAddScope
     @Provides
-    UploadProductApi provideUploadProductApi(@WsV4Qualifier Retrofit retrofit){
+    UploadProductApi provideUploadProductApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(UploadProductApi.class);
     }
 
