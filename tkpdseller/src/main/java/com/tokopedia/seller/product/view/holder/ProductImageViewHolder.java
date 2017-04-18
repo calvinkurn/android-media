@@ -2,17 +2,15 @@ package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -23,7 +21,6 @@ import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nathan on 4/11/17.
@@ -31,20 +28,18 @@ import java.util.List;
 
 public class ProductImageViewHolder {
 
-    public static final int REQUEST_CODE_IMAGE = 201;
-
+    public static final int MIN_IMG_RESOLUTION = 300;
     private ImagesSelectView imagesSelectView;
-    private Fragment fragment;
+    private ProductAddFragment fragment;
 
-    public ProductImageViewHolder(final Fragment fragment, View view) {
+    public ProductImageViewHolder(final ProductAddFragment fragment, View view) {
         this.fragment = fragment;
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
 
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
-                int remainingEmptySlot = imagesSelectView.getRemainingEmptySlot();
-                GalleryActivity.moveToImageGallery(fragment.getActivity(), fragment, position, remainingEmptySlot);
+                fragment.goToGalleryPermissionCheck(position);
             }
 
             @Override
@@ -56,14 +51,22 @@ public class ProductImageViewHolder {
         imagesSelectView.setOnCheckResolutionListener(new ImagesSelectView.OnCheckResolutionListener() {
             @Override
             public boolean isResolutionCorrect(String uri) {
-                return true;
+                return (new ImageSelectModel(uri).getMinResolution() >= MIN_IMG_RESOLUTION);
             }
 
             @Override
-            public void resolutionCheckFailed(List<String> imagesStringList) {
-
+            public void resolutionCheckFailed(String uri) {
+                if (fragment.getView() == null) {
+                    return;
+                }
+                Snackbar.make(fragment.getView(),
+                        fragment.getString( R.string.error_image_resolution),Snackbar.LENGTH_LONG).show();
             }
         });
+    }
+
+    public ImagesSelectView getImagesSelectView() {
+        return imagesSelectView;
     }
 
     public void showEditImageDialog(FragmentManager fm, int position, boolean isPrimary) {
@@ -72,7 +75,7 @@ public class ProductImageViewHolder {
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery((AppCompatActivity) fragment.getActivity(), position, 1);
+                GalleryActivity.moveToImageGallery((AppCompatActivity) fragment.getActivity(), position, 1, true);
             }
 
             @Override
