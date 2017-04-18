@@ -27,27 +27,27 @@ import com.tkpd.library.utils.ArrayFragmentStatePagerAdapter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.seller.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.instoped.model.InstagramMediaModelParc;
-import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
-import com.tokopedia.seller.myproduct.fragment.ImageChooserDialog;
+import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.core.myproduct.model.constant.ImageModelType;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.adapter.SmallPhotoAdapter;
+import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.fragment.ChooserDialogFragment;
 import com.tokopedia.seller.myproduct.fragment.ChooserFragment;
-import com.tokopedia.core.myproduct.model.ImageModel;
+import com.tokopedia.seller.myproduct.fragment.ImageChooserDialog;
 import com.tokopedia.seller.myproduct.model.SimpleTextModel;
-import com.tokopedia.core.myproduct.model.constant.ImageModelType;
 import com.tokopedia.seller.myproduct.presenter.ProductSocMedPresenter;
-import com.tokopedia.seller.myproduct.utils.AddProductType;
-import com.tokopedia.core.util.Pair;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.myproduct.utils.AddProductType;
 
 import org.parceler.Parcels;
 
@@ -75,7 +75,31 @@ public class ProductSocMedActivity extends BaseProductActivity implements
 
     PagerAdapter2 pagerAdapter;
     SmallPhotoAdapter adapter;
+    SparseArray<InstagramMediaModel> instagramMediaModelSparseArray;
+    TkpdProgressDialog tkpdProgressDialog;
+    private List<ImageModel> imageModels = new ArrayList<ImageModel>() {
+        {
+            ImageModel temp = new ImageModel(DEFAULT_HTTP);
+            temp.setType(ImageModelType.UNSELECTED.getType());
+            temp.setType(ImageModelType.INACTIVE.getType());
+            add(temp);
 
+            temp = new ImageModel(DEFAULT_HTTP);
+            temp.setType(ImageModelType.UNSELECTED.getType());
+            temp.setType(ImageModelType.ACTIVE.getType());
+            add(temp);
+
+            temp = new ImageModel(DEFAULT_HTTP);
+            temp.setType(ImageModelType.SELECTED.getType());
+            temp.setType(ImageModelType.INACTIVE.getType());
+            add(temp);
+
+            temp = new ImageModel(DEFAULT_HTTP);
+            temp.setType(ImageModelType.SELECTED.getType());
+            temp.setType(ImageModelType.ACTIVE.getType());
+            add(temp);
+        }
+    };
     ViewPager.OnPageChangeListener onPageChangeListener =
             new ViewPager.OnPageChangeListener() {
                 @Override
@@ -125,36 +149,7 @@ public class ProductSocMedActivity extends BaseProductActivity implements
 
                 }
             };
-
-    SparseArray<InstagramMediaModel> instagramMediaModelSparseArray;
-
-    private List<ImageModel> imageModels = new ArrayList<ImageModel>(){
-        {
-            ImageModel temp = new ImageModel(DEFAULT_HTTP);
-            temp.setType(ImageModelType.UNSELECTED.getType());
-            temp.setType(ImageModelType.INACTIVE.getType());
-            add(temp);
-
-            temp = new ImageModel(DEFAULT_HTTP);
-            temp.setType(ImageModelType.UNSELECTED.getType());
-            temp.setType(ImageModelType.ACTIVE.getType());
-            add(temp);
-
-            temp = new ImageModel(DEFAULT_HTTP);
-            temp.setType(ImageModelType.SELECTED.getType());
-            temp.setType(ImageModelType.INACTIVE.getType());
-            add(temp);
-
-            temp = new ImageModel(DEFAULT_HTTP);
-            temp.setType(ImageModelType.SELECTED.getType());
-            temp.setType(ImageModelType.ACTIVE.getType());
-            add(temp);
-        }
-    };
-
     private List<InstagramMediaModel> images = new ArrayList<>();
-
-    TkpdProgressDialog tkpdProgressDialog;
     private BroadcastReceiver addProductReceiver;
 
     @Override
@@ -520,19 +515,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         return "";
     }
 
-    protected static class PagerAdapter2 extends ArrayFragmentStatePagerAdapter<InstagramMediaModelParc> {
-
-        public PagerAdapter2(FragmentManager fm, List<InstagramMediaModelParc> items) {
-            super(fm, items);
-        }
-
-        @Override
-        public Fragment getFragment(InstagramMediaModelParc item, int position) {
-            return AddProductFragment.newInstance3(AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()
-                    , convertTo(item), position);
-        }
-    }
-
     public void showProgress(boolean isShow) {
         if(isShow){
             tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
@@ -541,7 +523,6 @@ public class ProductSocMedActivity extends BaseProductActivity implements
             tkpdProgressDialog.dismiss();
         }
     }
-
 
     public void changePicture(int position, ImageModel imageModel){
         adapter.changePicture(position,imageModel);
@@ -588,6 +569,19 @@ public class ProductSocMedActivity extends BaseProductActivity implements
         }
         else {
             return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    protected static class PagerAdapter2 extends ArrayFragmentStatePagerAdapter<InstagramMediaModelParc> {
+
+        public PagerAdapter2(FragmentManager fm, List<InstagramMediaModelParc> items) {
+            super(fm, items);
+        }
+
+        @Override
+        public Fragment getFragment(InstagramMediaModelParc item, int position) {
+            return AddProductFragment.newInstance3(AddProductType.ADD_FROM_SOCIAL_MEDIA.getType()
+                    , convertTo(item), position);
         }
     }
 

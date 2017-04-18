@@ -31,9 +31,6 @@ import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.ArrayList;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
@@ -164,13 +161,13 @@ public class ProductAddFragment extends BaseDaggerFragment
         return valueIndicatorScoreModel;
     }
 
-    public void goToGalleryPermissionCheck(int imagePosition){
+    public void goToGalleryPermissionCheck(int imagePosition) {
         ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(this, imagePosition);
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery(int imagePosition){
+    public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
         GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
@@ -191,7 +188,7 @@ public class ProductAddFragment extends BaseDaggerFragment
     @TargetApi(16)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @TargetApi(16)

@@ -40,7 +40,7 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
             });
     }
 
-    public void detachView(){
+    public void detachView() {
         super.detachView();
         fetchCatalogDataUseCase.unsubscribe();
     }

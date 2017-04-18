@@ -31,12 +31,12 @@ public class FileUtils {
     }
 
 
-    public static String getFolderPathForUploadNoRand(String root){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/";
+    public static String getFolderPathForUploadNoRand(String root) {
+        return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
     }
 
-    public static String getFileNameWithoutExt(String path){
-        String fileName = path.substring(path.lastIndexOf("/")+1);
+    public static String getFileNameWithoutExt(String path) {
+        String fileName = path.substring(path.lastIndexOf("/") + 1);
         int pos = fileName.lastIndexOf(".");
         if (pos > 0) {
             fileName = fileName.substring(0, pos);
@@ -47,7 +47,8 @@ public class FileUtils {
     /**
      * will wrte the buffer to Tkpdpath with the filename supply. Extension will be .jpg
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/cache/tokopedia/IMG_451274244.jpg
-     * @param buffer result of compressed image in jpeg
+     *
+     * @param buffer             result of compressed image in jpeg
      * @param fileNameWithoutExt name of file without extension to write to Tkpd Path
      * @return
      */
@@ -60,7 +61,7 @@ public class FileUtils {
             if (!tkpdRootdirectory.exists()) {
                 tkpdRootdirectory.mkdirs();
             }
-            File photo = new File(tkpdRootdirectory.getAbsolutePath() + "/cache/tokopedia/"+fileNameWithoutExt +".jpg");
+            File photo = new File(tkpdRootdirectory.getAbsolutePath() + "/cache/tokopedia/" + fileNameWithoutExt + ".jpg");
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {
@@ -80,7 +81,7 @@ public class FileUtils {
         return null;
     }
 
-    private static boolean writeBufferToFile (byte[] buffer, String path){
+    private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {
             FileOutputStream fos = new FileOutputStream(path);
 
