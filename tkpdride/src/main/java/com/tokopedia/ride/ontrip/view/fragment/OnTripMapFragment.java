@@ -20,6 +20,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -571,8 +572,27 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         processingDescription.setText(message);
     }
 
+    private boolean isNotificationVisible(int id) {
+        boolean visible = false;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            StatusBarNotification[] notifications = mNotifyMgr.getActiveNotifications();
+            for (StatusBarNotification notification : notifications) {
+                if (notification.getId() == id) {
+                    return true;
+                }
+            }
+        }
+
+        return visible;
+    }
+
     @Override
     public void showFindingUberNotification() {
+        if (isNotificationVisible(FINDING_UBER_NOTIFICATION_ID)) {
+            return;
+        }
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -593,7 +613,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     public void showAcceptedNotification(final RideRequest result) {
-        if (result.getVehicle() == null || result.getDriver() == null) {
+        if (result.getVehicle() == null || result.getDriver() == null || result.getPickup() == null) {
+            return;
+        }
+
+        if (isNotificationVisible(ACCEPTED_UBER_NOTIFICATION_ID)) {
             return;
         }
 
@@ -608,7 +632,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         remoteView.setTextViewText(R.id.tv_driver_star, result.getDriver().getRating());
         //remoteView.setImageViewUri(R.id.iv_driver_img, Uri.parse(result.getDriver().getPictureUrl()));
 
-
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -616,7 +639,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setContentTitle(getString(R.string.accepted_push_title))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating()))
+                .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating(), (int) result.getPickup().getEta() + ""))
                 .setCustomBigContentView(remoteView);
 
 
