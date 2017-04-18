@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 /**
  * Created by zulfikarrahman on 3/21/17.
@@ -30,8 +31,20 @@ public class ImageProductUploadDataSource {
                 .flatMap(new Func1<GenerateHost, Observable<ResultUploadImage>>() {
                     @Override
                     public Observable<ResultUploadImage> call(GenerateHost generateHost) {
-                        return imageProductUploadDataSourceCloud.uploadImage(generateHost, pathFileImage, productId);
+                        Observable<ResultUploadImage> imageUpload
+                                = imageProductUploadDataSourceCloud
+                                .uploadImage(generateHost, pathFileImage, productId);
+                        return Observable.zip(imageUpload, Observable.just(generateHost), new InsertGenerateHostResult());
                     }
                 });
+    }
+
+    private class InsertGenerateHostResult implements Func2<ResultUploadImage, GenerateHost, ResultUploadImage> {
+
+        @Override
+        public ResultUploadImage call(ResultUploadImage resultUploadImage, GenerateHost generateHost) {
+            resultUploadImage.setServerId(Integer.parseInt(generateHost.getServerId()));
+            return resultUploadImage;
+        }
     }
 }

@@ -17,6 +17,7 @@ public class ResultUploadImage {
     @SerializedName("file_th")
     @Expose
     private String fileTh;
+    private int serverId;
 
     public String getFileTh() {
         return fileTh;
@@ -48,5 +49,13 @@ public class ResultUploadImage {
 
     public void setPicObj(String picObj) {
         this.picObj = picObj;
+    }
+
+    public int getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 }

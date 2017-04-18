@@ -10,8 +10,8 @@ public class ImageProductInputDomainModel {
     private String url;
     private String description;
     private String imagePath;
-    private int picId;
     private String picObj;
+    private int picId;
 
     public ImageProductInputDomainModel() {
         url = "";

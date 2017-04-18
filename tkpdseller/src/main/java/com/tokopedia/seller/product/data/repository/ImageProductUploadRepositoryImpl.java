@@ -4,7 +4,7 @@ package com.tokopedia.seller.product.data.repository;
 import com.tokopedia.seller.product.data.mapper.UploadImageMapper;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
 
 import rx.Observable;
 
@@ -20,7 +20,7 @@ public class ImageProductUploadRepositoryImpl implements ImageProductUploadRepos
     }
 
     @Override
-    public Observable<ImageProductInputDomainModel> uploadImageProduct(String imagePath, String productId) {
+    public Observable<ImageProcessDomainModel> uploadImageProduct(String imagePath, String productId) {
         return imageProductUploadDataSource.uploadImage(imagePath, productId)
                 .map(new UploadImageMapper());
     }
