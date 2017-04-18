@@ -40,6 +40,7 @@ import butterknife.OnClick;
  */
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
+    private static final int MAX_SEAT_COUNT = 2;
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -144,7 +145,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void actionSelectSeatButtonClicked() {
         if (confirmBookingViewModel.getMaxCapacity() > 1) {
             List<SeatViewModel> seatViewModels = new ArrayList<>();
-            for (int i = 1; i <= confirmBookingViewModel.getMaxCapacity(); i++) {
+            for (int i = 1; i <= MAX_SEAT_COUNT; i++) {
                 String seatTitle = null;
                 if (i == 1) {
                     seatTitle = String.format("%d Seat", i);
