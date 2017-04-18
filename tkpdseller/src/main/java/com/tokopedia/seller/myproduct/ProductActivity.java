@@ -739,7 +739,7 @@ public class ProductActivity extends BaseProductActivity implements
                 } else {
                     int emptyPicture = 6 - ((AddProductFragment)fragment).countPicture();
                     Log.i(TAG, messageTAG + " max photo will get : " + emptyPicture);
-                    GalleryActivity.moveToImageGallery(this, position, emptyPicture);
+                    GalleryActivity.moveToImageGallery(this, position, emptyPicture, false);
                 }
                 break;
             case DialogFragmentImageAddProduct.ADD_DESCRIPTION:
