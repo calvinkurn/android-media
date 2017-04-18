@@ -116,13 +116,31 @@ public class ImagesSelectView extends FrameLayout {
 
     }
 
-    public boolean successHandleResolution (String imageUrl){
+    private void handleResolutionFromStringList (List<String> uriList) {
+        for (int i=uriList.size()-1; i>= 0; i-- ){
+            String uri = uriList.get(i);
+            if (!successHandleResolution(uri)){
+                uriList.remove(i);
+            }
+        }
+    }
+
+    private void handleResolutionFromList (List<ImageSelectModel> imageSelectModelList) {
+        for (int i=imageSelectModelList.size()-1; i>= 0; i-- ){
+            ImageSelectModel imageSelectModel = imageSelectModelList.get(i);
+            if (!successHandleResolution(imageSelectModel.getUri())){
+                imageSelectModelList.remove(i);
+            }
+        }
+    }
+
+    public boolean successHandleResolution (String localUri){
         if (onCheckResolutionListener == null ||
-            onCheckResolutionListener.isResolutionCorrect(imageUrl)){
+            onCheckResolutionListener.isResolutionCorrect(localUri)){
             return true;
         }
         else { // resolution is not correct
-            onCheckResolutionListener.resolutionCheckFailed(imageUrl);
+            onCheckResolutionListener.resolutionCheckFailed(localUri);
             return false;
         }
     }
@@ -134,26 +152,41 @@ public class ImagesSelectView extends FrameLayout {
     }
 
     public void addImages(List<ImageSelectModel> imageSelectModelList){
-        imageSelectorAdapter.addImages(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
+        if (imageSelectModelList.size() > 0) {
+            imageSelectorAdapter.addImages(imageSelectModelList);
+        }
     }
 
     public void addImagesString(List<String> imageStringList){
-        List<ImageSelectModel> imageSelectModelList = new ArrayList<>();
-        for (int i=0, sizei = imageStringList.size(); i<sizei; i++) {
-            imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+        handleResolutionFromStringList(imageStringList);
+
+        if (imageStringList.size() > 0) {
+            List<ImageSelectModel> imageSelectModelList = new ArrayList<>();
+            for (int i=0, sizei = imageStringList.size(); i<sizei; i++) {
+                imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+            }
+            imageSelectorAdapter.addImages(imageSelectModelList);
         }
-        imageSelectorAdapter.addImages(imageSelectModelList);
     }
 
     public void setImage(List<ImageSelectModel> imageSelectModelList){
-        imageSelectorAdapter.setImage(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
+
+        if (imageSelectModelList.size() > 0) {
+            imageSelectorAdapter.setImage(imageSelectModelList);
+        }
     }
 
     public void changeImagePath (String path) {
-        imageSelectorAdapter.changeImagePath(path);
+        if (successHandleResolution(path)) {
+            imageSelectorAdapter.changeImagePath(path);
+        }
     }
     public void changeImagePath (String path, int position) {
-        imageSelectorAdapter.changeImagePath(path, position);
+        if (successHandleResolution(path)) {
+            imageSelectorAdapter.changeImagePath(path, position);
+        }
     }
 
     public void changeImageDesc (String description) {
@@ -171,11 +204,15 @@ public class ImagesSelectView extends FrameLayout {
     }
 
     public void changeImage (ImageSelectModel imageSelectModel) {
-        imageSelectorAdapter.changeImage(imageSelectModel);
+        if (successHandleResolution(imageSelectModel.getUri())) {
+            imageSelectorAdapter.changeImage(imageSelectModel);
+        }
     }
 
     public void changeImage (ImageSelectModel imageSelectModel, int position) {
-        imageSelectorAdapter.changeImage(imageSelectModel, position);
+        if (successHandleResolution(imageSelectModel.getUri())) {
+            imageSelectorAdapter.changeImage(imageSelectModel, position);
+        }
     }
 
     public ImageSelectModel getPrimaryImage () {

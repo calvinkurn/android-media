@@ -1,21 +1,16 @@
 package com.tokopedia.seller.product.view.holder;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -24,13 +19,6 @@ import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
 
 /**
  * Created by nathan on 4/11/17.
@@ -38,6 +26,7 @@ import permissions.dispatcher.PermissionRequest;
 
 public class ProductImageViewHolder {
 
+    public static final int MIN_IMG_RESOLUTION = 300;
     private ImagesSelectView imagesSelectView;
     private ProductAddFragment fragment;
 
@@ -60,12 +49,16 @@ public class ProductImageViewHolder {
         imagesSelectView.setOnCheckResolutionListener(new ImagesSelectView.OnCheckResolutionListener() {
             @Override
             public boolean isResolutionCorrect(String uri) {
-                return true;
+                return (new ImageSelectModel(uri).getMinResolution() >= MIN_IMG_RESOLUTION);
             }
 
             @Override
             public void resolutionCheckFailed(String uri) {
-
+                if (fragment.getView() == null) {
+                    return;
+                }
+                Snackbar.make(fragment.getView(),
+                        fragment.getString( R.string.error_image_resolution),Snackbar.LENGTH_LONG).show();
             }
         });
     }

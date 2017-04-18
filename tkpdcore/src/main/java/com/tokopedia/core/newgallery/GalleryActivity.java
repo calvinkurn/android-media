@@ -6,8 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,7 +32,6 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
@@ -55,7 +52,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import org.parceler.Parcels;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -107,9 +103,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String TOKOPEDIA = "Tokopedia";
 
     public static final int RESULT_CODE	= 323;
-    public static final int DEFAULT_WIDTH_COMPRESS = 2048;
-    public static final int DEFAULT_HEIGHT_COMPRESS = 2048;
-    public static final int DEFAULT_QUALITY_COMPRESS = 70;
+    public static final int DEF_WIDTH_CMPR = 2048;
+    public static final int DEF_QLTY_COMPRESS = 70;
 
     String FRAGMENT;
     int position;
@@ -326,77 +321,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    public static File writeImageToTkpdPath(byte[] buffer, String fileName) {
-        if (buffer != null) {
-            String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
-
-            File directory = new File(tkpdFolderPath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            File photo = new File(directory.getAbsolutePath() + "/"+fileName);
-            if (photo.exists()) {
-                // photo already exist in cache
-                if (photo.length() == buffer.length) {
-                    return photo;
-                } else { // the length is different, delete it and write the new one
-                    photo.delete();
-                    if (writeBufferToFile(buffer, photo.getPath())) {
-                        return photo;
-                    }
-                }
-            } else {
-                if (writeBufferToFile(buffer, photo.getPath())) {
-                    return photo;
-                }
-            }
-        }
-        return null;
-    }
-
-    private static boolean writeBufferToFile (byte[] buffer, String path){
-        try {
-            FileOutputStream fos = new FileOutputStream(path);
-
-            fos.write(buffer);
-            fos.close();
-            return true;
-        } catch (java.io.IOException e) {
-            return false;
-        }
-
-    }
-
-    public static byte[] compressImage(String imagePathToCompress) {
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        BitmapFactory.Options checksize = new BitmapFactory.Options();
-        checksize.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        checksize.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(imagePathToCompress, checksize);
-        options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
-        Bitmap tempPic = BitmapFactory.decodeFile(imagePathToCompress, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
-        if (tempPic != null) {
-            try {
-                tempPic = ImageHandler.RotatedBitmap(tempPic, imagePathToCompress);
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            if (tempPic.getWidth() > DEFAULT_WIDTH_COMPRESS || tempPic.getHeight() > DEFAULT_HEIGHT_COMPRESS) {
-                tempPicToUpload = ImageHandler.ResizeBitmap(tempPic, DEFAULT_WIDTH_COMPRESS);
-            } else {
-                tempPicToUpload = tempPic;
-            }
-            tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, DEFAULT_QUALITY_COMPRESS, bao);
-            return bao.toByteArray();
-        }
-        return null;
-    }
-
     @Override
     public void fetchExtras(Intent intent) {
         if (intent != null) {
@@ -473,8 +397,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
             if (compressToTkpd ) {
-                String fileNameToMove = path.substring(path.lastIndexOf("/")+1);
-                File photo = writeImageToTkpdPath(compressImage(path), fileNameToMove);
+                String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+                File photo = FileUtils.writeImageToTkpdPath(
+                        FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                        fileNameToMove);
                 if (photo != null) {
                     intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
                 }
@@ -497,8 +423,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i=0, sizei=paths.size(); i<sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = path.substring(path.lastIndexOf("/")+1);
-                    File photo = writeImageToTkpdPath(compressImage(path), fileNameToMove);
+                    String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+                    File photo = FileUtils.writeImageToTkpdPath(
+                            FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                            fileNameToMove);
                     if (photo != null) {
                         tkpdPaths.add(photo.getAbsolutePath());
                     }
@@ -599,8 +527,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
                                 if (compressToTkpd ) {
-                                    String fileNameToMove = imagePathCamera.substring(imagePathCamera.lastIndexOf("/")+1);
-                                    File photo = writeImageToTkpdPath(compressImage(imagePathCamera), fileNameToMove);
+                                    String fileNameToMove = FileUtils.getFileNameWithoutExt(imagePathCamera);
+                                    File photo = FileUtils.writeImageToTkpdPath(
+                                            FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                                            fileNameToMove);
                                     if (photo != null) {
                                         intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
                                     }
@@ -663,8 +593,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
                             if (compressToTkpd ) {
-                                String fileNameToMove = cacheFilePath.substring(cacheFilePath.lastIndexOf("/")+1);
-                                File photo = writeImageToTkpdPath(compressImage(imagePathCamera), fileNameToMove);
+                                String fileNameToMove = FileUtils.getFileNameWithoutExt(cacheFilePath);
+                                File photo = FileUtils.writeImageToTkpdPath(
+                                        FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                                        fileNameToMove);
                                 if (photo != null) {
                                     return photo;
                                 }
