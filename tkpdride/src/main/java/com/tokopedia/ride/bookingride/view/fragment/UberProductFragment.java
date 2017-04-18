@@ -164,13 +164,14 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
             confirmBookingViewModel.setFareId(rideProductViewModel.getFareId());
             confirmBookingViewModel.setSource(source);
             confirmBookingViewModel.setDestination(destination);
+            confirmBookingViewModel.setProductDisplayName(rideProductViewModel.getProductName());
             confirmBookingViewModel.setProductId(rideProductViewModel.getProductId());
             confirmBookingViewModel.setPriceFmt(rideProductViewModel.getProductPriceFmt());
             confirmBookingViewModel.setPrice(rideProductViewModel.getProductPrice());
             confirmBookingViewModel.setProductImage(rideProductViewModel.getProductImage());
             confirmBookingViewModel.setHeaderTitle(
                     String.format(
-                            "%s - Pickup in %s",
+                            getString(R.string.confirm_booking_header_title_format),
                             rideProductViewModel.getProductName(),
                             rideProductViewModel.getTimeEstimate())
             );
@@ -186,11 +187,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void updateProductList(PlacePassViewModel source, PlacePassViewModel destination) {
         this.destination = destination;
         this.source = source;
-        if (source != null && destination != null) {
-            isCompleteLocations = true;
-        } else {
-            isCompleteLocations = false;
-        }
+        isCompleteLocations = source != null && destination != null;
         showProgress();
         mPresenter.actionGetRideProducts(source, destination);
     }

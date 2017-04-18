@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="You Pay"
+            android:text="@string/confirm_booking_you_pay"
             android:textColor="#666666"
             android:textSize="11sp" />
     </LinearLayout>
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Seats Needed"
+            android:text="@string/confirm_booking_seats_needed"
             android:textColor="#666666"
             android:textSize="11sp" />
     </LinearLayout>

@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class ConfirmBookingViewModel implements Parcelable {
     private String fareId;
     private String productId;
+    private String productDisplayName;
 
     private PlacePassViewModel source;
     private PlacePassViewModel destination;
@@ -24,9 +25,11 @@ public class ConfirmBookingViewModel implements Parcelable {
     public ConfirmBookingViewModel() {
     }
 
+
     protected ConfirmBookingViewModel(Parcel in) {
         fareId = in.readString();
         productId = in.readString();
+        productDisplayName = in.readString();
         source = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         destination = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         seatCount = in.readInt();
@@ -145,6 +148,14 @@ public class ConfirmBookingViewModel implements Parcelable {
         this.price = price;
     }
 
+    public String getProductDisplayName() {
+        return productDisplayName;
+    }
+
+    public void setProductDisplayName(String productDisplayName) {
+        this.productDisplayName = productDisplayName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -154,6 +165,7 @@ public class ConfirmBookingViewModel implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(fareId);
         parcel.writeString(productId);
+        parcel.writeString(productDisplayName);
         parcel.writeParcelable(source, i);
         parcel.writeParcelable(destination, i);
         parcel.writeInt(seatCount);

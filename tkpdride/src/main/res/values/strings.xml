@@ -33,4 +33,16 @@
     <string name="create_request_failed_tos_confirmation">User doenst accept TOS</string>
     <string name="create_request_failed_surge_confirm">User doenst accept surge confirmation</string>
     <string name="title_trip_completed">Trip Completed</string>
+    <string name="confirm_booking_tokocash_activation_required">TokoCash Activation required.</string>
+    <string name="confirm_booking_toko_cash_activation">Toko Cash Activation</string>
+    <string name="confirm_booking_topup_toko_cash">Topup Toko Cash</string>
+    <string name="confirm_booking_btn_confirm">Confirm</string>
+    <string name="confirm_booking_you_pay">You Pay</string>
+    <string name="confirm_booking_seats_needed">Seats Needed</string>
+    <string name="confirm_booking_header_title_format">%s - Pickup in %s</string>
+    <string name="confirm_booking_uber_pool_key">uberPOOL</string>
+    <string name="confirm_booking_capacity">Capacity</string>
+    <string name="confirm_booking_insuficient_balance_format">Insufficient Balance. Your Balance is</string>
+    <string name="confirm_booking_seat_format">%d Seat</string>
+    <string name="confirm_booking_seats_format">%d Seats</string>
 </resources>

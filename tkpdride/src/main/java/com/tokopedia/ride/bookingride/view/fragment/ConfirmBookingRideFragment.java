@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,7 +41,6 @@ import butterknife.OnClick;
  */
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
-    private static final int MAX_SEAT_COUNT = 2;
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -50,6 +50,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView priceTextView;
     @BindView(R2.id.tv_seats)
     TextView seatsTextView;
+    @BindView(R2.id.tv_seats_needed)
+    TextView seatsLabelTextView;
     @BindView(R2.id.tvSurgeRate)
     TextView surgeRateTextView;
     @BindView(R2.id.cab_confirmation)
@@ -143,20 +145,20 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.cab_select_seat)
     public void actionSelectSeatButtonClicked() {
-        if (confirmBookingViewModel.getMaxCapacity() > 1) {
-            List<SeatViewModel> seatViewModels = new ArrayList<>();
-            for (int i = 1; i <= confirmBookingViewModel.getMaxCapacity(); i++) {
-                String seatTitle = null;
-                if (i == 1) {
-                    seatTitle = String.format("%d Seat", i);
-                } else {
-                    seatTitle = String.format("%d Seats", i);
+        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            if (confirmBookingViewModel.getMaxCapacity() > 1) {
+                List<SeatViewModel> seatViewModels = new ArrayList<>();
+                for (int i = 1; i <= confirmBookingViewModel.getMaxCapacity(); i++) {
+                    String seatTitle = null;
+                    if (i == 1) {
+                        seatTitle = String.format(getString(R.string.confirm_booking_seat_format), i);
+                    } else {
+                        seatTitle = String.format(getString(R.string.confirm_booking_seats_format), i);
+                    }
+                    seatViewModels.add(new SeatViewModel(i, seatTitle));
                 }
-                seatViewModels.add(new SeatViewModel(i, seatTitle));
+                mListener.actionChangeSeatCount(seatViewModels);
             }
-            mListener.actionChangeSeatCount(seatViewModels);
-        } else {
-            Toast.makeText(getActivity(), "Capacity 1, cant change seat", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -203,7 +205,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel.setPriceFmt(display);
         confirmBookingViewModel.setPrice(price);
         priceTextView.setText(display);
+
         seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
+        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            seatsLabelTextView.setText(getString(R.string.confirm_booking_seats_needed));
+        } else {
+            seatsLabelTextView.setText(R.string.confirm_booking_capacity);
+        }
     }
 
     public ConfirmBookingViewModel getActiveConfirmBooking() {
@@ -253,7 +261,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @Override
     public void setBalanceText(String balance) {
-        tokoCashLabelTextView.setText("Insufficient Balance. Your Balance is " + balance);
+        tokoCashLabelTextView.setText(String.format("%s%s",
+                getString(R.string.confirm_booking_insuficient_balance_format),
+                balance));
     }
 
     @Override
