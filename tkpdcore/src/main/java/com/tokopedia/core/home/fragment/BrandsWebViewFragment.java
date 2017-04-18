@@ -171,7 +171,8 @@ public class BrandsWebViewFragment extends Fragment {
                 && !url.endsWith(".pl")
                 && !url.contains("login")
                 && !url.contains("official-store")
-                && !url.contains("appauth")) {
+                && !url.contains("appauth")
+                && !url.contains("promo")) {
             switch ((DeepLinkChecker.getDeepLinkType(url))) {
                 case DeepLinkChecker.BROWSE:
                     DeepLinkChecker.openBrowse(url, getActivity());
