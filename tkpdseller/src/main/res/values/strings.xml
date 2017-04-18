@@ -294,9 +294,12 @@
     <string name="product_label_product_recommendation">Rekomendasi Kategori</string>
     <string name="product_label_product_about">Tentang Produk</string>
     <string name="product_label_product_price">Harga Produk</string>
+    <string name="product_label_wholesale_price">Harga Grosir</string>
     <string name="product_label_product_weight">Berat Produk</string>
+    <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
     <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_manage_stock">Pengaturan Stok</string>
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
@@ -306,6 +309,7 @@
     <string name="product_label_save_and_add">Simpan dan tambah</string>
     <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
+    <string name="product_label_preorder">Preorder</string>
     <string name="product_label_share">Bagikan</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
@@ -324,7 +328,6 @@
     <string name="product_score_label_minus">Kurang</string>
     <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
     <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>
-
 
     <string-array name="product_weight_entries">
         <item>Gram</item>
