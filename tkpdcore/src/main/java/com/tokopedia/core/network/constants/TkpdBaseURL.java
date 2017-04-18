@@ -657,6 +657,6 @@ public class TkpdBaseURL {
     }
 
     public static class OfficialStore {
-        public static final String URL_WEBVIEW = MOBILE_DOMAIN + "official-store/";
+        public static final String URL_WEBVIEW = MOBILE_DOMAIN + "official-store/mobile";
     }
 }
