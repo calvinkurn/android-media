@@ -29,7 +29,7 @@ public class ImageSelectModel {
     public ImageSelectModel(String uri,
                             @Nullable String description,
                             boolean isPrimary) {
-        this.uri = uri;
+        setUri(uri);
         this.description = description;
         this.isPrimary = isPrimary;
     }
@@ -40,6 +40,8 @@ public class ImageSelectModel {
 
     public void setUri(String uri) {
         this.uri = uri;
+        // when uri change, recalculate its width/height
+        calculateWidthAndHeight();
     }
 
     public String getDescription() {
@@ -59,22 +61,14 @@ public class ImageSelectModel {
     }
 
     public int getWidth(){
-        if (width <= 0) {
-            calculateWidthAndHeight();
-        }
         return width;
     }
 
     public int getHeight(){
-        if (height <= 0) {
-            calculateWidthAndHeight();
-        }
         return height;
     }
 
     public int getMinResolution(){
-        int width = getWidth();
-        int height = getHeight();
         return Math.min(width, height);
     }
 
