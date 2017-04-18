@@ -35,6 +35,8 @@ import rx.Observable;
 
 @RuntimePermissions
 public class OnTripActivity extends BaseActivity implements OnTripMapFragment.OnFragmentInteractionListener {
+    public static final String EXTRA_PLACE_SOURCE = "EXTRA_PLACE_SOURCE";
+    public static final String EXTRA_PLACE_DESTINATION = "EXTRA_PLACE_DESTINATION";
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     public static String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     public static final int RIDE_HOME_RESULT_CODE = 11;

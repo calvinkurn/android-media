@@ -102,7 +102,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        destination.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        destination.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
@@ -127,9 +127,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
          */
         if (configuration.isWaitingDriverState() &&
                 getIntent().getExtras() != null &&
-                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)){
+                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
             finish();
-        }else if (configuration.isWaitingDriverState()) {
+        } else if (configuration.isWaitingDriverState()) {
             Intent intent = OnTripActivity.getCallingIntent(this);
             startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
         }
@@ -138,6 +138,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
         addFragment(R.id.top_container, RideHomeFragment.newInstance());
+        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+    }
+
+    private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
+        addFragment(R.id.top_container, RideHomeFragment.newInstance(source, destination));
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
@@ -190,7 +195,16 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
                     finish();
                     break;
                 case OnTripActivity.RIDE_HOME_RESULT_CODE:
-                    RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+                    PlacePassViewModel source = null, destionation = null;
+                    if (data != null) {
+                        source = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_SOURCE);
+                        destionation = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_DESTINATION);
+                    }
+                    if (source != null && destionation != null) {
+                        initFragmentWithPlace(source, destionation);
+                    } else {
+                        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+                    }
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
                     break;
@@ -308,7 +322,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     private void onBottomContainerChangeToProductListScreen() {
-        if (getFragmentManager().findFragmentById(R.id.top_container) instanceof RideHomeFragment){
+        if (getFragmentManager().findFragmentById(R.id.top_container) instanceof RideHomeFragment) {
             RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (fragment != null) {
                 fragment.enablePickLocation();

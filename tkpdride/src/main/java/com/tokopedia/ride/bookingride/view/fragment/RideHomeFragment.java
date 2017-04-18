@@ -160,6 +160,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 if (mSource != null && mDestination != null) {
                     setSourceLocationText(mSource.getTitle());
                     setDestinationLocationText(mDestination.getTitle());
+                    hideMarkerCenter();
                 }
             }
         }
@@ -363,6 +364,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
             if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
                 mSource = getArguments().getParcelable(EXTRA_SOURCE);
                 mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
+                isAlreadySelectDestination = true;
             }
         }
     }

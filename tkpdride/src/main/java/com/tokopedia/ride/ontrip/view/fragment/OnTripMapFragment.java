@@ -36,6 +36,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -483,8 +484,25 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void onSuccessCancelRideRequest() {
+        PlacePassViewModel source = null, destination = null;
+        if (confirmBookingViewModel != null){
+            source = confirmBookingViewModel.getSource();
+            destination = confirmBookingViewModel.getDestination();
+        } else {
+            if (rideConfiguration.isWaitingDriverState()){
+                source = rideConfiguration.getActiveSource();
+                destination = rideConfiguration.getActiveDestination();
+            }
+        }
+
         rideConfiguration.clearActiveRequest();
-        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+
+        Intent intent = getActivity().getIntent();
+        if (source != null && destination != null){
+            intent.putExtra(OnTripActivity.EXTRA_PLACE_SOURCE, source);
+            intent.putExtra(OnTripActivity.EXTRA_PLACE_DESTINATION, destination);
+        }
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE, intent);
         getActivity().finish();
     }
 
