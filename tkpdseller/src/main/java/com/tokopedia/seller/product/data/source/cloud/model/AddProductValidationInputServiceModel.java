@@ -3,8 +3,11 @@ package com.tokopedia.seller.product.data.source.cloud.model;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
+import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Formatter;
 
 /**
  * @author sebastianuskh on 4/11/17.
@@ -69,7 +72,7 @@ public class AddProductValidationInputServiceModel {
         }
         params.put(PRODUCT_DEPARTMENT_ID, String.valueOf(getProductDepartmentId()));
         params.put(PRODUCT_CATALOG_ID, String.valueOf(getProductCatalogId()));
-        params.put(PRODUCT_PRICE, String.valueOf(getProductPrice()));
+        params.put(PRODUCT_PRICE, formatDecimal(getProductPrice()));
         params.put(PRODUCT_CONDITION, String.valueOf(getProductCondition()));
         params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalaseId()));
         params.put(PRODUCT_MIN_ORDER, String.valueOf(getProductMinOrder()));
@@ -91,7 +94,7 @@ public class AddProductValidationInputServiceModel {
     public TKPDMapParam<String, String> getWholesaleParams() {
         TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
         for (int i = 0; i < productWholesale.size(); i++) {
-            wholesaleParams.put(PRD_PRC_ + i, String.valueOf(productWholesale.get(i).getPrice()));
+            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i).getPrice()));
             wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i).getQtyMax()));
             wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i).getQtyMin()));
         }
@@ -130,6 +133,13 @@ public class AddProductValidationInputServiceModel {
             params.put(PRODUCT_VIDEO_ + i, getProductVideo().get(i));
         }
         return params;
+    }
+
+    private String formatDecimal(double productPrice) {
+        if (productPrice == (long) productPrice)
+            return String.format(Locale.US, "%d", (long) productPrice);
+        else
+            return String.format("%s", productPrice);
     }
 
     public int getProductCatalogId() {
