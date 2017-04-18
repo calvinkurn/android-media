@@ -25,12 +25,12 @@ public class ImageProductUploadDataSource {
         this.generateHostDataSourceCloud = generateHostDataSourceCloud;
     }
 
-    public Observable<ResultUploadImage> uploadImage(final String pathFileImage) {
+    public Observable<ResultUploadImage> uploadImage(final String pathFileImage, final String productId) {
         return generateHostDataSourceCloud.generateHost()
                 .flatMap(new Func1<GenerateHost, Observable<ResultUploadImage>>() {
                     @Override
                     public Observable<ResultUploadImage> call(GenerateHost generateHost) {
-                        return imageProductUploadDataSourceCloud.uploadImage(generateHost, pathFileImage);
+                        return imageProductUploadDataSourceCloud.uploadImage(generateHost, pathFileImage, productId);
                     }
                 });
     }

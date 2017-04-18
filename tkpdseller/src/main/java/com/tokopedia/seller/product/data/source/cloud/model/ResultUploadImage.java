@@ -5,37 +5,48 @@ import com.google.gson.annotations.SerializedName;
 
 public class ResultUploadImage {
 
-        @SerializedName("file_path")
-        @Expose
-        private String filePath;
-        @SerializedName("pic_id")
-        @Expose
-        private int picId;
-        @SerializedName("pic_obj")
-        @Expose
-        private String picObj;
+    @SerializedName("file_path")
+    @Expose
+    private String filePath;
+    @SerializedName("pic_id")
+    @Expose
+    private int picId;
+    @SerializedName("pic_obj")
+    @Expose
+    private String picObj;
+    @SerializedName("file_th")
+    @Expose
+    private String fileTh;
 
-        public String getFilePath() {
-            return filePath;
-        }
+    public String getFileTh() {
+        return fileTh;
+    }
 
-        public void setFilePath(String filePath) {
-            this.filePath = filePath;
-        }
+    public void setFileTh(String fileTh) {
+        this.fileTh = fileTh;
+    }
 
-        public int getPicId() {
-            return picId;
-        }
+    public String getFilePath() {
+        return filePath;
+    }
 
-        public void setPicId(int picId) {
-            this.picId = picId;
-        }
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
-        public String getPicObj() {
-            return picObj;
-        }
+    public int getPicId() {
+        return picId;
+    }
 
-        public void setPicObj(String picObj) {
-            this.picObj = picObj;
-        }
+    public void setPicId(int picId) {
+        this.picId = picId;
+    }
+
+    public String getPicObj() {
+        return picObj;
+    }
+
+    public void setPicObj(String picObj) {
+        this.picObj = picObj;
+    }
 }

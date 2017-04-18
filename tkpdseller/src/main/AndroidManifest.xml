@@ -225,6 +225,10 @@
             android:label="@string/video"
             android:theme="@style/AppTheme" />
 
+        <activity android:name=".product.view.activity.ProductScoringDetailActivity"
+            android:label="@string/product_score_label_title"
+            android:screenOrientation="portrait"/>
+
         <service
             android:name="com.tokopedia.seller.selling.SellingService"
             android:exported="false" />
