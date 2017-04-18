@@ -96,7 +96,7 @@
         "value_indicator": [
           {
             "indicator_type": "count",
-            "indicator_desc": "Tips penamaan produk yang baik: Jenis + Merk + Keterangan detail. Contoh: Tas Ransel Pria Eiger Anti ",
+            "indicator_desc": "Tips penamaan produk yang baik: <b>Jenis + Merk + Keterangan detail</b>. Contoh: Tas Ransel Pria Eiger Anti ",
             "indicator_scoring": [
               {
                 "min": 0,
