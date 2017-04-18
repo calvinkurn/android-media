@@ -34,7 +34,7 @@ public abstract class BaseImageUploadSourceCloud {
     }
 
 
-    public Map<String,RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload) {
+    public Map<String,RequestBody> getParamsUploadImage(String urlUploadImage, String pathFile, String serverIdUpload, String productId) {
         Map<String, RequestBody> paramsUploadImage = new TKPDMapParam<>();
 
         NetworkCalculator networkCalculator = new NetworkCalculator(NetworkConfig.POST, context,
@@ -50,6 +50,7 @@ public abstract class BaseImageUploadSourceCloud {
         RequestBody newAdd = RequestBody.create(MediaType.parse("text/plain"), ProductNetworkConstant.GOLANG_VALUE);
         RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), ProductNetworkConstant.RESOLUTION_DEFAULT_VALUE);
         RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), serverIdUpload);
+        RequestBody productIdBody = RequestBody.create(MediaType.parse("text/plain"), productId);
 
         paramsUploadImage.put(NetworkCalculator.USER_ID,userId);
         paramsUploadImage.put(NetworkCalculator.DEVICE_ID, deviceId);
@@ -59,6 +60,9 @@ public abstract class BaseImageUploadSourceCloud {
         paramsUploadImage.put(ProductNetworkConstant.SERVER_LANGUAGE, newAdd);
         paramsUploadImage.put(ProductNetworkConstant.RESOLUTION, resolution);
         paramsUploadImage.put(ProductNetworkConstant.SERVER_ID, serverId);
+        if(productId !=null && !productId.isEmpty()){
+            paramsUploadImage.put(ProductNetworkConstant.PRODUCT_ID, productIdBody);
+        }
 
         return paramsUploadImage;
     }

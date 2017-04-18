@@ -10,5 +10,5 @@ import rx.Observable;
  */
 
 public interface ImageProductUploadRepository {
-    Observable<ImageProductInputDomainModel> uploadImageProduct(String uri);
+    Observable<ImageProductInputDomainModel> uploadImageProduct(String uri, String productId);
 }
