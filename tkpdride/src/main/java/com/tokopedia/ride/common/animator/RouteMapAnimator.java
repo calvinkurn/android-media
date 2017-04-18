@@ -14,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ import java.util.List;
  */
 
 public class RouteMapAnimator {
+    private final float POLYLINE_WIDTH_IN_PX = 10;
+
     private static RouteMapAnimator mapAnimator;
 
     private Polyline backgroundPolyline;
@@ -71,10 +74,10 @@ public class RouteMapAnimator {
         if (backgroundPolyline != null) backgroundPolyline.remove();
 
 
-        PolylineOptions optionsBackground = new PolylineOptions().add(bangaloreRoute.get(0)).color(GREY).width(5);
+        PolylineOptions optionsBackground = new PolylineOptions().add(bangaloreRoute.get(0)).color(GREY).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         backgroundPolyline = googleMap.addPolyline(optionsBackground);
 
-        optionsForeground = new PolylineOptions().add(bangaloreRoute.get(0)).color(Color.BLACK).width(5);
+        optionsForeground = new PolylineOptions().add(bangaloreRoute.get(0)).color(Color.BLACK).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         foregroundPolyline = googleMap.addPolyline(optionsForeground);
 
         final ValueAnimator percentageCompletion = ValueAnimator.ofInt(0, 100);
