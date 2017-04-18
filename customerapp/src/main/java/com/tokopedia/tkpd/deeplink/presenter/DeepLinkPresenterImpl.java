@@ -582,6 +582,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("search")
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("about")
+                && !linkSegment.get(0).equals("kartu-kredit")
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl")
                 && !linkSegment.get(0).equals("privacy.pl")
