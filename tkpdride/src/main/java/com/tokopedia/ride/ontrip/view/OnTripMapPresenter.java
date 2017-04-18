@@ -200,7 +200,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
-//                getView().showAcceptedNotification(result);
+                getView().showAcceptedNotification(result);
                 getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
