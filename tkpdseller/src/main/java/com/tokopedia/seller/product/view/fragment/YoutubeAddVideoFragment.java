@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -19,6 +21,9 @@ import com.tokopedia.seller.product.view.holder.AddUrlContainerViewHolder;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,6 +42,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     private HasComponent<YoutubeVideoComponent> parentComponent;
     private YoutubeVideoComponent component;
     private YoutubeAddVideoPresenter presenter;
+    private YoutubeAddVideoActView youtubeAddVideoActView;
 
     public static Fragment createInstance() {
         return new YoutubeAddVideoFragment();
@@ -48,6 +54,11 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         if ((context != null) && (context instanceof HasComponent<?>)) {
             parentComponent
                     = (HasComponent<YoutubeVideoComponent>) context;
+        }
+
+        if ((context != null) && (context instanceof YoutubeAddVideoActView)) {
+            youtubeAddVideoActView
+                    = (YoutubeAddVideoActView) context;
         }
     }
 
@@ -68,9 +79,16 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             presenter = new YoutubeAddVideoPresenterImpl(
                     youtubeVideoUseCase,
                     youtubeVideoLinkUtils);
+
+            presenter.attachView(this);
+            List<String> strings = youtubeAddVideoActView.videoIds();
+            if (CommonUtils.checkCollectionNotNull(strings)) {
+                for (String videoId : strings) {
+                    presenter.fetchYoutube(videoId);
+                }
+            }
         }
 
-        presenter.attachView(this);
     }
 
     @Override
@@ -102,6 +120,10 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         presenter.fetchYoutubeDescription(youtubeUrl);
     }
 
+    public void addVideoId(String videoId) {
+        presenter.fetchYoutube(videoId);
+    }
+
     @Override
     public void showMessageError(final String videoId) {
         NetworkErrorHelper
@@ -113,5 +135,16 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                     }
                 })
                 .showRetrySnackbar();
+    }
+
+    public Intent getResultIntent() {
+        List<String> videoIds = addUrlContainerViewHolder.getVideoIds();
+        if (CommonUtils.checkCollectionNotNull(videoIds)) {
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra(KEY_VIDEOS_LINK, new ArrayList<String>(videoIds));
+            return intent;
+        } else {
+            return null;
+        }
     }
 }

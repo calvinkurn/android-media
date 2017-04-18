@@ -77,6 +77,14 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
+    public List<String> getVideoIds() {
+        List<String> videoIds = new ArrayList<>();
+        for (AddUrlVideoModel addUrlVideoModel : addUrlVideoModels) {
+            videoIds.add(addUrlVideoModel.getVideoId());
+        }
+        return videoIds;
+    }
+
     private boolean isLastItemPosition(int position) {
         return position == addUrlVideoModels.size();
     }
