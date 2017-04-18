@@ -51,4 +51,8 @@
     <string name="title_activate_account">Aktivasi Akun Tokopedia</string>
     <string name="activation_resend_email">Belum menerima email? Kirim ulang email</string>
     <string name="activation_header_text">Kode aktivasi akun telah dikirimkan ke</string>
+    <string name="resend_activation_email">Kirim Ulang Email</string>
+    <string name="message_resend_email_to">Apakah anda ingin kirim ulang email ke</string>
+    <string name="button_change_email">Ubah Email</string>
+    <string name="title_new_email">Email Baru</string>
 </resources>

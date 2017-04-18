@@ -1,8 +1,11 @@
 package com.tokopedia.session.activation.view.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -19,6 +22,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
@@ -41,6 +45,8 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     TextView footer;
     TkpdProgressDialog progressDialog;
 
+    String email;
+
     public static RegisterActivationFragment createInstance(String email) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
         Bundle bundle = new Bundle();
@@ -56,6 +62,16 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected void onFirstTimeLaunched() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null)
+            email = savedInstanceState.getString(ARGS_EMAIL, "");
+        else if (getArguments().getString(ARGS_EMAIL) != null)
+            email = getArguments().getString(ARGS_EMAIL, "");
     }
 
     @Override
@@ -100,8 +116,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         activateButton = (TextView) view.findViewById(R.id.verify_button);
         footer = (TextView) view.findViewById(R.id.footer);
 
-        String activateText = getString(R.string.activation_header_text) + " <b>" + getArguments().getString(ARGS_EMAIL, "") + "</b>";
-        activationText.setText(MethodChecker.fromHtml(activateText).toString());
+        setActivateText();
 
         Spannable spannable = new SpannableString(getString(R.string.activation_resend_email));
 
@@ -126,6 +141,11 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         footer.setText(spannable, TextView.BufferType.SPANNABLE);
     }
 
+    private void setActivateText() {
+        String activateText = getString(R.string.activation_header_text) + " <br><b>" + getEmail() + "</b>";
+        activationText.setText(MethodChecker.fromHtml(activateText).toString());
+    }
+
     @Override
     protected void setViewListener() {
         activateButton.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +157,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         footer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.resendActivation();
+                showChangeEmailDialog();
             }
         });
 
@@ -168,6 +188,33 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 }
             }
         });
+    }
+
+    private void showChangeEmailDialog() {
+        String dialogMessage =
+                getString(R.string.message_resend_email_to) + " <b>" + getEmail() + "</b>";
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.resend_activation_email)
+                .setMessage(MethodChecker.fromHtml(dialogMessage))
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.resendActivation();
+                    }
+                })
+                .setNegativeButton(R.string.button_change_email, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToChangeEmail();
+                    }
+                })
+                .show();
+    }
+
+    private void goToChangeEmail() {
+        startActivityForResult(
+                ChangeEmailActivity.getCallingIntent(
+                        getActivity(),
+                        getEmail()),
+                ChangeEmailFragment.ACTION_CHANGE_EMAIL);
     }
 
     @Override
@@ -213,7 +260,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public String getEmail() {
-        return getArguments().getString(ARGS_EMAIL, "");
+        return email;
     }
 
     @Override
@@ -241,7 +288,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
         startActivity(Login.getAutomaticLoginIntent(
                 getActivity(),
-                getArguments().getString(ARGS_EMAIL),
+                email,
                 getArguments().getString(ARGS_PASSWORD))
         );
     }
@@ -256,5 +303,23 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     public void onDestroyView() {
         presenter.unsubscribeObservable();
         super.onDestroyView();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == ChangeEmailFragment.ACTION_CHANGE_EMAIL
+                && resultCode == Activity.RESULT_OK
+                && data != null
+                && data.getExtras() != null) {
+            email = data.getExtras().getString(ChangeEmailFragment.EXTRA_EMAIL, "");
+            setActivateText();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(ARGS_EMAIL, email);
+        super.onSaveInstanceState(outState);
     }
 }

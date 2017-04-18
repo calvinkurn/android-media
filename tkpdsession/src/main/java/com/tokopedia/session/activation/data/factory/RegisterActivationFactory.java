@@ -4,9 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
+import com.tokopedia.session.activation.data.mapper.ChangeEmailMapper;
 import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
 import com.tokopedia.session.activation.data.source.CloudActivateUnicodeSource;
+import com.tokopedia.session.activation.data.source.CloudChangeEmailSource;
 import com.tokopedia.session.activation.data.source.CloudResendActivationSource;
+import com.tokopedia.session.activation.domain.RegisterActivationRepository;
 
 /**
  * Created by nisie on 4/17/17.
@@ -17,16 +20,18 @@ public class RegisterActivationFactory {
     private final AccountsService accountsService;
     private ResendActivationMapper resendActivationMapper;
     private ActivateUnicodeMapper activateUnicodeMapper;
-
+    private ChangeEmailMapper changeEmailMapper;
 
     public RegisterActivationFactory(Context context,
                                      AccountsService accountsService,
                                      ResendActivationMapper resendActivationMapper,
-                                     ActivateUnicodeMapper activateUnicodeMapper) {
+                                     ActivateUnicodeMapper activateUnicodeMapper,
+                                     ChangeEmailMapper changeEmailMapper) {
         this.context = context;
         this.accountsService = accountsService;
         this.resendActivationMapper = resendActivationMapper;
         this.activateUnicodeMapper = activateUnicodeMapper;
+        this.changeEmailMapper = changeEmailMapper;
     }
 
     public CloudResendActivationSource createCloudResendActivationDataStore() {
@@ -35,5 +40,9 @@ public class RegisterActivationFactory {
 
     public CloudActivateUnicodeSource createCloudActivateWithUnicodeDataStore() {
         return new CloudActivateUnicodeSource(context, accountsService, activateUnicodeMapper);
+    }
+
+    public CloudChangeEmailSource createCloudChangeEmailDataStore() {
+        return new CloudChangeEmailSource(context, accountsService, changeEmailMapper);
     }
 }

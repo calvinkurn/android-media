@@ -2,6 +2,7 @@ package com.tokopedia.session.activation.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.activation.data.ActivateUnicodeModel;
+import com.tokopedia.session.activation.data.ChangeEmailModel;
 import com.tokopedia.session.activation.data.ResendActivationModel;
 import com.tokopedia.session.activation.data.factory.RegisterActivationFactory;
 import com.tokopedia.session.activation.domain.RegisterActivationRepository;
@@ -31,5 +32,11 @@ public class RegisterActivationRepositoryImpl implements RegisterActivationRepos
     public Observable<ActivateUnicodeModel> activateWithUnicode(TKPDMapParam<String, Object> parameters) {
         return registerActivationFactory.createCloudActivateWithUnicodeDataStore()
                 .activateWithUnicode(parameters);
+    }
+
+    @Override
+    public Observable<ChangeEmailModel> changeEmail(TKPDMapParam<String, Object> parameters) {
+        return registerActivationFactory.createCloudChangeEmailDataStore()
+                .changeEmail(parameters);
     }
 }

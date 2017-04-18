@@ -112,4 +112,7 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Accounts.ACTIVATE_UNICODE)
     Observable<Response<String>> activateWithUnicode(@FieldMap Map<String, Object> params);
 
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.CHANGE_EMAIL)
+    Observable<Response<TkpdResponse>> changeEmail(@FieldMap Map<String, Object> params);
 }

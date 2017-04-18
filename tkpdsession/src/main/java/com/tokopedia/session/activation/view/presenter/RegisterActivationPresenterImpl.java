@@ -9,6 +9,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.session.activation.data.factory.RegisterActivationFactory;
 import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
+import com.tokopedia.session.activation.data.mapper.ChangeEmailMapper;
 import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
 import com.tokopedia.session.activation.data.repository.RegisterActivationRepositoryImpl;
 import com.tokopedia.session.activation.domain.RegisterActivationRepository;
@@ -38,12 +39,14 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
         ResendActivationMapper resendActivationMapper = new ResendActivationMapper();
         ActivateUnicodeMapper activateUnicodeMapper = new ActivateUnicodeMapper();
+        ChangeEmailMapper changeEmailMapper = new ChangeEmailMapper();
         RegisterActivationFactory registerActivationFactory =
                 new RegisterActivationFactory(
                         viewListener.getActivity(),
                         accountsService,
                         resendActivationMapper,
-                        activateUnicodeMapper
+                        activateUnicodeMapper,
+                        changeEmailMapper
                 );
 
         RegisterActivationRepository registerActivationRepository =
