@@ -7,14 +7,17 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
+import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialog;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
+import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
 
 /**
  * Created by nathan on 4/3/17.
  */
 
 public class ProductAddActivity extends TActivity
-        implements HasComponent<AppComponent>, TextPickerDialogListener {
+        implements HasComponent<AppComponent>, TextPickerDialogListener, YoutubeAddVideoActView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +32,15 @@ public class ProductAddActivity extends TActivity
         return getApplicationComponent();
     }
 
-    public void openAddYoutubeDialog() {
+    @Override
+    public YoutubeAddVideoFragment youtubeAddVideoFragment() {
+        return null;
+    }
 
+    @Override
+    public void openAddYoutubeDialog() {
+        YoutubeAddUrlDialog dialog = new YoutubeAddUrlDialog();
+        dialog.show(getSupportFragmentManager(), YoutubeAddUrlDialog.TAG);
     }
 
     @Override
