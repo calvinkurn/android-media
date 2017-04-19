@@ -16,6 +16,8 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
@@ -85,6 +87,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return view;
     }
 
+    public ProductAddPresenter getPresenter() {
+        return presenter;
+    }
+
     private void setSubmitButtonListener(View view) {
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +122,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
@@ -161,5 +173,27 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForExternalStorage(final PermissionRequest request) {
         request.proceed();
+    }
+
+    @Override
+    public void showCatalogError(Throwable e) {
+        // TODO
+    }
+
+    @Override
+    public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
+        // TODO
+        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
+    }
+
+    @Override
+    public void showCatRecommError(Throwable e) {
+        // TODO category recomm error
+        productInfoViewHolder.showCatRecommError();
+    }
+
+    @Override
+    public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
+        productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
     }
 }

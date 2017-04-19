@@ -12,7 +12,6 @@ import rx.Observable;
  * @author sebastianuskh on 4/4/17.
  */
 
-@ActivityScope
 public class CatalogDataSource {
     private final CatalogCloud catalogCloud;
 

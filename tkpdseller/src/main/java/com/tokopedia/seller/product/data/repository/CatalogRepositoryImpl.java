@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 3/8/17.
  */
-@ActivityScope
+
 public class CatalogRepositoryImpl implements CatalogRepository {
     private final CatalogDataSource catalogDataSource;
 

@@ -2,19 +2,24 @@ package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import android.support.annotation.IdRes;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
-import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
-import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 
 import org.parceler.Parcels;
 
@@ -32,11 +37,13 @@ public class ProductInfoViewHolder {
     private EditText nameEditText;
     private LabelView categoryLabelView;
     private LabelView catalogLabelView;
+    private View categoryRecommView;
 
-    private Fragment fragment;
+    private ProductAddFragment fragment;
     private String name;
     private int categoryId;
-    private int catalogId;
+    private int catalogId = -1;
+    private final RadioGroup radioGroupCategoryRecomm;
 
     public String getName() {
         return name;
@@ -55,8 +62,10 @@ public class ProductInfoViewHolder {
         this.categoryId = categoryId;
     }
 
-    public ProductInfoViewHolder(final Fragment fragment, View view) {
+    public ProductInfoViewHolder(final ProductAddFragment fragment, View view) {
         this.fragment = fragment;
+        categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
+        radioGroupCategoryRecomm = (RadioGroup) categoryRecommView.findViewById(R.id.radio_group_category_recomm);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         categoryLabelView = (LabelView) view.findViewById(R.id.label_view_category);
         catalogLabelView = (LabelView) view.findViewById(R.id.label_view_catalog);
@@ -70,6 +79,43 @@ public class ProductInfoViewHolder {
             @Override
             public void onClick(View view) {
                 CatalogPickerActivity.start(fragment, fragment.getActivity(), REQUEST_CODE_CATALOG, nameEditText.getText().toString(), categoryId, catalogId);
+            }
+        });
+        nameEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                hideAndClearCatalog();
+                hideAndClearCategoryRecomm();
+                if (s!= null && s.length() >= 2) {
+                    fragment.getPresenter().getCategoryRecommendation(s.toString());
+                }
+            }
+        });
+        radioGroupCategoryRecomm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                categoryId = checkedId;
+                View radioButton = group.findViewById(checkedId);
+                if (radioButton == null) {
+                    categoryLabelView.resetContentText();
+                    return;
+                }
+                ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
+                if (productCategoryPrediction == null) {
+                    categoryLabelView.resetContentText();
+                    return;
+                }
+                processCategory(productCategoryPrediction.getCategoryName());
             }
         });
     }
@@ -107,6 +153,68 @@ public class ProductInfoViewHolder {
             }
         }
         categoryLabelView.setContent(category);
+    }
+
+    private void processCategory(String[] categoryNameArr) {
+        String category = "";
+        for (int i = 0, sizei = categoryNameArr.length; i < sizei; i++) {
+            String categoryName = categoryNameArr[i];
+            if (TextUtils.isEmpty(categoryName)) {
+                continue;
+            }
+            category += categoryName;
+            if (i < sizei - 1) {
+                category += "\n";
+            }
+        }
+        categoryLabelView.setContent(category);
+    }
+
+    public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
+        // TODO
+        catalogLabelView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideAndClearCategoryRecomm(){
+        categoryRecommView.setVisibility(View.GONE);
+    }
+
+    private void hideAndClearCatalog(){
+        catalogLabelView.setVisibility(View.GONE);
+        catalogId = -1;
+    }
+
+    public void showCatRecommError(){
+        hideAndClearCategoryRecomm();
+    }
+
+    public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
+        if (categoryPredictionList== null || categoryPredictionList.size() == 0) {
+            hideAndClearCategoryRecomm();
+            return;
+        }
+        int predictionSize = categoryPredictionList.size();
+        // create the radio buttons
+        if (radioGroupCategoryRecomm.getChildCount() == 0 ||
+                predictionSize != radioGroupCategoryRecomm.getChildCount() ) {
+            radioGroupCategoryRecomm.removeAllViews();
+            for (int i=0; i<predictionSize; i++) {
+                LayoutInflater inflater = LayoutInflater.from(fragment.getContext());
+                RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.item_basic_radio_button, radioGroupCategoryRecomm, false);
+                radioGroupCategoryRecomm.addView(radioButton);
+            }
+        }
+
+        radioGroupCategoryRecomm.clearCheck();
+
+        // update values
+        for (int i=0; i<predictionSize; i++) {
+            RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.getChildAt(i);
+            radioButton.setText(categoryPredictionList.get(i).getPrintedString());
+            radioButton.setId(categoryPredictionList.get(i).getLastCategoryId());
+            radioButton.setTag(categoryPredictionList.get(i));
+        }
+        categoryRecommView.setVisibility(View.VISIBLE);
     }
 
 }

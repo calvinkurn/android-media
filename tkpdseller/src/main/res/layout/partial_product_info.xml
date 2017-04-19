@@ -42,12 +42,26 @@
 
         <LinearLayout
             style="@style/LabelLayoutWithoutBorder"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/view_group_category_recomm"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/text_view_shop_title"
                 style="@style/TextView.TopAds.Body.Gray"
                 android:text="@string/product_label_product_recommendation" />
+
+            <RadioGroup
+                android:id="@+id/radio_group_category_recomm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:clipToPadding="false">
+
+                <!-- will add radio button programmatically -->
+
+            </RadioGroup>
+
 
         </LinearLayout>
 
@@ -66,6 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
+        android:visibility="gone"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"

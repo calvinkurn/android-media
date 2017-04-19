@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 4/3/17.
  */
-@ActivityScope
+
 public class FetchCatalogDataUseCase extends UseCase<CatalogDataModel>{
 
     private final CatalogRepository catalogRepository;

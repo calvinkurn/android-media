@@ -397,7 +397,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
             if (compressToTkpd ) {
-                String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+                String fileNameToMove = FileUtils.generateUniqueFileName(path);
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                         fileNameToMove);
@@ -423,7 +423,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i=0, sizei=paths.size(); i<sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+                    String fileNameToMove = FileUtils.generateUniqueFileName(path);
                     File photo = FileUtils.writeImageToTkpdPath(
                             FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                             fileNameToMove);
@@ -527,7 +527,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
                                 if (compressToTkpd ) {
-                                    String fileNameToMove = FileUtils.getFileNameWithoutExt(imagePathCamera);
+                                    String fileNameToMove = FileUtils.generateUniqueFileName(imagePathCamera);
                                     File photo = FileUtils.writeImageToTkpdPath(
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                             fileNameToMove);
@@ -593,7 +593,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
                             if (compressToTkpd ) {
-                                String fileNameToMove = FileUtils.getFileNameWithoutExt(cacheFilePath);
+                                String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
                                 File photo = FileUtils.writeImageToTkpdPath(
                                         FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                         fileNameToMove);
