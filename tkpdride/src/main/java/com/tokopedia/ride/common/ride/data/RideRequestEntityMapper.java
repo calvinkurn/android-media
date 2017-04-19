@@ -38,7 +38,7 @@ public class RideRequestEntityMapper {
         return rideRequest;
     }
 
-    private LocationLatLng transform(LocationLatLngEntity entity) {
+    public LocationLatLng transform(LocationLatLngEntity entity) {
         LocationLatLng location = null;
         if (entity != null) {
             location = new LocationLatLng();
@@ -49,7 +49,7 @@ public class RideRequestEntityMapper {
         return location;
     }
 
-    private Vehicle transform(VehicleEntity entity) {
+    public Vehicle transform(VehicleEntity entity) {
         Vehicle vehicle = null;
         if (entity != null) {
             vehicle = new Vehicle();
@@ -61,7 +61,7 @@ public class RideRequestEntityMapper {
         return vehicle;
     }
 
-    private Location transform(LocationEntity entity) {
+    public Location transform(LocationEntity entity) {
         Location location = null;
         if (entity != null) {
             location = new Location();
@@ -72,7 +72,7 @@ public class RideRequestEntityMapper {
         return location;
     }
 
-    private Driver transform(DriverEntity entity) {
+    public Driver transform(DriverEntity entity) {
         Driver driver = null;
         if (entity != null) {
             driver = new Driver();
