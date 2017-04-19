@@ -7,6 +7,9 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -61,6 +64,21 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
         rideStatusTextView.setText(element.getStatus());
         if (element.getLatLngs() != null && element.getLatLngs().size() > 1) {
             RouteMapAnimator.getInstance().animateRoute(googleMap, element.getLatLngs());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(
+                            element.getLatLngs().get(0).latitude,
+                            element.getLatLngs().get(0).longitude
+                    ))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            );
+
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(
+                            element.getLatLngs().get(element.getLatLngs().size() - 1).latitude,
+                            element.getLatLngs().get(element.getLatLngs().size() - 1).longitude
+                    ))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            );
         }
     }
 
