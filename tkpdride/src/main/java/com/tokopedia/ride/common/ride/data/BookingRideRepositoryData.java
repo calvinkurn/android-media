@@ -35,7 +35,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final RideRequestEntityMapper rideRequestEntityMapper;
     private final ReceiptEntityMapper receiptEntityMapper;
     private final PromoEntityMapper promoEntityMapper;
-
+    private final RideHistoryEntityMapper rideHistoryEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -47,6 +47,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         rideRequestEntityMapper = new RideRequestEntityMapper();
         receiptEntityMapper = new ReceiptEntityMapper();
         promoEntityMapper = new PromoEntityMapper();
+        rideHistoryEntityMapper = new RideHistoryEntityMapper();
     }
 
     @Override
@@ -156,7 +157,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                 .map(new Func1<List<RideHistoryEntity>, List<RideHistory>>() {
                     @Override
                     public List<RideHistory> call(List<RideHistoryEntity> rideTransactionEntities) {
-                        return null;
+                        return rideHistoryEntityMapper.transform(rideTransactionEntities);
                     }
                 });
     }
