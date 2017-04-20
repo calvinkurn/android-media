@@ -163,7 +163,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
      */
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
-                                                boolean compressToTkpd){
+                                                boolean compressToTkpd) {
         Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         context.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
@@ -172,7 +172,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 int position,
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
-                                                boolean compressToTkpd){
+                                                boolean compressToTkpd) {
         Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
@@ -181,7 +181,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                                 int position,
                                                 boolean forceOpenCamera,
                                                 int maxImageSelection,
-                                                boolean compressToTkpd){
+                                                boolean compressToTkpd) {
         Intent imageGallery = createIntent(context, position, forceOpenCamera, maxImageSelection, compressToTkpd);
         fragment.startActivityForResult(imageGallery, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
@@ -189,7 +189,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     private static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
-                                       boolean compressToTkpd){
+                                       boolean compressToTkpd) {
         Intent imageGallery = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(ADD_PRODUCT_IMAGE_LOCATION, position);
@@ -215,6 +215,43 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
         return new File(mediaStorageDir.getPath() + File.separator
                 + "IMG_" + System.currentTimeMillis() / 1000L + ".jpg");
+    }
+
+    public static File writeImageToTkpdPath(File source) {
+        InputStream inStream = null;
+        OutputStream outStream = null;
+        File dest = null;
+        try {
+
+            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            dest = new File(directory.getAbsolutePath() + "/image.jpg");
+
+            inStream = new FileInputStream(source);
+            outStream = new FileOutputStream(dest);
+
+            byte[] buffer = new byte[1024];
+
+            int length;
+            //copy the file content in bytes
+            while ((length = inStream.read(buffer)) > 0) {
+
+                outStream.write(buffer, 0, length);
+
+            }
+
+            inStream.close();
+            outStream.close();
+
+            Log.d(TAG, "File is copied successful!");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return dest;
     }
 
     @Override
@@ -396,7 +433,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
-            if (compressToTkpd ) {
+            if (compressToTkpd) {
                 String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -404,8 +441,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 if (photo != null) {
                     intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
                 }
-            }
-            else {
+            } else {
                 intent.putExtra(GalleryActivity.IMAGE_URL, path);
             }
             intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
@@ -421,7 +457,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
             Intent intent = new Intent();
             if (compressToTkpd) {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
-                for (int i=0, sizei=paths.size(); i<sizei; i++) {
+                for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
                     String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
                     File photo = FileUtils.writeImageToTkpdPath(
@@ -431,7 +467,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         tkpdPaths.add(photo.getAbsolutePath());
                     }
                 }
-                if (tkpdPaths.size()>0) {
+                if (tkpdPaths.size() > 0) {
                     intent.putStringArrayListExtra(GalleryActivity.IMAGE_URLS, tkpdPaths);
                 }
             } else {
@@ -526,7 +562,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
-                                if (compressToTkpd ) {
+                                if (compressToTkpd) {
                                     String fileNameToMove = FileUtils.getFileNameWithoutExt(imagePathCamera);
                                     File photo = FileUtils.writeImageToTkpdPath(
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -534,8 +570,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                     if (photo != null) {
                                         intent.putExtra(GalleryActivity.IMAGE_URL, photo.getAbsolutePath());
                                     }
-                                }
-                                else {
+                                } else {
                                     intent.putExtra(GalleryActivity.IMAGE_URL, imagePathCamera);
                                 }
                                 intent.putExtra(ADD_PRODUCT_IMAGE_LOCATION, position);
@@ -592,7 +627,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         try {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
-                            if (compressToTkpd ) {
+                            if (compressToTkpd) {
                                 String fileNameToMove = FileUtils.getFileNameWithoutExt(cacheFilePath);
                                 File photo = FileUtils.writeImageToTkpdPath(
                                         FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -600,8 +635,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 if (photo != null) {
                                     return photo;
                                 }
-                            }
-                            else {
+                            } else {
                                 return writeImageToTkpdPath(cacheFile);
                             }
                         } catch (InterruptedException | ExecutionException e) {
@@ -611,43 +645,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         return null;
                     }
                 });
-    }
-
-    public static File writeImageToTkpdPath(File source) {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            inStream = new FileInputStream(source);
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = inStream.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            inStream.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
     }
 
     public void convertHttpPathToLocalPath(List<String> urls) {

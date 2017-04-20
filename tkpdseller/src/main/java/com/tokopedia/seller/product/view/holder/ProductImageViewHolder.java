@@ -1,6 +1,5 @@
 package com.tokopedia.seller.product.view.holder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -21,6 +20,7 @@ import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by nathan on 4/11/17.
@@ -60,7 +60,7 @@ public class ProductImageViewHolder {
                     return;
                 }
                 Snackbar.make(fragment.getView(),
-                        fragment.getString( R.string.error_image_resolution),Snackbar.LENGTH_LONG).show();
+                        fragment.getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
             }
         });
     }
