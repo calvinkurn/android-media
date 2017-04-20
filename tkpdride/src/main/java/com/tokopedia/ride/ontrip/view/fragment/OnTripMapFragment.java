@@ -91,6 +91,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_SURGE_CONFIRM_DIALOG = 1007;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
+    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
+    private static final float DEFAUL_MAP_ZOOM = 16;
 
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
@@ -268,6 +270,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
 
         if (confirmBookingViewModel != null) {
             presenter.getOverViewPolyLine(
@@ -485,11 +488,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onSuccessCancelRideRequest() {
         PlacePassViewModel source = null, destination = null;
-        if (confirmBookingViewModel != null){
+        if (confirmBookingViewModel != null) {
             source = confirmBookingViewModel.getSource();
             destination = confirmBookingViewModel.getDestination();
         } else {
-            if (rideConfiguration.isWaitingDriverState()){
+            if (rideConfiguration.isWaitingDriverState()) {
                 source = rideConfiguration.getActiveSource();
                 destination = rideConfiguration.getActiveDestination();
             }
@@ -498,7 +501,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         rideConfiguration.clearActiveRequest();
 
         Intent intent = getActivity().getIntent();
-        if (source != null && destination != null){
+        if (source != null && destination != null) {
             intent.putExtra(OnTripActivity.EXTRA_PLACE_SOURCE, source);
             intent.putExtra(OnTripActivity.EXTRA_PLACE_DESTINATION, destination);
         }
