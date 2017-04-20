@@ -366,6 +366,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                 mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
                 isAlreadySelectDestination = true;
             }
+
+
         }
     }
 

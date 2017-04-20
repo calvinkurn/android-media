@@ -2,14 +2,19 @@ package com.tokopedia.ride.history.view;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
@@ -24,6 +29,7 @@ import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -31,8 +37,12 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 public class RideHistoryFragment extends BaseFragment implements ItemClickListener, RideHistoryContract.View {
 
+    @BindView(R2.id.container)
+    FrameLayout containerFrameLayout;
     @BindView(R2.id.rv_list_rides)
     RecyclerView listRidesRecyclerView;
+    @BindView(R2.id.sw_refresh_layout)
+    SwipeRefreshLayout refreshLayout;
 
     RideHistoryAdapter adapter;
 
@@ -68,6 +78,17 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         listRidesRecyclerView.setLayoutManager(layoutManager);
         listRidesRecyclerView.setHasFixedSize(true);
         listRidesRecyclerView.setAdapter(adapter);
+        refreshLayout.setOnRefreshListener(getRefreshListener());
+    }
+
+    @NonNull
+    private SwipeRefreshLayout.OnRefreshListener getRefreshListener() {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.actionRefreshHistoriesData();
+            }
+        };
     }
 
     @Override
@@ -109,5 +130,44 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     @Override
     public void renderUpdatedHistoryRow(int position, Visitable history) {
         adapter.setChangedItem(position, history);
+    }
+
+    @Override
+    public void enableRefreshLayout() {
+        refreshLayout.setEnabled(true);
+    }
+
+    @Override
+    public void setRefreshLayoutToFalse() {
+        refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void disableRefreshLayout() {
+        refreshLayout.setEnabled(false);
+    }
+
+    @Override
+    public void showEmptyResultLayout() {
+        adapter.clearData();
+        ArrayList<Visitable> emptyModels = new ArrayList<>();
+        emptyModels.add(new EmptyModel());
+        adapter.setElement(emptyModels);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showRetryLayout() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), getRetryGetHistoriesListener());
+    }
+
+    @NonNull
+    private NetworkErrorHelper.RetryClickedListener getRetryGetHistoriesListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                mPresenter.actionRefreshHistoriesData();
+            }
+        };
     }
 }

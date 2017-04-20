@@ -45,4 +45,5 @@
     <string name="confirm_booking_insuficient_balance_format">Insufficient Balance. Your Balance is</string>
     <string name="confirm_booking_seat_format" formatted="false">%d Seat</string>
     <string name="confirm_booking_seats_format" formatted="false">%d Seats</string>
+    <string name="your_trips_toolbar_title">Your Trips</string>
 </resources>

@@ -21,10 +21,22 @@ public interface RideHistoryContract {
         void renderHistoryLists(ArrayList<Visitable> histories);
 
         void renderUpdatedHistoryRow(int position, Visitable history);
+
+        void enableRefreshLayout();
+
+        void setRefreshLayoutToFalse();
+
+        void disableRefreshLayout();
+
+        void showEmptyResultLayout();
+
+        void showRetryLayout();
     }
 
     interface Presenter extends CustomerPresenter<View>{
 
         void initialize();
+
+        void actionRefreshHistoriesData();
     }
 }

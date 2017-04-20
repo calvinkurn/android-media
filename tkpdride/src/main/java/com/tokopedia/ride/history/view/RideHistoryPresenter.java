@@ -32,6 +32,11 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
 
     @Override
     public void initialize() {
+        actionGetHistoriesData();
+    }
+
+    private void actionGetHistoriesData() {
+        getView().disableRefreshLayout();
         mGetRideHistoriesUseCase.execute(getView().getHistoriesParam(), new Subscriber<List<RideHistory>>() {
             @Override
             public void onCompleted() {
@@ -43,6 +48,9 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().showFailedGetHistoriesMessage();
+                    getView().enableRefreshLayout();
+                    getView().setRefreshLayoutToFalse();
+                    getView().showRetryLayout();
                 }
             }
 
@@ -69,8 +77,14 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setEndLongitude(rideHistory.getDestination().getLongitude());
                         histories.add(viewModel);
                     }
-                    getView().renderHistoryLists(histories);
-                    actionGetOverviewPolyline(histories);
+                    getView().enableRefreshLayout();
+                    getView().setRefreshLayoutToFalse();
+                    if (histories.size() > 0) {
+                        getView().renderHistoryLists(histories);
+                        actionGetOverviewPolyline(histories);
+                    } else {
+                        getView().showEmptyResultLayout();
+                    }
                 }
             }
         });
@@ -103,12 +117,12 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
 
                 @Override
                 public void onNext(List<String> strings) {
-                    if (isViewAttached() && !isUnsubscribed()){
+                    if (isViewAttached() && !isUnsubscribed()) {
                         List<List<LatLng>> routes = new ArrayList<>();
                         for (String route : strings) {
                             routes.add(PolyUtil.decode(route));
                         }
-                        if (routes.size() > 0){
+                        if (routes.size() > 0) {
                             viewModel.setLatLngs(routes.get(0));
                             getView().renderUpdatedHistoryRow(finalPosition, viewModel);
                         }
@@ -116,5 +130,11 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                 }
             });
         }
+    }
+
+    @Override
+    public void actionRefreshHistoriesData() {
+        getView().disableRefreshLayout();
+        actionGetHistoriesData();
     }
 }
