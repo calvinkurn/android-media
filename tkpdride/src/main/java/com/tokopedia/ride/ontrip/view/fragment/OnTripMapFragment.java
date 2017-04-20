@@ -405,7 +405,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void renderAcceptedRequest(RideRequest result) {
         replaceFragment(R.id.bottom_container, DriverDetailFragment.newInstance(result, getTag()));
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+            reDrawDriverMarker(result);
         }
     }
 
@@ -420,7 +420,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderInProgressRequest(RideRequest result) {
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+            reDrawDriverMarker(result);
         }
     }
 
@@ -481,7 +481,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderArrivingDriverEvent(RideRequest result) {
         if (result.getLocation() != null) {
-            reDrawDriverMarker(result.getLocation().getLatitude(), result.getLocation().getLongitude());
+            reDrawDriverMarker(result);
         }
     }
 
@@ -570,13 +570,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
-    private void reDrawDriverMarker(double latitude, double longitude) {
+
+
+    private void reDrawDriverMarker(RideRequest result) {
         if (mDriverMarker != null) {
             mDriverMarker.remove();
         }
+
         MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(latitude, longitude))
+                .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                .rotation(result.getLocation().getBearing())
                 .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
