@@ -25,40 +25,40 @@ public class ImageProductInputDomainModel {
         return url;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public void setUrl(String url) {
         this.url = url;
     }
 
-    public void setPicId(int picId) {
-        this.picId = picId;
-    }
-
-    public void setPicObj(String picObj) {
-        this.picObj = picObj;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public String getImagePath() {
+        return imagePath;
     }
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public int getPicId() {
         return picId;
     }
 
+    public void setPicId(int picId) {
+        this.picId = picId;
+    }
+
     public String getPicObj() {
         return picObj;
+    }
+
+    public void setPicObj(String picObj) {
+        this.picObj = picObj;
     }
 
     public int getProductId() {

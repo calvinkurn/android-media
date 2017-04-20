@@ -1,8 +1,7 @@
 package com.tokopedia.seller.product.data.source;
 
-import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.CatalogCloud;
+import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import javax.inject.Inject;
 

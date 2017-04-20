@@ -235,12 +235,12 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.poProcessValue = poProcessValue;
     }
 
-    public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
-        this.productWholesale = productWholesale;
-    }
-
     public List<ProductWholesaleServiceModel> getProductWholesale() {
         return productWholesale;
+    }
+
+    public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
+        this.productWholesale = productWholesale;
     }
 
     public List<String> getProductVideo() {

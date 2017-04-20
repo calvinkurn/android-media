@@ -3,24 +3,16 @@ package com.tokopedia.seller.product.data.source.cloud;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
-import com.tokopedia.seller.product.data.source.cloud.api.ImageUploadApi;
-import com.tokopedia.seller.product.data.source.cloud.model.GenerateHostModel;
 
 import java.io.File;
 import java.util.Map;
 
-import javax.inject.Inject;
-
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import retrofit2.Response;
-import rx.Observable;
 
 /**
  * Created by zulfikarrahman on 4/11/17.

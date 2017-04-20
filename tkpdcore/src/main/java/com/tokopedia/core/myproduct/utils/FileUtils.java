@@ -43,7 +43,7 @@ public class FileUtils {
         return fileName;
     }
 
-    public static String generateUniqueFileName (String path){
+    public static String generateUniqueFileName(String path) {
         return String.valueOf(path.hashCode()).replaceAll("-", "");
     }
 
@@ -63,7 +63,7 @@ public class FileUtils {
             if (!tkpdRootdirectory.exists()) {
                 tkpdRootdirectory.mkdirs();
             }
-            File photo = new File(tkpdRootdirectory.getAbsolutePath() + "/cache/tokopedia/"+fileName +".jpg");
+            File photo = new File(tkpdRootdirectory.getAbsolutePath() + "/cache/tokopedia/" + fileName + ".jpg");
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {

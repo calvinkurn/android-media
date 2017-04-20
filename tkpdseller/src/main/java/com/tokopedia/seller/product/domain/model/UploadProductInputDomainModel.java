@@ -212,11 +212,11 @@ public class UploadProductInputDomainModel {
         this.productVideos = productVideos;
     }
 
-    public void setHostUrl(String hostUrl) {
-        this.hostUrl = hostUrl;
-    }
-
     public String getHostUrl() {
         return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 }

@@ -18,7 +18,6 @@ import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
-import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import org.parceler.Parcels;
@@ -33,47 +32,14 @@ public class ProductInfoViewHolder {
 
     public static final int REQUEST_CODE_CATEGORY = 101;
     public static final int REQUEST_CODE_CATALOG = 102;
-
+    private final RadioGroup radioGroupCategoryRecomm;
     private EditText nameEditText;
     private LabelView categoryLabelView;
     private LabelView catalogLabelView;
     private View categoryRecommView;
-
     private ProductInfoViewHolder.Listener listener;
-
-    public interface Listener {
-        void onCategoryPickerClicked(int categoryId);
-
-        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
-
-        void onProductNameChanged(String productName);
-
-        void onCategoryChanged(int categoryId);
-    }
-
-    public void setListener(ProductInfoViewHolder.Listener listener) {
-        this.listener = listener;
-    }
-
     private int categoryId;
     private int catalogId = -1;
-    private final RadioGroup radioGroupCategoryRecomm;
-
-    public String getName() {
-        return nameEditText.getText().toString();
-    }
-
-    public void setName(String name) {
-        nameEditText.setText(name);
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
 
     public ProductInfoViewHolder(View view) {
         categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
@@ -142,6 +108,26 @@ public class ProductInfoViewHolder {
                 processCategory(productCategoryPrediction.getCategoryName());
             }
         });
+    }
+
+    public void setListener(ProductInfoViewHolder.Listener listener) {
+        this.listener = listener;
+    }
+
+    public String getName() {
+        return nameEditText.getText().toString();
+    }
+
+    public void setName(String name) {
+        nameEditText.setText(name);
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -252,6 +238,16 @@ public class ProductInfoViewHolder {
             radioButton.setTag(categoryPredictionList.get(i));
         }
         categoryRecommView.setVisibility(View.VISIBLE);
+    }
+
+    public interface Listener {
+        void onCategoryPickerClicked(int categoryId);
+
+        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
+
+        void onProductNameChanged(String productName);
+
+        void onCategoryChanged(int categoryId);
     }
 
 }
