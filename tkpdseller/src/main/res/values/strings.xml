@@ -299,6 +299,9 @@
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
     <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
+    <string name="product_label_price_whole_sale">Harga Produk</string>
+    <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
     <string name="product_label_manage_stock">Pengaturan Stok</string>
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>

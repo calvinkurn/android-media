@@ -29,6 +29,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.ArrayList;
@@ -207,5 +208,9 @@ public class ProductAddFragment extends BaseDaggerFragment
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
+    }
+
+    public void addWholesaleItem(WholesaleModel wholesaleModel) {
+        productDetailViewHolder.addWholesaleItem(wholesaleModel);
     }
 }
