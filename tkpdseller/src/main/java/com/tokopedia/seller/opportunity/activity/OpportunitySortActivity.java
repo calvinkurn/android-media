@@ -1,6 +1,8 @@
 package com.tokopedia.seller.opportunity.activity;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,14 +10,15 @@ import android.support.v7.app.ActionBar;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.fragment.OpportunitySortFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
+import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+
+import java.util.ArrayList;
 
 /**
  * Created by nisie on 3/6/17.
  */
 
-public class OpportunitySortActivity extends BasePresenterActivity
-        implements TopAdsFilterContentFragment.Callback {
+public class OpportunitySortActivity extends BasePresenterActivity {
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -44,11 +47,12 @@ public class OpportunitySortActivity extends BasePresenterActivity
             actionBar.setDisplayHomeAsUpEnabled(false);
         }
 
-        OpportunitySortFragment fragment = OpportunitySortFragment.createInstance(getIntent().getExtras());
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
-        fragmentTransaction.commit();
-        fragment.setCallback(this);
+        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+            OpportunitySortFragment fragment = OpportunitySortFragment.createInstance(getIntent().getExtras());
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.container, fragment);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
@@ -66,8 +70,10 @@ public class OpportunitySortActivity extends BasePresenterActivity
 
     }
 
-    @Override
-    public void onStatusChanged(boolean active) {
-
+    public static Intent getCallingIntent(Context context,
+                                          ArrayList<SortingTypeViewModel> listSort) {
+        Intent intent = new Intent(context, OpportunitySortActivity.class);
+        intent.putParcelableArrayListExtra(OpportunitySortFragment.ARGS_LIST_SORT, listSort);
+        return intent;
     }
 }

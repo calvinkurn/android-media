@@ -5,8 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.adapter.OpportunitySortAdapter;
+import com.tokopedia.seller.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
 import com.tokopedia.seller.topads.view.model.RadioButtonItem;
@@ -18,64 +27,14 @@ import java.util.List;
  * Created by nisie on 3/6/17.
  */
 
-public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
+public class OpportunitySortFragment extends BasePresenterFragment {
 
-    public static final String EXTRA_LIST_SORT = "EXTRA_LIST_SORT";
+    public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
     public static final String SELECTED_VALUE = "SELECTED_VALUE";
-    private static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
+
+    OpportunitySortAdapter adapter;
     List<SortingTypeViewModel> listSort;
-
-    @Override
-    protected List<RadioButtonItem> getRadioButtonList() {
-        if (getArguments().getParcelableArrayList(EXTRA_LIST_SORT) != null)
-            listSort = getArguments().getParcelableArrayList(EXTRA_LIST_SORT);
-        return convertToRadioButtonItem(listSort);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null)
-            listSort = savedInstanceState.getParcelableArrayList(ARGS_LIST_SORT);
-        else
-            listSort = new ArrayList<>();
-    }
-
-    private List<RadioButtonItem> convertToRadioButtonItem(List<SortingTypeViewModel> listSort) {
-        ArrayList<RadioButtonItem> listRadio = new ArrayList<>();
-        for (int i = 0; i < listSort.size(); i++) {
-            RadioButtonItem sortItem = new RadioButtonItem();
-            sortItem.setName(listSort.get(i).getSortingTypeName());
-            sortItem.setPosition(i);
-            sortItem.setValue(String.valueOf(listSort.get(i).getSortingTypeId()));
-            listRadio.add(sortItem);
-        }
-        selectedAdapterPosition = 0;
-        return listRadio;
-    }
-
-    @Override
-    public String getTitle(Context context) {
-        return getString(R.string.title_sort_by);
-    }
-
-    @Override
-    public Intent addResult(Intent intent) {
-        return intent;
-    }
-
-    @Override
-    public void onItemSelected(RadioButtonItem radioButtonItem, int position) {
-        super.onItemSelected(radioButtonItem, position);
-        getActivity().setResult(Activity.RESULT_OK, getResultIntent(radioButtonItem, position));
-        getActivity().finish();
-    }
-
-    private Intent getResultIntent(RadioButtonItem radioButtonItem, int position) {
-        Intent intent = new Intent();
-        intent.putExtra(SELECTED_VALUE, listSort.get(position).getSortingTypeId());
-        return intent;
-    }
+    RecyclerView sortRecyclerView;
 
     public static OpportunitySortFragment createInstance(Bundle extras) {
         OpportunitySortFragment fragment = new OpportunitySortFragment();
@@ -84,8 +43,140 @@ public class OpportunitySortFragment extends TopAdsFilterRadioButtonFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null)
+            listSort = savedInstanceState.getParcelableArrayList(ARGS_LIST_SORT);
+        else if (getArguments().getParcelableArrayList(ARGS_LIST_SORT) != null)
+            listSort = getArguments().getParcelableArrayList(ARGS_LIST_SORT);
+        else {
+            listSort = new ArrayList<>();
+        }
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
+    }
+
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(ARGS_LIST_SORT, new ArrayList<Parcelable>(listSort));
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return true;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_sort, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_close) {
+            getActivity().finish();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void initialPresenter() {
+
+    }
+
+    @Override
+    protected void initialListener(Activity activity) {
+
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_sort_opportunity;
+    }
+
+    @Override
+    protected void initView(View view) {
+        sortRecyclerView = (RecyclerView) view.findViewById(R.id.list);
+
+        adapter = OpportunitySortAdapter.createInstance(getSortList(), onItemSelectedListener());
+        sortRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        sortRecyclerView.setAdapter(adapter);
+
+    }
+
+    private ArrayList<SimpleCheckListItemModel> getSortList() {
+        ArrayList<SimpleCheckListItemModel> listData = new ArrayList<>();
+
+        for (SortingTypeViewModel sortingTypeViewModel : listSort) {
+            SimpleCheckListItemModel itemModel = new SimpleCheckListItemModel();
+            itemModel.setSelected(sortingTypeViewModel.isSelected());
+            itemModel.setTitle(sortingTypeViewModel.getSortingTypeName());
+            itemModel.setValue(String.valueOf(sortingTypeViewModel.getSortingTypeId()));
+            listData.add(itemModel);
+        }
+
+        return listData;
+    }
+
+    private OpportunitySortAdapter.SimpleCheckListListener onItemSelectedListener() {
+        return new OpportunitySortAdapter.SimpleCheckListListener() {
+            @Override
+
+            public void onItemSelected(int position, String value) {
+
+                for (int i = 0; i < listSort.size(); i++) {
+                    if (i != position)
+                        listSort.get(i).setSelected(false);
+                }
+
+                Intent intent = new Intent();
+                intent.putExtra(SELECTED_VALUE, value);
+                listSort.get(position).setSelected(true);
+                intent.putParcelableArrayListExtra(ARGS_LIST_SORT, new ArrayList<>(listSort));
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+            }
+        };
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
     }
 }

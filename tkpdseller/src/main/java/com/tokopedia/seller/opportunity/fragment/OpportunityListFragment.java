@@ -273,10 +273,11 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             @Override
             public void onClick(View v) {
                 ArrayList<SortingTypeViewModel> listSort = new ArrayList<>(filterData.getListSortingType());
-
-                Intent intent = new Intent(getActivity(), OpportunitySortActivity.class);
-                intent.putParcelableArrayListExtra(OpportunitySortFragment.EXTRA_LIST_SORT, listSort);
-                startActivityForResult(intent, REQUEST_SORT);
+                startActivityForResult(
+                        OpportunitySortActivity.getCallingIntent(
+                                getActivity(),
+                                listSort)
+                        , REQUEST_SORT);
             }
         });
 
@@ -418,8 +419,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                 adapter.showEmptyFull(true);
             adapter.notifyDataSetChanged();
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
-            CommonUtils.dumper("NISNIS Sort " + data.getExtras().getInt(OpportunitySortFragment.SELECTED_VALUE));
-            String paramSort = String.valueOf(data.getExtras().getInt(OpportunitySortFragment.SELECTED_VALUE));
+            CommonUtils.dumper("NISNIS Sort " + data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE));
+            String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
+
+            ArrayList<SortingTypeViewModel> listSort = data.getExtras().getParcelableArrayList(OpportunitySortFragment.ARGS_LIST_SORT);
+            filterData.setListSortingType(listSort);
+
             presenter.getPass().setSort(paramSort);
             resetOpportunityList();
 

@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -91,6 +94,23 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     @Override
     protected void initialPresenter() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sort, menu);
+        return true;
+    }
+
+    @Override
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_close) {
+            finish();
+            return true;
+        } else
+            return super.onOptionsItemSelected(item);
     }
 
     @Override
