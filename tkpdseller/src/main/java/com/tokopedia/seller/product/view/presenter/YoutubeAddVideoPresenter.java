@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 
 /**
  * @author normansyahputa on 4/17/17.

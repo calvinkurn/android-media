@@ -18,6 +18,8 @@ import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
 import com.tokopedia.seller.product.view.holder.AddUrlContainerViewHolder;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;

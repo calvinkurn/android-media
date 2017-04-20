@@ -35,6 +35,8 @@ import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
+import com.tokopedia.seller.product.view.listener.ProductAddView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -134,7 +136,8 @@ public class ProductAddFragment extends BaseDaggerFragment
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
         viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
 //        viewModel youtube
-
+        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
+        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderDay());
         return viewModel;
     }
 
@@ -266,9 +269,9 @@ public class ProductAddFragment extends BaseDaggerFragment
     @Override
     public void startYoutubeVideoActivity(ArrayList<String> videoIds) {
         Intent intent = new Intent(getActivity(), YoutubeAddVideoActivity.class);
-        if (CommonUtils.checkCollectionNotNull(videoIds))
-            intent.putStringArrayListExtra(
-                    YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        if (CommonUtils.checkCollectionNotNull(videoIds)) {
+            intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
     }
 

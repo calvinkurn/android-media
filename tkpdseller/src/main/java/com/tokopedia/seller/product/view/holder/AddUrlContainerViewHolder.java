@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.adapter.addurlvideo.AddUrlVideoAdapter;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
 import java.util.List;

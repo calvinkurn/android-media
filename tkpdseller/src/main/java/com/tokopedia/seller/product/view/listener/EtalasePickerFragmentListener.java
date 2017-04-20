@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.view.fragment;
+package com.tokopedia.seller.product.view.listener;
 
 /**
  * @author sebastianuskh on 4/5/17.

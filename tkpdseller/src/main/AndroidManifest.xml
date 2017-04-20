@@ -222,7 +222,7 @@
 
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/video"
+            android:label="@string/product_label_video"
             android:theme="@style/AppTheme" />
 
         <activity android:name=".product.view.activity.ProductScoringDetailActivity"

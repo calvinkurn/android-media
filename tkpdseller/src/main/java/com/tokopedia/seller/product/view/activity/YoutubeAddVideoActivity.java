@@ -14,9 +14,9 @@ import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialog;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 
 import java.util.ArrayList;
 import java.util.List;

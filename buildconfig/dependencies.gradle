@@ -147,7 +147,7 @@ ext {
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.5"
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.6"
     ]
 
 }
