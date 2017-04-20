@@ -23,7 +23,13 @@ public class ListProductFragmentImpl implements ListProductFragmentPresenter {
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        getListProductUseCase.execute(RequestParams.EMPTY, new ListProductSubsriber(fragmentView));
+        getListProductUseCase.execute(getListProductParams(), new ListProductSubsriber(fragmentView));
+    }
+
+    private RequestParams getListProductParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetListProductUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override
