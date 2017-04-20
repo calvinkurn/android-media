@@ -28,11 +28,11 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -328,7 +328,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         isDisableSelectLocation = true;
     }
 
-    public void enablePickLocation(){
+    public void enablePickLocation() {
         isDisableSelectLocation = false;
     }
 
@@ -385,7 +385,9 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
                     mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
                     setSourceLocationText(String.valueOf(mSource.getTitle()));
                     proccessToRenderRideProduct();
-                    moveMapToLocation(mSource.getLatitude(), mSource.getLongitude());
+                    if (!isAlreadySelectDestination) {
+                        moveMapToLocation(mSource.getLatitude(), mSource.getLongitude());
+                    }
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                     mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
@@ -511,12 +513,12 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         //add markers on source and destination
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mSource.getLatitude(), mSource.getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .icon(getMarkerIcon("#569222"))
                 .title(mSource.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .icon(getMarkerIcon("#DE2F34"))
                 .title(mDestination.getAddress()));
 
         //zoom map to fit both source and dest
@@ -524,6 +526,12 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         builder.include(new LatLng(mSource.getLatitude(), mSource.getLongitude()));
         builder.include(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()));
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
+    }
+
+    public BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
     @OnClick(R2.id.iv_my_location_button)

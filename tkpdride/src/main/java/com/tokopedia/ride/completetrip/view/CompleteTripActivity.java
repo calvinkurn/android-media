@@ -15,7 +15,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
 public class CompleteTripActivity extends BaseActivity {
@@ -62,9 +61,9 @@ public class CompleteTripActivity extends BaseActivity {
     private void setupToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
+            mToolbar.setTitle(getString(R.string.title_trip_completed));
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            mToolbar.setTitle(getString(R.string.title_trip_completed));
         }
     }
 

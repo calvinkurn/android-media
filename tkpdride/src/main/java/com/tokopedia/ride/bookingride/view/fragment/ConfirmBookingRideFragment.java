@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -118,8 +117,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                 .dontAnimate()
                 .error(R.mipmap.ic_launcher)
                 .into(productIconImageView);
+
         headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
         priceTextView.setText(confirmBookingViewModel.getPriceFmt());
+        bookingConfirmationTextView.setText(getString(R.string.btn_request) + " " + confirmBookingViewModel.getProductDisplayName());
 //        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 
@@ -212,9 +213,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
             seatsLabelTextView.setText(getString(R.string.confirm_booking_seats_needed));
             seatArrowDownImageView.setVisibility(View.VISIBLE);
+            selectSeatContainer.setEnabled(true);
         } else {
             seatsLabelTextView.setText(R.string.confirm_booking_capacity);
             seatArrowDownImageView.setVisibility(View.GONE);
+            selectSeatContainer.setEnabled(false);
         }
     }
 

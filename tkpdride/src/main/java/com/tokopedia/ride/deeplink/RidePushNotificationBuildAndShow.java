@@ -1,6 +1,5 @@
 package com.tokopedia.ride.deeplink;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -22,15 +20,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
@@ -39,17 +32,11 @@ import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
-import com.tokopedia.ride.ontrip.receiver.CallDriverReceiver;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.Date;
-import java.util.Set;
 
-import rx.Observable;
 import rx.Subscriber;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -62,7 +49,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 public class RidePushNotificationBuildAndShow {
     private static int mNotificationId = 003;
     public static final int FINDING_UBER_NOTIFICATION_ID = 003;
-    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 003;
+    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 004;
     private Context mContext;
     private Gson gson;
     private GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase;
