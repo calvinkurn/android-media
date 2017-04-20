@@ -5,7 +5,9 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.data.ActivateUnicodeModel;
+import com.tokopedia.session.activation.data.pojo.ActivateUnicodeData;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -82,9 +84,17 @@ public class ActivateUnicodeSubscriber extends Subscriber<ActivateUnicodeModel> 
     @Override
     public void onNext(ActivateUnicodeModel activateUnicodeModel) {
         if (activateUnicodeModel.isSuccess())
-            viewListener.onSuccessActivateWithUnicode(activateUnicodeModel.getStatusMessage());
+            viewListener.onSuccessActivateWithUnicode(mappingToViewModel(activateUnicodeModel.getActivateUnicodeData()));
         else {
             viewListener.onErrorActivateWithUnicode(activateUnicodeModel.getErrorMessage());
         }
+    }
+
+    private LoginTokenViewModel mappingToViewModel(ActivateUnicodeData activateUnicodeData) {
+        LoginTokenViewModel viewModel = new LoginTokenViewModel();
+        viewModel.setAccessToken(activateUnicodeData.getAccessToken());
+        viewModel.setExpiresIn(activateUnicodeData.getExpiresIn());
+        viewModel.setTokenType(activateUnicodeData.getTokenType());
+        return viewModel;
     }
 }

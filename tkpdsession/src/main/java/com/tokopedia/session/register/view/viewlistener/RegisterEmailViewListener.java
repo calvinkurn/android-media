@@ -51,5 +51,5 @@ public interface RegisterEmailViewListener {
 
     void onSuccessRegister(RegisterEmailViewModel registerResult);
 
-    void setRegisterModel(RegisterViewModel registerViewModel);
+    void getRegisterModel(RegisterViewModel registerViewModel);
 }

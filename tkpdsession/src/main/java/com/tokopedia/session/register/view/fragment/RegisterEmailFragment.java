@@ -506,12 +506,13 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     }
 
     @Override
-    public void setRegisterModel(RegisterViewModel registerViewModel) {
+    public void getRegisterModel(RegisterViewModel registerViewModel) {
         registerViewModel.setName(name.getText().toString());
         registerViewModel.setEmail(email.getText().toString());
         registerViewModel.setPhone(phone.getText().toString().replace("-", ""));
         registerViewModel.setAgreedTermCondition(true);
         registerViewModel.setPassword(registerPassword.getText().toString());
+        registerViewModel.setIsAutoVerify(isEmailAddressFromDevice() ? 1 : 0);
     }
 
     private void sendLocalyticsRegisterEvent(int userId) {

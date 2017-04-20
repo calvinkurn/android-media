@@ -46,7 +46,7 @@ public class ChangeEmailPresenterImpl implements ChangeEmailPresenter {
         RegisterActivationFactory registerActivationFactory =
                 new RegisterActivationFactory(
                         viewListener.getActivity(),
-                        accountsService,
+                        accountsService, accountsService,
                         resendActivationMapper,
                         activateUnicodeMapper,
                         changeEmailMapper

@@ -32,6 +32,7 @@ import com.tokopedia.core.session.model.LoginViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.model.TokenModel;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.session.model.LoginEmailModel;
 import com.tokopedia.session.session.model.LoginThirdModel;
 import com.tokopedia.session.session.presenter.Login;
@@ -102,6 +103,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 Log.d(TAG, LoginImpl.class.getSimpleName() + " try to login email : " + model);
                 intent.putExtra(LOGIN_VIEW_MODEL_KEY, Parcels.wrap(model));
                 break;
+            case LOGIN_UNIQUE_CODE:
+                LoginTokenViewModel tokenModel = bundle.getParcelable(LOGIN_TOKEN_MODEL_KEY);
+                intent.putExtra(LOGIN_TOKEN_MODEL_KEY, tokenModel);
+                break;
             case REGISTER_GOOGLE:
             case LOGIN_GOOGLE:
                 LoginGoogleModel loginGoogleModel = Parcels.unwrap(bundle.getParcelable(LOGIN_GOOGLE_MODEL_KEY));
@@ -165,6 +170,18 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 data.setLoginType(LOGIN_EMAIL);
                 data.setGrantType(Login.GRANT_PASSWORD);
                 data.setUUID(xxx.getUuid());
+                handleAccounts(data);
+                break;
+            case LOGIN_UNIQUE_CODE:
+
+                LoginTokenViewModel tokenViewModel = intent.getParcelableExtra(LOGIN_TOKEN_MODEL_KEY);
+
+                TokenModel tokenModel = new TokenModel();
+                tokenModel.setAccessToken(tokenViewModel.getAccessToken());
+                tokenModel.setTokenType(tokenViewModel.getTokenType());
+                tokenModel.setExpiresIn(Integer.parseInt(tokenViewModel.getExpiresIn()));
+
+                data.setTokenModel(tokenModel);
                 handleAccounts(data);
                 break;
 
@@ -296,7 +313,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 .flatMap(new Func1<AccountsParameter, Observable<AccountsParameter>>() {
                     @Override
                     public Observable<AccountsParameter> call(AccountsParameter accountsParameter) {
-                        return getObservableAccountsToken(accountsParameter);
+                        if (accountsParameter.getTokenModel() == null)
+                            return getObservableAccountsToken(accountsParameter);
+                        else
+                            return Observable.just(accountsParameter);
                     }
                 })
 
@@ -306,8 +326,8 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                         if (accountsParameter.getErrorModel() == null) {
                             TokenModel tokenModel = accountsParameter.getTokenModel();
                             sessionHandler.setToken(tokenModel.getAccessToken(),
-                                    tokenModel.getTokenType(),
-                                    tokenModel.getRefreshToken());
+                                    tokenModel.getTokenType()
+                            );
                         }
                         return Observable.just(accountsParameter);
                     }

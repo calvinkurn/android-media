@@ -53,6 +53,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.otp.phoneverification.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;
 import com.tokopedia.session.session.fragment.LoginFragment;
 import com.tokopedia.session.session.fragment.RegisterInitialFragment;
@@ -103,9 +104,12 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     public static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
-    private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
+    private static final String INTENT_EXTRA_PARAM_TOKEN_MODEL = "INTENT_EXTRA_PARAM_TOKEN_MODEL";
+    private static final String INTENT_LOGIN_TYPE = "INTENT_LOGIN_TYPE";
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     public static final String DEFAULT = "not";
+    private static final int AUTOMATIC_LOGIN = 1;
+    private static final int UNIQUE_CODE_LOGIN = 2;
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -146,7 +150,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         Intent callingIntent = new Intent(context, Login.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
-        callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
+        callingIntent.putExtra(INTENT_LOGIN_TYPE, AUTOMATIC_LOGIN);
         callingIntent.putExtra("login", DEFAULT);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         if (GlobalConfig.isSellerApp())
@@ -158,6 +162,20 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
 
     public static Intent getCallingIntent(Context context) {
         Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        if (GlobalConfig.isSellerApp())
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
+        else
+            callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+        return callingIntent;
+    }
+
+    public static Intent getAutomaticLoginFromActivationIntent(Context context,
+                                                               LoginTokenViewModel loginTokenViewModel) {
+        Intent callingIntent = new Intent(context, Login.class);
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_TOKEN_MODEL, loginTokenViewModel);
+        callingIntent.putExtra(INTENT_LOGIN_TYPE, UNIQUE_CODE_LOGIN);
+        callingIntent.putExtra("login", DEFAULT);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         if (GlobalConfig.isSellerApp())
             callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
@@ -225,7 +243,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         otpReceiver = new OTPResultReceiver(new Handler());
         otpReceiver.setReceiver(this);
 
-        if (getIntent().getExtras().getBoolean(INTENT_AUTOMATIC_LOGIN, false)) {
+        if (getIntent().getExtras().getInt(INTENT_LOGIN_TYPE) == AUTOMATIC_LOGIN) {
             Bundle bundle = new Bundle();
             LoginViewModel loginViewModel = new LoginViewModel();
             loginViewModel.setPassword(getIntent().getExtras().getString(INTENT_EXTRA_PARAM_PASSWORD));
@@ -234,7 +252,14 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             bundle.putParcelable(DownloadService.LOGIN_VIEW_MODEL_KEY, Parcels.wrap(loginViewModel));
             bundle.putBoolean(DownloadService.IS_NEED_LOGIN, true);
             LoginService.startLogin(this, loginReceiver, bundle, DownloadServiceConstant.LOGIN_ACCOUNTS_TOKEN);
+        } else if (getIntent().getExtras().getInt(INTENT_LOGIN_TYPE) == UNIQUE_CODE_LOGIN) {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(
+                    DownloadService.LOGIN_TOKEN_MODEL_KEY,
+                    getIntent().getParcelableExtra(INTENT_EXTRA_PARAM_TOKEN_MODEL));
+            LoginService.startLogin(this, loginReceiver, bundle, DownloadServiceConstant.LOGIN_UNIQUE_CODE);
         }
+
     }
 
     @Override
@@ -247,7 +272,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle bundle) {
+    public void moveToRegisterPassPhone(CreatePasswordModel
+                                                model, List<String> createPasswordList, Bundle bundle) {
         Log.d(TAG, messageTAG + " moveToRegisterThird : " + model);
         if (isFragmentCreated(REGISTER_THIRD)) {
             Fragment fragment = RegisterPassPhoneFragment.newInstance(model, createPasswordList, bundle);
@@ -753,6 +779,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.LOGIN_FACEBOOK:
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
             case DownloadService.LOGIN_ACCOUNTS_INFO:
+            case DownloadService.LOGIN_UNIQUE_CODE:
             case DownloadService.LOGIN_ACCOUNTS_PROFILE:
             case DownloadService.MAKE_LOGIN:
             case DownloadService.LOGIN_WEBVIEW:
@@ -800,6 +827,8 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             case DownloadService.LOGIN_GOOGLE:
             case DownloadService.LOGIN_FACEBOOK:
             case DownloadService.LOGIN_ACCOUNTS_TOKEN:
+            case DownloadService.LOGIN_UNIQUE_CODE:
+
             case DownloadService.LOGIN_ACCOUNTS_INFO:
             case DownloadService.LOGIN_ACCOUNTS_PROFILE:
             case DownloadService.LOGIN_WEBVIEW:
@@ -949,4 +978,6 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         intent.putExtra(Intent.EXTRA_TEXT, getString(com.tokopedia.session.R.string.application_version_text) + GlobalConfig.VERSION_CODE);
         startActivity(Intent.createChooser(intent, getString(com.tokopedia.session.R.string.send_email)));
     }
+
+
 }

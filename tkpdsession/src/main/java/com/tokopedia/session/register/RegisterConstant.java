@@ -24,12 +24,6 @@ public interface RegisterConstant {
     String PARAM_BIRTHDAY = "birth_day";
     String PARAM_BIRTHMONTH = "birth_month";
     String PARAM_BIRTHYEAR = "birth_year";
-    String PARAM_CONFIRM_PASSWORD = "confirm_password";
-    String PARAM_EMAIL = "email";
     String PARAM_FACEBOOK_USERID = "fb_user_id";
-    String PARAM_FULLNAME = "full_name";
     String PARAM_GENDER = "gender";
-    String PARAM_PASSWORD = "password";
-    String PARAM_PHONE = "phone";
-    String PARAM_IS_AUTO_VERIFY = "is_auto_verify";
 }

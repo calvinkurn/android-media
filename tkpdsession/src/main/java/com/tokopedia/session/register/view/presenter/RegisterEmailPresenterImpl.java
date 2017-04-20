@@ -23,10 +23,20 @@ import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 
+import static com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase.PARAM_PHONE;
+import static com.tokopedia.session.activation.domain.interactor.ChangeEmailUseCase.PARAM_PASSWORD;
+import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_CONFIRM_PASSWORD;
+import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_FULLNAME;
+import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_IS_AUTO_VERIFY;
+
 /**
  * Created by nisie on 1/27/17.
  */
 public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, RegisterConstant {
+
+    private static final int STATUS_ACTIVE = 1;
+    private static final int STATUS_PENDING = -1;
+    private static final int STATUS_INACTIVE = 0;
 
     private final RegisterEmailViewListener viewListener;
     private RegisterViewModel registerViewModel;
@@ -67,13 +77,13 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
 
     private RequestParams getRegisterStep2Param() {
         RequestParams param = RequestParams.create();
-        viewListener.setRegisterModel(registerViewModel);
-
-        param.putString(PARAM_EMAIL, registerViewModel.getEmail());
-        param.putString(PARAM_FULLNAME, registerViewModel.getName());
-        param.putString(PARAM_PASSWORD, registerViewModel.getPassword());
-        param.putString(PARAM_CONFIRM_PASSWORD, registerViewModel.getPassword());
-        param.putString(PARAM_PHONE, registerViewModel.getPhone());
+        viewListener.getRegisterModel(registerViewModel);
+        param.putString(RegisterEmailUseCase.PARAM_EMAIL, registerViewModel.getEmail());
+        param.putString(RegisterEmailUseCase.PARAM_FULLNAME, registerViewModel.getName());
+        param.putString(RegisterEmailUseCase.PARAM_PASSWORD, registerViewModel.getPassword());
+        param.putString(RegisterEmailUseCase.PARAM_CONFIRM_PASSWORD, registerViewModel.getPassword());
+        param.putString(RegisterEmailUseCase.PARAM_PHONE, registerViewModel.getPhone());
+        param.putInt(RegisterEmailUseCase.PARAM_IS_AUTO_VERIFY, registerViewModel.getIsAutoVerify());
         return param;
     }
 
@@ -98,7 +108,10 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
                 break;
             case GO_TO_REGISTER:
             case GO_TO_ACTIVATION_PAGE:
-                viewListener.goToActivationPage(viewModel);
+                if (viewModel.getIsActive() == STATUS_ACTIVE)
+                    viewListener.goToAutomaticLogin();
+                else if (viewModel.getIsActive() == STATUS_INACTIVE || viewModel.getIsActive() == STATUS_PENDING )
+                    viewListener.goToActivationPage(viewModel);
                 break;
             case GO_TO_RESET_PASSWORD:
                 viewListener.goToAutomaticResetPassword();

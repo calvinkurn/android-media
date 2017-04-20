@@ -1,5 +1,7 @@
 package com.tokopedia.session.register.data.model;
 
+import static android.R.attr.autoVerify;
+
 /**
  * Created by nisie on 1/30/17.
  */
@@ -13,6 +15,7 @@ public class RegisterViewModel {
     private String phone;
     private String password;
     private String confirmPassword;
+    private int isAutoVerify;
 
     public boolean isAgreedTermCondition() {
         return isAgreedTermCondition;
@@ -60,6 +63,14 @@ public class RegisterViewModel {
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public int getIsAutoVerify() {
+        return isAutoVerify;
+    }
+
+    public void setIsAutoVerify(int isAutoVerify){
+        this.isAutoVerify = isAutoVerify;
     }
 }
 

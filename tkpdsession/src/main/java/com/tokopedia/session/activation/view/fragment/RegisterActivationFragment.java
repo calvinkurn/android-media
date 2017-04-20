@@ -23,6 +23,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
@@ -174,12 +175,11 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 6) {
+                if (s.length() == 5) {
                     activateButton.setEnabled(true);
                     MethodChecker.setBackground(activateButton,
                             MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
-
                 } else {
                     activateButton.setEnabled(false);
                     MethodChecker.setBackground(activateButton,
@@ -278,18 +278,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     }
 
     @Override
-    public void onSuccessActivateWithUnicode(String statusMessage) {
+    public void onSuccessActivateWithUnicode(LoginTokenViewModel loginTokenViewModel) {
         finishLoadingProgress();
-        goToAutomaticLogin();
+        goToAutomaticLogin(loginTokenViewModel);
     }
 
-    private void goToAutomaticLogin() {
+    private void goToAutomaticLogin(LoginTokenViewModel loginTokenViewModel) {
         getActivity().finish();
 
-        startActivity(Login.getAutomaticLoginIntent(
+        startActivity(Login.getAutomaticLoginFromActivationIntent(
                 getActivity(),
-                email,
-                getArguments().getString(ARGS_PASSWORD))
+                loginTokenViewModel)
         );
     }
 

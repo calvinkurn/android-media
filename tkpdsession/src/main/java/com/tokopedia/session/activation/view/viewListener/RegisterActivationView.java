@@ -2,6 +2,8 @@ package com.tokopedia.session.activation.view.viewListener;
 
 import android.app.Activity;
 
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
+
 /**
  * Created by nisie on 1/31/17.
  */
@@ -24,5 +26,5 @@ public interface RegisterActivationView {
 
     void onErrorActivateWithUnicode(String errorMessage);
 
-    void onSuccessActivateWithUnicode(String statusMessage);
+    void onSuccessActivateWithUnicode(LoginTokenViewModel statusMessage);
 }

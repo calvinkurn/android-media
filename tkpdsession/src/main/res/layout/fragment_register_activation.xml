@@ -104,7 +104,7 @@
                 android:imeOptions="actionDone"
                 android:inputType="number"
                 android:layout_centerHorizontal="true"
-                android:maxLength="6"
+                android:maxLength="5"
                 android:paddingBottom="@dimen/margin_small"
                 android:textIsSelectable="false"
                 android:textSize="28sp"

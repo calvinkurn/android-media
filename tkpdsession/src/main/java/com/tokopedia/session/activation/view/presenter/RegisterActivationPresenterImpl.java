@@ -37,6 +37,8 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
 
         AccountsService accountsService = new AccountsService(bundle);
 
+        AccountsService accountsServiceBearer = new AccountsService(new Bundle());
+
         ResendActivationMapper resendActivationMapper = new ResendActivationMapper();
         ActivateUnicodeMapper activateUnicodeMapper = new ActivateUnicodeMapper();
         ChangeEmailMapper changeEmailMapper = new ChangeEmailMapper();
@@ -44,6 +46,7 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
                 new RegisterActivationFactory(
                         viewListener.getActivity(),
                         accountsService,
+                        accountsServiceBearer,
                         resendActivationMapper,
                         activateUnicodeMapper,
                         changeEmailMapper

@@ -45,9 +45,7 @@ public class ActivateUnicodeMapper implements Func1<Response<String>, ActivateUn
             }
 
             model.setResponseCode(response.code());
-        } else
-
-        {
+        } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
         return model;

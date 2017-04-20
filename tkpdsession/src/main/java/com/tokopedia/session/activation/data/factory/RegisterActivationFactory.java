@@ -18,17 +18,20 @@ import com.tokopedia.session.activation.domain.RegisterActivationRepository;
 public class RegisterActivationFactory {
     private Context context;
     private final AccountsService accountsService;
+    private final AccountsService accountsServiceBearer;
     private ResendActivationMapper resendActivationMapper;
     private ActivateUnicodeMapper activateUnicodeMapper;
     private ChangeEmailMapper changeEmailMapper;
 
     public RegisterActivationFactory(Context context,
                                      AccountsService accountsService,
+                                     AccountsService accountsServiceBearer,
                                      ResendActivationMapper resendActivationMapper,
                                      ActivateUnicodeMapper activateUnicodeMapper,
                                      ChangeEmailMapper changeEmailMapper) {
         this.context = context;
         this.accountsService = accountsService;
+        this.accountsServiceBearer  = accountsServiceBearer;
         this.resendActivationMapper = resendActivationMapper;
         this.activateUnicodeMapper = activateUnicodeMapper;
         this.changeEmailMapper = changeEmailMapper;
@@ -39,7 +42,7 @@ public class RegisterActivationFactory {
     }
 
     public CloudActivateUnicodeSource createCloudActivateWithUnicodeDataStore() {
-        return new CloudActivateUnicodeSource(context, accountsService, activateUnicodeMapper);
+        return new CloudActivateUnicodeSource(context, accountsServiceBearer, activateUnicodeMapper);
     }
 
     public CloudChangeEmailSource createCloudChangeEmailDataStore() {

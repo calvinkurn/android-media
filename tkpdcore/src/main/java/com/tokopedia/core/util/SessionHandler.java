@@ -522,12 +522,11 @@ public class SessionHandler {
     }
 
 
-    public void setToken(String accessToken, String tokenType, String refreshToken) {
+    public void setToken(String accessToken, String tokenType) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
         saveToSharedPref(editor, TOKEN_TYPE, tokenType);
-        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
@@ -562,11 +561,6 @@ public class SessionHandler {
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TOKEN_TYPE, "");
-    }
-
-    public static String getRefreshToken(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString(REFRESH_TOKEN, "");
     }
 
     public static boolean isFirstTimeAskedPermissionStorage(Context context) {

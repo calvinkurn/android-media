@@ -714,6 +714,7 @@ LoginFragment extends Fragment implements LoginView {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
                 startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                getActivity().finish();
             }
         }
         switch (type) {
@@ -780,6 +781,8 @@ LoginFragment extends Fragment implements LoginView {
                     Bundle lbundle = new Bundle();
                     lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
                     startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                    getActivity().finish();
+
                 }
                 break;
             case 200:
