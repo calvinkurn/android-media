@@ -3,14 +3,16 @@ package com.tokopedia.seller.product.view.holder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.adapter.addurlvideo.AddUrlVideoAdapter;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoActView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
+
+import java.util.List;
 
 /**
  * @author normansyahputa on 4/13/17.
@@ -22,7 +24,7 @@ public class AddUrlContainerViewHolder {
     private final View itemView;
     private final RecyclerView recyclerViewAddUrlVideo;
     private final AddUrlVideoAdapter addUrlVideoAdapter;
-    private final TextView textAddUrlVideo;
+    private final Button textAddUrlVideo;
     YoutubeAddVideoActView context;
 
     public AddUrlContainerViewHolder(View view) {
@@ -33,7 +35,7 @@ public class AddUrlContainerViewHolder {
         }
 
         recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
-        textAddUrlVideo = (TextView) view.findViewById(R.id.text_add_url_video);
+        textAddUrlVideo = (Button) view.findViewById(R.id.text_add_url_video);
         textAddUrlVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,6 +59,10 @@ public class AddUrlContainerViewHolder {
                     Toast.LENGTH_LONG
             ).show();
         }
+    }
+
+    public List<String> getVideoIds() {
+        return addUrlVideoAdapter.getVideoIds();
     }
 
 

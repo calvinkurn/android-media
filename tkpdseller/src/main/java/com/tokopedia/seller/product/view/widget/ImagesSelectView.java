@@ -26,19 +26,13 @@ import java.util.List;
 public class ImagesSelectView extends FrameLayout {
 
     public static final int DEFAULT_LIMIT = 5;
+    OnCheckResolutionListener onCheckResolutionListener;
     private int recyclerViewPadding;
     private Drawable addPictureDrawable;
     private ImageSelectorAdapter imageSelectorAdapter;
     private String primaryImageString;
     private int imageLimit;
     private String titleString;
-
-    OnCheckResolutionListener onCheckResolutionListener;
-
-    public interface OnCheckResolutionListener {
-        boolean isResolutionCorrect (String uri);
-        void resolutionCheckFailed(List<String> imagesStringList);
-    }
 
     public ImagesSelectView(Context context) {
         super(context);
@@ -116,15 +110,31 @@ public class ImagesSelectView extends FrameLayout {
 
     }
 
-    public boolean successHandleResolution (String imageUrl){
+    private void handleResolutionFromStringList(List<String> uriList) {
+        for (int i = uriList.size() - 1; i >= 0; i--) {
+            String uri = uriList.get(i);
+            if (!successHandleResolution(uri)) {
+                uriList.remove(i);
+            }
+        }
+    }
+
+    private void handleResolutionFromList(List<ImageSelectModel> imageSelectModelList) {
+        for (int i = imageSelectModelList.size() - 1; i >= 0; i--) {
+            ImageSelectModel imageSelectModel = imageSelectModelList.get(i);
+            if (!successHandleResolution(imageSelectModel.getUri())) {
+                imageSelectModelList.remove(i);
+            }
+        }
+    }
+
+    public boolean successHandleResolution(String localUri) {
         if (onCheckResolutionListener == null ||
-            onCheckResolutionListener.isResolutionCorrect(imageUrl)){
+                onCheckResolutionListener.isResolutionCorrect(localUri)) {
             return true;
         }
         else { // resolution is not correct
-            List<String>resolutionFailedStringList = new ArrayList<>();
-            resolutionFailedStringList.add(imageUrl);
-            onCheckResolutionListener.resolutionCheckFailed(resolutionFailedStringList);
+            onCheckResolutionListener.resolutionCheckFailed(localUri);
             return false;
         }
     }
@@ -136,34 +146,52 @@ public class ImagesSelectView extends FrameLayout {
     }
 
     public void addImages(List<ImageSelectModel> imageSelectModelList){
-        imageSelectorAdapter.addImages(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
+        if (imageSelectModelList.size() > 0) {
+            imageSelectorAdapter.addImages(imageSelectModelList);
+        }
     }
 
     public void addImagesString(List<String> imageStringList){
-        List<ImageSelectModel> imageSelectModelList = new ArrayList<>();
-        for (int i=0, sizei = imageStringList.size(); i<sizei; i++) {
-            imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+        handleResolutionFromStringList(imageStringList);
+
+        if (imageStringList.size() > 0) {
+            List<ImageSelectModel> imageSelectModelList = new ArrayList<>();
+            for (int i = 0, sizei = imageStringList.size(); i < sizei; i++) {
+                imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+            }
+            imageSelectorAdapter.addImages(imageSelectModelList);
         }
-        imageSelectorAdapter.addImages(imageSelectModelList);
     }
 
     public void setImage(List<ImageSelectModel> imageSelectModelList){
-        imageSelectorAdapter.setImage(imageSelectModelList);
+        handleResolutionFromList(imageSelectModelList);
+
+        if (imageSelectModelList.size() > 0) {
+            imageSelectorAdapter.setImage(imageSelectModelList);
+        }
     }
 
     public void changeImagePath (String path) {
-        imageSelectorAdapter.changeImagePath(path);
+        if (successHandleResolution(path)) {
+            imageSelectorAdapter.changeImagePath(path);
+        }
     }
+
     public void changeImagePath (String path, int position) {
-        imageSelectorAdapter.changeImagePath(path, position);
+        if (successHandleResolution(path)) {
+            imageSelectorAdapter.changeImagePath(path, position);
+        }
     }
 
     public void changeImageDesc (String description) {
         imageSelectorAdapter.changeImageDesc(description);
     }
+
     public void changeImageDesc (String description, int position) {
         imageSelectorAdapter.changeImageDesc(description, position);
     }
+
     public void changeImagePrimary (boolean isPrimary) {
         imageSelectorAdapter.changeImagePrimary(isPrimary);
     }
@@ -173,16 +201,21 @@ public class ImagesSelectView extends FrameLayout {
     }
 
     public void changeImage (ImageSelectModel imageSelectModel) {
-        imageSelectorAdapter.changeImage(imageSelectModel);
+        if (successHandleResolution(imageSelectModel.getUri())) {
+            imageSelectorAdapter.changeImage(imageSelectModel);
+        }
     }
 
     public void changeImage (ImageSelectModel imageSelectModel, int position) {
-        imageSelectorAdapter.changeImage(imageSelectModel, position);
+        if (successHandleResolution(imageSelectModel.getUri())) {
+            imageSelectorAdapter.changeImage(imageSelectModel, position);
+        }
     }
 
     public ImageSelectModel getPrimaryImage () {
         return imageSelectorAdapter.getPrimaryImage();
     }
+
     public int getPrimaryImageIndex () {
         return imageSelectorAdapter.getPrimaryImageIndex();
     }
@@ -190,12 +223,15 @@ public class ImagesSelectView extends FrameLayout {
     public ImageSelectModel getSelectedImage () {
         return imageSelectorAdapter.getSelectedImage();
     }
+
     public ImageSelectModel getImageAt (int position) {
         return getImageList().get(position);
     }
+
     public List<ImageSelectModel> getImageList(){
         return imageSelectorAdapter.getImageSelectModelList();
     }
+
     public int getSelectedImageIndex () {
         return imageSelectorAdapter.getSelectedImageIndex();
     }
@@ -210,5 +246,11 @@ public class ImagesSelectView extends FrameLayout {
 
     public int getRemainingEmptySlot() {
         return imageLimit - imageSelectorAdapter.getImageSelectModelList().size();
+    }
+
+    public interface OnCheckResolutionListener {
+        boolean isResolutionCorrect(String uri);
+
+        void resolutionCheckFailed(String uri);
     }
 }

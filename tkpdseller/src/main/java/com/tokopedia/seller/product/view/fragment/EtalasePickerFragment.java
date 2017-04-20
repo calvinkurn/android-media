@@ -21,6 +21,8 @@ import com.tokopedia.seller.product.di.component.EtalasePickerViewComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerViewModule;
 import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapter;
 import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapterListener;
+import com.tokopedia.seller.product.view.listener.EtalasePickerFragmentListener;
+import com.tokopedia.seller.product.view.listener.EtalasePickerView;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 

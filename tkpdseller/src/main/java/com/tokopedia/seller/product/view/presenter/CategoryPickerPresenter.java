@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.product.view.fragment.CategoryPickerView;
+import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 
 /**
  * @author sebastianuskh on 4/3/17.

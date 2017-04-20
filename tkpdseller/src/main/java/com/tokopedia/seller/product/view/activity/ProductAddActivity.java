@@ -29,10 +29,6 @@ public class ProductAddActivity extends TActivity
         return getApplicationComponent();
     }
 
-    public void openAddYoutubeDialog() {
-
-    }
-
     @Override
     public void onTextPickerSubmitted(String newEtalaseName) {
 

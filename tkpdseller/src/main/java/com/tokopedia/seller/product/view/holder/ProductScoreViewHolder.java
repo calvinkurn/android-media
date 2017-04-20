@@ -10,7 +10,7 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ColorScoringProductHelper;
 import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
-import com.tokopedia.seller.product.view.fragment.ProductAddView;
+import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 
