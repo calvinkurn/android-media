@@ -140,9 +140,22 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     /**
      * Call this to get image from image gallery and can select more that one.
+     * alias to function moveToImageGalleryCamera
      *
      * @param context non null object
      */
+    public static void moveToImageGallery(AppCompatActivity context, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, position, false, maxSelection, false);
+    }
+
+    public static void moveToImageGallery(Context context, android.app.Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection, false);
+    }
+
+    public static void moveToImageGallery(Context context, Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection, false);
+    }
+
     public static void moveToImageGallery(AppCompatActivity context, int position, int maxSelection, boolean compressToTkpd) {
         moveToImageGalleryCamera(context, position, false, maxSelection, compressToTkpd);
     }
@@ -158,9 +171,34 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     /**
      * Call this to get image from image gallery
      * and force open camera.
-     *
-     * @param context non null object
+     * without compressToTkpd
      */
+    public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, android.app.Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    /**
+     * Call this to get image from image gallery
+     * and force open camera.
+     * with compressToTkpd parameter
+     * @param compressToTkpd set true, will compress move the image to tkpd path after the images are selected.
+     */
+
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd){

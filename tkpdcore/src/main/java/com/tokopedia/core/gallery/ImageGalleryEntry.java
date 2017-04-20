@@ -40,7 +40,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGallery(AppCompatActivity appCompatActivity, int position, int maxSelection){
         if(checkNotNull(appCompatActivity))
-            GalleryActivity.moveToImageGallery(appCompatActivity, position, maxSelection, false);
+            GalleryActivity.moveToImageGallery(appCompatActivity, position, maxSelection);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ImageGalleryEntry{
      */
     public static void moveToImageGalleryCamera(AppCompatActivity appCompatActivity){
         if(checkNotNull(appCompatActivity))
-            GalleryActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1, false);
+            GalleryActivity.moveToImageGalleryCamera(appCompatActivity, 0, true, -1);
     }
 
     /**
