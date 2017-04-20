@@ -46,11 +46,10 @@ public class ProductInfoViewHolder {
     private final RadioGroup radioGroupCategoryRecomm;
 
     public String getName() {
-        return name;
+        return nameEditText.getText().toString();
     }
 
     public void setName(String name) {
-        this.name = name;
         nameEditText.setText(name);
     }
 

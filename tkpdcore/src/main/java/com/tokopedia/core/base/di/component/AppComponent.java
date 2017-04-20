@@ -16,6 +16,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 
 import dagger.Component;
@@ -55,6 +56,9 @@ public interface AppComponent {
 
     @WsV4Qualifier
     Retrofit baseDomainRetrofit();
+
+    @WsV4QualifierWithErrorHander
+    Retrofit baseDomainWithErrorHandlerRetrofit();
 
     @ActivityContext
     Context contextActivity();

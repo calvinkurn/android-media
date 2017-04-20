@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.view.dialog;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,7 +16,7 @@ import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
  * @author normansyahputa on 4/13/17.
  */
 
-public class YoutubeAddUrlDialog extends AddEtalaseDialog {
+public class YoutubeAddUrlDialog extends TextPickerDialog {
 
     public static final String TAG = "YoutubeAddUrlDialog";
 
@@ -33,9 +32,9 @@ public class YoutubeAddUrlDialog extends AddEtalaseDialog {
         youtubeLinkUtils = new YoutubeVideoLinkUtils();
         youtubeLinkUtils.fillExceptionString(getActivity());
 
-        etalaseTitle.setText(R.string.youtube_add_url_title);
-        etalaseNameInputLayout.setHint(getString(R.string.url_video));
-        etalaseName.addTextChangedListener(new TextWatcher() {
+        stringPickerTitle.setText(R.string.youtube_add_url_title);
+        textInputLayout.setHint(getString(R.string.url_video));
+        textInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -47,8 +46,8 @@ public class YoutubeAddUrlDialog extends AddEtalaseDialog {
                     try {
                         youtubeLinkUtils.setYoutubeUrl(s.toString());
                     } catch (IllegalArgumentException iae) {
-                        etalaseNameInputLayout.setErrorEnabled(true);
-                        etalaseNameInputLayout.setError(iae.getMessage());
+                        textInputLayout.setErrorEnabled(true);
+                        textInputLayout.setError(iae.getMessage());
 
                         isErrorReturn = true;
                         return;
@@ -58,15 +57,15 @@ public class YoutubeAddUrlDialog extends AddEtalaseDialog {
                         String videoID = youtubeLinkUtils.saveVideoID();
                         CommonUtils.dumper(TAG + " : " + videoID);
                     } catch (IllegalArgumentException iae) {
-                        etalaseNameInputLayout.setErrorEnabled(true);
-                        etalaseNameInputLayout.setError(iae.getMessage());
+                        textInputLayout.setErrorEnabled(true);
+                        textInputLayout.setError(iae.getMessage());
 
                         isErrorReturn = true;
                         return;
                     }
 
-                    etalaseNameInputLayout.setErrorEnabled(false);
-                    etalaseNameInputLayout.setError(null);
+                    textInputLayout.setErrorEnabled(false);
+                    textInputLayout.setError(null);
                     isErrorReturn = false;
                 }
             }
@@ -79,23 +78,12 @@ public class YoutubeAddUrlDialog extends AddEtalaseDialog {
         return view;
     }
 
-    @NonNull
     @Override
-    protected AddEtalaseButtonOnClick getSaveOnClickListener() {
-        return new AddYoutubeButtonOnClick();
-    }
-
-    protected class AddYoutubeButtonOnClick extends AddEtalaseButtonOnClick {
-        @Override
-        public void onClick(View v) {
-            if (isErrorReturn)
-                return;
-
-            String youtubeLink = etalaseName.getText().toString();
-            if (listener instanceof YoutubeAddUrlDialogListener) {
-                ((YoutubeAddUrlDialogListener) listener).addYoutubeUrl(youtubeLink);
-            }
-            dismiss();
+    protected void onTextSubmited(String text) {
+        if (isErrorReturn) {
+            return;
+        } else {
+            super.onTextSubmited(text);
         }
     }
 }

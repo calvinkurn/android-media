@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -35,7 +36,8 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
         } else {
             throw new RuntimeException("Input model is missing");
         }
-        return productDraftRepository.saveDraft(inputModel);
+        return Observable.just(inputModel)
+                .flatMap(new SaveDraft());
     }
 
     private boolean isInputProductNotNull(RequestParams requestParams) {
@@ -51,5 +53,12 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
         RequestParams params = RequestParams.create();
         params.putObject(UPLOAD_PRODUCT_INPUT_MODEL, domainModel);
         return params;
+    }
+
+    private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
+        @Override
+        public Observable<Long> call(UploadProductInputDomainModel inputModel) {
+            return productDraftRepository.saveDraft(inputModel);
+        }
     }
 }

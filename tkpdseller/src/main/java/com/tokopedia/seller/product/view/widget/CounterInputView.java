@@ -146,6 +146,14 @@ public class CounterInputView extends FrameLayout {
         decimalInputView.addTextChangedListener(watcher);
     }
 
+    public String getValueText() {
+        return decimalInputView.getText();
+    }
+
+    public float getFloatValue() {
+        return decimalInputView.getFloatValue();
+    }
+
     public EditText getEditText() {
         return decimalInputView.getEditText();
     }

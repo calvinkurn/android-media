@@ -60,19 +60,19 @@ public class ImageSelectModel {
         isPrimary = primary;
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return width;
     }
 
-    public int getHeight(){
+    public int getHeight() {
         return height;
     }
 
-    public int getMinResolution(){
+    public int getMinResolution() {
         return Math.min(width, height);
     }
 
-    private void calculateWidthAndHeight(){
+    private void calculateWidthAndHeight() {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(new File(uri).getAbsolutePath(), options);

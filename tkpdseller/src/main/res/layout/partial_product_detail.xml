@@ -21,7 +21,8 @@
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_decimal_entries="@array/product_currency_entries"
         app:spinner_decimal_hint="@string/product_label_product_price"
-        app:spinner_decimal_show_counter_button="false" />
+        app:spinner_decimal_show_counter_button="false"
+        app:spinner_decimal_values="@array/product_currency_values"/>
 
     <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
         android:id="@+id/spinner_counter_input_view_weight"
@@ -29,10 +30,11 @@
         android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_decimal_entries="@array/product_weight_entries"
         app:spinner_decimal_hint="@string/product_label_product_weight"
-        app:spinner_decimal_show_counter_button="false" />
+        app:spinner_decimal_show_counter_button="false"
+        app:spinner_decimal_values="@array/product_weight_values" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
-        android:id="@+id/counter_input_view_minimum_buy"
+        android:id="@+id/counter_input_view_minimum_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy" />
@@ -42,7 +44,7 @@
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_stock_status_entries"
         app:spinner_hint="@string/product_label_status"
-        app:spinner_selection="0" />
+        app:spinner_values="@array/product_stock_status_values" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
         android:id="@+id/counter_input_view_stock_total"
@@ -65,17 +67,20 @@
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:spinner_entries="@array/product_condition_entries"
-        app:spinner_hint="@string/product_label_condition" />
+        app:spinner_hint="@string/product_label_condition"
+        app:spinner_values="@array/product_condition_values" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_insurance"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_insurance_entries"
-        app:spinner_hint="@string/product_label_insurance" />
+        app:spinner_hint="@string/product_label_insurance"
+        app:spinner_values="@array/product_insurance_values" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_free_returns"
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_free_returns_entries"
-        app:spinner_hint="@string/product_label_free_returns" />
+        app:spinner_hint="@string/product_label_free_returns"
+        app:spinner_values="@array/product_free_returns_values" />
 </LinearLayout>

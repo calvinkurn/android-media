@@ -8,6 +8,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <include layout="@layout/partial_product_score"/>
+
         <include layout="@layout/partial_product_info" />
 
         <include layout="@layout/partial_product_image" />

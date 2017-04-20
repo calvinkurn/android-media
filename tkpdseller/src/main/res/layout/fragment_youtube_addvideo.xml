@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,12 +12,10 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
+    <Button
         android:id="@+id/text_add_url_video"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/topads_detail_padding_item"
-        android:text="@string/add_url_video"
-        android:textColor="@color/arrow_up"
-        android:textSize="@dimen/fourten_text_size" />
-</LinearLayout>
+        style="@style/Button.TopAds.Submit.Green"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/add_url_video" />
+</RelativeLayout>

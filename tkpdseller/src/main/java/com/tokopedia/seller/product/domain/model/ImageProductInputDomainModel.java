@@ -13,6 +13,13 @@ public class ImageProductInputDomainModel {
     private int picId;
     private String picObj;
 
+    public ImageProductInputDomainModel() {
+        url = "";
+        description = "";
+        imagePath = "";
+        picObj = "";
+    }
+
     public String getUrl() {
         return url;
     }

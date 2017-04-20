@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.newgallery.GalleryActivity;
@@ -20,16 +20,18 @@ import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
+import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
+import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
+import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
-import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -45,17 +47,17 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView {
+public class ProductAddFragment extends BaseDaggerFragment
+        implements ProductAddView, ProductAdditionalInfoViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
-
-    private ProductInfoViewHolder productInfoViewHolder;
+    @Inject
+    public ProductAddPresenter presenter;
+    private ProductScoreViewHolder productScoreViewHolder;
     private ProductImageViewHolder productImageViewHolder;
     private ProductDetailViewHolder productDetailViewHolder;
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
-
-    @Inject
-    public ProductAddPresenter presenter;
+    private ProductInfoViewHolder productInfoViewHolder;
 
     public static ProductAddFragment createInstance() {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -80,10 +82,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productImageViewHolder = new ProductImageViewHolder(this, view);
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
+        productAdditionalInfoViewHolder.setListener(this);
         setSubmitButtonListener(view);
+        productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
         presenter.attachView(this);
-
         return view;
     }
 
@@ -104,6 +107,23 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
+//        viewModel.setProductCatalogId(productInfoViewHolder.);
+        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
+        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
+//        viewModel.setProductWholesaleList();
+        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
+        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
+        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
+        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+//        viewModel.setProductEtalaseId(productDetailViewHolder.);
+        viewModel.setProductCondition(productDetailViewHolder.getCondition());
+        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
+        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
+//        viewModel youtube
+
         return viewModel;
     }
 
@@ -119,6 +139,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 break;
             case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
                 productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+            case YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO:
+                productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
             default:
                 super.onActivityResult(requestCode, resultCode, data);
         }
@@ -135,17 +157,29 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return null;
     }
 
-    public void add(AddUrlVideoModel addUrlVideoModel) {
-        productAdditionalInfoViewHolder.addAddUrlVideModel(addUrlVideoModel);
+    @Override
+    public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
+        productScoreViewHolder.setValueProductScoreToView(dataScoringProductView);
     }
 
-    public void goToGalleryPermissionCheck(int imagePosition){
+    @Override
+    public void updateProductScoring() {
+        presenter.getProductScoring(getValueIndicatorScoreModel());
+    }
+
+    @Override
+    public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
+        ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
+        return valueIndicatorScoreModel;
+    }
+
+    public void goToGalleryPermissionCheck(int imagePosition) {
         ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(this, imagePosition);
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void goToGallery(int imagePosition){
+    public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
         GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
@@ -166,13 +200,22 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @TargetApi(16)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @TargetApi(16)
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForExternalStorage(final PermissionRequest request) {
         request.proceed();
+    }
+
+    @Override
+    public void startYoutubeVideoActivity(ArrayList<String> videoIds) {
+        Intent intent = new Intent(getActivity(), YoutubeAddVideoActivity.class);
+        if (CommonUtils.checkCollectionNotNull(videoIds))
+            intent.putStringArrayListExtra(
+                    YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
     }
 
     @Override

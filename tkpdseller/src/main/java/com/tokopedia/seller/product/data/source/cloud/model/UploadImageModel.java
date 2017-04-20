@@ -3,13 +3,17 @@ package com.tokopedia.seller.product.data.source.cloud.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by zulfikarrahman on 3/22/17.
  */
 
 public class UploadImageModel {
 
-
+    @SerializedName("message_error")
+    @Expose
+    private List<String> messageError = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -19,9 +23,17 @@ public class UploadImageModel {
     @SerializedName("server_process_time")
     @Expose
     private String serverProcessTime;
-    @SerializedName("result")
+    @SerializedName(value = "result", alternate = "data")
     @Expose
     private ResultUploadImage result;
+
+    public List<String> getMessageError() {
+        return messageError;
+    }
+
+    public void setMessageError(List<String> messageError) {
+        this.messageError = messageError;
+    }
 
     public String getStatus() {
         return status;

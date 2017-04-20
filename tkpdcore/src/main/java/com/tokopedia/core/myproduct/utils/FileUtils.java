@@ -31,12 +31,12 @@ public class FileUtils {
     }
 
 
-    public static String getFolderPathForUploadNoRand(String root){
-        return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/";
+    public static String getFolderPathForUploadNoRand(String root) {
+        return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
     }
 
-    public static String getFileNameWithoutExt(String path){
-        String fileName = path.substring(path.lastIndexOf("/")+1);
+    public static String getFileNameWithoutExt(String path) {
+        String fileName = path.substring(path.lastIndexOf("/") + 1);
         int pos = fileName.lastIndexOf(".");
         if (pos > 0) {
             fileName = fileName.substring(0, pos);
@@ -84,7 +84,7 @@ public class FileUtils {
         return null;
     }
 
-    private static boolean writeBufferToFile (byte[] buffer, String path){
+    private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {
             FileOutputStream fos = new FileOutputStream(path);
 

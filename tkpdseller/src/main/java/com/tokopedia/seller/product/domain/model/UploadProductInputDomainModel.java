@@ -8,12 +8,13 @@ import java.util.List;
 
 public class UploadProductInputDomainModel {
 
+    private long id;
     private ProductPhotoListDomainModel productPhotos;
     private List<ProductWholesaleDomainModel> productWholesaleList;
     private List<String> productVideos;
     private String productName;
     private String productDescription;
-    private String productEtalaseName;
+    private double productPrice;
     private int productChangePhoto;
     private int productCatalogId;
     private int productDepartmentId;
@@ -21,7 +22,6 @@ public class UploadProductInputDomainModel {
     private int productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
-    private int productPrice;
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
@@ -30,6 +30,14 @@ public class UploadProductInputDomainModel {
     private int poProcessType;
     private int poProcessValue;
     private int serverId;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public ProductPhotoListDomainModel getProductPhotos() {
         return productPhotos;
@@ -91,14 +99,6 @@ public class UploadProductInputDomainModel {
         this.productEtalaseId = productEtalaseId;
     }
 
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
-    }
-
     public int getProductMinOrder() {
         return productMinOrder;
     }
@@ -123,11 +123,11 @@ public class UploadProductInputDomainModel {
         this.productName = productName;
     }
 
-    public int getProductPrice() {
+    public double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(int productPrice) {
+    public void setProductPrice(double productPrice) {
         this.productPrice = productPrice;
     }
 

@@ -31,7 +31,6 @@ public class AddProductInputMapper {
         serviceModel.setProductDepartmentId(domainModel.getProductDepartmentId());
         serviceModel.setProductDescription(domainModel.getProductDescription());
         serviceModel.setProductEtalaseId(domainModel.getProductEtalaseId());
-        serviceModel.setProductEtalaseName(domainModel.getProductEtalaseName());
         serviceModel.setProductMinOrder(domainModel.getProductMinOrder());
         serviceModel.setProductMustInsurance(domainModel.getProductMustInsurance());
         serviceModel.setProductName(domainModel.getProductName());
@@ -61,7 +60,6 @@ public class AddProductInputMapper {
         AddProductSubmitInputServiceModel serviceModel = new AddProductSubmitInputServiceModel();
         serviceModel.setPostKey(domainModel.getPostKey());
         serviceModel.setFileUploaded(domainModel.getFileUploadedTo());
-        serviceModel.setProductEtalaseName(domainModel.getProductEtalaseName());
         serviceModel.setProductEtalseId(domainModel.getProductEtalaseId());
         serviceModel.setProductUploadTo(domainModel.getProductUploadTo());
         return serviceModel;

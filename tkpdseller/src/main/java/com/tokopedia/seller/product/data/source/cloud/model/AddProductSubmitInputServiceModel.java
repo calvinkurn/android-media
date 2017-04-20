@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.source.cloud.model;
 
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -10,20 +11,21 @@ public class AddProductSubmitInputServiceModel {
     public static final String FILE_UPLOADED = "file_uploaded";
     public static final String POST_KEY = "post_key";
     public static final String PRODUCT_ETALASE_ID = "product_etalase_id";
-    public static final String PRODUCT_ETALASE_NAME = "product_etalase_name";
     public static final String PRODUCT_UPLOAD_TO = "product_upload_to";
     private String fileUploaded;
     private String postKey;
-    private String productEtalaseName;
     private int productEtalseId;
     private int productUploadTo;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(FILE_UPLOADED, getFileUploaded());
-        params.put(POST_KEY, getPostKey());
+        if (StringUtils.isNotBlank(getFileUploaded())) {
+            params.put(FILE_UPLOADED, getFileUploaded());
+        }
+        if (StringUtils.isNotBlank(getPostKey())) {
+            params.put(POST_KEY, getPostKey());
+        }
         params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalseId()));
-        params.put(PRODUCT_ETALASE_NAME, getProductEtalaseName());
         params.put(PRODUCT_UPLOAD_TO, String.valueOf(getProductUploadTo()));
         return params;
     }
@@ -40,10 +42,6 @@ public class AddProductSubmitInputServiceModel {
         return productEtalseId;
     }
 
-    public String getProductEtalaseName() {
-        return productEtalaseName;
-    }
-
     public int getProductUploadTo() {
         return productUploadTo;
     }
@@ -58,10 +56,6 @@ public class AddProductSubmitInputServiceModel {
 
     public void setProductEtalseId(int productEtalseId) {
         this.productEtalseId = productEtalseId;
-    }
-
-    public void setProductEtalaseName(String productEtalaseName) {
-        this.productEtalaseName = productEtalaseName;
     }
 
     public void setProductUploadTo(int productUploadTo) {

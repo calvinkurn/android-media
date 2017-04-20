@@ -5,8 +5,8 @@ import android.content.res.TypedArray;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
@@ -26,7 +26,8 @@ public class SpinnerTextView extends FrameLayout {
     private String hintText;
     private CharSequence[] entries;
     private CharSequence[] values;
-    private int selection;
+    private int selectionIndex;
+    private AdapterView.OnItemClickListener onItemClickListener;
 
     public SpinnerTextView(Context context) {
         super(context);
@@ -48,7 +49,7 @@ public class SpinnerTextView extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerTextView);
         try {
             hintText = styledAttributes.getString(R.styleable.SpinnerTextView_spinner_hint);
-            selection = styledAttributes.getInt(R.styleable.SpinnerTextView_spinner_selection, 0);
+            selectionIndex = styledAttributes.getInt(R.styleable.SpinnerTextView_spinner_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
         } finally {
@@ -80,6 +81,15 @@ public class SpinnerTextView extends FrameLayout {
                 ((AutoCompleteTextView) view).showDropDown();
             }
         });
+        textAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(adapterView, view, pos, id);
+                }
+                selectionIndex = pos;
+            }
+        });
     }
 
     public void setHint(String hintText) {
@@ -94,22 +104,28 @@ public class SpinnerTextView extends FrameLayout {
         requestLayout();
     }
 
+    public void setValues(String[] values) {
+        this.values = values;
+        invalidate();
+        requestLayout();
+    }
+
+    public String getSpinnerValue() {
+        if (values == null) {
+            return null;
+        }
+        return values[selectionIndex].toString();
+    }
+
     private void updateEntries(String[] entries) {
         if (entries != null) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
-            textAutoComplete.setText(entries[selection]);
+            textAutoComplete.setText(entries[selectionIndex]);
         }
     }
 
-    private int getSelectionIndex() {
-        String text = textAutoComplete.getText().toString();
-        for (int i = 0; i < entries.length; i++) {
-            String entry = entries[i].toString();
-            if (entry.equalsIgnoreCase(text)) {
-                return i;
-            }
-        }
-        return -1;
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 }

@@ -10,10 +10,13 @@ import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.C
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
+import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
+import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
 import java.util.concurrent.TimeUnit;
@@ -29,6 +32,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class ProductAddPresenterImpl extends ProductAddPresenter {
     private final SaveDraftProductUseCase saveDraftProductUseCase;
+    private final ProductScoringUseCase productScoringUseCase;
     private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
@@ -41,11 +45,13 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    AddProductUseCase addProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
-                                   GetCategoryRecommUseCase getCategoryRecommUseCase) {
+                                   GetCategoryRecommUseCase getCategoryRecommUseCase,
+                                   ProductScoringUseCase productScoringUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.addProductUseCase = addProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
+        this.productScoringUseCase = productScoringUseCase;
         createCategoryRecommSubscriber();
     }
 
@@ -148,6 +154,34 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
     }
 
+    @Override
+    public void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+        RequestParams requestParams = ProductScoringUseCase.createRequestParams(valueIndicatorScoreModel);
+        productScoringUseCase.execute(requestParams, getSubscriberProductScoring());
+    }
+
+    public Subscriber<DataScoringProductView> getSubscriberProductScoring() {
+        return new Subscriber<DataScoringProductView>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                checkViewAttached();
+            }
+
+            @Override
+            public void onNext(DataScoringProductView dataScoringProductView) {
+                checkViewAttached();
+                if(dataScoringProductView != null) {
+                    getView().onSuccessGetScoringProduct(dataScoringProductView);
+                }
+            }
+        };
+    }
+
     private class SaveDraftSubscriber extends Subscriber<Long> {
         @Override
         public void onCompleted() {
@@ -156,7 +190,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            checkViewAttached();
         }
 
         @Override
@@ -174,12 +208,12 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            checkViewAttached();
         }
 
         @Override
         public void onNext(AddProductDomainModel addProductDomainModel) {
-
+            checkViewAttached();
         }
     }
 

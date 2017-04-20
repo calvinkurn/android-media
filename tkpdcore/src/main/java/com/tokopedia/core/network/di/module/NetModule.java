@@ -6,6 +6,7 @@ import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
@@ -15,6 +16,7 @@ import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 
 import dagger.Module;
@@ -34,6 +36,14 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4Retrofit(@DefaultAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @WsV4QualifierWithErrorHander
+    @ApplicationScope
+    @Provides
+    public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                        Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 

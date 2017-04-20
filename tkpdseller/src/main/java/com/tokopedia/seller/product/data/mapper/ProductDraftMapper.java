@@ -1,7 +1,18 @@
 package com.tokopedia.seller.product.data.mapper;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.seller.product.data.source.db.model.ImageProductInputDraftModel;
+import com.tokopedia.seller.product.data.source.db.model.ProductDraftModel;
+import com.tokopedia.seller.product.data.source.db.model.ProductPhotoListDraftModel;
+import com.tokopedia.seller.product.data.source.db.model.ProductWholesaleDraftModel;
+import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.functions.Func1;
 
@@ -10,15 +21,143 @@ import rx.functions.Func1;
  */
 
 public class ProductDraftMapper implements Func1<String, UploadProductInputDomainModel> {
+    private final long draftId;
+
+    public ProductDraftMapper(long draftId) {
+        this.draftId = draftId;
+    }
+
     @Override
     public UploadProductInputDomainModel call(String json) {
-        return CacheUtil.convertStringToModel(
+        ProductDraftModel draftModel = CacheUtil.convertStringToModel(
                 json,
-                UploadProductInputDomainModel.class
+                ProductDraftModel.class
         );
+
+        UploadProductInputDomainModel domainModel = mapDraftToDomain(draftModel);
+        domainModel.setId(draftId);
+        return domainModel;
+    }
+
+    private UploadProductInputDomainModel mapDraftToDomain(ProductDraftModel draftModel) {
+        UploadProductInputDomainModel domainModel = new UploadProductInputDomainModel();
+        domainModel.setProductPhotos(mapProductPhoto(draftModel.getProductPhotos()));
+        domainModel.setProductWholesaleList(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
+        domainModel.setProductVideos(draftModel.getProductVideos());
+        domainModel.setProductName(draftModel.getProductName());
+        domainModel.setProductDescription(draftModel.getProductDescription());
+        domainModel.setProductChangePhoto(draftModel.getProductChangePhoto());
+        domainModel.setProductCatalogId(draftModel.getProductCatalogId());
+        domainModel.setProductDepartmentId(draftModel.getProductDepartmentId());
+        domainModel.setProductCondition(draftModel.getProductCondition());
+        domainModel.setProductEtalaseId(draftModel.getProductEtalaseId());
+        domainModel.setProductMinOrder(draftModel.getProductMinOrder());
+        domainModel.setProductMustInsurance(draftModel.getProductMustInsurance());
+        domainModel.setProductPrice(draftModel.getProductPrice());
+        domainModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
+        domainModel.setProductReturnable(draftModel.getProductReturnable());
+        domainModel.setProductUploadTo(draftModel.getProductUploadTo());
+        domainModel.setProductWeight(draftModel.getProductWeight());
+        domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
+        domainModel.setPoProcessType(draftModel.getPoProcessType());
+        domainModel.setPoProcessValue(draftModel.getPoProcessValue());
+        domainModel.setServerId(draftModel.getServerId());
+        return domainModel;
+    }
+
+    private List<ProductWholesaleDomainModel> mapWholesaleDraftToDomain(List<ProductWholesaleDraftModel> draftModelList) {
+        List<ProductWholesaleDomainModel> domainModels = new ArrayList<>();
+        for (ProductWholesaleDraftModel draftModel : draftModelList){
+            ProductWholesaleDomainModel domainModel = new ProductWholesaleDomainModel();
+            domainModel.setPrice(draftModel.getPrice());
+            domainModel.setQtyMax(draftModel.getQtyMax());
+            domainModel.setQtyMin(draftModel.getQtyMin());
+            domainModels.add(domainModel);
+        }
+        return domainModels;
+    }
+
+    private ProductPhotoListDomainModel mapProductPhoto(ProductPhotoListDraftModel draftModel) {
+        ProductPhotoListDomainModel domainModel = new ProductPhotoListDomainModel();
+        domainModel.setProductDefaultPicture(draftModel.getProductDefaultPicture());
+        domainModel.setPhotos(mapPhotosDraftToDomain(draftModel.getPhotos()));
+        return domainModel;
+    }
+
+    private List<ImageProductInputDomainModel> mapPhotosDraftToDomain(List<ImageProductInputDraftModel> photos) {
+        List<ImageProductInputDomainModel> domainModels = new ArrayList<>();
+        for (ImageProductInputDraftModel draftModel : photos){
+            ImageProductInputDomainModel domainModel = new ImageProductInputDomainModel();
+            domainModel.setDescription(draftModel.getDescription());
+            domainModel.setImagePath(draftModel.getImagePath());
+            domainModel.setPicId(draftModel.getPicId());
+            domainModel.setPicObj(draftModel.getPicObj());
+            domainModels.add(domainModel);
+        }
+        return domainModels;
     }
 
     public static String mapFromDomain(UploadProductInputDomainModel domainModel) {
-        return CacheUtil.convertModelToString(domainModel, UploadProductInputDomainModel.class);
+        ProductDraftModel productDraft = mapDomainToDraft(domainModel);
+        return CacheUtil.convertModelToString(productDraft, new TypeToken<ProductDraftModel>() {
+        }.getType());
+    }
+
+    private static ProductDraftModel mapDomainToDraft(UploadProductInputDomainModel domainModel) {
+        ProductDraftModel draftModel = new ProductDraftModel();
+        draftModel.setProductPhotos(mapProductPhoto(domainModel.getProductPhotos()));
+        draftModel.setProductWholesaleList(mapWholesaleDomainToDraft(domainModel.getProductWholesaleList()));
+        draftModel.setProductVideos(domainModel.getProductVideos());
+        draftModel.setProductName(domainModel.getProductName());
+        draftModel.setProductDescription(domainModel.getProductDescription());
+        draftModel.setProductChangePhoto(domainModel.getProductChangePhoto());
+        draftModel.setProductCatalogId(domainModel.getProductCatalogId());
+        draftModel.setProductDepartmentId(domainModel.getProductDepartmentId());
+        draftModel.setProductCondition(domainModel.getProductCondition());
+        draftModel.setProductEtalaseId(domainModel.getProductEtalaseId());
+        draftModel.setProductMinOrder(domainModel.getProductMinOrder());
+        draftModel.setProductMustInsurance(domainModel.getProductMustInsurance());
+        draftModel.setProductPrice(domainModel.getProductPrice());
+        draftModel.setProductPriceCurrency(domainModel.getProductPriceCurrency());
+        draftModel.setProductReturnable(domainModel.getProductReturnable());
+        draftModel.setProductUploadTo(domainModel.getProductUploadTo());
+        draftModel.setProductWeight(domainModel.getProductWeight());
+        draftModel.setProductWeightUnit(domainModel.getProductWeightUnit());
+        draftModel.setPoProcessType(domainModel.getPoProcessType());
+        draftModel.setPoProcessValue(domainModel.getPoProcessValue());
+        draftModel.setServerId(domainModel.getServerId());
+        return draftModel;
+    }
+
+    private static List<ProductWholesaleDraftModel> mapWholesaleDomainToDraft(List<ProductWholesaleDomainModel> productWholesaleList) {
+        List<ProductWholesaleDraftModel> draftModels = new ArrayList<>();
+        for (ProductWholesaleDomainModel domainModel : productWholesaleList){
+            ProductWholesaleDraftModel draftModel = new ProductWholesaleDraftModel();
+            draftModel.setPrice(domainModel.getPrice());
+            draftModel.setQtyMax(domainModel.getQtyMax());
+            draftModel.setQtyMin(domainModel.getQtyMin());
+            draftModels.add(draftModel);
+        }
+        return draftModels;
+    }
+
+    private static ProductPhotoListDraftModel mapProductPhoto(ProductPhotoListDomainModel productPhotos) {
+        ProductPhotoListDraftModel draftModel = new ProductPhotoListDraftModel();
+        draftModel.setProductDefaultPicture(productPhotos.getProductDefaultPicture());
+        draftModel.setPhotos(mapPhotosDomainToDraft(productPhotos.getPhotos()));
+        return draftModel;
+    }
+
+    private static List<ImageProductInputDraftModel> mapPhotosDomainToDraft(List<ImageProductInputDomainModel> photos) {
+        List<ImageProductInputDraftModel> draftModels = new ArrayList<>();
+        for (ImageProductInputDomainModel domainModel : photos){
+            ImageProductInputDraftModel draftModel = new ImageProductInputDraftModel();
+            draftModel.setDescription(domainModel.getDescription());
+            draftModel.setImagePath(domainModel.getImagePath());
+            draftModel.setPicId(domainModel.getPicId());
+            draftModel.setPicObj(domainModel.getPicObj());
+            draftModels.add(draftModel);
+        }
+        return draftModels;
     }
 }

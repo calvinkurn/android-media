@@ -14,7 +14,7 @@ import com.tokopedia.seller.product.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.view.dialog.AddEtalaseDialog;
-import com.tokopedia.seller.product.view.dialog.AddEtalaseDialogListener;
+import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerFragment;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerView;
@@ -27,7 +27,7 @@ public class EtalasePickerActivity
         extends TActivity
         implements HasComponent<EtalasePickerComponent>,
         EtalasePickerFragmentListener,
-        AddEtalaseDialogListener {
+        TextPickerDialogListener {
 
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";
@@ -84,7 +84,7 @@ public class EtalasePickerActivity
     }
 
     @Override
-    public void addEtalase(String newEtalaseName) {
+    public void onTextPickerSubmitted(String newEtalaseName) {
         Fragment fragment = fragmentManager.findFragmentByTag(EtalasePickerFragment.TAG);
         if (fragment != null && fragment instanceof EtalasePickerView){
             ((EtalasePickerView)fragment).addNewEtalase(newEtalaseName);

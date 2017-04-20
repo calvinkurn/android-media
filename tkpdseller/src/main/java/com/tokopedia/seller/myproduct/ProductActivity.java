@@ -28,7 +28,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -38,7 +37,17 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.fragment.TwitterDialogV4;
+import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.presenter.BaseView;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.interactor.CacheInteractor;
+import com.tokopedia.core.product.interactor.CacheInteractorImpl;
+import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
@@ -48,19 +57,9 @@ import com.tokopedia.seller.myproduct.fragment.ImageChooserDialog;
 import com.tokopedia.seller.myproduct.model.SimpleTextModel;
 import com.tokopedia.seller.myproduct.presenter.AddProductView;
 import com.tokopedia.seller.myproduct.presenter.ProductView;
+import com.tokopedia.seller.myproduct.service.ProductService;
 import com.tokopedia.seller.myproduct.utils.AddProductType;
 import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.product.interactor.CacheInteractor;
-import com.tokopedia.core.product.interactor.CacheInteractorImpl;
-import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.service.ProductService;
 
 import org.parceler.Parcels;
 
@@ -96,12 +95,16 @@ public class ProductActivity extends BaseProductActivity implements
         ImageChooserDialog.SelectWithImage
 {
 
-    private static final String TAG = "ProductActivity";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-
+    public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
+    public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
+    public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
+    // currently supported type
+    public static final int ADD_PRODUCT_CATEGORY = 0;
+    public static final int ADD_PRODUCT_CHOOSE_ETALASE = 1;
+    private static final String TAG = "ProductActivity";
     Toolbar toolbar;
     FrameLayout container;
-
     String FRAGMENT = "";
     int position;
     String imagePathFromImport;
@@ -110,22 +113,11 @@ public class ProductActivity extends BaseProductActivity implements
     boolean isCopy;
     boolean isModify;
     String productId;
-    private long productDb;
-
     FragmentManager supportFragmentManager;
-    public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
-
-    public static final String ADD_PRODUCT_IMAGE_LOCATION = "ADD_PRODUCT_IMAGE_LOCATION";
-    public static final int ADD_PRODUCT_IMAGE_LOCATION_DEFAULT = 0;
-
-
-    // currently supported type
-    public static final int ADD_PRODUCT_CATEGORY = 0;
-    public static final int ADD_PRODUCT_CHOOSE_ETALASE = 1;
-
-
     // fragment productActifity, moved there because it is needed for twitter dialog
     Fragment productActifityFragment = null;
+    ImageChooserDialog imageChooserDialog;
+    private long productDb;
     private String messageTAG = "Product";
     private BroadcastReceiver addProductReceiver;
     private String imagePathCamera;
@@ -146,8 +138,121 @@ public class ProductActivity extends BaseProductActivity implements
         return mediaFile;
     }
 
+    public static String getPath(Context context, Uri contentUri) {
 
-    ImageChooserDialog imageChooserDialog;
+        String res = "";
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                res = cursor.getString(column_index);
+            }
+            cursor.close();
+        } else {
+            Log.d(TAG, "Cursor is null");
+            return contentUri.getPath();
+        }
+        return res;
+    }
+
+    public static String getRealPathFromURI(Context context, Uri uri) {
+        InputStream is = null;
+        if (uri.getAuthority() != null) {
+            try {
+                is = context.getContentResolver().openInputStream(uri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+                return writeToTempImageAndGetPathUri(context, bmp);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return getPath(inContext, Uri.parse(path));
+    }
+
+    public static void moveToAddProduct(Context context) {
+        if (!checkNotNull(context))
+            return;
+
+        Intent intent = new Intent(context, ProductActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    public static void moveToProductShare(ShareData shareData, Context context) {
+
+        context.startActivity(ProductInfoActivity.createInstance(context, shareData));
+
+        if (context instanceof AppCompatActivity) {
+            ((AppCompatActivity) context).finish();
+        }
+    }
+
+    public static void moveToProductShare(Context context) {
+
+        context.startActivity(ProductInfoActivity.createInstance(context));
+
+        if (context instanceof AppCompatActivity) {
+            ((AppCompatActivity) context).finish();
+        }
+    }
+
+    public static void showPopup(FragmentManager fm, int type
+            , String title, List<SimpleTextModel> simpleTextModels) {
+        DialogFragment dialogFragment;
+        switch (type) {
+            case ADD_PRODUCT_CATEGORY:
+            case ADD_PRODUCT_CHOOSE_ETALASE:
+                dialogFragment = ChooserDialogFragment.newInstance(type, title, simpleTextModels);
+                dialogFragment.show(fm, ChooserDialogFragment.FRAGMENT_TAG);
+                break;
+        }
+    }
+
+    public static Intent moveToEditFragment(Context context, boolean isEdit, String productId) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_edit", true);
+        bundle.putString("product_id", productId);
+        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+        Intent addProduct = new Intent(context, ProductActivity.class);
+        addProduct.putExtras(bundle);
+        return addProduct;
+    }
+
+    public static Intent moveToCopyFragment(Context context, boolean isCopy, String productId) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_copy", true);
+        bundle.putString("product_id", productId);
+        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+        Intent addProduct = new Intent(context, ProductActivity.class);
+        addProduct.putExtras(bundle);
+        return addProduct;
+    }
+
+    public static Intent moveToModifyProduct(Context context, long productDb) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("is_modify", true);
+        bundle.putLong("product_db", productDb);
+        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+        Intent addProduct = new Intent(context, ProductActivity.class);
+        addProduct.putExtras(bundle);
+        return addProduct;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -340,51 +445,6 @@ public class ProductActivity extends BaseProductActivity implements
         }
     }
 
-    public static String getPath(Context context, Uri contentUri) {
-
-        String res = "";
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
-        if (cursor != null) {
-            if (cursor.moveToFirst()) {
-                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                res = cursor.getString(column_index);
-            }
-            cursor.close();
-        } else {
-            Log.d(TAG, "Cursor is null");
-            return contentUri.getPath();
-        }
-        return res;
-    }
-
-    public static String getRealPathFromURI(Context context, Uri uri) {
-        InputStream is = null;
-        if (uri.getAuthority() != null) {
-            try {
-                is = context.getContentResolver().openInputStream(uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-                return writeToTempImageAndGetPathUri(context, bmp);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return getPath(inContext, Uri.parse(path));
-    }
-
     public String getPathFromGmail(Uri contentUri) {
         File attach = null;
         try {
@@ -561,50 +621,9 @@ public class ProductActivity extends BaseProductActivity implements
         super.onDestroy();
     }
 
-    public static void moveToAddProduct(Context context) {
-        if (!checkNotNull(context))
-            return;
-
-        Intent intent = new Intent(context, ProductActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-    }
-
     @Override
     public void showPopup(int type, String title, List<SimpleTextModel> simpleTextModels) {
         showPopup(getSupportFragmentManager(), type, title, simpleTextModels);
-    }
-
-    public static void moveToProductShare(ShareData shareData, Context context) {
-
-        context.startActivity(ProductInfoActivity.createInstance(context, shareData));
-
-        if (context instanceof AppCompatActivity) {
-            ((AppCompatActivity) context).finish();
-        }
-    }
-
-    public static void moveToProductShare(Context context) {
-
-        context.startActivity(ProductInfoActivity.createInstance(context));
-
-        if (context instanceof AppCompatActivity) {
-            ((AppCompatActivity) context).finish();
-        }
-    }
-
-    public static void showPopup(FragmentManager fm, int type
-            , String title, List<SimpleTextModel> simpleTextModels) {
-        DialogFragment dialogFragment;
-        switch (type) {
-            case ADD_PRODUCT_CATEGORY:
-            case ADD_PRODUCT_CHOOSE_ETALASE:
-                dialogFragment = ChooserDialogFragment.newInstance(type, title, simpleTextModels);
-                dialogFragment.show(fm, ChooserDialogFragment.FRAGMENT_TAG);
-                break;
-        }
     }
 
     @Override
@@ -626,36 +645,6 @@ public class ProductActivity extends BaseProductActivity implements
             }
         }
 
-    }
-
-    public static Intent moveToEditFragment(Context context, boolean isEdit, String productId) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("is_edit", true);
-        bundle.putString("product_id", productId);
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-        Intent addProduct = new Intent(context, ProductActivity.class);
-        addProduct.putExtras(bundle);
-        return addProduct;
-    }
-
-    public static Intent moveToCopyFragment(Context context, boolean isCopy, String productId) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("is_copy", true);
-        bundle.putString("product_id", productId);
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-        Intent addProduct = new Intent(context, ProductActivity.class);
-        addProduct.putExtras(bundle);
-        return addProduct;
-    }
-
-    public static Intent moveToModifyProduct(Context context, long productDb){
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("is_modify", true);
-        bundle.putLong("product_db", productDb);
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-        Intent addProduct = new Intent(context, ProductActivity.class);
-        addProduct.putExtras(bundle);
-        return addProduct;
     }
 
     @Override
@@ -774,10 +763,6 @@ public class ProductActivity extends BaseProductActivity implements
         return "";
     }
 
-    public interface OnBackPressedListener {
-        boolean onBackPressed();
-    }
-
     @Override
     public void onBackPressed() {
         List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
@@ -889,5 +874,9 @@ public class ProductActivity extends BaseProductActivity implements
         Dialog dialog = myAlertDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
+    }
+
+    public interface OnBackPressedListener {
+        boolean onBackPressed();
     }
 }
