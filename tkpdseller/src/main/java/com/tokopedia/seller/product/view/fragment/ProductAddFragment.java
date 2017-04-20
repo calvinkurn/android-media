@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,6 +59,7 @@ public class ProductAddFragment extends BaseDaggerFragment
     private ProductDetailViewHolder productDetailViewHolder;
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     private ProductInfoViewHolder productInfoViewHolder;
+    private Listener listener;
 
     public static ProductAddFragment createInstance() {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -72,6 +74,17 @@ public class ProductAddFragment extends BaseDaggerFragment
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Listener){
+            this.listener = (Listener) context;
+        } else {
+            throw new RuntimeException("Activity must implement Listener");
+        }
+
     }
 
     @Nullable
@@ -168,6 +181,11 @@ public class ProductAddFragment extends BaseDaggerFragment
         return valueIndicatorScoreModel;
     }
 
+    @Override
+    public void onSuccessStoreProductToDraft(long productId) {
+        listener.startUploadProduct(productId);
+    }
+
     public void goToGalleryPermissionCheck(int imagePosition) {
         ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(this, imagePosition);
     }
@@ -211,5 +229,9 @@ public class ProductAddFragment extends BaseDaggerFragment
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
+    }
+
+    public interface Listener {
+        void startUploadProduct(long productId);
     }
 }

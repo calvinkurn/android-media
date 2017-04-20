@@ -20,13 +20,10 @@ import rx.Subscriber;
 public class ProductAddPresenterImpl extends ProductAddPresenter {
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
-    private final AddProductUseCase addProductUseCase;
 
-    public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase, ProductScoringUseCase productScoringUseCase,
-                                   AddProductUseCase addProductUseCase) {
+    public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase, ProductScoringUseCase productScoringUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.productScoringUseCase = productScoringUseCase;
-        this.addProductUseCase = addProductUseCase;
     }
 
     @Override
@@ -77,25 +74,9 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onNext(Long productId) {
-            RequestParams requestParam = AddProductUseCase.generateUploadProductParam(productId);
-            addProductUseCase.execute(requestParam, new AddProductSubscriber());
+            checkViewAttached();
+            getView().onSuccessStoreProductToDraft(productId);
         }
     }
 
-    private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            checkViewAttached();
-        }
-
-        @Override
-        public void onNext(AddProductDomainModel addProductDomainModel) {
-            checkViewAttached();
-        }
-    }
 }

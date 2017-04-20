@@ -32,7 +32,6 @@ import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.NotificationVariable;
-import com.tokopedia.core.network.di.module.*;
 
 import java.util.List;
 
