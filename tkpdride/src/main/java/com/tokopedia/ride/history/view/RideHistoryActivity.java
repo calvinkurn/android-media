@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.ride.R;
 
 public class RideHistoryActivity extends BaseActivity {

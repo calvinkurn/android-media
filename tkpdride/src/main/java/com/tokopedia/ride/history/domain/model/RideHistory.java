@@ -1,7 +1,6 @@
 package com.tokopedia.ride.history.domain.model;
 
 import com.tokopedia.ride.common.ride.domain.model.Driver;
-import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 

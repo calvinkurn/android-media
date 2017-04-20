@@ -26,12 +26,9 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.history.view.RideHistoryContract;
 import com.tokopedia.ride.history.view.RideHistoryDetailContract;
 import com.tokopedia.ride.history.view.RideHistoryDetailPresenter;
-import com.tokopedia.ride.history.view.RideHistoryPresenter;
 
 import java.util.concurrent.TimeUnit;
 

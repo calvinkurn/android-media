@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryTypeFactory;
 
 import java.util.Collections;

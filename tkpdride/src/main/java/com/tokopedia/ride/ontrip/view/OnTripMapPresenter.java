@@ -12,6 +12,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
@@ -185,18 +186,18 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     public void proccessGetCurrentRideRequest(RideRequest result) {
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
-            case "no_drivers_available":
+            case RideStatus.NO_DRIVER_AVAILABLE:
                 getView().hideFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().clearRideConfiguration();
                 getView().showNoDriverAvailableDialog();
                 break;
-            case "processing":
+            case RideStatus.PROCESSING:
                 getView().showFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
                 break;
-            case "accepted":
+            case RideStatus.ACCEPTED:
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -205,7 +206,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
                 break;
-            case "arriving":
+            case RideStatus.ARRIVING:
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
@@ -214,7 +215,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
                 break;
-            case "in_progress":
+            case RideStatus.IN_PROGRESS:
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().hideCancelRequestButton();
@@ -223,19 +224,19 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderInProgressRequest(result);
                 getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
                 break;
-            case "driver_canceled":
+            case RideStatus.DRIVER_CANCELED:
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
-            case "rider_canceled":
+            case RideStatus.RIDER_CANCELED:
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
                 getView().clearRideConfiguration();
                 break;
-            case "completed":
+            case RideStatus.COMPLETED:
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderCompletedRequest(result);

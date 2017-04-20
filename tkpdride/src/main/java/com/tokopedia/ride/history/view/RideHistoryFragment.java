@@ -26,10 +26,8 @@ import com.tokopedia.ride.history.view.adapter.RideHistoryAdapter;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryTypeFactory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 

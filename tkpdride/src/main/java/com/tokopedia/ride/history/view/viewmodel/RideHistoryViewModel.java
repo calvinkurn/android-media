@@ -1,8 +1,5 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.ride.history.view.adapter.factory.RideHistoryAdapterTypeFactory;
