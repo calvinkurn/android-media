@@ -10,6 +10,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -142,12 +144,12 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     @Override
     public void showGetReceiptLoading() {
-
+        loaderLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideGetReceiptLoading() {
-
+        loaderLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -172,5 +174,25 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    public void showReceiptLayout() {
+        onTripCompleteLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorLayout() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.actionGetReceipt();
+            }
+        });
+    }
+
+    @Override
+    public void hideReceiptLayout() {
+        onTripCompleteLayout.setVisibility(View.GONE);
     }
 }

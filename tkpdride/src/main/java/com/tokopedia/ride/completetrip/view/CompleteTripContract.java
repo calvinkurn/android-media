@@ -20,6 +20,12 @@ public interface CompleteTripContract {
         void renderReceipt(Receipt receipt);
 
         void showMessage(String message);
+
+        void showReceiptLayout();
+
+        void showErrorLayout();
+
+        void hideReceiptLayout();
     }
 
     interface Presenter extends CustomerPresenter<View> {

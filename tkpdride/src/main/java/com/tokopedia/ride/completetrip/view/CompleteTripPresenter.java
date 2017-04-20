@@ -27,6 +27,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
     @Override
     public void actionGetReceipt() {
         getView().showGetReceiptLoading();
+        getView().hideReceiptLayout();
         getReceiptUseCase.execute(getView().getReceiptParam(), new Subscriber<Receipt>() {
             @Override
             public void onCompleted() {
@@ -39,11 +40,13 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                 if (!isViewAttached()) return;
                 getView().hideGetReceiptLoading();
                 getView().showMessage(e.getMessage());
+                getView().showErrorLayout();
             }
 
             @Override
             public void onNext(Receipt receipt) {
                 if (isViewAttached()) {
+                    getView().showReceiptLayout();
                     getView().renderReceipt(receipt);
                 }
             }
