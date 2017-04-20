@@ -28,6 +28,7 @@ public class ProductDetailFragmentImpl implements ProductDetailFragmentContract.
 
     private RequestParams getProductDetailParams() {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetProductDetailUseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
         requestParams.putString(GetProductDetailUseCase.PARAM_TROUBLE_ID, viewListener.getTroubleID());
         return requestParams;
     }

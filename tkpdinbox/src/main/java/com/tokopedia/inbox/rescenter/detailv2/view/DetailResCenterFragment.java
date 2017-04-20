@@ -203,7 +203,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         ResolutionDetailComponent resolutionDetailComponent =
                 DaggerResolutionDetailComponent.builder()
                         .appComponent(appComponent)
-                        .resolutionDetailModule(new ResolutionDetailModule(getResolutionID(), this))
+                        .resolutionDetailModule(new ResolutionDetailModule(this))
                         .build();
         resolutionDetailComponent.inject(this);
     }

@@ -26,7 +26,13 @@ public class HistoryAddressFragmentImpl implements HistoryAddressFragmentPresent
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        getHistoryAddressUseCase.execute(RequestParams.EMPTY, new HistoryAddressSubsriber(fragmentView));
+        getHistoryAddressUseCase.execute(getHistoryAddressParams(), new HistoryAddressSubsriber(fragmentView));
+    }
+
+    private RequestParams getHistoryAddressParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetHistoryAddressUseCase.ARGS_PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override

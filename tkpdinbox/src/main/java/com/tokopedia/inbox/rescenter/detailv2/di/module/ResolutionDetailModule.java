@@ -54,15 +54,13 @@ import retrofit2.Retrofit;
 @Module
 public class ResolutionDetailModule {
 
-    private String resolutionID;
     private DetailResCenterFragmentView viewListener;
 
-    public ResolutionDetailModule(String resolutionID) {
-        this.resolutionID = resolutionID;
+    public ResolutionDetailModule() {
+
     }
 
-    public ResolutionDetailModule(String resolutionID, DetailResCenterFragmentView viewListener) {
-        this.resolutionID = resolutionID;
+    public ResolutionDetailModule(DetailResCenterFragmentView viewListener) {
         this.viewListener = viewListener;
     }
 
@@ -203,7 +201,7 @@ public class ResolutionDetailModule {
     @ResolutionDetailScope
     @Provides
     ResCenterRepository provideResCenterRepository(ResCenterDataSourceFactory resCenterDataSourceFactory) {
-        return new ResCenterRepositoryImpl(resolutionID, resCenterDataSourceFactory);
+        return new ResCenterRepositoryImpl(resCenterDataSourceFactory);
     }
 
     @ResolutionDetailScope

@@ -41,7 +41,13 @@ public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPrese
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
         fragmentView.showInpuNewShippingAwb(false);
-        getHistoryAwbUseCase.execute(RequestParams.EMPTY, new HistoryAwbSubsriber(fragmentView));
+        getHistoryAwbUseCase.execute(getHistoryAwbParams(), new HistoryAwbSubsriber(fragmentView));
+    }
+
+    private RequestParams getHistoryAwbParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetHistoryAwbUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override

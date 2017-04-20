@@ -92,7 +92,7 @@ public class ResCenterDiscussionActivity extends BasePresenterActivity
     public ResolutionDetailComponent getComponent() {
         return DaggerResolutionDetailComponent.builder()
                 .appComponent(getApplicationComponent())
-                .resolutionDetailModule(new ResolutionDetailModule(resolutionId))
+                .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
 }

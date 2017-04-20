@@ -15,6 +15,8 @@ import rx.Observable;
 
 public class GetResCenterDiscussionUseCase extends UseCase<DiscussionModel> {
 
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
+
     private final ResCenterRepository resCenterRepository;
 
     public GetResCenterDiscussionUseCase(ThreadExecutor jobExecutor,
@@ -25,6 +27,7 @@ public class GetResCenterDiscussionUseCase extends UseCase<DiscussionModel> {
 
     @Override
     public Observable<DiscussionModel> createObservable(RequestParams requestParams) {
-        return resCenterRepository.getConversation(requestParams.getParameters());
+        String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
+        return resCenterRepository.getConversation(resolutionID, requestParams.getParameters());
     }
 }

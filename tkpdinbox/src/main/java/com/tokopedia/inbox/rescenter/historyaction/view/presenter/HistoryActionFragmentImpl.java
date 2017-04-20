@@ -26,7 +26,13 @@ public class HistoryActionFragmentImpl implements HistoryActionFragmentPresenter
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
-        getHistoryActionUseCase.execute(RequestParams.EMPTY, new HistoryActionSubsriber(fragmentView));
+        getHistoryActionUseCase.execute(getHistoryActionParams(), new HistoryActionSubsriber(fragmentView));
+    }
+
+    private RequestParams getHistoryActionParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetHistoryActionUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return requestParams;
     }
 
     @Override

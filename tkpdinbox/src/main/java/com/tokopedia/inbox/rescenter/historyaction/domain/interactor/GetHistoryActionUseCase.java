@@ -15,6 +15,8 @@ import rx.Observable;
 
 public class GetHistoryActionUseCase extends UseCase<HistoryActionData> {
 
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
+
     private final ResCenterRepository resCenterRepository;
 
     public GetHistoryActionUseCase(ThreadExecutor jobExecutor,
@@ -26,6 +28,7 @@ public class GetHistoryActionUseCase extends UseCase<HistoryActionData> {
 
     @Override
     public Observable<HistoryActionData> createObservable(RequestParams requestParams) {
-        return resCenterRepository.getHistoryAction(requestParams.getParameters());
+        String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
+        return resCenterRepository.getHistoryAction(resolutionID, requestParams.getParameters());
     }
 }

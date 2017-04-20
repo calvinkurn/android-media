@@ -1,11 +1,9 @@
 package com.tokopedia.inbox.rescenter.historyawb.domain.interactor;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 
@@ -17,6 +15,8 @@ import rx.Observable;
 
 public class GetHistoryAwbUseCase extends UseCase<HistoryAwbData> {
 
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
+
     private final ResCenterRepository repository;
 
     public GetHistoryAwbUseCase(ThreadExecutor jobExecutor, PostExecutionThread uiThread, ResCenterRepository resCenterRepository) {
@@ -26,6 +26,7 @@ public class GetHistoryAwbUseCase extends UseCase<HistoryAwbData> {
 
     @Override
     public Observable<HistoryAwbData> createObservable(RequestParams requestParams) {
-        return repository.getHistoryAwb(requestParams.getParameters());
+        String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
+        return repository.getHistoryAwb(resolutionID, requestParams.getParameters());
     }
 }

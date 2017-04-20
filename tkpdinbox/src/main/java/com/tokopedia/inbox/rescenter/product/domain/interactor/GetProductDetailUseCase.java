@@ -15,7 +15,9 @@ import rx.Observable;
 
 public class GetProductDetailUseCase extends UseCase<ProductDetailData> {
 
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_TROUBLE_ID = "trouble_id";
+
     private final ResCenterRepository resCenterRepository;
 
     public GetProductDetailUseCase(ThreadExecutor threadExecutor,
@@ -27,9 +29,8 @@ public class GetProductDetailUseCase extends UseCase<ProductDetailData> {
 
     @Override
     public Observable<ProductDetailData> createObservable(RequestParams requestParams) {
-        return resCenterRepository.getDetailProduct(
-                requestParams.getString(PARAM_TROUBLE_ID, ""),
-                requestParams.getParameters()
-        );
+        String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
+        String troubleID = requestParams.getString(PARAM_TROUBLE_ID, "");
+        return resCenterRepository.getDetailProduct(resolutionID, troubleID, requestParams.getParameters());
     }
 }

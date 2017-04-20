@@ -70,9 +70,15 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     public void initData() {
         viewListener.showLoading();
         viewListener.setViewEnabled(false);
-        getDiscussionUseCase.execute(RequestParams.EMPTY,
+        getDiscussionUseCase.execute(getDiscussionParams(),
                 new GetDiscussionSubscriber(viewListener));
 
+    }
+
+    private RequestParams getDiscussionParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetResCenterDiscussionUseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
+        return params;
     }
 
     @Override
@@ -111,6 +117,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private RequestParams getLoadMoreParam() {
         RequestParams params = RequestParams.create();
         params.putString(LoadMoreDiscussionUseCase.PARAM_LAST_CONVERSATION_ID, viewListener.getLastConversationId());
+        params.putString(LoadMoreDiscussionUseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
         return params;
     }
 

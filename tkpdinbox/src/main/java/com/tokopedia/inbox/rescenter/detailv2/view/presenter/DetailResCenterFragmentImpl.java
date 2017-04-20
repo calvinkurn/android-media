@@ -65,7 +65,10 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     }
 
     private RequestParams getInitResCenterDetailParam() {
-        return RequestParams.EMPTY;
+        String resolutionID = fragmentView.getResolutionID();
+        RequestParams params = RequestParams.create();
+        params.putString(GetResCenterDetailUseCase.PARAM_RESOLUTION_ID, resolutionID);
+        return params;
     }
 
     @Override

@@ -1,11 +1,9 @@
 package com.tokopedia.inbox.rescenter.discussion.domain.interactor;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
 
@@ -17,7 +15,9 @@ import rx.Observable;
 
 public class LoadMoreDiscussionUseCase extends UseCase<LoadMoreModel> {
 
+    public static final String PARAM_RESOLUTION_ID = "resolution_id";
     public static final String PARAM_LAST_CONVERSATION_ID = "resConvId";
+
     private final ResCenterRepository resCenterRepository;
 
     public LoadMoreDiscussionUseCase(ThreadExecutor jobExecutor,
@@ -28,8 +28,8 @@ public class LoadMoreDiscussionUseCase extends UseCase<LoadMoreModel> {
 
     @Override
     public Observable<LoadMoreModel> createObservable(RequestParams requestParams) {
-        return resCenterRepository.getConversationMore(
-                requestParams.getParameters());
+        String resolutionID = requestParams.getString(PARAM_RESOLUTION_ID, "");
+        return resCenterRepository.getConversationMore(resolutionID, requestParams.getParameters());
     }
 
 }

@@ -126,7 +126,7 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
     public ResolutionDetailComponent getComponent() {
         return DaggerResolutionDetailComponent.builder()
                 .appComponent(getApplicationComponent())
-                .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+                .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
 }

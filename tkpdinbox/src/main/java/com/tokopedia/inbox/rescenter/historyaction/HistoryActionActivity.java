@@ -113,7 +113,7 @@ public class HistoryActionActivity extends BasePresenterActivity<HistoryAction>
     public ResolutionDetailComponent getComponent() {
         return DaggerResolutionDetailComponent.builder()
                 .appComponent(getApplicationComponent())
-                .resolutionDetailModule(new ResolutionDetailModule(getResolutionID()))
+                .resolutionDetailModule(new ResolutionDetailModule())
                 .build();
     }
 }
