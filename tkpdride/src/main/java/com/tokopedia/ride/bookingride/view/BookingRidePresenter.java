@@ -11,10 +11,8 @@ import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationListener;
@@ -35,8 +33,6 @@ import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.Product;
-import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
-import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -235,7 +231,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
                     @Override
                     public void onNext(String sourceAddress) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             PlacePassViewModel placeVm = new PlacePassViewModel();
                             placeVm.setAddress(sourceAddress);
                             placeVm.setLatitude(mCurrentLocation.getLatitude());
@@ -343,7 +339,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
 
             @Override
             public void onNext(List<String> strings) {
-                if (isViewAttached() && !isUnsubscribed()){
+                if (isViewAttached() && !isUnsubscribed()) {
                     List<List<LatLng>> routes = new ArrayList<>();
                     for (String route : strings) {
                         routes.add(PolyUtil.decode(route));

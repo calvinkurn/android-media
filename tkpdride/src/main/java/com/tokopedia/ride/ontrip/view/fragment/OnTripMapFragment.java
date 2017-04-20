@@ -885,6 +885,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @OnClick(R2.id.block_translucent_view)
     public void actionBlockTranslucentClicked() {
         hideContactPanel();
+        hideCancelPanel();
     }
 
     private void openCallIntent() {

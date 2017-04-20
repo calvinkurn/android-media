@@ -108,6 +108,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         presenter.attachView(this);
         presenter.initialize();
         setViewListener();
+        updateSeatCountUi();
     }
 
     private void setViewListener() {
@@ -178,7 +179,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
         requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
         requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(confirmBookingViewModel.getProductId()));
-        requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
+
+        //add seat count for Uber Pool only
+        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
+        }
         return requestParams;
     }
 
@@ -209,12 +214,17 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel.setPrice(price);
         priceTextView.setText(display);
 
-        seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
+        updateSeatCountUi();
+    }
+
+    private void updateSeatCountUi() {
         if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
             seatsLabelTextView.setText(getString(R.string.confirm_booking_seats_needed));
             seatArrowDownImageView.setVisibility(View.VISIBLE);
             selectSeatContainer.setEnabled(true);
         } else {
+            seatsTextView.setText(String.valueOf(confirmBookingViewModel.getMaxCapacity()));
             seatsLabelTextView.setText(R.string.confirm_booking_capacity);
             seatArrowDownImageView.setVisibility(View.GONE);
             selectSeatContainer.setEnabled(false);

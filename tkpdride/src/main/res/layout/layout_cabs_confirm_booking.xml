@@ -116,7 +116,7 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/rounded_filled_theme_bttn"
         android:gravity="center"
-        android:text="@string/confirm_booking_btn_confirm"
+        android:text="@string/btn_request"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="15sp" />
