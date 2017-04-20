@@ -37,4 +37,6 @@ public interface BookingRideRepository {
     Observable<String> getRideMap(String requestId, TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters);
+
+    Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters);
 }

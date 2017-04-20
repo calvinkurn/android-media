@@ -4,14 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.ride.R;
-
-import net.hockeyapp.android.metrics.model.Base;
 
 public class RideHistoryDetailActivity extends BaseActivity {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
