@@ -77,11 +77,13 @@
                 android:textSize="14sp" />
 
             <ImageView
+                android:id="@+id/iv_seat_arrow_down"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:tint="#616161"
+                android:visibility="gone"
                 app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
         </LinearLayout>

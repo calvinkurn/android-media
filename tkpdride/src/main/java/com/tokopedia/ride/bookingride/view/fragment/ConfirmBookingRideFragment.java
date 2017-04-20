@@ -64,6 +64,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashLabelTextView;
     @BindView(R2.id.confirm_progress_bar)
     ProgressBar progressBar;
+    @BindView(R2.id.iv_seat_arrow_down)
+    ImageView seatArrowDownImageView;
 
     @BindView(R2.id.toko_cash_activation_layout)
     LinearLayout tokoCashActivationLayout;
@@ -209,8 +211,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         seatsTextView.setText(String.valueOf(confirmBookingViewModel.getSeatCount()));
         if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
             seatsLabelTextView.setText(getString(R.string.confirm_booking_seats_needed));
+            seatArrowDownImageView.setVisibility(View.VISIBLE);
         } else {
             seatsLabelTextView.setText(R.string.confirm_booking_capacity);
+            seatArrowDownImageView.setVisibility(View.GONE);
         }
     }
 
