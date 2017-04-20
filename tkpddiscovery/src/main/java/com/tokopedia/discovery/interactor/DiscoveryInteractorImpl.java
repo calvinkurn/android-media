@@ -12,6 +12,7 @@ import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
@@ -21,21 +22,27 @@ import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
+import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -53,6 +60,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
+    private MojitoService mojitoService;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -68,6 +76,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        mojitoService = new MojitoService();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -277,6 +286,33 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                     }
                 })
         );
+    }
+
+    @Override
+    public Observable<Map<String, Boolean>> checkProductsInWishlist(String userId,
+                                                       List<ProductItem> productItemList) {
+
+        StringBuilder productIds = new StringBuilder();
+
+        for (ProductItem item : productItemList) {
+            productIds.append(item.getId());
+            productIds.append(",");
+        }
+
+        productIds.deleteCharAt(productIds.length() - 1);
+
+        return mojitoService.getApi().checkWishlist(userId, productIds.toString())
+                .map(new Func1<Response<WishlistCheckResult>, Map<String, Boolean>>() {
+                    @Override
+                    public Map<String, Boolean> call(Response<WishlistCheckResult> wishlistCheckResultResponse) {
+                        Map<String, Boolean> resultMap = new HashMap<>();
+                        List<String> idList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
+                        for (String id : idList) {
+                            resultMap.put(id, true);
+                        }
+                        return resultMap;
+                    }
+                });
     }
 
     @Override

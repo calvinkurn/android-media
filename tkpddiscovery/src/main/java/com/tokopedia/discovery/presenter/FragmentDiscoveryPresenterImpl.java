@@ -14,6 +14,7 @@ import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
@@ -32,6 +33,11 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -250,12 +256,67 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+    public void processBrowseProduct(final Long totalProduct,
+                                     final List<ProductItem> productItems,
+                                     final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, Boolean> checkResultMap) {
+                        for (ProductItem item : productItems) {
+                            if (checkResultMap.get(item.getId()) != null) {
+                                item.setProductAlreadyWishlist(true);
+                            } else {
+                                item.setProductAlreadyWishlist(false);
+                            }
+                        }
+                        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+                    }
+                });
     }
 
-    public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+    public void processBrowseProductLoadMore(final List<ProductItem> productItems,
+                                             final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, Boolean> checkResultMap) {
+                        for (ProductItem item : productItems) {
+                            if (checkResultMap.get(item.getId()) != null) {
+                                item.setProductAlreadyWishlist(true);
+                            } else {
+                                item.setProductAlreadyWishlist(false);
+                            }
+                        }
+                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+                    }
+                });
     }
 
     @Override

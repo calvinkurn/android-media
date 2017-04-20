@@ -883,6 +883,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         TextView location;
         @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
+        @BindView(R2.id.wishlist_button)
+        ImageView wishlistButton;
 
         private Context context;
         private String source = "";
@@ -944,6 +946,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     }
                     labelContainer.addView(view);
                 }
+            }
+            if (data.productAlreadyWishlist) {
+                wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
+            } else {
+                wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
             }
         }
 

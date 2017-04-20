@@ -78,6 +78,8 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
     @SerializedName("free_return")
     public String free_return;
 
+    public boolean productAlreadyWishlist;
+
     @Transient
     Spanned spannedName;
 
@@ -263,6 +265,14 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.free_return = free_return;
     }
 
+    public boolean isProductAlreadyWishlist() {
+        return productAlreadyWishlist;
+    }
+
+    public void setProductAlreadyWishlist(boolean productAlreadyWishlist) {
+        this.productAlreadyWishlist = productAlreadyWishlist;
+    }
+
     public ProductItem() {
         setType(PRODUCT_ITEM_TYPE);
     }
@@ -353,6 +363,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         dest.writeTypedList(this.badges);
         dest.writeString(this.shop_location);
         dest.writeString(this.free_return);
+        dest.writeValue(this.productAlreadyWishlist);
         dest.writeParcelable((Parcelable) this.spannedName, flags);
         dest.writeParcelable((Parcelable) this.spannedShop, flags);
         dest.writeValue(this.isWishlist);
@@ -379,6 +390,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
         this.badges = in.createTypedArrayList(Badge.CREATOR);
         this.shop_location = in.readString();
         this.free_return = in.readString();
+        this.productAlreadyWishlist = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.spannedName = in.readParcelable(Spanned.class.getClassLoader());
         this.spannedShop = in.readParcelable(Spanned.class.getClassLoader());
         this.isWishlist = (Boolean) in.readValue(Boolean.class.getClassLoader());

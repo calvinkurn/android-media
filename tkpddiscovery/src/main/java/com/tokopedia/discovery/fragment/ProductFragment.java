@@ -31,6 +31,7 @@ import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -195,6 +196,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public BrowseProductModel getDataModel() {
         return ((FragmentDiscoveryPresenterImpl) presenter).getBrowseProductModel();
+    }
+
+    @Override
+    public String getUserId() {
+        return SessionHandler.getLoginID(getActivity());
     }
 
     @Override

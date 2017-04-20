@@ -546,6 +546,7 @@ public class TkpdBaseURL {
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
         public static final String PATH_USER_WISHLIST = "/users";
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
+        public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
     }
 
 
