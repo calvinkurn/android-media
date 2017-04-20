@@ -14,7 +14,7 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/10/17.
  */
 
-public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnType>{
+public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnType> {
     public static final String UPLOAD_PRODUCT_ID = "UPLOAD_PRODUCT_ID";
     public static final int UNSELECTED_PRODUCT_ID = -1;
     private final ProductDraftRepository productDraftRepository;
@@ -33,23 +33,21 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(getImageProductObservable())
+                .flatMap(getAddImageProductObservable())
                 .flatMap(getUploadProductObservable());
     }
 
-    public static RequestParams generateUploadProductParam(long productId){
+    public static RequestParams generateUploadProductParam(long productId) {
         RequestParams params = RequestParams.create();
         params.putLong(UPLOAD_PRODUCT_ID, productId);
         return params;
     }
 
-    protected abstract
-    Func1<UploadProductInputDomainModel, Observable<ReturnType>>
+    protected abstract Func1<UploadProductInputDomainModel, Observable<ReturnType>>
     getUploadProductObservable();
 
-    protected abstract
-    Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>>
-    getImageProductObservable();
+    protected abstract Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>>
+    getAddImageProductObservable();
 
     private class GetProductModelObservable implements Func1<Long, Observable<UploadProductInputDomainModel>> {
         @Override

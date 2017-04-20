@@ -23,10 +23,6 @@ public interface UploadProductApi {
     Observable<Response<AddProductValidationServiceModel>> addProductValidation(@FieldMap TKPDMapParam<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Upload.PATH_UPLOAD_IMAGE_HELPER + TkpdBaseURL.Upload.PATH_ADD_PRODUCT_PICTURE)
-    Observable<Response<AddProductPictureServiceModel>> addProductPicture(@FieldMap TKPDMapParam<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_ADD_PRODUCT_SUBMIT)
     Observable<Response<AddProductSubmitServiceModel>> addProductSubmit(@FieldMap TKPDMapParam<String, String> stringStringTKPDMapParam);
 }

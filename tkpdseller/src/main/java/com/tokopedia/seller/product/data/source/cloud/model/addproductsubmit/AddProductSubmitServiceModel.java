@@ -15,7 +15,7 @@ public class AddProductSubmitServiceModel {
     @SerializedName("server_process_time")
     @Expose
     private String serverProcessTime;
-    @SerializedName("result")
+    @SerializedName("data")
     @Expose
     private AddProductSubmitResult addProductSubmitResult;
 

@@ -1,7 +1,8 @@
 package com.tokopedia.seller.product.domain;
 
-import com.tokopedia.seller.product.data.source.cloud.model.ResultUploadImage;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
+import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
 
 import rx.Observable;
 
@@ -10,5 +11,7 @@ import rx.Observable;
  */
 
 public interface ImageProductUploadRepository {
-    Observable<ImageProductInputDomainModel> uploadImageProduct(String uri, String productId);
+    Observable<ImageProcessDomainModel> uploadImageProduct(String hostUrl, int serverId, String imagePath, int productId);
+
+    Observable<AddProductPictureDomainModel> addProductPicture(AddProductPictureInputDomainModel addProductPictureInputDomainModel);
 }

@@ -11,12 +11,14 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRecommRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.UploadProductRepositoryImpl;
+import com.tokopedia.seller.product.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.data.source.CatalogDataSource;
 import com.tokopedia.seller.product.data.source.CategoryRecommDataSource;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
@@ -29,6 +31,7 @@ import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.CatalogRepository;
 import com.tokopedia.seller.product.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
@@ -69,6 +72,12 @@ public class ProductAddModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
         return new ProductDraftRepositoryImpl(productDraftDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    GenerateHostRepository provideGenerateHostRepository(GenerateHostDataSource generateHostDataSource){
+        return new GenerateHostRepositoryImpl(generateHostDataSource);
     }
 
     @ProductAddScope
