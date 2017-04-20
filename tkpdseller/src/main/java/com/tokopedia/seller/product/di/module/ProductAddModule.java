@@ -9,10 +9,12 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.UploadProductRepositoryImpl;
+import com.tokopedia.seller.product.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
@@ -21,6 +23,7 @@ import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCach
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
+import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
@@ -53,6 +56,12 @@ public class ProductAddModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
         return new ProductDraftRepositoryImpl(productDraftDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    GenerateHostRepository provideGenerateHostRepository(GenerateHostDataSource generateHostDataSource){
+        return new GenerateHostRepositoryImpl(generateHostDataSource);
     }
 
     @ProductAddScope

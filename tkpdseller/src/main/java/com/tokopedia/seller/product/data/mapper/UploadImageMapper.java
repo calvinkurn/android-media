@@ -17,7 +17,6 @@ public class UploadImageMapper implements Func1<ResultUploadImage, ImageProcessD
         ImageProcessDomainModel domainModel = new ImageProcessDomainModel();
         domainModel.setUrl(resultUploadImage.getFilePath());
         domainModel.setPicObj(resultUploadImage.getPicObj());
-        domainModel.setServerId(resultUploadImage.getServerId());
         return domainModel;
     }
 }

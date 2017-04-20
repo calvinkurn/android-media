@@ -20,6 +20,7 @@ public class AddProductDomainMapper {
         AddProductPictureInputDomainModel domainModel = new AddProductPictureInputDomainModel();
         domainModel.setProductPhotos(uploadProductInputDomainModel.getProductPhotos());
         domainModel.setServerId(uploadProductInputDomainModel.getServerId());
+        domainModel.setHostUrl(uploadProductInputDomainModel.getHostUrl());
         return domainModel;
     }
 

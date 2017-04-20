@@ -53,6 +53,7 @@ public class AddProductInputMapper {
         AddProductPictureInputServiceModel serviceModel = new AddProductPictureInputServiceModel();
         serviceModel.setProductPhoto(mapPhotoModel(domainModel.getProductPhotos()));
         serviceModel.setServerId(domainModel.getServerId());
+        serviceModel.setHostUrl(domainModel.getHostUrl());
         return serviceModel;
     }
 

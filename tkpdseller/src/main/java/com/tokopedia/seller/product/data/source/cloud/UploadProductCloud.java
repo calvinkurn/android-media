@@ -19,7 +19,6 @@ import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
 
-import retrofit2.Retrofit;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -30,13 +29,11 @@ import rx.functions.Func1;
 public class UploadProductCloud {
     private final UploadProductApi api;
     private final Context context;
-    private final GenerateHostDataSourceCloud generateHost;
 
     @Inject
-    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context, GenerateHostDataSourceCloud generateHost) {
+    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context, GenerateHostCloud generateHost) {
         this.api = api;
         this.context = context;
-        this.generateHost = generateHost;
     }
 
     public Observable<AddProductValidationServiceModel> addProductValidation(AddProductValidationInputServiceModel serviceModel) {
@@ -44,30 +41,8 @@ public class UploadProductCloud {
                 .map(new GetData<AddProductValidationServiceModel>());
     }
 
-    public Observable<AddProductPictureServiceModel> addProductPicture(AddProductPictureInputServiceModel serviceModel) {
-        return generateHost.generateHost()
-                .flatMap(new AddProductPicture(serviceModel));
-    }
-
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
         return api.addProductSubmit(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
                 .map(new GetData<AddProductSubmitServiceModel>());
-    }
-
-    private class AddProductPicture implements Func1<GenerateHost, Observable<AddProductPictureServiceModel>> {
-        private final AddProductPictureInputServiceModel serviceModel;
-
-        public AddProductPicture(AddProductPictureInputServiceModel serviceModel) {
-            this.serviceModel = serviceModel;
-        }
-
-        @Override
-        public Observable<AddProductPictureServiceModel> call(GenerateHost generateHost) {
-            String uploadHost = ProductNetworkConstant.getUploadImageUrl(generateHost.getUploadHost());
-            return RetrofitUtils.createRetrofit(uploadHost)
-                    .create(ImageUploadApi.class)
-                    .addProductPicture(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
-                    .map(new GetData<AddProductPictureServiceModel>());
-        }
     }
 }

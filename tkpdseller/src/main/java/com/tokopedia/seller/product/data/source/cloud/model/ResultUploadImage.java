@@ -10,14 +10,13 @@ public class ResultUploadImage {
     private String filePath;
     @SerializedName("pic_id")
     @Expose
-    private int picId;
+    private String picId;
     @SerializedName("pic_obj")
     @Expose
     private String picObj;
     @SerializedName("file_th")
     @Expose
     private String fileTh;
-    private int serverId;
 
     public String getFileTh() {
         return fileTh;
@@ -35,11 +34,11 @@ public class ResultUploadImage {
         this.filePath = filePath;
     }
 
-    public int getPicId() {
+    public String getPicId() {
         return picId;
     }
 
-    public void setPicId(int picId) {
+    public void setPicId(String picId) {
         this.picId = picId;
     }
 
@@ -49,13 +48,5 @@ public class ResultUploadImage {
 
     public void setPicObj(String picObj) {
         this.picObj = picObj;
-    }
-
-    public int getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(int serverId) {
-        this.serverId = serverId;
     }
 }

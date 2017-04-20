@@ -14,6 +14,7 @@ public class AddProductPictureInputServiceModel {
     public static final String DELIMITER = "~";
     private ProductPhotoListServiceModel productPhoto;
     private int serverId;
+    private String hostUrl;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
@@ -57,5 +58,13 @@ public class AddProductPictureInputServiceModel {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 }

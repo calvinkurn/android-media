@@ -12,6 +12,7 @@ public class ImageProductInputDomainModel {
     private String imagePath;
     private String picObj;
     private int picId;
+    private int productId;
 
     public ImageProductInputDomainModel() {
         url = "";
@@ -58,5 +59,9 @@ public class ImageProductInputDomainModel {
 
     public String getPicObj() {
         return picObj;
+    }
+
+    public int getProductId() {
+        return productId;
     }
 }

@@ -6,7 +6,6 @@ package com.tokopedia.seller.product.domain.model;
 
 public class ImageProcessDomainModel {
     private int picId;
-    private int serverId;
     private String url;
     private String picObj;
 
@@ -22,16 +21,8 @@ public class ImageProcessDomainModel {
         this.picObj = picObj;
     }
 
-    public void setServerId(int serverId) {
-        this.serverId = serverId;
-    }
-
     public int getPicId() {
         return picId;
-    }
-
-    public int getServerId() {
-        return serverId;
     }
 
     public String getUrl() {

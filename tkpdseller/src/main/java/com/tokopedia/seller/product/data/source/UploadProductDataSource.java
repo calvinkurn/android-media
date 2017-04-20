@@ -30,10 +30,6 @@ public class UploadProductDataSource {
         return uploadProductCloud.addProductValidation(serviceModel);
     }
 
-    public Observable<AddProductPictureServiceModel> addProductPicture(AddProductPictureInputServiceModel serviceModel) {
-        return uploadProductCloud.addProductPicture(serviceModel);
-    }
-
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
         return uploadProductCloud.addProductSubmit(serviceModel);
     }

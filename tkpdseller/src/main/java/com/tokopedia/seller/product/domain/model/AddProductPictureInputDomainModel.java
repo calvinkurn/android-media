@@ -10,6 +10,7 @@ public class AddProductPictureInputDomainModel {
     private String duplicate;
     private int serverId;
     private ProductPhotoListDomainModel productPhotos;
+    private String hostUrl;
 
     public String getDuplicate() {
         return duplicate;
@@ -33,5 +34,13 @@ public class AddProductPictureInputDomainModel {
 
     public void setProductPhotos(ProductPhotoListDomainModel productPhotos) {
         this.productPhotos = productPhotos;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 }
