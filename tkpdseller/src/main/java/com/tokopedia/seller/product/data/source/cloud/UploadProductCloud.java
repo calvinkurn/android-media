@@ -4,8 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
+import com.tokopedia.seller.product.constant.ProductNetworkConstant;
+import com.tokopedia.seller.product.data.source.cloud.api.ImageUploadApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductpicture.AddProductPictureServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
@@ -16,6 +20,7 @@ import com.tokopedia.seller.shopscore.data.common.GetData;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 4/11/17.
@@ -26,7 +31,7 @@ public class UploadProductCloud {
     private final Context context;
 
     @Inject
-    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context) {
+    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context, GenerateHostCloud generateHost) {
         this.api = api;
         this.context = context;
     }
@@ -34,11 +39,6 @@ public class UploadProductCloud {
     public Observable<AddProductValidationServiceModel> addProductValidation(AddProductValidationInputServiceModel serviceModel) {
         return api.addProductValidation(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
                 .map(new GetData<AddProductValidationServiceModel>());
-    }
-
-    public Observable<AddProductPictureServiceModel> addProductPicture(AddProductPictureInputServiceModel serviceModel) {
-        return api.addProductPicture(AuthUtil.generateParamsNetwork(context,serviceModel.generateMapParam()))
-                .map(new GetData<AddProductPictureServiceModel>());
     }
 
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {

@@ -4,13 +4,13 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 /**
  * @author sebastianuskh on 4/11/17.
  */
 
-public class AddProductValidationInputServiceModel {
+public class AddProductValidationInputServiceModel extends AddProductPictureInputServiceModel {
     public static final String PRODUCT_CATALOG_ID = "product_catalog_id";
     public static final String PRODUCT_CONDITION = "product_condition";
     public static final String PRODUCT_DEPARTMENT_ID = "product_department_id";
@@ -19,9 +19,6 @@ public class AddProductValidationInputServiceModel {
     public static final String PRODUCT_MIN_ORDER = "product_min_order";
     public static final String PRODUCT_MUST_INSURANCE = "product_must_insurance";
     public static final String PRODUCT_NAME = "product_name";
-    public static final String PRODUCT_PHOTO = "product_photo";
-    public static final String PRODUCT_PHOTO_DEFAULT = "product_photo_default";
-    public static final String PRODUCT_PHOTO_DESC = "product_photo_desc";
     public static final String PRODUCT_PRICE = "product_price";
     public static final String PRODUCT_PRICE_CURRENCY = "product_price_currency";
     public static final String PRODUCT_RETURNABLE = "product_returnable";
@@ -32,13 +29,10 @@ public class AddProductValidationInputServiceModel {
     public static final String PO_PROCESS_VALUE = "po_process_value";
     public static final String PRODUCT_VIDEO_SIZE = "product_video_size";
     public static final String PRODUCT_VIDEO_ = "product_video_";
-    public static final String SERVER_ID = "server_id";
     public static final String PRD_PRC_ = "prd_prc_";
     public static final String QTY_MAX_ = "qty_max_";
     public static final String QTY_MIN_ = "qty_min_";
-    public static final String DELIMITER = "~";
 
-    private ProductPhotoListServiceModel productPhotos;
     private List<ProductWholesaleServiceModel> productWholesale;
     private List<String> productVideo;
     private String productDescription;
@@ -57,7 +51,6 @@ public class AddProductValidationInputServiceModel {
     private int productWeightUnit;
     private int poProcessType;
     private int poProcessValue;
-    private int serverId;
 
     public TKPDMapParam<String, String> generateMapParam() {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
@@ -69,7 +62,7 @@ public class AddProductValidationInputServiceModel {
         }
         params.put(PRODUCT_DEPARTMENT_ID, String.valueOf(getProductDepartmentId()));
         params.put(PRODUCT_CATALOG_ID, String.valueOf(getProductCatalogId()));
-        params.put(PRODUCT_PRICE, String.valueOf(getProductPrice()));
+        params.put(PRODUCT_PRICE, formatDecimal(getProductPrice()));
         params.put(PRODUCT_CONDITION, String.valueOf(getProductCondition()));
         params.put(PRODUCT_ETALASE_ID, String.valueOf(getProductEtalaseId()));
         params.put(PRODUCT_MIN_ORDER, String.valueOf(getProductMinOrder()));
@@ -91,36 +84,11 @@ public class AddProductValidationInputServiceModel {
     public TKPDMapParam<String, String> getWholesaleParams() {
         TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
         for (int i = 0; i < productWholesale.size(); i++) {
-            wholesaleParams.put(PRD_PRC_ + i, String.valueOf(productWholesale.get(i).getPrice()));
+            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i).getPrice()));
             wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i).getQtyMax()));
             wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i).getQtyMin()));
         }
         return wholesaleParams;
-    }
-
-    public TKPDMapParam<String, String> getPhotosParams() {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        if (getProductPhotos().getPhotosServiceModelList().isEmpty()) {
-            String productPhotosString = "";
-            String productPhotosDefault = "";
-            String productPhotosDescriptionString = "";
-            for (int i = 0; i < getProductPhotos().getPhotosServiceModelList().size(); i++) {
-                ProductPhotoServiceModel productPhoto = getProductPhotos().getPhotosServiceModelList().get(i);
-                productPhotosString += productPhoto.getUrl();
-                productPhotosDescriptionString += productPhoto.getDescription();
-                if (productPhoto.isDefault()) {
-                    productPhotosDefault = String.valueOf(i);
-                }
-                if (i < getProductPhotos().getPhotosServiceModelList().size() - 1) {
-                    productPhotosString += DELIMITER;
-                    productPhotosDescriptionString += DELIMITER;
-                }
-            }
-            params.put(PRODUCT_PHOTO, productPhotosString);
-            params.put(PRODUCT_PHOTO_DEFAULT, productPhotosDefault);
-            params.put(PRODUCT_PHOTO_DESC, productPhotosDescriptionString);
-        }
-        return params;
     }
 
     public TKPDMapParam<String, String> getVideosParams() {
@@ -130,6 +98,13 @@ public class AddProductValidationInputServiceModel {
             params.put(PRODUCT_VIDEO_ + i, getProductVideo().get(i));
         }
         return params;
+    }
+
+    private String formatDecimal(double productPrice) {
+        if (productPrice == (long) productPrice)
+            return String.format(Locale.US, "%d", (long) productPrice);
+        else
+            return String.format("%s", productPrice);
     }
 
     public int getProductCatalogId() {
@@ -260,28 +235,12 @@ public class AddProductValidationInputServiceModel {
         this.poProcessValue = poProcessValue;
     }
 
-    public int getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(int serverId) {
-        this.serverId = serverId;
-    }
-
     public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
         this.productWholesale = productWholesale;
     }
 
-    public void setProductPhotos(ProductPhotoListServiceModel productPhotos) {
-        this.productPhotos = productPhotos;
-    }
-
     public List<ProductWholesaleServiceModel> getProductWholesale() {
         return productWholesale;
-    }
-
-    public ProductPhotoListServiceModel getProductPhotos() {
-        return productPhotos;
     }
 
     public List<String> getProductVideo() {

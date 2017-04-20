@@ -40,13 +40,6 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<AddProductPictureDomainModel> addProductPicture(AddProductPictureInputDomainModel domainModel) {
-        AddProductPictureInputServiceModel serviceModel = AddProductInputMapper.mapPicture(domainModel);
-        return uploadProductDataSource.addProductPicture(serviceModel)
-                .map(new AddProductPictureMapper());
-    }
-
-    @Override
     public Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel domainModel) {
         AddProductSubmitInputServiceModel serviceModel = AddProductInputMapper.mapSubmit(domainModel);
         return uploadProductDataSource.addProductSubmit(serviceModel)
