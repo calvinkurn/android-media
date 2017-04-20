@@ -48,31 +48,38 @@
             android:textColor="@color/black"
             android:textSize="13sp" />
 
-        <RatingBar
-            android:id="@+id/rb_driver_rating"
-            style="@style/avgRatingBarSmall"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/tv_cab_detail"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@id/cab_driver_image"
-            android:isIndicator="true"
-            android:numStars="5"
-            android:rating="3.6" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tv_driver_rating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_cab_detail"
-            android:layout_marginLeft="@dimen/five_dp"
-            android:layout_marginTop="8dp"
-            android:layout_toRightOf="@id/rb_driver_rating"
-            android:singleLine="true"
-            android:text="4.3"
-            android:textColor="@color/black"
-            android:textSize="10sp" />
+            <RatingBar
+                android:id="@+id/rb_driver_rating"
+                style="@style/avgRatingBarSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="15dp"
+                android:gravity="center_vertical"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="3.6" />
+
+            <TextView
+                android:id="@+id/tv_driver_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/five_dp"
+                android:gravity="center_vertical"
+                android:singleLine="true"
+                android:text="4.3"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/driver_eta_text"

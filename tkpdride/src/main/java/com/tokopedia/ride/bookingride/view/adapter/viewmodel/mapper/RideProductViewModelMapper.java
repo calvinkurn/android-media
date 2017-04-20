@@ -109,4 +109,23 @@ public class RideProductViewModelMapper {
 
         return productPrice;
     }
+
+    /**
+     * This function added a space after currency if not added by Uber
+     *
+     * @param productPriceFormat
+     * @return
+     */
+    private String getFormattedProductPrice(String productPriceFormat) {
+        //format display to add space after currency
+        if (productPriceFormat != null && productPriceFormat.contains("IDR") && !productPriceFormat.contains("IDR ")) {
+            productPriceFormat = productPriceFormat.replace("IDR", "IDR ");
+        }
+
+        if (productPriceFormat != null && productPriceFormat.contains("Rp") && !productPriceFormat.contains("Rp ")) {
+            productPriceFormat = productPriceFormat.replace("Rp", "Rp ");
+        }
+
+        return productPriceFormat;
+    }
 }

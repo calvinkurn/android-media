@@ -15,9 +15,9 @@ public class FareEstimateMapper {
     public FareEstimateMapper() {
     }
 
-    public FareEstimate transform(FareEstimateEntity estimateEntity){
+    public FareEstimate transform(FareEstimateEntity estimateEntity) {
         FareEstimate fareEstimate = null;
-        if (estimateEntity != null){
+        if (estimateEntity != null) {
             fareEstimate = new FareEstimate();
             fareEstimate.setFare(transformFareEntity(estimateEntity.getFare()));
             fareEstimate.setTrip(transformTripEntity(estimateEntity.getTrip()));
@@ -28,7 +28,7 @@ public class FareEstimateMapper {
 
     private Trip transformTripEntity(TripEntity entity) {
         Trip trip = null;
-        if (entity != null){
+        if (entity != null) {
             trip = new Trip();
             trip.setDistanceEstimate(entity.getDistanceEstimate());
             trip.setDistanceUnit(entity.getDistanceUnit());
@@ -39,14 +39,32 @@ public class FareEstimateMapper {
 
     private Fare transformFareEntity(FareEntity entity) {
         Fare fare1 = null;
-        if (entity != null){
+        if (entity != null) {
             fare1 = new Fare();
             fare1.setCurrencyCode(entity.getCurrencyCode());
-            fare1.setDisplay(entity.getDisplay());
+            fare1.setDisplay(formatDisplayPrice(entity.getDisplay()));
             fare1.setExpiresAt(entity.getExpiresAt());
             fare1.setFareId(entity.getFareId());
             fare1.setValue(entity.getValue());
         }
         return fare1;
+    }
+
+    /**
+     * This function added a space after IDR currency if not provided
+     *
+     * @param price
+     */
+    private String formatDisplayPrice(String price) {
+        //format display to add space after currency
+        if (price != null && price.contains("IDR") && !price.contains("IDR ")) {
+            price = price.replace("IDR", "IDR ");
+        }
+
+        if (price != null && price.contains("Rp") && !price.contains("Rp ")) {
+            price = price.replace("Rp", "Rp ");
+        }
+
+        return price;
     }
 }

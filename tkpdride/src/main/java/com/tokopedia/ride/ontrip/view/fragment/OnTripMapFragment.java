@@ -17,10 +17,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.service.notification.StatusBarNotification;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -36,13 +36,13 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -131,6 +131,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private Notification acceptedNotification;
 
     private boolean isScreenBlocked;
+    private boolean isFindingUberNotificationShown = false;
+    private boolean isAcceptedUberNotificationShown = false;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -555,12 +557,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(source.getLatitude(), source.getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .icon(getMarkerIcon("#569222"))
                 .title(source.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                .icon(getMarkerIcon("#DE2F34"))
                 .title(destination.getAddress()));
 
         //zoom map to fit both source and dest
@@ -568,6 +570,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
         builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
+    }
+
+    public BitmapDescriptor getMarkerIcon(String color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor(color), hsv);
+        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
     }
 
     private void reDrawDriverMarker(double latitude, double longitude) {
@@ -593,24 +601,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         processingDescription.setText(message);
     }
 
-    private boolean isNotificationVisible(int id) {
-        boolean visible = false;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            StatusBarNotification[] notifications = mNotifyMgr.getActiveNotifications();
-            for (StatusBarNotification notification : notifications) {
-                if (notification.getId() == id) {
-                    return true;
-                }
-            }
-        }
-
-        return visible;
-    }
-
     @Override
     public void showFindingUberNotification() {
-        if (isNotificationVisible(FINDING_UBER_NOTIFICATION_ID)) {
+        if (isFindingUberNotificationShown) {
             return;
         }
 
@@ -623,9 +616,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setContentTitle(getResources().getString(R.string.notification_title_finding_uber));
 
-
         // Builds the notification and issues it.
         mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
+
+        isFindingUberNotificationShown = true;
     }
 
     @Override
@@ -638,7 +632,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return;
         }
 
-        if (isNotificationVisible(ACCEPTED_UBER_NOTIFICATION_ID)) {
+        if (isAcceptedUberNotificationShown) {
             return;
         }
 
@@ -674,6 +668,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         // Builds the notification and issues it.
         acceptedNotification = mBuilder.build();
         mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, acceptedNotification);
+
+        isAcceptedUberNotificationShown = true;
 
         //update driver botmap after downloading
         presenter.getDriverBitmap(remoteView, result.getDriver().getPictureUrl());
