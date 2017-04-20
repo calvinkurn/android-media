@@ -34,7 +34,7 @@ public class AddProductInputMapper {
         serviceModel.setProductMinOrder(domainModel.getProductMinOrder());
         serviceModel.setProductMustInsurance(domainModel.getProductMustInsurance());
         serviceModel.setProductName(domainModel.getProductName());
-        serviceModel.setProductPhotos(mapPhotoModel(domainModel.getProductPhotos()));
+        serviceModel.setProductPhoto(mapPhotoModel(domainModel.getProductPhotos()));
         serviceModel.setProductPrice(domainModel.getProductPrice());
         serviceModel.setProductPriceCurrency(domainModel.getProductPriceCurrency());
         serviceModel.setProductReturnable(domainModel.getProductReturnable());
@@ -53,6 +53,7 @@ public class AddProductInputMapper {
         AddProductPictureInputServiceModel serviceModel = new AddProductPictureInputServiceModel();
         serviceModel.setProductPhoto(mapPhotoModel(domainModel.getProductPhotos()));
         serviceModel.setServerId(domainModel.getServerId());
+        serviceModel.setHostUrl(domainModel.getHostUrl());
         return serviceModel;
     }
 

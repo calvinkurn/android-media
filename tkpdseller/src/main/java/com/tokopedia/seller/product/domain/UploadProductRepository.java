@@ -17,8 +17,6 @@ import rx.Observable;
 public interface UploadProductRepository {
     Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel);
 
-    Observable<AddProductPictureDomainModel> addProductPicture(AddProductPictureInputDomainModel addProductValidationDomainModel);
-
     Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel addProductPictureDomainModel);
 
     Observable<EditProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);

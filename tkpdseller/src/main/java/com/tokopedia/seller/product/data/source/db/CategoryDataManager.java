@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 
 /**
  * @author sebastianuskh on 4/3/17.

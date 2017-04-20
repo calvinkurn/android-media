@@ -8,14 +8,15 @@ import java.util.List;
 
 public class AddProductPictureInputDomainModel {
     private String duplicate;
-    private String serverId;
+    private int serverId;
     private ProductPhotoListDomainModel productPhotos;
+    private String hostUrl;
 
     public String getDuplicate() {
         return duplicate;
     }
 
-    public String getServerId() {
+    public int getServerId() {
         return serverId;
     }
 
@@ -23,7 +24,7 @@ public class AddProductPictureInputDomainModel {
         this.duplicate = duplicate;
     }
 
-    public void setServerId(String serverId) {
+    public void setServerId(int serverId) {
         this.serverId = serverId;
     }
 
@@ -33,5 +34,13 @@ public class AddProductPictureInputDomainModel {
 
     public void setProductPhotos(ProductPhotoListDomainModel productPhotos) {
         this.productPhotos = productPhotos;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
     }
 }

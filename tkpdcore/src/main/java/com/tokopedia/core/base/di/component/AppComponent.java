@@ -11,7 +11,9 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
+import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -19,6 +21,7 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
 /**
@@ -39,6 +42,9 @@ public interface AppComponent {
     @AceQualifier
     Retrofit aceRetrofit();
 
+    @MerlinQualifier
+    Retrofit merlinRetrofit();
+
     @MojitoQualifier
     Retrofit mojitoRetrofit();
 
@@ -47,6 +53,11 @@ public interface AppComponent {
 
     @YoutubeQualifier
     Retrofit youtubeRetrofit();
+
+    @DefaultAuthWithErrorHandler
+    OkHttpClient okHttpClient();
+
+    Retrofit.Builder retrofitBuilder();
 
     Gson gson();
 

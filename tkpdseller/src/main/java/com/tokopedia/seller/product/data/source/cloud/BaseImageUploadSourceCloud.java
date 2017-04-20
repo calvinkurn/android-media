@@ -27,7 +27,7 @@ import rx.Observable;
  */
 
 public abstract class BaseImageUploadSourceCloud {
-    private final Context context;
+    protected final Context context;
 
     public BaseImageUploadSourceCloud(@ActivityContext Context context) {
         this.context = context;

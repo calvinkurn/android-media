@@ -78,6 +78,13 @@ public class LabelView extends FrameLayout {
         requestLayout();
     }
 
+    public void resetContentText(){
+        contentTextView.setText(valueText);
+        setVisibleArrow(showArrow);
+        invalidate();
+        requestLayout();
+    }
+
     public void setContentSmall() {
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);

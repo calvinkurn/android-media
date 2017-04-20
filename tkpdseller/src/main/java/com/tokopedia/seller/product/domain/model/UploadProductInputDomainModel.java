@@ -30,6 +30,7 @@ public class UploadProductInputDomainModel {
     private int poProcessType;
     private int poProcessValue;
     private int serverId;
+    private String hostUrl;
 
     public long getId() {
         return id;
@@ -209,5 +210,13 @@ public class UploadProductInputDomainModel {
 
     public void setProductVideos(List<String> productVideos) {
         this.productVideos = productVideos;
+    }
+
+    public void setHostUrl(String hostUrl) {
+        this.hostUrl = hostUrl;
+    }
+
+    public String getHostUrl() {
+        return hostUrl;
     }
 }
