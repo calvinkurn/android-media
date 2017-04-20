@@ -9,6 +9,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
+import com.tokopedia.ride.history.domain.model.RideHistory;
 
 import java.util.List;
 
@@ -38,4 +39,6 @@ public interface BookingRideDataStore {
     Observable<RideRequestMapEntity> getRideMap(String requestId, TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideHistoryEntity>> getHistories(TKPDMapParam<String, Object> parameters);
+
+    Observable<RideHistoryEntity> getHistory(TKPDMapParam<String, Object> parameters);
 }

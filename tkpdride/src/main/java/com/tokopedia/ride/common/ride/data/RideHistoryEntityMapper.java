@@ -30,7 +30,7 @@ public class RideHistoryEntityMapper {
         return rideHistories;
     }
 
-    private RideHistory transform(RideHistoryEntity entity) {
+    public RideHistory transform(RideHistoryEntity entity) {
         RideHistory rideHistory = null;
         if (entity != null){
             rideHistory = new RideHistory();

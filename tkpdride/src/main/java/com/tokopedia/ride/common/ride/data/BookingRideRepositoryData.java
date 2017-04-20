@@ -161,4 +161,16 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     }
                 });
     }
+
+    @Override
+    public Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getHistory(parameters)
+                .map(new Func1<RideHistoryEntity, RideHistory>() {
+                    @Override
+                    public RideHistory call(RideHistoryEntity rideHistoryEntity) {
+                        return rideHistoryEntityMapper.transform(rideHistoryEntity);
+                    }
+                });
+    }
 }

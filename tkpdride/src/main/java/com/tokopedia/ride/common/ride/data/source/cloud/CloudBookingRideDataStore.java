@@ -105,4 +105,9 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     public Observable<List<RideHistoryEntity>> getHistories(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getHistories(parameters);
     }
+
+    @Override
+    public Observable<RideHistoryEntity> getHistory(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getHistory(parameters);
+    }
 }
