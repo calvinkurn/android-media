@@ -2,28 +2,8 @@ package com.tokopedia.inbox.rescenter.discussion.view.presenter;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.detailv2.domain.UploadImageRepository;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.CreatePictureMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.UploadImageMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.repository.UploadImageRepositoryImpl;
-import com.tokopedia.inbox.rescenter.discussion.data.source.UploadImageSourceFactory;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.CreatePictureUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.rescenter.discussion.domain.interactor.GetResCenterDiscussionUseCase;
@@ -38,13 +18,10 @@ import com.tokopedia.inbox.rescenter.discussion.view.subscriber.LoadMoreSubscrib
 import com.tokopedia.inbox.rescenter.discussion.view.subscriber.ReplyDiscussionSubscriber;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.SendReplyDiscussionParam;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by nisie on 3/29/17.
@@ -52,7 +29,7 @@ import java.util.ArrayList;
 
 public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPresenter {
 
-    private final ResCenterDiscussionView viewListener;
+    private ResCenterDiscussionView viewListener;
     private GetResCenterDiscussionUseCase getDiscussionUseCase;
     private LoadMoreDiscussionUseCase loadMoreUseCase;
     private SendDiscussionUseCase sendDiscussionUseCase;
@@ -65,108 +42,27 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private SendReplyDiscussionParam pass;
     private Context context;
 
-    public ResCenterDiscussionPresenterImpl(Context context, ResCenterDiscussionView viewListener) {
+    @Inject
+    public ResCenterDiscussionPresenterImpl(ResCenterDiscussionView viewListener,
+                                            GetResCenterDiscussionUseCase getDiscussionUseCase,
+                                            LoadMoreDiscussionUseCase loadMoreDiscussionUseCase,
+                                            SendDiscussionUseCase sendDiscussionUseCase,
+                                            ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
+                                            GenerateHostUseCase generateHostUseCase,
+                                            UploadImageUseCase uploadImageUseCase,
+                                            CreatePictureUseCase createPictureUseCase,
+                                            ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase,
+                                            SendReplyDiscussionParam sendReplyDiscussionParam) {
         this.viewListener = viewListener;
-        this.context = context;
-
-        String resolutionID = viewListener.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        getDiscussionUseCase = new GetResCenterDiscussionUseCase(
-                jobExecutor, uiThread, resCenterRepository);
-
-        loadMoreUseCase = new LoadMoreDiscussionUseCase(
-                jobExecutor, uiThread, resCenterRepository
-        );
-
-        replyDiscussionValidationUseCase = new ReplyDiscussionValidationUseCase(
-                jobExecutor, uiThread, resCenterRepository
-        );
-
-        GenerateHostActService generateHostActService = new GenerateHostActService();
-
-        GenerateHostMapper generateHostMapper = new GenerateHostMapper();
-
-        UploadImageMapper uploadImageMapper = new UploadImageMapper();
-
-        CreatePictureMapper createPictureMapper = new CreatePictureMapper();
-
-        SubmitImageMapper submitImageMapper = new SubmitImageMapper();
-
-        UploadImageSourceFactory uploadImageSourceFactory = new UploadImageSourceFactory(context,
-                generateHostActService,
-                resCenterActService,
-                generateHostMapper,
-                uploadImageMapper,
-                createPictureMapper,
-                submitImageMapper
-
-        );
-
-        UploadImageRepository uploadImageRepository
-                = new UploadImageRepositoryImpl(uploadImageSourceFactory);
-
-        generateHostUseCase = new GenerateHostUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        uploadImageUseCase = new UploadImageUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        createPictureUseCase = new CreatePictureUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        replyDiscussionSubmitUseCase = new ReplyDiscussionSubmitUseCase(
-                jobExecutor, uiThread, uploadImageRepository
-        );
-
-        sendDiscussionUseCase = new SendDiscussionUseCase(
-                jobExecutor, uiThread,
-                generateHostUseCase,
-                replyDiscussionValidationUseCase,
-                uploadImageUseCase,
-                createPictureUseCase,
-                replyDiscussionSubmitUseCase
-
-        );
-
-        pass = new SendReplyDiscussionParam();
+        this.getDiscussionUseCase = getDiscussionUseCase;
+        this.loadMoreUseCase = loadMoreDiscussionUseCase;
+        this.sendDiscussionUseCase = sendDiscussionUseCase;
+        this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
+        this.generateHostUseCase = generateHostUseCase;
+        this.uploadImageUseCase = uploadImageUseCase;
+        this.createPictureUseCase = createPictureUseCase;
+        this.replyDiscussionSubmitUseCase = replyDiscussionSubmitUseCase;
+        this.pass = sendReplyDiscussionParam;
     }
 
 
@@ -174,9 +70,15 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     public void initData() {
         viewListener.showLoading();
         viewListener.setViewEnabled(false);
-        getDiscussionUseCase.execute(RequestParams.EMPTY,
+        getDiscussionUseCase.execute(getDiscussionParams(),
                 new GetDiscussionSubscriber(viewListener));
 
+    }
+
+    private RequestParams getDiscussionParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetResCenterDiscussionUseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
+        return params;
     }
 
     @Override
@@ -215,6 +117,7 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
     private RequestParams getLoadMoreParam() {
         RequestParams params = RequestParams.create();
         params.putString(LoadMoreDiscussionUseCase.PARAM_LAST_CONVERSATION_ID, viewListener.getLastConversationId());
+        params.putString(LoadMoreDiscussionUseCase.PARAM_RESOLUTION_ID, viewListener.getResolutionID());
         return params;
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
+import com.tokopedia.core.network.apiservices.user.apis.InboxResCenterApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.historyawb.data.mapper.TrackAwbReturProductMapper;
@@ -16,19 +17,18 @@ import rx.Observable;
 
 public class CloudInboxResCenterDataSource {
     private final Context context;
-    private final InboxResCenterService inboxResCenterService;
+    private final InboxResCenterApi inboxResCenterApi;
     private final TrackAwbReturProductMapper trackAwbReturProductMapper;
 
-    public CloudInboxResCenterDataSource(Context context, InboxResCenterService inboxResCenterService) {
+    public CloudInboxResCenterDataSource(Context context, InboxResCenterApi inboxResCenterApi) {
         super();
         this.context = context;
-        this.inboxResCenterService = inboxResCenterService;
+        this.inboxResCenterApi = inboxResCenterApi;
         this.trackAwbReturProductMapper = new TrackAwbReturProductMapper();
     }
 
     public Observable<TrackingAwbReturProduct> trackAwbReturProduct(TKPDMapParam<String, Object> parameters) {
-        return inboxResCenterService.getApi()
-                .trackShippingRefv2(AuthUtil.generateParamsNetwork2(context, parameters))
+        return inboxResCenterApi.trackShippingRefv2(AuthUtil.generateParamsNetwork2(context, parameters))
                 .map(trackAwbReturProductMapper);
     }
 }

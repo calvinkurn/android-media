@@ -1,36 +1,19 @@
 package com.tokopedia.inbox.rescenter.historyawb.view.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.HistoryAwbUseCase;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProductHistory;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
+import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.GetHistoryAwbUseCase;
+import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.historyawb.view.subscriber.HistoryAwbSubsriber;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -41,61 +24,30 @@ import rx.Subscriber;
 @SuppressWarnings("ALL")
 public class HistoryShippingFragmentImpl implements HistoryShippingFragmentPresenter {
 
-    private final HistoryShippingFragmentView fragmentView;
-    private final TrackAwbReturProductUseCase trackAwbReturProductUseCase;
-    private final HistoryAwbUseCase getHistoryAwbUseCase;
+    private HistoryShippingFragmentView fragmentView;
+    private TrackAwbReturProductUseCase trackAwbReturProductUseCase;
+    private GetHistoryAwbUseCase getHistoryAwbUseCase;
 
-    public HistoryShippingFragmentImpl(Context context, HistoryShippingFragmentView fragmentView) {
+    @Inject
+    public HistoryShippingFragmentImpl(HistoryShippingFragmentView fragmentView,
+                                       GetHistoryAwbUseCase getHistoryAwbUseCase,
+                                       TrackAwbReturProductUseCase trackAwbReturProductUseCase) {
         this.fragmentView = fragmentView;
-        String resolutionID = fragmentView.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        this.getHistoryAwbUseCase
-                = new HistoryAwbUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.trackAwbReturProductUseCase
-                = new TrackAwbReturProductUseCase(jobExecutor, uiThread, resCenterRepository);
+        this.getHistoryAwbUseCase = getHistoryAwbUseCase;
+        this.trackAwbReturProductUseCase = trackAwbReturProductUseCase;
     }
 
     @Override
     public void onFirstTimeLaunch() {
         fragmentView.setLoadingView(true);
         fragmentView.showInpuNewShippingAwb(false);
-        getHistoryAwbUseCase.execute(RequestParams.EMPTY, new HistoryAwbSubsriber(fragmentView));
+        getHistoryAwbUseCase.execute(getHistoryAwbParams(), new HistoryAwbSubsriber(fragmentView));
+    }
+
+    private RequestParams getHistoryAwbParams() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetHistoryAwbUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
+        return params;
     }
 
     @Override

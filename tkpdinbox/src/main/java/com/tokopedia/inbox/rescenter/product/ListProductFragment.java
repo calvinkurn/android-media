@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.product;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,22 +7,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.product.di.component.DaggerResolutionProductListComponent;
+import com.tokopedia.inbox.rescenter.product.di.component.ResolutionProductListComponent;
+import com.tokopedia.inbox.rescenter.product.di.module.ResolutionProductListModule;
 import com.tokopedia.inbox.rescenter.product.view.customadapter.ListProductAdapter;
 import com.tokopedia.inbox.rescenter.product.view.model.ListProductViewItem;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentImpl;
-import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentPresenter;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ListProductFragmentView;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
-public class ListProductFragment extends BasePresenterFragment<ListProductFragmentPresenter>
+public class ListProductFragment extends BaseDaggerFragment
     implements ListProductFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -37,6 +42,9 @@ public class ListProductFragment extends BasePresenterFragment<ListProductFragme
     private ArrayList<ListProductViewItem> viewData;
 
     private TkpdProgressDialog normalLoading;
+
+    @Inject
+    ListProductFragmentImpl presenter;
 
     public static Fragment createInstance(String resolutionID) {
         ListProductFragment fragment = new ListProductFragment();
@@ -141,18 +149,19 @@ public class ListProductFragment extends BasePresenterFragment<ListProductFragme
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_PRODUCT_LIST;
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = new ListProductFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
+    protected void initInjector() {
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        ResolutionProductListComponent resolutionProductListComponent =
+                DaggerResolutionProductListComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
+                        .resolutionProductListModule(new ResolutionProductListModule(this))
+                        .build();
+        resolutionProductListComponent.inject(this);
     }
 
     @Override
@@ -176,18 +185,14 @@ public class ListProductFragment extends BasePresenterFragment<ListProductFragme
     }
 
     @Override
-    protected void initialVar() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         viewData = new ArrayList<>();
         adapter = new ListProductAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(adapter);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

@@ -20,22 +20,28 @@ import android.widget.ImageView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.discussion.di.component.DaggerResolutionDiscussionComponent;
+import com.tokopedia.inbox.rescenter.discussion.di.component.ResolutionDiscussionComponent;
+import com.tokopedia.inbox.rescenter.discussion.di.module.ResolutionDiscussionModule;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.ResCenterDiscussionAdapter;
 import com.tokopedia.inbox.rescenter.discussion.view.adapter.databinder.LoadMoreDataBinder;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
-import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenter;
 import com.tokopedia.inbox.rescenter.discussion.view.presenter.ResCenterDiscussionPresenterImpl;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -51,7 +57,7 @@ import static com.tokopedia.inbox.rescenter.discussion.domain.interactor.ReplyDi
  */
 
 @RuntimePermissions
-public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenterDiscussionPresenter>
+public class ResCenterDiscussionFragment extends BaseDaggerFragment
         implements ResCenterDiscussionView {
 
     private static final String PARAM_RESOLUTION_ID = "PARAM_RESOLUTION_ID";
@@ -70,6 +76,9 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     private ImageUploadHandler uploadImageDialog;
     private TkpdProgressDialog progressDialog;
     private Bundle savedInstance;
+
+    @Inject
+    ResCenterDiscussionPresenterImpl presenter;
 
     public static Fragment createInstance(String resolutionID, boolean flagReceived) {
         Fragment fragment = new ResCenterDiscussionFragment();
@@ -111,18 +120,19 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_DISCUSSION;
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = new ResCenterDiscussionPresenterImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
+    protected void initInjector() {
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        ResolutionDiscussionComponent discussionComponent =
+                DaggerResolutionDiscussionComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
+                        .resolutionDiscussionModule(new ResolutionDiscussionModule(this))
+                        .build();
+        discussionComponent.inject(this);
     }
 
     @Override
@@ -173,7 +183,7 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
                     attachmentAdapter.addList(list);
                 }
             }
-                replyEditText.setText(savedInstance.getString(ARGS_REPLY,""));
+            replyEditText.setText(savedInstance.getString(ARGS_REPLY,""));
         }
     }
 
@@ -300,13 +310,9 @@ public class ResCenterDiscussionFragment extends BasePresenterFragment<ResCenter
     }
 
     @Override
-    protected void initialVar() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         uploadImageDialog = ImageUploadHandler.createInstance(this);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

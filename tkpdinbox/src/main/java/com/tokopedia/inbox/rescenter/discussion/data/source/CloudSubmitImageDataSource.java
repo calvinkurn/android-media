@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.discussion.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResCenterActApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.SubmitImageMapper;
@@ -16,19 +16,19 @@ import rx.Observable;
 
 public class CloudSubmitImageDataSource {
     private Context context;
-    private final ResCenterActService resCenterActService;
+    private final ResCenterActApi resCenterActApi;
     private final SubmitImageMapper submitImageMapper;
 
     public CloudSubmitImageDataSource(Context context,
-                                      ResCenterActService resCenterActService,
+                                      ResCenterActApi resCenterActApi,
                                       SubmitImageMapper submitImageMapper) {
         this.context = context;
-        this.resCenterActService = resCenterActService;
+        this.resCenterActApi = resCenterActApi;
         this.submitImageMapper = submitImageMapper;
     }
 
     public Observable<ReplySubmitModel> submitImage(TKPDMapParam<String, Object> params) {
-        return resCenterActService.getApi().replyConversationSubmit2(
+        return resCenterActApi.replyConversationSubmit2(
                 AuthUtil.generateParamsNetwork2(context, params))
                 .map(submitImageMapper);
     }

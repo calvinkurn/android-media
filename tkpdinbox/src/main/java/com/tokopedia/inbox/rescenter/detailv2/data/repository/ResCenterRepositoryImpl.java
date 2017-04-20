@@ -4,16 +4,16 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
 import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.DetailResCenter;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.ResolutionActionDomainData;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.TrackingAwbReturProduct;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.loadmore.LoadMoreModel;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.replyvalidation.ReplyDiscussionValidationModel;
 import com.tokopedia.inbox.rescenter.historyaction.domain.model.HistoryActionData;
 import com.tokopedia.inbox.rescenter.historyaddress.domain.model.HistoryAddressData;
 import com.tokopedia.inbox.rescenter.historyawb.domain.model.HistoryAwbData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ListProductDomainData;
 import com.tokopedia.inbox.rescenter.product.domain.model.ProductDetailData;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 
 import rx.Observable;
 
@@ -24,65 +24,62 @@ import rx.Observable;
 public class ResCenterRepositoryImpl implements ResCenterRepository {
 
     private final ResCenterDataSourceFactory resCenterDataSourceFactory;
-    private String resolutionID;
 
-    public ResCenterRepositoryImpl(String resolutionID,
-                                   ResCenterDataSourceFactory resCenterDataSourceFactory) {
-        this.resolutionID = resolutionID;
+    public ResCenterRepositoryImpl(ResCenterDataSourceFactory resCenterDataSourceFactory) {
         this.resCenterDataSourceFactory = resCenterDataSourceFactory;
     }
 
     @Override
-    public Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters) {
+    public Observable<DetailResCenter> getDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterDetail(resolutionID, parameters);
     }
 
     @Override
-    public Observable<HistoryAwbData> getHistoryAwb(TKPDMapParam<String, Object> parameters) {
+    public Observable<HistoryAwbData> getHistoryAwb(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getHistoryAwb(resolutionID, parameters);
     }
 
     @Override
-    public Observable<HistoryAddressData> getHistoryAddress(TKPDMapParam<String, Object> parameters) {
+    public Observable<HistoryAddressData> getHistoryAddress(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getHistoryAddress(resolutionID, parameters);
     }
 
     @Override
-    public Observable<HistoryActionData> getHistoryAction(TKPDMapParam<String, Object> parameters) {
+    public Observable<HistoryActionData> getHistoryAction(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getHistoryAction(resolutionID, parameters);
     }
 
     @Override
-    public Observable<ListProductDomainData> getListProduct(TKPDMapParam<String, Object> parameters) {
+    public Observable<ListProductDomainData> getListProduct(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getListProduct(resolutionID, parameters);
     }
 
     @Override
-    public Observable<ProductDetailData> getDetailProduct(String troubleID, TKPDMapParam<String, Object> parameters) {
+    public Observable<ProductDetailData> getDetailProduct(String resolutionID, String troubleID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getProductDetail(resolutionID, troubleID, parameters);
     }
 
     @Override
-    public Observable<DiscussionModel> getConversation(TKPDMapParam<String, Object> parameters) {
+    public Observable<DiscussionModel> getConversation(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterConversation(resolutionID, parameters);
     }
 
     @Override
-    public Observable<LoadMoreModel> getConversationMore(TKPDMapParam<String, Object> parameters) {
+    public Observable<LoadMoreModel> getConversationMore(String resolutionID, TKPDMapParam<String, Object> parameters) {
         return resCenterDataSourceFactory
                 .createCloudResCenterDataSource()
                 .getResCenterConversationMore(resolutionID, parameters);

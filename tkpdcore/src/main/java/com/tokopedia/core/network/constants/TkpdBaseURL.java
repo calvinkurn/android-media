@@ -145,6 +145,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_RESOLUTION_CENTER_DETAIL = "get_resolution_center_detail_new.pl";
         public static final String PATH_GET_RESOLUTION_CENTER_SHOW_MORE = "get_resolution_center_show_more.pl";
         public static final String PATH_TRACK_SHIPPING_REF = "track_shipping_ref.pl";
+        public static final String PATH_TRACK_SHIPPING_REF_V2 = "v4/inbox-resolution-center/track_shipping_ref.pl";
 
         public static final String PATH_GET_INBOX_REVIEW = "get_inbox_review.pl";
 
@@ -377,6 +378,15 @@ public class TkpdBaseURL {
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_NEW = "reply_conversation_validation_new.pl";
         public static final String PATH_REPORT_REOLUTION = "report_resolution.pl";
         public static final String PATH_RESOLUTION_CENTER = "resolution-center.pl";
+        public static final String PATH_CANCEL_RESOLUTION_V2 = "v4/action/resolution-center/cancel_resolution.pl";
+        public static final String PATH_REPORT_RESOLUTION_V2 = "v4/action/resolution-center/report_resolution.pl";
+        public static final String PATH_FINISH_RES_RETURN_V2 = "v4/action/resolution-center/finish_resolution_retur.pl";
+        public static final String PATH_ACCEPT_ADMIN_RESOLUTION_V2 = "v4/action/resolution-center/accept_admin_resolution.pl";
+        public static final String PATH_ACCEPT_RESOLUTION_V2 = "v4/action/resolution-center/accept_resolution.pl";
+        public static final String PATH_INPUT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/input_address_resolution.pl";
+        public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
+        public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
+        public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
     }
 
     public static class Search {
@@ -492,6 +502,7 @@ public class TkpdBaseURL {
         public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
+        public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
 

@@ -7,7 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailContract;
 import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailImpl;
 
@@ -16,7 +20,7 @@ import com.tokopedia.inbox.rescenter.product.view.presenter.ProductDetailImpl;
  */
 
 public class ProductDetailActivity extends BasePresenterActivity<ProductDetailContract.Presenter>
-    implements ProductDetailContract.ViewListener {
+    implements ProductDetailContract.ViewListener, HasComponent<ResolutionDetailComponent> {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_TROUBLE_ID = "trouble_id";
@@ -116,5 +120,13 @@ public class ProductDetailActivity extends BasePresenterActivity<ProductDetailCo
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public ResolutionDetailComponent getComponent() {
+        return DaggerResolutionDetailComponent.builder()
+                .appComponent(getApplicationComponent())
+                .resolutionDetailModule(new ResolutionDetailModule())
+                .build();
     }
 }

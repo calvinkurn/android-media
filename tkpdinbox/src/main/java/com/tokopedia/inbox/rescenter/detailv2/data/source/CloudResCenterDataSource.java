@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.detailv2.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
@@ -31,7 +31,7 @@ import rx.Observable;
 public class CloudResCenterDataSource {
 
     private Context context;
-    private ResolutionService resolutionService;
+    private ResolutionApi resolutionApi;
     private DetailResCenterMapper detailResCenterMapper;
     private HistoryAwbMapper historyAwbMapper;
     private HistoryAddressMapper historyAddressMapper;
@@ -42,7 +42,7 @@ public class CloudResCenterDataSource {
     private LoadMoreMapper loadMoreMapper;
 
     public CloudResCenterDataSource(Context context,
-                                    ResolutionService resolutionService,
+                                    ResolutionApi resolutionApi,
                                     DetailResCenterMapper detailResCenterMapper,
                                     HistoryAwbMapper historyAwbMapper,
                                     HistoryAddressMapper historyAddressMapper,
@@ -53,7 +53,7 @@ public class CloudResCenterDataSource {
                                     LoadMoreMapper loadMoreMapper) {
         super();
         this.context = context;
-        this.resolutionService = resolutionService;
+        this.resolutionApi = resolutionApi;
         this.detailResCenterMapper = detailResCenterMapper;
         this.historyAwbMapper = historyAwbMapper;
         this.historyAddressMapper = historyAddressMapper;
@@ -65,80 +65,67 @@ public class CloudResCenterDataSource {
     }
 
     public Observable<DetailResCenter> getResCenterDetail(String resolutionID, TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getResCenterDetail(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(detailResCenterMapper);
+        return resolutionApi.getResCenterDetail(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(detailResCenterMapper);
     }
 
  public Observable<DiscussionModel> getResCenterConversation(String resolutionID,
                                                              TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getResCenterConversation(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(discussionResCenterMapper);
+        return resolutionApi.getResCenterConversation(
+                resolutionID, AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(discussionResCenterMapper);
     }
 
     public Observable<LoadMoreModel> getResCenterConversationMore(String resolutionID,
                                                                   TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getResCenterConversationMore(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(loadMoreMapper);
+        return resolutionApi.getResCenterConversationMore(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(loadMoreMapper);
     }
 
     public Observable<HistoryAwbData> getHistoryAwb(String resolutionID,
                                                     TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getHistoryAwb(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(historyAwbMapper);
+        return resolutionApi.getHistoryAwb(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(historyAwbMapper);
     }
 
     public Observable<HistoryActionData> getHistoryAction(String resolutionID,
                                                           TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getHistoryAction(resolutionID, AuthUtil.generateParamsNetwork2(context, parameters))
-                .map(historyActionMapper);
+        return resolutionApi.getHistoryAction(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(historyActionMapper);
     }
 
     public Observable<HistoryAddressData> getHistoryAddress(String resolutionID,
                                                             TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getHistoryAddress(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(historyAddressMapper);
+        return resolutionApi.getHistoryAddress(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(historyAddressMapper);
     }
 
     public Observable<ListProductDomainData> getListProduct(String resolutionID,
                                                             TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getListProduct(
-                        resolutionID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(listProductMapper);
+        return resolutionApi.getListProduct(
+                resolutionID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(listProductMapper);
     }
 
     public Observable<ProductDetailData> getProductDetail(String resolutionID,
                                                           String troubleID,
                                                           TKPDMapParam<String, Object> parameters) {
-        return resolutionService.getApi()
-                .getProductDetail(
-                        resolutionID,
-                        troubleID,
-                        AuthUtil.generateParamsNetwork2(context, parameters)
-                )
-                .map(productDetailMapper);
+        return resolutionApi.getProductDetail(
+                resolutionID,
+                troubleID,
+                AuthUtil.generateParamsNetwork2(context, parameters)
+        ).map(productDetailMapper);
     }
+
 }

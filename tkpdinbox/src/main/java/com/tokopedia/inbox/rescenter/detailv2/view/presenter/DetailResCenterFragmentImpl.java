@@ -1,38 +1,21 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.rescenter.ResCenterActService;
-import com.tokopedia.core.network.apiservices.rescenter.ResolutionService;
-import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.detailv2.data.factory.ResCenterDataSourceFactory;
-import com.tokopedia.inbox.rescenter.detailv2.data.mapper.DetailResCenterMapper;
-import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.LoadMoreMapper;
-import com.tokopedia.inbox.rescenter.discussion.data.mapper.DiscussionResCenterMapper;
-import com.tokopedia.inbox.rescenter.historyaction.data.mapper.HistoryActionMapper;
-import com.tokopedia.inbox.rescenter.historyaddress.data.mapper.HistoryAddressMapper;
-import com.tokopedia.inbox.rescenter.historyawb.data.mapper.HistoryAwbMapper;
-import com.tokopedia.inbox.rescenter.detailv2.data.repository.ResCenterRepositoryImpl;
-import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptAdminSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AcceptSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.AskHelpResolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.CancelResolutionUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.EditAddressUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolutionUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
-import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.GetResCenterDetailSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.ResolutionActionSubscriber;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.TrackAwbReturProductSubscriber;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ListProductMapper;
-import com.tokopedia.inbox.rescenter.product.data.mapper.ProductDetailMapper;
+import com.tokopedia.inbox.rescenter.historyawb.domain.interactor.TrackAwbReturProductUseCase;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 3/9/17.
@@ -51,71 +34,27 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     private final InputAddressUseCase inputAddressUseCase;
     private final EditAddressUseCase editAddressUseCase;
 
-    public DetailResCenterFragmentImpl(Context context, DetailResCenterFragmentView fragmentView) {
+    @Inject
+    public DetailResCenterFragmentImpl(DetailResCenterFragmentView fragmentView,
+                                       GetResCenterDetailUseCase getResCenterDetailUseCase,
+                                       TrackAwbReturProductUseCase trackAwbReturProductUseCase,
+                                       CancelResolutionUseCase cancelResolutionUseCase,
+                                       AskHelpResolutionUseCase askHelpResolutionUseCase,
+                                       FinishReturSolutionUseCase finishReturSolutionUseCase,
+                                       AcceptAdminSolutionUseCase acceptAdminSolutionUseCase,
+                                       AcceptSolutionUseCase acceptSolutionUseCase,
+                                       InputAddressUseCase inputAddressUseCase,
+                                       EditAddressUseCase editAddressUseCase) {
         this.fragmentView = fragmentView;
-        String resolutionID = fragmentView.getResolutionID();
-        String accessToken = new SessionHandler(context).getAccessToken(context);
-
-        JobExecutor jobExecutor = new JobExecutor();
-        UIThread uiThread = new UIThread();
-
-        InboxResCenterService inboxResCenterService = new InboxResCenterService();
-
-        ResCenterActService resCenterActService = new ResCenterActService();
-        ResolutionService resolutionService = new ResolutionService(accessToken);
-
-        DetailResCenterMapper detailResCenterMapper = new DetailResCenterMapper();
-        HistoryAwbMapper historyAwbMapper = new HistoryAwbMapper();
-        HistoryAddressMapper historyAddressMapper = new HistoryAddressMapper();
-        HistoryActionMapper historyActionMapper = new HistoryActionMapper();
-        ListProductMapper listProductMapper = new ListProductMapper();
-        ProductDetailMapper productDetailMapper = new ProductDetailMapper();
-        DiscussionResCenterMapper discussionResCenterMapper = new DiscussionResCenterMapper();
-        LoadMoreMapper loadMoreMapper = new LoadMoreMapper();
-
-        ResCenterDataSourceFactory dataSourceFactory = new ResCenterDataSourceFactory(context,
-                resolutionService,
-                inboxResCenterService,
-                resCenterActService,
-                detailResCenterMapper,
-                historyAwbMapper,
-                historyAddressMapper,
-                historyActionMapper,
-                listProductMapper,
-                productDetailMapper,
-                discussionResCenterMapper,
-                loadMoreMapper
-        );
-
-        ResCenterRepository resCenterRepository
-                = new ResCenterRepositoryImpl(resolutionID, dataSourceFactory);
-
-        this.getResCenterDetailUseCase
-                = new GetResCenterDetailUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.trackAwbReturProductUseCase
-                = new TrackAwbReturProductUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.cancelResolutionUseCase
-                = new CancelResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.askHelpResolutionUseCase
-                = new AskHelpResolutionUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.finishReturSolutionUseCase
-                = new FinishReturSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.acceptAdminSolutionUseCase
-                = new AcceptAdminSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.acceptSolutionUseCase
-                = new AcceptSolutionUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.inputAddressUseCase
-                = new InputAddressUseCase(jobExecutor, uiThread, resCenterRepository);
-
-        this.editAddressUseCase
-                = new EditAddressUseCase(jobExecutor, uiThread, resCenterRepository);
+        this.getResCenterDetailUseCase = getResCenterDetailUseCase;
+        this.trackAwbReturProductUseCase = trackAwbReturProductUseCase;
+        this.cancelResolutionUseCase = cancelResolutionUseCase;
+        this.askHelpResolutionUseCase = askHelpResolutionUseCase;
+        this.finishReturSolutionUseCase = finishReturSolutionUseCase;
+        this.acceptAdminSolutionUseCase = acceptAdminSolutionUseCase;
+        this.acceptSolutionUseCase = acceptSolutionUseCase;
+        this.inputAddressUseCase = inputAddressUseCase;
+        this.editAddressUseCase = editAddressUseCase;
     }
 
     @Override
@@ -126,7 +65,10 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     }
 
     private RequestParams getInitResCenterDetailParam() {
-        return RequestParams.EMPTY;
+        String resolutionID = fragmentView.getResolutionID();
+        RequestParams params = RequestParams.create();
+        params.putString(GetResCenterDetailUseCase.PARAM_RESOLUTION_ID, resolutionID);
+        return params;
     }
 
     @Override

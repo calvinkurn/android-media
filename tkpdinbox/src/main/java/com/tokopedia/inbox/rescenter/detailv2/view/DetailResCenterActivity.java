@@ -7,7 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailViewListener;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPresenter;
@@ -17,7 +20,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.presenter.DetailResCenterPres
  */
 
 public class DetailResCenterActivity extends BasePresenterActivity<DetailResCenterPresenter>
-    implements DetailViewListener {
+    implements DetailViewListener, HasComponent {
 
     private static final String EXTRA_PARAM_RESOLUTION_CENTER_DETAIL = "resolution_id";
     private static final String TAG_DETAIL_FRAGMENT_RESOLUTION_CENTER = DetailResCenterFragment.class.getSimpleName();
@@ -103,4 +106,8 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
 
     }
 
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
+    }
 }

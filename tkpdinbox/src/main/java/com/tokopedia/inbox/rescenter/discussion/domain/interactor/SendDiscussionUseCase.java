@@ -4,8 +4,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.rescenter.detailv2.domain.ResCenterRepository;
 import com.tokopedia.inbox.rescenter.detailv2.domain.model.UploadImageModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.ActionDiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.CreatePictureModel;
@@ -55,15 +58,15 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
     private final CreatePictureUseCase createPictureUseCase;
     private final ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase;
 
-    public SendDiscussionUseCase(JobExecutor jobExecutor,
-                                 UIThread uiThread,
+    public SendDiscussionUseCase(ThreadExecutor threadExecutor,
+                                 PostExecutionThread postExecutionThread,
                                  GenerateHostUseCase generateHostUseCase,
                                  ReplyDiscussionValidationUseCase replyDiscussionValidationUseCase,
                                  UploadImageUseCase uploadImageUseCase,
                                  CreatePictureUseCase createPictureUseCase,
                                  ReplyDiscussionSubmitUseCase replyDiscussionSubmitUseCase) {
 
-        super(jobExecutor, uiThread);
+        super(threadExecutor, postExecutionThread);
         this.generateHostUseCase = generateHostUseCase;
         this.replyDiscussionValidationUseCase = replyDiscussionValidationUseCase;
         this.uploadImageUseCase = uploadImageUseCase;

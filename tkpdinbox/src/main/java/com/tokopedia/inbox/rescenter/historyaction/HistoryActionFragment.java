@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.historyaction;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,22 +7,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.historyaction.di.component.DaggerHistoryActionComponent;
+import com.tokopedia.inbox.rescenter.historyaction.di.component.HistoryActionComponent;
+import com.tokopedia.inbox.rescenter.historyaction.di.module.HistoryActionModule;
 import com.tokopedia.inbox.rescenter.historyaction.view.customadapter.HistoryActionAdapter;
 import com.tokopedia.inbox.rescenter.historyaction.view.model.HistoryActionViewItem;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentImpl;
-import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentPresenter;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
-public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFragmentPresenter>
+public class HistoryActionFragment extends BaseDaggerFragment
     implements HistoryActionFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -37,6 +42,9 @@ public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFr
     private ArrayList<HistoryActionViewItem> viewData;
 
     private TkpdProgressDialog normalLoading;
+
+    @Inject
+    HistoryActionFragmentImpl presenter;
 
     public static Fragment createInstance(String resolutionID) {
         HistoryActionFragment fragment = new HistoryActionFragment();
@@ -67,6 +75,22 @@ public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFr
     @Override
     public void setResolutionID(String resolutionID) {
         this.resolutionID = resolutionID;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_HISTORY_ACTION;
+    }
+
+    @Override
+    protected void initInjector() {
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        HistoryActionComponent historyAddressComponent =
+                DaggerHistoryActionComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
+                        .historyActionModule(new HistoryActionModule(this))
+                        .build();
+        historyAddressComponent.inject(this);
     }
 
     @Override
@@ -141,21 +165,6 @@ public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFr
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new HistoryActionFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
     protected void setupArguments(Bundle arguments) {
         setResolutionID(arguments.getString(EXTRA_PARAM_RESOLUTION_ID));
     }
@@ -176,18 +185,14 @@ public class HistoryActionFragment extends BasePresenterFragment<HistoryActionFr
     }
 
     @Override
-    protected void initialVar() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         viewData = new ArrayList<>();
         adapter = new HistoryActionAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(adapter);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override

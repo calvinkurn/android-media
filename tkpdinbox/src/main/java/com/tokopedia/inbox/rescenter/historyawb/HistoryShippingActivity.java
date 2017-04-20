@@ -7,17 +7,21 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.di.module.ResolutionDetailModule;
 import com.tokopedia.inbox.rescenter.historyawb.view.listener.HistoryShipping;
-import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingImpl;
 import com.tokopedia.inbox.rescenter.historyawb.view.listener.HistoryShippingViewListener;
+import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingImpl;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
 public class HistoryShippingActivity extends BasePresenterActivity<HistoryShipping>
-        implements HistoryShippingViewListener {
+        implements HistoryShippingViewListener, HasComponent<ResolutionDetailComponent> {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_ALLOW_INPUT_NEW_SHIPPING_AWB = "is_allow_input_shipping_new_awb";
@@ -116,5 +120,13 @@ public class HistoryShippingActivity extends BasePresenterActivity<HistoryShippi
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public ResolutionDetailComponent getComponent() {
+        return DaggerResolutionDetailComponent.builder()
+                .appComponent(getApplicationComponent())
+                .resolutionDetailModule(new ResolutionDetailModule())
+                .build();
     }
 }

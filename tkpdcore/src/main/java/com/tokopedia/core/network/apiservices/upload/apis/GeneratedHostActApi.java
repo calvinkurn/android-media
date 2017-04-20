@@ -44,6 +44,6 @@ public interface GeneratedHostActApi {
     Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST)
+    @POST(TkpdBaseURL.Upload.PATH_GENERATE_HOST_V2)
     Observable<Response<TkpdResponse>> generateHost3(@FieldMap Map<String, Object> params);
 }

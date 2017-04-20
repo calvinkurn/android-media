@@ -3,6 +3,7 @@ package com.tokopedia.inbox.rescenter.discussion.data.source;
 import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
+import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.discussion.data.mapper.GenerateHostMapper;
@@ -16,20 +17,19 @@ import rx.Observable;
 
 public class CloudGenerateHostSource {
     private Context context;
-    private final GenerateHostActService generateHostActService;
+    private final GeneratedHostActApi generateHostActApi;
     private final GenerateHostMapper generateHostMapper;
 
     public CloudGenerateHostSource(Context context,
-                                   GenerateHostActService generateHostActService,
+                                   GeneratedHostActApi generateHostActApi,
                                    GenerateHostMapper generateHostMapper) {
         this.context = context;
-        this.generateHostActService = generateHostActService;
+        this.generateHostActApi = generateHostActApi;
         this.generateHostMapper = generateHostMapper;
     }
 
     public Observable<GenerateHostModel> generateHost(TKPDMapParam<String, Object> params) {
-        return generateHostActService.getApi()
-                .generateHost3(AuthUtil.generateParamsNetwork2(context, params))
+        return generateHostActApi.generateHost3(AuthUtil.generateParamsNetwork2(context, params))
                 .map(generateHostMapper);
     }
 }

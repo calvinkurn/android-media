@@ -21,21 +21,21 @@ import rx.Observable;
 
 public interface ResCenterRepository {
 
-    Observable<DetailResCenter> getDetail(TKPDMapParam<String, Object> parameters);
+    Observable<DetailResCenter> getDetail(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<DiscussionModel> getConversation(TKPDMapParam<String, Object> parameters);
+    Observable<DiscussionModel> getConversation(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<LoadMoreModel> getConversationMore(TKPDMapParam<String, Object> parameters);
+    Observable<LoadMoreModel> getConversationMore(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<HistoryAwbData> getHistoryAwb(TKPDMapParam<String, Object> parameters);
+    Observable<HistoryAwbData> getHistoryAwb(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<HistoryAddressData> getHistoryAddress(TKPDMapParam<String, Object> parameters);
+    Observable<HistoryAddressData> getHistoryAddress(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<HistoryActionData> getHistoryAction(TKPDMapParam<String, Object> parameters);
+    Observable<HistoryActionData> getHistoryAction(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<ListProductDomainData> getListProduct(TKPDMapParam<String, Object> parameters);
+    Observable<ListProductDomainData> getListProduct(String resolutionID, TKPDMapParam<String, Object> parameters);
 
-    Observable<ProductDetailData> getDetailProduct(String troubleID, TKPDMapParam<String, Object> parameters);
+    Observable<ProductDetailData> getDetailProduct(String resolutionID, String troubleID, TKPDMapParam<String, Object> parameters);
 
     Observable<TrackingAwbReturProduct> getTrackingAwbReturProduct(TKPDMapParam<String, Object> parameters);
 

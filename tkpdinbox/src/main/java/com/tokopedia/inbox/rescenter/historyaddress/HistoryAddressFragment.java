@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.historyaddress;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,22 +7,28 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
+import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.historyaddress.di.component.DaggerHistoryAddressComponent;
+import com.tokopedia.inbox.rescenter.historyaddress.di.component.HistoryAddressComponent;
+import com.tokopedia.inbox.rescenter.historyaddress.di.module.HistoryAddressModule;
 import com.tokopedia.inbox.rescenter.historyaddress.view.customadapter.HistoryAddressAdapter;
 import com.tokopedia.inbox.rescenter.historyaddress.view.model.HistoryAddressViewItem;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentImpl;
-import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentPresenter;
 import com.tokopedia.inbox.rescenter.historyaddress.view.presenter.HistoryAddressFragmentView;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 3/23/17.
  */
 
-public class HistoryAddressFragment extends BasePresenterFragment<HistoryAddressFragmentPresenter>
+public class HistoryAddressFragment extends BaseDaggerFragment
     implements HistoryAddressFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
@@ -37,6 +42,9 @@ public class HistoryAddressFragment extends BasePresenterFragment<HistoryAddress
     private ArrayList<HistoryAddressViewItem> viewData;
 
     private TkpdProgressDialog normalLoading;
+
+    @Inject
+    HistoryAddressFragmentImpl presenter;
 
     public static Fragment createInstance(String resolutionID) {
         HistoryAddressFragment fragment = new HistoryAddressFragment();
@@ -141,18 +149,19 @@ public class HistoryAddressFragment extends BasePresenterFragment<HistoryAddress
     }
 
     @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_RESOLUTION_CENTER_HISTORY_ADDRESS;
     }
 
     @Override
-    protected void initialPresenter() {
-        presenter = new HistoryAddressFragmentImpl(getActivity(), this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
+    protected void initInjector() {
+        ResolutionDetailComponent resolutionDetailComponent = getComponent(ResolutionDetailComponent.class);
+        HistoryAddressComponent historyAddressComponent =
+                DaggerHistoryAddressComponent.builder()
+                        .resolutionDetailComponent(resolutionDetailComponent)
+                        .historyAddressModule(new HistoryAddressModule(this))
+                        .build();
+        historyAddressComponent.inject(this);
     }
 
     @Override
@@ -176,18 +185,14 @@ public class HistoryAddressFragment extends BasePresenterFragment<HistoryAddress
     }
 
     @Override
-    protected void initialVar() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         viewData = new ArrayList<>();
         adapter = new HistoryAddressAdapter(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(adapter);
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
