@@ -13,7 +13,7 @@ import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoView;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 
 import java.util.ArrayList;
 import java.util.HashSet;

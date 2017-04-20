@@ -17,6 +17,8 @@ import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewCompone
 import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapterListener;
+import com.tokopedia.seller.product.view.listener.CategoryPickerFragmentListener;
+import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;

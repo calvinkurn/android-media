@@ -16,8 +16,8 @@ import com.tokopedia.seller.product.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerFragment;
-import com.tokopedia.seller.product.view.fragment.EtalasePickerFragmentListener;
-import com.tokopedia.seller.product.view.fragment.EtalasePickerView;
+import com.tokopedia.seller.product.view.listener.EtalasePickerFragmentListener;
+import com.tokopedia.seller.product.view.listener.EtalasePickerView;
 
 /**
  * @author sebastianuskh on 4/5/17.
