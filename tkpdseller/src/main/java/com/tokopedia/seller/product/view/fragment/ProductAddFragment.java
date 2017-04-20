@@ -201,9 +201,9 @@ public class ProductAddFragment extends BaseDaggerFragment
     @Override
     public void startYoutubeVideoActivity(ArrayList<String> videoIds) {
         Intent intent = new Intent(getActivity(), YoutubeAddVideoActivity.class);
-        if (CommonUtils.checkCollectionNotNull(videoIds))
-            intent.putStringArrayListExtra(
-                    YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        if (CommonUtils.checkCollectionNotNull(videoIds)) {
+            intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
+        }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
     }
 }

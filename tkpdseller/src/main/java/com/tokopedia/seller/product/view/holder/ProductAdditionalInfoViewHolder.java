@@ -10,7 +10,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
-import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
@@ -26,10 +25,24 @@ import java.util.Set;
 
 public class ProductAdditionalInfoViewHolder {
 
-    private final String textVideo;
+    /**
+     * @author normansyahputa on 4/18/17.
+     *         <p>
+     *         this represent contract for {@link ProductAdditionalInfoViewHolder}
+     *         <p>
+     *         for example calling {@link ProductAddFragment#startActivityForResult(Intent, int)}
+     *         this will delefate to {@link ProductAddFragment} for doing that
+     */
+    public interface Listener {
+
+        void startYoutubeVideoActivity(ArrayList<String> videoIds);
+    }
+
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
+    private SpinnerCounterInputView preOrderSpinnerCounterInputView;
+    private LabelSwitch shareLabelSwitch;
 
     private Listener listener;
 
@@ -38,22 +51,16 @@ public class ProductAdditionalInfoViewHolder {
      */
     private Set<String> videoIds;
 
-    private String textAdd;
-
-    private SpinnerCounterInputView preOrderSpinnerCounterInputView;
-    private LabelSwitch shareLabelSwitch;
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public ProductAdditionalInfoViewHolder(View view) {
         descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
-
-        textAdd = view.getContext().getString(R.string.etalase_picker_add_etalase_add_button_dialog);
-        textVideo = view.getContext().getString(R.string.video);
-
         preOrderSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_pre_order);
-        shareLabelSwitch = (LabelSwitch)  view.findViewById(R.id.label_switch_share);
-        addUrlContainerViewHolder = new AddUrlContainerViewHolder(view);
+        shareLabelSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_share);
 
         videoIds = new HashSet<>();
 
@@ -61,9 +68,7 @@ public class ProductAdditionalInfoViewHolder {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.checkNotNull(listener)) {
-                    listener.startYoutubeVideoActivity(
-                            new ArrayList<>(videoIds)
-                    );
+                    listener.startYoutubeVideoActivity(new ArrayList<>(videoIds));
                 }
             }
         });
@@ -71,10 +76,6 @@ public class ProductAdditionalInfoViewHolder {
 
     public String getDescription() {
         return descriptionEditText.getText().toString();
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -101,26 +102,11 @@ public class ProductAdditionalInfoViewHolder {
 
     private void setLabelViewText(ArrayList<String> videoIds) {
         if (CommonUtils.checkCollectionNotNull(videoIds)) {
-            String size = videoIds.size() + " " + textVideo;
-            labelAddVideoView.setContent(size);
+            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIds.size()));
         } else {
-            labelAddVideoView.setContent(textAdd);
+            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.etalase_picker_add_etalase_add_button_dialog));
         }
     }
-
-
-    /**
-     * @author normansyahputa on 4/18/17.
-     *         <p>
-     *         this represent contract for {@link ProductAdditionalInfoViewHolder}
-     *         <p>
-     *         for example calling {@link ProductAddFragment#startActivityForResult(Intent, int)}
-     *         this will delefate to {@link ProductAddFragment} for doing that
-     */
-    public interface Listener {
-
-        void startYoutubeVideoActivity(ArrayList<String> videoIds);
- 	}
 
     public int getPreOrderUnit() {
         return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());

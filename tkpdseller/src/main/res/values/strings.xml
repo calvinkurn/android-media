@@ -401,5 +401,6 @@
     <string name="url_video">URL Video</string>
     <string name="error_no_video_url_name">Url Video harus diisi</string>
     <string name="youtube_add_url_title">Tambah URL Video</string>
-    <string name="video">Video</string>
+    <string name="product_label_video">Video</string>
+    <string name="product_video_count">%1d Video</string>
 </resources>
