@@ -488,12 +488,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-                browseView.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        fetchCategoriesHeader(departementId);
-                    }
-                });
+                //only show ace products
             }
 
             @Override
