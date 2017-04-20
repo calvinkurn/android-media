@@ -140,9 +140,22 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     /**
      * Call this to get image from image gallery and can select more that one.
+     * alias to function moveToImageGalleryCamera
      *
      * @param context non null object
      */
+    public static void moveToImageGallery(AppCompatActivity context, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, position, false, maxSelection, false);
+    }
+
+    public static void moveToImageGallery(Context context, android.app.Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection, false);
+    }
+
+    public static void moveToImageGallery(Context context, Fragment fragment, int position, int maxSelection) {
+        moveToImageGalleryCamera(context, fragment, position, false, maxSelection, false);
+    }
+
     public static void moveToImageGallery(AppCompatActivity context, int position, int maxSelection, boolean compressToTkpd) {
         moveToImageGalleryCamera(context, position, false, maxSelection, compressToTkpd);
     }
@@ -158,9 +171,34 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     /**
      * Call this to get image from image gallery
      * and force open camera.
-     *
-     * @param context non null object
+     * without compressToTkpd
      */
+    public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, android.app.Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    public static void moveToImageGalleryCamera(Context context, Fragment fragment,
+                                                int position,
+                                                boolean forceOpenCamera,
+                                                int maxImageSelection){
+        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+    }
+
+    /**
+     * Call this to get image from image gallery
+     * and force open camera.
+     * with compressToTkpd parameter
+     * @param compressToTkpd set true, will compress move the image to tkpd path after the images are selected.
+     */
+
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
                                                 int maxImageSelection,
                                                 boolean compressToTkpd) {
@@ -433,8 +471,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
-            if (compressToTkpd) {
-                String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+            if (compressToTkpd ) {
+                String fileNameToMove = FileUtils.generateUniqueFileName(path);
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                         fileNameToMove);
@@ -459,7 +497,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.getFileNameWithoutExt(path);
+                    String fileNameToMove = FileUtils.generateUniqueFileName(path);
                     File photo = FileUtils.writeImageToTkpdPath(
                             FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                             fileNameToMove);
@@ -562,8 +600,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
-                                if (compressToTkpd) {
-                                    String fileNameToMove = FileUtils.getFileNameWithoutExt(imagePathCamera);
+                                if (compressToTkpd ) {
+                                    String fileNameToMove = FileUtils.generateUniqueFileName(imagePathCamera);
                                     File photo = FileUtils.writeImageToTkpdPath(
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                             fileNameToMove);
@@ -627,8 +665,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         try {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
-                            if (compressToTkpd) {
-                                String fileNameToMove = FileUtils.getFileNameWithoutExt(cacheFilePath);
+                            if (compressToTkpd ) {
+                                String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
                                 File photo = FileUtils.writeImageToTkpdPath(
                                         FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
                                         fileNameToMove);

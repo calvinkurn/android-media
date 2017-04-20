@@ -19,25 +19,25 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
     @Override
     public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
-            FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
-            new Subscriber<CatalogDataModel>() {
-                @Override
-                public void onCompleted() {
+                FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
+                new Subscriber<CatalogDataModel>() {
+                    @Override
+                    public void onCompleted() {
 
-                }
+                    }
 
-                @Override
-                public void onError(Throwable e) {
-                    getView().showError(e);
-                }
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showError(e);
+                    }
 
-                @Override
-                public void onNext(CatalogDataModel catalogDataModel) {
-                    getView().successFetchData(
-                            catalogDataModel.getResult().getCatalogs(),
-                            catalogDataModel.getResult().getTotalRecord());
-                }
-            });
+                    @Override
+                    public void onNext(CatalogDataModel catalogDataModel) {
+                        getView().successFetchData(
+                                catalogDataModel.getResult().getCatalogs(),
+                                catalogDataModel.getResult().getTotalRecord());
+                    }
+                });
     }
 
     public void detachView() {

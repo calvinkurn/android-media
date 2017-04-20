@@ -29,6 +29,7 @@ import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -460,8 +461,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                         onAddInstagram();
                         break;
                     case R.id.action_gallery:
-                        AppCompatActivity activity = (AppCompatActivity) getActivity();
-                        ImageGalleryEntry.moveToImageGallery(activity, 0);
+                        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
                     case R.id.action_camera:
                         onAddGallery();
@@ -473,8 +473,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
     private void onAddGallery() {
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        ImageGalleryEntry.moveToImageGalleryCamera(activity);
+        GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, true, -1);
     }
 
     private void onAddInstagram() {

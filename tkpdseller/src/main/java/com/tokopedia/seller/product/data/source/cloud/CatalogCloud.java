@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * @author hendry on 4/4/17.
  */
-@ActivityScope
+
 public class CatalogCloud {
 
     private static final int DEFAULT_START = 1;

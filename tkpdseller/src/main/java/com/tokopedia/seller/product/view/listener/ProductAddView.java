@@ -1,6 +1,10 @@
 package com.tokopedia.seller.product.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
+import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
+
+import java.util.List;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 
@@ -14,4 +18,10 @@ public interface ProductAddView extends CustomerView {
     void updateProductScoring();
 
     ValueIndicatorScoreModel getValueIndicatorScoreModel();
+    void showCatalogError(Throwable e);
+    void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows);
+
+    void showCatRecommError(Throwable e);
+    void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList);
+
 }

@@ -30,7 +30,7 @@
     <!-- Product -->
     <dimen name="product_margin_cards">@dimen/top_ads_dashboard_margin_cards</dimen>
 
-    <dimen name="image_select_view_height">160dp</dimen>
+    <dimen name="image_select_view_height">150dp</dimen>
 
     <!-- ChartView -->
 
