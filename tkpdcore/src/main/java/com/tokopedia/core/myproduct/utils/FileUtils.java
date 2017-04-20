@@ -30,7 +30,6 @@ public class FileUtils {
         return root+"/Android/data/"+ MainApplication.PACKAGE_NAME+"/"+(System.currentTimeMillis() / 1000L)+new Random().nextInt(1000) + "/";
     }
 
-
     public static String getFolderPathForUploadNoRand(String root) {
         return root + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
     }

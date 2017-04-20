@@ -39,8 +39,22 @@ public class ProductInfoViewHolder {
     private LabelView catalogLabelView;
     private View categoryRecommView;
 
-    private ProductAddFragment fragment;
-    private String name;
+    private ProductInfoViewHolder.Listener listener;
+
+    public interface Listener {
+        void onCategoryPickerClicked(int categoryId);
+
+        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
+
+        void onProductNameChanged(String productName);
+
+        void onCategoryChanged(int categoryId);
+    }
+
+    public void setListener(ProductInfoViewHolder.Listener listener) {
+        this.listener = listener;
+    }
+
     private int categoryId;
     private int catalogId = -1;
     private final RadioGroup radioGroupCategoryRecomm;
@@ -61,8 +75,7 @@ public class ProductInfoViewHolder {
         this.categoryId = categoryId;
     }
 
-    public ProductInfoViewHolder(final ProductAddFragment fragment, View view) {
-        this.fragment = fragment;
+    public ProductInfoViewHolder(View view) {
         categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
         radioGroupCategoryRecomm = (RadioGroup) categoryRecommView.findViewById(R.id.radio_group_category_recomm);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
@@ -71,13 +84,17 @@ public class ProductInfoViewHolder {
         categoryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CategoryPickerActivity.start(fragment, fragment.getActivity(), REQUEST_CODE_CATEGORY, categoryId);
+                if (listener != null) {
+                    listener.onCategoryPickerClicked(categoryId);
+                }
             }
         });
         catalogLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CatalogPickerActivity.start(fragment, fragment.getActivity(), REQUEST_CODE_CATALOG, nameEditText.getText().toString(), categoryId, catalogId);
+                if (listener != null) {
+                    listener.onCatalogPickerClicked(nameEditText.getText().toString(), categoryId, catalogId);
+                }
             }
         });
         nameEditText.addTextChangedListener(new TextWatcher() {
@@ -93,17 +110,25 @@ public class ProductInfoViewHolder {
 
             @Override
             public void afterTextChanged(Editable s) {
-                hideAndClearCatalog();
-                hideAndClearCategoryRecomm();
-                if (s!= null && s.length() >= 2) {
-                    fragment.getPresenter().getCategoryRecommendation(s.toString());
+                if (s != null && s.length() >= 2) {
+                    if (listener != null) {
+                        listener.onProductNameChanged(s.toString());
+                    }
                 }
             }
         });
         radioGroupCategoryRecomm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                categoryId = checkedId;
+                if (checkedId != categoryId) {
+                    categoryId = checkedId;
+                    if (categoryId <= 0) {
+                        hideAndClearCatalog();
+                    }
+                    if (listener != null) {
+                        listener.onCategoryChanged(categoryId);
+                    }
+                }
                 View radioButton = group.findViewById(checkedId);
                 if (radioButton == null) {
                     categoryLabelView.resetContentText();
@@ -143,12 +168,21 @@ public class ProductInfoViewHolder {
     private void processCategory(Intent data) {
         List<CategoryViewModel> listCategory = Parcels.unwrap(data.getParcelableExtra(CategoryPickerActivity.CATEGORY_RESULT_LEVEL));
         String category = "";
+        int previousCategoryId = categoryId;
         for (int i = 0; i < listCategory.size(); i++) {
             CategoryViewModel viewModel = listCategory.get(i);
             categoryId = viewModel.getId();
             category += viewModel.getName();
             if (i < listCategory.size() - 1) {
                 category += "\n";
+            }
+        }
+        if (previousCategoryId != categoryId) {
+            if (categoryId <= 0) {
+                hideAndClearCatalog();
+            }
+            if (listener != null) {
+                listener.onCategoryChanged(categoryId);
             }
         }
         categoryLabelView.setContent(category);
@@ -170,35 +204,39 @@ public class ProductInfoViewHolder {
     }
 
     public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
-        // TODO
-        catalogLabelView.setVisibility(View.VISIBLE);
+        if (catalogViewModelList == null || catalogViewModelList.size() == 0) {
+            hideAndClearCatalog();
+        } else {
+            catalogId = -1;
+            catalogLabelView.setVisibility(View.VISIBLE);
+        }
     }
 
-    private void hideAndClearCategoryRecomm(){
+    private void hideAndClearCategoryRecomm() {
         categoryRecommView.setVisibility(View.GONE);
     }
 
-    private void hideAndClearCatalog(){
+    public void hideAndClearCatalog() {
         catalogLabelView.setVisibility(View.GONE);
         catalogId = -1;
     }
 
-    public void showCatRecommError(){
+    public void showCatRecommError() {
         hideAndClearCategoryRecomm();
     }
 
     public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
-        if (categoryPredictionList== null || categoryPredictionList.size() == 0) {
+        if (categoryPredictionList == null || categoryPredictionList.size() == 0) {
             hideAndClearCategoryRecomm();
             return;
         }
         int predictionSize = categoryPredictionList.size();
         // create the radio buttons
         if (radioGroupCategoryRecomm.getChildCount() == 0 ||
-                predictionSize != radioGroupCategoryRecomm.getChildCount() ) {
+                predictionSize != radioGroupCategoryRecomm.getChildCount()) {
             radioGroupCategoryRecomm.removeAllViews();
-            for (int i=0; i<predictionSize; i++) {
-                LayoutInflater inflater = LayoutInflater.from(fragment.getContext());
+            LayoutInflater inflater = LayoutInflater.from(radioGroupCategoryRecomm.getContext());
+            for (int i = 0; i < predictionSize; i++) {
                 RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.item_basic_radio_button, radioGroupCategoryRecomm, false);
                 radioGroupCategoryRecomm.addView(radioButton);
             }
@@ -207,7 +245,7 @@ public class ProductInfoViewHolder {
         radioGroupCategoryRecomm.clearCheck();
 
         // update values
-        for (int i=0; i<predictionSize; i++) {
+        for (int i = 0; i < predictionSize; i++) {
             RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.getChildAt(i);
             radioButton.setText(categoryPredictionList.get(i).getPrintedString());
             radioButton.setId(categoryPredictionList.get(i).getLastCategoryId());

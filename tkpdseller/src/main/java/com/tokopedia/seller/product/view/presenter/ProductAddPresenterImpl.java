@@ -1,8 +1,6 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
@@ -25,6 +23,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -38,9 +37,11 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
 
     private QueryListener getCategoryRecomListener;
-    private Subscription subscriptionCategoryRecomm;
+    private Subscription subscriptionDebounceCategoryRecomm;
+    private CatalogQueryListener getCatalogListener;
+    private Subscription subscriptionDebounceCatalog;
 
-    public static final int TIME_DELAY = 700;
+    public static final int TIME_DELAY = 500;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    AddProductUseCase addProductUseCase,
@@ -53,10 +54,11 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
         createCategoryRecommSubscriber();
+        createCatalogSubscriber();
     }
 
     private void createCategoryRecommSubscriber(){
-        subscriptionCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
+        subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
                 getCategoryRecomListener = new QueryListener() {
@@ -69,6 +71,23 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSubscriberDebounceGetCategoryRecomm());
+    }
+
+    private void createCatalogSubscriber(){
+        subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
+            @Override
+            public void call(final Subscriber<? super CatalogQuery> subscriber) {
+                getCatalogListener = new CatalogQueryListener() {
+
+                    @Override
+                    public void getQuery(CatalogQuery catalogQuery) {
+                        subscriber.onNext(catalogQuery);
+                    }
+                };
+            }
+        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceGetCatalog());
     }
 
     @NonNull
@@ -92,8 +111,29 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         };
     }
 
-    @Override
-    public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
+    @NonNull
+    private Subscriber<CatalogQuery> getSubscriberDebounceGetCatalog() {
+        return new Subscriber<CatalogQuery>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(CatalogQuery catalogQuery) {
+                getCatalogFromServer(catalogQuery.getKeyword(),
+                        catalogQuery.getCategoryId(),
+                        catalogQuery.getStart(),
+                        catalogQuery.getRow());
+            }
+        };
+    }
+
+    public void getCatalogFromServer(String keyword, int departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {
@@ -121,7 +161,13 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         if (getCategoryRecomListener != null) {
             getCategoryRecomListener.getQueryString(productTitle);
         }
+    }
 
+    @Override
+    public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
+        if (getCatalogListener != null) {
+            getCatalogListener.getQuery(new CatalogQuery(keyword,departmentId,start,rows));
+        }
     }
 
     private void getCategoryRecommendationFromServer(String productTitle, int expectRow) {
@@ -221,10 +267,45 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         void getQueryString(String string);
     }
 
+    private interface CatalogQueryListener {
+        void getQuery(CatalogQuery catalogQuery);
+    }
+
+    public static class CatalogQuery{
+        String keyword;
+        int categoryId;
+        int start;
+        int row;
+
+        public CatalogQuery(String keyword, int categoryId, int start, int row) {
+            this.keyword = keyword;
+            this.categoryId = categoryId;
+            this.start = start;
+            this.row = row;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+    }
+
     public void detachView(){
         super.detachView();
         addProductUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
-        subscriptionCategoryRecomm.unsubscribe();
+        subscriptionDebounceCategoryRecomm.unsubscribe();
+        subscriptionDebounceCatalog.unsubscribe();
     }
 }

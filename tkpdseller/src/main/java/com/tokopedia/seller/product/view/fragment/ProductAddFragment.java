@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +25,11 @@ import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
+import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
+import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
+import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
+import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.product.view.holder.ProductAdditionalInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
@@ -32,6 +41,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,9 +58,12 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductAddFragment extends BaseDaggerFragment
-        implements ProductAddView, ProductAdditionalInfoViewHolder.Listener {
+        implements ProductAddView, ProductAdditionalInfoViewHolder.Listener,
+        ProductImageViewHolder.Listener,
+        ProductInfoViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+
     @Inject
     public ProductAddPresenter presenter;
     private ProductScoreViewHolder productScoreViewHolder;
@@ -78,8 +91,10 @@ public class ProductAddFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
-        productInfoViewHolder = new ProductInfoViewHolder(this, view);
-        productImageViewHolder = new ProductImageViewHolder(this, view);
+        productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info));
+        productInfoViewHolder.setListener(this);
+        productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
+        productImageViewHolder.setListener(this);
         productDetailViewHolder = new ProductDetailViewHolder(this, view);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
@@ -88,10 +103,6 @@ public class ProductAddFragment extends BaseDaggerFragment
 
         presenter.attachView(this);
         return view;
-    }
-
-    public ProductAddPresenter getPresenter() {
-        return presenter;
     }
 
     private void setSubmitButtonListener(View view) {
@@ -173,8 +184,51 @@ public class ProductAddFragment extends BaseDaggerFragment
         return valueIndicatorScoreModel;
     }
 
-    public void goToGalleryPermissionCheck(int imagePosition) {
+    @Override
+    public void onAddImagePickerClicked(int imagePosition) {
         ProductAddFragmentPermissionsDispatcher.goToGalleryWithCheck(this, imagePosition);
+    }
+
+    @Override
+    public void onImagePickerItemClicked(int position, boolean isPrimary) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary);
+        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
+        ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+            @Override
+            public void clickEditImagePath(int position) {
+                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+            }
+
+            @Override
+            public void clickEditImageDesc(int position) {
+                String currentDescription = productImageViewHolder.getImagesSelectView().getImageAt(position).getDescription();
+                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
+                fragment.show(fragment.getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
+                fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
+                    @Override
+                    public void onImageDescDialogOK(String newDescription) {
+                        productImageViewHolder.getImagesSelectView().changeImageDesc(newDescription);
+                    }
+                });
+            }
+
+            @Override
+            public void clickEditImagePrimary(int position) {
+                productImageViewHolder.getImagesSelectView().changeImagePrimary(true, position);
+            }
+
+            @Override
+            public void clickRemoveImage(int positions) {
+                productImageViewHolder.getImagesSelectView().removeImage();
+            }
+        });
+    }
+
+    @Override
+    public void onResolutionImageCheckFailed(String uri) {
+        Snackbar.make(getView(),
+                getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
     }
 
     @TargetApi(16)
@@ -220,23 +274,50 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     @Override
     public void showCatalogError(Throwable e) {
-        // TODO
+        productInfoViewHolder.hideAndClearCatalog();
     }
 
     @Override
     public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
-        // TODO
         productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
     }
 
     @Override
     public void showCatRecommError(Throwable e) {
-        // TODO category recomm error
         productInfoViewHolder.showCatRecommError();
     }
 
     @Override
     public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
+    }
+
+
+    @Override
+    public void onCategoryPickerClicked(int categoryId) {
+        CategoryPickerActivity.start(this, getActivity(),
+                ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
+    }
+
+    @Override
+    public void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId) {
+        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG,
+                keyword, depId, selectedCatalogId);
+    }
+
+    @Override
+    public void onProductNameChanged(String productName) {
+        presenter.getCategoryRecommendation(productName);
+        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+    }
+
+    @Override
+    public void onCategoryChanged(int categoryId) {
+        // when category change, check if catalog exists
+        checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
+    }
+
+    private void checkIfCatalogExist(String productName, int categoryId) {
+        presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
 }

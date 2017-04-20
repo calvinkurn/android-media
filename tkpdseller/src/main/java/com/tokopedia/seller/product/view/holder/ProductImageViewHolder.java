@@ -1,19 +1,12 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
-import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
-import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
-import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
@@ -30,23 +23,38 @@ public class ProductImageViewHolder {
 
     public static final int MIN_IMG_RESOLUTION = 300;
     private ImagesSelectView imagesSelectView;
-    private ProductAddFragment fragment;
 
-    public ProductImageViewHolder(final ProductAddFragment fragment, View view) {
-        this.fragment = fragment;
+    private Listener listener;
+
+    public interface Listener {
+        void onAddImagePickerClicked(int position);
+
+        void onImagePickerItemClicked(int position, boolean isPrimary);
+
+        void onResolutionImageCheckFailed(String uri);
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public ProductImageViewHolder(View view) {
 
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
 
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
-                fragment.goToGalleryPermissionCheck(position);
+                if (listener != null) {
+                    listener.onAddImagePickerClicked(position);
+                }
             }
 
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
-                showEditImageDialog(fragment.getActivity().getSupportFragmentManager(), position,
-                        imageSelectModel.isPrimary());
+                if (listener != null) {
+                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary());
+                }
             }
         });
         imagesSelectView.setOnCheckResolutionListener(new ImagesSelectView.OnCheckResolutionListener() {
@@ -57,51 +65,15 @@ public class ProductImageViewHolder {
 
             @Override
             public void resolutionCheckFailed(String uri) {
-                if (fragment.getView() == null) {
-                    return;
+                if (listener != null) {
+                    listener.onResolutionImageCheckFailed(uri);
                 }
-                Snackbar.make(fragment.getView(),
-                        fragment.getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
             }
         });
     }
 
     public ImagesSelectView getImagesSelectView() {
         return imagesSelectView;
-    }
-
-    public void showEditImageDialog(FragmentManager fm, int position, boolean isPrimary) {
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary);
-        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
-        ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
-            @Override
-            public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery((AppCompatActivity) fragment.getActivity(), position, 1, true);
-            }
-
-            @Override
-            public void clickEditImageDesc(int position) {
-                String currentDescription = imagesSelectView.getImageAt(position).getDescription();
-                ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
-                fragment.show(fragment.getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
-                fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
-                    @Override
-                    public void onImageDescDialogOK(String newDescription) {
-                        imagesSelectView.changeImageDesc(newDescription);
-                    }
-                });
-            }
-
-            @Override
-            public void clickEditImagePrimary(int position) {
-                imagesSelectView.changeImagePrimary(true, position);
-            }
-
-            @Override
-            public void clickRemoveImage(int positions) {
-                imagesSelectView.removeImage();
-            }
-        });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
