@@ -672,7 +672,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess() {
                         viewListener.finishLoadingWishList();
                         viewListener.showDialog(createSuccessWishListDialog(context));
-                        viewListener.updateWishListStatus(1);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_IN_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -694,7 +694,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
-                        viewListener.updateWishListStatus(0);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }

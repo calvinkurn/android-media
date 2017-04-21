@@ -24,6 +24,7 @@
         android:background="@drawable/ic_wishlist"
         android:layout_alignRight="@id/product_image"
         android:layout_alignTop="@id/product_image"
+        android:visibility="gone"
         />
 
     <TextView

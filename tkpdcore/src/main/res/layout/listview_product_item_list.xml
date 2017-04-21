@@ -53,6 +53,7 @@
                     android:layout_height="24dp"
                     android:background="@drawable/ic_wishlist"
                     android:layout_marginLeft="28dp"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>
