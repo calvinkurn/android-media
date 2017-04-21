@@ -54,6 +54,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             checkViewAttached();
             getView().onSuccessAddProduct();
             getView().notificationComplete();
+            getView().sendBroadcast(addProductDomainModel);
         }
     }
 }

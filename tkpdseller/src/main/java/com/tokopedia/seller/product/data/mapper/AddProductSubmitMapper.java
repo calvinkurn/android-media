@@ -21,6 +21,7 @@ public class AddProductSubmitMapper implements Func1<AddProductSubmitServiceMode
         domainModel.setProductDest(result.getProductDest());
         domainModel.setProductName(result.getProductName());
         domainModel.setProductUrl(result.getProductUrl());
+        domainModel.setProductPrimaryPic(result.getProductPrimaryPic());
         return domainModel;
     }
 }

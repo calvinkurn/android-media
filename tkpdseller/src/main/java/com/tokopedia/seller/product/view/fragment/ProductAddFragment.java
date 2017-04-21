@@ -183,7 +183,11 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessStoreProductToDraft(long productId) {
-        listener.startUploadProduct(productId);
+        if (productAdditionalInfoViewHolder.isShare()) {
+            listener.startUploadProductWithShare(productId);
+        } else {
+            listener.startUploadProduct(productId);
+        }
     }
 
     public void goToGalleryPermissionCheck(int imagePosition) {
@@ -233,5 +237,7 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     public interface Listener {
         void startUploadProduct(long productId);
+
+        void startUploadProductWithShare(long productId);
     }
 }

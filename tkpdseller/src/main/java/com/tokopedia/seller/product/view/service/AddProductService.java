@@ -5,15 +5,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.core.app.BaseService;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
+import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.view.presenter.AddProductServiceListener;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 
@@ -83,6 +86,19 @@ public class AddProductService extends BaseService implements AddProductServiceL
     public void notificationComplete() {
         Notification notification = buildCompleteNotification();
         notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    @Override
+    public void sendBroadcast(AddProductDomainModel domainModel) {
+        Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        Bundle bundle = new Bundle();
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE);
+        bundle.putString(TkpdState.ProductService.PRODUCT_NAME, domainModel.getProductName());
+        bundle.putString(TkpdState.ProductService.IMAGE_URI, domainModel.getProductPrimaryPic());
+        bundle.putString(TkpdState.ProductService.PRODUCT_URI, domainModel.getProductUrl());
+        bundle.putString(TkpdState.ProductService.PRODUCT_DESCRIPTION, domainModel.getProductDesc());
+        result.putExtras(bundle);
+        sendBroadcast(result);
     }
 
     private void buildBaseNotification(String productName) {

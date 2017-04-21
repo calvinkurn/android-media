@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
@@ -41,6 +42,13 @@ public class ProductAddActivity extends TActivity
     @Override
     public void startUploadProduct(long productId) {
         startService(AddProductService.getIntent(this, productId));
+        finish();
+    }
+
+    @Override
+    public void startUploadProductWithShare(long productId) {
+        startService(AddProductService.getIntent(this, productId));
+        startActivity(ProductInfoActivity.createInstance(this));
         finish();
     }
 }
