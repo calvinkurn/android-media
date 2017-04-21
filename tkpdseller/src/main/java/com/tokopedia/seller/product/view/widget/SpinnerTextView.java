@@ -92,6 +92,13 @@ public class SpinnerTextView extends FrameLayout {
         });
     }
 
+    public void setSpinnerPosition(int position) {
+        if (position >= 0 && position < values.length) {
+            selectionIndex = position;
+            textAutoComplete.setText(entries[position]);
+        }
+    }
+
     public void setHint(String hintText) {
         textInputLayout.setHint(hintText);
         invalidate();
@@ -119,6 +126,7 @@ public class SpinnerTextView extends FrameLayout {
 
     private void updateEntries(String[] entries) {
         if (entries != null) {
+            this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
             textAutoComplete.setText(entries[selectionIndex]);

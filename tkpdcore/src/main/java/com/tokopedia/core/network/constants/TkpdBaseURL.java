@@ -265,7 +265,8 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-shipment/";
         public static final String URL_NOTES = BASE_DOMAIN + "v4/notes/";
         public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
-        public static final String URL_SHOP = BASE_DOMAIN + "v4/shop/";
+        public static final String PATH_SHOP = "v4/shop/";
+        public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
         public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
 
         public static final String PATH_CHECK_DOMAIN = "check_domain.pl";

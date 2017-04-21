@@ -1,8 +1,13 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
@@ -10,6 +15,7 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
@@ -17,13 +23,13 @@ import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProduct
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -35,6 +41,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
     private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
+    private final ShopInfoUseCase shopInfoUseCase;
 
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
@@ -47,17 +54,19 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
                                    AddProductUseCase addProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
-                                   ProductScoringUseCase productScoringUseCase) {
+                                   ProductScoringUseCase productScoringUseCase,
+                                   ShopInfoUseCase shopInfoUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.addProductUseCase = addProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
+        this.shopInfoUseCase = shopInfoUseCase;
         createCategoryRecommSubscriber();
         createCatalogSubscriber();
     }
 
-    private void createCategoryRecommSubscriber(){
+    private void createCategoryRecommSubscriber() {
         subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -73,7 +82,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
                 .subscribe(getSubscriberDebounceGetCategoryRecomm());
     }
 
-    private void createCatalogSubscriber(){
+    private void createCatalogSubscriber() {
         subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
             @Override
             public void call(final Subscriber<? super CatalogQuery> subscriber) {
@@ -164,9 +173,34 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
     }
 
     @Override
+    public void getShopInfo(String userId, String deviceId, String shopId) {
+        shopInfoUseCase.execute(
+                ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId),
+                new Subscriber<ShopModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showErrorGetShopInfo(e);
+                    }
+
+                    @Override
+                    public void onNext(ShopModel shopModel) {
+                        boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
+                        boolean isFreeReturn = shopModel.info.isFreeReturns();
+                        getView().showGoldMerchant(isGoldMerchant);
+                        getView().showFreeReturn(isFreeReturn);
+                    }
+                });
+    }
+
+    @Override
     public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
         if (getCatalogListener != null) {
-            getCatalogListener.getQuery(new CatalogQuery(keyword,departmentId,start,rows));
+            getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
         }
     }
 
@@ -221,7 +255,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
             @Override
             public void onNext(DataScoringProductView dataScoringProductView) {
                 checkViewAttached();
-                if(dataScoringProductView != null) {
+                if (dataScoringProductView != null) {
                     getView().onSuccessGetScoringProduct(dataScoringProductView);
                 }
             }
@@ -271,7 +305,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         void getQuery(CatalogQuery catalogQuery);
     }
 
-    public static class CatalogQuery{
+    public static class CatalogQuery {
         String keyword;
         int categoryId;
         int start;
@@ -301,10 +335,14 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         }
     }
 
-    public void detachView(){
+    public void detachView() {
         super.detachView();
         addProductUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
+        fetchCatalogDataUseCase.unsubscribe();
+        getCategoryRecommUseCase.unsubscribe();
+        shopInfoUseCase.unsubscribe();
+
         subscriptionDebounceCategoryRecomm.unsubscribe();
         subscriptionDebounceCatalog.unsubscribe();
     }

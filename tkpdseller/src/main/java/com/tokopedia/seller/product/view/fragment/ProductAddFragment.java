@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +16,10 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
@@ -27,6 +27,7 @@ import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -62,7 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class ProductAddFragment extends BaseDaggerFragment
         implements ProductAddView, ProductAdditionalInfoViewHolder.Listener,
         ProductImageViewHolder.Listener,
-        ProductInfoViewHolder.Listener {
+        ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
@@ -97,13 +98,18 @@ public class ProductAddFragment extends BaseDaggerFragment
         productInfoViewHolder.setListener(this);
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        productDetailViewHolder = new ProductDetailViewHolder(this, view);
+        productDetailViewHolder = new ProductDetailViewHolder(view);
+        productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
         setSubmitButtonListener(view);
         productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
         presenter.attachView(this);
+
+        presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
+                                GCMHandler.getRegistrationId(getContext()),
+                                SessionHandler.getShopID(getContext()));
         return view;
     }
 
@@ -299,6 +305,22 @@ public class ProductAddFragment extends BaseDaggerFragment
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
     }
 
+    @Override
+    public void showErrorGetShopInfo(Throwable e) {
+
+    }
+
+    @Override
+    public void showGoldMerchant(boolean isGoldMerchant) {
+        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.updateViewGoldMerchant(isGoldMerchant);
+    }
+
+    @Override
+    public void showFreeReturn(boolean isFreeReturn) {
+        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+    }
+
 
     @Override
     public void onCategoryPickerClicked(int categoryId) {
@@ -326,5 +348,17 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     private void checkIfCatalogExist(String productName, int categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
+    }
+
+    @Override
+    public void onUSDClickedNotAllowed() {
+        Snackbar.make(getView(),
+                getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onEtalaseViewClicked() {
+        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+        this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 }

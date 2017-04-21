@@ -11,12 +11,15 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRecommRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
+import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.UploadProductRepositoryImpl;
 import com.tokopedia.seller.product.data.source.GenerateHostDataSource;
 import com.tokopedia.seller.product.data.source.CatalogDataSource;
@@ -24,11 +27,13 @@ import com.tokopedia.seller.product.data.source.CategoryRecommDataSource;
 import com.tokopedia.seller.product.data.source.ImageProductUploadDataSource;
 import com.tokopedia.seller.product.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.data.source.ProductScoreDataSource;
+import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
 import com.tokopedia.seller.product.data.source.cloud.api.MerlinApi;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
+import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
@@ -37,12 +42,14 @@ import com.tokopedia.seller.product.domain.CategoryRecommRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
+import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenterImpl;
 
@@ -63,9 +70,11 @@ public class ProductAddModule {
                                                    AddProductUseCase addProductUseCase,
                                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
-                                                   ProductScoringUseCase productScoringUseCase){
+                                                   ProductScoringUseCase productScoringUseCase,
+                                                   ShopInfoUseCase shopInfoUseCase){
         return new ProductAddPresenterImpl(saveDraftProductUseCase, addProductUseCase,
-                fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase);
+                fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
+                shopInfoUseCase);
     }
 
     @ProductAddScope
@@ -152,6 +161,25 @@ public class ProductAddModule {
     @Provides
     MerlinApi provideMerlinApi(@MerlinQualifier Retrofit retrofit){
         return retrofit.create(MerlinApi.class);
+    }
+
+    // FOR SHOP_INFO
+    @ProductAddScope
+    @Provides
+    ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource){
+        return new ShopInfoRepositoryImpl(shopInfoDataSource);
+    }
+
+    @ProductAddScope
+    @Provides
+    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
+    }
+
+    @ProductAddScope
+    @Provides
+    SimpleDataResponseMapper<ShopModel> provideShopModelMapper(){
+        return new SimpleDataResponseMapper<>();
     }
 
 }

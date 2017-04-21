@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Info {
 
+    public static final String FREE_RETURNS = "Free Returns";
     @SerializedName("shop_status_title")
     @Expose
     public String shopStatusTitle;
@@ -101,5 +102,18 @@ public class Info {
     @SerializedName("badges")
     @Expose
     public List<Badge> badges = new ArrayList<>();
+
+    public boolean isFreeReturns(){
+        boolean isFreeReturn = false;
+        if (badges != null) {
+            for (int i = 0, sizei = badges.size(); i < sizei; i++) {
+                Badge badge = badges.get(i);
+                if (badge.getTitle().equals(FREE_RETURNS)) {
+                    isFreeReturn = true;
+                }
+            }
+        }
+        return isFreeReturn;
+    }
 
 }
