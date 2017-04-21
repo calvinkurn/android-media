@@ -90,7 +90,8 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/notes_voucher"
                     android:textColor="@color/digital_voucher_notes"
-                    android:textSize="@dimen/fontvs"/>
+                    android:textSize="@dimen/fontvs"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 
@@ -118,7 +119,7 @@
                     android:layout_marginLeft="@dimen/margin_small"
                     android:layout_marginStart="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
-                    android:background="@drawable/digital_grey_button_rounded"
+                    android:background="@drawable/digital_white_grey_button_rounded"
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/cancel_voucher"

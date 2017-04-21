@@ -11,6 +11,7 @@ import com.tokopedia.transaction.cart.interactor.data.IShipmentCartDataStore;
 import com.tokopedia.transaction.cart.interactor.data.entity.CalculateShipmentEntity;
 import com.tokopedia.transaction.cart.interactor.data.entity.EditShipmentEntity;
 import com.tokopedia.transaction.cart.interactor.data.entity.ShipmentEntity;
+import com.tokopedia.transaction.cart.interactor.exception.WrongEditCartException;
 import com.tokopedia.transaction.cart.model.savelocation.SaveLocationData;
 
 import org.json.JSONException;
@@ -125,7 +126,8 @@ public class CloudShipmentCartDataStore implements IShipmentCartDataStore {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
                             } else {
-                                throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                throw new WrongEditCartException(response.body()
+                                        .getErrorMessageJoined());
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {
@@ -183,7 +185,8 @@ public class CloudShipmentCartDataStore implements IShipmentCartDataStore {
                                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_NULL_DATA);
                                 }
                             } else {
-                                throw new RuntimeException(response.body().getErrorMessages().get(0));
+                                throw new WrongEditCartException(response.body()
+                                        .getErrorMessages().get(0));
                             }
                         } else {
                             new ErrorHandler(new ErrorListener() {

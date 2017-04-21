@@ -408,10 +408,12 @@ public class EditShippingPresenterImpl implements EditShippingPresenter{
     }
 
     private void initiateDatas(EditShippingCouriers model) {
-        setShopInformation(model.shopShipping);
-        setCourierModel(model.courier);
-        setLocationList(model.getProvincesCitiesDistricts());
-        sortCourier(model);
+        if (model != null) {
+            setShopInformation(model.shopShipping);
+            setCourierModel(model.courier);
+            setLocationList(model.getProvincesCitiesDistricts());
+            sortCourier(model);
+        }
     }
 
     private void initiateDatasOpenShop(OpenShopData model) {
