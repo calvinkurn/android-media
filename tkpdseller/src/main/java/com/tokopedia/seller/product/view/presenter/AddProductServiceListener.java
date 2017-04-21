@@ -9,4 +9,9 @@ import com.tokopedia.core.base.presentation.CustomerView;
 public interface AddProductServiceListener extends CustomerView {
     void onSuccessAddProduct();
 
+    void createNotification(String productName);
+
+    void notificationUpdate(int stepNotification);
+
+    void notificationComplete();
 }
