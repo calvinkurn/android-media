@@ -153,6 +153,9 @@ public class OpportunitySortFragment extends BasePresenterFragment {
                 for (int i = 0; i < listSort.size(); i++) {
                     if (i != position)
                         listSort.get(i).setSelected(false);
+                    else {
+                        listSort.get(i).setSelected(true);
+                    }
                 }
 
                 Intent intent = new Intent();

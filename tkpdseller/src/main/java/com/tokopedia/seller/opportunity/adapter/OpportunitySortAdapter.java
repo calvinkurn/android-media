@@ -66,14 +66,8 @@ public class OpportunitySortAdapter extends RecyclerView.Adapter<OpportunitySort
             @Override
             public void onClick(View v) {
                 list.get(position).setSelected(holder.checkImage.getVisibility() == View.VISIBLE);
-
-                for (SimpleCheckListItemModel viewModel : list) {
-                    if (viewModel != list.get(position))
-                        viewModel.setSelected(false);
-                }
-
-                listener.onItemSelected(position, list.get(position).getValue());
                 notifyDataSetChanged();
+                listener.onItemSelected(position, list.get(position).getValue());
             }
         });
 
