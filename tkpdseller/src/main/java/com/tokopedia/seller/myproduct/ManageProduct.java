@@ -84,14 +84,13 @@ import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
 import com.tokopedia.seller.myproduct.presenter.ManageProductPresenterImpl;
 import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
-import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.json.JSONException;
@@ -255,7 +254,7 @@ public class ManageProduct extends TkpdActivity implements
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onCompletedAddReceiver,
-                new IntentFilter(ProductService.ACTION_COMPLETED_ADD_PRODUCT));
+                new IntentFilter(ProductServiceConstant.ACTION_COMPLETED_ADD_PRODUCT));
         drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
@@ -1465,13 +1464,6 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
-    private void deleteProd(String ID) {
-        List<String> items = Arrays.asList(ID.split("~"));
-        for (int i = 0; i < items.size(); i++) {
-            ProductCache.DeleteCache(items.get(i), this);
-        }
-    }
-
     private void TriggerLoadNewData() {
         if (!Refresh.isRefreshing()) {
             clearData();
@@ -1493,10 +1485,6 @@ public class ManageProduct extends TkpdActivity implements
         lvadapter.clearEditMode();
         lvadapter.clearDatas();
         mPaging.resetPage();
-    }
-
-    private void clearCache() {
-
     }
 
     @Override
@@ -1555,11 +1543,11 @@ public class ManageProduct extends TkpdActivity implements
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-                Intent intent = new Intent(ManageProduct.this, ProductActivity.class);
+                Intent intent = new Intent(ManageProduct.this, ProductAddActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(GalleryBrowser.IMAGE_URLS, Parcels.wrap(imageUrls));
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, -1);
+//                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+//                intent.putExtra(GalleryBrowser.IMAGE_URLS, Parcels.wrap(imageUrls));
+//                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, -1);
                 intent.putExtras(bundle);
 
                 ManageProduct.this.startActivity(intent);
@@ -1567,11 +1555,11 @@ public class ManageProduct extends TkpdActivity implements
 
             @Override
             public void onSuccess(String path, int position) {
-                Intent intent = new Intent(ManageProduct.this, ProductActivity.class);
+                Intent intent = new Intent(ManageProduct.this, ProductAddActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(IMAGE_GALLERY, path);
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
+//                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
+//                intent.putExtra(IMAGE_GALLERY, path);
+//                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
                 intent.putExtras(bundle);
 
                 ManageProduct.this.startActivity(intent);
@@ -1622,37 +1610,6 @@ public class ManageProduct extends TkpdActivity implements
 
         return true;
     }
-
-    private void setToUI(ManageProductPresenterImpl.CacheManageProduct cacheManageProduct) {
-
-        if (mPaging.getPage() == 1) {
-            clearData();
-        }
-
-        PagingHandler.PagingHandlerModel pagingHandlerModel =
-                cacheManageProduct.pagingHandlerModel;
-        mPaging.setNewParameter(pagingHandlerModel);
-        if (mPaging.CheckNextPage()) {
-            lvListProd.addLoadingFooter();
-            loading = false;
-        } else {
-            lvListProd.removeLoading();
-            loading = true;
-        }
-        IsAllowShop = cacheManageProduct.IsAllowShop;
-
-        lvListProd.removeNoResult();// remove no result
-        if (checkCollectionNotNull(cacheManageProduct.productModels)) {
-            lvadapter.setData(new ArrayList<ManageProductModel>(cacheManageProduct.productModels));
-        } else {
-            lvListProd.addNoResult();
-        }
-
-        isProdManager = cacheManageProduct.isProdManager;
-        lvadapter.setProdManager(isProdManager);
-        invalidateOptionsMenu();
-    }
-
 
     private void SetToUI(ProductList.Data Result) {
         ArrayList<ManageProductModel> manageProductModels = new ArrayList<>();
