@@ -78,13 +78,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private ProductAdapter productAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private BrowseProductRouter.GridType gridType;
+    private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!isViewInitialized()) {
+                return;
+            }
             BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
             int lastItemPosition = getLastItemPosition();
             changeLayoutType(gridType);
@@ -92,6 +95,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             mRecyclerView.scrollToPosition(lastItemPosition);
         }
     };
+
+    private boolean isViewInitialized() {
+        return productAdapter != null
+                && linearLayoutManager != null
+                && gridLayoutManager != null
+                && mRecyclerView != null;
+    }
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
