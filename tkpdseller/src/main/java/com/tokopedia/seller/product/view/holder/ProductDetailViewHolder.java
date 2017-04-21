@@ -1,7 +1,9 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,7 +19,15 @@ import com.tokopedia.seller.product.view.widget.SpinnerTextView;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductDetailViewHolder {
+public class ProductDetailViewHolder extends ProductViewHolder {
+
+    public interface Listener {
+
+        /**
+         * @param baseValue means for single price tag.
+         */
+        void startAddWholeSaleDialog(WholesaleModel baseValue);
+    }
 
     public static final int REQUEST_CODE_ETALASE = 301;
     private Listener listener;
@@ -129,11 +139,26 @@ public class ProductDetailViewHolder {
         );
     }
 
-    public interface Listener {
-
-        /**
-         * @param baseValue means for single price tag.
-         */
-        void startAddWholeSaleDialog(WholesaleModel baseValue);
+    @Override
+    public boolean isDataValid() {
+        if (getPriceValue() < 0) {
+            Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_price_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
+        if (getWeightValue() < 0) {
+            Snackbar.make(weightSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_weight_not_valid, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(weightSpinnerCounterInputView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
+        if (getEtalaseId() < 0) {
+            Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
+        return true;
     }
 }

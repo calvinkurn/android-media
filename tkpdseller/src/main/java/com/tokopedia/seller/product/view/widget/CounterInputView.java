@@ -103,7 +103,7 @@ public class CounterInputView extends FrameLayout {
             @Override
             public void onClick(View view) {
                 try {
-                    int result = (int) decimalInputView.getFloatValue() - 1;
+                    long result = (long) decimalInputView.getFloatValue() - 1;
                     if (result >= 0) {
                         decimalInputView.setText(String.valueOf(result));
                     }

@@ -18,7 +18,7 @@ import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScor
  * Created by zulfikarrahman on 4/12/17.
  */
 
-public class ProductScoreViewHolder {
+public class ProductScoreViewHolder extends ProductViewHolder {
 
     private TextView valueScore;
     private ImageView imageInfo;
@@ -55,4 +55,8 @@ public class ProductScoreViewHolder {
         progressValueScore.setProgressColor(ColorScoringProductHelper.getColorOfScore(dataScoringProductView.getTotalScoringProductView().getColor(), context));
     }
 
+    @Override
+    public boolean isDataValid() {
+        return true;
+    }
 }

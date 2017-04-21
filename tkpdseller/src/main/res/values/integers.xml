@@ -2,4 +2,5 @@
 <resources>
     <integer name="product_max_character_name">70</integer>
     <integer name="product_max_character_description">2000</integer>
+    <integer name="product_max_counter_length">20</integer>
 </resources>

@@ -23,7 +23,7 @@ import java.util.Set;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductAdditionalInfoViewHolder {
+public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     /**
      * @author normansyahputa on 4/18/17.
@@ -118,5 +118,10 @@ public class ProductAdditionalInfoViewHolder {
 
     public boolean isShare() {
         return shareLabelSwitch.isChecked();
+    }
+
+    @Override
+    public boolean isDataValid() {
+        return true;
     }
 }

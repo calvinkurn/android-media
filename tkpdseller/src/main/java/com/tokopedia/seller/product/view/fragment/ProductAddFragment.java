@@ -110,10 +110,22 @@ public class ProductAddFragment extends BaseDaggerFragment
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadProductInputViewModel viewModel = collectDataFromView();
-                presenter.saveDraft(viewModel);
+                if (isDataValid()) {
+                    UploadProductInputViewModel viewModel = collectDataFromView();
+                    presenter.saveDraft(viewModel);
+                }
             }
         });
+    }
+
+    private boolean isDataValid() {
+        if (!productInfoViewHolder.isDataValid()) {
+            return false;
+        }
+        if (!productDetailViewHolder.isDataValid()) {
+            return false;
+        }
+        return true;
     }
 
     private UploadProductInputViewModel collectDataFromView() {

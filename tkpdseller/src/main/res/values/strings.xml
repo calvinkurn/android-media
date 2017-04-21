@@ -395,6 +395,12 @@
         <item>2</item>
     </string-array>
 
+    <string name="product_error_product_name_empty">Nama produk harus diisi</string>
+    <string name="product_error_product_category_empty">Kategori harus diisi</string>
+    <string name="product_error_product_price_empty">Harga harus diisi</string>
+    <string name="product_error_product_weight_not_valid">Berat harus diisi antara 1 &#8212; 100.000</string>
+    <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
+
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
     <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>

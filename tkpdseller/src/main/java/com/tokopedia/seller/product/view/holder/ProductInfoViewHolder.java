@@ -3,6 +3,9 @@ package com.tokopedia.seller.product.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.IdRes;
+import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
@@ -28,11 +32,22 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductInfoViewHolder {
+public class ProductInfoViewHolder extends ProductViewHolder {
+
+    public interface Listener {
+        void onCategoryPickerClicked(int categoryId);
+
+        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
+
+        void onProductNameChanged(String productName);
+
+        void onCategoryChanged(int categoryId);
+    }
 
     public static final int REQUEST_CODE_CATEGORY = 101;
     public static final int REQUEST_CODE_CATALOG = 102;
     private final RadioGroup radioGroupCategoryRecomm;
+    private TextInputLayout nameTextInputLayout;
     private EditText nameEditText;
     private LabelView categoryLabelView;
     private LabelView catalogLabelView;
@@ -41,9 +56,14 @@ public class ProductInfoViewHolder {
     private int categoryId;
     private int catalogId = -1;
 
+    public void setListener(ProductInfoViewHolder.Listener listener) {
+        this.listener = listener;
+    }
+
     public ProductInfoViewHolder(View view) {
         categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
         radioGroupCategoryRecomm = (RadioGroup) categoryRecommView.findViewById(R.id.radio_group_category_recomm);
+        nameTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_name);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);
         categoryLabelView = (LabelView) view.findViewById(R.id.label_view_category);
         catalogLabelView = (LabelView) view.findViewById(R.id.label_view_catalog);
@@ -71,7 +91,9 @@ public class ProductInfoViewHolder {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                if (s.length() > 0) {
+                    nameTextInputLayout.setError(null);
+                }
             }
 
             @Override
@@ -110,12 +132,8 @@ public class ProductInfoViewHolder {
         });
     }
 
-    public void setListener(ProductInfoViewHolder.Listener listener) {
-        this.listener = listener;
-    }
-
     public String getName() {
-        return nameEditText.getText().toString();
+        return nameEditText.getText().toString().trim();
     }
 
     public void setName(String name) {
@@ -240,14 +258,20 @@ public class ProductInfoViewHolder {
         categoryRecommView.setVisibility(View.VISIBLE);
     }
 
-    public interface Listener {
-        void onCategoryPickerClicked(int categoryId);
-
-        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
-
-        void onProductNameChanged(String productName);
-
-        void onCategoryChanged(int categoryId);
+    @Override
+    public boolean isDataValid() {
+        if (TextUtils.isEmpty(getName())) {
+            nameTextInputLayout.setError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
+            nameTextInputLayout.clearFocus();
+            nameTextInputLayout.requestFocus();
+            return false;
+        }
+        if (categoryId < 0) {
+            Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(categoryLabelView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
+        return false;
     }
-
 }

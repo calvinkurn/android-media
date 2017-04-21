@@ -19,7 +19,15 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductImageViewHolder {
+public class ProductImageViewHolder extends ProductViewHolder {
+
+    public interface Listener {
+        void onAddImagePickerClicked(int position);
+
+        void onImagePickerItemClicked(int position, boolean isPrimary);
+
+        void onResolutionImageCheckFailed(String uri);
+    }
 
     public static final int MIN_IMG_RESOLUTION = 300;
     private ImagesSelectView imagesSelectView;
@@ -108,11 +116,8 @@ public class ProductImageViewHolder {
         return productPhotos;
     }
 
-    public interface Listener {
-        void onAddImagePickerClicked(int position);
-
-        void onImagePickerItemClicked(int position, boolean isPrimary);
-
-        void onResolutionImageCheckFailed(String uri);
+    @Override
+    public boolean isDataValid() {
+        return true;
     }
 }
