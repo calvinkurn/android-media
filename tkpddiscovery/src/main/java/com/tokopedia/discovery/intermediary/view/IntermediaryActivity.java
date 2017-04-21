@@ -138,10 +138,8 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
             fragment = IntermediaryFragment.createInstance(departmentId);
-        } else {
-            if (fragment instanceof IntermediaryFragment) {
-                ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
-            }
+        } else if (fragment instanceof IntermediaryFragment) {
+            ((IntermediaryFragment)fragment).setDepartmentId(departmentId);
         }
         inflateFragment(
                 fragment,
