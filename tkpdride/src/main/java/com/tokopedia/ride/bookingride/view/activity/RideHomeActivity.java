@@ -39,6 +39,8 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
+import com.tokopedia.ride.bookingride.di.RideHomeDependencyInjection;
+import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
@@ -61,7 +63,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
-        UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
+        UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener,
+        SeatAdapter.OnItemClickListener, RideHomeContract.View {
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
@@ -82,6 +85,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     private RideConfiguration configuration;
     private boolean isSeatPanelShowed;
+
+    RideHomeContract.Presenter mPresenter;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHomeActivity.class);
@@ -113,6 +118,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking_ride);
         unbinder = ButterKnife.bind(this);
+
+        mPresenter = RideHomeDependencyInjection.createPresenter(this);
+        mPresenter.attachView(this);
 
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
 

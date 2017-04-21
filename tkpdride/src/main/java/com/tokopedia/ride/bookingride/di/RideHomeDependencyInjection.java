@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.di;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -8,7 +10,10 @@ import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
+import com.tokopedia.ride.bookingride.view.RideHomeContract;
+import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
 import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
@@ -129,7 +134,7 @@ public class RideHomeDependencyInjection {
                 .build();
     }
 
-    private GetCurrentRideRequestUseCase provideGetProductAndEstimatedUseCase(String token, String userId) {
+    private GetCurrentRideRequestUseCase provideGetCurrentRideRequestUseCase(String token, String userId) {
         return new GetCurrentRideRequestUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -151,5 +156,14 @@ public class RideHomeDependencyInjection {
                         new TimeEstimateEntityMapper()
                 )
         );
+    }
+
+    public static RideHomeContract.Presenter createPresenter(Context context){
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        String userId = sessionHandler.getLoginID();
+        RideHomeDependencyInjection injection = new RideHomeDependencyInjection();
+        GetCurrentRideRequestUseCase getCurrentRideRequestUseCase = injection.provideGetCurrentRideRequestUseCase(token, userId);
+        return new RideHomePresenter(getCurrentRideRequestUseCase);
     }
 }
