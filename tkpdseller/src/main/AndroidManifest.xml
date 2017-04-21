@@ -214,6 +214,10 @@
             android:name=".product.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_score_label_title"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.view.activity.ProductEditActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".selling.SellingService"

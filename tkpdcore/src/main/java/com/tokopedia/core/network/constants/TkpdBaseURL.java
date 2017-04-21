@@ -41,7 +41,8 @@ public class TkpdBaseURL {
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
     public static class Product {
-        public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
+        public static final String V4_PRODUCT = "v4/product/";
+        public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
         public static final String V4_ACTION_PRODUCT = "v4/action/product/";
         public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + V4_ACTION_PRODUCT;
         public static final String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
