@@ -261,8 +261,9 @@ public class SendDiscussionUseCase extends UseCase<DiscussionItemViewModel> {
     }
 
     private RequestParams getGenerateHostParam(RequestParams requestParams) {
-        RequestParams params = RequestParams.create();
-        return params;
+        RequestParams generateHostParams = RequestParams.create();
+        generateHostParams.putInt(GenerateHostUseCase.PARAM_SERVER_LANGUAGE, GenerateHostUseCase.STATIC_GOLANG_VALUE);
+        return generateHostParams;
     }
 
 
