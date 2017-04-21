@@ -26,18 +26,6 @@ public class ProductImageViewHolder {
 
     private Listener listener;
 
-    public interface Listener {
-        void onAddImagePickerClicked(int position);
-
-        void onImagePickerItemClicked(int position, boolean isPrimary);
-
-        void onResolutionImageCheckFailed(String uri);
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
     public ProductImageViewHolder(View view) {
 
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
@@ -70,6 +58,10 @@ public class ProductImageViewHolder {
                 }
             }
         });
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     public ImagesSelectView getImagesSelectView() {
@@ -114,5 +106,13 @@ public class ProductImageViewHolder {
         }
         productPhotos.setPhotos(listImageViewModel);
         return productPhotos;
+    }
+
+    public interface Listener {
+        void onAddImagePickerClicked(int position);
+
+        void onImagePickerItemClicked(int position, boolean isPrimary);
+
+        void onResolutionImageCheckFailed(String uri);
     }
 }

@@ -48,12 +48,12 @@ public class AddProductPictureInputServiceModel {
         return productPhoto;
     }
 
-    public int getServerId() {
-        return serverId;
-    }
-
     public void setProductPhoto(ProductPhotoListServiceModel productPhoto) {
         this.productPhoto = productPhoto;
+    }
+
+    public int getServerId() {
+        return serverId;
     }
 
     public void setServerId(int serverId) {

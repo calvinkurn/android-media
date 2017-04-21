@@ -9,8 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +38,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.ArrayList;
@@ -326,5 +325,9 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     private void checkIfCatalogExist(String productName, int categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
+    }
+
+    public void addWholesaleItem(WholesaleModel wholesaleModel) {
+        productDetailViewHolder.addWholesaleItem(wholesaleModel);
     }
 }

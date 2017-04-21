@@ -83,6 +83,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         }
 
     }
+
     private class AddProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
         @Override
         public Observable<AddProductDomainModel> call(UploadProductInputDomainModel domainModel) {
@@ -95,6 +96,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
                     .flatMap(new ProcessAddProductValidation(domainModel));
         }
     }
+
     private class GetGeneratedHost implements Func1<UploadProductInputDomainModel, Observable<GenerateHostDomainModel>> {
 
         @Override
@@ -103,6 +105,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         }
 
     }
+
     private class PrepareUploadImage implements Func1<GenerateHostDomainModel, UploadProductInputDomainModel> {
         private final UploadProductInputDomainModel domainModel;
 
@@ -131,6 +134,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
             private final int serverId;
 
             private final String hostUrl;
+
             public UploadSingleImage(int serverId, String hostUrl) {
                 this.serverId = serverId;
                 this.hostUrl = hostUrl;
@@ -196,7 +200,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         @Override
         public Observable<AddProductDomainModel> call(AddProductValidationDomainModel addProductValidationDomainModel) {
             String postKey = addProductValidationDomainModel.getPostKey();
-            if (!TextUtils.isEmpty(postKey)){
+            if (!TextUtils.isEmpty(postKey)) {
                 AddProductPictureInputDomainModel addProductPictureInputModel = AddProductDomainMapper.mapUploadToPicture(uploadProductInputDomainModel);
                 return Observable.just(addProductPictureInputModel)
                         .flatMap(new AddProductPicture())

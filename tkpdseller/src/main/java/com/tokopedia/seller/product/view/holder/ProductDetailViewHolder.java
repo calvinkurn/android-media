@@ -3,10 +3,12 @@ package com.tokopedia.seller.product.view.holder;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
@@ -18,6 +20,7 @@ import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 public class ProductDetailViewHolder {
 
     public static final int REQUEST_CODE_ETALASE = 301;
+    private Listener listener;
 
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
@@ -28,6 +31,8 @@ public class ProductDetailViewHolder {
     private SpinnerTextView conditionSpinnerTextView;
     private SpinnerTextView insuranceSpinnerTextView;
     private SpinnerTextView freeReturnsSpinnerTextView;
+
+    private TextView textViewAddWholesale;
 
     private Fragment fragment;
     private int etalaseId;
@@ -48,6 +53,18 @@ public class ProductDetailViewHolder {
             public void onClick(View view) {
                 Intent intent = new Intent(fragment.getActivity(), EtalasePickerActivity.class);
                 fragment.startActivityForResult(intent, REQUEST_CODE_ETALASE);
+            }
+        });
+        if (view.getContext() != null && view.getContext() instanceof Listener) {
+            listener = (Listener) view.getContext();
+        }
+        textViewAddWholesale = (TextView) view.findViewById(R.id.text_view_add_wholesale);
+        textViewAddWholesale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.startAddWholeSaleDialog(getBaseValue());
+                }
             }
         });
     }
@@ -100,5 +117,23 @@ public class ProductDetailViewHolder {
 
     public int getEtalaseId() {
         return etalaseId;
+    }
+
+    public void addWholesaleItem(WholesaleModel wholesaleModel) {
+        // TODO insert into wholesale adapter.
+    }
+
+    private WholesaleModel getBaseValue() {
+        return new WholesaleModel(
+                1, 1, getPriceValue()
+        );
+    }
+
+    public interface Listener {
+
+        /**
+         * @param baseValue means for single price tag.
+         */
+        void startAddWholeSaleDialog(WholesaleModel baseValue);
     }
 }

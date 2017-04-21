@@ -25,6 +25,12 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
         this.productDraftRepository = productDraftRepository;
     }
 
+    public static RequestParams generateUploadProductParam(long productId) {
+        RequestParams params = RequestParams.create();
+        params.putLong(UPLOAD_PRODUCT_ID, productId);
+        return params;
+    }
+
     @Override
     public Observable<ReturnType> createObservable(RequestParams requestParams) {
         long productId = requestParams.getLong(UPLOAD_PRODUCT_ID, UNSELECTED_PRODUCT_ID);
@@ -35,12 +41,6 @@ public abstract class UploadProductUseCase<ReturnType> extends UseCase<ReturnTyp
                 .flatMap(new GetProductModelObservable())
                 .flatMap(getAddImageProductObservable())
                 .flatMap(getUploadProductObservable());
-    }
-
-    public static RequestParams generateUploadProductParam(long productId) {
-        RequestParams params = RequestParams.create();
-        params.putLong(UPLOAD_PRODUCT_ID, productId);
-        return params;
     }
 
     protected abstract Func1<UploadProductInputDomainModel, Observable<ReturnType>>

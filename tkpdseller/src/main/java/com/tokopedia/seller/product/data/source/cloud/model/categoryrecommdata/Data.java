@@ -4,9 +4,10 @@ package com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata;
  * Created by Hendry on 4/18/2017.
  */
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class Data {
 

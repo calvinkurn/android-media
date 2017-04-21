@@ -9,27 +9,27 @@ public class ImageProcessDomainModel {
     private String url;
     private String picObj;
 
-    public void setUrl(String url) {
-        this.url = url;
+    public int getPicId() {
+        return picId;
     }
 
     public void setPicId(int picId) {
         this.picId = picId;
     }
 
-    public void setPicObj(String picObj) {
-        this.picObj = picObj;
-    }
-
-    public int getPicId() {
-        return picId;
-    }
-
     public String getUrl() {
         return url;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getPicObj() {
         return picObj;
+    }
+
+    public void setPicObj(String picObj) {
+        this.picObj = picObj;
     }
 }

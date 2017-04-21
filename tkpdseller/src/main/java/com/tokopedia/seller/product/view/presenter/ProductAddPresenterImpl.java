@@ -23,25 +23,22 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 
 /**
  * @author sebastianuskh on 4/13/17.
  */
 
 public class ProductAddPresenterImpl extends ProductAddPresenter {
+    public static final int TIME_DELAY = 500;
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
     private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
-
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
     private Subscription subscriptionDebounceCatalog;
-
-    public static final int TIME_DELAY = 500;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    AddProductUseCase addProductUseCase,
@@ -57,7 +54,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         createCatalogSubscriber();
     }
 
-    private void createCategoryRecommSubscriber(){
+    private void createCategoryRecommSubscriber() {
         subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
@@ -73,7 +70,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
                 .subscribe(getSubscriberDebounceGetCategoryRecomm());
     }
 
-    private void createCatalogSubscriber(){
+    private void createCatalogSubscriber() {
         subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
             @Override
             public void call(final Subscriber<? super CatalogQuery> subscriber) {
@@ -166,7 +163,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
     @Override
     public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
         if (getCatalogListener != null) {
-            getCatalogListener.getQuery(new CatalogQuery(keyword,departmentId,start,rows));
+            getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
         }
     }
 
@@ -228,6 +225,52 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         };
     }
 
+    public void detachView() {
+        super.detachView();
+        addProductUseCase.unsubscribe();
+        saveDraftProductUseCase.unsubscribe();
+        subscriptionDebounceCategoryRecomm.unsubscribe();
+        subscriptionDebounceCatalog.unsubscribe();
+    }
+
+    private interface QueryListener {
+        void getQueryString(String string);
+    }
+
+    private interface CatalogQueryListener {
+        void getQuery(CatalogQuery catalogQuery);
+    }
+
+    public static class CatalogQuery {
+        String keyword;
+        int categoryId;
+        int start;
+        int row;
+
+        public CatalogQuery(String keyword, int categoryId, int start, int row) {
+            this.keyword = keyword;
+            this.categoryId = categoryId;
+            this.start = start;
+            this.row = row;
+        }
+
+        public int getCategoryId() {
+            return categoryId;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public String getKeyword() {
+            return keyword;
+        }
+    }
+
     private class SaveDraftSubscriber extends Subscriber<Long> {
         @Override
         public void onCompleted() {
@@ -261,51 +304,5 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         public void onNext(AddProductDomainModel addProductDomainModel) {
             checkViewAttached();
         }
-    }
-
-    private interface QueryListener {
-        void getQueryString(String string);
-    }
-
-    private interface CatalogQueryListener {
-        void getQuery(CatalogQuery catalogQuery);
-    }
-
-    public static class CatalogQuery{
-        String keyword;
-        int categoryId;
-        int start;
-        int row;
-
-        public CatalogQuery(String keyword, int categoryId, int start, int row) {
-            this.keyword = keyword;
-            this.categoryId = categoryId;
-            this.start = start;
-            this.row = row;
-        }
-
-        public int getCategoryId() {
-            return categoryId;
-        }
-
-        public int getRow() {
-            return row;
-        }
-
-        public int getStart() {
-            return start;
-        }
-
-        public String getKeyword() {
-            return keyword;
-        }
-    }
-
-    public void detachView(){
-        super.detachView();
-        addProductUseCase.unsubscribe();
-        saveDraftProductUseCase.unsubscribe();
-        subscriptionDebounceCategoryRecomm.unsubscribe();
-        subscriptionDebounceCatalog.unsubscribe();
     }
 }

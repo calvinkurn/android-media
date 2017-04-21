@@ -41,12 +41,12 @@ public class ProductCategoryPrediction {
         setPrintedStringAndId();
     }
 
-    private void setPrintedStringAndId(){
+    private void setPrintedStringAndId() {
         printedString = "";
         int size = productCategoryId.size();
         categoryId = new int[size];
         categoryName = new String[size];
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             ProductCategoryId productCategoryItem = productCategoryId.get(i);
             int id = productCategoryItem.getId();
             categoryName[i] = productCategoryItem.getName();
@@ -67,11 +67,11 @@ public class ProductCategoryPrediction {
         return printedString;
     }
 
-    public int getLastCategoryId(){
+    public int getLastCategoryId() {
         if (printedString == null) {
             setPrintedStringAndId();
         }
-        return categoryId[categoryId.length-1];
+        return categoryId[categoryId.length - 1];
     }
 
     public int[] getCategoryId() {
