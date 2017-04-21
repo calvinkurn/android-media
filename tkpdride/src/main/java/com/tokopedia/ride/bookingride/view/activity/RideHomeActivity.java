@@ -42,7 +42,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment;
-import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
+import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -60,7 +60,7 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
-public class RideHomeActivity extends BaseActivity implements RideHomeFragment.OnFragmentInteractionListener,
+public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener, SeatAdapter.OnItemClickListener {
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int LOGIN_REQUEST_CODE = 1005;
@@ -137,12 +137,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
-        addFragment(R.id.top_container, RideHomeFragment.newInstance());
+        addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
-        addFragment(R.id.top_container, RideHomeFragment.newInstance(source, destination));
+        addFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
@@ -184,8 +184,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RideHomeFragment.REQUEST_CHECK_LOCATION_SETTINGS) {
-            RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (requestCode == RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS) {
+            RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (fragment != null) {
                 fragment.handleLocationAlertResult(resultCode);
             }
@@ -248,11 +248,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void onMinimumTimeEstCalculated(String timeEst) {
-        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.setMarkerText(timeEst);
         } else {
-            fragment = RideHomeFragment.newInstance();
+            fragment = RideHomeMapFragment.newInstance();
             addFragment(R.id.top_container, fragment);
             fragment.setMarkerText(timeEst);
         }
@@ -260,7 +260,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void showEnterDestError() {
-        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.showEnterDestError();
         }
@@ -268,7 +268,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
 
     @Override
     public void showEnterSourceLocationActiity() {
-        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.actionSourceButtonClicked();
         }
@@ -305,11 +305,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     private void onBottomContainerChangeToBookingScreen() {
-        RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.disablePickLocation();
         } else {
-            fragment = RideHomeFragment.newInstance();
+            fragment = RideHomeMapFragment.newInstance();
             addFragment(R.id.top_container, fragment);
             fragment.disablePickLocation();
         }
@@ -322,8 +322,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeFragment.O
     }
 
     private void onBottomContainerChangeToProductListScreen() {
-        if (getFragmentManager().findFragmentById(R.id.top_container) instanceof RideHomeFragment) {
-            RideHomeFragment fragment = (RideHomeFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (getFragmentManager().findFragmentById(R.id.top_container) instanceof RideHomeMapFragment) {
+            RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
             if (fragment != null) {
                 fragment.enablePickLocation();
             }

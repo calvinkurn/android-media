@@ -30,7 +30,7 @@ import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
-import com.tokopedia.ride.bookingride.view.fragment.RideHomeFragment;
+import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 
@@ -50,9 +50,8 @@ import static android.app.Activity.RESULT_OK;
  * Created by alvarisi on 3/13/17.
  */
 
-public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContract.View>
-        implements BookingRideContract.Presenter {
-
+public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContract.View>
+        implements RideHomeMapContract.Presenter {
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -62,7 +61,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
 
-    public BookingRidePresenter(GetUberProductsUseCase getUberProductsUseCase,
+    public RideHomeMapPresenter(GetUberProductsUseCase getUberProductsUseCase,
                                 GetOverviewPolylineUseCase getOverviewPolylineUseCase) {
         mGetUberProductsUseCase = getUberProductsUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
@@ -175,7 +174,7 @@ public class BookingRidePresenter extends BaseDaggerPresenter<BookingRideContrac
                         try {
                             // Show the dialog by calling startResolutionForResult(),
                             // and check the result in onActivityResult().
-                            status.startResolutionForResult(getView().getActivity(), RideHomeFragment.REQUEST_CHECK_LOCATION_SETTINGS);
+                            status.startResolutionForResult(getView().getActivity(), RideHomeMapFragment.REQUEST_CHECK_LOCATION_SETTINGS);
                         } catch (IntentSender.SendIntentException e) {
                             // Ignore the error.
                         }

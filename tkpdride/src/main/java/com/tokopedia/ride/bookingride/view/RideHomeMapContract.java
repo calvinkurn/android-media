@@ -14,7 +14,7 @@ import java.util.List;
  * Created by alvarisi on 3/13/17.
  */
 
-public interface BookingRideContract {
+public interface RideHomeMapContract {
     interface View extends CustomerView {
         Context getActivityContext();
 

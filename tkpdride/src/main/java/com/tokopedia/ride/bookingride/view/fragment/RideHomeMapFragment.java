@@ -42,7 +42,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
-import com.tokopedia.ride.bookingride.view.BookingRideContract;
+import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
@@ -54,7 +54,7 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
-public class RideHomeFragment extends BaseFragment implements BookingRideContract.View, OnMapReadyCallback {
+public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback {
     public static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
@@ -68,7 +68,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
 
-    BookingRideContract.Presenter mPresenter;
+    RideHomeMapContract.Presenter mPresenter;
 
     @BindView(R2.id.toolbar)
     Toolbar mToolbar;
@@ -103,7 +103,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
     private OnFragmentInteractionListener mListener;
     private int mToolBarHeightinPx;
 
-    public RideHomeFragment() {
+    public RideHomeMapFragment() {
     }
 
     /**
@@ -114,8 +114,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
      * @param destination
      * @return
      */
-    public static RideHomeFragment newInstance(PlacePassViewModel source, PlacePassViewModel destination) {
-        RideHomeFragment fragment = new RideHomeFragment();
+    public static RideHomeMapFragment newInstance(PlacePassViewModel source, PlacePassViewModel destination) {
+        RideHomeMapFragment fragment = new RideHomeMapFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(EXTRA_IS_ALREADY_HAVE_LOC, true);
         bundle.putParcelable(EXTRA_SOURCE, source);
@@ -124,8 +124,8 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
         return fragment;
     }
 
-    public static RideHomeFragment newInstance() {
-        return new RideHomeFragment();
+    public static RideHomeMapFragment newInstance() {
+        return new RideHomeMapFragment();
     }
 
     @Override
@@ -373,7 +373,7 @@ public class RideHomeFragment extends BaseFragment implements BookingRideContrac
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        System.out.println("Vishal RideHomeFragment onActivityResult");
+        System.out.println("Vishal RideHomeMapFragment onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {

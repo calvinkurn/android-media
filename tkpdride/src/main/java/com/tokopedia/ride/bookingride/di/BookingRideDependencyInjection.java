@@ -13,7 +13,7 @@ import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
-import com.tokopedia.ride.bookingride.view.BookingRidePresenter;
+import com.tokopedia.ride.bookingride.view.RideHomeMapPresenter;
 import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;
@@ -203,12 +203,12 @@ public class BookingRideDependencyInjection {
         );
     }
 
-    public static BookingRidePresenter createPresenter(Context context) {
+    public static RideHomeMapPresenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();
         BookingRideDependencyInjection injection = new BookingRideDependencyInjection();
-        return new BookingRidePresenter(injection.getUberProductsUseCase(token, userId),
+        return new RideHomeMapPresenter(injection.getUberProductsUseCase(token, userId),
                 injection.getOverviewPolylineUseCase(context)
         );
     }
