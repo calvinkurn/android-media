@@ -1,19 +1,19 @@
 package com.tokopedia.topads.sdk.view.adapter.viewmodel;
 
-import com.tokopedia.topads.sdk.base.adapter.Visitable;
+import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.view.adapter.factory.TypeFactory;
+import com.tokopedia.topads.sdk.view.adapter.factory.AdsTypeFactory;
 
 /**
  * @author by errysuprayogi on 3/27/17.
  */
 
-public class ProductListViewModel implements Visitable<TypeFactory> {
+public class ProductListViewModel implements Item<AdsTypeFactory> {
 
     private Data data;
 
     @Override
-    public int type(TypeFactory typeFactory) {
+    public int type(AdsTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 
@@ -23,5 +23,10 @@ public class ProductListViewModel implements Visitable<TypeFactory> {
 
     public void setData(Data data) {
         this.data = data;
+    }
+
+    @Override
+    public int originalPos() {
+        return 0;
     }
 }

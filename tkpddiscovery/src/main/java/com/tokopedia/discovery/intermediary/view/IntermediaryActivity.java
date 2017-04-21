@@ -33,14 +33,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class IntermediaryActivity extends BasePresenterActivity implements
-        IntermediaryCategoryAdapter.CategoryListener, MenuItemCompat.OnActionExpandListener{
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener{
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
+    public static final String CATEGORY_DEFAULT_TITLE = "Direktori";
 
     private String departmentId = "";
-    private String categoryName = "";
+    private String categoryName = CATEGORY_DEFAULT_TITLE;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -73,6 +73,17 @@ public class IntermediaryActivity extends BasePresenterActivity implements
         context.startActivity(intent);
     }
 
+    public static void moveTo(Context context, String depId) {
+        if (context == null)
+            return;
+
+        Intent intent = new Intent(context, IntermediaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -82,7 +93,9 @@ public class IntermediaryActivity extends BasePresenterActivity implements
     @Override
     protected void setupBundlePass(Bundle extras) {
         departmentId = extras.getString(BrowseProductRouter.DEPARTMENT_ID);
-        categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
+        if (extras.getString(BrowseProductRouter.DEPARTMENT_NAME)!=null
+                && extras.getString(BrowseProductRouter.DEPARTMENT_NAME).length()>0)
+            categoryName = extras.getString(BrowseProductRouter.DEPARTMENT_NAME);
     }
 
     @Override
@@ -124,7 +137,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements
         Fragment fragment =
                 (fragmentManager.findFragmentByTag(IntermediaryFragment.TAG));
         if (fragment == null) {
-            fragment = IntermediaryFragment.createInstance(this);
+            fragment = IntermediaryFragment.createInstance(departmentId);
         }
         inflateFragment(
                 fragment,
@@ -134,7 +147,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements
 
     protected boolean onSearchOptionSelected() {
         Intent intent = BrowseProductRouter
-                .getBrowseProductIntent(this, getDepartmentId(), TopAdsApi.SRC_DIRECTORY);
+                .getBrowseProductIntent(this, departmentId, TopAdsApi.SRC_DIRECTORY);
         startActivity(intent);
         return true;
     }
@@ -160,32 +173,8 @@ public class IntermediaryActivity extends BasePresenterActivity implements
         ft.commit();
     }
 
-    public String getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
-    }
-
     public String getCategoryName() {
         return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    @Override
-    public void onCategoryRevampClick(ChildCategoryModel child) {
-        BrowseProductActivity.moveTo(
-                IntermediaryActivity.this,
-                child.getCategoryId(),
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                child.getCategoryName()
-        );
-        UnifyTracking.eventLevelCategoryIntermediary(departmentId,child.getCategoryId());
     }
 
     @Override
@@ -216,9 +205,5 @@ public class IntermediaryActivity extends BasePresenterActivity implements
 
     public FrameLayout getFrameLayout() {
         return frameLayout;
-    }
-
-    public void setFrameLayout(FrameLayout frameLayout) {
-        this.frameLayout = frameLayout;
     }
 }

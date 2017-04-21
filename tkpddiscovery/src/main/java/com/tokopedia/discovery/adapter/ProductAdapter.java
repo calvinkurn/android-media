@@ -526,6 +526,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
                     categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+            titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {

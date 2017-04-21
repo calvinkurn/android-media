@@ -1,10 +1,12 @@
 package com.tokopedia.topads.sdk.base.adapter;
 
 /**
- * @author kulomady on 1/24/17.
+ * @author errysuprayogi on 1/24/17.
  */
 
-public interface Visitable<T> {
+public interface Item<T> {
 
     int type(T typeFactory);
+
+    int originalPos();
 }

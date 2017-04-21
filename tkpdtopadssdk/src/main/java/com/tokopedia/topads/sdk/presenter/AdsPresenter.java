@@ -32,4 +32,6 @@ public interface AdsPresenter <V extends AdsView>{
     void openShopTopAds(String click_url, Shop shop);
 
     void setSessionId(String sessionId);
+
+    void setDisplayMode(int displayMode);
 }

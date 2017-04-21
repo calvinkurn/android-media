@@ -1,15 +1,11 @@
 package com.tokopedia.topads.sdk.view.adapter.factory;
 
 import android.content.Context;
-import android.view.View;
+import android.view.ViewGroup;
 
-import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
-import com.tokopedia.topads.sdk.imageutils.ImageCache;
-import com.tokopedia.topads.sdk.imageutils.ImageFetcher;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductGridViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.ProductListViewHolder;
@@ -24,11 +20,11 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
  * @author by errysuprayogi on 3/29/17.
  */
 
-public class AdapterTypeFactory implements TypeFactory {
+public class AdsAdapterTypeFactory implements AdsTypeFactory {
 
     private LocalAdsClickListener itemClickListener;
     private ImageLoader imageLoader;
-    public AdapterTypeFactory(Context context) {
+    public AdsAdapterTypeFactory(Context context) {
         imageLoader = new ImageLoader(context);
     }
 
@@ -57,7 +53,7 @@ public class AdapterTypeFactory implements TypeFactory {
     }
 
     @Override
-    public AbstractViewHolder createViewHolder(View view, int viewType) {
+    public AbstractViewHolder createViewHolder(ViewGroup view, int viewType) {
         AbstractViewHolder holder;
         if (viewType == ProductGridViewHolder.LAYOUT) {
             holder = new ProductGridViewHolder(view, imageLoader, itemClickListener);
