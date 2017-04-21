@@ -25,6 +25,7 @@
     <string name="label_btn_re_request_otp_digital_module">Kirim Ulang Kode Verifikasi</string>
     <string name="label_hint_input_otp_digital_module">Masukkan Kode Verifikasi</string>
     <string name="label_price_cart_digital">Harga</string>
+    <string name="label_discount_cart_digital">Diskon Voucher</string>
     <string name="label_total_payment_cart_digital">Total Pembayaran</string>
     <string name="label_btn_next_cart_digital">LANJUT</string>
     <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>

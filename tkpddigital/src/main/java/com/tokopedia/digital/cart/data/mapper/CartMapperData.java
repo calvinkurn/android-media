@@ -149,6 +149,8 @@ public class CartMapperData implements ICartMapperData {
 
             VoucherAttributeDigital voucherAttributeDigital = new VoucherAttributeDigital();
             voucherAttributeDigital.setMessage(responseVoucherData.getAttributes().getMessage());
+            voucherAttributeDigital.setDiscountAmountPlain(responseVoucherData.getAttributes().getDiscountAmountPlain());
+            voucherAttributeDigital.setCashbackAmpountPlain(responseVoucherData.getAttributes().getCashbackAmountPlain());
             voucherAttributeDigital.setUserId(responseVoucherData.getAttributes().getUserId());
             voucherAttributeDigital.setVoucherCode(responseVoucherData.getAttributes().getVoucherCode());
 
