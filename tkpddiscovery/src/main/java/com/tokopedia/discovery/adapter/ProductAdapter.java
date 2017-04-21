@@ -98,7 +98,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         Log.d(TAG, "ProductAdapter data " + data.size());
         if (context != null && context instanceof BrowseProductActivity) {
             BrowseProductActivity activity = (BrowseProductActivity) context;
-            switch (activity.getBrowseProductActivityModel().getSource()) {
+            switch (activity.getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                     source = "hotlist";
                     break;
@@ -434,6 +434,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
                     categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+            titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {

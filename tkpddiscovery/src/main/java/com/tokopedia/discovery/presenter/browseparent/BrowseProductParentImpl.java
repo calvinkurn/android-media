@@ -60,7 +60,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
     }
 
     @Override
-    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
+    public BrowseProductModel getDataForBrowseProduct() {
         return browseProductModel;
     }
 
@@ -293,6 +293,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+
                 break;
             case DiscoveryListener.TOPADS:
                 Log.d("MNORMANSYAH", "masuk sini gan!!");

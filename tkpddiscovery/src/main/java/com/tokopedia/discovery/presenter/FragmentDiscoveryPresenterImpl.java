@@ -92,7 +92,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     @Override
     public void sendGTMNoResult(Context context) {
-        BrowseProductModel browseProductModel = ((BrowseView) context).getDataForBrowseProduct(!isAfterRotate);
+        BrowseProductModel browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
         if (browseProductModel != null) {
             if (browseProductModel.result.products == null || browseProductModel.result.products.length == 0) {
                 NetworkParam.Product params = ((BrowseView) context).getProductParam();
@@ -124,11 +124,9 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         switch (TAG) {
             case ProductFragment.TAG:
-                // below indicate for the first time
-                if (!isAfterRotate) {
-                    view.setupRecyclerView();
+                if ( !isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
-                        browseProductModel = ((BrowseView) context).getDataForBrowseProduct(!isAfterRotate);
+                        browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);
                         if (browseProductModel == null || browseProductModel.result.products == null)
@@ -141,9 +139,9 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         } else if(browseProductModel!=null
                                 && browseProductModel.header != null
-                                && listPagingHandlerModelPair.getModel1() !=null
-                                && listPagingHandlerModelPair.getModel2() !=null){
-                            processBrowseProduct(browseProductModel.header.getTotalData(),listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                                && listPagingHandlerModelPair.getModel1() != null
+                                && listPagingHandlerModelPair.getModel2() != null) {
+                            processBrowseProduct(browseProductModel.header.getTotalData(), listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -217,9 +215,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     @Override
     public void initDataInstance(Context context) {
-        if (!isAfterRotate) {
-            view.setupAdapter();
-        }
+        view.setupAdapter();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }

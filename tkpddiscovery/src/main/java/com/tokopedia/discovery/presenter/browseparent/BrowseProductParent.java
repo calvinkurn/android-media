@@ -29,7 +29,7 @@ public abstract class BrowseProductParent extends BaseImpl<BrowseProductParentVi
         return null;
     }
 
-    public abstract BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly);
+    public abstract BrowseProductModel getDataForBrowseProduct();
 
     public abstract NetworkParam.Product getProductParam();
 

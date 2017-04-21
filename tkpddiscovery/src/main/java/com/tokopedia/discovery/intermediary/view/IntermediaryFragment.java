@@ -70,13 +70,15 @@ import butterknife.OnClick;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_DIRECTORY_VALUE;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 /**
  * Created by alifa on 3/24/17.
  */
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
-    CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener {
+    CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
+        IntermediaryCategoryAdapter.CategoryListener {
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -108,20 +110,20 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.category_view_all)
     TextView viewAllCategory;
 
-    com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
+    public static final String TAG = "INTERMEDIARY_FRAGMENT";
 
+    private String departmentId = "";
     private IntermediaryCategoryAdapter categoryAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
+    com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
 
-    public static final String TAG = "INTERMEDIARY_FRAGMENT";
-
-    public static IntermediaryFragment createInstance(IntermediaryCategoryAdapter.CategoryListener listener) {
+    public static IntermediaryFragment createInstance(String departmentId) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
-        intermediaryFragment.categoryListener = listener;
+        intermediaryFragment.departmentId = departmentId;
         return intermediaryFragment;
     }
 
@@ -144,7 +146,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ButterKnife.bind(this, parentView);
 
         presenter.attachView(this);
-        presenter.getIntermediaryCategory(((IntermediaryActivity) getActivity()).getDepartmentId());
+        presenter.getIntermediaryCategory(departmentId);
         topAdsView = (TopAdsView) parentView.findViewById(R.id.top_ads_view);
 
         return parentView;
@@ -155,6 +157,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
                 headerModel.getHeaderImageUrl(), new CategoryHeaderTransformation(imageHeader.getContext()));
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
+        titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
     }
 
@@ -171,10 +174,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
-        params.getParam().put(TopAdsParams.KEY_SRC,SRC_DIRECTORY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
         params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
-        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,((IntermediaryActivity) getActivity())
-                .getDepartmentId());
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
         topAdsView.setTopAdsParams(params);
         topAdsView.loadTopAds();
     }
@@ -195,14 +197,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         revampCategoriesRecyclerView.setLayoutManager(
                 new NonScrollGridLayoutManager(getActivity(), 3,
                         GridLayoutManager.VERTICAL, false));
-        categoryAdapter = new IntermediaryCategoryAdapter(  getCategoryWidth(),activeChildren,categoryListener);
+        categoryAdapter = new IntermediaryCategoryAdapter(  getCategoryWidth(),activeChildren,this);
         revampCategoriesRecyclerView.setAdapter(categoryAdapter);
         if (isUsedUnactiveChildren) {
             expandLayout.setVisibility(View.VISIBLE);
             expandLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UnifyTracking.eventShowMoreCategory(((IntermediaryActivity) getActivity()).getDepartmentId());
+                    UnifyTracking.eventShowMoreCategory(departmentId);
                     categoryAdapter.addDataChild(childCategoryModelList
                             .subList(9,childCategoryModelList.size()));
                     expandLayout.setVisibility(View.GONE);
@@ -245,7 +247,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         cardViewHotList.setVisibility(View.VISIBLE);
 
         HotListItemAdapter hotListItemAdapter = new HotListItemAdapter(hotListModelList,
-                getCategoryWidth(),getActivity(),((IntermediaryActivity) getActivity()).getDepartmentId());
+                getCategoryWidth(),getActivity(),departmentId);
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
@@ -275,7 +277,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void skipIntermediaryPage() {
         BrowseProductActivity.moveToWithoutAnimation(
             getActivity(),
-                ((IntermediaryActivity) getActivity()).getDepartmentId(),
+                departmentId,
             TopAdsApi.SRC_DIRECTORY,
             BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 ((IntermediaryActivity) getActivity()).getCategoryName()
@@ -296,8 +298,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                       presenter.getIntermediaryCategory(((IntermediaryActivity) getActivity())
-                               .getDepartmentId());
+                       presenter.getIntermediaryCategory(departmentId);
                     }
                 });
     }
@@ -315,7 +316,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     public void viewAllCategory() {
         BrowseProductActivity.moveTo(
                 getActivity(),
-                ((IntermediaryActivity) getActivity()).getDepartmentId(),
+                departmentId,
                 TopAdsApi.SRC_DIRECTORY,
                 BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 ((IntermediaryActivity) getActivity()).getCategoryName()
@@ -327,7 +328,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
                 Integer.toString(productModel.getId()));
         getActivity().startActivity(intent);
-        UnifyTracking.eventCuratedIntermediary(((IntermediaryActivity) getActivity()).getDepartmentId(),
+        UnifyTracking.eventCuratedIntermediary(departmentId,
                 curatedName,productModel.getName());
     }
 
@@ -361,5 +362,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onAddFavorite(Shop shop) {
         //TODO: this listener not used in this sprint
+    }
+
+    @Override
+    public void onCategoryRevampClick(ChildCategoryModel child) {
+        BrowseProductActivity.moveTo(
+                getActivity(),
+                child.getCategoryId(),
+                TopAdsApi.SRC_DIRECTORY,
+                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                child.getCategoryName()
+        );
+        UnifyTracking.eventLevelCategoryIntermediary(departmentId,child.getCategoryId());
     }
 }
