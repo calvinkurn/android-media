@@ -95,4 +95,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
+    public void setSpinnerPosition(int position){
+        spinnerTextView.setSpinnerPosition(position);
+    }
 }

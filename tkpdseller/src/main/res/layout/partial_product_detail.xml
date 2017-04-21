@@ -96,6 +96,7 @@
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_free_returns"
         style="@style/LabelLayoutWithoutBorder"
+        android:visibility="gone"
         app:spinner_entries="@array/product_free_returns_entries"
         app:spinner_hint="@string/product_label_free_returns"
         app:spinner_values="@array/product_free_returns_values" />

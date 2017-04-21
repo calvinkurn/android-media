@@ -1,9 +1,12 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -11,15 +14,20 @@ import com.tokopedia.core.app.MainApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Random;
 
 /**
  * Created by m.normansyah on 12/8/15.
  */
 public class FileUtils {
+
+    public static final String CACHE_TOKOPEDIA = "/cache/tokopedia/";
 
     /**
      * example of result : /storage/emulated/0/Android/data/com.tokopedia.tkpd/1451274244/
@@ -56,14 +64,7 @@ public class FileUtils {
      */
     public static File writeImageToTkpdPath(byte[] buffer, String fileName) {
         if (buffer != null) {
-            String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
-
-            File tkpdRootdirectory = new File(tkpdFolderPath);
-            if (!tkpdRootdirectory.exists()) {
-                tkpdRootdirectory.mkdirs();
-            }
-            File photo = new File(tkpdRootdirectory.getAbsolutePath() + "/cache/tokopedia/" + fileName + ".jpg");
+            File photo = getTkpdCacheFile(fileName);
             if (photo.exists()) {
                 // photo already exist in cache
                 if (photo.length() == buffer.length) {
@@ -83,12 +84,122 @@ public class FileUtils {
         return null;
     }
 
+    public static File writeImageToTkpdPath(InputStream source, String fileName) {
+        File photo = getTkpdCacheFile(fileName);
+
+        if (photo.exists()) {
+            photo.delete();
+        }
+        if (writeStreamToFile(source, photo)) {
+            return photo;
+        }
+
+        return null;
+    }
+
+    public static File getTkpdCacheFile(String fileName){
+        String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
+
+        File tkpdRootdirectory = new File(tkpdFolderPath);
+        if (!tkpdRootdirectory.exists()) {
+            tkpdRootdirectory.mkdirs();
+        }
+        File photo = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA+fileName +".jpg");
+        if (photo.exists()) {
+            return photo;
+        }
+        else {
+            return null;
+        }
+    }
+
+    // URI starts with "content://gmail-ls/"
+    public static String getPathFromGmail(Context context, Uri contentUri) {
+        File attach;
+        try {
+            InputStream attachment = context.getContentResolver().openInputStream(contentUri);
+            String fileName = FileUtils.generateUniqueFileName(contentUri.toString());
+            attach = FileUtils.writeImageToTkpdPath(attachment, fileName);
+            if (attach == null) {
+                return null;
+            }
+            return attach.getAbsolutePath();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String getRealPathFromURI(Context context, Uri uri) {
+        InputStream is = null;
+        if (uri.getAuthority() != null) {
+            try {
+                is = context.getContentResolver().openInputStream(uri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+                return writeToTempImageAndGetPathUri(context, bmp);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return getPath(inContext, Uri.parse(path));
+    }
+
+    public static String getPath(Context context, Uri contentUri) {
+
+        String res = "";
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                res = cursor.getString(column_index);
+            }
+            cursor.close();
+        } else {
+            return contentUri.getPath();
+        }
+        return res;
+    }
+
     private static boolean writeBufferToFile(byte[] buffer, String path) {
         try {
             FileOutputStream fos = new FileOutputStream(path);
 
             fos.write(buffer);
             fos.close();
+            return true;
+        } catch (java.io.IOException e) {
+            return false;
+        }
+
+    }
+    private static boolean writeStreamToFile(InputStream source, File file) {
+        OutputStream outStream;
+        try {
+            outStream = new FileOutputStream(file);
+
+            byte[] buffer = new byte[1024];
+
+            int length;
+            //copy the file content in bytes
+            while ((length = source.read(buffer)) > 0) {
+                outStream.write(buffer, 0, length);
+            }
+            source.close();
+            outStream.close();
             return true;
         } catch (java.io.IOException e) {
             return false;

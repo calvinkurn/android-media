@@ -74,6 +74,15 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
     }
 
+    public void updateViewGoldMerchant(boolean isShown){
+        if (isShown) {
+            labelAddVideoView.setVisibility(View.VISIBLE);
+        } else {
+            this.videoIds.clear();
+            labelAddVideoView.setVisibility(View.GONE);
+        }
+    }
+
     public String getDescription() {
         return descriptionEditText.getText().toString();
     }

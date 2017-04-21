@@ -272,6 +272,6 @@ public class ProductInfoViewHolder extends ProductViewHolder {
                     .show();
             return false;
         }
-        return false;
+        return true;
     }
 }

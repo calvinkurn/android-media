@@ -359,12 +359,12 @@ public class ManageProduct extends TkpdActivity implements
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5, false);
+        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5, true);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1, false);
+        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1, true);
     }
 
     private void checkLogin() {
@@ -693,8 +693,7 @@ public class ManageProduct extends TkpdActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_product) {
             if (isProdManager == 1) {
-                Intent intent = new Intent(this, ProductAddActivity.class);
-                startActivity(intent);
+                ProductAddActivity.start(this);
                 // analytic below : https://phab.tokopedia.com/T18496
                 UnifyTracking.eventClickAPManageProductTop();
             } else {
@@ -1543,26 +1542,14 @@ public class ManageProduct extends TkpdActivity implements
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-                Intent intent = new Intent(ManageProduct.this, ProductAddActivity.class);
-                Bundle bundle = new Bundle();
-//                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-//                intent.putExtra(GalleryBrowser.IMAGE_URLS, Parcels.wrap(imageUrls));
-//                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, -1);
-                intent.putExtras(bundle);
-
-                ManageProduct.this.startActivity(intent);
+                ProductAddActivity.start(ManageProduct.this,imageUrls);
             }
 
             @Override
             public void onSuccess(String path, int position) {
-                Intent intent = new Intent(ManageProduct.this, ProductAddActivity.class);
-                Bundle bundle = new Bundle();
-//                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-//                intent.putExtra(IMAGE_GALLERY, path);
-//                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
-                intent.putExtras(bundle);
-
-                ManageProduct.this.startActivity(intent);
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(path);
+                ProductAddActivity.start(ManageProduct.this,imageUrls);
             }
 
             @Override

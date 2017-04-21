@@ -34,6 +34,10 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
     private Listener listener;
 
+    public void setImages(ArrayList<String> images) {
+        imagesSelectView.addImagesString(images);
+    }
+
     public ProductImageViewHolder(View view) {
 
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);

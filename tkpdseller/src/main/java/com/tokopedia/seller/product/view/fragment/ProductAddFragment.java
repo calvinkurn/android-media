@@ -17,8 +17,10 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
@@ -26,6 +28,8 @@ import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -62,9 +66,18 @@ import permissions.dispatcher.RuntimePermissions;
 public class ProductAddFragment extends BaseDaggerFragment
         implements ProductAddView, ProductAdditionalInfoViewHolder.Listener,
         ProductImageViewHolder.Listener,
-        ProductInfoViewHolder.Listener {
+        ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+
+    public interface Listener {
+        void startUploadProduct(long productId);
+
+        void startUploadProductWithShare(long productId);
+    }
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+
+    // url got from gallery or camera or other paths
+    private ArrayList<String> tkpdImageUrls;
 
     @Inject
     public ProductAddPresenter presenter;
@@ -75,9 +88,24 @@ public class ProductAddFragment extends BaseDaggerFragment
     protected ProductInfoViewHolder productInfoViewHolder;
     protected Listener listener;
 
-    public static ProductAddFragment createInstance() {
+    public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
+        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS, tkpdImageUrls);
+            fragment.setArguments(bundle);
+        }
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+
+        if (args!= null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
+            tkpdImageUrls = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
+        }
     }
 
     @Override
@@ -107,15 +135,24 @@ public class ProductAddFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
         productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info));
         productInfoViewHolder.setListener(this);
+
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        productDetailViewHolder = new ProductDetailViewHolder(this, view);
+        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+            productImageViewHolder.setImages(tkpdImageUrls);
+        }
+        productDetailViewHolder = new ProductDetailViewHolder(view);
+        productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
         setSubmitButtonListener(view);
         productScoreViewHolder = new ProductScoreViewHolder(view, this);
 
         presenter.attachView(this);
+
+        presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
+                                GCMHandler.getRegistrationId(getContext()),
+                                SessionHandler.getShopID(getContext()));
         return view;
     }
 
@@ -332,6 +369,22 @@ public class ProductAddFragment extends BaseDaggerFragment
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
     }
 
+    @Override
+    public void showErrorGetShopInfo(Throwable e) {
+
+    }
+
+    @Override
+    public void showGoldMerchant(boolean isGoldMerchant) {
+        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.updateViewGoldMerchant(isGoldMerchant);
+    }
+
+    @Override
+    public void showFreeReturn(boolean isFreeReturn) {
+        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+    }
+
 
     @Override
     public void onCategoryPickerClicked(int categoryId) {
@@ -364,10 +417,21 @@ public class ProductAddFragment extends BaseDaggerFragment
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
         productDetailViewHolder.addWholesaleItem(wholesaleModel);
 	}
-	
-    public interface Listener {
-        void startUploadProduct(long productId);
 
-        void startUploadProductWithShare(long productId);
+    @Override
+    public void startAddWholeSaleDialog(WholesaleModel baseValue) {
+
+    }
+
+    @Override
+    public void onUSDClickedNotAllowed() {
+        Snackbar.make(getView(),
+                getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onEtalaseViewClicked() {
+        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+        this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 }

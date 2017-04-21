@@ -29,4 +29,10 @@ public interface ProductAddView extends CustomerView {
 
     void onSuccessStoreProductToDraft(long productId);
 
+    void showErrorGetShopInfo(Throwable e);
+
+    void showGoldMerchant(boolean isGoldMerchant);
+
+    void showFreeReturn(boolean isFreeReturn);
+
 }

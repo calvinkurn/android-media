@@ -1,8 +1,13 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
@@ -10,6 +15,8 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
+import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
@@ -17,6 +24,7 @@ import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProduct
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -35,6 +43,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
+    private final ShopInfoUseCase shopInfoUseCase;
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
@@ -44,12 +53,14 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
                                    AddProductUseCase addProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
-                                   ProductScoringUseCase productScoringUseCase) {
+                                   ProductScoringUseCase productScoringUseCase,
+                                   ShopInfoUseCase shopInfoUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.addProductUseCase = addProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
+        this.shopInfoUseCase = shopInfoUseCase;
         createCategoryRecommSubscriber();
         createCatalogSubscriber();
     }
@@ -161,6 +172,31 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
+    public void getShopInfo(String userId, String deviceId, String shopId) {
+        shopInfoUseCase.execute(
+                ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId),
+                new Subscriber<ShopModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showErrorGetShopInfo(e);
+                    }
+
+                    @Override
+                    public void onNext(ShopModel shopModel) {
+                        boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
+                        boolean isFreeReturn = shopModel.info.isFreeReturns();
+                        getView().showGoldMerchant(isGoldMerchant);
+                        getView().showFreeReturn(isFreeReturn);
+                    }
+                });
+    }
+
+    @Override
     public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
         if (getCatalogListener != null) {
             getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
@@ -218,19 +254,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             @Override
             public void onNext(DataScoringProductView dataScoringProductView) {
                 checkViewAttached();
-                if(dataScoringProductView != null) {
+                if (dataScoringProductView != null) {
                     getView().onSuccessGetScoringProduct(dataScoringProductView);
                 }
             }
         };
-    }
-
-    public void detachView() {
-        super.detachView();
-        addProductUseCase.unsubscribe();
-        saveDraftProductUseCase.unsubscribe();
-        subscriptionDebounceCategoryRecomm.unsubscribe();
-        subscriptionDebounceCatalog.unsubscribe();
     }
 
     private interface QueryListener {
@@ -287,6 +315,18 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             checkViewAttached();
             getView().onSuccessStoreProductToDraft(productId);
         }
+	}
+	
+    public void detachView() {
+        super.detachView();
+        addProductUseCase.unsubscribe();
+        saveDraftProductUseCase.unsubscribe();
+        fetchCatalogDataUseCase.unsubscribe();
+        getCategoryRecommUseCase.unsubscribe();
+        shopInfoUseCase.unsubscribe();
+
+        subscriptionDebounceCategoryRecomm.unsubscribe();
+        subscriptionDebounceCatalog.unsubscribe();
     }
 
 }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.AdapterView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -27,10 +28,14 @@ public class ProductDetailViewHolder extends ProductViewHolder {
          * @param baseValue means for single price tag.
          */
         void startAddWholeSaleDialog(WholesaleModel baseValue);
+
+        void onUSDClickedNotAllowed();
+        void onEtalaseViewClicked();
     }
 
     public static final int REQUEST_CODE_ETALASE = 301;
-    private Listener listener;
+    public static final int POSITION_IDR = 0;
+    public static final int POSITION_USD = 1;
 
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
@@ -44,11 +49,15 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
     private TextView textViewAddWholesale;
 
-    private Fragment fragment;
     private int etalaseId;
 
-    public ProductDetailViewHolder(final Fragment fragment, View view) {
-        this.fragment = fragment;
+    private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public ProductDetailViewHolder(View view) {
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
         minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
@@ -61,8 +70,9 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(fragment.getActivity(), EtalasePickerActivity.class);
-                fragment.startActivityForResult(intent, REQUEST_CODE_ETALASE);
+                if (listener!= null) {
+                    listener.onEtalaseViewClicked();
+                }
             }
         });
         if (view.getContext() != null && view.getContext() instanceof Listener) {
@@ -83,6 +93,39 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
         String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
         etalaseLabelView.setContent(etalaseName);
+    }
+
+    public void updateViewGoldMerchant(boolean isGoldMerchant){
+        if (! isGoldMerchant) {
+            priceSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if ( position == POSITION_USD) {
+                        if (listener!= null) {
+                            listener.onUSDClickedNotAllowed();
+                        }
+                        priceSpinnerCounterInputView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                priceSpinnerCounterInputView.setSpinnerPosition(POSITION_IDR);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        else {
+            priceSpinnerCounterInputView.setOnItemClickListener(null);
+        }
+    }
+
+    public void updateViewFreeReturn(boolean isFreeReturn) {
+        if (isFreeReturn){
+            freeReturnsSpinnerTextView.setVisibility(View.VISIBLE);
+        }
+        else {
+            freeReturnsSpinnerTextView.setVisibility(View.GONE);
+        }
     }
 
     public int getPriceCurrency() {
