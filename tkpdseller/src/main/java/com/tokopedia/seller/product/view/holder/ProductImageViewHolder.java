@@ -142,4 +142,19 @@ public class ProductImageViewHolder {
         productPhotos.setPhotos(listImageViewModel);
         return productPhotos;
     }
+
+    public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
+        List<ImageSelectModel> images = new ArrayList<>();
+        int defaultPicture = productPhotos.getProductDefaultPicture();
+        for (int i = 0; i < productPhotos.getPhotos().size(); i ++){
+            ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
+            ImageSelectModel image = new ImageSelectModel(
+                    productPhoto.getImagePath(),
+                    productPhoto.getImageDescription(),
+                    i == defaultPicture
+            );
+            images.add(image);
+        }
+        imagesSelectView.setImage(images);
+    }
 }

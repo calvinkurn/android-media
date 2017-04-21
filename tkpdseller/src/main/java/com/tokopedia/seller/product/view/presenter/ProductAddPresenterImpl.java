@@ -1,11 +1,10 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -17,7 +16,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class ProductAddPresenterImpl extends ProductAddPresenter {
+public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
 
@@ -28,7 +27,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
     @Override
     public void saveDraft(UploadProductInputViewModel viewModel) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.map(viewModel);
+        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
         RequestParams requestParam = SaveDraftProductUseCase.generateUploadProductParam(domainModel);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
     }

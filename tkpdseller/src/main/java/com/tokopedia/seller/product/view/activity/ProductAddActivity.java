@@ -23,6 +23,10 @@ public class ProductAddActivity extends TActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFragment();
+    }
+
+    protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .add(R.id.container, ProductAddFragment.createInstance(), ProductAddFragment.class.getSimpleName())

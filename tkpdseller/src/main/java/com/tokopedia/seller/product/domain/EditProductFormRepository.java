@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.domain;
 
-import com.tokopedia.seller.product.domain.model.EditProductFormDomainModel;
+import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
 
@@ -9,5 +9,5 @@ import rx.Observable;
  */
 
 public interface EditProductFormRepository {
-    Observable<EditProductFormDomainModel> fetchEditProduct(String productId);
+    Observable<UploadProductInputDomainModel> fetchEditProduct(String productId);
 }

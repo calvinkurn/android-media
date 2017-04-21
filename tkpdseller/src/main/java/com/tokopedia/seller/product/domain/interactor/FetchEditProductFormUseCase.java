@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.EditProductFormRepository;
-import com.tokopedia.seller.product.domain.model.EditProductFormDomainModel;
+import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * @author sebastianuskh on 4/21/17.
  */
 
-public class FetchEditProductFormUseCase extends UseCase<EditProductFormDomainModel> {
+public class FetchEditProductFormUseCase extends UseCase<UploadProductInputDomainModel> {
     private static final String UNSELECTED_PRODUCT_ID = "-1";
     private static final String PRODUCT_ID = "PRODUCT_ID";
     private final EditProductFormRepository editProductFormRepository;
@@ -27,7 +27,7 @@ public class FetchEditProductFormUseCase extends UseCase<EditProductFormDomainMo
     }
 
     @Override
-    public Observable<EditProductFormDomainModel> createObservable(RequestParams requestParams) {
+    public Observable<UploadProductInputDomainModel> createObservable(RequestParams requestParams) {
         String productId = requestParams.getString(PRODUCT_ID, UNSELECTED_PRODUCT_ID);
         if (productId.equals(UNSELECTED_PRODUCT_ID)) {
             throw new RuntimeException("Product id is not selected");

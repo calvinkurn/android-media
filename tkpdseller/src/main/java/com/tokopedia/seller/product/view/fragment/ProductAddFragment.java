@@ -54,12 +54,12 @@ public class ProductAddFragment extends BaseDaggerFragment
     public static final String TAG = ProductAddFragment.class.getSimpleName();
     @Inject
     public ProductAddPresenter presenter;
-    private ProductScoreViewHolder productScoreViewHolder;
-    private ProductImageViewHolder productImageViewHolder;
-    private ProductDetailViewHolder productDetailViewHolder;
-    private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
-    private ProductInfoViewHolder productInfoViewHolder;
-    private Listener listener;
+    protected ProductScoreViewHolder productScoreViewHolder;
+    protected ProductImageViewHolder productImageViewHolder;
+    protected ProductDetailViewHolder productDetailViewHolder;
+    protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
+    protected ProductInfoViewHolder productInfoViewHolder;
+    protected Listener listener;
 
     public static ProductAddFragment createInstance() {
         ProductAddFragment fragment = new ProductAddFragment();

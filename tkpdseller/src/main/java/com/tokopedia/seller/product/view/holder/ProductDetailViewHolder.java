@@ -101,4 +101,8 @@ public class ProductDetailViewHolder {
     public int getEtalaseId() {
         return etalaseId;
     }
+
+    public void setEtalaseId(int etalaseId) {
+        this.etalaseId = etalaseId;
+    }
 }

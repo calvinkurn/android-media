@@ -23,8 +23,7 @@ public class ProductEditActivity extends ProductAddActivity {
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
         String productId = getIntent().getStringExtra(PRODUCT_ID);
         if (StringUtils.isBlank(productId)){
@@ -34,5 +33,4 @@ public class ProductEditActivity extends ProductAddActivity {
                 .add(R.id.container, ProductEditFragment.createInstance(productId), ProductEditFragment.class.getSimpleName())
                 .commit();
     }
-
 }

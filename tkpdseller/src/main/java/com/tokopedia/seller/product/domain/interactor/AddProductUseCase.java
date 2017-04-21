@@ -176,7 +176,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
                         hostUrl,
                         serverId,
                         imageProductInputDomainModel.getImagePath(),
-                        imageProductInputDomainModel.getProductId())
+                        0)
                         .map(new MapImageModelToProductInput(imageProductInputDomainModel));
             }
 
