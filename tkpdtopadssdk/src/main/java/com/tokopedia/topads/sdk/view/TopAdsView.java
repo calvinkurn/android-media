@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.topads.sdk.R;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -98,9 +99,8 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         }
     }
 
-    @Override
-    public void setSessionId(String sessionId) {
-        presenter.setSessionId(sessionId);
+    public void setConfig(Config config){
+        presenter.setConfig(config);
     }
 
     @Override

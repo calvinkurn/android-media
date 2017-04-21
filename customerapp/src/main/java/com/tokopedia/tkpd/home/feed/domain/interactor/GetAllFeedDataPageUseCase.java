@@ -18,6 +18,7 @@ import java.util.List;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.functions.Func3;
 
 /**
@@ -51,19 +52,13 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
 
     @Override
     public Observable<DataFeed> createObservable(RequestParams requestParams) {
-        return Observable.zip(
-                getRecentProductObservable(),
-                getFeedObservable(),
-                getTopAdsObservable(),
-                new Func3<List<ProductFeed>, Feed, List<TopAds>, DataFeed>() {
-                    @Override
-                    public DataFeed call(List<ProductFeed> products,
-                                         Feed feed, List<TopAds> topAds) {
-
-                        return getValidDataFeed(products, feed, topAds);
-                    }
-                }
-        ).onErrorReturn(new Func1<Throwable, DataFeed>() {
+        return Observable.zip(getRecentProductObservable(), getFeedObservable(),
+                new Func2<List<ProductFeed>, Feed, DataFeed>() {
+            @Override
+            public DataFeed call(List<ProductFeed> productFeeds, Feed feed) {
+                return getValidDataFeed(productFeeds, feed);
+            }
+        }).onErrorReturn(new Func1<Throwable, DataFeed>() {
             @Override
             public DataFeed call(Throwable throwable) {
                 return getInvalidDataFeed();
@@ -72,7 +67,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     }
 
     @NonNull
-    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed, List<TopAds> topAds) {
+    private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed) {
         DataFeed dataFeed = new DataFeed();
         if (products == null) {
             dataFeed.setRecentProductError(true);
@@ -86,7 +81,6 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
         } else {
             dataFeed.setFeed(feed);
         }
-        dataFeed.setTopAds(topAds);
         dataFeed.setValid(true);
         return dataFeed;
     }

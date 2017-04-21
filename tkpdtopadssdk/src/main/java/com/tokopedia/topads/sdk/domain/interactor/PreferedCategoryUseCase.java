@@ -1,0 +1,100 @@
+package com.tokopedia.topads.sdk.domain.interactor;
+
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
+
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.UseCase;
+import com.tokopedia.topads.sdk.data.datasource.CloudTopAdsDataSource;
+import com.tokopedia.topads.sdk.data.datasource.TopAdsDataSource;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
+import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
+import com.tokopedia.topads.sdk.view.AdsView;
+
+import java.util.List;
+import java.util.Random;
+
+/**
+ * Created by errysuprayogi on 3/27/17.
+ */
+
+public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
+
+    private static String TAG = PreferedCategoryUseCase.class.getSimpleName();
+    private TopAdsDataSource dataSource;
+    private AsyncTask<TopAdsParams, Void, PreferedCategory> task;
+    private boolean execute = false;
+    private PreferedCategoryListener listener;
+    private Random random;
+
+    public PreferedCategoryUseCase(Context context, PreferedCategoryListener listener) {
+        this.dataSource = new CloudTopAdsDataSource(context);
+        this.listener = listener;
+        this.random = new Random();
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        this.dataSource.setConfig(config);
+    }
+
+    @Override
+    public void execute(TopAdsParams params, final AdsView view) {
+        if (execute) {
+            Log.d(TAG, "executor already executed cancel execution");
+            return;
+        }
+        execute = true;
+        task = new AsyncTask<TopAdsParams, Void, PreferedCategory>() {
+
+            @Override
+            protected void onPreExecute() {
+                view.initLoading();
+            }
+
+            @Override
+            protected PreferedCategory doInBackground(TopAdsParams... params) {
+                return dataSource.getPreferenceCategory();
+            }
+
+            @Override
+            protected void onPostExecute(PreferedCategory preferedCategory) {
+                if(preferedCategory.getErrorMessage() == null && preferedCategory.getUserType() != 1){
+                    listener.onSuccessLoadPrefered(getRandomId(preferedCategory.getUserCategoriesId()));
+                } else {
+                    listener.onErrorLoadPrefed();
+                    view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE, preferedCategory.getErrorMessage());
+                }
+                view.finishLoading();
+                execute = false;
+            }
+
+            @Override
+            protected void onCancelled() {
+                super.onCancelled();
+                view.finishLoading();
+            }
+        };
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+        } else {
+            task.execute(params);
+        }
+    }
+
+
+    @Override
+    public void unsubscribe() {
+        if (task != null) {
+            task.cancel(true);
+        }
+    }
+
+    private int getRandomId(List<Integer> ids){
+        int index = random.nextInt(ids.size());
+        return ids.get(index);
+    }
+}

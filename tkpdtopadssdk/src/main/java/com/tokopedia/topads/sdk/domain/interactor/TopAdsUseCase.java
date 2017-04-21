@@ -3,7 +3,9 @@ package com.tokopedia.topads.sdk.domain.interactor;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.util.Log;
 
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.UseCase;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
@@ -24,14 +26,20 @@ import java.util.List;
 
 public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
+    private static String TAG = TopAdsUseCase.class.getSimpleName();
     private TopAdsDataSource dataSource;
-    private String sessionId;
     private AsyncTask<TopAdsParams, Void, TopAdsModel> task;
     private int displayMode;
+    private boolean execute = false;
 
     public TopAdsUseCase(Context context) {
         this.dataSource = new CloudTopAdsDataSource(context);
         this.displayMode = DisplayMode.GRID;
+    }
+
+    @Override
+    public void setConfig(Config config) {
+        this.dataSource.setConfig(config);
     }
 
     public void setDisplayMode(int displayMode) {
@@ -42,12 +50,13 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
         return displayMode;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
     @Override
     public void execute(TopAdsParams params, final AdsView view) {
+        if (execute) {
+            Log.d(TAG, "executor already executed cancel execution");
+            return;
+        }
+        execute = true;
         task = new AsyncTask<TopAdsParams, Void, TopAdsModel>() {
 
             @Override
@@ -57,30 +66,30 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
 
             @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
-                return dataSource.getTopAds(sessionId, params[0].getParam());
+                return dataSource.getTopAds(params[0].getParam());
             }
 
             @Override
             protected void onPostExecute(TopAdsModel topAdsModel) {
-                if (topAdsModel.getError()==null && topAdsModel.getStatus().getErrorCode() == 0) {
+                if (topAdsModel.getError() == null && topAdsModel.getStatus().getErrorCode() == 0) {
                     List<Item> visitables = new ArrayList<>();
                     for (Data data : topAdsModel.getData()) {
                         if (data.getProduct() != null) {
-                            if(displayMode == DisplayMode.GRID) {
+                            if (displayMode == DisplayMode.GRID) {
                                 visitables.add(ModelConverter.convertToProductGridViewModel(data));
                             } else {
                                 visitables.add(ModelConverter.convertToProductListViewModel(data));
                             }
                         } else if (data.getShop() != null) {
-                            if(displayMode == DisplayMode.GRID) {
+                            if (displayMode == DisplayMode.GRID) {
                                 visitables.add(ModelConverter.convertToShopGridViewModel(data));
-                            }else {
+                            } else {
                                 visitables.add(ModelConverter.convertToShopListViewModel(data));
                             }
                         }
                     }
                     view.displayAds(visitables);
-                } else if(topAdsModel.getError() != null){
+                } else if (topAdsModel.getError() != null) {
                     view.notifyAdsErrorLoaded(topAdsModel.getError().getCode(),
                             topAdsModel.getError().getTitle());
                 } else {
@@ -88,6 +97,7 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                             topAdsModel.getStatus().getMessage());
                 }
                 view.finishLoading();
+                execute = false;
             }
 
             @Override

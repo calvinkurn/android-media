@@ -18,12 +18,12 @@ import rx.Observable;
 public class GetTopAdsUseCase
         extends UseCase<List<TopAds>> {
 
-    static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
-    static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
-    static final String SRC_PRODUCT_FEED = "fav_product";
-    static final String KEY_ITEM = "item";
-    static final String KEY_SRC = "src";
-    static final String KEY_PAGE = "page";
+    public static final String TOPADS_PAGE_DEFAULT_VALUE = "1";
+    public static final String TOPADS_ITEM_DEFAULT_VALUE = "4";
+    public static final String SRC_PRODUCT_FEED = "fav_product";
+    public static final String KEY_ITEM = "item";
+    public static final String KEY_SRC = "src";
+    public static final String KEY_PAGE = "page";
 
     private FeedRepository feedRepository;
 

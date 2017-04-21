@@ -28,7 +28,7 @@ public interface BrowseProductParentView extends BaseView {
     void setNetworkStateError();
     void setLoadingProgress(boolean isLoading);
     void redirectUrl(BrowseProductModel productModel);
-    void setupCategory(BrowseProductModel browseProductModel);
+    void setupCategory(String departemenId);
     void renderCategories(Data a);
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
     void setCurrentTabs(int pos);

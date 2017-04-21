@@ -25,10 +25,6 @@ public abstract class FragmentDiscoveryPresenter extends BaseImpl<FragmentBrowse
 
     public abstract void loadMore(Context context);
 
-    public abstract void getTopAds(int page, String TAG, Context context);
-
-    public abstract void getTopAds(int page, String TAG, Context context, int spanCount);
-
     public abstract void sendGTMNoResult(Context context);
 
     public abstract void getCategoryHeader(String categoryId);

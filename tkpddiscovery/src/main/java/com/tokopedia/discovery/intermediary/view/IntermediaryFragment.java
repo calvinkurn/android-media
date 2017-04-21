@@ -53,6 +53,7 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -159,9 +160,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderTopAds() {
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .build();
+
         topAdsView.setAdsItemClickListener(this);
         topAdsView.setAdsListener(this);
-        topAdsView.setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+        topAdsView.setConfig(config);
 
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));

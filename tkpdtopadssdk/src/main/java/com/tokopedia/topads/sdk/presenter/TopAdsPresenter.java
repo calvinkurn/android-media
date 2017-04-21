@@ -1,31 +1,56 @@
 package com.tokopedia.topads.sdk.presenter;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
+import com.tokopedia.topads.sdk.domain.interactor.PreferedCategoryUseCase;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
 import com.tokopedia.topads.sdk.view.AdsView;
 
 /**
  * Created by errysuprayogi on 3/27/17.
  */
 
-public class TopAdsPresenter implements AdsPresenter {
+public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
     private static final String TAG = TopAdsPresenter.class.getSimpleName();
     private AdsView adsView;
     private Context context;
     private TopAdsUseCase adsUseCase;
     private OpenTopAdsUseCase openTopAdsUseCase;
+    private PreferedCategoryUseCase preferedCategoryUseCase;
     private TopAdsParams adsParams;
+    private Config config;
 
     public TopAdsPresenter(Context context) {
         this.context = context;
         this.adsUseCase = new TopAdsUseCase(context);
         this.openTopAdsUseCase = new OpenTopAdsUseCase(context);
+        this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this);
         this.adsParams = new TopAdsParams();
+    }
+
+    @Override
+    public void onSuccessLoadPrefered(int randomCategoryId) {
+        adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, String.valueOf(randomCategoryId));
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, config.getUserId());
+        adsUseCase.setConfig(config);
+        adsUseCase.execute(adsParams, adsView);
+    }
+
+    @Override
+    public void onErrorLoadPrefed() {
+
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
     }
 
     @Override
@@ -40,11 +65,6 @@ public class TopAdsPresenter implements AdsPresenter {
 
     public int getDisplayMode(){
         return adsUseCase.getDisplayMode();
-    }
-
-    @Override
-    public void setSessionId(String sessionId) {
-        adsUseCase.setSessionId(sessionId);
     }
 
     @Override
@@ -64,7 +84,14 @@ public class TopAdsPresenter implements AdsPresenter {
 
     @Override
     public void loadTopAds() {
-        adsUseCase.execute(adsParams, adsView);
+        Log.d(TAG, "Load TopAds");
+        if(config.isWithPreferedCategory()){
+            getPreferedCategory();
+        } else {
+            adsParams.getParam().put(TopAdsParams.KEY_USER_ID, config.getUserId());
+            adsUseCase.setConfig(config);
+            adsUseCase.execute(adsParams, adsView);
+        }
     }
 
 
@@ -116,4 +143,9 @@ public class TopAdsPresenter implements AdsPresenter {
         }
     }
 
+    @Override
+    public void getPreferedCategory() {
+        preferedCategoryUseCase.setConfig(config);
+        preferedCategoryUseCase.execute(adsParams, adsView);
+    }
 }

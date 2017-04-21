@@ -175,9 +175,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 } else if (position == 0) {
 //                    return headerColumnSize;
                     return regularColumnSize;
-                } else if (browseShopAdapter.isTopAds(position)) {
-                    // top ads span column
-                    return headerColumnSize;
                 } else {
                     // regular one column
                     return regularColumnSize;

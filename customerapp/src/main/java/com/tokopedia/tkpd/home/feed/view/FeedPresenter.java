@@ -76,7 +76,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             checkViewAttached();
             getView().hideRefreshLoading();
             pagingHandler.nextPage();
-            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(isPageOdd()));
+            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(false));
 
         }
 
@@ -89,12 +89,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
         requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
-        if (isPageOdd()) {
-            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, true);
-            requestParams.putString(LoadMoreFeedUseCase.KEY_TOPADS_PAGE, getView().getTopAdsPage());
-        } else {
-            requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, false);
-        }
+        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, false);
         requestParams.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE, false);
         return requestParams;
     }
@@ -330,12 +325,12 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         }
 
         private void showEmptyView(ProductFeedViewModel productFeedViewModel) {
-                getView().showContentView();
-                productFeedViewModel.getData().add(
-                        new HistoryProductListItem(Collections.<ProductItem>emptyList()));
+            getView().showContentView();
+            productFeedViewModel.getData().add(
+                    new HistoryProductListItem(Collections.<ProductItem>emptyList()));
 
-                productFeedViewModel.getData().add(new EmptyFeedModel());
-                displayRefreshData(productFeedViewModel);
+            productFeedViewModel.getData().add(new EmptyFeedModel());
+            displayRefreshData(productFeedViewModel);
 
         }
 

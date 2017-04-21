@@ -91,69 +91,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     @Override
-    public void getTopAds(int page, String TAG, Context context) {
-        checkTAG();
-        this.context = new WeakReference<Context>(context);
-        switch (TAG) {
-            case ProductFragment.TAG:
-                int startIndexForQuery = view.getStartIndexForQuery(TAG);
-                if (context != null && context instanceof BrowseView) {
-
-                    NetworkParam.Product productParam = ((BrowseView) context).getProductParam();
-
-                    Log.d(TAG, getMessageTAG() + productParam);
-                    if (productParam == null)
-                        return;
-
-                    NetworkParam.TopAds topAds = new NetworkParam.TopAds();
-                    topAds.page = (topAdsPaging * 2) - 1;
-                    topAds.q = productParam.q;
-                    topAds.depId = productParam.sc;
-                    topAds.h = productParam.h;
-                    if(productParam.extraFilter != null){
-                        topAds.extraFilter = productParam.extraFilter;
-                    }
-
-                    topAds.src = ((BrowseView) context).getBrowseProductActivityModel().getAdSrc();
-
-                    Log.d(TAG, "getTopAds page "+page);
-                    if(spanCount < 3) {// spanCount 1 and 2
-                        if(currTopAdsItem == null || currTopAdsItem.isEmpty()){
-                            HashMap<String, String> topAdsParam = NetworkParam.generateTopAds(context, topAds);
-                            discoveryInteractor.getTopAds(topAdsParam);
-//                        fetchTopAds(page);
-                        } else {
-                            List<ProductItem> passProduct = new ArrayList<>();
-                            int counter = 2;
-                            while(counter != 0 && !currTopAdsItem.isEmpty()) {
-                                if (currTopAdsItem.get(0) != null) {
-                                    ProductItem productItem = currTopAdsItem.remove(0);
-                                    passProduct.add(productItem);
-                                    counter --;
-                                }
-                            }
-                            view.addTopAds(passProduct, page, TAG);
-                        }
-                    }else{
-                        HashMap<String, String> topAdsParam = NetworkParam.generateTopAds(context, topAds);
-                        discoveryInteractor.getTopAds(topAdsParam);
-                    }
-                }
-                break;
-            default:
-                Log.i(TAG, getMessageTAG() + " not implemented yet for this TAG");
-                break;
-        }
-
-    }
-
-    @Override
-    public void getTopAds(int page, String TAG, Context context, int spanCount) {
-        this.spanCount = spanCount;
-        getTopAds(page, TAG, context);
-    }
-
-    @Override
     public void sendGTMNoResult(Context context) {
         BrowseProductModel browseProductModel = ((BrowseView) context).getDataForBrowseProduct(!isAfterRotate);
         if (browseProductModel != null) {
@@ -201,7 +138,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         HotListBannerModel hotListBannerModel = browseProductModel.hotListBannerModel;
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
-                            processBrowseProductLoadMore(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         } else if(browseProductModel!=null
                                 && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() !=null
@@ -341,55 +278,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 break;
             case DiscoveryListener.BROWSE_CATALOG:
 
-                break;
-            case DiscoveryListener.TOPADS:
-                Log.i(TAG, getMessageTAG() + " fetch top ads " + data.getModel1());
-                ObjContainer model2 = data.getModel2();
-                topAdsPaging ++;
-                if(model2 instanceof TopAdsResponse.TopAdsContainer){
-
-                    TopAdsResponse topAdsResponse = (TopAdsResponse) model2.body();
-                    int page = view.getPage(ProductFragment.TAG) - 1;
-
-                    if (spanCount < 3) {// spanCount 1 & 2
-
-                        currTopAdsItem = new ArrayList<>();
-                        List<TopAdsResponse.Data> topAdsData = topAdsResponse.data;
-                        for (int i = 0; i < topAdsData.size(); i++) {
-                            TopAdsResponse.Data dataTopAds = topAdsData.get(i);
-                            ProductItem topads = convertToProductItem(dataTopAds);
-                            topads.setTopAds(TopAds.from(dataTopAds));
-                            currTopAdsItem.add(topads);
-                        }
-
-                        List<ProductItem> passProduct = new ArrayList<>();
-
-                        int counter = 2;
-                        while(counter != 0 && !currTopAdsItem.isEmpty()) {
-                            passProduct.add(currTopAdsItem.remove(0));
-                            counter --;
-                        }
-
-                        view.addTopAds(passProduct, page, TAG);
-                    } else {
-                        List<ProductItem> topAds = new ArrayList<>();
-                        int count = 0, max = 4;
-                        A:
-                        for (TopAdsResponse.Data topAdsData :
-                                topAdsResponse.data) {
-                            if (count < max) {
-                                ProductItem topads = convertToProductItem(topAdsData);
-                                topads.setTopAds(TopAds.from(topAdsData));
-                                topAds.add(topads);
-                            } else {
-                                break A;
-                            }
-                            count++;
-                        }
-                        view.addTopAds(topAds, page, TAG);
-                    }
-
-                }
                 break;
             default:
 

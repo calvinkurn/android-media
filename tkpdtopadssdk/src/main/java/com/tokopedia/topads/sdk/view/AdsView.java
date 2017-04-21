@@ -37,5 +37,4 @@ public interface AdsView {
 
     void showLoading(boolean showLoading);
 
-    void setSessionId(String sessionId);
 }

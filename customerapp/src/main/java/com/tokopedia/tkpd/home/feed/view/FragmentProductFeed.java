@@ -23,18 +23,24 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.di.qualifier.GlobalAuth;
 import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.myproduct.ManageProduct;
@@ -43,7 +49,15 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
+import com.tokopedia.tkpd.home.feed.domain.interactor.GetTopAdsUseCase;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +74,8 @@ import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 
 public class FragmentProductFeed extends BaseDaggerFragment implements FeedContract.View,
-        DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener {
+        DefaultRetryListener.OnClickRetry, ListenerFabClick, SwipeRefreshLayout.OnRefreshListener,
+        TopAdsInfoClickListener, TopAdsItemClickListener {
 
     @BindView(R.id.index_main_recycler_view)
     RecyclerView contentRecyclerView;
@@ -83,7 +98,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private DataFeedAdapter adapter;
     private Unbinder unbinder;
     private RetryHandler retryHandler;
-
+    private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private int currentTopAdsPage;
 
     @Override
@@ -191,10 +206,13 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @Override
     public void showFeedDataFromCache(List<RecyclerViewItem> dataFeedList) {
         final int historyDataPosition = 0;
+        if(dataFeedList.get(historyDataPosition) instanceof HistoryProductListItem){
+            topAdsRecyclerAdapter.setHasHeader(true);
+        } else {
+            topAdsRecyclerAdapter.setHasHeader(false);
+        }
         adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-        adapter.addAll(true, false, dataFeedList);
-        adapter.notifyItemInserted(historyDataPosition);
-
+        adapter.setData(dataFeedList);
     }
 
     @Override
@@ -204,8 +222,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showLoadMoreFeed(List<RecyclerViewItem> dataFeedList) {
+        topAdsRecyclerAdapter.hideLoading();
         adapter.addNextPage(dataFeedList);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -226,14 +244,11 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void enableLoadmore() {
-        adapter.setIsLoading(true);
-        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void disableLoadmore() {
-        adapter.setIsLoading(false);
-        adapter.notifyDataSetChanged();
+        topAdsRecyclerAdapter.hideLoading();
     }
 
     @Override
@@ -241,9 +256,13 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         // I know this is BUSUK caused adapter not revamped yet
         if (dataFeedList != null && dataFeedList.size() > 0) {
             final int historyDataPosition = 0;
+            if(dataFeedList.get(historyDataPosition) instanceof HistoryProductListItem){
+                topAdsRecyclerAdapter.setHasHeader(true);
+            } else {
+                topAdsRecyclerAdapter.setHasHeader(false);
+            }
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
-            adapter.addAll(true, true, dataFeedList);
-            adapter.notifyItemInserted(0);
+            adapter.setData(dataFeedList);
             currentTopAdsPage = 3;
         }
     }
@@ -387,22 +406,69 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
 
         gridLayoutManager = new GridLayoutManager(getActivity(), columnSize);
-        gridLayoutManager.setSpanSizeLookup(getSpanSizeLookup());
         adapter = new DataFeedAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .withPreferedCategory()
+                .build();
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
+        topAdsRecyclerAdapter.setAdsItemClickListener(this);
+        topAdsRecyclerAdapter.setAdsInfoClickListener(this);
+        topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
+        topAdsRecyclerAdapter.setHasHeader(true);
+        topAdsRecyclerAdapter.setConfig(config);
+        topAdsRecyclerAdapter.setTopAdsParams(generateTopAdsParams());
     }
 
+    @Override
+    public void onInfoClicked() {
+
+    }
+
+    @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Shop shop) {
+
+    }
+
+    private TopAdsParams generateTopAdsParams(){
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getActivity()));
+        params.getParam().put(TopAdsParams.KEY_SRC, GetTopAdsUseCase.SRC_PRODUCT_FEED);
+        return params;
+    }
 
     private void prepareView(View parentView) {
         contentRecyclerView.setLayoutManager(gridLayoutManager);
         contentRecyclerView.setHasFixedSize(true);
-        contentRecyclerView.setAdapter(adapter);
-        contentRecyclerView.addOnScrollListener(onRecyclerViewListener());
+
+        contentRecyclerView.setAdapter(topAdsRecyclerAdapter);
+        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
+            @Override
+            public void onLoad(int page, int totalCount) {
+                feedPresenter.loadMoreDataFeed();
+            }
+        });
+//        contentRecyclerView.addOnScrollListener(onRecyclerViewListener());
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter.setOnRetryListenerRV(onAdapterRetryListener());
         setFabListener();
         retryHandler = new RetryHandler(getActivity(), parentView);
-
-
     }
 
     @NonNull
@@ -418,31 +484,14 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         };
     }
 
-    @NonNull
-    private RecyclerView.OnScrollListener onRecyclerViewListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() ==
-                        gridLayoutManager.getItemCount() - 1) {
-                    feedPresenter.loadMoreDataFeed();
-                }
-            }
-        };
-    }
-
     private GridLayoutManager.SpanSizeLookup getSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (isPositionInFooter(position)) {
-                    return ProductFeedHelper.PORTRAIT_COLUMN_FOOTER;
-                } else if (isPositionOnHistory(position)) {
-                    return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
-                } else if (isPositionOnTopAds(position)) {
-                    return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
-                } else if (isPositionOnEmptyFeed(position)) {
+                if (isPositionOnHistory(position)
+                        || isPositionOnEmptyFeed(position)
+                        || topAdsRecyclerAdapter.isTopAdsViewHolder(position)
+                        || topAdsRecyclerAdapter.isLoading(position)) {
                     return ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
                 } else {
                     return ProductFeedHelper.PORTRAIT_COLUMN;
@@ -484,10 +533,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
         startActivity(moveToProductActivity);
-    }
-
-    private boolean isPositionOnTopAds(int position) {
-        return adapter.isTopAds(position);
     }
 
     private boolean isPositionOnHistory(int position) {
