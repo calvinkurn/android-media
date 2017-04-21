@@ -38,6 +38,10 @@ public class ProductImageViewHolder {
         this.listener = listener;
     }
 
+    public void setImages(ArrayList<String> images) {
+        imagesSelectView.addImagesString(images);
+    }
+
     public ProductImageViewHolder(View view) {
 
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);

@@ -16,6 +16,7 @@ import com.tokopedia.seller.product.view.model.ImageSelectModel;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,6 +82,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         notifyItemChanged(prevSize);
         notifyItemRangeInserted(prevSize + 1, imageSelectModelList.size());
         notifyNextAddProductIfNeeded();
+    }
+
+    public void setImageString(@NonNull List<String> imageStringList) {
+        this.imageSelectModelList = new ArrayList<>();
+        for (int i=0; i<imageStringList.size();i++){
+            imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
+        }
+        currentPrimaryImageIndex = -1;
+        switchPrimaryImageIfNeeded(0, imageSelectModelList);
+        notifyDataSetChanged();
     }
 
     public void setImage(@NonNull List<ImageSelectModel> imageSelectModelList) {

@@ -28,6 +28,7 @@ import com.tokopedia.seller.product.di.module.ProductAddModule;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -67,6 +68,9 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
+    // url got from gallery or camera or other paths
+    private ArrayList<String> tkpdImageUrls;
+
     @Inject
     public ProductAddPresenter presenter;
     private ProductScoreViewHolder productScoreViewHolder;
@@ -75,9 +79,24 @@ public class ProductAddFragment extends BaseDaggerFragment
     private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     private ProductInfoViewHolder productInfoViewHolder;
 
-    public static ProductAddFragment createInstance() {
+    public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
+        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS, tkpdImageUrls);
+            fragment.setArguments(bundle);
+        }
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle args = getArguments();
+
+        if (args!= null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
+            tkpdImageUrls = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
+        }
     }
 
     @Override
@@ -96,8 +115,12 @@ public class ProductAddFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_product_add, container, false);
         productInfoViewHolder = new ProductInfoViewHolder(view.findViewById(R.id.view_group_product_info));
         productInfoViewHolder.setListener(this);
+
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
+        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+            productImageViewHolder.setImages(tkpdImageUrls);
+        }
         productDetailViewHolder = new ProductDetailViewHolder(view);
         productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
