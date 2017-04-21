@@ -66,7 +66,7 @@ import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
@@ -840,12 +840,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         String userId = SessionHandler.getLoginID(getActivity());
         String hash = md5(userId + "~" + deviceId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_REQUEST_ID, requestId);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_USER_ID, userId);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_HASH, hash);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_OS_TYPE, "1");
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_REQUEST_ID, requestId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
 
         return requestParams;
     }

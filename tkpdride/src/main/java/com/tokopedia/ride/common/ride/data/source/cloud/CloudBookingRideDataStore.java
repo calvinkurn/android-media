@@ -79,7 +79,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
-    public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> params) {
+    public Observable<RideRequestEntity> getRequestDetail(TKPDMapParam<String, Object> params) {
         return mRideApi.getDetailRequestRide(params).doOnNext(new Action1<RideRequestEntity>() {
             @Override
             public void call(RideRequestEntity entity) {
@@ -109,5 +109,10 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     @Override
     public Observable<RideHistoryEntity> getHistory(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getHistory(parameters);
+    }
+
+    @Override
+    public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.getCurrentRequest(parameters);
     }
 }

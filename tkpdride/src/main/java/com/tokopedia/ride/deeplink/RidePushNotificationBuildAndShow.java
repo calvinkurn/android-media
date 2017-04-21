@@ -30,7 +30,7 @@ import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
@@ -52,7 +52,7 @@ public class RidePushNotificationBuildAndShow {
     public static final int ACCEPTED_UBER_NOTIFICATION_ID = 004;
     private Context mContext;
     private Gson gson;
-    private GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase;
+    private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
     public static final String ACTION_DONE = "RidePushNotificationBuildAndShow#ACTION_DONE";
     public static final String EXTRA_RIDE_RIDE_REQUEST = "EXTRA_RIDE_RIDE_REQUEST";
 
@@ -63,7 +63,7 @@ public class RidePushNotificationBuildAndShow {
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(mContext));
         String userId = sessionHandler.getLoginID();
         RidePushDependencyInjection injection = new RidePushDependencyInjection();
-        getCurrentDetailRideRequestUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
+        getRideRequestDetailUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
     }
 
     public void processReceivedNotification(Bundle bundle) {
@@ -79,13 +79,13 @@ public class RidePushNotificationBuildAndShow {
         String userId = SessionHandler.getLoginID(mContext);
         String hash = md5(userId + "~" + deviceId);
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_REQUEST_ID, ridePushNotification.getRequestId());
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_USER_ID, userId);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_HASH, hash);
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_OS_TYPE, "1");
-        requestParams.putString(GetCurrentDetailRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-        getCurrentDetailRideRequestUseCase.execute(requestParams, getSubscriber());
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_REQUEST_ID, ridePushNotification.getRequestId());
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        getRideRequestDetailUseCase.execute(requestParams, getSubscriber());
 
     }
 

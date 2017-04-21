@@ -61,4 +61,7 @@ public interface RideApi {
 
     @GET(RideUrl.TRANSACTION)
     Observable<RideHistoryEntity> getHistory(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @GET(RideUrl.REQUEST_CURRENT)
+    Observable<RideRequestEntity> getCurrentRequest(@QueryMap TKPDMapParam<String, Object> parameters);
 }

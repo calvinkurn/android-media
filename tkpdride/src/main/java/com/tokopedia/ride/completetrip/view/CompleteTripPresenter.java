@@ -1,14 +1,11 @@
 package com.tokopedia.ride.completetrip.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func2;
 
 /**
  * Created by alvarisi on 3/31/17.
@@ -17,11 +14,11 @@ import rx.functions.Func2;
 public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContract.View>
         implements CompleteTripContract.Presenter {
     private GetReceiptUseCase getReceiptUseCase;
-    private GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase;
+    private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
 
-    public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase, GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase) {
+    public CompleteTripPresenter(GetReceiptUseCase getReceiptUseCase, GetRideRequestDetailUseCase getRideRequestDetailUseCase) {
         this.getReceiptUseCase = getReceiptUseCase;
-        this.getCurrentDetailRideRequestUseCase = getCurrentDetailRideRequestUseCase;
+        this.getRideRequestDetailUseCase = getRideRequestDetailUseCase;
     }
 
     @Override
@@ -55,7 +52,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
 
     @Override
     public void detachView() {
-        getCurrentDetailRideRequestUseCase.unsubscribe();
+        getRideRequestDetailUseCase.unsubscribe();
         getReceiptUseCase.unsubscribe();
         super.detachView();
     }

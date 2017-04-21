@@ -16,7 +16,7 @@ import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
 import com.tokopedia.ride.common.ride.data.source.api.RideApi;
 import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
 import java.util.concurrent.TimeUnit;
@@ -134,8 +134,8 @@ public class RidePushDependencyInjection {
                 .build();
     }
 
-    public GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
-        return new GetCurrentDetailRideRequestUseCase(
+    public GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
+        return new GetRideRequestDetailUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(

@@ -34,6 +34,6 @@ public class CreateRideRequestUseCase extends UseCase<RideRequest> {
 
     @Override
     public Observable<RideRequest> createObservable(RequestParams requestParams) {
-        return bookingRideRepository.createRideRequest(requestParams.getParameters());
+        return bookingRideRepository.createRequest(requestParams.getParameters());
     }
 }

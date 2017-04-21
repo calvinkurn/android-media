@@ -85,7 +85,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<RideRequest> createRideRequest(TKPDMapParam<String, Object> params) {
+    public Observable<RideRequest> createRequest(TKPDMapParam<String, Object> params) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .createRideRequest(params)
                 .map(new Func1<RideRequestEntity, RideRequest>() {
@@ -102,14 +102,27 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
+    public Observable<RideRequest> getRequestDetail(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory
+                .createCloudDataStore()
+                .getRequestDetail(parameters)
+                .map(new Func1<RideRequestEntity, RideRequest>() {
+                    @Override
+                    public RideRequest call(RideRequestEntity entity) {
+                        return rideRequestEntityMapper.transform(entity);
+                    }
+                });
+    }
+
+    @Override
     public Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory
                 .createCloudDataStore()
                 .getCurrentRequest(parameters)
                 .map(new Func1<RideRequestEntity, RideRequest>() {
                     @Override
-                    public RideRequest call(RideRequestEntity entity) {
-                        return rideRequestEntityMapper.transform(entity);
+                    public RideRequest call(RideRequestEntity rideRequestEntity) {
+                        return rideRequestEntityMapper.transform(rideRequestEntity);
                     }
                 });
     }

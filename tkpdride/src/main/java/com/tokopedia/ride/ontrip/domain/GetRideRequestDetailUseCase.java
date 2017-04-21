@@ -13,7 +13,7 @@ import rx.Observable;
  * Created by alvarisi on 3/29/17.
  */
 
-public class GetCurrentDetailRideRequestUseCase extends UseCase<RideRequest> {
+public class GetRideRequestDetailUseCase extends UseCase<RideRequest> {
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_DEVICE_ID = "device_id";
     public static final String PARAM_HASH = "hash";
@@ -22,15 +22,15 @@ public class GetCurrentDetailRideRequestUseCase extends UseCase<RideRequest> {
     public static final String PARAM_REQUEST_ID = "request_id";
 
     private BookingRideRepository bookingRideRepository;
-    public GetCurrentDetailRideRequestUseCase(ThreadExecutor threadExecutor,
-                                              PostExecutionThread postExecutionThread,
-                                              BookingRideRepository bookingRideRepository) {
+    public GetRideRequestDetailUseCase(ThreadExecutor threadExecutor,
+                                       PostExecutionThread postExecutionThread,
+                                       BookingRideRepository bookingRideRepository) {
         super(threadExecutor, postExecutionThread);
         this.bookingRideRepository = bookingRideRepository;
     }
 
     @Override
     public Observable<RideRequest> createObservable(RequestParams requestParams) {
-        return bookingRideRepository.getCurrentRequest(requestParams.getParameters());
+        return bookingRideRepository.getRequestDetail(requestParams.getParameters());
     }
 }

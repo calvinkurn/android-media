@@ -17,6 +17,7 @@
         android:layout_marginRight="@dimen/margin_large"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/padding_vs"
+        android:textSize="18sp"
         android:text="@string/protect_your_account_with_phone_verification" />
 
     <FrameLayout

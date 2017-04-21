@@ -22,11 +22,10 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.view.CompleteTripContract;
 import com.tokopedia.ride.completetrip.view.CompleteTripPresenter;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -169,12 +168,12 @@ public class CompleteTripDependencyInjection {
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();
         GetReceiptUseCase getReceiptUseCase = injection.provideGetReceiptUseCase(token, userId);
-        GetCurrentDetailRideRequestUseCase getCurrentDetailRideRequestUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
-        return new CompleteTripPresenter(getReceiptUseCase, getCurrentDetailRideRequestUseCase);
+        GetRideRequestDetailUseCase getRideRequestDetailUseCase = injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
+        return new CompleteTripPresenter(getReceiptUseCase, getRideRequestDetailUseCase);
     }
 
-    private GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
-        return new GetCurrentDetailRideRequestUseCase(
+    private GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
+        return new GetRideRequestDetailUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(

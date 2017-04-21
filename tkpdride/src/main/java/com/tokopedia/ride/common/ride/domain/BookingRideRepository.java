@@ -24,11 +24,11 @@ public interface BookingRideRepository {
 
     Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> productParams);
 
-    Observable<RideRequest> createRideRequest(TKPDMapParam<String, Object> productParams);
+    Observable<RideRequest> createRequest(TKPDMapParam<String, Object> productParams);
 
     Observable<String> cancelRequest(TKPDMapParam<String, Object> productParams);
 
-    Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
+    Observable<RideRequest> getRequestDetail(TKPDMapParam<String, Object> parameters);
 
     Observable<Receipt> getReceipt(TKPDMapParam<String, Object> param);
 
@@ -39,4 +39,6 @@ public interface BookingRideRepository {
     Observable<List<RideHistory>> getHistories(TKPDMapParam<String, Object> parameters);
 
     Observable<RideHistory> getHistory(TKPDMapParam<String, Object> parameters);
+
+    Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
 }

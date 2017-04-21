@@ -18,4 +18,5 @@ public interface RideUrl {
     String REQUEST_MAP = "/requests/{request_id}/map";
     String TRANSACTIONS_ALL = "/uber/request/history";
     String TRANSACTION = "/uber/request/history";
+    String REQUEST_CURRENT = "/uber/request/current";
 }

@@ -28,7 +28,7 @@ import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripMapPresenter;
 
@@ -192,8 +192,8 @@ public class OnTripDependencyInjection {
         );
     }
 
-    private GetCurrentDetailRideRequestUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
-        return new GetCurrentDetailRideRequestUseCase(
+    private GetRideRequestDetailUseCase provideGetCurrentDetailRideRequestUseCase(String token, String userId) {
+        return new GetRideRequestDetailUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(
@@ -226,7 +226,7 @@ public class OnTripDependencyInjection {
         CancelRideRequestUseCase cancelRideRequestUseCase = injection.provideCancelRideRequestUseCase(token, userId);
         GetRideRequestMapUseCase getRideRequestMapUseCase = injection.provideGetRideRequestMapUseCase(token, userId);
         GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
-        GetCurrentDetailRideRequestUseCase getRideReuquestUseCase = injection.createGetDetailUseCase(context);
+        GetRideRequestDetailUseCase getRideReuquestUseCase = injection.createGetDetailUseCase(context);
         return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase, getRideReuquestUseCase);
     }
 
@@ -254,7 +254,7 @@ public class OnTripDependencyInjection {
         );
     }
 
-    public static GetCurrentDetailRideRequestUseCase createGetDetailUseCase(Context context) {
+    public static GetRideRequestDetailUseCase createGetDetailUseCase(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         OnTripDependencyInjection injection = new OnTripDependencyInjection();

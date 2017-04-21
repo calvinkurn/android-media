@@ -17,7 +17,7 @@ import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
-import com.tokopedia.ride.ontrip.domain.GetCurrentDetailRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
 import java.io.BufferedInputStream;
@@ -47,7 +47,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private CancelRideRequestUseCase cancelRideRequestUseCase;
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
-    private GetCurrentDetailRideRequestUseCase getRideRequestUseCase;
+    private GetRideRequestDetailUseCase getRideRequestUseCase;
 
     private Handler handler = new Handler();
     private String mRequestId;
@@ -56,7 +56,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               CancelRideRequestUseCase cancelRideRequestUseCase,
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
-                              GetCurrentDetailRideRequestUseCase getRideRequestUseCase) {
+                              GetRideRequestDetailUseCase getRideRequestUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
