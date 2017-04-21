@@ -7,16 +7,16 @@
             android:shape="rectangle" >
             <gradient
                 android:angle="270"
-                android:endColor="#3e9d43"
-                android:startColor="#3e9d43" />
+                android:endColor="@color/green_buy"
+                android:startColor="@color/green_buy" />
 
             <corners android:radius="2dp" />
 
             <padding
-                android:bottom="8dp"
-                android:left="8dp"
-                android:right="8dp"
-                android:top="8dp" />
+                android:bottom="@dimen/padding_buy"
+                android:left="@dimen/padding_buy"
+                android:right="@dimen/padding_buy"
+                android:top="@dimen/padding_buy" />
         </shape>
     </item>
 

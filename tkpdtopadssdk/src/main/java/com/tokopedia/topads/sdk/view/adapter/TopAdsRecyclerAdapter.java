@@ -199,7 +199,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void initPresenter() {
         presenter = new TopAdsPresenter(mContext);
         presenter.attachView(this);
-        setSessionId("cmqKKiZDXdw:APA91bEegZcC1X2BXAwDg6fbc5yrkU7sb2Kw1JGi8kfqUObXUY1pzU29PtTeIE3DJBX5YIeYoHhchw30N9_3VynqCexuVei8Gxs2lFyO11BoRBm9FJM6ixiNY5UPzVJhoc59Acmrb0oT");
     }
 
     @Override

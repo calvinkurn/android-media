@@ -25,7 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_sm"
             />
-i
+
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
