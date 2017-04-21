@@ -124,19 +124,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             case GRID_1: //List
                 spanCount = 1;
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(linearLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(linearLayoutManager);
                 break;
             case GRID_2: //Grid 2x2
                 spanCount = 2;
                 gridLayoutManager.setSpanCount(spanCount);
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
             case GRID_3: //Grid 1x1
                 spanCount = 1;
                 gridLayoutManager.setSpanCount(spanCount);
                 productAdapter.setgridView(gridType);
-                mRecyclerView.setLayoutManager(gridLayoutManager);
+                topAdsRecyclerAdapter.setLayoutManager(gridLayoutManager);
                 break;
         }
     }
@@ -254,7 +254,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
-//        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
 
     // to determine size of grid columns
@@ -277,7 +276,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void setupRecyclerView() {
+    public boolean setupRecyclerView() {
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
@@ -299,8 +298,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 }
             }
         });
-        mRecyclerView.setAdapter(productAdapter);
+        mRecyclerView.setAdapter(topAdsRecyclerAdapter);
         changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+        return true;
     }
 
     private TopAdsParams populatedNetworkParams() {

@@ -90,39 +90,37 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
                 shopListImage.setAdapter(imageListAdapter);
             }
 
-            SpannableString spannableString;
+            Spanned title;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                spannableString = new SpannableString("  "+Html.fromHtml(shop.getTagline(), Html.FROM_HTML_MODE_LEGACY));
+                title = Html.fromHtml(shop.getName(), Html.FROM_HTML_MODE_LEGACY);
                 shopSubtitle.setText(Html.fromHtml(shop.getTagline(), Html.FROM_HTML_MODE_LEGACY));
             } else {
-                spannableString = new SpannableString("  "+Html.fromHtml(shop.getTagline()));
+                title = Html.fromHtml(shop.getName());
                 shopSubtitle.setText(Html.fromHtml(shop.getTagline()));
             }
 
             if(shop.isGoldShopBadge()){
-                Drawable image = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    image = context.getResources().getDrawable(R.drawable.ic_gold, null);
-                } else {
-                    image = context.getResources().getDrawable(R.drawable.ic_gold);
-                }
-                image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size),
-                        context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
-                spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            if(shop.isShop_is_official()) {
-                Drawable image = null;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    image = context.getResources().getDrawable(R.drawable.ic_official, null);
-                } else {
-                    image = context.getResources().getDrawable(R.drawable.ic_official);
-                }
-                image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size),
-                        context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
-                spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
+            } else if(shop.isShop_is_official()) {
+                shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
+            } else {
+                shopTitle.setText(title);
             }
 
-            shopTitle.setText(spannableString);
         }
+    }
+
+    private Spanned spannedBadgeString(Spanned text, int drawable){
+        SpannableString spannableString = new SpannableString("  "+text);
+        Drawable image;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            image = context.getResources().getDrawable(drawable, null);
+        } else {
+            image = context.getResources().getDrawable(drawable);
+        }
+        image.setBounds(0, 0, context.getResources().getDimensionPixelOffset(R.dimen.badge_size),
+                context.getResources().getDimensionPixelOffset(R.dimen.badge_size));
+        spannableString.setSpan(new ImageSpan(image), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 }
