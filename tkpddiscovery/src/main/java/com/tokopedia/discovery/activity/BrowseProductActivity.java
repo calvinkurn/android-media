@@ -460,8 +460,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     public static void moveToWithoutAnimation(Context context, String depId, String ad_src, String source, String title) {
-        if (context == null)
-            return;
+        if (context == null) return;
 
         Intent intent = new Intent(context, BrowseProductActivity.class);
         Bundle bundle = new Bundle();

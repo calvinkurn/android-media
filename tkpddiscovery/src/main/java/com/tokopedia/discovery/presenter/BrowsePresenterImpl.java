@@ -87,6 +87,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private static final String LAYOUT_GRID_BOX = "2";
     private static final String LAYOUT_LIST = "3";
     private static final String KEY_GTM = "GTMFilterData";
+    private static final String LABEL_TRACKING = "label";
 
     enum FDest {
         SORT, FILTER
@@ -832,11 +833,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         if (item.getString("key").equalsIgnoreCase(map.getKey())) {
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
-                                UnifyTracking.eventDiscoveryFilter(item.getString("label"));
+                                UnifyTracking.eventDiscoveryFilter(item.getString(LABEL_TRACKING));
                                 if (browseModel.getSource().equals(BrowseProductRouter.
                                         VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                                     UnifyTracking.eventFilterCategory(browseModel.getParentDepartement(),
-                                            item.getString("label"));
+                                            item.getString(LABEL_TRACKING));
                                 }
                             }
                             break;
@@ -868,10 +869,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             for (int i = 0; i < dynamicSort.length(); i++) {
                 JSONObject item = (JSONObject) dynamicSort.get(i);
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
-                    UnifyTracking.eventDiscoverySort(item.getString("label"));
+                    UnifyTracking.eventDiscoverySort(item.getString(LABEL_TRACKING));
                     if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         UnifyTracking.eventSortCategory(browseModel.getParentDepartement(),
-                                item.getString("label"));
+                                item.getString(LABEL_TRACKING));
                     }
                     break;
                 }

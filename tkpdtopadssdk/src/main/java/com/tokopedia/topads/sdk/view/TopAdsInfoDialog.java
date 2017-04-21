@@ -22,6 +22,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 
 public class TopAdsInfoDialog extends DialogFragment implements View.OnClickListener {
 
+    public static String ADS_URL = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
+
     public static TopAdsInfoDialog newInstance() {
 
         Bundle args = new Bundle();
@@ -63,12 +65,11 @@ public class TopAdsInfoDialog extends DialogFragment implements View.OnClickList
     public void onClick(View v) {
         if(v.getId()==R.id.readMore) {
             dismiss();
-            String url = "https://www.tokopedia.com/iklan?source=tooltip&medium=android";
             if (infoClickListener != null) {
                 infoClickListener.onInfoClicked();
             } else {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(url));
+                intent.setData(Uri.parse(ADS_URL));
                 startActivity(intent);
             }
         }

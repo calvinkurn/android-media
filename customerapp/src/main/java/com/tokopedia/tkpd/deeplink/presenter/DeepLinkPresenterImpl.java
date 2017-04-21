@@ -619,7 +619,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isBrowse(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                 linkSegment.get(0).equals("p")
+                 linkSegment.get(0).equals("search")
         );
     }
 

@@ -127,7 +127,7 @@
             android:visibility="gone"
             card_view:cardCornerRadius="0dip"
             card_view:cardElevation="3dip"
-            card_view:contentPadding="5dp">
+            card_view:contentPadding="@dimen/padding_vs">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -141,7 +141,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="2dp">
+                    android:padding="@dimen/padding_vvvs">
 
                     <TextView
                         android:id="@+id/itemTitle"

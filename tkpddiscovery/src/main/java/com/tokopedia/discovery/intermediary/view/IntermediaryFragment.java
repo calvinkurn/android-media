@@ -375,4 +375,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         );
         UnifyTracking.eventLevelCategoryIntermediary(departmentId,child.getCategoryId());
     }
+
+    public String getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(String departmentId) {
+        this.departmentId = departmentId;
+    }
 }
