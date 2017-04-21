@@ -48,5 +48,7 @@
     <string name="your_trips_toolbar_title">Your Trips</string>
     <string name="btn_request">Request</string>
     <string name="apply_promocode">Do you have a promocode?</string>
-    <string name="apply">Apply</string>
+    <string name="apply">Apply Promo Code</string>
+    <string name="btn_apply">Apply</string>
+    <string name="hint_enter_promo_code">Enter Promo Code</string>
 </resources>
