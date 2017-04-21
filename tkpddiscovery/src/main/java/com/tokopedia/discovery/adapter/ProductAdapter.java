@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.ProductFragment;
@@ -910,6 +911,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         ImageView wishlistButton;
         @BindView(R2.id.container)
         View container;
+        @BindView(R2.id.rating)
+        ImageView rating;
+        @BindView(R2.id.review_count)
+        TextView reviewCount;
 
         private Context context;
         private String source = "";
@@ -995,6 +1000,15 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     onItemClicked(position);
                 }
             });
+            float rateAmount = Float.parseFloat(data.getRating());
+            rating.setImageResource(
+                    RatingView.getRatingDrawable(getStarCount(rateAmount))
+            );
+            reviewCount.setText("(" + data.getReviewCount() + ")");
+        }
+
+        private int getStarCount(float rating) {
+            return Math.round(rating / 20f);
         }
 
         private void onItemClicked(int position) {

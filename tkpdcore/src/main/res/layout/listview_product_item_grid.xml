@@ -52,11 +52,33 @@
         android:textColor="@color/orange_red"
         android:textSize="12sp" />
 
+    <LinearLayout
+        android:id="@+id/rating_review_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/price"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/rating"
+            android:layout_width="70dp"
+            android:layout_height="16dp"
+            />
+
+        <TextView
+            android:id="@+id/review_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:textSize="12sp"
+            />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/price"
+        android:layout_below="@+id/rating_review_container"
         android:gravity="bottom"
         android:orientation="vertical">
 
