@@ -24,7 +24,7 @@ public interface FragmentBrowseProductView extends BaseView {
      */
     int getDataSize(String TAG);
     void setupAdapter();
-    void setupRecyclerView();
+    boolean setupRecyclerView();
     void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
