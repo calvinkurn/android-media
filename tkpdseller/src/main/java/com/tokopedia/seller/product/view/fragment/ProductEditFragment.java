@@ -61,12 +61,12 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     @Override
     public void populateView(UploadProductInputViewModel model) {
         productInfoViewHolder.setName(model.getProductName());
-//        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
-//
-//        productImageViewHolder.setProductPhotos(model.getProductPhotos());
-//
-//        productDetailViewHolder.setEtalaseId(model.getProductPriceCurrency());
-//
-//        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+
+        productImageViewHolder.setProductPhotos(model.getProductPhotos());
+
+        productDetailViewHolder.setEtalaseId(model.getProductPriceCurrency());
+
+        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
@@ -47,6 +48,12 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
+            if (e instanceof ResponseErrorListStringException) {
+                String errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
+                getView().onFailedAddProduct();
+                getView().notificationFailed(errorMessage);
+                getView().sendFailedBroadcast(errorMessage);
+            }
         }
 
         @Override
@@ -54,7 +61,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             checkViewAttached();
             getView().onSuccessAddProduct();
             getView().notificationComplete();
-            getView().sendBroadcast(addProductDomainModel);
+            getView().sendSuccessBroadcast(addProductDomainModel);
         }
     }
 }

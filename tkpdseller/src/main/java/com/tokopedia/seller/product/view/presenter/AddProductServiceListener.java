@@ -16,5 +16,11 @@ public interface AddProductServiceListener extends CustomerView {
 
     void notificationComplete();
 
-    void sendBroadcast(AddProductDomainModel addProductDomainModel);
+    void sendSuccessBroadcast(AddProductDomainModel addProductDomainModel);
+
+    void onFailedAddProduct();
+
+    void notificationFailed(String errorMessage);
+
+    void sendFailedBroadcast(String errorMessage);
 }

@@ -149,7 +149,7 @@ public class ProductImageViewHolder {
         for (int i = 0; i < productPhotos.getPhotos().size(); i ++){
             ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
             ImageSelectModel image = new ImageSelectModel(
-                    productPhoto.getImagePath(),
+                    productPhoto.getUrl(),
                     productPhoto.getImageDescription(),
                     i == defaultPicture
             );

@@ -70,6 +70,18 @@ public class AddProductService extends BaseService implements AddProductServiceL
     }
 
     @Override
+    public void onFailedAddProduct() {
+        stopForeground(false);
+        stopSelf();
+    }
+
+    @Override
+    public void notificationFailed(String errorMessage) {
+        Notification notification = buildFailedNotification(errorMessage);
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    @Override
     public void createNotification(String productName){
         buildBaseNotification(productName);
         Notification notification = buildStartNotification();
@@ -89,7 +101,17 @@ public class AddProductService extends BaseService implements AddProductServiceL
     }
 
     @Override
-    public void sendBroadcast(AddProductDomainModel domainModel) {
+    public void sendFailedBroadcast(String errorMessage) {
+        Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
+        Bundle bundle = new Bundle();
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
+        bundle.putString(TkpdState.ProductService.MESSAGE_ERROR_FLAG, errorMessage);
+        result.putExtras(bundle);
+        sendBroadcast(result);
+    }
+
+    @Override
+    public void sendSuccessBroadcast(AddProductDomainModel domainModel) {
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE);
@@ -110,6 +132,18 @@ public class AddProductService extends BaseService implements AddProductServiceL
                 .setSmallIcon(R.drawable.qc_launcher2)
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.group_notification));
+    }
+
+    private Notification buildFailedNotification(String errorMessage) {
+        return notificationBuilder
+                .setContentText(errorMessage)
+                .setStyle(new NotificationCompat
+                        .BigTextStyle()
+                        .bigText(errorMessage)
+                )
+                .setProgress(0, 0, false)
+                .setOngoing(false)
+                .build();
     }
 
     private Notification buildStartNotification() {
