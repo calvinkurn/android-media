@@ -5,6 +5,7 @@ package com.tokopedia.ride.common.configuration;
  */
 
 public interface RideStatus {
+    String KEY = "RIDE_STATUS";
     String NO_DRIVER_AVAILABLE = "no_drivers_available";
     String PROCESSING = "processing";
     String ACCEPTED = "accepted";

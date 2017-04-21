@@ -27,6 +27,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
@@ -50,6 +51,7 @@ public class RidePushNotificationBuildAndShow {
     private static int mNotificationId = 003;
     public static final int FINDING_UBER_NOTIFICATION_ID = 003;
     public static final int ACCEPTED_UBER_NOTIFICATION_ID = 004;
+    public static final String RIDE_STATUS = "RIDE_STATUS";
     private Context mContext;
     private Gson gson;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
@@ -229,6 +231,7 @@ public class RidePushNotificationBuildAndShow {
                                                           Bundle bundle = new Bundle();
                                                           bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
                                                           bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+                                                          bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                           TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
 
                                                           PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -266,6 +269,7 @@ public class RidePushNotificationBuildAndShow {
                                                   Bundle bundle = new Bundle();
                                                   bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
                                                   bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+                                                  bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                   TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
 
                                                   PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
