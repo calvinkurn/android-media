@@ -27,4 +27,6 @@ public interface ProductAddView extends CustomerView {
 
     void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList);
 
+    void onSuccessStoreProductToDraft(long productId);
+
 }

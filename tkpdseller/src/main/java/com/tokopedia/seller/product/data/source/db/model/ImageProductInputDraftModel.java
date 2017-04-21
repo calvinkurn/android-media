@@ -8,7 +8,7 @@ public class ImageProductInputDraftModel {
     private String url;
     private String description;
     private String imagePath;
-    private int picId;
+    private String picId;
     private String picObj;
 
     public String getUrl() {
@@ -35,11 +35,11 @@ public class ImageProductInputDraftModel {
         this.imagePath = imagePath;
     }
 
-    public int getPicId() {
+    public String getPicId() {
         return picId;
     }
 
-    public void setPicId(int picId) {
+    public void setPicId(String picId) {
         this.picId = picId;
     }
 

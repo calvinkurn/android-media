@@ -10,8 +10,8 @@ import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -28,7 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class ProductAddPresenterImpl extends ProductAddPresenter {
+public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
     public static final int TIME_DELAY = 500;
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
@@ -192,7 +192,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
     @Override
     public void saveDraft(UploadProductInputViewModel viewModel) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.map(viewModel);
+        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
         RequestParams requestParam = SaveDraftProductUseCase.generateUploadProductParam(domainModel);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
     }
@@ -284,25 +284,9 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
         @Override
         public void onNext(Long productId) {
-            RequestParams requestParam = AddProductUseCase.generateUploadProductParam(productId);
-            addProductUseCase.execute(requestParam, new AddProductSubscriber());
+            checkViewAttached();
+            getView().onSuccessStoreProductToDraft(productId);
         }
     }
 
-    private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            checkViewAttached();
-        }
-
-        @Override
-        public void onNext(AddProductDomainModel addProductDomainModel) {
-            checkViewAttached();
-        }
-    }
 }

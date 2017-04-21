@@ -12,8 +12,15 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
  */
 
 public class AddProductDomainMapper {
-    public static AddProductDomainModel mapValidationToSubmit(AddProductValidationDomainModel addProductValidationDomainModel) {
-        return null;
+    public static AddProductDomainModel mapValidationToSubmit(AddProductValidationDomainModel validationDomainModel) {
+        AddProductDomainModel domainModel = new AddProductDomainModel();
+        domainModel.setProductId(validationDomainModel.getProductId());
+        domainModel.setProductName(validationDomainModel.getProductName());
+        domainModel.setProductUrl(validationDomainModel.getProductUrl());
+        domainModel.setProductDesc(validationDomainModel.getProductDesc());
+        domainModel.setProductDest(validationDomainModel.getProductDest());
+        domainModel.setProductEtalase(validationDomainModel.getProductEtalase());
+        return domainModel;
     }
 
     public static AddProductPictureInputDomainModel mapUploadToPicture(UploadProductInputDomainModel uploadProductInputDomainModel) {

@@ -116,6 +116,21 @@ public class ProductImageViewHolder extends ProductViewHolder {
         return productPhotos;
     }
 
+    public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
+        List<ImageSelectModel> images = new ArrayList<>();
+        int defaultPicture = productPhotos.getProductDefaultPicture();
+        for (int i = 0; i < productPhotos.getPhotos().size(); i ++){
+            ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
+            ImageSelectModel image = new ImageSelectModel(
+                    productPhoto.getUrl(),
+                    productPhoto.getImageDescription(),
+                    i == defaultPicture
+            );
+            images.add(image);
+        }
+        imagesSelectView.setImage(images);
+    }
+
     @Override
     public boolean isDataValid() {
         return true;

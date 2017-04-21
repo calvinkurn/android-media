@@ -490,6 +490,9 @@ public class TkpdState {
         public static final String INVALID_MESSAGE_ERROR = "default";
 
 
-
+        public static final String PRODUCT_NAME = "PRODUCT_NAME";
+        public static final String IMAGE_URI = "IMAGE_URI";
+        public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
+        public static final String PRODUCT_URI = "PRODUCT_URI";
     }
 }

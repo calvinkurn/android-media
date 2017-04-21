@@ -129,6 +129,10 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return etalaseId;
     }
 
+    public void setEtalaseId(int etalaseId) {
+        this.etalaseId = etalaseId;
+    }
+
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
         // TODO insert into wholesale adapter.
     }
@@ -141,13 +145,13 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
     @Override
     public boolean isDataValid() {
-        if (getPriceValue() < 0) {
+        if (getPriceValue() <= 0) {
             Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_price_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
                     .show();
             return false;
         }
-        if (getWeightValue() < 0) {
+        if (getWeightValue() <= 0) {
             Snackbar.make(weightSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_weight_not_valid, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(weightSpinnerCounterInputView.getContext(), R.color.green_400))
                     .show();
@@ -160,5 +164,5 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
-    }
+	}
 }

@@ -31,6 +31,8 @@ public class UploadProductInputDomainModel {
     private int poProcessValue;
     private int serverId;
     private String hostUrl;
+    private String productId;
+    private int nameEditable;
 
     public long getId() {
         return id;
@@ -218,5 +220,13 @@ public class UploadProductInputDomainModel {
 
     public void setHostUrl(String hostUrl) {
         this.hostUrl = hostUrl;
+    }
+
+    public void setproductId(String productId) {
+        this.productId = productId;
+    }
+
+    public void setNameEditable(int nameEditable) {
+        this.nameEditable = nameEditable;
     }
 }

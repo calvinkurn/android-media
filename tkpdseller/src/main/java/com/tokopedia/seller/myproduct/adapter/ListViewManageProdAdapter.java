@@ -49,6 +49,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -536,7 +537,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                 boolean isCopy;
                 if (item.getItemId() == R.id.action_edit) {
                     isEdit = true;
-                    intent = new Intent(activity, ProductAddActivity.class);
+                    intent = ProductEditActivity.createInstance(activity, ProductID);
                     activity.startActivityForResult(intent, 1);
                     return true;
                 } else if (item.getItemId() == R.id.action_copy) {

@@ -36,14 +36,14 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     public interface Listener {
 
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
-    }
 
+    }
     private TextInputLayout descriptionTextInputLayout;
+
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
-
     private Listener listener;
 
     /**
@@ -118,6 +118,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public boolean isShare() {
         return shareLabelSwitch.isChecked();
+    }
+
+    public void setDescription(String description) {
+        descriptionEditText.setText(description);
     }
 
     @Override

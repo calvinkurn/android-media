@@ -412,4 +412,9 @@
     <string name="youtube_add_url_title">Tambah URL Video</string>
     <string name="product_label_video">Video</string>
     <string name="product_video_count">%1d Video</string>
+    <string name="title_notification_upload_product">Mengunggah</string>
+    <string name="group_notification">com.tokopedia</string>
+    <string name="notification_start_upload_product">Mulai mengunggah produk</string>
+    <string name="notification_progress_upload_product">Sedang meunggah produk</string>
+    <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
 </resources>

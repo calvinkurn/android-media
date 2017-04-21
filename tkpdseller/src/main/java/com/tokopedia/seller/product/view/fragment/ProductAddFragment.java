@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -67,11 +68,12 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     @Inject
     public ProductAddPresenter presenter;
-    private ProductScoreViewHolder productScoreViewHolder;
-    private ProductImageViewHolder productImageViewHolder;
-    private ProductDetailViewHolder productDetailViewHolder;
-    private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
-    private ProductInfoViewHolder productInfoViewHolder;
+    protected ProductScoreViewHolder productScoreViewHolder;
+    protected ProductImageViewHolder productImageViewHolder;
+    protected ProductDetailViewHolder productDetailViewHolder;
+    protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
+    protected ProductInfoViewHolder productInfoViewHolder;
+    protected Listener listener;
 
     public static ProductAddFragment createInstance() {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -86,6 +88,17 @@ public class ProductAddFragment extends BaseDaggerFragment
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof Listener){
+            this.listener = (Listener) context;
+        } else {
+            throw new RuntimeException("Activity must implement Listener");
+        }
+
     }
 
     @Nullable
@@ -200,6 +213,15 @@ public class ProductAddFragment extends BaseDaggerFragment
     public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
         ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         return valueIndicatorScoreModel;
+    }
+
+    @Override
+    public void onSuccessStoreProductToDraft(long productId) {
+        if (productAdditionalInfoViewHolder.isShare()) {
+            listener.startUploadProductWithShare(productId);
+        } else {
+            listener.startUploadProduct(productId);
+        }
     }
 
     @Override
@@ -341,5 +363,11 @@ public class ProductAddFragment extends BaseDaggerFragment
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
         productDetailViewHolder.addWholesaleItem(wholesaleModel);
+	}
+	
+    public interface Listener {
+        void startUploadProduct(long productId);
+
+        void startUploadProductWithShare(long productId);
     }
 }
