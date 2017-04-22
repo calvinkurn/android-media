@@ -27,6 +27,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         void onImagePickerItemClicked(int position, boolean isPrimary);
 
         void onResolutionImageCheckFailed(String uri);
+
+        void onTotalImageUpdated(int total);
     }
 
     public static final int MIN_IMG_RESOLUTION = 300;
@@ -96,6 +98,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (imageUrls != null) {
                 imagesSelectView.addImagesString(imageUrls);
             }
+            listener.onTotalImageUpdated(0);
         }
     }
 

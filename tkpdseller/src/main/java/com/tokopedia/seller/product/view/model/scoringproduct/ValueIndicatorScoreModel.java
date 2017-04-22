@@ -13,9 +13,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
     private int lengthProductName;
     private int lengthDescProduct;
     private boolean stockStatus;
-    private boolean cashbackStatus;
     private boolean freeReturnStatus;
-    private boolean videoStatus;
 
     public ValueIndicatorScoreModel(int imageCount, int imageResolution,
                                     int lengthProductName, int lengthDescProduct, boolean stockStatus,
@@ -25,9 +23,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.lengthProductName = lengthProductName;
         this.lengthDescProduct = lengthDescProduct;
         this.stockStatus = stockStatus;
-        this.cashbackStatus = cashbackStatus;
         this.freeReturnStatus = freeReturnStatus;
-        this.videoStatus = videoStatus;
     }
 
     public ValueIndicatorScoreModel() {
@@ -73,28 +69,12 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.stockStatus = stockStatus;
     }
 
-    public boolean isCashbackStatus() {
-        return cashbackStatus;
-    }
-
-    public void setCashbackStatus(boolean cashbackStatus) {
-        this.cashbackStatus = cashbackStatus;
-    }
-
     public boolean isFreeReturnStatus() {
         return freeReturnStatus;
     }
 
     public void setFreeReturnStatus(boolean freeReturnStatus) {
         this.freeReturnStatus = freeReturnStatus;
-    }
-
-    public boolean isVideoStatus() {
-        return videoStatus;
-    }
-
-    public void setVideoStatus(boolean videoStatus) {
-        this.videoStatus = videoStatus;
     }
 
     @Override
@@ -109,9 +89,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
         dest.writeInt(this.lengthProductName);
         dest.writeInt(this.lengthDescProduct);
         dest.writeByte(this.stockStatus ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.cashbackStatus ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeReturnStatus ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.videoStatus ? (byte) 1 : (byte) 0);
     }
 
     protected ValueIndicatorScoreModel(Parcel in) {
@@ -120,9 +98,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.lengthProductName = in.readInt();
         this.lengthDescProduct = in.readInt();
         this.stockStatus = in.readByte() != 0;
-        this.cashbackStatus = in.readByte() != 0;
         this.freeReturnStatus = in.readByte() != 0;
-        this.videoStatus = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<ValueIndicatorScoreModel> CREATOR = new Parcelable.Creator<ValueIndicatorScoreModel>() {

@@ -56,9 +56,9 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends TActivity
-        implements HasComponent<AppComponent>, TextPickerDialogListener
-        , AddWholeSaleDialog.WholeSaleDialogListener, ProductDetailViewHolder.Listener, ProductAddFragment.Listener {
+public class ProductAddActivity extends TActivity implements HasComponent<AppComponent>,
+        TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener,
+        ProductDetailViewHolder.Listener, ProductAddFragment.Listener {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
@@ -173,8 +173,7 @@ public class ProductAddActivity extends TActivity
                 if (tkpdCacheFile != null) {
                     // already in cache, return as is
                     imageUrls.add(tkpdCacheFile.getAbsolutePath());
-                }
-                else {
+                } else {
                     File photo = FileUtils.writeImageToTkpdPath(
                             FileUtils.compressImage(uriString,
                                     GalleryActivity.DEF_WIDTH_CMPR,
@@ -194,8 +193,8 @@ public class ProductAddActivity extends TActivity
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {
         imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        ArrayList<Uri>imageUris = new ArrayList<>();
-        for (int i=0; i<imageUrls.size();i++){
+        ArrayList<Uri> imageUris = new ArrayList<>();
+        for (int i = 0; i < imageUrls.size(); i++) {
             imageUris.add(Uri.parse(imageUrls.get(i)));
         }
         processMultipleImage(imageUris);
@@ -270,7 +269,7 @@ public class ProductAddActivity extends TActivity
     public void startAddWholeSaleDialog(WholesaleModel baseValue) {
         AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(baseValue);
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
-	}
+    }
 
     @Override
     public void onUSDClickedNotAllowed() {
@@ -279,6 +278,16 @@ public class ProductAddActivity extends TActivity
 
     @Override
     public void onEtalaseViewClicked() {
+
+    }
+
+    @Override
+    public void onFreeReturnChecked(boolean checked) {
+
+    }
+
+    @Override
+    public void onTotalStockUpdated(float stock) {
 
     }
 

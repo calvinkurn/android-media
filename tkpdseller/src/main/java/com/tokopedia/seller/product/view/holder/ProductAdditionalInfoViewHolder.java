@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.holder;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
@@ -37,6 +39,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
         void startYoutubeVideoActivity(ArrayList<String> videoIds);
 
+        void onDescriptionTextChanged(String text);
+
     }
     private TextInputLayout descriptionTextInputLayout;
 
@@ -61,6 +65,22 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
         preOrderSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_pre_order);
         shareLabelSwitch = (LabelSwitch) view.findViewById(R.id.label_switch_share);
+        descriptionEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                listener.onDescriptionTextChanged(editable.toString().trim());
+            }
+        });
 
         videoIds = new HashSet<>();
 

@@ -2,11 +2,10 @@ package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -15,6 +14,7 @@ import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.util.CurrencyTextWatcher;
 
 /**
  * Created by nathan on 4/11/17.
@@ -30,7 +30,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         void startAddWholeSaleDialog(WholesaleModel baseValue);
 
         void onUSDClickedNotAllowed();
+
         void onEtalaseViewClicked();
+
+        void onFreeReturnChecked(boolean checked);
+
+        void onTotalStockUpdated(float stock);
     }
 
     public static final int REQUEST_CODE_ETALASE = 301;
@@ -85,6 +90,19 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 if (listener != null) {
                     listener.startAddWholeSaleDialog(getBaseValue());
                 }
+            }
+        });
+
+        freeReturnsSpinnerTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                listener.onFreeReturnChecked(false);
+            }
+        });
+        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), "0") {
+            @Override
+            public void onCurrencyChanged(float currencyValue) {
+                listener.onTotalStockUpdated(currencyValue);
             }
         });
     }

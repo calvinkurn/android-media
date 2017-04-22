@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.fragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.ProductExtraConstant;
 import com.tokopedia.seller.product.di.component.DaggerProductScoringComponent;
 import com.tokopedia.seller.product.di.module.ProductScoringModule;
-import com.tokopedia.seller.product.utils.ColorScoringProductHelper;
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.adapter.IndicatorScoringAdapter;
 import com.tokopedia.seller.product.view.listener.ProductScoringDetailView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
@@ -74,6 +75,7 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
     }
 
     private void setListener() {
+        recyclerViewIndicatorScore.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewIndicatorScore.setAdapter(adapter);
     }
 
@@ -123,7 +125,7 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
     public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
         TotalScoringProductView totalScoringProductView = dataScoringProductView.getTotalScoringProductView();
         valueScoreProduct.setText(totalScoringProductView.getValueScoreProduct());
-        valueScoreProduct.setTextColor(ColorScoringProductHelper.getColorOfScore(totalScoringProductView.getColor(), getActivity()));
+        valueScoreProduct.setTextColor(ScoringProductHelper.getColorOfScore(totalScoringProductView.getColor(), getActivity()));
         adapter.addData(dataScoringProductView.getIndicatorScoreView());
     }
 

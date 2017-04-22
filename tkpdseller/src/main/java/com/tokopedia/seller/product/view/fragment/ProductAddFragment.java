@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +31,10 @@ import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
+import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
+
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -39,9 +44,12 @@ import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
+import com.tokopedia.seller.product.view.listener.ProductScoringDetailView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
@@ -63,10 +71,8 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ProductAddFragment extends BaseDaggerFragment
-        implements ProductAddView, ProductAdditionalInfoViewHolder.Listener,
-        ProductImageViewHolder.Listener,
-        ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView,
+        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener, ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
 
     public interface Listener {
         void startUploadProduct(long productId);
@@ -145,18 +151,12 @@ public class ProductAddFragment extends BaseDaggerFragment
         productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
-        setSubmitButtonListener(view);
-        productScoreViewHolder = new ProductScoreViewHolder(view, this);
-
+        productScoreViewHolder = new ProductScoreViewHolder(view);
+        productScoreViewHolder.setListener(this);
         presenter.attachView(this);
-
         presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
                                 GCMHandler.getRegistrationId(getContext()),
                                 SessionHandler.getShopID(getContext()));
-        return view;
-    }
-
-    private void setSubmitButtonListener(View view) {
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,6 +166,7 @@ public class ProductAddFragment extends BaseDaggerFragment
                 }
             }
         });
+        return view;
     }
 
     private boolean isDataValid() {
@@ -226,14 +227,9 @@ public class ProductAddFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
-
-    @Override
-    protected String getScreenName() {
-        return null;
+    public void onDetailProductScoringClicked() {
+        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), getValueIndicatorScoreModel());
+        startActivity(intent);
     }
 
     @Override
@@ -246,9 +242,22 @@ public class ProductAddFragment extends BaseDaggerFragment
         presenter.getProductScoring(getValueIndicatorScoreModel());
     }
 
-    @Override
     public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
         ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
+        valueIndicatorScoreModel.setLengthProductName(productInfoViewHolder.getName().length());
+        valueIndicatorScoreModel.setLengthDescProduct(productAdditionalInfoViewHolder.getDescription().length());
+
+        ProductPhotoListViewModel productPhotoListViewModel = productImageViewHolder.getProductPhotos();
+        int imageCount = productPhotoListViewModel.getPhotos().size();
+        if(imageCount > 0) {
+            ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos()
+                    .get(productPhotoListViewModel.getProductDefaultPicture());
+            valueIndicatorScoreModel.setImageResolution(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
+        }
+
+        valueIndicatorScoreModel.setImageCount(imageCount);
+        valueIndicatorScoreModel.setStockStatus(productDetailViewHolder.getTotalStock() > 0 ? true : false);
+        valueIndicatorScoreModel.setFreeReturnStatus(productDetailViewHolder.getFreeReturns() != -1 ? true : false);
         return valueIndicatorScoreModel;
     }
 
@@ -308,6 +317,11 @@ public class ProductAddFragment extends BaseDaggerFragment
                 getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onTotalImageUpdated(int total) {
+
+    }
+
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
@@ -347,6 +361,11 @@ public class ProductAddFragment extends BaseDaggerFragment
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
+    }
+
+    @Override
+    public void onDescriptionTextChanged(String text) {
+
     }
 
     @Override
@@ -433,5 +452,26 @@ public class ProductAddFragment extends BaseDaggerFragment
     public void onEtalaseViewClicked() {
         Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
+    }
+
+    @Override
+    public void onFreeReturnChecked(boolean checked) {
+
+    }
+
+    @Override
+    public void onTotalStockUpdated(float stock) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }
