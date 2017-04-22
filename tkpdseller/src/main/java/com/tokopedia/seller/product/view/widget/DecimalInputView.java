@@ -105,6 +105,10 @@ public class DecimalInputView extends FrameLayout {
         return Float.parseFloat(valueString);
     }
 
+    public void setValue(float value) {
+        editText.setText(String.valueOf(value));
+    }
+
     public EditText getEditText() {
         return editText;
     }

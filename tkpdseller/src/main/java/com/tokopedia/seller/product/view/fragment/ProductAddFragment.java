@@ -178,6 +178,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         if (!productDetailViewHolder.isDataValid()) {
             return false;
         }
+        if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
+            return false;
+        }
         return true;
     }
 

@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by nathan on 04/05/17.
  */
@@ -122,6 +124,18 @@ public class SpinnerTextView extends FrameLayout {
             return null;
         }
         return values[selectionIndex].toString();
+    }
+
+    public void setSpinnerValue(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return;
+        }
+        for (int i = 0; i < values.length; i++) {
+            String tempValue = values[i].toString();
+            if (tempValue.equalsIgnoreCase(value)) {
+                setSpinnerPosition(i);
+            }
+        }
     }
 
     public void setError(String error) {

@@ -90,8 +90,16 @@ public class SpinnerCounterInputView extends FrameLayout {
         return counterInputView.getFloatValue();
     }
 
+    public void setCounterValue(float value) {
+        counterInputView.setValue(value);
+    }
+
     public String getSpinnerValue() {
         return spinnerTextView.getSpinnerValue();
+    }
+
+    public void setSpinnerValue(String value) {
+        spinnerTextView.setSpinnerValue(value);
     }
 
     public void setUnitError(String error) {

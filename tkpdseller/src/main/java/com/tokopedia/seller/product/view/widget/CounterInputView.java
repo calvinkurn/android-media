@@ -158,6 +158,10 @@ public class CounterInputView extends FrameLayout {
         return decimalInputView.getFloatValue();
     }
 
+    public void setValue(float value) {
+        decimalInputView.setValue(value);
+    }
+
     public EditText getEditText() {
         return decimalInputView.getEditText();
     }

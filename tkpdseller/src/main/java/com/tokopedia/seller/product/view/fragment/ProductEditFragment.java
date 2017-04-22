@@ -65,8 +65,20 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
 
         productImageViewHolder.setProductPhotos(model.getProductPhotos());
 
+        productDetailViewHolder.setPriceCurrency(model.getProductPriceCurrency());
+        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
+        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
+        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+//        productDetailViewHolder.setStockStatus(model.get);
+//        productDetailViewHolder.setTotalStock();
         productDetailViewHolder.setEtalaseId(model.getProductPriceCurrency());
+        productDetailViewHolder.setCondition(model.getProductCondition());
+        productDetailViewHolder.setInsurance(model.getProductMustInsurance());
+        productDetailViewHolder.setFreeReturn(model.getProductReturnable());
 
         productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
+        productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
     }
 }

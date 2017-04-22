@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -35,6 +37,10 @@ public class ProductImageViewHolder extends ProductViewHolder {
     private ImagesSelectView imagesSelectView;
 
     private Listener listener;
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
 
     public void setImages(ArrayList<String> images) {
         imagesSelectView.addImagesString(images);
@@ -72,10 +78,6 @@ public class ProductImageViewHolder extends ProductViewHolder {
                 }
             }
         });
-    }
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
     }
 
     public ImagesSelectView getImagesSelectView() {
@@ -140,6 +142,12 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
     @Override
     public boolean isDataValid() {
+        if (getProductPhotos().getPhotos().size() < 1) {
+            Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
         return true;
     }
 }

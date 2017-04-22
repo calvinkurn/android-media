@@ -42,6 +42,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         void onDescriptionTextChanged(String text);
 
     }
+
     private TextInputLayout descriptionTextInputLayout;
 
     private EditText descriptionEditText;
@@ -94,7 +95,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
     }
 
-    public void updateViewGoldMerchant(boolean isShown){
+    public void updateViewGoldMerchant(boolean isShown) {
         if (isShown) {
             labelAddVideoView.setVisibility(View.VISIBLE);
         } else {
@@ -151,6 +152,14 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public void setDescription(String description) {
         descriptionEditText.setText(description);
+    }
+
+    public void setPreOrderUnit(int unit) {
+        preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public void setPreOrderValue(float value) {
+        preOrderSpinnerCounterInputView.setCounterValue(value);
     }
 
     @Override

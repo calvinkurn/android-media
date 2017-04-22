@@ -186,6 +186,14 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return priceSpinnerCounterInputView.getCounterValue();
     }
 
+    public void setPriceCurrency(int unit) {
+        priceSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public void setPriceValue(float price) {
+        priceSpinnerCounterInputView.setCounterValue(price);
+    }
+
     public int getWeightUnit() {
         return Integer.parseInt(weightSpinnerCounterInputView.getSpinnerValue());
     }
@@ -194,12 +202,32 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return (int) weightSpinnerCounterInputView.getCounterValue();
     }
 
+    public void setWeightUnit(int unit) {
+        weightSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public void setWeightValue(float value) {
+        weightSpinnerCounterInputView.setCounterValue(value);
+    }
+
     public int getMinimumOrder() {
         return (int) minimumOrderCounterInputView.getFloatValue();
     }
 
+    public void setMinimumOrder(float value) {
+        minimumOrderCounterInputView.setValue(value);
+    }
+
     public int getStatusStock() {
         return Integer.parseInt(stockStatusSpinnerTextView.getSpinnerValue());
+    }
+
+    public void setStockStatus(int unit) {
+        stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public void setTotalStock(float value) {
+        stockTotalCounterInputView.setValue(value);
     }
 
     public int getTotalStock() {
@@ -210,12 +238,24 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return Integer.parseInt(conditionSpinnerTextView.getSpinnerValue());
     }
 
+    public void setCondition(int unit) {
+        conditionSpinnerTextView.setSpinnerValue(String.valueOf(unit));
+    }
+
     public int getInsurance() {
         return Integer.parseInt(insuranceSpinnerTextView.getSpinnerValue());
     }
 
+    public void setInsurance(int unit) {
+        insuranceSpinnerTextView.setSpinnerValue(String.valueOf(unit));
+    }
+
     public int getFreeReturns() {
         return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
+    }
+
+    public void setFreeReturn(int unit) {
+        freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
     public int getEtalaseId() {

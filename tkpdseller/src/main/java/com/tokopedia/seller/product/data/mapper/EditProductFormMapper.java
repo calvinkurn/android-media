@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
@@ -31,7 +33,11 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         DataEditProductForm data = serviceModel.getData();
         ProductEditForm product = data.getProduct();
         domainModel.setProductWeightUnit(Integer.parseInt(product.getProductWeightUnit()));
-        domainModel.setProductEtalaseId(Integer.parseInt(product.getProductEtalaseId()));
+        if (!TextUtils.isEmpty(product.getProductEtalaseId())) {
+            domainModel.setProductEtalaseId(Integer.parseInt(product.getProductEtalaseId()));
+        } else {
+            domainModel.setProductEtalaseId(-1);
+        }
         domainModel.setProductCondition(Integer.parseInt(product.getProductCondition()));
         domainModel.setProductDepartmentId(Integer.parseInt(product.getProductDepartmentId()));
         domainModel.setProductMustInsurance(Integer.parseInt(product.getProductMustInsurance()));
