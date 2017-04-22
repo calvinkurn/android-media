@@ -124,6 +124,10 @@ public class SpinnerTextView extends FrameLayout {
         return values[selectionIndex].toString();
     }
 
+    public void setError(String error) {
+        textInputLayout.setError(error);
+    }
+
     private void updateEntries(String[] entries) {
         if (entries != null) {
             this.entries = entries;

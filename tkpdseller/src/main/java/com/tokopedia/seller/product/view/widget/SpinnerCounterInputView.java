@@ -3,9 +3,11 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
@@ -92,10 +94,27 @@ public class SpinnerCounterInputView extends FrameLayout {
         return spinnerTextView.getSpinnerValue();
     }
 
+    public void setUnitError(String error) {
+        spinnerTextView.setError(error);
+    }
+
+    public void setCounterError(String error) {
+        counterInputView.setError(error);
+    }
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        counterInputView.addTextChangedListener(watcher);
+    }
+
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
+
     public void setSpinnerPosition(int position){
         spinnerTextView.setSpinnerPosition(position);
+    }
+
+    public EditText getCounterEditText() {
+        return counterInputView.getEditText();
     }
 }

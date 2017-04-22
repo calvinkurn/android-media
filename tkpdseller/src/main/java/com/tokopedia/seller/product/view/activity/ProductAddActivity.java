@@ -57,8 +57,7 @@ import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 
 @RuntimePermissions
 public class ProductAddActivity extends TActivity implements HasComponent<AppComponent>,
-        TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener,
-        ProductDetailViewHolder.Listener, ProductAddFragment.Listener {
+        TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
@@ -269,26 +268,6 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     public void startAddWholeSaleDialog(WholesaleModel baseValue) {
         AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(baseValue);
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
-    }
-
-    @Override
-    public void onUSDClickedNotAllowed() {
-
-    }
-
-    @Override
-    public void onEtalaseViewClicked() {
-
-    }
-
-    @Override
-    public void onFreeReturnChecked(boolean checked) {
-
-    }
-
-    @Override
-    public void onTotalStockUpdated(float stock) {
-
     }
 
     public void startUploadProduct(long productId) {

@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
@@ -72,6 +73,33 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         conditionSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_condition);
         insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
         freeReturnsSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_free_returns);
+        priceSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(priceSpinnerCounterInputView.getCounterEditText(), priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+
+            @Override
+            public void onCurrencyChanged(float currencyValue) {
+                if (isPriceValid()) {
+                    priceSpinnerCounterInputView.setCounterError(null);
+                }
+            }
+        });
+        weightSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+
+            @Override
+            public void onCurrencyChanged(float currencyValue) {
+                if (isWeightValid()) {
+                    weightSpinnerCounterInputView.setCounterError(null);
+                }
+            }
+        });
+        minimumOrderCounterInputView.addTextChangedListener(new CurrencyTextWatcher(minimumOrderCounterInputView.getEditText(), minimumOrderCounterInputView.getContext().getString(R.string.product_default_counter_minimum_order_text)) {
+
+            @Override
+            public void onCurrencyChanged(float currencyValue) {
+                if (currencyValue > 0) {
+                    minimumOrderCounterInputView.setError(null);
+                }
+            }
+        });
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,10 +127,14 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 listener.onFreeReturnChecked(false);
             }
         });
-        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), "0") {
+        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+
             @Override
             public void onCurrencyChanged(float currencyValue) {
                 listener.onTotalStockUpdated(currencyValue);
+                if (currencyValue > 0) {
+                    stockTotalCounterInputView.setError(null);
+                }
             }
         });
     }
@@ -204,18 +236,46 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         );
     }
 
-    @Override
-    public boolean isDataValid() {
-        if (getPriceValue() <= 0) {
-            Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_price_empty, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
-                    .show();
+    private boolean isPriceValid() {
+        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_minimum_price));
+        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
+        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_maximum_price));
+        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
+        if (minPrice > getPriceValue() || getPriceValue() > maxPrice) {
+            priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid, minPriceString, maxPriceString));
+            priceSpinnerCounterInputView.clearFocus();
+            priceSpinnerCounterInputView.requestFocus();
             return false;
         }
-        if (getWeightValue() <= 0) {
-            Snackbar.make(weightSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_weight_not_valid, Snackbar.LENGTH_LONG)
-                    .setActionTextColor(ContextCompat.getColor(weightSpinnerCounterInputView.getContext(), R.color.green_400))
-                    .show();
+        return true;
+    }
+
+    private boolean isWeightValid() {
+        String minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_minimum_weight));
+        float minWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minWeightString));
+        String maxWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_maximum_weight));
+        float maxWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxWeightString));
+        if (minWeight > getWeightValue() || getWeightValue() > maxWeight) {
+            weightSpinnerCounterInputView.setCounterError(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_weight_not_valid, minWeightString, maxWeightString));
+            weightSpinnerCounterInputView.clearFocus();
+            weightSpinnerCounterInputView.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isDataValid() {
+        if (!isPriceValid()) {
+            return false;
+        }
+        if (!isWeightValid()) {
+            return false;
+        }
+        if (getMinimumOrder() <= 0) {
+            minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().getString(R.string.product_error_product_minimum_order_not_valid));
+            minimumOrderCounterInputView.clearFocus();
+            minimumOrderCounterInputView.requestFocus();
             return false;
         }
         if (getEtalaseId() < 0) {

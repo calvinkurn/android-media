@@ -78,6 +78,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         void startUploadProduct(long productId);
 
         void startUploadProductWithShare(long productId);
+
+        void startAddWholeSaleDialog(WholesaleModel baseValue);
     }
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
@@ -439,7 +441,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void startAddWholeSaleDialog(WholesaleModel baseValue) {
-
+        listener.startAddWholeSaleDialog(baseValue);
     }
 
     @Override

@@ -90,6 +90,11 @@ public class DecimalInputView extends FrameLayout {
         editText.addTextChangedListener(watcher);
     }
 
+    public void setError(String error) {
+        textInputLayout.setErrorEnabled(!TextUtils.isEmpty(error));
+        textInputLayout.setError(error);
+    }
+
     public String getText() {
         return editText.getText().toString();
     }

@@ -45,6 +45,7 @@
     <com.tokopedia.seller.product.view.widget.CounterInputView
         android:id="@+id/counter_input_view_minimum_order"
         style="@style/LabelLayoutWithoutBorder"
+        app:counter_text="@string/product_default_counter_minimum_order_text"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy" />
 
