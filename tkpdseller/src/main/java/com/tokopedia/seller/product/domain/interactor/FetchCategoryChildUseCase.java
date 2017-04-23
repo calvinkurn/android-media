@@ -20,28 +20,27 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainModel>>{
+public class FetchCategoryChildUseCase extends UseCase<List<CategoryDomainModel>> {
 
     private static final int UNSELECTED = -2;
     public static final String CATEGORY_PARENT = "CATEGORY_PARENT";
     private final CategoryRepository categoryRepository;
 
     @Inject
-    public FetchCategoryFromParentUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
+    public FetchCategoryChildUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
         super(threadExecutor, postExecutionThread);
         this.categoryRepository = categoryRepository;
     }
 
     @Override
     public Observable<List<CategoryDomainModel>> createObservable(RequestParams requestParams) {
-        int parent = requestParams.getInt(CATEGORY_PARENT, UNSELECTED);
-        return Observable.just(parent)
-                .flatMap(new FetchCategoryLevelOne());
+        long categoryId = requestParams.getLong(CATEGORY_PARENT, UNSELECTED);
+        return Observable.just(categoryId).flatMap(new FetchCategoryLevelOne());
     }
 
     public static RequestParams generateLevelOne() {
         RequestParams requestParam = RequestParams.create();
-        requestParam.putInt(CATEGORY_PARENT, CategoryDataBase.LEVEL_ONE_PARENT);
+        requestParam.putLong(CATEGORY_PARENT, CategoryDataBase.LEVEL_ONE_PARENT);
         return requestParam;
     }
 
@@ -51,10 +50,10 @@ public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainM
         return requestParam;
     }
 
-    private class FetchCategoryLevelOne implements Func1<Integer, Observable<List<CategoryDomainModel>>> {
+    private class FetchCategoryLevelOne implements Func1<Long, Observable<List<CategoryDomainModel>>> {
         @Override
-        public Observable<List<CategoryDomainModel>> call(Integer parent) {
-            return categoryRepository.fetchCategoryLevelOne(parent);
+        public Observable<List<CategoryDomainModel>> call(Long categoryId) {
+            return categoryRepository.fetchCategoryLevelOne(categoryId);
         }
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.interactor.FetchAllCategoryDataUseCase;
-import com.tokopedia.seller.product.domain.interactor.FetchCategoryFromParentUseCase;
+import com.tokopedia.seller.product.domain.interactor.FetchCategoryChildUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
@@ -18,14 +18,14 @@ import rx.Subscriber;
  */
 
 public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
-    private final FetchCategoryFromParentUseCase fetchCategoryFromParentUseCase;
+    private final FetchCategoryChildUseCase fetchCategoryChildUseCase;
     private final FetchAllCategoryDataUseCase fetchAllCategoryDataUseCase;
     private final FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase;
 
     public CategoryPickerPresenterImpl(
-            FetchCategoryFromParentUseCase fetchCategoryFromParentUseCase,
+            FetchCategoryChildUseCase fetchCategoryChildUseCase,
             FetchAllCategoryDataUseCase fetchAllCategoryDataUseCase, FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase) {
-        this.fetchCategoryFromParentUseCase = fetchCategoryFromParentUseCase;
+        this.fetchCategoryChildUseCase = fetchCategoryChildUseCase;
         this.fetchAllCategoryDataUseCase = fetchAllCategoryDataUseCase;
         this.fetchCategoryFromSelectedUseCase = fetchCategoryFromSelectedUseCase;
     }
@@ -33,16 +33,15 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     @Override
     public void fetchCategoryLevelOne() {
         checkViewAttached();
-        RequestParams requestParam = FetchCategoryFromParentUseCase.generateLevelOne();
-        fetchCategoryFromParentUseCase.execute(requestParam, new FetchCategoryFromParentSubscriber());
-
+        RequestParams requestParam = FetchCategoryChildUseCase.generateLevelOne();
+        fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryChildSubscriber());
     }
 
     @Override
-    public void fetchCategoryWithParent(long categoryId) {
+    public void fetchCategoryChild(long categoryId) {
         checkViewAttached();
-        RequestParams requestParam = FetchCategoryFromParentUseCase.generateFromParent(categoryId);
-        fetchCategoryFromParentUseCase.execute(requestParam, new FetchCategoryFromParentSubscriber());
+        RequestParams requestParam = FetchCategoryChildUseCase.generateFromParent(categoryId);
+        fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryChildSubscriber());
     }
 
     @Override
@@ -61,12 +60,12 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
 
     @Override
     public void unsubscribe() {
-        fetchCategoryFromParentUseCase.unsubscribe();
+        fetchCategoryChildUseCase.unsubscribe();
         fetchAllCategoryDataUseCase.unsubscribe();
         fetchCategoryFromSelectedUseCase.unsubscribe();
     }
 
-    private class FetchCategoryFromParentSubscriber extends Subscriber<List<CategoryDomainModel>> {
+    private class FetchCategoryChildSubscriber extends Subscriber<List<CategoryDomainModel>> {
         @Override
         public void onCompleted() {
 
@@ -119,8 +118,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         @Override
         public void onNext(List<CategoryLevelDomainModel> categoryLevelDomainModels) {
             checkViewAttached();
-            List<CategoryLevelViewModel> categoryLevelViewModels =
-                    CategoryViewMapper.mapLevel(categoryLevelDomainModels);
+            List<CategoryLevelViewModel> categoryLevelViewModels = CategoryViewMapper.mapLevel(categoryLevelDomainModels);
             getView().renderCategoryFromSelected(categoryLevelViewModels);
         }
     }

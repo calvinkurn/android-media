@@ -64,7 +64,7 @@ public class CategoryPickerActivity
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
         initInjection();
-        long currentSelected = getIntent().getIntExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
+        long currentSelected = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
         inflateCategoryFragment(currentSelected);
 
     }

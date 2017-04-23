@@ -73,7 +73,7 @@ public class CategoryPickerLevelAdapter extends BaseLinearRecyclerViewAdapter im
     }
 
     @Override
-    public void selectParent(int categoryId) {
+    public void selectParent(long categoryId) {
         listener.selectParent(categoryId);
         notifyDataSetChanged();
     }

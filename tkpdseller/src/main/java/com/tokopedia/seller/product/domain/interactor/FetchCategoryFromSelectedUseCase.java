@@ -17,7 +17,7 @@ import rx.Observable;
  * @author sebastianuskh on 4/7/17.
  */
 
-public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevelDomainModel>>{
+public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevelDomainModel>> {
 
     public static final String INIT_SELECTED = "INIT_SELECTED";
     public static final int INIT_UNSELECTED = -1;
@@ -35,8 +35,8 @@ public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevel
 
     @Override
     public Observable<List<CategoryLevelDomainModel>> createObservable(RequestParams requestParams) {
-        int initSelected = requestParams.getInt(INIT_SELECTED, INIT_UNSELECTED);
-        if (initSelected == INIT_UNSELECTED){
+        long initSelected = requestParams.getLong(INIT_SELECTED, INIT_UNSELECTED);
+        if (initSelected == INIT_UNSELECTED) {
             throw new RuntimeException("Init category is unselected");
         }
         return categoryRepository.fetchCategoryFromSelected(initSelected);

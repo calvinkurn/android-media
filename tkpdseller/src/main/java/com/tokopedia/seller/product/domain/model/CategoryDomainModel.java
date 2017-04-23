@@ -6,18 +6,18 @@ package com.tokopedia.seller.product.domain.model;
 
 public class CategoryDomainModel {
 
-    private int id;
+    private long id;
 
     private String name;
 
     private String identifier;
     private boolean hasChild;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

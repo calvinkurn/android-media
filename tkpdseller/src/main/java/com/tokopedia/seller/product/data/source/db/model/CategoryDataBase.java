@@ -16,7 +16,7 @@ public class CategoryDataBase extends BaseModel{
 
     @PrimaryKey
     @Column
-    private int id;
+    private long id;
 
     @Column
     private String name;
@@ -28,16 +28,16 @@ public class CategoryDataBase extends BaseModel{
     private int weight;
 
     @Column
-    private int parentId;
+    private long parentId;
 
     @Column
     private boolean hasChild;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -65,11 +65,11 @@ public class CategoryDataBase extends BaseModel{
         this.weight = weight;
     }
 
-    public int getParentId() {
+    public long getParentId() {
         return parentId;
     }
 
-    public void setParentId(int parentId) {
+    public void setParentId(long parentId) {
         this.parentId = parentId;
     }
 

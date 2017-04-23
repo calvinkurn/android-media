@@ -23,16 +23,15 @@ public class CategoryDataManager {
 
     @Inject
     public CategoryDataManager() {
+
     }
 
     public void clearDatabase() {
         new Delete().from(CategoryDataBase.class).execute();
-
     }
 
-    public List<CategoryDataBase> fetchCategoryFromParent(int parentId) {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(CategoryDataBase_Table.parentId.eq(parentId));
+    public List<CategoryDataBase> fetchCategoryFromParent(long categoryId) {
+        ConditionGroup conditionGroup = ConditionGroup.clause().and(CategoryDataBase_Table.parentId.eq(categoryId));
         return new Select()
                 .from(CategoryDataBase.class)
                 .where(conditionGroup)
@@ -59,10 +58,10 @@ public class CategoryDataManager {
 
     }
 
-    public CategoryDataBase fetchCategoryWithId(int selectedId) {
+    public CategoryDataBase fetchCategoryWithId(long categoryId) {
         return new Select()
                 .from(CategoryDataBase.class)
-                .where(CategoryDataBase_Table.id.like(selectedId))
+                .where(CategoryDataBase_Table.id.like(categoryId))
                 .querySingle();
     }
 }

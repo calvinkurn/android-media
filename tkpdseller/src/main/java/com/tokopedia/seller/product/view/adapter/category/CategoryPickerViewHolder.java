@@ -18,7 +18,7 @@ public abstract class CategoryPickerViewHolder extends RecyclerView.ViewHolder{
     protected final TextView categoryName;
     protected final Context context;
     protected boolean isSelected;
-    private int categoryId;
+    private long categoryId;
 
     public CategoryPickerViewHolder(View view) {
         super(view);
@@ -26,7 +26,7 @@ public abstract class CategoryPickerViewHolder extends RecyclerView.ViewHolder{
         categoryName = (TextView) view.findViewById(R.id.category_name);
     }
 
-    protected int getCategoryId() {
+    protected long getCategoryId() {
         if (categoryId != -1) {
             return categoryId;
         } else {

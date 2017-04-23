@@ -10,7 +10,7 @@ import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 public abstract class CategoryPickerPresenter extends BaseDaggerPresenter<CategoryPickerView>{
     public abstract void fetchCategoryLevelOne();
 
-    public abstract void fetchCategoryWithParent(long categoryId);
+    public abstract void fetchCategoryChild(long categoryId);
 
     public abstract void fetchAllCategoryData();
 

@@ -7,24 +7,24 @@ import java.util.List;
  */
 
 public class CategoryLevelDomainModel {
-    private Integer selected;
-    private int parent;
+    private long selectedCategoryId;
+    private long parentCategoryId;
     private List<CategoryDomainModel> categoryModels;
 
-    public void setSelected(Integer selected) {
-        this.selected = selected;
+    public void setSelectedCategoryId(long categoryId) {
+        this.selectedCategoryId = categoryId;
     }
 
-    public int getParent() {
-        return parent;
+    public long getParentCategoryId() {
+        return parentCategoryId;
     }
 
-    public Integer getSelected() {
-        return selected;
+    public long getSelectedCategoryId() {
+        return selectedCategoryId;
     }
 
-    public void setParent(int parent) {
-        this.parent = parent;
+    public void setParentCategoryId(long categoryId) {
+        this.parentCategoryId = categoryId;
     }
 
     public void setCategoryModels(List<CategoryDomainModel> categoryModels) {
