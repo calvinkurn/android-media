@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
@@ -62,114 +63,6 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
         this.shopInfoUseCase = shopInfoUseCase;
-        createCategoryRecommSubscriber();
-        createCatalogSubscriber();
-    }
-
-    private void createCategoryRecommSubscriber() {
-        subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(final Subscriber<? super String> subscriber) {
-                getCategoryRecomListener = new QueryListener() {
-                    @Override
-                    public void getQueryString(String string) {
-                        subscriber.onNext(string);
-                    }
-                };
-            }
-        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getSubscriberDebounceGetCategoryRecomm());
-    }
-
-    private void createCatalogSubscriber() {
-        subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
-            @Override
-            public void call(final Subscriber<? super CatalogQuery> subscriber) {
-                getCatalogListener = new CatalogQueryListener() {
-
-                    @Override
-                    public void getQuery(CatalogQuery catalogQuery) {
-                        subscriber.onNext(catalogQuery);
-                    }
-                };
-            }
-        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getSubscriberDebounceGetCatalog());
-    }
-
-    @NonNull
-    private Subscriber<String> getSubscriberDebounceGetCategoryRecomm() {
-        return new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(String string) {
-                if (!string.equals("")) {
-                    getCategoryRecommendationFromServer(string, 3);
-                }
-            }
-        };
-    }
-
-    @NonNull
-    private Subscriber<CatalogQuery> getSubscriberDebounceGetCatalog() {
-        return new Subscriber<CatalogQuery>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(CatalogQuery catalogQuery) {
-                getCatalogFromServer(catalogQuery.getKeyword(),
-                        catalogQuery.getCategoryId(),
-                        catalogQuery.getStart(),
-                        catalogQuery.getRow());
-            }
-        };
-    }
-
-    public void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
-        fetchCatalogDataUseCase.execute(
-                FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
-                new Subscriber<CatalogDataModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().showCatalogError(e);
-                    }
-
-                    @Override
-                    public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().successFetchCatalogData(
-                                catalogDataModel.getResult().getCatalogs(),
-                                catalogDataModel.getResult().getTotalRecord());
-                    }
-                });
-    }
-
-    @Override
-    public void getCategoryRecommendation(String productTitle) {
-        if (getCategoryRecomListener != null) {
-            getCategoryRecomListener.getQueryString(productTitle);
-        }
     }
 
     @Override
@@ -198,10 +91,120 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
+    public void getCategoryRecommendation(String productTitle) {
+        if (getCategoryRecomListener != null) {
+            getCategoryRecomListener.getQueryString(productTitle);
+        } else {
+            createCategoryRecommSubscriber();
+        }
+    }
+
+    private void createCategoryRecommSubscriber() {
+        subscriptionDebounceCategoryRecomm = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(final Subscriber<? super String> subscriber) {
+                getCategoryRecomListener = new QueryListener() {
+                    @Override
+                    public void getQueryString(String string) {
+                        subscriber.onNext(string);
+                    }
+                };
+            }
+        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceGetCategoryRecomm());
+    }
+
+    @NonNull
+    private Subscriber<String> getSubscriberDebounceGetCategoryRecomm() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String string) {
+                if (!TextUtils.isEmpty(string)) {
+                    getCategoryRecommendationFromServer(string, 3);
+                }
+            }
+        };
+    }
+
+    @Override
     public void fetchCatalogData(String keyword, long departmentId, int start, int rows) {
         if (getCatalogListener != null) {
             getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
+        } else {
+            createCatalogSubscriber();
         }
+    }
+
+    private void createCatalogSubscriber() {
+        subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
+            @Override
+            public void call(final Subscriber<? super CatalogQuery> subscriber) {
+                getCatalogListener = new CatalogQueryListener() {
+
+                    @Override
+                    public void getQuery(CatalogQuery catalogQuery) {
+                        subscriber.onNext(catalogQuery);
+                    }
+                };
+            }
+        }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getSubscriberDebounceGetCatalog());
+    }
+
+    @NonNull
+    private Subscriber<CatalogQuery> getSubscriberDebounceGetCatalog() {
+        return new Subscriber<CatalogQuery>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(CatalogQuery catalogQuery) {
+                getCatalogFromServer(catalogQuery.getKeyword(),
+                        catalogQuery.getCategoryId(),
+                        catalogQuery.getStart(),
+                        catalogQuery.getRow());
+            }
+        };
+    }
+
+    private void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
+        fetchCatalogDataUseCase.execute(
+                FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
+                new Subscriber<CatalogDataModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().showCatalogError(e);
+                    }
+
+                    @Override
+                    public void onNext(CatalogDataModel catalogDataModel) {
+                        getView().successFetchCatalogData(
+                                catalogDataModel.getResult().getCatalogs(),
+                                catalogDataModel.getResult().getTotalRecord());
+                    }
+                });
     }
 
     private void getCategoryRecommendationFromServer(String productTitle, int expectRow) {
@@ -316,8 +319,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             checkViewAttached();
             getView().onSuccessStoreProductToDraft(productId);
         }
-	}
-	
+    }
+
     public void detachView() {
         super.detachView();
         addProductUseCase.unsubscribe();
@@ -326,8 +329,12 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         getCategoryRecommUseCase.unsubscribe();
         shopInfoUseCase.unsubscribe();
 
-        subscriptionDebounceCategoryRecomm.unsubscribe();
-        subscriptionDebounceCatalog.unsubscribe();
+        if (subscriptionDebounceCategoryRecomm != null) {
+            subscriptionDebounceCategoryRecomm.unsubscribe();
+        }
+        if (subscriptionDebounceCatalog != null) {
+            subscriptionDebounceCatalog.unsubscribe();
+        }
     }
 
 }
