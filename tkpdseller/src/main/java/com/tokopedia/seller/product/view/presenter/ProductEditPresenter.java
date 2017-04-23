@@ -49,6 +49,7 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
 
         @Override
         public void onError(Throwable e) {
+            e.printStackTrace();
             checkViewAttached();
         }
 

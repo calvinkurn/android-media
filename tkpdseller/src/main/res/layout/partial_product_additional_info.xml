@@ -40,6 +40,7 @@
         app:title="@string/product_label_video" />
 
     <com.tokopedia.expandable.ExpandableOptionSwitch
+        android:id="@+id/expandable_option_switch_pre_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:eo_checked="false"

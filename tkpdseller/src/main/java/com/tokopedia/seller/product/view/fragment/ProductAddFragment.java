@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -44,7 +43,6 @@ import com.tokopedia.seller.product.view.holder.ProductImageViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
-import com.tokopedia.seller.product.view.listener.ProductScoringDetailView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -181,6 +179,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
             return false;
         }
+        if (!productAdditionalInfoViewHolder.isDataValid()) {
+            return false;
+        }
         return true;
     }
 
@@ -204,7 +205,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
 //        viewModel youtube
         viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
-        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderDay());
+        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
         return viewModel;
     }
 

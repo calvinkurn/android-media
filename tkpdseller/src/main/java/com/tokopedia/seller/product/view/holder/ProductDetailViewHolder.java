@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
@@ -47,6 +48,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private CounterInputView minimumOrderCounterInputView;
     private SpinnerTextView stockStatusSpinnerTextView;
+    private ExpandableOptionSwitch stockTotalExpandableOptionSwitch;
     private CounterInputView stockTotalCounterInputView;
     private LabelView etalaseLabelView;
     private SpinnerTextView conditionSpinnerTextView;
@@ -64,17 +66,18 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public ProductDetailViewHolder(View view) {
+        etalaseId = -1;
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
         minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
+        stockTotalExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_stock_total);
         stockTotalCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_stock_total);
         etalaseLabelView = (LabelView) view.findViewById(R.id.label_view_shop_window);
         conditionSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_condition);
         insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
         freeReturnsSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_free_returns);
         priceSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(priceSpinnerCounterInputView.getCounterEditText(), priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
-
             @Override
             public void onCurrencyChanged(float currencyValue) {
                 if (isPriceValid()) {
@@ -83,7 +86,6 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             }
         });
         weightSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
-
             @Override
             public void onCurrencyChanged(float currencyValue) {
                 if (isWeightValid()) {
@@ -91,8 +93,19 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 }
             }
         });
+        weightSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                weightSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                priceSpinnerCounterInputView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        isWeightValid();
+                    }
+                });
+            }
+        });
         minimumOrderCounterInputView.addTextChangedListener(new CurrencyTextWatcher(minimumOrderCounterInputView.getEditText(), minimumOrderCounterInputView.getContext().getString(R.string.product_default_counter_minimum_order_text)) {
-
             @Override
             public void onCurrencyChanged(float currencyValue) {
                 if (currencyValue > 0) {
@@ -103,7 +116,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (listener!= null) {
+                if (listener != null) {
                     listener.onEtalaseViewClicked();
                 }
             }
@@ -145,35 +158,39 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         etalaseLabelView.setContent(etalaseName);
     }
 
-    public void updateViewGoldMerchant(boolean isGoldMerchant){
-        if (! isGoldMerchant) {
-            priceSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if ( position == POSITION_USD) {
-                        if (listener!= null) {
-                            listener.onUSDClickedNotAllowed();
+    public void updateViewGoldMerchant(final boolean isGoldMerchant) {
+        priceSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (isGoldMerchant) {
+                    priceSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                    priceSpinnerCounterInputView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            isPriceValid();
                         }
-                        priceSpinnerCounterInputView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                priceSpinnerCounterInputView.setSpinnerPosition(POSITION_IDR);
-                            }
-                        });
-                    }
+                    });
+                    return;
                 }
-            });
-        }
-        else {
-            priceSpinnerCounterInputView.setOnItemClickListener(null);
-        }
+                if (position == POSITION_USD) {
+                    if (listener != null) {
+                        listener.onUSDClickedNotAllowed();
+                    }
+                    priceSpinnerCounterInputView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            priceSpinnerCounterInputView.setSpinnerPosition(POSITION_IDR);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void updateViewFreeReturn(boolean isFreeReturn) {
-        if (isFreeReturn){
+        if (isFreeReturn) {
             freeReturnsSpinnerTextView.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             freeReturnsSpinnerTextView.setVisibility(View.GONE);
         }
     }
@@ -277,9 +294,13 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     private boolean isPriceValid() {
-        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_minimum_price));
+        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_minimum_price_rp));
+        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_maximum_price_rp));
+        if (priceSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
+            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_minimum_price_usd));
+            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_maximum_price_usd));
+        }
         float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
-        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_maximum_price));
         float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
         if (minPrice > getPriceValue() || getPriceValue() > maxPrice) {
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid, minPriceString, maxPriceString));
@@ -291,9 +312,13 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     private boolean isWeightValid() {
-        String minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_minimum_weight));
+        String minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_minimum_weight_gram));
+        String maxWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_maximum_weight_gram));
+        if (weightSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(weightSpinnerCounterInputView.getContext().getString(R.string.product_weight_value_kg))) {
+            minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_minimum_weight_kg));
+            maxWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_maximum_weight_kg));
+        }
         float minWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minWeightString));
-        String maxWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_maximum_weight));
         float maxWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxWeightString));
         if (minWeight > getWeightValue() || getWeightValue() > maxWeight) {
             weightSpinnerCounterInputView.setCounterError(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_weight_not_valid, minWeightString, maxWeightString));
@@ -325,5 +350,5 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
-	}
+    }
 }
