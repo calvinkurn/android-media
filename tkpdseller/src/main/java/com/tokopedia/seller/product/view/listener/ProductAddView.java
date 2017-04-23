@@ -17,8 +17,6 @@ public interface ProductAddView extends CustomerView {
 
     void updateProductScoring();
 
-    ValueIndicatorScoreModel getValueIndicatorScoreModel();
-
     void showCatalogError(Throwable e);
 
     void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows);

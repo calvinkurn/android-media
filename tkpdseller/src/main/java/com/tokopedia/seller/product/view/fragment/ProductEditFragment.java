@@ -61,6 +61,8 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     @Override
     public void onProductNameChanged(String productName) {
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+        valueIndicatorScoreModel.setLengthProductName(productName.length());
+        updateProductScoring();
     }
 
     @Override

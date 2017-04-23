@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
@@ -31,6 +32,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
         void onResolutionImageCheckFailed(String uri);
 
         void onTotalImageUpdated(int total);
+
+        void onImageResolutionChanged(int maxSize);
     }
 
     public static final int MIN_IMG_RESOLUTION = 300;
@@ -47,9 +50,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public ProductImageViewHolder(View view) {
-
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
-
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
@@ -100,6 +101,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (imageUrls != null) {
                 imagesSelectView.addImagesString(imageUrls);
             }
+            updateImageResolution();
             listener.onTotalImageUpdated(0);
         }
     }
@@ -138,6 +140,16 @@ public class ProductImageViewHolder extends ProductViewHolder {
             images.add(image);
         }
         imagesSelectView.setImage(images);
+    }
+
+    private void updateImageResolution() {
+        ProductPhotoListViewModel productPhotoListViewModel = getProductPhotos();
+        int imageCount = productPhotoListViewModel.getPhotos().size();
+        if (imageCount > 0) {
+            ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos()
+                    .get(productPhotoListViewModel.getProductDefaultPicture());
+            listener.onImageResolutionChanged(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
+        }
     }
 
     @Override

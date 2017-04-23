@@ -92,11 +92,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     protected ProductDetailViewHolder productDetailViewHolder;
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
+
+    protected ValueIndicatorScoreModel valueIndicatorScoreModel;
     protected Listener listener;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
-        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+        if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS, tkpdImageUrls);
             fragment.setArguments(bundle);
@@ -107,9 +109,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
-
-        if (args!= null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
+        if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
             tkpdImageUrls = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
         }
     }
@@ -127,7 +129,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof Listener){
+        if (context instanceof Listener) {
             this.listener = (Listener) context;
         } else {
             throw new RuntimeException("Activity must implement Listener");
@@ -144,7 +146,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+        if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
             productImageViewHolder.setImages(tkpdImageUrls);
         }
         productDetailViewHolder = new ProductDetailViewHolder(view);
@@ -155,8 +157,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
         presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
-                                GCMHandler.getRegistrationId(getContext()),
-                                SessionHandler.getShopID(getContext()));
+                GCMHandler.getRegistrationId(getContext()),
+                SessionHandler.getShopID(getContext()));
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,50 +167,63 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                     presenter.saveDraft(viewModel);
                 }
             }
+
+            private boolean isDataValid() {
+                if (!productInfoViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (!productDetailViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (!productAdditionalInfoViewHolder.isDataValid()) {
+                    return false;
+                }
+                return true;
+            }
         });
         return view;
     }
 
-    private boolean isDataValid() {
-        if (!productInfoViewHolder.isDataValid()) {
-            return false;
-        }
-        if (!productDetailViewHolder.isDataValid()) {
-            return false;
-        }
-        if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
-            return false;
-        }
-        if (!productAdditionalInfoViewHolder.isDataValid()) {
-            return false;
-        }
-        return true;
+    @Override
+    public void onProductNameChanged(String productName) {
+        presenter.getCategoryRecommendation(productName);
+        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+        valueIndicatorScoreModel.setLengthProductName(productName.length());
+        updateProductScoring();
     }
 
-    private UploadProductInputViewModel collectDataFromView() {
-        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
-        viewModel.setProductName(productInfoViewHolder.getName());
-        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
-        viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
-        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
-        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
-        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
-//        viewModel.setProductWholesaleList();
-        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
-        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
-        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
-        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
-        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
-        viewModel.setProductCondition(productDetailViewHolder.getCondition());
-        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
-        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
-        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
-//        viewModel youtube
-        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
-        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
-        return viewModel;
+    @Override
+    public void onTotalImageUpdated(int total) {
+        valueIndicatorScoreModel.setImageCount(total);
+        updateProductScoring();
     }
 
+    @Override
+    public void onImageResolutionChanged(int maxSize) {
+        valueIndicatorScoreModel.setImageCount(maxSize);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onFreeReturnChecked(boolean checked) {
+        valueIndicatorScoreModel.setFreeReturnStatus(checked);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onTotalStockUpdated(int total) {
+        valueIndicatorScoreModel.setStockStatus(total > 0);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onDescriptionTextChanged(String text) {
+        valueIndicatorScoreModel.setLengthDescProduct(text.length());
+        updateProductScoring();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -234,7 +249,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onDetailProductScoringClicked() {
-        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), getValueIndicatorScoreModel());
+        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), valueIndicatorScoreModel);
         startActivity(intent);
     }
 
@@ -245,26 +260,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void updateProductScoring() {
-        presenter.getProductScoring(getValueIndicatorScoreModel());
-    }
-
-    public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
-        ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
-        valueIndicatorScoreModel.setLengthProductName(productInfoViewHolder.getName().length());
-        valueIndicatorScoreModel.setLengthDescProduct(productAdditionalInfoViewHolder.getDescription().length());
-
-        ProductPhotoListViewModel productPhotoListViewModel = productImageViewHolder.getProductPhotos();
-        int imageCount = productPhotoListViewModel.getPhotos().size();
-        if(imageCount > 0) {
-            ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos()
-                    .get(productPhotoListViewModel.getProductDefaultPicture());
-            valueIndicatorScoreModel.setImageResolution(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
-        }
-
-        valueIndicatorScoreModel.setImageCount(imageCount);
-        valueIndicatorScoreModel.setStockStatus(productDetailViewHolder.getTotalStock() > 0 ? true : false);
-        valueIndicatorScoreModel.setFreeReturnStatus(productDetailViewHolder.getFreeReturns() != -1 ? true : false);
-        return valueIndicatorScoreModel;
+        presenter.getProductScoring(valueIndicatorScoreModel);
     }
 
     @Override
@@ -319,13 +315,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onResolutionImageCheckFailed(String uri) {
-        Snackbar.make(getView(),
-                getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onTotalImageUpdated(int total) {
-
+        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
     }
 
     @TargetApi(16)
@@ -367,11 +357,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIds);
         }
         startActivityForResult(intent, YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO);
-    }
-
-    @Override
-    public void onDescriptionTextChanged(String text) {
-
     }
 
     @Override
@@ -422,12 +407,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onProductNameChanged(String productName) {
-        presenter.getCategoryRecommendation(productName);
-        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
-    }
-
-    @Override
     public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
@@ -439,7 +418,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
         productDetailViewHolder.addWholesaleItem(wholesaleModel);
-	}
+    }
 
     @Override
     public void startAddWholeSaleDialog(WholesaleModel baseValue) {
@@ -457,14 +436,28 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 
-    @Override
-    public void onFreeReturnChecked(boolean checked) {
-
-    }
-
-    @Override
-    public void onTotalStockUpdated(float stock) {
-
+    private UploadProductInputViewModel collectDataFromView() {
+        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
+        viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
+        viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
+        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
+//        viewModel.setProductWholesaleList();
+        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
+        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
+        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
+        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
+        viewModel.setProductCondition(productDetailViewHolder.getCondition());
+        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
+        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
+//        viewModel youtube
+        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
+        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
+        return viewModel;
     }
 
     @Override

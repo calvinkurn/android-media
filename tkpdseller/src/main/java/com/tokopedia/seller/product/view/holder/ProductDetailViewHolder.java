@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -26,18 +27,18 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
     public interface Listener {
 
+        void onUSDClickedNotAllowed();
+
         /**
          * @param baseValue means for single price tag.
          */
         void startAddWholeSaleDialog(WholesaleModel baseValue);
 
-        void onUSDClickedNotAllowed();
+        void onTotalStockUpdated(int total);
 
         void onEtalaseViewClicked();
 
         void onFreeReturnChecked(boolean checked);
-
-        void onTotalStockUpdated(float stock);
     }
 
     public static final int REQUEST_CODE_ETALASE = 301;
@@ -140,11 +141,17 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 listener.onFreeReturnChecked(false);
             }
         });
-        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
+            @Override
+            public void onExpandViewChange(boolean isExpand) {
+                listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getFloatValue() : 0);
+            }
+        });
 
+        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
             public void onCurrencyChanged(float currencyValue) {
-                listener.onTotalStockUpdated(currencyValue);
+                listener.onTotalStockUpdated((int) currencyValue);
                 if (currencyValue > 0) {
                     stockTotalCounterInputView.setError(null);
                 }
