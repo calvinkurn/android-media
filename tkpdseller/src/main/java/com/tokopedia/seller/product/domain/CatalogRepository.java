@@ -9,5 +9,5 @@ import rx.Observable;
  */
 
 public interface CatalogRepository {
-    Observable<CatalogDataModel> fetchCatalog(String keyword, int prodDeptId, int start, int rows);
+    Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int rows);
 }

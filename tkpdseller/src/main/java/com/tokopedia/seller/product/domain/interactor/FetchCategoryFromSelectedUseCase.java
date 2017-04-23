@@ -42,9 +42,9 @@ public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevel
         return categoryRepository.fetchCategoryFromSelected(initSelected);
     }
 
-    public static RequestParams generateParam(int initSelected) {
+    public static RequestParams generateParam(long initSelected) {
         RequestParams requestParam = RequestParams.create();
-        requestParam.putInt(INIT_SELECTED, initSelected);
+        requestParam.putLong(INIT_SELECTED, initSelected);
         return requestParam;
     }
 }

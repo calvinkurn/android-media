@@ -35,24 +35,22 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
     public static final int VISIBLE_THRESHOLD = 2;
 
     private String keyword;
-    private int departmentId;
-    private int selectedCatalogId;
+    private long departmentId;
+    private long selectedCatalogId;
 
     CatalogPickerPresenter presenter;
 
     private CatalogPickerAdapter adapter;
     private LinearLayoutManager llm;
 
-    public static CatalogPickerFragment newInstance(String keyword,
-                                                    int departmentId,
-                                                    int selectedCatalogID) {
+    public static CatalogPickerFragment newInstance(String keyword, long departmentId, long selectedCatalogID) {
 
         Bundle args = new Bundle();
 
         CatalogPickerFragment fragment = new CatalogPickerFragment();
         args.putString(CatalogPickerActivity.KEYWORD, keyword);
-        args.putInt(CatalogPickerActivity.DEP_ID, departmentId);
-        args.putInt(CatalogPickerActivity.CATALOG_ID, selectedCatalogID);
+        args.putLong(CatalogPickerActivity.DEP_ID, departmentId);
+        args.putLong(CatalogPickerActivity.CATALOG_ID, selectedCatalogID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,8 +60,8 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         keyword = bundle.getString(CatalogPickerActivity.KEYWORD);
-        departmentId = bundle.getInt(CatalogPickerActivity.DEP_ID);
-        selectedCatalogId = bundle.getInt(CatalogPickerActivity.CATALOG_ID);
+        departmentId = bundle.getLong(CatalogPickerActivity.DEP_ID);
+        selectedCatalogId = bundle.getLong(CatalogPickerActivity.CATALOG_ID);
 
         adapter = new CatalogPickerAdapter(null, selectedCatalogId, 0);
 
@@ -162,7 +160,7 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
     }
 
     public Intent getResultIntent(){
-        int adapterSelectedCatalogId = adapter.getSelectedCatalogId();
+        long adapterSelectedCatalogId = adapter.getSelectedCatalogId();
         if (selectedCatalogId == adapterSelectedCatalogId) {
             return null;
         } else {

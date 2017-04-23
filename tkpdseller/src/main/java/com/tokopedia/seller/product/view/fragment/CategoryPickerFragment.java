@@ -43,12 +43,12 @@ public class CategoryPickerFragment
 
     private CategoryPickerLevelAdapter adapter;
     private CategoryPickerFragmentListener listener;
-    private int initSelected;
+    private long initSelected;
 
-    public static CategoryPickerFragment createInstance(int currentSelected) {
+    public static CategoryPickerFragment createInstance(long currentSelected) {
         CategoryPickerFragment categoryPickerFragment = new CategoryPickerFragment();
         Bundle args = new Bundle();
-        args.putInt(INIT_SELECTED, currentSelected);
+        args.putLong(INIT_SELECTED, currentSelected);
         categoryPickerFragment.setArguments(args);
         return categoryPickerFragment;
     }
@@ -77,7 +77,7 @@ public class CategoryPickerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        initSelected = bundle.getInt(INIT_SELECTED, INIT_UNSELECTED);
+        initSelected = bundle.getLong(INIT_SELECTED, INIT_UNSELECTED);
     }
 
     @Nullable

@@ -81,9 +81,11 @@ public class UploadProductMapper {
         viewModel.setProductDescription(domainModel.getProductDescription());
         viewModel.setProductChangePhoto(domainModel.getProductChangePhoto());
         viewModel.setProductCatalogId(domainModel.getProductCatalogId());
+        viewModel.setProductCatalogName(domainModel.getProductCatalogName());
         viewModel.setProductDepartmentId(domainModel.getProductDepartmentId());
         viewModel.setProductCondition(domainModel.getProductCondition());
         viewModel.setProductEtalaseId(domainModel.getProductEtalaseId());
+        viewModel.setProductEtalaseName(domainModel.getProductEtalaseName());
         viewModel.setProductMinOrder(domainModel.getProductMinOrder());
         viewModel.setProductMustInsurance(domainModel.getProductMustInsurance());
         viewModel.setProductPrice(domainModel.getProductPrice());

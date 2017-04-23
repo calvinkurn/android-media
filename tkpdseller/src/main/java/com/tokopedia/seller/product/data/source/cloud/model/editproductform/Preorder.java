@@ -14,7 +14,7 @@ public class Preorder {
     private int preorderProcessTimeType;
     @SerializedName("preorder_process_time_type_string")
     @Expose
-    private int preorderProcessTimeTypeString;
+    private String preorderProcessTimeTypeString;
     @SerializedName("preorder_process_time")
     @Expose
     private int preorderProcessTime;
@@ -35,11 +35,11 @@ public class Preorder {
         this.preorderProcessTimeType = preorderProcessTimeType;
     }
 
-    public int getPreorderProcessTimeTypeString() {
+    public String getPreorderProcessTimeTypeString() {
         return preorderProcessTimeTypeString;
     }
 
-    public void setPreorderProcessTimeTypeString(int preorderProcessTimeTypeString) {
+    public void setPreorderProcessTimeTypeString(String preorderProcessTimeTypeString) {
         this.preorderProcessTimeTypeString = preorderProcessTimeTypeString;
     }
 

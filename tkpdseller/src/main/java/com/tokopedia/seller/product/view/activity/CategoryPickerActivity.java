@@ -35,24 +35,22 @@ public class CategoryPickerActivity
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
 
-    public static void start(Activity activity, int requestCode, int depId){
+    public static void start(Activity activity, int requestCode, long depId){
         Intent intent = createIntent(activity, depId);
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.app.Fragment fragment, Context context, int requestCode, int depId){
+    public static void start(android.app.Fragment fragment, Context context, int requestCode, long depId){
         Intent intent = createIntent(context, depId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode,
-                             int depId){
+    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode, long depId){
         Intent intent = createIntent(context, depId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context,
-                                       int departmentId){
+    private static Intent createIntent(Context context, long departmentId){
         Intent intent = new Intent(context, CategoryPickerActivity.class);
         if (departmentId > 0) {
             intent.putExtra(CATEGORY_ID_INIT_SELECTED, departmentId);
@@ -66,12 +64,7 @@ public class CategoryPickerActivity
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
         initInjection();
-        int currentSelected =
-                getIntent()
-                        .getIntExtra(
-                                CATEGORY_ID_INIT_SELECTED,
-                                CategoryPickerFragment.INIT_UNSELECTED
-                        );
+        long currentSelected = getIntent().getIntExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
         inflateCategoryFragment(currentSelected);
 
     }
@@ -85,7 +78,7 @@ public class CategoryPickerActivity
 
     }
 
-    private void inflateCategoryFragment(int currentSelected) {
+    private void inflateCategoryFragment(long currentSelected) {
         Fragment fragment = fragmentManager.findFragmentByTag(CategoryPickerFragment.TAG);
         if (fragment == null) {
             fragment = CategoryPickerFragment.createInstance(currentSelected);

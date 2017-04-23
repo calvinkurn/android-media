@@ -45,9 +45,9 @@ public class FetchCategoryFromParentUseCase extends UseCase<List<CategoryDomainM
         return requestParam;
     }
 
-    public static RequestParams generateFromParent(int categoryId) {
+    public static RequestParams generateFromParent(long categoryId) {
         RequestParams requestParam = RequestParams.create();
-        requestParam.putInt(CATEGORY_PARENT, categoryId);
+        requestParam.putLong(CATEGORY_PARENT, categoryId);
         return requestParam;
     }
 

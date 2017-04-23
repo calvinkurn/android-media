@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.editproductform.Etalase;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductImage;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
@@ -38,6 +39,9 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         } else {
             domainModel.setProductEtalaseId(-1);
         }
+        domainModel.setProductEtalaseName(product.getProductEtalase());
+        domainModel.setProductCatalogId(data.getCatalog().getCatalogId());
+        domainModel.setProductCatalogName(data.getCatalog().getCatalogName());
         domainModel.setProductCondition(Integer.parseInt(product.getProductCondition()));
         domainModel.setProductDepartmentId(Integer.parseInt(product.getProductDepartmentId()));
         domainModel.setProductMustInsurance(Integer.parseInt(product.getProductMustInsurance()));
@@ -50,9 +54,8 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setProductWeight(Integer.parseInt(product.getProductWeight()));
         domainModel.setProductName(product.getProductName());
 
-        domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePrice()));
-        domainModel.setProductPhotos(mapPhotos(data.getProductImages()));
-
+        domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
+        domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
         return domainModel;
     }
 

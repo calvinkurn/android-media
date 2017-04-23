@@ -32,31 +32,25 @@ public class CatalogPickerActivity extends TActivity implements HasComponent<Cat
     public static final String CATALOG_NAME = "cat_nm";
 
     private String keyword;
-    private int departmentId;
-    private int selectedCatalogId;
+    private long departmentId;
+    private long selectedCatalogId;
 
-    public static void start(Activity activity, int requestCode,
-                             String keyword, int depId, int selectedCatalogId){
+    public static void start(Activity activity, int requestCode, String keyword, long depId, long selectedCatalogId){
         Intent intent = createIntent(activity, keyword, depId, selectedCatalogId);
         activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.app.Fragment fragment, Context context, int requestCode,
-                             String keyword, int depId, int selectedCatalogId){
+    public static void start(android.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId){
         Intent intent = createIntent(context, keyword, depId, selectedCatalogId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode,
-                             String keyword, int depId, int selectedCatalogId){
+    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode, String keyword, long depId, long selectedCatalogId){
         Intent intent = createIntent(context, keyword, depId, selectedCatalogId);
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    private static Intent createIntent(Context context,
-                                      @Nullable String keyword,
-                                      int departmentId,
-                                      int selectedCatalogId){
+    private static Intent createIntent(Context context, @Nullable String keyword, long departmentId, long selectedCatalogId){
         Intent intent = new Intent(context, CatalogPickerActivity.class);
         intent.putExtra(KEYWORD, keyword);
         intent.putExtra(DEP_ID, departmentId);
@@ -70,8 +64,8 @@ public class CatalogPickerActivity extends TActivity implements HasComponent<Cat
 
         Bundle extras = getIntent().getExtras();
         keyword = extras.getString(KEYWORD);
-        departmentId = extras.getInt(DEP_ID);
-        selectedCatalogId = extras.getInt(CATALOG_ID);
+        departmentId = extras.getLong(DEP_ID);
+        selectedCatalogId = extras.getLong(CATALOG_ID);
 
         inflateView(R.layout.activity_simple_fragment);
         initInjection();
@@ -90,8 +84,7 @@ public class CatalogPickerActivity extends TActivity implements HasComponent<Cat
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(CatalogPickerFragment.TAG);
         if (fragment == null) {
-            fragment = CatalogPickerFragment.newInstance(keyword, departmentId,
-                    selectedCatalogId);
+            fragment = CatalogPickerFragment.newInstance(keyword, departmentId, selectedCatalogId);
             FragmentTransaction fragmentTransaction = fm.beginTransaction();
             fragmentTransaction.replace(R.id.container, fragment, CatalogPickerFragment.TAG);
             fragmentTransaction.commit();

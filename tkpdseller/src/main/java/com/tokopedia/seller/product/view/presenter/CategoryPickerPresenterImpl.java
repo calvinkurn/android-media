@@ -39,7 +39,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     }
 
     @Override
-    public void fetchCategoryWithParent(int categoryId) {
+    public void fetchCategoryWithParent(long categoryId) {
         checkViewAttached();
         RequestParams requestParam = FetchCategoryFromParentUseCase.generateFromParent(categoryId);
         fetchCategoryFromParentUseCase.execute(requestParam, new FetchCategoryFromParentSubscriber());
@@ -53,7 +53,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     }
 
     @Override
-    public void fetchCategoryFromSelected(int initSelected) {
+    public void fetchCategoryFromSelected(long initSelected) {
         checkViewAttached();
         RequestParams requestParam = FetchCategoryFromSelectedUseCase.generateParam(initSelected);
         fetchCategoryFromSelectedUseCase.execute(requestParam, new FetchCategoryFromSelectedSubscriber());

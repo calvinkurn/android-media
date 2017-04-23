@@ -14,7 +14,7 @@ public class AddProductSubmitInputServiceModel {
     public static final String PRODUCT_UPLOAD_TO = "product_upload_to";
     private String fileUploaded;
     private String postKey;
-    private int productEtalseId;
+    private long productEtalseId;
     private int productUploadTo;
 
     public TKPDMapParam<String, String> generateMapParam() {
@@ -38,7 +38,7 @@ public class AddProductSubmitInputServiceModel {
         return postKey;
     }
 
-    public int getProductEtalseId() {
+    public long getProductEtalseId() {
         return productEtalseId;
     }
 
@@ -54,7 +54,7 @@ public class AddProductSubmitInputServiceModel {
         this.postKey = postKey;
     }
 
-    public void setProductEtalseId(int productEtalseId) {
+    public void setProductEtalseId(long productEtalseId) {
         this.productEtalseId = productEtalseId;
     }
 

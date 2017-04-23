@@ -17,7 +17,7 @@ public class CatalogPickerPresenterImpl extends CatalogPickerPresenter {
     }
 
     @Override
-    public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
+    public void fetchCatalogData(String keyword, long departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {

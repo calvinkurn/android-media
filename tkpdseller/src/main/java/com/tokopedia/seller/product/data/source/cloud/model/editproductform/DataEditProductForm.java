@@ -24,13 +24,13 @@ public class DataEditProductForm {
     private String serverId;
     @SerializedName("wholesale_price")
     @Expose
-    private List<Object> wholesalePrice = null;
+    private List<Object> wholesalePriceList = null;
     @SerializedName("etalase")
     @Expose
-    private List<Etalase> etalase = null;
+    private List<Etalase> etalaseList = null;
     @SerializedName("breadcrumb")
     @Expose
-    private List<Breadcrumb> breadcrumb = null;
+    private List<Breadcrumb> breadcrumbList = null;
     @SerializedName("product")
     @Expose
     private ProductEditForm product;
@@ -39,10 +39,10 @@ public class DataEditProductForm {
     private String token;
     @SerializedName("product_images")
     @Expose
-    private List<ProductImage> productImages = null;
+    private List<ProductImage> productImageList = null;
     @SerializedName("condition")
     @Expose
-    private List<Condition> condition = null;
+    private List<Condition> conditionList = null;
 
     public int getShopIsGold() {
         return shopIsGold;
@@ -84,28 +84,28 @@ public class DataEditProductForm {
         this.serverId = serverId;
     }
 
-    public List<Object> getWholesalePrice() {
-        return wholesalePrice;
+    public List<Object> getWholesalePriceList() {
+        return wholesalePriceList;
     }
 
-    public void setWholesalePrice(List<Object> wholesalePrice) {
-        this.wholesalePrice = wholesalePrice;
+    public void setWholesalePriceList(List<Object> wholesalePriceList) {
+        this.wholesalePriceList = wholesalePriceList;
     }
 
-    public List<Etalase> getEtalase() {
-        return etalase;
+    public List<Etalase> getEtalaseList() {
+        return etalaseList;
     }
 
-    public void setEtalase(List<Etalase> etalase) {
-        this.etalase = etalase;
+    public void setEtalaseList(List<Etalase> etalaseList) {
+        this.etalaseList = etalaseList;
     }
 
-    public List<Breadcrumb> getBreadcrumb() {
-        return breadcrumb;
+    public List<Breadcrumb> getBreadcrumbList() {
+        return breadcrumbList;
     }
 
-    public void setBreadcrumb(List<Breadcrumb> breadcrumb) {
-        this.breadcrumb = breadcrumb;
+    public void setBreadcrumbList(List<Breadcrumb> breadcrumbList) {
+        this.breadcrumbList = breadcrumbList;
     }
 
     public ProductEditForm getProduct() {
@@ -124,20 +124,20 @@ public class DataEditProductForm {
         this.token = token;
     }
 
-    public List<ProductImage> getProductImages() {
-        return productImages;
+    public List<ProductImage> getProductImageList() {
+        return productImageList;
     }
 
-    public void setProductImages(List<ProductImage> productImages) {
-        this.productImages = productImages;
+    public void setProductImageList(List<ProductImage> productImageList) {
+        this.productImageList = productImageList;
     }
 
-    public List<Condition> getCondition() {
-        return condition;
+    public List<Condition> getConditionList() {
+        return conditionList;
     }
 
-    public void setCondition(List<Condition> condition) {
-        this.condition = condition;
+    public void setConditionList(List<Condition> conditionList) {
+        this.conditionList = conditionList;
     }
 
 }

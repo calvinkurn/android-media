@@ -38,10 +38,10 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private String productDescription;
     private String productName;
     private double productPrice;
-    private int productCatalogId;
+    private long productCatalogId;
     private int productCondition;
-    private int productDepartmentId;
-    private int productEtalaseId;
+    private long productDepartmentId;
+    private long productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
     private int productPriceCurrency;
@@ -107,11 +107,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
             return String.format("%s", productPrice);
     }
 
-    public int getProductCatalogId() {
+    public long getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
+    public void setProductCatalogId(long productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
@@ -123,11 +123,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.productCondition = productCondition;
     }
 
-    public int getProductDepartmentId() {
+    public long getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(int productDepartmentId) {
+    public void setProductDepartmentId(long productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -139,11 +139,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.productDescription = productDescription;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 

@@ -189,7 +189,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
-//        viewModel.setProductCatalogId(productInfoViewHolder.);
+        viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
@@ -412,15 +412,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
 
     @Override
-    public void onCategoryPickerClicked(int categoryId) {
-        CategoryPickerActivity.start(this, getActivity(),
-                ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
+    public void onCategoryPickerClicked(long categoryId) {
+        CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
     }
 
     @Override
-    public void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId) {
-        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG,
-                keyword, depId, selectedCatalogId);
+    public void onCatalogPickerClicked(String keyword, long depId, long selectedCatalogId) {
+        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG, keyword, depId, selectedCatalogId);
     }
 
     @Override
@@ -430,12 +428,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onCategoryChanged(int categoryId) {
+    public void onCategoryChanged(long categoryId) {
         // when category change, check if catalog exists
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
     }
 
-    private void checkIfCatalogExist(String productName, int categoryId) {
+    protected void checkIfCatalogExist(String productName, long categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
 
@@ -450,8 +448,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onUSDClickedNotAllowed() {
-        Snackbar.make(getView(),
-                getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
+        Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
     }
 
     @Override

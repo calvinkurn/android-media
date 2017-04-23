@@ -38,6 +38,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
     public static final int TIME_DELAY = 500;
+
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
     private final AddProductUseCase addProductUseCase;
@@ -141,7 +142,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         };
     }
 
-    public void getCatalogFromServer(String keyword, int departmentId, int start, int rows) {
+    public void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {
@@ -197,7 +198,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
+    public void fetchCatalogData(String keyword, long departmentId, int start, int rows) {
         if (getCatalogListener != null) {
             getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
         }
@@ -271,18 +272,18 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     public static class CatalogQuery {
         String keyword;
-        int categoryId;
+        long categoryId;
         int start;
         int row;
 
-        public CatalogQuery(String keyword, int categoryId, int start, int row) {
+        public CatalogQuery(String keyword, long categoryId, int start, int row) {
             this.keyword = keyword;
             this.categoryId = categoryId;
             this.start = start;
             this.row = row;
         }
 
-        public int getCategoryId() {
+        public long getCategoryId() {
             return categoryId;
         }
 

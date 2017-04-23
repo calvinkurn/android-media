@@ -14,7 +14,7 @@ public abstract class ProductAddPresenter<T extends ProductAddView> extends Base
 
     public abstract void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel);
 
-    public abstract void fetchCatalogData(String keyword, int departmentId, int start, int rows);
+    public abstract void fetchCatalogData(String keyword, long departmentId, int start, int rows);
 
     public abstract void getCategoryRecommendation(String productTitle);
 

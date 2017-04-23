@@ -59,10 +59,17 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     }
 
     @Override
+    public void onProductNameChanged(String productName) {
+        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+    }
+
+    @Override
     public void populateView(UploadProductInputViewModel model) {
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
-
+        if (model.getProductCatalogId() > 0) {
+            productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
+        }
         productImageViewHolder.setProductPhotos(model.getProductPhotos());
 
         productDetailViewHolder.setPriceCurrency(model.getProductPriceCurrency());
@@ -72,7 +79,10 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
 //        productDetailViewHolder.setStockStatus(model.get);
 //        productDetailViewHolder.setTotalStock();
-        productDetailViewHolder.setEtalaseId(model.getProductPriceCurrency());
+        if (model.getProductEtalaseId() > 0) {
+            productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
+            productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
+        }
         productDetailViewHolder.setCondition(model.getProductCondition());
         productDetailViewHolder.setInsurance(model.getProductMustInsurance());
         productDetailViewHolder.setFreeReturn(model.getProductReturnable());

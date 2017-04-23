@@ -19,8 +19,7 @@ public class CatalogDataSource {
         this.catalogCloud = catalogCloud;
     }
 
-    public Observable<CatalogDataModel> fetchCatalog(
-                        String keyword, int prodDeptId, int start, int row) {
+    public Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int row) {
         return catalogCloud.fetchData(keyword, prodDeptId, start, row);
     }
 

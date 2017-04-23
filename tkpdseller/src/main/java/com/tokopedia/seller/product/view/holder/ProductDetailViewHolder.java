@@ -57,7 +57,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
     private TextView textViewAddWholesale;
 
-    private int etalaseId;
+    private long etalaseId;
 
     private Listener listener;
 
@@ -275,12 +275,16 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public int getEtalaseId() {
+    public long getEtalaseId() {
         return etalaseId;
     }
 
-    public void setEtalaseId(int etalaseId) {
+    public void setEtalaseId(long etalaseId) {
         this.etalaseId = etalaseId;
+    }
+
+    public void setEtalaseName(String name) {
+        this.etalaseLabelView.setContent(name);
     }
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {

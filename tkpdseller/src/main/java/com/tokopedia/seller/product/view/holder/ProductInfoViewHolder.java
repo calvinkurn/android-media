@@ -34,15 +34,17 @@ import java.util.List;
 public class ProductInfoViewHolder extends ProductViewHolder {
 
     public interface Listener {
-        void onCategoryPickerClicked(int categoryId);
+        void onCategoryPickerClicked(long categoryId);
 
-        void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId);
+        void onCatalogPickerClicked(String keyword, long depId, long selectedCatalogId);
 
         void onProductNameChanged(String productName);
 
-        void onCategoryChanged(int categoryId);
+        void onCategoryChanged(long categoryId);
     }
 
+    private static final int DEFAULT_CATEGORY_ID = -1;
+    private static final int DEFAULT_CATALOG_ID = -1;
     public static final int REQUEST_CODE_CATEGORY = 101;
     public static final int REQUEST_CODE_CATALOG = 102;
     private final RadioGroup radioGroupCategoryRecomm;
@@ -52,14 +54,16 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     private LabelView catalogLabelView;
     private View categoryRecommView;
     private ProductInfoViewHolder.Listener listener;
-    private int categoryId;
-    private int catalogId = -1;
+    private long categoryId;
+    private long catalogId;
 
     public void setListener(ProductInfoViewHolder.Listener listener) {
         this.listener = listener;
     }
 
     public ProductInfoViewHolder(View view) {
+        categoryId = DEFAULT_CATEGORY_ID;
+        catalogId = DEFAULT_CATALOG_ID;
         categoryRecommView = view.findViewById(R.id.view_group_category_recomm);
         radioGroupCategoryRecomm = (RadioGroup) categoryRecommView.findViewById(R.id.radio_group_category_recomm);
         nameTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_name);
@@ -139,12 +143,16 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         nameEditText.setText(name);
     }
 
-    public int getCategoryId() {
+    public long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
+    public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public long getCatalogId() {
+        return catalogId;
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -165,13 +173,19 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     private void processCatalog(Intent intent) {
         catalogId = intent.getIntExtra(CatalogPickerActivity.CATALOG_ID, 0);
         String catalogName = intent.getStringExtra(CatalogPickerActivity.CATALOG_NAME);
-        catalogLabelView.setContent(catalogName);
+        setCatalog(catalogId, catalogName);
+    }
+
+    public void setCatalog(long catalogId, String name) {
+        this.catalogId = catalogId;
+        catalogLabelView.setContent(name);
+        catalogLabelView.setVisibility(View.VISIBLE);
     }
 
     private void processCategory(Intent data) {
         List<CategoryViewModel> listCategory = Parcels.unwrap(data.getParcelableExtra(CategoryPickerActivity.CATEGORY_RESULT_LEVEL));
         String category = "";
-        int previousCategoryId = categoryId;
+        long previousCategoryId = categoryId;
         for (int i = 0; i < listCategory.size(); i++) {
             CategoryViewModel viewModel = listCategory.get(i);
             categoryId = viewModel.getId();

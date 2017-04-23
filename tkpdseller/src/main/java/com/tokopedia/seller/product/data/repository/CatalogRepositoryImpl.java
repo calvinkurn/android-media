@@ -21,7 +21,7 @@ public class CatalogRepositoryImpl implements CatalogRepository {
     }
 
     @Override
-    public Observable<CatalogDataModel> fetchCatalog(String keyword, int prodDeptId, int start, int row) {
+    public Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int row) {
         return catalogDataSource.fetchCatalog(keyword, prodDeptId, start, row);
     }
 }

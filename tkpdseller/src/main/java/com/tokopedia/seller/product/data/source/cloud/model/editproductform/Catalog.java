@@ -11,7 +11,7 @@ public class Catalog {
     private int catalogId;
     @SerializedName("catalog_name")
     @Expose
-    private int catalogName;
+    private String catalogName;
 
     public int getCatalogId() {
         return catalogId;
@@ -21,11 +21,11 @@ public class Catalog {
         this.catalogId = catalogId;
     }
 
-    public int getCatalogName() {
+    public String getCatalogName() {
         return catalogName;
     }
 
-    public void setCatalogName(int catalogName) {
+    public void setCatalogName(String catalogName) {
         this.catalogName = catalogName;
     }
 
