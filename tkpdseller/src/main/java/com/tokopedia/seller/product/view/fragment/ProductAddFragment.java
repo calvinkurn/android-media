@@ -31,7 +31,6 @@ import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
-import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
 
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
@@ -46,8 +45,6 @@ import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
-import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
-import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
@@ -387,7 +384,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void showGoldMerchant(boolean isGoldMerchant) {
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
-        productDetailViewHolder.updateViewGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.setGoldMerchant(isGoldMerchant);
     }
 
     @Override
@@ -441,7 +438,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
         viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
-        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
 //        viewModel.setProductWholesaleList();
         viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());

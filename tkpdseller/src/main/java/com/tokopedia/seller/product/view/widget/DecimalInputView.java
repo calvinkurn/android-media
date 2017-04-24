@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.util.CurrencyTextWatcher;
+import com.tokopedia.seller.util.NumberTextWatcher;
 
 /**
  * Created by nathan on 04/05/17.
@@ -71,7 +71,7 @@ public class DecimalInputView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_decimal_input_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         editText = (EditText) view.findViewById(R.id.edit_text);
-        addTextChangedListener(new CurrencyTextWatcher(editText, DEFAULT_VALUE));
+        addTextChangedListener(new NumberTextWatcher(editText, DEFAULT_VALUE));
     }
 
     public void setHint(String hintText) {
@@ -87,7 +87,13 @@ public class DecimalInputView extends FrameLayout {
     }
 
     public void addTextChangedListener(TextWatcher watcher) {
-        editText.addTextChangedListener(watcher);
+        if (watcher != null) {
+            editText.addTextChangedListener(watcher);
+        }
+    }
+
+    public void removeTextChangedListener(TextWatcher watcher) {
+        editText.removeTextChangedListener(watcher);
     }
 
     public void setError(String error) {

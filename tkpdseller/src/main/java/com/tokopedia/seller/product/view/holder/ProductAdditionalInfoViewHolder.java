@@ -20,7 +20,7 @@ import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
-import com.tokopedia.seller.util.CurrencyTextWatcher;
+import com.tokopedia.seller.util.NumberTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,9 +96,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 }
             }
         });
-        preOrderSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText(), preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText(), preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
-            public void onCurrencyChanged(float currencyValue) {
+            public void onNumberChanged(float currencyValue) {
                 if (isPreOrderValid()) {
                     preOrderSpinnerCounterInputView.setCounterError(null);
                 }

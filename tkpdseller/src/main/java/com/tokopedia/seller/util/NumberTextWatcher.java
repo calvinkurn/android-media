@@ -11,12 +11,20 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
  * Created by Nathaniel on 3/3/2017.
  */
 
-public class CurrencyTextWatcher implements TextWatcher {
+public class NumberTextWatcher implements TextWatcher {
 
-    private EditText editText;
+    private static final String DEFAULT_VALUE = "0";
+
+    protected EditText editText;
+
     private String defaultValue;
 
-    public CurrencyTextWatcher(EditText editText, String defaultValue) {
+    public NumberTextWatcher(EditText editText) {
+        this.editText = editText;
+        this.defaultValue = DEFAULT_VALUE;
+    }
+
+    public NumberTextWatcher(EditText editText, String defaultValue) {
         this.editText = editText;
         this.defaultValue = defaultValue;
     }
@@ -28,7 +36,7 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-        CurrencyFormatHelper.setToRupiahCheckPrefix(editText);
+        applyFormatter();
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(charSequence.toString());
         valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
         if (TextUtils.isEmpty(valueString)) {
@@ -36,7 +44,11 @@ public class CurrencyTextWatcher implements TextWatcher {
             return;
         }
         float value = Float.parseFloat(valueString);
-        onCurrencyChanged(value);
+        onNumberChanged(value);
+    }
+
+    protected void applyFormatter() {
+        CurrencyFormatHelper.setToRupiahCheckPrefix(editText);
     }
 
     @Override
@@ -44,7 +56,7 @@ public class CurrencyTextWatcher implements TextWatcher {
 
     }
 
-    public void onCurrencyChanged(float currencyValue) {
+    public void onNumberChanged(float currencyValue) {
 
     }
 }

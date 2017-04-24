@@ -86,6 +86,14 @@ public class SpinnerCounterInputView extends FrameLayout {
         requestLayout();
     }
 
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        spinnerTextView.setOnItemClickListener(onItemClickListener);
+    }
+
+    public void setOnItemChangeListener(SpinnerTextView.OnItemChangeListener onItemChangeListener) {
+        spinnerTextView.setOnItemChangeListener(onItemChangeListener);
+    }
+
     public float getCounterValue() {
         return counterInputView.getFloatValue();
     }
@@ -96,6 +104,10 @@ public class SpinnerCounterInputView extends FrameLayout {
 
     public String getSpinnerValue() {
         return spinnerTextView.getSpinnerValue();
+    }
+
+    public String getSpinnerValue(int position) {
+        return spinnerTextView.getSpinnerValue(position);
     }
 
     public void setSpinnerValue(String value) {
@@ -114,8 +126,8 @@ public class SpinnerCounterInputView extends FrameLayout {
         counterInputView.addTextChangedListener(watcher);
     }
 
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
-        spinnerTextView.setOnItemClickListener(onItemClickListener);
+    public void removeTextChangedListener(TextWatcher watcher) {
+        counterInputView.removeTextChangedListener(watcher);
     }
 
     public void setSpinnerPosition(int position){

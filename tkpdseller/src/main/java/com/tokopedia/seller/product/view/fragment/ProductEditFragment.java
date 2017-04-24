@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
@@ -75,7 +74,7 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
         }
         productImageViewHolder.setProductPhotos(model.getProductPhotos());
 
-        productDetailViewHolder.setPriceCurrency(model.getProductPriceCurrency());
+        productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
         productDetailViewHolder.setPriceValue((float) model.getProductPrice());
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
         productDetailViewHolder.setWeightValue((float) model.getProductWeight());

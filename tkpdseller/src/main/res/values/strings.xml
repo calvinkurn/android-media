@@ -335,14 +335,14 @@
     <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
     <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>
 
-    <string name="product_currency_value_rp">1</string>
+    <string name="product_currency_value_idr">1</string>
     <string name="product_currency_value_usd">2</string>
     <string-array name="product_currency_entries">
         <item>Rp</item>
         <item>$</item>
     </string-array>
     <string-array name="product_currency_values">
-        <item>@string/product_currency_value_rp</item>
+        <item>@string/product_currency_value_idr</item>
         <item>@string/product_currency_value_usd</item>
     </string-array>
 

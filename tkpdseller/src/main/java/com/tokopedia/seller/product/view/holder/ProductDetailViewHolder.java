@@ -17,7 +17,9 @@ import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
-import com.tokopedia.seller.util.CurrencyTextWatcher;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
+import com.tokopedia.seller.util.NumberTextWatcher;
 
 /**
  * Created by nathan on 4/11/17.
@@ -42,8 +44,6 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public static final int REQUEST_CODE_ETALASE = 301;
-    public static final int POSITION_IDR = 0;
-    public static final int POSITION_USD = 1;
 
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
@@ -59,11 +59,18 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     private TextView textViewAddWholesale;
 
     private long etalaseId;
+    private boolean goldMerchant;
+    private CurrencyIdrTextWatcher idrTextWatcher;
+    private CurrencyUsdTextWatcher usdTextWatcher;
 
     private Listener listener;
 
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        this.goldMerchant = goldMerchant;
     }
 
     public ProductDetailViewHolder(View view) {
@@ -78,17 +85,69 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         conditionSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_condition);
         insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
         freeReturnsSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_free_returns);
-        priceSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(priceSpinnerCounterInputView.getCounterEditText(), priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        idrTextWatcher = new CurrencyIdrTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onCurrencyChanged(float currencyValue) {
+            public void onNumberChanged(float currencyValue) {
                 if (isPriceValid()) {
                     priceSpinnerCounterInputView.setCounterError(null);
                 }
             }
-        });
-        weightSpinnerCounterInputView.addTextChangedListener(new CurrencyTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        };
+        usdTextWatcher = new CurrencyUsdTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onCurrencyChanged(float currencyValue) {
+            public void onNumberChanged(float currencyValue) {
+                if (isPriceValid()) {
+                    priceSpinnerCounterInputView.setCounterError(null);
+                }
+            }
+        };
+        priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
+        priceSpinnerCounterInputView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                setTextWatcher(value);
+            }
+
+            private void setTextWatcher(String spinnerValue) {
+                priceSpinnerCounterInputView.removeTextChangedListener(idrTextWatcher);
+                priceSpinnerCounterInputView.removeTextChangedListener(usdTextWatcher);
+                if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
+                    priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
+                } else {
+                    priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
+                }
+            }
+        });
+
+        priceSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                priceSpinnerCounterInputView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onItemClicked(position);
+                    }
+                });
+            }
+
+            private void onItemClicked(int position) {
+                if (goldMerchant) {
+                    priceSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                    isPriceValid();
+                    return;
+                }
+                if (priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
+                    if (listener != null) {
+                        listener.onUSDClickedNotAllowed();
+                    }
+
+                }
+                priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
+            }
+        });
+        weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+            @Override
+            public void onNumberChanged(float currencyValue) {
                 if (isWeightValid()) {
                     weightSpinnerCounterInputView.setCounterError(null);
                 }
@@ -97,21 +156,13 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         weightSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                weightSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                priceSpinnerCounterInputView.post(new Runnable() {
+                weightSpinnerCounterInputView.setCounterValue(Float.parseFloat(weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                weightSpinnerCounterInputView.post(new Runnable() {
                     @Override
                     public void run() {
                         isWeightValid();
                     }
                 });
-            }
-        });
-        minimumOrderCounterInputView.addTextChangedListener(new CurrencyTextWatcher(minimumOrderCounterInputView.getEditText(), minimumOrderCounterInputView.getContext().getString(R.string.product_default_counter_minimum_order_text)) {
-            @Override
-            public void onCurrencyChanged(float currencyValue) {
-                if (currencyValue > 0) {
-                    minimumOrderCounterInputView.setError(null);
-                }
             }
         });
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
@@ -122,9 +173,6 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 }
             }
         });
-        if (view.getContext() != null && view.getContext() instanceof Listener) {
-            listener = (Listener) view.getContext();
-        }
         textViewAddWholesale = (TextView) view.findViewById(R.id.text_view_add_wholesale);
         textViewAddWholesale.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,47 +196,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             }
         });
 
-        stockTotalCounterInputView.addTextChangedListener(new CurrencyTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
-            public void onCurrencyChanged(float currencyValue) {
+            public void onNumberChanged(float currencyValue) {
                 listener.onTotalStockUpdated((int) currencyValue);
                 if (currencyValue > 0) {
                     stockTotalCounterInputView.setError(null);
-                }
-            }
-        });
-    }
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
-        String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-        etalaseLabelView.setContent(etalaseName);
-    }
-
-    public void updateViewGoldMerchant(final boolean isGoldMerchant) {
-        priceSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (isGoldMerchant) {
-                    priceSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                    priceSpinnerCounterInputView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            isPriceValid();
-                        }
-                    });
-                    return;
-                }
-                if (position == POSITION_USD) {
-                    if (listener != null) {
-                        listener.onUSDClickedNotAllowed();
-                    }
-                    priceSpinnerCounterInputView.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            priceSpinnerCounterInputView.setSpinnerPosition(POSITION_IDR);
-                        }
-                    });
                 }
             }
         });
@@ -202,7 +215,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         }
     }
 
-    public int getPriceCurrency() {
+    public int getPriceUnit() {
         return Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue());
     }
 
@@ -210,7 +223,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return priceSpinnerCounterInputView.getCounterValue();
     }
 
-    public void setPriceCurrency(int unit) {
+    public void setPriceUnit(int unit) {
         priceSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
@@ -299,9 +312,13 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     private WholesaleModel getBaseValue() {
-        return new WholesaleModel(
-                1, 1, getPriceValue()
-        );
+        return new WholesaleModel(1, 1, getPriceValue());
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+        String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+        etalaseLabelView.setContent(etalaseName);
     }
 
     private boolean isPriceValid() {
