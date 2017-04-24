@@ -22,7 +22,6 @@ public class EditProductFormRepositoryImpl implements EditProductFormRepository 
 
     @Override
     public Observable<UploadProductInputDomainModel> fetchEditProduct(String productId) {
-        return editProductFormDataSource.fetchEditProductForm(productId)
-                .map(editProductFormMapper);
+        return editProductFormDataSource.fetchEditProductForm(productId).map(editProductFormMapper);
     }
 }

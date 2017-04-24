@@ -35,8 +35,6 @@ public class EditProductFormCloud {
         String shopId = SessionHandler.getShopID(context);
         params.put(SHOP_ID, shopId);
         params.put(PRODUCT_ID, productId);
-        return api
-                .fetchEditProductForm(AuthUtil.generateParamsNetwork(context, params))
-                .map(new GetData<EditProductFormServiceModel>());
+        return api.fetchEditProductForm(AuthUtil.generateParamsNetwork(context, params)).map(new GetData<EditProductFormServiceModel>());
     }
 }

@@ -8,16 +8,16 @@ public class Catalog {
 
     @SerializedName("catalog_id")
     @Expose
-    private int catalogId;
+    private long catalogId;
     @SerializedName("catalog_name")
     @Expose
     private String catalogName;
 
-    public int getCatalogId() {
+    public long getCatalogId() {
         return catalogId;
     }
 
-    public void setCatalogId(int catalogId) {
+    public void setCatalogId(long catalogId) {
         this.catalogId = catalogId;
     }
 

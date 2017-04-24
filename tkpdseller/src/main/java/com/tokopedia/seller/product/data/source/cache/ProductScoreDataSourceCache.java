@@ -87,7 +87,7 @@ public class ProductScoreDataSourceCache {
             indicatorScoreView.setMaxScoreIndicator(maxScoreEachItem);
             indicatorScoreView.setScore(tempScoreEachItem);
             List<String> descs = new ArrayList<>();
-            for(ValueIndicator valueIndicator: indicatorScore.getValueIndicator()){
+            for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
                 descs.add(valueIndicator.getIndicatorDesc());
             }
             indicatorScoreView.setIndicatorDescs(descs);
@@ -121,8 +121,8 @@ public class ProductScoreDataSourceCache {
                 }
             });
 
-            for(int i = indicatorScorings.size()-1; i>=0; i--){
-                if(i == indicatorScorings.size() -1){
+            for (int i = indicatorScorings.size() - 1; i >= 0; i--) {
+                if (i == indicatorScorings.size() - 1) {
                     IndicatorScoring indicatorScoring = indicatorScorings.get(i);
                     tempMaxScore = tempMaxScore + indicatorScoring.getScore();
                     break;
@@ -203,10 +203,10 @@ public class ProductScoreDataSourceCache {
 
     private int calculateScoreProductImage(IndicatorScore indicatorScore, int imageCount, int imageResolution) {
         for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
-            if(valueIndicator.getIndicatorType().equals(COUNT_TYPE_IMAGE)){
-                imageCount =  calculateScore(valueIndicator, imageCount);
-            }else if(valueIndicator.getIndicatorType().equals(RESOLUTION_TYPE_IMAGE)){
-                imageResolution =calculateScore(valueIndicator, imageResolution);
+            if (valueIndicator.getIndicatorType().equals(COUNT_TYPE_IMAGE)) {
+                imageCount = calculateScore(valueIndicator, imageCount);
+            } else if (valueIndicator.getIndicatorType().equals(RESOLUTION_TYPE_IMAGE)) {
+                imageResolution = calculateScore(valueIndicator, imageResolution);
             }
         }
         return imageCount + imageResolution;
@@ -214,9 +214,9 @@ public class ProductScoreDataSourceCache {
 
     private int calculateScore(ValueIndicator valueIndicator, int valueCount) {
         List<IndicatorScoring> indicatorScorings = valueIndicator.getIndicatorScoring();
-        for(int i = indicatorScorings.size() - 1; i >= 0; i--){
+        for (int i = indicatorScorings.size() - 1; i >= 0; i--) {
             IndicatorScoring indicatorScoring = indicatorScorings.get(i);
-            if(valueCount >= indicatorScoring.getMin()){
+            if (valueCount >= indicatorScoring.getMin()) {
                 return indicatorScoring.getScore();
             }
         }

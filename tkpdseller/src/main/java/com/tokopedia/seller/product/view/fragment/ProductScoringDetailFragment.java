@@ -45,6 +45,14 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
     private ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
+    public static ProductScoringDetailFragment createInstance(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+        ProductScoringDetailFragment productScoringDetailFragment = new ProductScoringDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA, valueIndicatorScoreModel);
+        productScoringDetailFragment.setArguments(bundle);
+        return productScoringDetailFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,14 +109,6 @@ public class ProductScoringDetailFragment extends BaseDaggerFragment implements 
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
-    }
-
-    public static ProductScoringDetailFragment createInstance(ValueIndicatorScoreModel valueIndicatorScoreModel) {
-        ProductScoringDetailFragment productScoringDetailFragment = new ProductScoringDetailFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA, valueIndicatorScoreModel);
-        productScoringDetailFragment.setArguments(bundle);
-        return productScoringDetailFragment;
     }
 
     @Override

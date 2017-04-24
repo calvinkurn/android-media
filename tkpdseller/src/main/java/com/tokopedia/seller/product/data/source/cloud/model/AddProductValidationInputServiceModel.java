@@ -95,7 +95,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(PRODUCT_VIDEO_SIZE, String.valueOf(getProductVideo().size()));
         for (int i = 0; i < getProductVideo().size(); i++) {
-            params.put(PRODUCT_VIDEO_ + i, getProductVideo().get(i));
+            int count = i + 1;
+            params.put(PRODUCT_VIDEO_ + count, getProductVideo().get(i));
         }
         return params;
     }

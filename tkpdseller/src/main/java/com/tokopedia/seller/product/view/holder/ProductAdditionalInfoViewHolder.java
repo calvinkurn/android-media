@@ -23,8 +23,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.util.CurrencyTextWatcher;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by nathan on 4/11/17.
@@ -57,15 +56,16 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private Listener listener;
 
     /**
-     * this prevent duplication at videoIds;
+     * this prevent duplication at videoIdList;
      */
-    private Set<String> videoIds;
+    private List<String> videoIdList;
 
     public void setListener(Listener listener) {
         this.listener = listener;
     }
 
     public ProductAdditionalInfoViewHolder(View view) {
+        videoIdList = new ArrayList<>();
         descriptionTextInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout_description);
         descriptionEditText = (EditText) view.findViewById(R.id.edit_text_description);
         labelAddVideoView = (LabelView) view.findViewById(R.id.label_add_video_view);
@@ -88,12 +88,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 listener.onDescriptionTextChanged(editable.toString().trim());
             }
         });
-        videoIds = new HashSet<>();
         labelAddVideoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (CommonUtils.checkNotNull(listener)) {
-                    listener.startYoutubeVideoActivity(new ArrayList<>(videoIds));
+                    listener.startYoutubeVideoActivity(new ArrayList<>(videoIdList));
                 }
             }
         });
@@ -120,7 +119,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
-                preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                if (!isExpand) {
+                    preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                }
             }
         });
     }
@@ -129,7 +130,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         if (isShown) {
             labelAddVideoView.setVisibility(View.VISIBLE);
         } else {
-            this.videoIds.clear();
+            videoIdList.clear();
             labelAddVideoView.setVisibility(View.GONE);
         }
     }
@@ -145,27 +146,38 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                     processVideos(data);
                 } else {
                     // means that no data at all.
-                    this.videoIds.clear();
-                    setLabelViewText(new ArrayList<>(videoIds));
+                    this.videoIdList.clear();
+                    setLabelViewText(new ArrayList<>(videoIdList));
                 }
                 break;
         }
     }
 
     private void processVideos(Intent data) {
-        ArrayList<String> videoIds = data.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-        this.videoIds.clear();
-        this.videoIds.addAll(videoIds);
-
-        setLabelViewText(videoIds);
+        ArrayList<String> videoIdList = data.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
+        this.videoIdList.clear();
+        setVideoIdList(videoIdList);
     }
 
-    private void setLabelViewText(ArrayList<String> videoIds) {
-        if (CommonUtils.checkCollectionNotNull(videoIds)) {
-            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIds.size()));
+    private void setLabelViewText(List<String> videoIdList) {
+        if (CommonUtils.checkCollectionNotNull(videoIdList)) {
+            labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.product_video_count, videoIdList.size()));
         } else {
             labelAddVideoView.setContent(labelAddVideoView.getContext().getString(R.string.etalase_picker_add_etalase_add_button_dialog));
         }
+    }
+
+    public List<String> getVideoIdList() {
+        return videoIdList;
+    }
+
+    public void setVideoIdList(List<String> videoIdList) {
+        this.videoIdList.addAll(videoIdList);
+        setLabelViewText(videoIdList);
+    }
+
+    public void expandPreOrder(boolean expand) {
+//        preOrderExpandableOptionSwitch.setExpand(expand);
     }
 
     public int getPreOrderUnit() {

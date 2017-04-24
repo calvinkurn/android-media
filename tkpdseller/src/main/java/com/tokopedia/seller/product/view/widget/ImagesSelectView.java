@@ -25,14 +25,42 @@ import java.util.List;
 
 public class ImagesSelectView extends FrameLayout {
 
+    public interface OnImageChanged {
+
+        void onTotalImageUpdated(int total);
+
+    }
+
+    public interface OnCheckResolutionListener {
+
+        boolean isResolutionCorrect(String uri);
+
+        void resolutionCheckFailed(String uri);
+    }
+
     public static final int DEFAULT_LIMIT = 5;
-    OnCheckResolutionListener onCheckResolutionListener;
+
     private int recyclerViewPadding;
     private Drawable addPictureDrawable;
     private ImageSelectorAdapter imageSelectorAdapter;
     private String primaryImageString;
     private int imageLimit;
     private String titleString;
+
+    private OnCheckResolutionListener onCheckResolutionListener;
+    private OnImageChanged onImageChanged;
+
+    public void setOnImageSelectionListener(ImageSelectorAdapter.OnImageSelectionListener listener) {
+        imageSelectorAdapter.setOnImageSelectionListener(listener);
+    }
+
+    public void setOnCheckResolutionListener(OnCheckResolutionListener listener) {
+        this.onCheckResolutionListener = listener;
+    }
+
+    public void setOnImageChanged(OnImageChanged onImageChanged) {
+        this.onImageChanged = onImageChanged;
+    }
 
     public ImagesSelectView(Context context) {
         super(context);
@@ -73,8 +101,7 @@ public class ImagesSelectView extends FrameLayout {
         TextView textViewTitle = (TextView) view.findViewById(R.id.textViewTitle);
         if (TextUtils.isEmpty(titleString)) {
             textViewTitle.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             textViewTitle.setText(titleString);
         }
 
@@ -88,26 +115,16 @@ public class ImagesSelectView extends FrameLayout {
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         // add margin between Items
-        recyclerView.addItemDecoration(
-                new HorizontalItemDecoration(
-                        getContext().getResources().getDimensionPixelOffset(R.dimen.margin_vs)));
+        recyclerView.addItemDecoration(new HorizontalItemDecoration(getContext().getResources().getDimensionPixelOffset(R.dimen.margin_vs)));
 
         recyclerView.setAdapter(imageSelectorAdapter);
     }
 
-    public void setOnImageSelectionListener (ImageSelectorAdapter.OnImageSelectionListener listener) {
-        imageSelectorAdapter.setOnImageSelectionListener(listener);
-    }
-
-    public void setOnCheckResolutionListener(OnCheckResolutionListener listener) {
-        this.onCheckResolutionListener = listener;
-    }
-
-    public void addImageString(String imageUrl){
-        if (successHandleResolution(imageUrl)){
+    public void addImageString(String imageUrl) {
+        if (successHandleResolution(imageUrl)) {
             imageSelectorAdapter.addImage(new ImageSelectModel(imageUrl));
+            updateTotalImageListener();
         }
-
     }
 
     private void handleResolutionFromStringList(List<String> uriList) {
@@ -129,30 +146,30 @@ public class ImagesSelectView extends FrameLayout {
     }
 
     public boolean successHandleResolution(String localUri) {
-        if (onCheckResolutionListener == null ||
-                onCheckResolutionListener.isResolutionCorrect(localUri)) {
+        if (onCheckResolutionListener == null || onCheckResolutionListener.isResolutionCorrect(localUri)) {
             return true;
-        }
-        else { // resolution is not correct
+        } else { // resolution is not correct
             onCheckResolutionListener.resolutionCheckFailed(localUri);
             return false;
         }
     }
 
-    public void addImage(ImageSelectModel imageSelectModel){
-        if (successHandleResolution(imageSelectModel.getUri())){
+    public void addImage(ImageSelectModel imageSelectModel) {
+        if (successHandleResolution(imageSelectModel.getUri())) {
             imageSelectorAdapter.addImage(imageSelectModel);
+            updateTotalImageListener();
         }
     }
 
-    public void addImages(List<ImageSelectModel> imageSelectModelList){
+    public void addImages(List<ImageSelectModel> imageSelectModelList) {
         handleResolutionFromList(imageSelectModelList);
         if (imageSelectModelList.size() > 0) {
             imageSelectorAdapter.addImages(imageSelectModelList);
+            updateTotalImageListener();
         }
     }
 
-    public void addImagesString(List<String> imageStringList){
+    public void addImagesString(List<String> imageStringList) {
         handleResolutionFromStringList(imageStringList);
 
         if (imageStringList.size() > 0) {
@@ -161,96 +178,103 @@ public class ImagesSelectView extends FrameLayout {
                 imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
             }
             imageSelectorAdapter.addImages(imageSelectModelList);
+            updateTotalImageListener();
         }
     }
 
-    public void setImage(List<ImageSelectModel> imageSelectModelList){
-        handleResolutionFromList(imageSelectModelList);
+    public void setImage(List<ImageSelectModel> imageSelectModelList) {
+//        handleResolutionFromList(imageSelectModelList);
 
         if (imageSelectModelList.size() > 0) {
             imageSelectorAdapter.setImage(imageSelectModelList);
+            updateTotalImageListener();
         }
     }
 
-    public void changeImagePath (String path) {
+    public void changeImagePath(String path) {
         if (successHandleResolution(path)) {
             imageSelectorAdapter.changeImagePath(path);
         }
     }
 
-    public void changeImagePath (String path, int position) {
+    public void changeImagePath(String path, int position) {
         if (successHandleResolution(path)) {
             imageSelectorAdapter.changeImagePath(path, position);
+            updateTotalImageListener();
         }
     }
 
-    public void changeImageDesc (String description) {
+    public void changeImageDesc(String description) {
         imageSelectorAdapter.changeImageDesc(description);
     }
 
-    public void changeImageDesc (String description, int position) {
+    public void changeImageDesc(String description, int position) {
         imageSelectorAdapter.changeImageDesc(description, position);
     }
 
-    public void changeImagePrimary (boolean isPrimary) {
+    public void changeImagePrimary(boolean isPrimary) {
         imageSelectorAdapter.changeImagePrimary(isPrimary);
     }
 
-    public void changeImagePrimary (boolean isPrimary, int position) {
+    public void changeImagePrimary(boolean isPrimary, int position) {
         imageSelectorAdapter.changeImagePrimary(isPrimary, position);
     }
 
-    public void changeImage (ImageSelectModel imageSelectModel) {
+    public void changeImage(ImageSelectModel imageSelectModel) {
         if (successHandleResolution(imageSelectModel.getUri())) {
             imageSelectorAdapter.changeImage(imageSelectModel);
+            updateTotalImageListener();
         }
     }
 
-    public void changeImage (ImageSelectModel imageSelectModel, int position) {
+    public void changeImage(ImageSelectModel imageSelectModel, int position) {
         if (successHandleResolution(imageSelectModel.getUri())) {
             imageSelectorAdapter.changeImage(imageSelectModel, position);
+            updateTotalImageListener();
         }
     }
 
-    public ImageSelectModel getPrimaryImage () {
+    public ImageSelectModel getPrimaryImage() {
         return imageSelectorAdapter.getPrimaryImage();
     }
 
-    public int getPrimaryImageIndex () {
+    public int getPrimaryImageIndex() {
         return imageSelectorAdapter.getPrimaryImageIndex();
     }
 
-    public ImageSelectModel getSelectedImage () {
+    public ImageSelectModel getSelectedImage() {
         return imageSelectorAdapter.getSelectedImage();
     }
 
-    public ImageSelectModel getImageAt (int position) {
+    public ImageSelectModel getImageAt(int position) {
         return getImageList().get(position);
     }
 
-    public List<ImageSelectModel> getImageList(){
+    public List<ImageSelectModel> getImageList() {
         return imageSelectorAdapter.getImageSelectModelList();
     }
 
-    public int getSelectedImageIndex () {
+    public int getSelectedImageIndex() {
         return imageSelectorAdapter.getSelectedImageIndex();
     }
 
     public void removeImage() {
         imageSelectorAdapter.removeSelected();
+        updateTotalImageListener();
     }
 
     public void removeImage(int position) {
         imageSelectorAdapter.removeSelected(position);
+        updateTotalImageListener();
     }
 
     public int getRemainingEmptySlot() {
         return imageLimit - imageSelectorAdapter.getImageSelectModelList().size();
     }
 
-    public interface OnCheckResolutionListener {
-        boolean isResolutionCorrect(String uri);
-
-        void resolutionCheckFailed(String uri);
+    private void updateTotalImageListener() {
+        if (onImageChanged != null) {
+            onImageChanged.onTotalImageUpdated(imageSelectorAdapter.getImageSelectModelList().size());
+        }
     }
 }

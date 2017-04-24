@@ -35,7 +35,7 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         ProductEditForm product = data.getProduct();
         domainModel.setProductWeightUnit(Integer.parseInt(product.getProductWeightUnit()));
         if (!TextUtils.isEmpty(product.getProductEtalaseId())) {
-            domainModel.setProductEtalaseId(Integer.parseInt(product.getProductEtalaseId()));
+            domainModel.setProductEtalaseId(Long.parseLong(product.getProductEtalaseId()));
         } else {
             domainModel.setProductEtalaseId(-1);
         }
@@ -56,6 +56,11 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
 
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
+
+        if (data.getPreorder() != null) {
+            domainModel.setPoProcessType(data.getPreorder().getPreorderProcessTimeType());
+            domainModel.setPoProcessValue(data.getPreorder().getPreorderProcessTime());
+        }
         return domainModel;
     }
 

@@ -79,6 +79,22 @@ public class ProductImageViewHolder extends ProductViewHolder {
                 }
             }
         });
+        imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {
+            @Override
+            public void onTotalImageUpdated(int total) {
+                listener.onTotalImageUpdated(total);
+                updateImageResolution();
+            }
+
+            private void updateImageResolution() {
+                ProductPhotoListViewModel productPhotoListViewModel = getProductPhotos();
+                int imageCount = productPhotoListViewModel.getPhotos().size();
+                if (imageCount > 0) {
+                    ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos().get(productPhotoListViewModel.getProductDefaultPicture());
+                    listener.onImageResolutionChanged(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
+                }
+            }
+        });
     }
 
     public ImagesSelectView getImagesSelectView() {
@@ -101,8 +117,6 @@ public class ProductImageViewHolder extends ProductViewHolder {
             if (imageUrls != null) {
                 imagesSelectView.addImagesString(imageUrls);
             }
-            updateImageResolution();
-            listener.onTotalImageUpdated(0);
         }
     }
 
@@ -140,16 +154,6 @@ public class ProductImageViewHolder extends ProductViewHolder {
             images.add(image);
         }
         imagesSelectView.setImage(images);
-    }
-
-    private void updateImageResolution() {
-        ProductPhotoListViewModel productPhotoListViewModel = getProductPhotos();
-        int imageCount = productPhotoListViewModel.getPhotos().size();
-        if (imageCount > 0) {
-            ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos()
-                    .get(productPhotoListViewModel.getProductDefaultPicture());
-            listener.onImageResolutionChanged(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
-        }
     }
 
     @Override

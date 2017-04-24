@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
@@ -90,7 +91,13 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
         productDetailViewHolder.setFreeReturn(model.getProductReturnable());
 
         productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
-        productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
-        productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
+        if (model.getProductVideos() != null) {
+            productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
+        }
+        if (model.getPoProcessValue() > 0) {
+            productAdditionalInfoViewHolder.expandPreOrder(true);
+            productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
+            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
+        }
     }
 }

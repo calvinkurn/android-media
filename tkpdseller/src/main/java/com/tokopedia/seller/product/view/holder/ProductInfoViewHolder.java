@@ -171,7 +171,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     }
 
     private void processCatalog(Intent intent) {
-        catalogId = intent.getIntExtra(CatalogPickerActivity.CATALOG_ID, 0);
+        catalogId = intent.getLongExtra(CatalogPickerActivity.CATALOG_ID, 0);
         String catalogName = intent.getStringExtra(CatalogPickerActivity.CATALOG_NAME);
         setCatalog(catalogId, catalogName);
     }

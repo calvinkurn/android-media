@@ -203,7 +203,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onImageResolutionChanged(int maxSize) {
-        valueIndicatorScoreModel.setImageCount(maxSize);
+        valueIndicatorScoreModel.setImageResolution(maxSize);
         updateProductScoring();
     }
 
@@ -285,7 +285,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, false);
             }
 
             @Override
@@ -322,7 +322,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
+        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, false);
     }
 
     @Override
@@ -395,7 +395,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
     }
 
-
     @Override
     public void onCategoryPickerClicked(long categoryId) {
         CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
@@ -454,9 +453,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
         viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
-//        viewModel youtube
-        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
-        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
+        viewModel.setProductVideos(productAdditionalInfoViewHolder.getVideoIdList());
+        if (productAdditionalInfoViewHolder.getPreOrderValue() > 0) {
+            viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
+            viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
+        }
         return viewModel;
     }
 
