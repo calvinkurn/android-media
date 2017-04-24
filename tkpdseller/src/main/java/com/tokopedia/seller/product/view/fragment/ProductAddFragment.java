@@ -382,13 +382,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void showGoldMerchant(boolean isGoldMerchant) {
+    public void onSuccessGetShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
-    }
-
-    @Override
-    public void showFreeReturn(boolean isFreeReturn) {
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
     }
 

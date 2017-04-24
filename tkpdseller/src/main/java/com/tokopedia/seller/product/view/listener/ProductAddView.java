@@ -27,10 +27,7 @@ public interface ProductAddView extends CustomerView {
 
     void onSuccessStoreProductToDraft(long productId);
 
+    void onSuccessGetShopInfo(boolean goldMerchant, boolean freeReturn);
+
     void showErrorGetShopInfo(Throwable e);
-
-    void showGoldMerchant(boolean isGoldMerchant);
-
-    void showFreeReturn(boolean isFreeReturn);
-
 }
