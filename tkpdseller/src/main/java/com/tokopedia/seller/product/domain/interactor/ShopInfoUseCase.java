@@ -19,8 +19,6 @@ public class ShopInfoUseCase extends UseCase<ShopModel> {
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "shop_domain";
-    public static final String USER_ID = "user_id";
-    public static final String DEVICE_ID = "device_id";
 
     protected ShopInfoRepository shopInfoRepository;
 
@@ -35,31 +33,24 @@ public class ShopInfoUseCase extends UseCase<ShopModel> {
 
     @Override
     public Observable<ShopModel> createObservable(RequestParams requestParams) {
-        String userId = requestParams.getString(USER_ID, "");
-        String deviceId = requestParams.getString(DEVICE_ID, "");
         String shopId = requestParams.getString(SHOP_ID, "");
         String shopDomain = requestParams.getString(SHOP_DOMAIN, "");
-        return getShopInfo(userId, deviceId, shopId, shopDomain);
+        return getShopInfo(shopId, shopDomain);
     }
 
     // to be overridden by other use cases
-    protected Observable<ShopModel> getShopInfo(String userId, String deviceId,
-                                                String shopId, String shopDomain) {
-        return shopInfoRepository.getShopInfo(userId, deviceId, shopId, shopDomain);
+    protected Observable<ShopModel> getShopInfo(String shopId, String shopDomain) {
+        return shopInfoRepository.getShopInfo(shopId, shopDomain);
     }
 
-    public static RequestParams createRequestParamByShopId(String userId, String deviceId, String shopId) {
+    public static RequestParams createRequestParamByShopId(String shopId) {
         RequestParams params = RequestParams.create();
-        params.putString(USER_ID, userId);
-        params.putString(DEVICE_ID, deviceId);
         params.putString(SHOP_ID, shopId);
         return params;
     }
 
-    public static RequestParams createRequestParamByShopDomain(String userId, String deviceId, String shopDomain) {
+    public static RequestParams createRequestParamByShopDomain(String shopDomain) {
         RequestParams params = RequestParams.create();
-        params.putString(USER_ID, userId);
-        params.putString(DEVICE_ID, deviceId);
         params.putString(SHOP_DOMAIN, shopDomain);
         return params;
     }

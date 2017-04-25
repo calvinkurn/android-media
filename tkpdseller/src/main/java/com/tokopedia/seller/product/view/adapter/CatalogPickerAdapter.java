@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.image.ImageHandler;
@@ -31,6 +32,11 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
     private int selectedPosition = -1;
     private int noCatalogCount;
 
+    OnCatalogPickerListener listener;
+    public interface OnCatalogPickerListener{
+        void onCatalogClicked(long catalogId, String catalogName);
+    }
+
     public CatalogPickerAdapter(List<Catalog> catalogViewModelList, long selectedCatalogId, int maxRows) {
         this.catalogViewModelList = new ArrayList<>();
         Catalog notUseCatalog = new Catalog();
@@ -46,6 +52,10 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
         }
         this.selectedCatalogId = selectedCatalogId;
         this.maxRows = maxRows;
+    }
+
+    public void setListener(OnCatalogPickerListener listener) {
+        this.listener = listener;
     }
 
     public long getSelectedCatalogId() {
@@ -89,8 +99,10 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
 
     private class CatalogViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        RadioButton radioButton;
         public CatalogViewHolder(View itemView) {
             super(itemView);
+            this.radioButton = (RadioButton) itemView.findViewById(R.id.radio_button);
             itemView.setOnClickListener(this);
         }
 
@@ -111,6 +123,10 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
                 notifyItemChanged(prevSelectedPosition);
             }
             notifyItemChanged(selectedPosition);
+
+            if (listener!= null) {
+                listener.onCatalogClicked(selectedCatalogId, catalogViewModelList.get(position).getCatalogName());
+            }
         }
     }
 
@@ -151,17 +167,19 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
+
         switch (viewType) {
-            case VIEW_TYPE_NO_USE_CATALOG:
-                holder.itemView.setSelected(selectedPosition == position);
-                break;
             case VIEW_TYPE_ITEM:
                 Catalog catalogViewModel = catalogViewModelList.get(position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 new ImageHandler(itemViewHolder.imageCatalog.getContext())
                         .loadImage(itemViewHolder.imageCatalog, catalogViewModel.getCatalogImage());
                 itemViewHolder.textCatalogName.setText(catalogViewModel.getCatalogName());
-                holder.itemView.setSelected(selectedPosition == position);
+                // no need break
+                // continue below
+            case VIEW_TYPE_NO_USE_CATALOG:
+                boolean isSelected = (selectedPosition == position);
+                ((CatalogViewHolder) holder).radioButton.setChecked(isSelected);
                 break;
             default:
                 super.onBindViewHolder(holder, position);

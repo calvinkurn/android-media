@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +30,7 @@ import java.util.List;
  * Created by hendry on 4/3/17.
  */
 
-public class CatalogPickerFragment extends BaseDaggerFragment implements CatalogPickerView {
+public class CatalogPickerFragment extends BaseDaggerFragment implements CatalogPickerView, CatalogPickerAdapter.OnCatalogPickerListener {
     public static final String TAG = "CatalogPicker";
 
     public static final int ROWS = 20;
@@ -64,6 +66,7 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         selectedCatalogId = bundle.getLong(CatalogPickerActivity.CATALOG_ID);
 
         adapter = new CatalogPickerAdapter(null, selectedCatalogId, 0);
+        adapter.setListener(this);
 
         TopAdsWhiteRetryDataBinder topAdsRetryDataBinder = new TopAdsWhiteRetryDataBinder(adapter);
         topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
@@ -98,6 +101,8 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         llm = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(llm);
+
+        ((SimpleItemAnimator)recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
 
         recyclerView.setAdapter(adapter);
 
@@ -171,4 +176,20 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         }
     }
 
+    @Override
+    public void onCatalogClicked(long catalogId, String catalogName) {
+        Intent resultIntent;
+        if (selectedCatalogId == catalogId) {
+            resultIntent = null;
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(CatalogPickerActivity.CATALOG_ID, catalogId);
+            intent.putExtra(CatalogPickerActivity.CATALOG_NAME, catalogName);
+            resultIntent = intent;
+        }
+        if (resultIntent != null) {
+            getActivity().setResult(Activity.RESULT_OK, resultIntent);
+        }
+        getActivity().finish();
+    }
 }

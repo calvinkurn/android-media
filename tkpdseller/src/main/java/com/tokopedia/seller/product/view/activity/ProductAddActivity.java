@@ -81,7 +81,9 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
 
     protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
-        checkIntentImageUrls();
+        if (getSupportFragmentManager().findFragmentByTag(ProductAddFragment.class.getSimpleName()) == null) {
+            checkIntentImageUrls();
+        }
     }
 
     private void createProductAddFragment() {
