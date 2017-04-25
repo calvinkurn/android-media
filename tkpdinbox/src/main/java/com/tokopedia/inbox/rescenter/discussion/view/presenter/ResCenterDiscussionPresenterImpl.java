@@ -153,7 +153,8 @@ public class ResCenterDiscussionPresenterImpl implements ResCenterDiscussionPres
 
         if (pass.getMessage().trim().length() == 0) {
             isValid = false;
-            viewListener.onErrorSendReply(context.getString(R.string.error_field_required));
+            String error = viewListener.getString(R.string.error_field_required);
+            viewListener.onErrorSendReply(error);
         }
 
         return isValid;
