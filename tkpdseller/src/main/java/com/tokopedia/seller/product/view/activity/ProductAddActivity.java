@@ -1,32 +1,30 @@
 package com.tokopedia.seller.product.view.activity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.newgallery.GalleryActivity;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.AddProductService;
 
@@ -274,8 +272,13 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     @Override
-    public void startAddWholeSaleDialog(WholesaleModel baseValue) {
-        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(baseValue);
+    public void startAddWholeSaleDialog(
+            WholesaleModel fixedPrice,
+            @CurrencyTypeDef int currencyType,
+            WholesaleModel previousWholesalePrice) {
+        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(
+                fixedPrice, currencyType, previousWholesalePrice
+        );
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
     }
 

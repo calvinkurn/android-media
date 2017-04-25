@@ -3,13 +3,16 @@ package com.tokopedia.seller.product.view.model.wholesale;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+
 import java.lang.ref.WeakReference;
 
 /**
  * @author normansyahputa on 4/20/17.
  *         based on {@link com.tokopedia.seller.myproduct.customview.wholesale,WholesaleModel}
  */
-public class WholesaleModel implements Parcelable {
+public class WholesaleModel extends TypeBasedModel implements Parcelable {
+    public static final int TYPE = 1212834;
     public static final Parcelable.Creator<WholesaleModel> CREATOR = new Parcelable.Creator<WholesaleModel>() {
         @Override
         public WholesaleModel createFromParcel(Parcel source) {
@@ -32,23 +35,30 @@ public class WholesaleModel implements Parcelable {
     private WeakReference<WholesaleModel> nextWholesaleModel;
 
     public WholesaleModel() {
+        super(TYPE);
     }
 
     public WholesaleModel(int quantityOne, int quantityTwo, double wholeSalePrice) {
+        super(TYPE);
         this.qtyOne = quantityOne;
         this.qtyTwo = quantityTwo;
         this.qtyPrice = wholeSalePrice;
     }
 
     protected WholesaleModel(Parcel in) {
+        super(TYPE);
         this.qtyOne = in.readInt();
         this.qtyTwo = in.readInt();
         this.qtyPrice = in.readDouble();
         this.level = in.readInt();
+
         WholesaleModel prevwholesaleModel = in.readParcelable(WholesaleModel.class.getClassLoader());
-        this.prevWholesaleModel = new WeakReference<WholesaleModel>(prevwholesaleModel);
+        if (prevwholesaleModel != null)
+            this.prevWholesaleModel = new WeakReference<WholesaleModel>(prevwholesaleModel);
+
         WholesaleModel nextWholesaleModel = in.readParcelable(WholesaleModel.class.getClassLoader());
-        this.nextWholesaleModel = new WeakReference<WholesaleModel>(nextWholesaleModel);
+        if (nextWholesaleModel != null)
+            this.nextWholesaleModel = new WeakReference<WholesaleModel>(nextWholesaleModel);
     }
 
     public int getQtyOne() {
@@ -65,6 +75,22 @@ public class WholesaleModel implements Parcelable {
 
     public void setQtyTwo(int qtyTwo) {
         this.qtyTwo = qtyTwo;
+    }
+
+    public WholesaleModel getPrevWholesaleModel() {
+        return prevWholesaleModel != null ? prevWholesaleModel.get() : null;
+    }
+
+    public void setPrevWholesaleModel(WholesaleModel wholesaleModel) {
+        prevWholesaleModel = new WeakReference<WholesaleModel>(wholesaleModel);
+    }
+
+    public void setNextWholesaleModel(WholesaleModel wholesaleModel) {
+        nextWholesaleModel = new WeakReference<WholesaleModel>(wholesaleModel);
+    }
+
+    public WholesaleModel getNexWholesaleModel() {
+        return nextWholesaleModel != null ? nextWholesaleModel.get() : null;
     }
 
     public double getQtyPrice() {
@@ -91,7 +117,9 @@ public class WholesaleModel implements Parcelable {
         dest.writeInt(this.qtyTwo);
         dest.writeDouble(this.qtyPrice);
         dest.writeInt(this.level);
-        dest.writeParcelable(this.prevWholesaleModel.get(), flags);
-        dest.writeParcelable(this.nextWholesaleModel.get(), flags);
+        if (prevWholesaleModel != null && prevWholesaleModel.get() != null)
+            dest.writeParcelable(this.prevWholesaleModel.get(), flags);
+        if (nextWholesaleModel != null && nextWholesaleModel.get() != null)
+            dest.writeParcelable(this.nextWholesaleModel.get(), flags);
     }
 }
