@@ -16,10 +16,12 @@ public class UploadProductInputDomainModel {
     private String productDescription;
     private double productPrice;
     private int productChangePhoto;
-    private int productCatalogId;
-    private int productDepartmentId;
+    private long productCatalogId;
+    private String productCatalogName;
+    private long productDepartmentId;
     private int productCondition;
-    private int productEtalaseId;
+    private long productEtalaseId;
+    private String productEtalaseName;
     private int productMinOrder;
     private int productMustInsurance;
     private int productPriceCurrency;
@@ -31,6 +33,8 @@ public class UploadProductInputDomainModel {
     private int poProcessValue;
     private int serverId;
     private String hostUrl;
+    private String productId;
+    private int nameEditable;
 
     public long getId() {
         return id;
@@ -60,12 +64,20 @@ public class UploadProductInputDomainModel {
         this.productWholesaleList = productWholesaleList;
     }
 
-    public int getProductCatalogId() {
+    public long getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
+    public void setProductCatalogId(long productCatalogId) {
         this.productCatalogId = productCatalogId;
+    }
+
+    public String getProductCatalogName() {
+        return productCatalogName;
+    }
+
+    public void setProductCatalogName(String productCatalogName) {
+        this.productCatalogName = productCatalogName;
     }
 
     public int getProductCondition() {
@@ -76,11 +88,11 @@ public class UploadProductInputDomainModel {
         this.productCondition = productCondition;
     }
 
-    public int getProductDepartmentId() {
+    public long getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(int productDepartmentId) {
+    public void setProductDepartmentId(long productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -92,12 +104,20 @@ public class UploadProductInputDomainModel {
         this.productDescription = productDescription;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
+    }
+
+    public String getProductEtalaseName() {
+        return productEtalaseName;
+    }
+
+    public void setProductEtalaseName(String productEtalaseName) {
+        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductMinOrder() {
@@ -212,11 +232,19 @@ public class UploadProductInputDomainModel {
         this.productVideos = productVideos;
     }
 
+    public String getHostUrl() {
+        return hostUrl;
+    }
+
     public void setHostUrl(String hostUrl) {
         this.hostUrl = hostUrl;
     }
 
-    public String getHostUrl() {
-        return hostUrl;
+    public void setproductId(String productId) {
+        this.productId = productId;
+    }
+
+    public void setNameEditable(int nameEditable) {
+        this.nameEditable = nameEditable;
     }
 }

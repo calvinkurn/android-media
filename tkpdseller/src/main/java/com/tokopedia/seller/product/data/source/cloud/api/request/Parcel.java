@@ -13,7 +13,7 @@ public class Parcel {
     @Expose
     private Data data;
 
-    public Parcel (Data data) {
+    public Parcel(Data data) {
         this.data = data;
     }
 

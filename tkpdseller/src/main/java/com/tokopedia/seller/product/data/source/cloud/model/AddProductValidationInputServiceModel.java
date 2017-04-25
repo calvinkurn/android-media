@@ -38,10 +38,10 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private String productDescription;
     private String productName;
     private double productPrice;
-    private int productCatalogId;
+    private long productCatalogId;
     private int productCondition;
-    private int productDepartmentId;
-    private int productEtalaseId;
+    private long productDepartmentId;
+    private long productEtalaseId;
     private int productMinOrder;
     private int productMustInsurance;
     private int productPriceCurrency;
@@ -95,7 +95,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(PRODUCT_VIDEO_SIZE, String.valueOf(getProductVideo().size()));
         for (int i = 0; i < getProductVideo().size(); i++) {
-            params.put(PRODUCT_VIDEO_ + i, getProductVideo().get(i));
+            int count = i + 1;
+            params.put(PRODUCT_VIDEO_ + count, getProductVideo().get(i));
         }
         return params;
     }
@@ -107,11 +108,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
             return String.format("%s", productPrice);
     }
 
-    public int getProductCatalogId() {
+    public long getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
+    public void setProductCatalogId(long productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
@@ -123,11 +124,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.productCondition = productCondition;
     }
 
-    public int getProductDepartmentId() {
+    public long getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(int productDepartmentId) {
+    public void setProductDepartmentId(long productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -139,11 +140,11 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.productDescription = productDescription;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 
@@ -235,12 +236,12 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         this.poProcessValue = poProcessValue;
     }
 
-    public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
-        this.productWholesale = productWholesale;
-    }
-
     public List<ProductWholesaleServiceModel> getProductWholesale() {
         return productWholesale;
+    }
+
+    public void setProductWholesale(List<ProductWholesaleServiceModel> productWholesale) {
+        this.productWholesale = productWholesale;
     }
 
     public List<String> getProductVideo() {

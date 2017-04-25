@@ -8,27 +8,27 @@ public class ColorIndicator {
 
     @SerializedName("min")
     @Expose
-    private int min;
+    private float min;
     @SerializedName("max")
     @Expose
-    private int max;
+    private float max;
     @SerializedName("color")
     @Expose
     private String color;
 
-    public int getMin() {
+    public float getMin() {
         return min;
     }
 
-    public void setMin(int min) {
+    public void setMin(float min) {
         this.min = min;
     }
 
-    public int getMax() {
+    public float getMax() {
         return max;
     }
 
-    public void setMax(int max) {
+    public void setMax(float max) {
         this.max = max;
     }
 

@@ -52,8 +52,8 @@ public class FileUtils {
         return fileName;
     }
 
-    public static String generateUniqueFileName (String path){
-        return String.valueOf(path.hashCode() ).replaceAll("-", "");
+    public static String generateUniqueFileName(String path) {
+        return String.valueOf(path.hashCode()).replaceAll("-", "");
     }
 
     /**

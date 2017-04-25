@@ -3,34 +3,34 @@ package com.tokopedia.seller.product.view.listener;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
-
-import java.util.List;
-
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/13/17.
  */
 
 public interface ProductAddView extends CustomerView {
-    void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView);
 
-    void updateProductScoring();
+    void onSuccessLoadScoringProduct(DataScoringProductView dataScoringProductView);
 
-    ValueIndicatorScoreModel getValueIndicatorScoreModel();
+    void onErrorLoadScoringProduct(String errorMessage);
 
-    void showCatalogError(Throwable e);
+    void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows);
 
-    void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows);
+    void onErrorLoadCatalog(String errorMessage);
 
-    void showCatRecommError(Throwable e);
+    void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList);
 
-    void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList);
+    void onErrorLoadRecommendationCategory(String errorMessage);
 
-    void showErrorGetShopInfo(Throwable e);
+    void onSuccessStoreProductToDraft(long productId);
 
-    void showGoldMerchant(boolean isGoldMerchant);
+    void onErrorStoreProductToDraft(String errorMessage);
 
-    void showFreeReturn(boolean isFreeReturn);
+    void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn);
+
+    void onErrorLoadShopInfo(String errorMessage);
 }

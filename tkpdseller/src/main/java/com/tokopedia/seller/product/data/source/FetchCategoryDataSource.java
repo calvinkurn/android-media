@@ -28,63 +28,51 @@ public class FetchCategoryDataSource {
         this.categoryDataManager = categoryDataManager;
     }
 
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(int parent) {
-        return Observable.just(parent)
-                .map(new FetchFromParent())
-                .map(new CategoryDataToDomainMapper());
+    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(long categoryId) {
+        return Observable.just(categoryId).map(new FetchFromParent()).map(new CategoryDataToDomainMapper());
     }
 
-    public Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(int initSelected) {
-        return Observable
-                .just(initSelected)
-                .map(new FetchCategoryFromSelected());
+    public Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId) {
+        return Observable.just(categoryId).map(new FetchCategoryFromSelected());
     }
 
-    private class FetchCategoryFromSelected implements Func1<Integer, List<CategoryLevelDomainModel>> {
+    private class FetchCategoryFromSelected implements Func1<Long, List<CategoryLevelDomainModel>> {
         @Override
-        public List<CategoryLevelDomainModel> call(Integer selectedId) {
+        public List<CategoryLevelDomainModel> call(Long categoryId) {
             List<CategoryLevelDomainModel> categoryLevelDomainModels = new ArrayList<>();
-            int currentLevelSelected = selectedId;
+            long currentLevelSelected = categoryId;
             do {
                 CategoryLevelDomainModel categoryLevelDomain = new CategoryLevelDomainModel();
-                categoryLevelDomain.setSelected(currentLevelSelected);
+                categoryLevelDomain.setSelectedCategoryId(currentLevelSelected);
 
-                int parentId = getParentId(currentLevelSelected);
-                categoryLevelDomain.setParent(parentId);
+                long parentId = getParentId(currentLevelSelected);
+                categoryLevelDomain.setParentCategoryId(parentId);
                 List<CategoryDataBase> categoryFromParent = getCategoryFromParent(parentId);
                 categoryLevelDomain.setCategoryModels(
                         CategoryDataToDomainMapper.mapDomainModels(categoryFromParent)
                 );
-
                 categoryLevelDomainModels.add(0, categoryLevelDomain);
-
                 currentLevelSelected = parentId;
-            } while (
-                    categoryLevelDomainModels.get(0).getParent()
-                            != CategoryDataBase.LEVEL_ONE_PARENT
-                    );
-
+            }
+            while (categoryLevelDomainModels.get(0).getParentCategoryId() != CategoryDataBase.LEVEL_ONE_PARENT);
             return categoryLevelDomainModels;
         }
-
-
     }
 
-    private class FetchFromParent implements Func1<Integer, List<CategoryDataBase>> {
+    private class FetchFromParent implements Func1<Long, List<CategoryDataBase>> {
 
         @Override
-        public List<CategoryDataBase> call(Integer parent) {
+        public List<CategoryDataBase> call(Long parent) {
             return getCategoryFromParent(parent);
         }
     }
 
-    private List<CategoryDataBase> getCategoryFromParent(int parent) {
-        return categoryDataManager
-                .fetchCategoryFromParent(parent);
+    private List<CategoryDataBase> getCategoryFromParent(long categoryId) {
+        return categoryDataManager.fetchCategoryFromParent(categoryId);
     }
 
-    private int getParentId(Integer selectedId) {
-        CategoryDataBase selectedCategory = categoryDataManager.fetchCategoryWithId(selectedId);
+    private long getParentId(long categoryId) {
+        CategoryDataBase selectedCategory = categoryDataManager.fetchCategoryWithId(categoryId);
         return selectedCategory.getParentId();
     }
 }

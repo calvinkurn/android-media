@@ -1,8 +1,6 @@
 package com.tokopedia.seller.product.data.source;
 
-import com.tokopedia.seller.product.data.source.cloud.CatalogCloud;
 import com.tokopedia.seller.product.data.source.cloud.CategoryRecommCloud;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 
 import javax.inject.Inject;
@@ -22,7 +20,7 @@ public class CategoryRecommDataSource {
     }
 
     public Observable<CategoryRecommDataModel> fetchCategoryRecomm(
-                        String title, int row) {
+            String title, int row) {
         return categoryRecommCloud.fetchData(title, row);
     }
 

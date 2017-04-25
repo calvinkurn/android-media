@@ -9,14 +9,16 @@ import android.os.Parcelable;
 
 public class CategoryViewModel implements Parcelable{
     private String name;
-    private int id;
+    private long id;
     private boolean hasChild;
 
-    public CategoryViewModel(){}
+    public CategoryViewModel(){
+
+    }
 
     protected CategoryViewModel(Parcel in) {
         name = in.readString();
-        id = in.readInt();
+        id = in.readLong();
         hasChild = in.readByte() != 0;
     }
 
@@ -24,7 +26,7 @@ public class CategoryViewModel implements Parcelable{
         this.name = name;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -32,7 +34,7 @@ public class CategoryViewModel implements Parcelable{
         return name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -64,7 +66,7 @@ public class CategoryViewModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeByte((byte) (hasChild ? 1 : 0));
     }
 }

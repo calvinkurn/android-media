@@ -1,11 +1,14 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
@@ -19,12 +22,7 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductImageViewHolder {
-
-    public static final int MIN_IMG_RESOLUTION = 300;
-    private ImagesSelectView imagesSelectView;
-
-    private Listener listener;
+public class ProductImageViewHolder extends ProductViewHolder {
 
     public interface Listener {
         void onAddImagePickerClicked(int position);
@@ -32,7 +30,16 @@ public class ProductImageViewHolder {
         void onImagePickerItemClicked(int position, boolean isPrimary);
 
         void onResolutionImageCheckFailed(String uri);
+
+        void onTotalImageUpdated(int total);
+
+        void onImageResolutionChanged(int maxSize);
     }
+
+    public static final int MIN_IMG_RESOLUTION = 300;
+    private ImagesSelectView imagesSelectView;
+
+    private Listener listener;
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -43,9 +50,7 @@ public class ProductImageViewHolder {
     }
 
     public ProductImageViewHolder(View view) {
-
         imagesSelectView = (ImagesSelectView) view.findViewById(R.id.image_select_view);
-
         imagesSelectView.setOnImageSelectionListener(new ImageSelectorAdapter.OnImageSelectionListener() {
             @Override
             public void onAddClick(int position) {
@@ -71,6 +76,22 @@ public class ProductImageViewHolder {
             public void resolutionCheckFailed(String uri) {
                 if (listener != null) {
                     listener.onResolutionImageCheckFailed(uri);
+                }
+            }
+        });
+        imagesSelectView.setOnImageChanged(new ImagesSelectView.OnImageChanged() {
+            @Override
+            public void onTotalImageUpdated(int total) {
+                listener.onTotalImageUpdated(total);
+                updateImageResolution();
+            }
+
+            private void updateImageResolution() {
+                ProductPhotoListViewModel productPhotoListViewModel = getProductPhotos();
+                int imageCount = productPhotoListViewModel.getPhotos().size();
+                if (imageCount > 0) {
+                    ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos().get(productPhotoListViewModel.getProductDefaultPicture());
+                    listener.onImageResolutionChanged(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
                 }
             }
         });
@@ -118,5 +139,31 @@ public class ProductImageViewHolder {
         }
         productPhotos.setPhotos(listImageViewModel);
         return productPhotos;
+    }
+
+    public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
+        List<ImageSelectModel> images = new ArrayList<>();
+        int defaultPicture = productPhotos.getProductDefaultPicture();
+        for (int i = 0; i < productPhotos.getPhotos().size(); i ++){
+            ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
+            ImageSelectModel image = new ImageSelectModel(
+                    productPhoto.getUrl(),
+                    productPhoto.getImageDescription(),
+                    i == defaultPicture
+            );
+            images.add(image);
+        }
+        imagesSelectView.setImage(images);
+    }
+
+    @Override
+    public boolean isDataValid() {
+        if (getProductPhotos().getPhotos().size() < 1) {
+            Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
+                    .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
+                    .show();
+            return false;
+        }
+        return true;
     }
 }

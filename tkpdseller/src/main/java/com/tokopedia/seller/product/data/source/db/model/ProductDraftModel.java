@@ -32,16 +32,16 @@ public class ProductDraftModel {
     private int productChangePhoto;
 
     @SerializedName("product_catalog_id")
-    private int productCatalogId;
+    private long productCatalogId;
 
     @SerializedName("product_department_id")
-    private int productDepartmentId;
+    private long productDepartmentId;
 
     @SerializedName("product_condition")
     private int productCondition;
 
     @SerializedName("product_etalase_id")
-    private int productEtalaseId;
+    private long productEtalaseId;
 
     @SerializedName("product_min_order")
     private int productMinOrder;
@@ -121,19 +121,19 @@ public class ProductDraftModel {
         this.productChangePhoto = productChangePhoto;
     }
 
-    public int getProductCatalogId() {
+    public long getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
+    public void setProductCatalogId(long productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
-    public int getProductDepartmentId() {
+    public long getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(int productDepartmentId) {
+    public void setProductDepartmentId(long productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -145,11 +145,11 @@ public class ProductDraftModel {
         this.productCondition = productCondition;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 

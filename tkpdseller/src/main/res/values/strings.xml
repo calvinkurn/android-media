@@ -299,7 +299,12 @@
     <string name="product_label_add_wholesale">+ Tambah Harga Grosir</string>
     <string name="product_label_time_process">Waktu Proses</string>
     <string name="product_label_minimum_buy">Minimal Pembelian</string>
+    <string name="product_label_minimum_whole_sale">Jumlah Minimal</string>
+    <string name="product_label_price_whole_sale">Harga Produk</string>
+    <string name="product_label_maximum_whole_sale">Jumlah Maximal</string>
     <string name="product_label_manage_stock">Pengaturan Stok</string>
+    <string name="product_stock_available_value">1</string>
+    <string name="product_stock_not_available_value">2</string>
     <string name="product_label_stock_total">Jumlah Stok</string>
     <string name="product_label_status">Status</string>
     <string name="product_label_condition">Kondisi</string>
@@ -309,6 +314,7 @@
     <string name="product_label_save_and_add">Simpan dan tambah</string>
     <string name="product_label_save">Simpan</string>
     <string name="product_default_counter_text">0</string>
+    <string name="product_default_counter_minimum_order_text">1</string>
     <string name="product_label_preorder">Preorder</string>
     <string name="product_label_share">Bagikan</string>
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
@@ -324,27 +330,31 @@
     <!-- product score -->
     <string name="product_score_label_title">Produk skor</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
-    <string name="product_score_label_title_score">Skor Produk Anda </string>
+    <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
     <string name="product_score_label_minus">Kurang</string>
     <string name="product_score_label_desc_detail">Sempurnakan informasi produk Anda. Semakin detail informasi produk, pembeli akan semakin yakin untuk berbelanja di toko Anda.</string>
     <string name="product_score_label_error_count">Terjadi kesalahan penghitungan skor</string>
 
-    <string-array name="product_weight_entries">
-        <item>Gram</item>
-        <item>Kg</item>
-    </string-array>
-    <string-array name="product_weight_values">
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
+    <string name="product_currency_value_idr">1</string>
+    <string name="product_currency_value_usd">2</string>
     <string-array name="product_currency_entries">
         <item>Rp</item>
         <item>$</item>
     </string-array>
     <string-array name="product_currency_values">
-        <item>1</item>
-        <item>2</item>
+        <item>@string/product_currency_value_idr</item>
+        <item>@string/product_currency_value_usd</item>
+    </string-array>
+
+    <string name="product_weight_value_gram">1</string>
+    <string name="product_weight_value_kg">2</string>
+    <string-array name="product_weight_entries">
+        <item>Gram</item>
+        <item>Kg</item>
+    </string-array>
+    <string-array name="product_weight_values">
+        <item>@string/product_weight_value_gram</item>
+        <item>@string/product_weight_value_kg</item>
     </string-array>
 
     <string-array name="product_stock_status_entries">
@@ -352,8 +362,8 @@
         <item>Stock Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
-        <item>1</item>
-        <item>2</item>
+        <item>@string/product_stock_available_value</item>
+        <item>@string/product_stock_not_available_value</item>
     </string-array>
 
     <string-array name="product_condition_entries">
@@ -383,14 +393,37 @@
         <item>-1</item>
     </string-array>
 
+    <string name="product_pre_order_value_day">1</string>
+    <string name="product_pre_order_value_week">2</string>
     <string-array name="product_pre_order_entries">
         <item>Hari</item>
         <item>Minggu</item>
     </string-array>
     <string-array name="product_pre_order_values">
-        <item>1</item>
-        <item>2</item>
+        <item>@string/product_pre_order_value_day</item>
+        <item>@string/product_pre_order_value_week</item>
     </string-array>
+
+    <string name="product_error_product_name_empty">Nama produk harus diisi</string>
+    <string name="product_error_product_category_empty">Kategori harus diisi</string>
+    <string name="product_minimum_price_rp">100</string>
+    <string name="product_maximum_price_rp">100,000,000</string>
+    <string name="product_minimum_price_usd">1</string>
+    <string name="product_maximum_price_usd">7,500</string>
+    <string name="product_error_product_price_not_valid">Harga harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_minimum_weight_gram">1</string>
+    <string name="product_maximum_weight_gram">100,000</string>
+    <string name="product_minimum_weight_kg">1</string>
+    <string name="product_maximum_weight_kg">100</string>
+    <string name="product_error_product_weight_not_valid">Berat harus diisi antara %1$s &#8212; %2$s</string>
+    <string name="product_error_product_minimum_order_not_valid">Minimum order harus diisi</string>
+    <string name="product_error_product_etalase_empty">Etalase harus diisi</string>
+    <string name="product_error_product_picture_empty">Gambar harus diisi</string>
+    <string name="product_minimum_pre_order_day">1</string>
+    <string name="product_maximum_pre_order_day">30</string>
+    <string name="product_minimum_pre_order_week">1</string>
+    <string name="product_maximum_pre_order_week">4</string>
+    <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
 
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
@@ -403,5 +436,10 @@
     <string name="youtube_add_url_title">Tambah URL Video</string>
     <string name="product_label_video">Video</string>
     <string name="product_video_count">%1d Video</string>
+    <string name="title_notification_upload_product">Mengunggah</string>
+    <string name="group_notification">com.tokopedia</string>
+    <string name="notification_start_upload_product">Mulai mengunggah produk</string>
+    <string name="notification_progress_upload_product">Sedang meunggah produk</string>
+    <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
     <string name="error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
 </resources>

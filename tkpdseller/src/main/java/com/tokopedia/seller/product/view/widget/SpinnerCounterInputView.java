@@ -3,9 +3,11 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.tokopedia.seller.R;
@@ -84,18 +86,55 @@ public class SpinnerCounterInputView extends FrameLayout {
         requestLayout();
     }
 
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        spinnerTextView.setOnItemClickListener(onItemClickListener);
+    }
+
+    public void setOnItemChangeListener(SpinnerTextView.OnItemChangeListener onItemChangeListener) {
+        spinnerTextView.setOnItemChangeListener(onItemChangeListener);
+    }
+
     public float getCounterValue() {
         return counterInputView.getFloatValue();
+    }
+
+    public void setCounterValue(float value) {
+        counterInputView.setValue(value);
     }
 
     public String getSpinnerValue() {
         return spinnerTextView.getSpinnerValue();
     }
 
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
-        spinnerTextView.setOnItemClickListener(onItemClickListener);
+    public String getSpinnerValue(int position) {
+        return spinnerTextView.getSpinnerValue(position);
     }
+
+    public void setSpinnerValue(String value) {
+        spinnerTextView.setSpinnerValue(value);
+    }
+
+    public void setUnitError(String error) {
+        spinnerTextView.setError(error);
+    }
+
+    public void setCounterError(String error) {
+        counterInputView.setError(error);
+    }
+
+    public void addTextChangedListener(TextWatcher watcher) {
+        counterInputView.addTextChangedListener(watcher);
+    }
+
+    public void removeTextChangedListener(TextWatcher watcher) {
+        counterInputView.removeTextChangedListener(watcher);
+    }
+
     public void setSpinnerPosition(int position){
         spinnerTextView.setSpinnerPosition(position);
+    }
+
+    public EditText getCounterEditText() {
+        return counterInputView.getEditText();
     }
 }

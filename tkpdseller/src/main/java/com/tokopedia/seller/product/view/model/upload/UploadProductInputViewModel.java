@@ -15,10 +15,12 @@ public class UploadProductInputViewModel {
     private String productDescription;
     private double productPrice;
     private int productChangePhoto;
-    private int productCatalogId;
-    private int productDepartmentId;
+    private long productCatalogId;
+    private String productCatalogName;
+    private long productDepartmentId;
     private int productCondition;
-    private int productEtalaseId;
+    private long productEtalaseId;
+    private String productEtalaseName;
     private int productMinOrder;
     private int productMustInsurance;
     private int productPriceCurrency;
@@ -86,19 +88,27 @@ public class UploadProductInputViewModel {
         this.productChangePhoto = productChangePhoto;
     }
 
-    public int getProductCatalogId() {
+    public long getProductCatalogId() {
         return productCatalogId;
     }
 
-    public void setProductCatalogId(int productCatalogId) {
+    public void setProductCatalogId(long productCatalogId) {
         this.productCatalogId = productCatalogId;
     }
 
-    public int getProductDepartmentId() {
+    public String getProductCatalogName() {
+        return productCatalogName;
+    }
+
+    public void setProductCatalogName(String productCatalogName) {
+        this.productCatalogName = productCatalogName;
+    }
+
+    public long getProductDepartmentId() {
         return productDepartmentId;
     }
 
-    public void setProductDepartmentId(int productDepartmentId) {
+    public void setProductDepartmentId(long productDepartmentId) {
         this.productDepartmentId = productDepartmentId;
     }
 
@@ -110,12 +120,20 @@ public class UploadProductInputViewModel {
         this.productCondition = productCondition;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
+    }
+
+    public String getProductEtalaseName() {
+        return productEtalaseName;
+    }
+
+    public void setProductEtalaseName(String productEtalaseName) {
+        this.productEtalaseName = productEtalaseName;
     }
 
     public int getProductMinOrder() {

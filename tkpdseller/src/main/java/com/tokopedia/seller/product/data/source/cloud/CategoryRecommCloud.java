@@ -1,18 +1,13 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
-import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.data.source.cloud.api.MerlinApi;
-import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.data.source.cloud.api.request.CategoryRecommRequest;
 import com.tokopedia.seller.product.data.source.cloud.api.request.Data;
 import com.tokopedia.seller.product.data.source.cloud.api.request.Parcel;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -32,7 +27,7 @@ public class CategoryRecommCloud {
 
 
     public Observable<CategoryRecommDataModel> fetchData(String title,
-                                                  int row) {
+                                                         int row) {
         List<Parcel> parcelList = new ArrayList<>();
         parcelList.add(new Parcel(new Data(title)));
 

@@ -23,6 +23,14 @@ import java.util.List;
  * Created by hendry on 04/07/2017.
  */
 public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdapter.ViewHolder> {
+
+    public interface OnImageSelectionListener {
+
+        void onAddClick(int position);
+
+        void onItemClick(int position, ImageSelectModel imageSelectModel);
+    }
+
     private List<ImageSelectModel> imageSelectModelList;
     private int limit;
     private Drawable addPictureDrawable;
@@ -35,6 +43,10 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     private int currentSelectedIndex = -1;
     private int currentPrimaryImageIndex = -1;
 
+    public void setOnImageSelectionListener(OnImageSelectionListener onImageSelectionListener) {
+        this.onImageSelectionListener = onImageSelectionListener;
+    }
+
     public ImageSelectorAdapter(@NonNull List<ImageSelectModel> imageSelectModelList,
                                 int limit,
                                 Drawable addPictureDrawable,
@@ -45,16 +57,6 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         this.addPictureDrawable = addPictureDrawable;
         this.onImageSelectionListener = onImageSelectionListener;
         this.mainPrimaryImageString = mainPrimaryImageString;
-    }
-
-    public void setOnImageSelectionListener(OnImageSelectionListener onImageSelectionListener) {
-        this.onImageSelectionListener = onImageSelectionListener;
-    }
-
-    public interface OnImageSelectionListener {
-        void onAddClick(int position);
-
-        void onItemClick(int position, ImageSelectModel imageSelectModel);
     }
 
     public void addImage(ImageSelectModel imageSelectModel) {
@@ -86,7 +88,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     public void setImageString(@NonNull List<String> imageStringList) {
         this.imageSelectModelList = new ArrayList<>();
-        for (int i=0; i<imageStringList.size();i++){
+        for (int i = 0; i < imageStringList.size(); i++) {
             imageSelectModelList.add(new ImageSelectModel(imageStringList.get(i)));
         }
         currentPrimaryImageIndex = -1;

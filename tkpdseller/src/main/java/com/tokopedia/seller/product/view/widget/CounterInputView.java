@@ -103,7 +103,7 @@ public class CounterInputView extends FrameLayout {
             @Override
             public void onClick(View view) {
                 try {
-                    int result = (int) decimalInputView.getFloatValue() - 1;
+                    long result = (long) decimalInputView.getFloatValue() - 1;
                     if (result >= 0) {
                         decimalInputView.setText(String.valueOf(result));
                     }
@@ -146,12 +146,24 @@ public class CounterInputView extends FrameLayout {
         decimalInputView.addTextChangedListener(watcher);
     }
 
+    public void removeTextChangedListener(TextWatcher watcher) {
+        decimalInputView.removeTextChangedListener(watcher);
+    }
+
+    public void setError(String error) {
+        decimalInputView.setError(error);
+    }
+
     public String getValueText() {
         return decimalInputView.getText();
     }
 
     public float getFloatValue() {
         return decimalInputView.getFloatValue();
+    }
+
+    public void setValue(float value) {
+        decimalInputView.setValue(value);
     }
 
     public EditText getEditText() {

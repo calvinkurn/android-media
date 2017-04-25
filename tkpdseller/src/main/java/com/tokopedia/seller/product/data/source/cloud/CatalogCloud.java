@@ -1,9 +1,8 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
-import com.tokopedia.core.base.di.scope.ActivityScope;
+import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.data.source.cloud.api.SearchApi;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
-import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +28,11 @@ public class CatalogCloud {
 
     // https://phab.tokopedia.com/w/api/ace/search_catalog/
     // https://ace.tokopedia.com/search/v1/catalog?q=samsung&sc=65&device=android&start=0&rows=30&ob=1
-    public Observable<CatalogDataModel> fetchData(String keyword,
-                                                  int productDepId) {
+    public Observable<CatalogDataModel> fetchData(String keyword, long productDepId) {
         return fetchData(keyword, productDepId, DEFAULT_START, DEFAULT_ROWS);
     }
 
-    public Observable<CatalogDataModel> fetchData(String keyword,
-                                                  int productDepId,
-                                                  int start,
-                                                  int rows) {
+    public Observable<CatalogDataModel> fetchData(String keyword, long productDepId, int start, int rows) {
         Map<String, String> param = new HashMap<>();
         if (productDepId!= 0) {
             param.put(ProductNetworkConstant.PARAM_SC, String.valueOf(productDepId));

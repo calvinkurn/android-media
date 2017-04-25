@@ -65,7 +65,7 @@ public class CategoryPickerAdapter
                         );
                 break;
             case CATEGORY_ITEM:
-                boolean isSelected = data.getSelected() == data.getViewModels().get(position).getId();
+                boolean isSelected = data.getCategoryId() == data.getViewModels().get(position).getId();
                 ((CategoryItemViewHolder)holder)
                         .renderData(
                                 data.getViewModels().get(position), isSelected, data.getLevel()
@@ -108,7 +108,7 @@ public class CategoryPickerAdapter
     }
 
     private boolean isOneCategorySelected() {
-        return data.getSelected() != CategoryLevelViewModel.UNSELECTED;
+        return data.getCategoryId() != CategoryLevelViewModel.UNSELECTED;
     }
 
     private boolean isSelectedParent() {
@@ -125,22 +125,22 @@ public class CategoryPickerAdapter
     }
 
     @Override
-    public void selectParent(int selectedId) {
-        data.setSelected(selectedId);
+    public void selectParent(long selectedId) {
+        data.setCategoryId(selectedId);
         this.listener.selectParent(selectedId);
         notifyDataSetChanged();
     }
 
     @Override
     public void unselectParent() {
-        data.setSelected(CategoryLevelViewModel.UNSELECTED);
+        data.setCategoryId(CategoryLevelViewModel.UNSELECTED);
         this.listener.unselectParent(data.getLevel());
         notifyDataSetChanged();
     }
 
     @Override
-    public void selectItemCategory(int selectedId) {
-        data.setSelected(selectedId);
+    public void selectItemCategory(long selectedId) {
+        data.setCategoryId(selectedId);
         listener.selectCategoryItem();
     }
 }

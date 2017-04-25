@@ -31,9 +31,7 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/3/17.
  */
 
-public class CategoryPickerFragment
-        extends BaseDaggerFragment
-        implements CategoryPickerView, CategoryPickerLevelAdapterListener {
+public class CategoryPickerFragment extends BaseDaggerFragment implements CategoryPickerView, CategoryPickerLevelAdapterListener {
     public static final String TAG = "CategoryPickerFragment";
     public static final int INIT_UNSELECTED = 0;
     public static final String INIT_SELECTED = "INIT_SELECTED";
@@ -43,12 +41,12 @@ public class CategoryPickerFragment
 
     private CategoryPickerLevelAdapter adapter;
     private CategoryPickerFragmentListener listener;
-    private int initSelected;
+    private long selectedCategoryId;
 
-    public static CategoryPickerFragment createInstance(int currentSelected) {
+    public static CategoryPickerFragment createInstance(long currentSelected) {
         CategoryPickerFragment categoryPickerFragment = new CategoryPickerFragment();
         Bundle args = new Bundle();
-        args.putInt(INIT_SELECTED, currentSelected);
+        args.putLong(INIT_SELECTED, currentSelected);
         categoryPickerFragment.setArguments(args);
         return categoryPickerFragment;
     }
@@ -77,7 +75,7 @@ public class CategoryPickerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        initSelected = bundle.getInt(INIT_SELECTED, INIT_UNSELECTED);
+        selectedCategoryId = bundle.getLong(INIT_SELECTED, INIT_UNSELECTED);
     }
 
     @Nullable
@@ -124,10 +122,10 @@ public class CategoryPickerFragment
 
     @Override
     public void onSuccessFetchAllCategoryData() {
-        if (initSelected == INIT_UNSELECTED){
+        if (selectedCategoryId == INIT_UNSELECTED){
             presenter.fetchCategoryLevelOne();
         } else {
-            presenter.fetchCategoryFromSelected(initSelected);
+            presenter.fetchCategoryFromSelected(selectedCategoryId);
         }
     }
 
@@ -137,8 +135,8 @@ public class CategoryPickerFragment
     }
 
     @Override
-    public void selectParent(int categoryId) {
-        presenter.fetchCategoryWithParent(categoryId);
+    public void selectParent(long categoryId) {
+        presenter.fetchCategoryChild(categoryId);
     }
 
     @Override

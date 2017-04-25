@@ -12,12 +12,12 @@ public class GenerateHostDomainModel {
         return serverId;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     public void setServerId(int serverId) {
         this.serverId = serverId;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public void setUrl(String url) {

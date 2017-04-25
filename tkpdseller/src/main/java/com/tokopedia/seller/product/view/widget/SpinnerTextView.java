@@ -14,11 +14,19 @@ import android.widget.FrameLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by nathan on 04/05/17.
  */
 
 public class SpinnerTextView extends FrameLayout {
+
+    public interface OnItemChangeListener {
+
+        void onItemChanged(int position, String entry, String value);
+
+    }
 
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
@@ -28,6 +36,16 @@ public class SpinnerTextView extends FrameLayout {
     private CharSequence[] values;
     private int selectionIndex;
     private AdapterView.OnItemClickListener onItemClickListener;
+
+    private OnItemChangeListener onItemChangeListener;
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemChangeListener(OnItemChangeListener onItemChangeListener) {
+        this.onItemChangeListener = onItemChangeListener;
+    }
 
     public SpinnerTextView(Context context) {
         super(context);
@@ -83,20 +101,14 @@ public class SpinnerTextView extends FrameLayout {
         });
         textAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if (onItemClickListener != null) {
-                    onItemClickListener.onItemClick(adapterView, view, pos, id);
+                    onItemClickListener.onItemClick(adapterView, view, position, id);
                 }
-                selectionIndex = pos;
+                selectionIndex = position;
+                updateOnItemChanged(position);
             }
         });
-    }
-
-    public void setSpinnerPosition(int position) {
-        if (position >= 0 && position < values.length) {
-            selectionIndex = position;
-            textAutoComplete.setText(entries[position]);
-        }
     }
 
     public void setHint(String hintText) {
@@ -124,6 +136,41 @@ public class SpinnerTextView extends FrameLayout {
         return values[selectionIndex].toString();
     }
 
+    public String getSpinnerValue(int position) {
+        return values[position].toString();
+    }
+
+    public void setSpinnerPosition(int position) {
+        if (position >= 0 && position < values.length) {
+            selectionIndex = position;
+            textAutoComplete.setText(entries[position]);
+            updateOnItemChanged(position);
+        }
+    }
+
+    private void updateOnItemChanged(final int position) {
+        if (onItemChangeListener != null) {
+            onItemChangeListener.onItemChanged(position, entries[position].toString(), values[position].toString());
+        }
+    }
+
+    public void setSpinnerValue(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return;
+        }
+        for (int i = 0; i < values.length; i++) {
+            String tempValue = values[i].toString();
+            if (tempValue.equalsIgnoreCase(value)) {
+                setSpinnerPosition(i);
+                break;
+            }
+        }
+    }
+
+    public void setError(String error) {
+        textInputLayout.setError(error);
+    }
+
     private void updateEntries(String[] entries) {
         if (entries != null) {
             this.entries = entries;
@@ -131,9 +178,5 @@ public class SpinnerTextView extends FrameLayout {
             textAutoComplete.setAdapter(adapter);
             textAutoComplete.setText(entries[selectionIndex]);
         }
-    }
-
-    public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
     }
 }

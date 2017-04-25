@@ -1,13 +1,10 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.Badge;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
@@ -16,14 +13,14 @@ import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -35,20 +32,19 @@ import rx.android.schedulers.AndroidSchedulers;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class ProductAddPresenterImpl extends ProductAddPresenter {
+public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAddPresenter<T> {
+    public static final int TIME_DELAY = 500;
+
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
     private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
     private final ShopInfoUseCase shopInfoUseCase;
-
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
     private Subscription subscriptionDebounceCatalog;
-
-    public static final int TIME_DELAY = 500;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
                                    AddProductUseCase addProductUseCase,
@@ -62,8 +58,39 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
         this.shopInfoUseCase = shopInfoUseCase;
-        createCategoryRecommSubscriber();
-        createCatalogSubscriber();
+    }
+
+    @Override
+    public void getShopInfo(String userId, String deviceId, String shopId) {
+        shopInfoUseCase.execute(
+                ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId),
+                new Subscriber<ShopModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(e));
+                    }
+
+                    @Override
+                    public void onNext(ShopModel shopModel) {
+                        boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
+                        boolean isFreeReturn = shopModel.info.isFreeReturns();
+                        getView().onSuccessLoadShopInfo(isGoldMerchant, isFreeReturn);
+                    }
+                });
+    }
+
+    @Override
+    public void getCategoryRecommendation(String productTitle) {
+        if (getCategoryRecomListener != null) {
+            getCategoryRecomListener.getQueryString(productTitle);
+        } else {
+            createCategoryRecommSubscriber();
+        }
     }
 
     private void createCategoryRecommSubscriber() {
@@ -82,6 +109,36 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
                 .subscribe(getSubscriberDebounceGetCategoryRecomm());
     }
 
+    @NonNull
+    private Subscriber<String> getSubscriberDebounceGetCategoryRecomm() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onNext(String string) {
+                if (!TextUtils.isEmpty(string)) {
+                    getCategoryRecommendationFromServer(string, 3);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void fetchCatalogData(String keyword, long departmentId, int start, int rows) {
+        if (getCatalogListener != null) {
+            getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
+        } else {
+            createCatalogSubscriber();
+        }
+    }
+
     private void createCatalogSubscriber() {
         subscriptionDebounceCatalog = Observable.create(new Observable.OnSubscribe<CatalogQuery>() {
             @Override
@@ -97,27 +154,6 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         }).debounce(TIME_DELAY, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getSubscriberDebounceGetCatalog());
-    }
-
-    @NonNull
-    private Subscriber<String> getSubscriberDebounceGetCategoryRecomm() {
-        return new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-            }
-
-            @Override
-            public void onNext(String string) {
-                if (!string.equals("")) {
-                    getCategoryRecommendationFromServer(string, 3);
-                }
-            }
-        };
     }
 
     @NonNull
@@ -142,7 +178,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         };
     }
 
-    public void getCatalogFromServer(String keyword, int departmentId, int start, int rows) {
+    private void getCatalogFromServer(String keyword, long departmentId, int start, int rows) {
         fetchCatalogDataUseCase.execute(
                 FetchCatalogDataUseCase.createRequestParams(keyword, departmentId, start, rows),
                 new Subscriber<CatalogDataModel>() {
@@ -153,55 +189,16 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showCatalogError(e);
+                        getView().onErrorLoadCatalog(ViewUtils.getErrorMessage(e));
                     }
 
                     @Override
                     public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().successFetchCatalogData(
+                        getView().onSuccessLoadCatalog(
                                 catalogDataModel.getResult().getCatalogs(),
                                 catalogDataModel.getResult().getTotalRecord());
                     }
                 });
-    }
-
-    @Override
-    public void getCategoryRecommendation(String productTitle) {
-        if (getCategoryRecomListener != null) {
-            getCategoryRecomListener.getQueryString(productTitle);
-        }
-    }
-
-    @Override
-    public void getShopInfo(String userId, String deviceId, String shopId) {
-        shopInfoUseCase.execute(
-                ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId),
-                new Subscriber<ShopModel>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getView().showErrorGetShopInfo(e);
-                    }
-
-                    @Override
-                    public void onNext(ShopModel shopModel) {
-                        boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
-                        boolean isFreeReturn = shopModel.info.isFreeReturns();
-                        getView().showGoldMerchant(isGoldMerchant);
-                        getView().showFreeReturn(isFreeReturn);
-                    }
-                });
-    }
-
-    @Override
-    public void fetchCatalogData(String keyword, int departmentId, int start, int rows) {
-        if (getCatalogListener != null) {
-            getCatalogListener.getQuery(new CatalogQuery(keyword, departmentId, start, rows));
-        }
     }
 
     private void getCategoryRecommendationFromServer(String productTitle, int expectRow) {
@@ -215,12 +212,12 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showCatRecommError(e);
+                        getView().onErrorLoadRecommendationCategory(ViewUtils.getErrorMessage(e));
                     }
 
                     @Override
                     public void onNext(CategoryRecommDataModel categoryRecommDataModel) {
-                        getView().successGetCategoryRecommData(
+                        getView().onSuccessLoadRecommendationCategory(
                                 categoryRecommDataModel.getData().get(0).getProductCategoryPrediction()
                         );
                     }
@@ -229,7 +226,7 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
     @Override
     public void saveDraft(UploadProductInputViewModel viewModel) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.map(viewModel);
+        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
         RequestParams requestParam = SaveDraftProductUseCase.generateUploadProductParam(domainModel);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
     }
@@ -250,51 +247,17 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
             @Override
             public void onError(Throwable e) {
                 checkViewAttached();
+                getView().onErrorLoadScoringProduct(ViewUtils.getErrorMessage(e));
             }
 
             @Override
             public void onNext(DataScoringProductView dataScoringProductView) {
                 checkViewAttached();
                 if (dataScoringProductView != null) {
-                    getView().onSuccessGetScoringProduct(dataScoringProductView);
+                    getView().onSuccessLoadScoringProduct(dataScoringProductView);
                 }
             }
         };
-    }
-
-    private class SaveDraftSubscriber extends Subscriber<Long> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            checkViewAttached();
-        }
-
-        @Override
-        public void onNext(Long productId) {
-            RequestParams requestParam = AddProductUseCase.generateUploadProductParam(productId);
-            addProductUseCase.execute(requestParam, new AddProductSubscriber());
-        }
-    }
-
-    private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
-        @Override
-        public void onCompleted() {
-
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            checkViewAttached();
-        }
-
-        @Override
-        public void onNext(AddProductDomainModel addProductDomainModel) {
-            checkViewAttached();
-        }
     }
 
     private interface QueryListener {
@@ -307,18 +270,18 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
 
     public static class CatalogQuery {
         String keyword;
-        int categoryId;
+        long categoryId;
         int start;
         int row;
 
-        public CatalogQuery(String keyword, int categoryId, int start, int row) {
+        public CatalogQuery(String keyword, long categoryId, int start, int row) {
             this.keyword = keyword;
             this.categoryId = categoryId;
             this.start = start;
             this.row = row;
         }
 
-        public int getCategoryId() {
+        public long getCategoryId() {
             return categoryId;
         }
 
@@ -335,6 +298,25 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         }
     }
 
+    private class SaveDraftSubscriber extends Subscriber<Long> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            checkViewAttached();
+            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+        }
+
+        @Override
+        public void onNext(Long productId) {
+            checkViewAttached();
+            getView().onSuccessStoreProductToDraft(productId);
+        }
+    }
+
     public void detachView() {
         super.detachView();
         addProductUseCase.unsubscribe();
@@ -343,7 +325,12 @@ public class ProductAddPresenterImpl extends ProductAddPresenter {
         getCategoryRecommUseCase.unsubscribe();
         shopInfoUseCase.unsubscribe();
 
-        subscriptionDebounceCategoryRecomm.unsubscribe();
-        subscriptionDebounceCatalog.unsubscribe();
+        if (subscriptionDebounceCategoryRecomm != null) {
+            subscriptionDebounceCategoryRecomm.unsubscribe();
+        }
+        if (subscriptionDebounceCatalog != null) {
+            subscriptionDebounceCatalog.unsubscribe();
+        }
     }
+
 }

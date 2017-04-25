@@ -9,12 +9,12 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
  * @author sebastianuskh on 4/13/17.
  */
 
-public abstract class ProductAddPresenter extends BaseDaggerPresenter<ProductAddView> {
+public abstract class ProductAddPresenter<T extends ProductAddView> extends BaseDaggerPresenter<T>{
     public abstract void saveDraft(UploadProductInputViewModel viewModel);
 
     public abstract void getProductScoring(ValueIndicatorScoreModel valueIndicatorScoreModel);
 
-    public abstract void fetchCatalogData(String keyword, int departmentId, int start, int rows);
+    public abstract void fetchCatalogData(String keyword, long departmentId, int start, int rows);
 
     public abstract void getCategoryRecommendation(String productTitle);
 

@@ -38,7 +38,7 @@ class CategoryItemViewHolder extends CategoryPickerViewHolder {
 
     public interface CategoryItemViewHolderListener{
 
-        void selectItemCategory(int categoryId);
+        void selectItemCategory(long categoryId);
     }
 
 }

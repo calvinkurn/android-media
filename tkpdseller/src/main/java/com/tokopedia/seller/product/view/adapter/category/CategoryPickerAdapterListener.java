@@ -5,7 +5,7 @@ package com.tokopedia.seller.product.view.adapter.category;
  */
 
 public interface CategoryPickerAdapterListener {
-    void selectParent(int categoryId);
+    void selectParent(long categoryId);
 
     void unselectParent(int level);
 

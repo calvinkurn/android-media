@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public interface CategoryPickerLevelAdapterListener {
-    void selectParent(int categoryId);
+    void selectParent(long categoryId);
 
     void selectSetCategory(List<CategoryViewModel> listCategory);
 }

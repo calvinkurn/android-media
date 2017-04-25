@@ -11,8 +11,7 @@ public class ImageProductInputDomainModel {
     private String description;
     private String imagePath;
     private String picObj;
-    private int picId;
-    private int productId;
+    private String picId;
 
     public ImageProductInputDomainModel() {
         url = "";
@@ -37,7 +36,7 @@ public class ImageProductInputDomainModel {
         this.url = url;
     }
 
-    public void setPicId(int picId) {
+    public void setPicId(String picId) {
         this.picId = picId;
     }
 
@@ -53,15 +52,11 @@ public class ImageProductInputDomainModel {
         this.imagePath = imagePath;
     }
 
-    public int getPicId() {
+    public String getPicId() {
         return picId;
     }
 
     public String getPicObj() {
         return picObj;
-    }
-
-    public int getProductId() {
-        return productId;
     }
 }

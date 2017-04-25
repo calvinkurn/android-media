@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.view.activity;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,6 +15,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -20,6 +26,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
+import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
+import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
+import com.tokopedia.seller.product.view.service.AddProductService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,8 +50,8 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends TActivity
-        implements HasComponent<AppComponent>, TextPickerDialogListener {
+public class ProductAddActivity extends TActivity implements HasComponent<AppComponent>,
+        TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
     public static final String IMAGE = "image/";
@@ -67,6 +76,10 @@ public class ProductAddActivity extends TActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupFragment();
+    }
+
+    protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
         checkIntentImageUrls();
     }
@@ -92,7 +105,7 @@ public class ProductAddActivity extends TActivity
                         break;
                 }
             }
-        } else {
+        } else { // no image urls, create it directly
             createProductAddFragment();
         }
     }
@@ -204,12 +217,14 @@ public class ProductAddActivity extends TActivity
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForExternalStorage() {
         RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        createProductAddFragment();
     }
 
     @TargetApi(16)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        createProductAddFragment();
     }
 
     @TargetApi(16)
@@ -239,5 +254,37 @@ public class ProductAddActivity extends TActivity
     @Override
     public void onTextPickerSubmitted(String newEtalaseName) {
 
+    }
+
+    @Override
+    public void addWholesaleItem(WholesaleModel item) {
+        if (getProductAddFragment() != null && getProductAddFragment().isVisible()) {
+            getProductAddFragment().addWholesaleItem(item);
+        }
+    }
+
+    public ProductAddFragment getProductAddFragment() {
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.class.getSimpleName());
+        if (fragmentByTag != null && fragmentByTag instanceof ProductAddFragment) {
+            return (ProductAddFragment) fragmentByTag;
+        }
+        return null;
+    }
+
+    @Override
+    public void startAddWholeSaleDialog(WholesaleModel baseValue) {
+        AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(baseValue);
+        addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
+    }
+
+    public void startUploadProduct(long productId) {
+        startService(AddProductService.getIntent(this, productId));
+        finish();
+    }
+
+    public void startUploadProductWithShare(long productId) {
+        startService(AddProductService.getIntent(this, productId));
+        startActivity(ProductInfoActivity.createInstance(this));
+        finish();
     }
 }

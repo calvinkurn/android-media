@@ -20,18 +20,18 @@ import java.util.List;
  * @author hendry s on 4/5/17.
  */
 
-public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
+public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
     private List<Catalog> catalogViewModelList;
     private int maxRows;
 
     private static final int VIEW_TYPE_ITEM = 1;
     private static final int VIEW_TYPE_NO_USE_CATALOG = 2;
 
-    private int selectedCatalogId;
+    private long selectedCatalogId;
     private int selectedPosition = -1;
     private int noCatalogCount;
 
-    public CatalogPickerAdapter(List<Catalog> catalogViewModelList, int selectedCatalogId, int maxRows) {
+    public CatalogPickerAdapter(List<Catalog> catalogViewModelList, long selectedCatalogId, int maxRows) {
         this.catalogViewModelList = new ArrayList<>();
         Catalog notUseCatalog = new Catalog();
         notUseCatalog.setCatalogId(-1);
@@ -41,25 +41,25 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
         }
         noCatalogCount = 1;
 
-        if (catalogViewModelList!= null) {
+        if (catalogViewModelList != null) {
             this.catalogViewModelList.addAll(catalogViewModelList);
         }
         this.selectedCatalogId = selectedCatalogId;
         this.maxRows = maxRows;
     }
 
-    public int getSelectedCatalogId() {
+    public long getSelectedCatalogId() {
         return selectedCatalogId;
     }
 
     public String getSelectedCatalogName() {
-        if (selectedPosition> -1) {
+        if (selectedPosition > -1) {
             return catalogViewModelList.get(selectedPosition).getCatalogName();
         }
         return "";
     }
 
-    public void addMoreData(List<Catalog> catalogViewModelList){
+    public void addMoreData(List<Catalog> catalogViewModelList) {
         int prevSize = this.catalogViewModelList.size();
         int addedSize = catalogViewModelList.size();
         if (addedSize == 0) return;
@@ -68,7 +68,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
 
         // position for selected is not selected, perhaps when load more, the selectedItem is there
         if (selectedPosition < 0) {
-            for (int i=prevSize, sizei = this.catalogViewModelList.size(); i<sizei; i++) {
+            for (int i = prevSize, sizei = this.catalogViewModelList.size(); i < sizei; i++) {
                 Catalog catalog = this.catalogViewModelList.get(i);
                 if (catalog.getCatalogId() == selectedCatalogId) {
                     // found the selected position!
@@ -118,6 +118,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
     private class ItemViewHolder extends CatalogViewHolder implements View.OnClickListener {
         ImageView imageCatalog;
         TextView textCatalogName;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
             imageCatalog = (ImageView) itemView.findViewById(R.id.image_catalog);
@@ -143,7 +144,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
         }
     }
 
-    public boolean hasNextData (){
+    public boolean hasNextData() {
         return this.maxRows > getNonEmptyCatalogListSize();
     }
 
@@ -171,24 +172,20 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
     public int getItemViewType(int position) {
         if (catalogViewModelList == null || catalogViewModelList.size() == 0) {
             return super.getItemViewType(position); // might be empty or retry
-        }
-        else if (getNonEmptyCatalogListSize() == 0){ // all is no catalog
-            if(isLoading()){
+        } else if (getNonEmptyCatalogListSize() == 0) { // all is no catalog
+            if (isLoading()) {
                 return VIEW_LOADING;
-            }else if(isRetry()) {
+            } else if (isRetry()) {
                 return VIEW_RETRY;
-            }else{
+            } else {
                 return VIEW_TYPE_NO_USE_CATALOG;
             }
-        }
-        else if (position == catalogViewModelList.size()) {
+        } else if (position == catalogViewModelList.size()) {
             return VIEW_LOADING; // last position is loading for load more
-        }
-        else {
+        } else {
             if (catalogViewModelList.get(position).getCatalogId() == -1) {
                 return VIEW_TYPE_NO_USE_CATALOG;
-            }
-            else {
+            } else {
                 return VIEW_TYPE_ITEM; //else is catalog Item
             }
         }
@@ -197,32 +194,31 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
     @Override
     public int getItemCount() {
         if (catalogViewModelList == null || catalogViewModelList.size() == 0) {
-            return isEmpty()?1:0;
+            return isEmpty() ? 1 : 0;
         }
         // no catalog and we want to retry or loading
-        else if (getNonEmptyCatalogListSize() == 0){
-            if (isRetry())return 1;
-            else if (isLoading())return 1;
+        else if (getNonEmptyCatalogListSize() == 0) {
+            if (isRetry()) return 1;
+            else if (isLoading()) return 1;
             else return noCatalogCount;
         }
         // catalog is more than 1
         else {
-            return catalogViewModelList.size() + (isLoading() ?1 : 0); // last item for loadmore
+            return catalogViewModelList.size() + (isLoading() ? 1 : 0); // last item for loadmore
         }
     }
 
-    public int getNonEmptyCatalogListSize(){
+    public int getNonEmptyCatalogListSize() {
         if (catalogViewModelList == null || catalogViewModelList.size() == 0) {
             return 0;
-        }
-        else {
+        } else {
             return catalogViewModelList.size() - noCatalogCount;
         }
     }
 
     @Override
     public void showLoading(boolean isLoading) {
-        int isLoadingInt = isLoading? 1: 0;
+        int isLoadingInt = isLoading ? 1 : 0;
         if (loading == isLoadingInt) return;
 
         //setloadFull to false
@@ -230,14 +226,12 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter{
                 .setIsFullScreen(false);
 
         loading = isLoadingInt;
-        if (catalogViewModelList== null) {
+        if (catalogViewModelList == null) {
             notifyDataSetChanged();
-        }
-        else {
+        } else {
             if (isLoading) {
                 notifyItemInserted(catalogViewModelList.size() + 1);
-            }
-            else {
+            } else {
                 notifyItemRemoved(catalogViewModelList.size() + 1);
             }
         }

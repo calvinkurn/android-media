@@ -50,7 +50,7 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
     }
 
     public interface CategoryParentViewHolderListener {
-        void selectParent(int selected);
+        void selectParent(long selected);
 
         void unselectParent();
 

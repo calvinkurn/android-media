@@ -7,7 +7,7 @@ package com.tokopedia.seller.product.domain.model;
 public class AddProductSubmitInputDomainModel {
     private String postKey;
     private String fileUploadedTo;
-    private int productEtalaseId;
+    private long productEtalaseId;
     private int productUploadTo;
 
     public String getPostKey() {
@@ -18,7 +18,7 @@ public class AddProductSubmitInputDomainModel {
         return fileUploadedTo;
     }
 
-    public int getProductEtalaseId() {
+    public long getProductEtalaseId() {
         return productEtalaseId;
     }
 
@@ -34,7 +34,7 @@ public class AddProductSubmitInputDomainModel {
         this.fileUploadedTo = fileUploadedTo;
     }
 
-    public void setProductEtalaseId(int productEtalaseId) {
+    public void setProductEtalaseId(long productEtalaseId) {
         this.productEtalaseId = productEtalaseId;
     }
 

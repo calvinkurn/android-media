@@ -20,7 +20,9 @@
                 android:id="@+id/edit_text_description"
                 style="@style/EditText"
                 android:layout_width="match_parent"
-                android:hint="@string/product_label_product_description" />
+                android:hint="@string/product_label_product_description"
+                android:inputType="textMultiLine"
+                android:maxLength="@integer/product_max_character_description" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -38,6 +40,7 @@
         app:title="@string/product_label_video" />
 
     <com.tokopedia.expandable.ExpandableOptionSwitch
+        android:id="@+id/expandable_option_switch_pre_order"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:eo_checked="false"

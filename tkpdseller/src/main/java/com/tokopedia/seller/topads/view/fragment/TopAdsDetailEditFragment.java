@@ -26,7 +26,7 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailAdViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailEditPresenter;
 import com.tokopedia.seller.topads.view.widget.PrefixEditText;
-import com.tokopedia.seller.util.CurrencyTextWatcher;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -137,11 +137,11 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         iconThumbsUpRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_thumbs_up);
         iconFireRadioButton = (RadioButton) view.findViewById(R.id.radio_button_icon_fire);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        maxPriceEditText.addTextChangedListener(new CurrencyTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onCurrencyChanged(float currencyValue) {
-                super.onCurrencyChanged(currencyValue);
+            public void onNumberChanged(float currencyValue) {
+                super.onNumberChanged(currencyValue);
                 String errorMessage = ViewUtils.getClickBudgetError(getActivity(), currencyValue);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     maxPriceInputLayout.setError(errorMessage);
@@ -150,11 +150,11 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
-        budgetPerDayEditText.addTextChangedListener(new CurrencyTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+        budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onCurrencyChanged(float currencyValue) {
-                super.onCurrencyChanged(currencyValue);
+            public void onNumberChanged(float currencyValue) {
+                super.onNumberChanged(currencyValue);
                 String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
                 float clickBudget = 0;
                 if (!TextUtils.isEmpty(clickBudgetString)) {

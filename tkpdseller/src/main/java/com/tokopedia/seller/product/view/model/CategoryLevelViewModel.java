@@ -11,11 +11,11 @@ public class CategoryLevelViewModel {
 
     private final List<CategoryViewModel> viewModels;
     private final int level;
-    private int selected;
+    private long categoryId;
 
     public CategoryLevelViewModel(List<CategoryViewModel> map, int level) {
         viewModels = map;
-        selected = UNSELECTED;
+        categoryId = UNSELECTED;
         this.level = level;
     }
 
@@ -27,18 +27,18 @@ public class CategoryLevelViewModel {
         return viewModels;
     }
 
-    public int getSelected() {
-        return selected;
+    public long getCategoryId() {
+        return categoryId;
     }
 
-    public void setSelected(int selected) {
-        this.selected = selected;
+    public void setCategoryId(long categoryId) {
+        this.categoryId = categoryId;
     }
 
     public int getSelectedPosition() {
         int selectedPositionFromIndex = UNSELECTED;
         for (int i = 0; i < viewModels.size(); i ++){
-            if (viewModels.get(i).getId() == selected){
+            if (viewModels.get(i).getId() == categoryId){
                 selectedPositionFromIndex = i;
                 break;
             }
@@ -48,7 +48,7 @@ public class CategoryLevelViewModel {
 
     public CategoryViewModel getSelectedModel() throws RuntimeException{
         for (CategoryViewModel viewModel : viewModels){
-            if (viewModel.getId() == selected){
+            if (viewModel.getId() == categoryId){
                 return viewModel;
             }
         }

@@ -16,8 +16,9 @@ import rx.functions.Func1;
  */
 
 public class ProductScoringUseCase extends UseCase<DataScoringProductView> {
-    public static final String VALUE_INDICATOR_SCORE_MODEL = "value_indicator_score_model";
-    ProductScoreRepository productScoreRepository;
+    private static final String VALUE_INDICATOR_SCORE_MODEL = "value_indicator_score_model";
+
+    private ProductScoreRepository productScoreRepository;
 
     public ProductScoringUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                  ProductScoreRepository productScoreRepository) {

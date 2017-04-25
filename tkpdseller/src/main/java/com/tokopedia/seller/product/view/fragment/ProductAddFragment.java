@@ -2,7 +2,10 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +32,9 @@ import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+
+import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
+
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -42,6 +48,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
 import java.util.ArrayList;
@@ -61,27 +68,38 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ProductAddFragment extends BaseDaggerFragment
-        implements ProductAddView, ProductAdditionalInfoViewHolder.Listener,
-        ProductImageViewHolder.Listener,
-        ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView,
+        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener, ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+
+    public interface Listener {
+        void startUploadProduct(long productId);
+
+        void startUploadProductWithShare(long productId);
+
+        void startAddWholeSaleDialog(WholesaleModel baseValue);
+    }
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    // url got from gallery or camera or other paths
-    private ArrayList<String> tkpdImageUrls;
-
     @Inject
     public ProductAddPresenter presenter;
-    private ProductScoreViewHolder productScoreViewHolder;
-    private ProductImageViewHolder productImageViewHolder;
-    private ProductDetailViewHolder productDetailViewHolder;
-    private ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
-    private ProductInfoViewHolder productInfoViewHolder;
+
+    protected ProductScoreViewHolder productScoreViewHolder;
+    protected ProductImageViewHolder productImageViewHolder;
+    protected ProductDetailViewHolder productDetailViewHolder;
+    protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
+    protected ProductInfoViewHolder productInfoViewHolder;
+
+    private ValueIndicatorScoreModel valueIndicatorScoreModel;
+    /**
+     * Url got from gallery or camera or other paths
+     */
+    private ArrayList<String> imageUrlList;
+    private Listener listener;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
-        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
+        if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS, tkpdImageUrls);
             fragment.setArguments(bundle);
@@ -89,13 +107,37 @@ public class ProductAddFragment extends BaseDaggerFragment
         return fragment;
     }
 
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    private void onAttachToContext(Context context) {
+        if (context instanceof Listener) {
+            this.listener = (Listener) context;
+        } else {
+            throw new RuntimeException("Activity must implement Listener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
-
-        if (args!= null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
-            tkpdImageUrls = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
+        if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
+            imageUrlList = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
         }
     }
 
@@ -118,58 +160,46 @@ public class ProductAddFragment extends BaseDaggerFragment
 
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        if (tkpdImageUrls!= null && tkpdImageUrls.size() > 0) {
-            productImageViewHolder.setImages(tkpdImageUrls);
+        if (CommonUtils.checkCollectionNotNull(imageUrlList)) {
+            productImageViewHolder.setImages(imageUrlList);
         }
         productDetailViewHolder = new ProductDetailViewHolder(view);
         productDetailViewHolder.setListener(this);
         productAdditionalInfoViewHolder = new ProductAdditionalInfoViewHolder(view);
         productAdditionalInfoViewHolder.setListener(this);
-        setSubmitButtonListener(view);
-        productScoreViewHolder = new ProductScoreViewHolder(view, this);
-
+        productScoreViewHolder = new ProductScoreViewHolder(view);
+        productScoreViewHolder.setListener(this);
         presenter.attachView(this);
-
         presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
-                                GCMHandler.getRegistrationId(getContext()),
-                                SessionHandler.getShopID(getContext()));
-        return view;
-    }
-
-    private void setSubmitButtonListener(View view) {
+                GCMHandler.getRegistrationId(getContext()),
+                SessionHandler.getShopID(getContext()));
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadProductInputViewModel viewModel = collectDataFromView();
-                presenter.saveDraft(viewModel);
+                if (isDataValid()) {
+                    UploadProductInputViewModel viewModel = collectDataFromView();
+                    presenter.saveDraft(viewModel);
+                }
+            }
+
+            private boolean isDataValid() {
+                if (!productInfoViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (!productDetailViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
+                    return false;
+                }
+                if (!productAdditionalInfoViewHolder.isDataValid()) {
+                    return false;
+                }
+                return true;
             }
         });
+        return view;
     }
-
-    private UploadProductInputViewModel collectDataFromView() {
-        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
-        viewModel.setProductName(productInfoViewHolder.getName());
-        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
-//        viewModel.setProductCatalogId(productInfoViewHolder.);
-        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
-        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceCurrency());
-        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
-//        viewModel.setProductWholesaleList();
-        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
-        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
-        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
-        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
-        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
-        viewModel.setProductCondition(productDetailViewHolder.getCondition());
-        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
-        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
-        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
-//        viewModel youtube
-        viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
-        viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderDay());
-        return viewModel;
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -193,31 +223,141 @@ public class ProductAddFragment extends BaseDaggerFragment
         }
     }
 
+    // Permission part
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        ProductAddFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @TargetApi(16)
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForExternalStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForExternalStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForExternalStorage(final PermissionRequest request) {
+        request.proceed();
+    }
+
+    // View holder listener part
+    @Override
+    public void onProductNameChanged(String productName) {
+        getCategoryRecommendation(productName);
+        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
+        valueIndicatorScoreModel.setLengthProductName(productName.length());
+        updateProductScoring();
+    }
+
+    protected void getCategoryRecommendation(String productName) {
+        presenter.getCategoryRecommendation(productName);
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public void onTotalImageUpdated(int total) {
+        valueIndicatorScoreModel.setImageCount(total);
+        updateProductScoring();
     }
 
     @Override
-    public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
+    public void onImageResolutionChanged(int maxSize) {
+        valueIndicatorScoreModel.setImageResolution(maxSize);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onFreeReturnChecked(boolean checked) {
+        valueIndicatorScoreModel.setFreeReturnStatus(checked);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onTotalStockUpdated(int total) {
+        valueIndicatorScoreModel.setStockStatus(total > 0);
+        updateProductScoring();
+    }
+
+    @Override
+    public void onDescriptionTextChanged(String text) {
+        valueIndicatorScoreModel.setLengthDescProduct(text.length());
+        updateProductScoring();
+    }
+
+    private void updateProductScoring() {
+        presenter.getProductScoring(valueIndicatorScoreModel);
+    }
+
+    // Presenter listener part
+    @Override
+    public void onSuccessLoadScoringProduct(DataScoringProductView dataScoringProductView) {
         productScoreViewHolder.setValueProductScoreToView(dataScoringProductView);
     }
 
     @Override
-    public void updateProductScoring() {
-        presenter.getProductScoring(getValueIndicatorScoreModel());
+    public void onErrorLoadScoringProduct(String errorMessage) {
+
     }
 
     @Override
-    public ValueIndicatorScoreModel getValueIndicatorScoreModel() {
-        ValueIndicatorScoreModel valueIndicatorScoreModel = new ValueIndicatorScoreModel();
-        return valueIndicatorScoreModel;
+    public void onSuccessStoreProductToDraft(long productId) {
+        if (productAdditionalInfoViewHolder.isShare()) {
+            listener.startUploadProductWithShare(productId);
+        } else {
+            listener.startUploadProduct(productId);
+        }
+    }
+
+    @Override
+    public void onErrorStoreProductToDraft(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows) {
+        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
+    }
+
+    @Override
+    public void onErrorLoadCatalog(String errorMessage) {
+        productInfoViewHolder.hideAndClearCatalog();
+    }
+
+    @Override
+    public void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList) {
+        productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
+    }
+
+    @Override
+    public void onErrorLoadRecommendationCategory(String errorMessage) {
+        productInfoViewHolder.showCatRecommError();
+    }
+
+    @Override
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
+        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.setGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+    }
+
+    @Override
+    public void onErrorLoadShopInfo(String errorMessage) {
+
+    }
+
+    // Clicked Part
+    @Override
+    public void onDetailProductScoringClicked() {
+        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), valueIndicatorScoreModel);
+        startActivity(intent);
     }
 
     @Override
@@ -233,7 +373,7 @@ public class ProductAddFragment extends BaseDaggerFragment
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
+                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, false);
             }
 
             @Override
@@ -261,42 +401,11 @@ public class ProductAddFragment extends BaseDaggerFragment
         });
     }
 
-    @Override
-    public void onResolutionImageCheckFailed(String uri) {
-        Snackbar.make(getView(),
-                getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
-    }
-
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        ProductAddFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForExternalStorage(final PermissionRequest request) {
-        request.proceed();
+        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, false);
     }
 
     @Override
@@ -309,79 +418,85 @@ public class ProductAddFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showCatalogError(Throwable e) {
-        productInfoViewHolder.hideAndClearCatalog();
+    public void onCategoryPickerClicked(long categoryId) {
+        CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
     }
 
     @Override
-    public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
-        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
-    }
-
-    @Override
-    public void showCatRecommError(Throwable e) {
-        productInfoViewHolder.showCatRecommError();
-    }
-
-    @Override
-    public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
-        productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
-    }
-
-    @Override
-    public void showErrorGetShopInfo(Throwable e) {
-
-    }
-
-    @Override
-    public void showGoldMerchant(boolean isGoldMerchant) {
-        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
-        productDetailViewHolder.updateViewGoldMerchant(isGoldMerchant);
-    }
-
-    @Override
-    public void showFreeReturn(boolean isFreeReturn) {
-        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
-    }
-
-
-    @Override
-    public void onCategoryPickerClicked(int categoryId) {
-        CategoryPickerActivity.start(this, getActivity(),
-                ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
-    }
-
-    @Override
-    public void onCatalogPickerClicked(String keyword, int depId, int selectedCatalogId) {
-        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG,
-                keyword, depId, selectedCatalogId);
-    }
-
-    @Override
-    public void onProductNameChanged(String productName) {
-        presenter.getCategoryRecommendation(productName);
-        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
-    }
-
-    @Override
-    public void onCategoryChanged(int categoryId) {
-        // when category change, check if catalog exists
-        checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
-    }
-
-    private void checkIfCatalogExist(String productName, int categoryId) {
-        presenter.fetchCatalogData(productName, categoryId, 0, 1);
-    }
-
-    @Override
-    public void onUSDClickedNotAllowed() {
-        Snackbar.make(getView(),
-                getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
+    public void onCatalogPickerClicked(String keyword, long depId, long selectedCatalogId) {
+        CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG, keyword, depId, selectedCatalogId);
     }
 
     @Override
     public void onEtalaseViewClicked() {
         Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
+    }
+
+    // Others
+    @Override
+    public void onResolutionImageCheckFailed(String uri) {
+        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCategoryChanged(long categoryId) {
+        // when category change, check if catalog exists
+        checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
+    }
+
+    protected void checkIfCatalogExist(String productName, long categoryId) {
+        presenter.fetchCatalogData(productName, categoryId, 0, 1);
+    }
+
+    public void addWholesaleItem(WholesaleModel wholesaleModel) {
+        productDetailViewHolder.addWholesaleItem(wholesaleModel);
+    }
+
+    @Override
+    public void startAddWholeSaleDialog(WholesaleModel baseValue) {
+        listener.startAddWholeSaleDialog(baseValue);
+    }
+
+    @Override
+    public void onUSDClickedNotAllowed() {
+        Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
+    }
+
+    private UploadProductInputViewModel collectDataFromView() {
+        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
+        viewModel.setProductName(productInfoViewHolder.getName());
+        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
+        viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
+        viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
+//        viewModel.setProductWholesaleList();
+        viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
+        viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
+        viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
+        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
+        viewModel.setProductCondition(productDetailViewHolder.getCondition());
+        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
+        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
+        viewModel.setProductVideos(productAdditionalInfoViewHolder.getVideoIdList());
+        if (productAdditionalInfoViewHolder.getPreOrderValue() > 0) {
+            viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
+            viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
+        }
+        return viewModel;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

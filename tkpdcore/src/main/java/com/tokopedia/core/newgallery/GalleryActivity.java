@@ -174,28 +174,29 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
      * without compressToTkpd
      */
     public static void moveToImageGalleryCamera(Activity context, int position, boolean forceOpenCamera,
-                                                int maxImageSelection){
+                                                int maxImageSelection) {
         moveToImageGalleryCamera(context, position, forceOpenCamera, maxImageSelection, false);
     }
 
     public static void moveToImageGalleryCamera(Context context, android.app.Fragment fragment,
                                                 int position,
                                                 boolean forceOpenCamera,
-                                                int maxImageSelection){
-        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+                                                int maxImageSelection) {
+        moveToImageGalleryCamera(context, fragment, position, forceOpenCamera, maxImageSelection, false);
     }
 
     public static void moveToImageGalleryCamera(Context context, Fragment fragment,
                                                 int position,
                                                 boolean forceOpenCamera,
-                                                int maxImageSelection){
-        moveToImageGalleryCamera(context,fragment, position, forceOpenCamera, maxImageSelection, false);
+                                                int maxImageSelection) {
+        moveToImageGalleryCamera(context, fragment, position, forceOpenCamera, maxImageSelection, false);
     }
 
     /**
      * Call this to get image from image gallery
      * and force open camera.
      * with compressToTkpd parameter
+     *
      * @param compressToTkpd set true, will compress move the image to tkpd path after the images are selected.
      */
 
@@ -471,7 +472,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             Intent intent = new Intent();
-            if (compressToTkpd ) {
+            if (compressToTkpd) {
                 String fileNameToMove = FileUtils.generateUniqueFileName(path);
                 File photo = FileUtils.writeImageToTkpdPath(
                         FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -600,7 +601,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
                                 Intent intent = new Intent();
-                                if (compressToTkpd ) {
+                                if (compressToTkpd) {
                                     String fileNameToMove = FileUtils.generateUniqueFileName(imagePathCamera);
                                     File photo = FileUtils.writeImageToTkpdPath(
                                             FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
@@ -665,7 +666,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         try {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
-                            if (compressToTkpd ) {
+                            if (compressToTkpd) {
                                 String fileNameToMove = FileUtils.generateUniqueFileName(cacheFilePath);
                                 File photo = FileUtils.writeImageToTkpdPath(
                                         FileUtils.compressImage(cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),

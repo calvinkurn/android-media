@@ -78,7 +78,7 @@ public class LabelView extends FrameLayout {
         requestLayout();
     }
 
-    public void resetContentText(){
+    public void resetContentText() {
         contentTextView.setText(valueText);
         setVisibleArrow(showArrow);
         invalidate();
@@ -95,12 +95,6 @@ public class LabelView extends FrameLayout {
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
         arrow = (ImageView) view.findViewById(R.id.arrow_left);
-    }
-
-    public void setTitle(String textTitle) {
-        titleTextView.setText(textTitle);
-        invalidate();
-        requestLayout();
     }
 
     public void setContent(String textValue) {
@@ -137,6 +131,12 @@ public class LabelView extends FrameLayout {
 
     public String getTitle() {
         return titleTextView.getText().toString();
+    }
+
+    public void setTitle(String textTitle) {
+        titleTextView.setText(textTitle);
+        invalidate();
+        requestLayout();
     }
 
     public String getValue() {

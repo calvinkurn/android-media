@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.domain.model;
 
-import java.util.List;
-
 /**
  * @author sebastianuskh on 4/11/17.
  */
@@ -16,12 +14,12 @@ public class AddProductPictureInputDomainModel {
         return duplicate;
     }
 
-    public int getServerId() {
-        return serverId;
-    }
-
     public void setDuplicate(String duplicate) {
         this.duplicate = duplicate;
+    }
+
+    public int getServerId() {
+        return serverId;
     }
 
     public void setServerId(int serverId) {

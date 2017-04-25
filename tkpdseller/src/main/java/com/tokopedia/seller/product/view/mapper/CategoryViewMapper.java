@@ -22,7 +22,7 @@ public class CategoryViewMapper {
             CategoryLevelDomainModel categoryLevelDomainModel = categoryLevelDomainModels.get(i);
             List<CategoryViewModel> listViewModel = mapList(categoryLevelDomainModel.getCategoryModels());
             CategoryLevelViewModel levelViewModel = new CategoryLevelViewModel(listViewModel, i);
-            levelViewModel.setSelected(categoryLevelDomainModel.getSelected());
+            levelViewModel.setCategoryId(categoryLevelDomainModel.getSelectedCategoryId());
             levelViewModels.add(levelViewModel);
         }
         return levelViewModels;

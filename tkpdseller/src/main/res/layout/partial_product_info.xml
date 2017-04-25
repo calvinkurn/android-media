@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/view_group_product_info"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:id="@+id/view_group_product_info">
+    android:orientation="vertical">
 
     <LinearLayout
         style="@style/LabelLayoutWithoutBorder"
@@ -20,7 +20,7 @@
     <FrameLayout style="@style/LabelLayoutWithoutBorder">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_name"
+            android:id="@+id/text_input_layout_name"
             style="@style/TextInputLayout"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/product_max_character_name">
@@ -29,7 +29,9 @@
                 android:id="@+id/edit_text_name"
                 style="@style/EditText"
                 android:layout_width="match_parent"
-                android:hint="@string/product_label_name" />
+                android:hint="@string/product_label_name"
+                android:inputType="textShortMessage|textMultiLine"
+                android:maxLength="@integer/product_max_character_name" />
 
         </android.support.design.widget.TextInputLayout>
     </FrameLayout>
@@ -42,9 +44,9 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/view_group_category_recomm"
             style="@style/LabelLayoutWithoutBorder"
             android:orientation="vertical"
-            android:id="@+id/view_group_category_recomm"
             android:visibility="gone">
 
             <TextView
@@ -56,8 +58,8 @@
                 android:id="@+id/radio_group_category_recomm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:clipToPadding="false">
+                android:clipToPadding="false"
+                android:orientation="vertical">
 
                 <!-- will add radio button programmatically -->
 

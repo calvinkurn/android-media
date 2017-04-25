@@ -10,6 +10,7 @@ import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
+import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.mapper.AddProductDomainMapper;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
@@ -27,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -43,6 +45,9 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
 
+    private AddProductNotificationListener listener;
+    private int stepNotification;
+
     @Inject
     public AddProductUseCase(
             ThreadExecutor threadExecutor,
@@ -56,6 +61,10 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         this.generateHostRepository = generateHostRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
         this.uploadProductRepository = uploadProductRepository;
+    }
+
+    public void setListener(AddProductNotificationListener listener) {
+        this.listener = listener;
     }
 
     public static RequestParams generateUploadProductParam(long productId) {
@@ -83,27 +92,51 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         }
 
     }
+
     private class AddProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
         @Override
         public Observable<AddProductDomainModel> call(UploadProductInputDomainModel domainModel) {
+            createNotification(domainModel.getProductName());
             return Observable.just(domainModel)
                     .flatMap(new GetGeneratedHost())
+                    .doOnNext(new UpdateNotification())
                     .map(new PrepareUploadImage(domainModel))
                     .flatMap(new UploadImage())
+                    .doOnNext(new UpdateNotification())
                     .map(new PrepareAddProductValidation(domainModel))
                     .flatMap(new AddProductValidation())
-                    .flatMap(new ProcessAddProductValidation(domainModel));
+                    .doOnNext(new UpdateNotification())
+                    .flatMap(new ProcessAddProductValidation(domainModel))
+                    .doOnNext(new UpdateNotification());
         }
     }
-    private class GetGeneratedHost implements Func1<UploadProductInputDomainModel, Observable<GenerateHostDomainModel>> {
 
+    private class UpdateNotification implements Action1<Object> {
+        @Override
+        public void call(Object o) {
+            if (listener != null) {
+                stepNotification ++;
+                listener.notificationUpdate(stepNotification);
+            }
+        }
+    }
+
+    private void createNotification(String productName) {
+        if (listener != null) {
+            stepNotification = 0;
+            listener.createNotification(productName);
+        }
+    }
+
+    private class GetGeneratedHost implements Func1<UploadProductInputDomainModel, Observable<GenerateHostDomainModel>> {
         @Override
         public Observable<GenerateHostDomainModel> call(UploadProductInputDomainModel domainModel) {
             return generateHostRepository.generateHost();
         }
-
     }
+
     private class PrepareUploadImage implements Func1<GenerateHostDomainModel, UploadProductInputDomainModel> {
+
         private final UploadProductInputDomainModel domainModel;
 
         public PrepareUploadImage(UploadProductInputDomainModel domainModel) {
@@ -119,6 +152,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class UploadImage implements Func1<UploadProductInputDomainModel, Observable<List<ImageProductInputDomainModel>>> {
+
         @Override
         public Observable<List<ImageProductInputDomainModel>> call(UploadProductInputDomainModel domainModel) {
             return Observable.from(domainModel.getProductPhotos().getPhotos())
@@ -127,10 +161,10 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         }
 
         private class UploadSingleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
-
             private final int serverId;
 
             private final String hostUrl;
+
             public UploadSingleImage(int serverId, String hostUrl) {
                 this.serverId = serverId;
                 this.hostUrl = hostUrl;
@@ -142,11 +176,12 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
                         hostUrl,
                         serverId,
                         imageProductInputDomainModel.getImagePath(),
-                        imageProductInputDomainModel.getProductId())
+                        0)
                         .map(new MapImageModelToProductInput(imageProductInputDomainModel));
             }
 
             private class MapImageModelToProductInput implements Func1<ImageProcessDomainModel, ImageProductInputDomainModel> {
+
                 private final ImageProductInputDomainModel inputDomainModel;
 
                 public MapImageModelToProductInput(ImageProductInputDomainModel inputDomainModel) {
@@ -158,12 +193,14 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
                     inputDomainModel.setUrl(uploadImageDomainModel.getUrl());
                     return inputDomainModel;
                 }
-            }
-        }
 
+            }
+
+        }
     }
 
     private class PrepareAddProductValidation implements Func1<List<ImageProductInputDomainModel>, UploadProductInputDomainModel> {
+
         private final UploadProductInputDomainModel domainModel;
 
         public PrepareAddProductValidation(UploadProductInputDomainModel domainModel) {
@@ -179,6 +216,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class AddProductValidation implements Func1<UploadProductInputDomainModel, Observable<AddProductValidationDomainModel>> {
+
         @Override
         public Observable<AddProductValidationDomainModel> call(UploadProductInputDomainModel uploadProductInputDomainModel) {
             return uploadProductRepository
@@ -187,6 +225,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class ProcessAddProductValidation implements Func1<AddProductValidationDomainModel, Observable<AddProductDomainModel>> {
+
         private final UploadProductInputDomainModel uploadProductInputDomainModel;
 
         public ProcessAddProductValidation(UploadProductInputDomainModel uploadProductInputDomainModel) {
@@ -196,7 +235,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         @Override
         public Observable<AddProductDomainModel> call(AddProductValidationDomainModel addProductValidationDomainModel) {
             String postKey = addProductValidationDomainModel.getPostKey();
-            if (!TextUtils.isEmpty(postKey)){
+            if (!TextUtils.isEmpty(postKey)) {
                 AddProductPictureInputDomainModel addProductPictureInputModel = AddProductDomainMapper.mapUploadToPicture(uploadProductInputDomainModel);
                 return Observable.just(addProductPictureInputModel)
                         .flatMap(new AddProductPicture())
@@ -209,6 +248,7 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class AddProductPicture implements Func1<AddProductPictureInputDomainModel, Observable<AddProductPictureDomainModel>> {
+
         @Override
         public Observable<AddProductPictureDomainModel> call(AddProductPictureInputDomainModel addProductPictureInputDomainModel) {
             return imageProductUploadRepository
@@ -217,7 +257,9 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class ProcessAddProductPicture implements Func1<AddProductPictureDomainModel, AddProductSubmitInputDomainModel> {
+
         private final UploadProductInputDomainModel uploadProductInputDomainModel;
+
         private final String postKey;
 
         public ProcessAddProductPicture(UploadProductInputDomainModel uploadProductInputDomainModel, String postKey) {
@@ -229,14 +271,15 @@ public class AddProductUseCase extends UseCase<AddProductDomainModel> {
         public AddProductSubmitInputDomainModel call(AddProductPictureDomainModel addProductPictureDomainModel) {
             return AddProductDomainMapper.mapUploadToSubmit(addProductPictureDomainModel, uploadProductInputDomainModel, postKey);
         }
-
     }
 
     private class AddProductSubmit implements Func1<AddProductSubmitInputDomainModel, Observable<AddProductDomainModel>> {
+
         @Override
         public Observable<AddProductDomainModel> call(AddProductSubmitInputDomainModel addProductSubmitInputDomainModel) {
             return uploadProductRepository
                     .addProductSubmit(addProductSubmitInputDomainModel);
         }
+
     }
 }

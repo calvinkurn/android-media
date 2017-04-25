@@ -1,8 +1,7 @@
 package com.tokopedia.seller.product.data.source;
 
-import com.tokopedia.core.base.di.scope.ActivityScope;
-import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.CatalogCloud;
+import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 
 import javax.inject.Inject;
 
@@ -20,8 +19,7 @@ public class CatalogDataSource {
         this.catalogCloud = catalogCloud;
     }
 
-    public Observable<CatalogDataModel> fetchCatalog(
-                        String keyword, int prodDeptId, int start, int row) {
+    public Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int row) {
         return catalogCloud.fetchData(keyword, prodDeptId, start, row);
     }
 

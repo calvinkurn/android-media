@@ -18,6 +18,8 @@ import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScor
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import rx.Observable;
@@ -30,6 +32,11 @@ public class ProductScoreDataSourceCache {
 
     public static final String COUNT_TYPE_IMAGE = "count";
     public static final String RESOLUTION_TYPE_IMAGE = "resolution";
+    public static final int IMAGE_INDICATOR = 1;
+    public static final int NAME_INDICATOR = 2;
+    public static final int DESC_INDICATOR = 3;
+    public static final int STOK_INDICATOR = 4;
+    public static final int FREE_RETURN_INDICATOR = 5;
 
     private Context context;
     private Gson gson;
@@ -71,13 +78,16 @@ public class ProductScoreDataSourceCache {
             int tempScoreEachItem = calculateScoreEachItem(indicatorScore, valueIndicatorScoreModel);
             tempScore = tempScore + tempScoreEachItem;
 
-            String colorScore = calculateColorScore(indicatorScore, tempScoreEachItem);
+            int maxScoreEachItem = calculateMaxScoreEachItem(indicatorScore);
+            String colorScore = calculateColorScore(indicatorScore, tempScoreEachItem, maxScoreEachItem);
 
             IndicatorScoreView indicatorScoreView = new IndicatorScoreView();
             indicatorScoreView.setNameIndicator(indicatorScore.getNameIndicator());
             indicatorScoreView.setIndicatorColor(colorScore);
+            indicatorScoreView.setMaxScoreIndicator(maxScoreEachItem);
+            indicatorScoreView.setScore(tempScoreEachItem);
             List<String> descs = new ArrayList<>();
-            for(ValueIndicator valueIndicator: indicatorScore.getValueIndicator()){
+            for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
                 descs.add(valueIndicator.getIndicatorDesc());
             }
             indicatorScoreView.setIndicatorDescs(descs);
@@ -100,11 +110,34 @@ public class ProductScoreDataSourceCache {
         return dataScoringProductView;
     }
 
-    private String calculateColorScore(IndicatorScore indicatorScore, int tempScoreEachItem) {
+    private int calculateMaxScoreEachItem(final IndicatorScore indicatorScore) {
+        int tempMaxScore = 0;
+        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
+            List<IndicatorScoring> indicatorScorings = valueIndicator.getIndicatorScoring();
+            Collections.sort(indicatorScorings, new Comparator<IndicatorScoring>() {
+                @Override
+                public int compare(IndicatorScoring t2, IndicatorScoring t1) {
+                    return t2.getScore() < t1.getScore() ? t1.getScore() : t2.getScore();
+                }
+            });
+
+            for (int i = indicatorScorings.size() - 1; i >= 0; i--) {
+                if (i == indicatorScorings.size() - 1) {
+                    IndicatorScoring indicatorScoring = indicatorScorings.get(i);
+                    tempMaxScore = tempMaxScore + indicatorScoring.getScore();
+                    break;
+                }
+            }
+        }
+        return tempMaxScore;
+    }
+
+    private String calculateColorScore(IndicatorScore indicatorScore, int tempScoreEachItem, int maxScore) {
         List<ColorIndicator> colorIndicators = indicatorScore.getColorIndicator();
         for (int i = colorIndicators.size() - 1; i >= 0; i--) {
             ColorIndicator colorIndicator = colorIndicators.get(i);
-            if (tempScoreEachItem >= colorIndicator.getMin()) {
+            float percentageScore = tempScoreEachItem / maxScore * 100;
+            if (percentageScore >= colorIndicator.getMin()) {
                 return colorIndicator.getColor();
             }
         }
@@ -124,29 +157,20 @@ public class ProductScoreDataSourceCache {
 
     private int calculateScoreEachItem(IndicatorScore indicatorScore, ValueIndicatorScoreModel valueIndicatorScoreModel) {
         switch (indicatorScore.getIndicatorId()) {
-            case 1:
+            case IMAGE_INDICATOR:
                 return calculateScoreProductImage(indicatorScore, valueIndicatorScoreModel.getImageCount(),
                         valueIndicatorScoreModel.getImageResolution());
-            case 2:
+            case NAME_INDICATOR:
                 return calculateScoreProductName(indicatorScore, valueIndicatorScoreModel.getLengthProductName());
-            case 3:
+            case DESC_INDICATOR:
                 return calculateScoreProductDesc(indicatorScore, valueIndicatorScoreModel.getLengthDescProduct());
-            case 4:
+            case STOK_INDICATOR:
                 return calculateScoreStok(indicatorScore, valueIndicatorScoreModel.isStockStatus());
-            case 5:
+            case FREE_RETURN_INDICATOR:
                 return calculateScoreFreeReturns(indicatorScore, valueIndicatorScoreModel.isFreeReturnStatus());
-            case 6:
-                return calculateScoreCashback(indicatorScore, valueIndicatorScoreModel.isCashbackStatus());
             default:
                 return 0;
         }
-    }
-
-    private int calculateScoreCashback(IndicatorScore indicatorScore, boolean cashbackStatus) {
-        for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
-            return calculateScore(valueIndicator, cashbackStatus ? 1 : 0);
-        }
-        return 0;
     }
 
     private int calculateScoreFreeReturns(IndicatorScore indicatorScore, boolean freeReturnStatus) {
@@ -179,10 +203,10 @@ public class ProductScoreDataSourceCache {
 
     private int calculateScoreProductImage(IndicatorScore indicatorScore, int imageCount, int imageResolution) {
         for (ValueIndicator valueIndicator : indicatorScore.getValueIndicator()) {
-            if(valueIndicator.getIndicatorType().equals(COUNT_TYPE_IMAGE)){
-                imageCount =  calculateScore(valueIndicator, imageCount);
-            }else if(valueIndicator.getIndicatorType().equals(RESOLUTION_TYPE_IMAGE)){
-                imageResolution =calculateScore(valueIndicator, imageResolution);
+            if (valueIndicator.getIndicatorType().equals(COUNT_TYPE_IMAGE)) {
+                imageCount = calculateScore(valueIndicator, imageCount);
+            } else if (valueIndicator.getIndicatorType().equals(RESOLUTION_TYPE_IMAGE)) {
+                imageResolution = calculateScore(valueIndicator, imageResolution);
             }
         }
         return imageCount + imageResolution;
@@ -190,9 +214,9 @@ public class ProductScoreDataSourceCache {
 
     private int calculateScore(ValueIndicator valueIndicator, int valueCount) {
         List<IndicatorScoring> indicatorScorings = valueIndicator.getIndicatorScoring();
-        for(int i = indicatorScorings.size() - 1; i >= 0; i--){
+        for (int i = indicatorScorings.size() - 1; i >= 0; i--) {
             IndicatorScoring indicatorScoring = indicatorScorings.get(i);
-            if(valueCount >= indicatorScoring.getMin()){
+            if (valueCount >= indicatorScoring.getMin()) {
                 return indicatorScoring.getScore();
             }
         }

@@ -8,6 +8,5 @@ import com.tokopedia.seller.product.view.listener.CatalogPickerView;
  */
 
 public abstract class CatalogPickerPresenter extends BaseDaggerPresenter<CatalogPickerView>{
-    public abstract void fetchCatalogData(String keyword, int departmentId,
-                                          int start, int rows);
+    public abstract void fetchCatalogData(String keyword, long departmentId, int start, int rows);
 }

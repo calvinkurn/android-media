@@ -32,12 +32,12 @@ public class GenerateHostCloud {
 
     public Observable<GenerateHost> generateHost() {
         return generateHostApi.generateHost(AuthUtil.generateParamsNetwork(context, getParamsGenerateHost()))
-                .map(new GetData<GenerateHostModel> ())
+                .map(new GetData<GenerateHostModel>())
                 .map(new GetGenerateHostModel());
     }
 
 
-    public TKPDMapParam<String,String> getParamsGenerateHost() {
+    public TKPDMapParam<String, String> getParamsGenerateHost() {
         TKPDMapParam<String, String> paramsGenerateHost = new TKPDMapParam<>();
         paramsGenerateHost.put(ProductNetworkConstant.SERVER_LANGUAGE, ProductNetworkConstant.GOLANG_VALUE);
         return paramsGenerateHost;

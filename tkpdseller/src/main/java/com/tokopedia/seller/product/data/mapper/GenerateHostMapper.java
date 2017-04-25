@@ -2,13 +2,10 @@ package com.tokopedia.seller.product.data.mapper;
 
 
 import com.tokopedia.seller.product.data.source.cloud.model.GenerateHost;
-import com.tokopedia.seller.product.data.source.cloud.model.GenerateHostModel;
 import com.tokopedia.seller.product.domain.model.GenerateHostDomainModel;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
-import rx.Observable;
 import rx.functions.Func1;
 
 /**

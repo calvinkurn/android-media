@@ -108,7 +108,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideMerlinRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                           Retrofit.Builder retrofitBuilder) {
+                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MERLIN_DOMAIN).client(okHttpClient).build();
     }
 }
