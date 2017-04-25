@@ -360,12 +360,12 @@ public class ManageProduct extends TkpdActivity implements
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5, true);
+        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1, true);
+        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);
     }
 
     private void checkLogin() {

@@ -4,34 +4,26 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -41,6 +33,8 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 /**
  * Created by nathan on 4/3/17.
@@ -57,6 +51,8 @@ public class ProductAddActivity extends TActivity
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
 
+    TkpdProgressDialog tkpdProgressDialog;
+
     public static void start(Context context) {
         Intent intent = new Intent(context, ProductAddActivity.class);
         context.startActivity(intent);
@@ -72,7 +68,7 @@ public class ProductAddActivity extends TActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_product_add);
-        checkImageUrls();
+        checkIntentImageUrls();
     }
 
     private void createProductAddFragment() {
@@ -81,7 +77,7 @@ public class ProductAddActivity extends TActivity
                 .commit();
     }
 
-    private void checkImageUrls() {
+    private void checkIntentImageUrls() {
         if (checkExplicitImageUrls()) {
             ProductAddActivityPermissionsDispatcher.handleImageUrlFromExternalWithCheck(this);
         } else if (checkImplicitImageUrls()) {
@@ -96,7 +92,7 @@ public class ProductAddActivity extends TActivity
                         break;
                 }
             }
-        } else { // no image urls, create it directly
+        } else {
             createProductAddFragment();
         }
     }
@@ -146,6 +142,7 @@ public class ProductAddActivity extends TActivity
     }
 
     private void processMultipleImage(ArrayList<Uri> imageUris) {
+        showProgressDialog();
         int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagescount; i++) {
@@ -154,37 +151,33 @@ public class ProductAddActivity extends TActivity
             if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
                 imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
             } else { // get extras for import from gallery
-                String fileNameToMove = FileUtils.generateUniqueFileName(uriString);
-                File tkpdCacheFile = FileUtils.getTkpdCacheFile(fileNameToMove);
-                if (tkpdCacheFile != null) {
-                    // already in cache, return as is
-                    imageUrls.add(tkpdCacheFile.getAbsolutePath());
-                }
-                else {
-                    File photo = FileUtils.writeImageToTkpdPath(
-                            FileUtils.compressImage(uriString,
-                                    GalleryActivity.DEF_WIDTH_CMPR,
-                                    GalleryActivity.DEF_WIDTH_CMPR,
-                                    GalleryActivity.DEF_QLTY_COMPRESS),
-                            fileNameToMove);
-                    if (photo != null) {
-                        imageUrls.add(photo.getAbsolutePath());
-                    }
-                }
+                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
             }
         }
+        dismissDialog();
         createProductAddFragment();
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {
-        imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        ArrayList<Uri>imageUris = new ArrayList<>();
-        for (int i=0; i<imageUrls.size();i++){
-            imageUris.add(Uri.parse(imageUrls.get(i)));
+        showProgressDialog();
+        List<String> oriImageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
+        int imagescount = (oriImageUrls.size() > MAX_IMAGES) ? MAX_IMAGES : oriImageUrls.size();
+        imageUrls = new ArrayList<>();
+        for (int i = 0; i < imagescount; i++) {
+            String imageUrl = oriImageUrls.get(i);
+            String fileNameToMove = FileUtils.generateUniqueFileName(imageUrl);
+            File photo = FileUtils.writeImageToTkpdPath(
+                    FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
+                            DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                    fileNameToMove);
+            if (photo != null) {
+                imageUrls.add(photo.getAbsolutePath());
+            }
         }
-        processMultipleImage(imageUris);
+        dismissDialog();
+        createProductAddFragment();
     }
 
     @TargetApi(16)
@@ -211,14 +204,12 @@ public class ProductAddActivity extends TActivity
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForExternalStorage() {
         RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        createProductAddFragment();
     }
 
     @TargetApi(16)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        createProductAddFragment();
     }
 
     @TargetApi(16)
@@ -230,6 +221,19 @@ public class ProductAddActivity extends TActivity
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
+    }
+
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    public void dismissDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
     }
 
     @Override
