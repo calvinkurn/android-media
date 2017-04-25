@@ -41,13 +41,13 @@ public class TokoCashHeaderView extends RelativeLayout {
     }
 
     public void renderData(final TopCashItem tokoCashData) {
-        String tokoCashBalance = tokoCashData.getData().getBalance();
+        String tokoCashRedirectUrl = tokoCashData.getData().getRedirectUrl();
         if(tokoCashData.getData().getLink().equals(1)) {
             tokoCashAmount.setText(tokoCashData.getData().getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
-            tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashBalance));
+            tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashRedirectUrl));
         } else {
-            tokoCashButton.setOnClickListener(onActivationClickedListener(tokoCashBalance));
+            tokoCashButton.setOnClickListener(onActivationClickedListener(tokoCashRedirectUrl));
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_activation));
         }
     }
