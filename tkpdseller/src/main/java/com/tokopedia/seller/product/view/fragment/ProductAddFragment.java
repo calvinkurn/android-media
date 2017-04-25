@@ -464,7 +464,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
     }
 
-    private UploadProductInputViewModel collectDataFromView() {
+    protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());

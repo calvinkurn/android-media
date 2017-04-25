@@ -15,7 +15,6 @@ import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRecommRepositoryImpl;
-import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductScoreRepositoryImpl;
@@ -44,7 +43,7 @@ import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
@@ -67,12 +66,11 @@ public class ProductAddModule {
     @ProductAddScope
     @Provides
     ProductAddPresenter provideProductAddPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                                   AddProductUseCase addProductUseCase,
                                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                                    ProductScoringUseCase productScoringUseCase,
                                                    ShopInfoUseCase shopInfoUseCase){
-        return new ProductAddPresenterImpl(saveDraftProductUseCase, addProductUseCase,
+        return new ProductAddPresenterImpl(saveDraftProductUseCase,
                 fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
                 shopInfoUseCase);
     }

@@ -22,7 +22,7 @@ import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 
 import javax.inject.Inject;
 
-public class AddProductService extends BaseService implements AddProductServiceListener {
+public class UploadProductService extends BaseService implements AddProductServiceListener {
 
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
     private static final int NOTIFICATION_ID = 100;
@@ -30,7 +30,7 @@ public class AddProductService extends BaseService implements AddProductServiceL
     private NotificationCompat.Builder notificationBuilder;
 
     public static Intent getIntent(Context context, long productId) {
-        Intent intent = new Intent(context, AddProductService.class);
+        Intent intent = new Intent(context, UploadProductService.class);
         intent.putExtra(PRODUCT_DRAFT_ID, productId);
         return intent;
     }
@@ -53,7 +53,7 @@ public class AddProductService extends BaseService implements AddProductServiceL
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         long productDraftId = intent.getLongExtra(PRODUCT_DRAFT_ID, -1);
-        presenter.addProduct(productDraftId);
+        presenter.uploadProduct(productDraftId);
         return START_NOT_STICKY;
     }
 

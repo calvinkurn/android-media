@@ -26,6 +26,7 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
 
     @Inject
     public ProductEditPresenter presenter;
+    private String productId;
 
     @Override
     protected void initInjector() {
@@ -57,6 +58,7 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
 
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        productId = model.getProductId();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
@@ -98,6 +100,13 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     @Override
     protected void getCategoryRecommendation(String productName) {
         // Do nothing
+    }
+
+    @Override
+    protected UploadProductInputViewModel collectDataFromView() {
+        UploadProductInputViewModel viewModel = super.collectDataFromView();
+        viewModel.setProductId(productId);
+        return viewModel;
     }
 
     @ProductStatus

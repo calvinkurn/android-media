@@ -35,6 +35,7 @@ public class UploadProductInputViewModel {
     private int serverId;
     @ProductStatus
     private int productStatus;
+    private String productId;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -226,6 +227,14 @@ public class UploadProductInputViewModel {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductId() {
+        return productId;
     }
 
     @ProductStatus

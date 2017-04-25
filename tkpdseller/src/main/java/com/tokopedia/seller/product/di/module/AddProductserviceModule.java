@@ -12,12 +12,11 @@ import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.di.scope.AddProductServiceScope;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenterImpl;
 
@@ -34,8 +33,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(AddProductUseCase addProductUseCase){
-        return new AddProductServicePresenterImpl(addProductUseCase);
+    AddProductServicePresenter provideAddProductServicePresenter(UploadProductUseCase uploadProductUseCase){
+        return new AddProductServicePresenterImpl(uploadProductUseCase);
     }
 
     @AddProductServiceScope

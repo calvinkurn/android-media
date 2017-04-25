@@ -6,13 +6,7 @@ import android.support.v4.app.Fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
@@ -27,19 +21,12 @@ import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
-import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.service.AddProductService;
+import com.tokopedia.seller.product.view.service.UploadProductService;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import permissions.dispatcher.NeedsPermission;
@@ -271,12 +258,12 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     public void startUploadProduct(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         finish();
     }
 
     public void startUploadProductWithShare(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         startActivity(ProductInfoActivity.createInstance(this));
         finish();
     }

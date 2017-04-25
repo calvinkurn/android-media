@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 
@@ -24,4 +25,8 @@ public interface UploadProductApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_ADD_PRODUCT_SUBMIT)
     Observable<Response<AddProductSubmitServiceModel>> addProductSubmit(@FieldMap TKPDMapParam<String, String> stringStringTKPDMapParam);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_EDIT_PRODUCT)
+    Observable<EditProductServiceModel> editProduct(@FieldMap TKPDMapParam<String, String> param);
 }

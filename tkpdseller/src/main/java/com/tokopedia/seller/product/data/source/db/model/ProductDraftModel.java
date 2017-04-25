@@ -77,6 +77,7 @@ public class ProductDraftModel {
     @ProductStatus
     @SerializedName("product_status")
     private int productStatus;
+    private String productId;
 
     public ProductPhotoListDraftModel getProductPhotos() {
         return productPhotos;
@@ -253,5 +254,13 @@ public class ProductDraftModel {
 
     public void setProductStatus(@ProductStatus int productStatus) {
         this.productStatus = productStatus;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getProductId() {
+        return productId;
     }
 }

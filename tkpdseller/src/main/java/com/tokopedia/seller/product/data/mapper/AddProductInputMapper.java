@@ -68,7 +68,30 @@ public class AddProductInputMapper {
 
     public static EditProductInputServiceModel mapEdit(UploadProductInputDomainModel domainModel) {
         EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
-
+        serviceModel.setProductWholesale(mapWholesale(domainModel.getProductPriceOne()));
+        serviceModel.setProductCatalogId(domainModel.getProductCatalogId());
+        serviceModel.setProductCondition(domainModel.getProductCondition());
+        serviceModel.setProductDepartmentId(domainModel.getProductDepartmentId());
+        serviceModel.setProductDescription(domainModel.getProductDescription());
+        serviceModel.setProductEtalaseId(domainModel.getProductEtalaseId());
+        serviceModel.setProductMinOrder(domainModel.getProductMinOrder());
+        serviceModel.setProductMustInsurance(domainModel.getProductMustInsurance());
+        serviceModel.setProductName(domainModel.getProductName());
+        serviceModel.setProductPhoto(mapPhotoModel(domainModel.getProductPhotos()));
+        serviceModel.setProductPrice(domainModel.getProductPrice());
+        serviceModel.setProductPriceCurrency(domainModel.getProductPriceCurrency());
+        serviceModel.setProductReturnable(domainModel.getProductReturnable());
+        serviceModel.setProductUploadTo(domainModel.getProductUploadTo());
+        serviceModel.setProductWeight(domainModel.getProductWeight());
+        serviceModel.setProductWeightUnit(domainModel.getProductWeightUnit());
+        serviceModel.setPoProcessType(domainModel.getPoProcessType());
+        serviceModel.setPoProcessValue(domainModel.getPoProcessValue());
+        serviceModel.setProductVideo(domainModel.getProductVideos());
+        serviceModel.setServerId(domainModel.getServerId());
+        serviceModel.setProductChangeCatalog(0);
+        serviceModel.setProductChangeWholesale(0);
+        serviceModel.setProductChangePhoto(0);
+        serviceModel.setProductId(domainModel.getProductId());
         return serviceModel;
     }
 

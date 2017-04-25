@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 
@@ -13,18 +13,18 @@ import rx.Subscriber;
  */
 
 public class AddProductServicePresenterImpl extends AddProductServicePresenter implements AddProductNotificationListener {
-    private final AddProductUseCase addProductUseCase;
+    private final UploadProductUseCase uploadProductUseCase;
 
-    public AddProductServicePresenterImpl(AddProductUseCase addProductUseCase) {
-        this.addProductUseCase = addProductUseCase;
-        addProductUseCase.setListener(this);
+    public AddProductServicePresenterImpl(UploadProductUseCase uploadProductUseCase) {
+        this.uploadProductUseCase = uploadProductUseCase;
+        uploadProductUseCase.setListener(this);
     }
 
     @Override
-    public void addProduct(long productDraftId) {
+    public void uploadProduct(long productDraftId) {
         checkViewAttached();
-        RequestParams requestParams = AddProductUseCase.generateUploadProductParam(productDraftId);
-        addProductUseCase.execute(requestParams, new AddProductSubscriber());
+        RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber());
     }
 
     @Override
@@ -48,12 +48,13 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
+            String errorMessage = "unknown error";
             if (e instanceof ResponseErrorListStringException) {
-                String errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
-                getView().onFailedAddProduct();
-                getView().notificationFailed(errorMessage);
-                getView().sendFailedBroadcast(errorMessage);
+                errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
             }
+            getView().onFailedAddProduct();
+            getView().notificationFailed(errorMessage);
+            getView().sendFailedBroadcast(errorMessage);
         }
 
         @Override

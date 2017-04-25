@@ -63,6 +63,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setPoProcessValue(draftModel.getPoProcessValue());
         domainModel.setServerId(draftModel.getServerId());
         domainModel.setProductStatus(draftModel.getProductStatus());
+        domainModel.setProductId(draftModel.getProductId());
         return domainModel;
     }
 
@@ -128,6 +129,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setPoProcessValue(domainModel.getPoProcessValue());
         draftModel.setServerId(domainModel.getServerId());
         draftModel.setProductStatus(domainModel.getProductStatus());
+        draftModel.setProductId(domainModel.getProductId());
         return draftModel;
     }
 
