@@ -34,7 +34,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
@@ -477,7 +476,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private void onAddInstagram() {
         Intent moveToProductActivity = new Intent(getActivity(), InstopedActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
+        bundle.putString(InstopedActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
         startActivity(moveToProductActivity);
     }

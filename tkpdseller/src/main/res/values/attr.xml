@@ -155,6 +155,7 @@
         <attr name="counter_text" format="string"/>
         <attr name="counter_min" format="integer"/>
         <attr name="counter_show_counter_button" format="boolean"/>
+        <attr name="all_enable" format="boolean" />
     </declare-styleable>
     <declare-styleable name="SpinnerTextView">
         <attr name="spinner_hint" format="string"/>

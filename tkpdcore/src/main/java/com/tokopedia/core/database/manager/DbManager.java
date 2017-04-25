@@ -3,18 +3,13 @@ package com.tokopedia.core.database.manager;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.City;
-import com.tokopedia.core.database.model.CurrencyDB;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.PictureDB;
-import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.WholesalePriceDB;
-import com.tokopedia.core.myproduct.model.CatalogDataModel;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,4 +37,6 @@ public interface DbManager {
     Province getProvinceFromProvinceId(String provinceId);
     City getCity(String cityId);
     boolean isEtalaseEmpty(String EtalaseName);
+
+    List<Bank> getBankBasedOnText(String query);
 }

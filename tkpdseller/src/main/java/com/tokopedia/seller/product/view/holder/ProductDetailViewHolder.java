@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.holder;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -12,7 +14,10 @@ import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.view.adapter.WholesaleAdapter;
+import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
@@ -21,30 +26,17 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
+import java.util.List;
+
 /**
  * Created by nathan on 4/11/17.
  */
 
 public class ProductDetailViewHolder extends ProductViewHolder {
 
-    public interface Listener {
-
-        void onUSDClickedNotAllowed();
-
-        /**
-         * @param baseValue means for single price tag.
-         */
-        void startAddWholeSaleDialog(WholesaleModel baseValue);
-
-        void onTotalStockUpdated(int total);
-
-        void onEtalaseViewClicked();
-
-        void onFreeReturnChecked(boolean checked);
-    }
-
     public static final int REQUEST_CODE_ETALASE = 301;
-
+    private final RecyclerView recyclerViewWholesale;
+    private WholesaleAdapter wholesaleAdapter;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private CounterInputView minimumOrderCounterInputView;
@@ -55,23 +47,14 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     private SpinnerTextView conditionSpinnerTextView;
     private SpinnerTextView insuranceSpinnerTextView;
     private SpinnerTextView freeReturnsSpinnerTextView;
-
     private TextView textViewAddWholesale;
-
     private long etalaseId;
     private boolean goldMerchant;
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
-
     private Listener listener;
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
-
-    public void setGoldMerchant(boolean goldMerchant) {
-        this.goldMerchant = goldMerchant;
-    }
+    @CurrencyTypeDef
+    private int currencyType;
 
     public ProductDetailViewHolder(View view) {
         etalaseId = -1;
@@ -113,8 +96,10 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 priceSpinnerCounterInputView.removeTextChangedListener(usdTextWatcher);
                 if (spinnerValue.equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr))) {
                     priceSpinnerCounterInputView.addTextChangedListener(idrTextWatcher);
+                    currencyType = CurrencyTypeDef.TYPE_IDR;
                 } else {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
+                    currencyType = CurrencyTypeDef.TYPE_USD;
                 }
             }
         });
@@ -178,7 +163,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.startAddWholeSaleDialog(getBaseValue());
+                    listener.startAddWholeSaleDialog(getBaseValue(), currencyType, getPreviousValue());
                 }
             }
         });
@@ -195,6 +180,9 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getFloatValue() : 0);
             }
         });
+        recyclerViewWholesale = (RecyclerView) view.findViewById(R.id.recycler_view_wholesale);
+        setupWholesaleRecyclerView();
+
 
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
@@ -205,6 +193,26 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 }
             }
         });
+    }
+
+    public void setWholesalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
+        // parse to wholesaleadapter
+        wholesaleAdapter.addAllWholeSalePrice(wholesalePrice);
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        this.goldMerchant = goldMerchant;
+    }
+
+    public void setupWholesaleRecyclerView() {
+        recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(
+                recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
+        wholesaleAdapter = new WholesaleAdapter();
+        recyclerViewWholesale.setAdapter(wholesaleAdapter);
     }
 
     public void updateViewFreeReturn(boolean isFreeReturn) {
@@ -219,12 +227,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue());
     }
 
-    public float getPriceValue() {
-        return priceSpinnerCounterInputView.getCounterValue();
+    public void setPriceUnit(@CurrencyTypeDef int unit) {
+        priceSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public void setPriceUnit(int unit) {
-        priceSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    public float getPriceValue() {
+        return priceSpinnerCounterInputView.getCounterValue();
     }
 
     public void setPriceValue(float price) {
@@ -235,12 +243,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return Integer.parseInt(weightSpinnerCounterInputView.getSpinnerValue());
     }
 
-    public int getWeightValue() {
-        return (int) weightSpinnerCounterInputView.getCounterValue();
-    }
-
     public void setWeightUnit(int unit) {
         weightSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public int getWeightValue() {
+        return (int) weightSpinnerCounterInputView.getCounterValue();
     }
 
     public void setWeightValue(float value) {
@@ -263,12 +271,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public void setTotalStock(float value) {
-        stockTotalCounterInputView.setValue(value);
-    }
-
     public int getTotalStock() {
         return (int) stockTotalCounterInputView.getFloatValue();
+    }
+
+    public void setTotalStock(float value) {
+        stockTotalCounterInputView.setValue(value);
     }
 
     public int getCondition() {
@@ -308,11 +316,23 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
-        // TODO insert into wholesale adapter.
+        wholesaleAdapter.addItem(wholesaleModel);
+        wholesaleAdapter.notifyDataSetChanged();
     }
 
     private WholesaleModel getBaseValue() {
         return new WholesaleModel(1, 1, getPriceValue());
+    }
+
+    private WholesaleModel getPreviousValue() {
+        if (wholesaleAdapter != null) {
+            return wholesaleAdapter.getLastItem();
+        }
+        return null;
+    }
+
+    public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+        return wholesaleAdapter.getProductWholesaleViewModels();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -378,5 +398,25 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
+    }
+
+    public interface Listener {
+
+        void onUSDClickedNotAllowed();
+
+        /**
+         * @param fixedPrice             means for fixed price.
+         * @param currencyType           {@link CurrencyTypeDef}
+         * @param previousWholesalePrice previousWholesalePrice
+         */
+        void startAddWholeSaleDialog(WholesaleModel fixedPrice,
+                                     @CurrencyTypeDef int currencyType,
+                                     WholesaleModel previousWholesalePrice);
+
+        void onTotalStockUpdated(int total);
+
+        void onEtalaseViewClicked();
+
+        void onFreeReturnChecked(boolean checked);
     }
 }
