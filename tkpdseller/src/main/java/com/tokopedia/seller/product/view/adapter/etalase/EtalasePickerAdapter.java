@@ -21,6 +21,7 @@ import java.util.List;
 public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
     private List<EtalaseViewModel> data = new ArrayList<>();
     private final EtalasePickerAdapterListener listener;
+    private long selectedEtalase;
 
     public EtalasePickerAdapter(EtalasePickerAdapterListener listener) {
         this.listener = listener;
@@ -60,7 +61,8 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
 
         } else if (viewType == MyEtalaseViewModel.LAYOUT) {
             ((MyEtalaseViewHolder)holder).renderView(
-                    (MyEtalaseViewModel) data.get(position)
+                    (MyEtalaseViewModel) data.get(position),
+                    ((MyEtalaseViewModel) data.get(position)).getEtalaseId() == selectedEtalase
             );
         } else {
             super.onBindViewHolder(holder, viewType);
@@ -88,5 +90,9 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
 
     public void clearEtalaseList() {
         data.clear();
+    }
+
+    public void setSelectedEtalase(long selectedEtalase) {
+        this.selectedEtalase = selectedEtalase;
     }
 }

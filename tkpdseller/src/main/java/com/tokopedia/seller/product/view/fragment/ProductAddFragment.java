@@ -429,8 +429,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onEtalaseViewClicked() {
-        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+    public void onEtalaseViewClicked(long etalaseId) {
+        Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 

@@ -39,7 +39,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
         void onTotalStockUpdated(int total);
 
-        void onEtalaseViewClicked();
+        void onEtalaseViewClicked(long etalaseId);
 
         void onFreeReturnChecked(boolean checked);
     }
@@ -170,7 +170,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.onEtalaseViewClicked();
+                    listener.onEtalaseViewClicked(etalaseId);
                 }
             }
         });

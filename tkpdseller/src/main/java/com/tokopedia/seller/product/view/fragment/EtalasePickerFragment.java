@@ -35,6 +35,8 @@ import javax.inject.Inject;
  */
 public class EtalasePickerFragment extends BaseDaggerFragment implements EtalasePickerView, EtalasePickerAdapterListener {
     public static final String TAG = "EtalasePicker";
+    public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
+    public static final int UNSELECTED_ETALASE_ID = -1;
 
     @Inject
     EtalasePickerPresenter presenter;
@@ -43,8 +45,12 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     private EtalasePickerFragmentListener listener;
     private TkpdProgressDialog tkpdProgressDialog;
 
-    public static EtalasePickerFragment createInstance() {
-        return new EtalasePickerFragment();
+    public static EtalasePickerFragment createInstance(long etalaseId) {
+        EtalasePickerFragment fragment = new EtalasePickerFragment();
+        Bundle args = new Bundle();
+        args.putLong(SELECTED_ETALASE_ID, etalaseId);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -82,12 +88,18 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
         View view = inflater.inflate(R.layout.etalase_picker_fragment_layout, container, false);
 
         setupRecyclerView(view);
-
+        long etalaseId = getArguments().getLong(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);
+        if (etalaseId != UNSELECTED_ETALASE_ID) {
+            setupSelectedEtalase(etalaseId);
+        }
         presenter.attachView(this);
-
         refreshEtalaseData();
 
         return view;
+    }
+
+    private void setupSelectedEtalase(long etalaseId) {
+        adapter.setSelectedEtalase(etalaseId);
     }
 
     private void setupRecyclerView(View view) {
