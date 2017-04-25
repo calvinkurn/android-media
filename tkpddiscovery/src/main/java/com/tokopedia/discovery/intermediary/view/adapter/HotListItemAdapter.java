@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +17,11 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 
@@ -28,6 +31,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
+import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
 
 /**
  * Created by alifa on 3/30/17.
@@ -82,17 +88,39 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventHotlistIntermediary(categoryId,hotListModel.getTitle());
-                Bundle bundle = new Bundle();
-                bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS,
-                        URLParser.getPathSegment(1,hotListModel.getUrl()));
-                bundle.putString(BrowseProductRouter.EXTRA_SOURCE,
-                        BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
-                Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                URLParser urlParser = new URLParser(hotListModel.getUrl());
+                switch (urlParser.getType()) {
+                    case HOT_KEY:
+                        Bundle bundle = new Bundle();
+                        bundle.putString(BrowseProductRouter.EXTRAS_DISCOVERY_ALIAS, urlParser.getHotAlias());
+                        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT);
+                        moveToHotlistActivity(bundle,context);
+                        break;
+                    case CATALOG_KEY:
+                        context.startActivity(
+                                DetailProductRouter.getCatalogDetailActivity(context, urlParser.getHotAlias()));
+                        break;
+                    default:
+                        bundle = new Bundle();
+                        bundle.putString(BrowseProductRouter.DEPARTMENT_ID,
+                                urlParser.getDepIDfromURI(context));
+
+                        bundle.putInt(BrowseProductRouter.FRAGMENT_ID,
+                                BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+
+                        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_HOTLIST);
+                        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
+                        moveToHotlistActivity(bundle,context);
+                        break;
+                }
             }
         });
+    }
 
+    private void moveToHotlistActivity(Bundle bundle, Context context) {
+        Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     @Override
