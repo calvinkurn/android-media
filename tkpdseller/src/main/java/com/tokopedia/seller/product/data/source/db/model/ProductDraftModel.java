@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
 
@@ -72,6 +73,10 @@ public class ProductDraftModel {
 
     @SerializedName("server_id")
     private int serverId;
+
+    @ProductStatus
+    @SerializedName("product_status")
+    private int productStatus;
 
     public ProductPhotoListDraftModel getProductPhotos() {
         return productPhotos;
@@ -239,5 +244,14 @@ public class ProductDraftModel {
 
     public void setServerId(int serverId) {
         this.serverId = serverId;
+    }
+
+    @ProductStatus
+    public int getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(@ProductStatus int productStatus) {
+        this.productStatus = productStatus;
     }
 }

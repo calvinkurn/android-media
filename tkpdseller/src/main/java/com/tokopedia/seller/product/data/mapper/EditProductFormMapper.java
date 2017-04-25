@@ -4,13 +4,13 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.Etalase;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductImage;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setProductCondition(Integer.parseInt(product.getProductCondition()));
         domainModel.setProductDepartmentId(Integer.parseInt(product.getProductDepartmentId()));
         domainModel.setProductMustInsurance(Integer.parseInt(product.getProductMustInsurance()));
-        domainModel.setproductId(product.getProductId());
+        domainModel.setProductId(product.getProductId());
         domainModel.setProductPriceCurrency(Integer.parseInt(product.getProductCurrencyId()));
         domainModel.setProductDescription(product.getProductShortDesc());
         domainModel.setProductPrice(Double.parseDouble(product.getProductPrice()));
@@ -56,6 +56,8 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
 
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
+
+        domainModel.setProductStatus(ProductStatus.EDIT);
 
         if (data.getPreorder() != null) {
             domainModel.setPoProcessType(data.getPreorder().getPreorderProcessTimeType());

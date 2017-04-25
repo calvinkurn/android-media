@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.domain.model;
 
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+
 import java.util.List;
 
 /**
@@ -35,6 +37,8 @@ public class UploadProductInputDomainModel {
     private String hostUrl;
     private String productId;
     private int nameEditable;
+    @ProductStatus
+    private int productStatus;
 
     public long getId() {
         return id;
@@ -240,11 +244,28 @@ public class UploadProductInputDomainModel {
         this.hostUrl = hostUrl;
     }
 
-    public void setproductId(String productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
     }
 
     public void setNameEditable(int nameEditable) {
         this.nameEditable = nameEditable;
+    }
+
+    public void setProductStatus(@ProductStatus int productStatus) {
+        this.productStatus = productStatus;
+    }
+
+    @ProductStatus
+    public int getProductStatus() {
+        return productStatus;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public int getNameEditable() {
+        return nameEditable;
     }
 }

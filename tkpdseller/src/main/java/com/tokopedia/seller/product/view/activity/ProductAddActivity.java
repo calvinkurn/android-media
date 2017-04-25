@@ -280,4 +280,6 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
         startActivity(ProductInfoActivity.createInstance(this));
         finish();
     }
+
+
 }

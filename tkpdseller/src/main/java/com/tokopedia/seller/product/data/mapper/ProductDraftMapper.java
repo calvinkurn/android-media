@@ -62,6 +62,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setPoProcessType(draftModel.getPoProcessType());
         domainModel.setPoProcessValue(draftModel.getPoProcessValue());
         domainModel.setServerId(draftModel.getServerId());
+        domainModel.setProductStatus(draftModel.getProductStatus());
         return domainModel;
     }
 
@@ -126,6 +127,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setPoProcessType(domainModel.getPoProcessType());
         draftModel.setPoProcessValue(domainModel.getPoProcessValue());
         draftModel.setServerId(domainModel.getServerId());
+        draftModel.setProductStatus(domainModel.getProductStatus());
         return draftModel;
     }
 

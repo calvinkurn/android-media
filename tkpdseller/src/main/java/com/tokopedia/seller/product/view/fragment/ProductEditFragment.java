@@ -10,6 +10,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductEditView;
 
@@ -97,5 +98,11 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     @Override
     protected void getCategoryRecommendation(String productName) {
         // Do nothing
+    }
+
+    @ProductStatus
+    @Override
+    protected int getStatusUpload() {
+        return ProductStatus.EDIT;
     }
 }
