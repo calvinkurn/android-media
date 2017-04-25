@@ -177,7 +177,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void expandPreOrder(boolean expand) {
-//        preOrderExpandableOptionSwitch.setExpand(expand);
+        preOrderExpandableOptionSwitch.setExpand(expand);
     }
 
     public int getPreOrderUnit() {
@@ -205,9 +205,9 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     private boolean isPreOrderValid() {
-//        if (!preOrderExpandableOptionSwitch.isExpanded()) {
-//            return true;
-//        }
+        if (!preOrderExpandableOptionSwitch.isExpanded()) {
+            return true;
+        }
         String minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_day));
         String maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_day));
         if (preOrderSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_pre_order_value_week))) {
