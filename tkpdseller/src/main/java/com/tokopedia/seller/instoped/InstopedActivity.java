@@ -168,24 +168,5 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         boolean onBackPressed();
     }
 
-    @Override
-    public void onBackPressed() {
-        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
-        if (fragmentList != null && fragmentList.size() != 0) {
-            //TODO: Perform your logic to pass back press here
-            for (Fragment fragment : fragmentList) {
-                if (fragment instanceof OnBackPressedListener) {
-                    boolean canGoBack = ((OnBackPressedListener) fragment).onBackPressed();
-                    if (!canGoBack) {
-                        super.onBackPressed();
-                    }
-                } else {
-                    super.onBackPressed();
-                }
-            }
-        } else {
-            super.onBackPressed();
-        }
-    }
 
 }
