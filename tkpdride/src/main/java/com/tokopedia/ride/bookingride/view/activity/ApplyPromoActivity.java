@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
-import com.tokopedia.ride.history.view.RideHistoryFragment;
 
 public class ApplyPromoActivity extends BaseActivity {
 

@@ -20,9 +20,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ApplyPromoDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
 import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
-import com.tokopedia.ride.bookingride.view.ApplyPromoPresenter;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
-import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
 
 import java.util.Date;
 

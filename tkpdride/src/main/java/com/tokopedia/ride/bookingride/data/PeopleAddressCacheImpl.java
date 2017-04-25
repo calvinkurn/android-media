@@ -3,7 +3,6 @@ package com.tokopedia.ride.bookingride.data;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.ride.bookingride.data.entity.PeopleAddressEntity;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
 
 import java.lang.reflect.Type;
