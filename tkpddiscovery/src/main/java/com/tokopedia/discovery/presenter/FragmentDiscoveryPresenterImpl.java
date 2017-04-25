@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -369,6 +370,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                      final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
+        if (TextUtils.isEmpty(view.getUserId())) {
+            view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+        }
+
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -399,6 +404,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
     public void processBrowseProductLoadMore(final List<ProductItem> productItems,
                                              final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+
+        if (TextUtils.isEmpty(view.getUserId())) {
+            view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+        }
 
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
                 .subscribeOn(Schedulers.io())
