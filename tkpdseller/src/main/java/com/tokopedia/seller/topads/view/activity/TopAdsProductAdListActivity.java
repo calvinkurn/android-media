@@ -61,7 +61,8 @@ public class TopAdsProductAdListActivity extends TActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         if (toolbar.getHeight() > 0) {
             final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-            int radius = toolbar.getHeight() / 2;
+            int height = toolbar.getHeight();
+            int width = toolbar.getWidth() ;
 
             showCaseList.add(
                     new ShowCaseObject(
@@ -70,8 +71,8 @@ public class TopAdsProductAdListActivity extends TActivity
                             getString(R.string.topads_showcase_product_list_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
-                            .withCustomTarget(new int[]{toolbar.getWidth() - (int) (radius * 2.6), radius}
-                                    , radius));
+                            .withCustomTarget(new int[]{width - (int)(height * 1.8), 0,
+                                    width - (int)(height * 0.8), height}));
 
             showCaseList.add(
                     new ShowCaseObject(
@@ -80,8 +81,7 @@ public class TopAdsProductAdListActivity extends TActivity
                             getString(R.string.topads_showcase_product_list_desc_2),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
-                            .withCustomTarget(new int[]{toolbar.getWidth() -(int) (radius * 0.85), radius}
-                                    , radius));
+                            .withCustomTarget(new int[]{width - (int)(height * 0.9), 0,width, height}));
 
             RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
             recyclerView.postDelayed(new Runnable() {

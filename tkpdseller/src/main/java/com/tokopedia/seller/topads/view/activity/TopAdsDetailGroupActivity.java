@@ -66,7 +66,8 @@ public class TopAdsDetailGroupActivity extends TActivity
         final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         if (toolbar.getHeight() > 0) {
             final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-            int radius = toolbar.getHeight() / 2;
+            int height = toolbar.getHeight();
+            int width = toolbar.getWidth();
             showCaseList.add(
                     new ShowCaseObject(
                             findViewById(android.R.id.content),
@@ -74,8 +75,7 @@ public class TopAdsDetailGroupActivity extends TActivity
                             getString(R.string.topads_showcase_detail_group_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
-                            .withCustomTarget(new int[]{toolbar.getWidth() - radius * 4 / 5, radius}
-                                    , radius));
+                            .withCustomTarget(new int[]{width - (int)(height * 0.8), 0,width, height}));
             View statusView = topAdsDetailGroupFragment.getStatusView();
             if (statusView != null) {
                 showCaseList.add(

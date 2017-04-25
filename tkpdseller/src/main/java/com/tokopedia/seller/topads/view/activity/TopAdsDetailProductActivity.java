@@ -74,7 +74,8 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
         if (toolbar.getHeight() > 0) {
-            int radius = toolbar.getHeight() / 2;
+            int height = toolbar.getHeight();
+            int width = toolbar.getWidth();
             showCaseList.add(
                     new ShowCaseObject(
                             findViewById(android.R.id.content),
@@ -82,8 +83,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
                             getString(R.string.topads_showcase_detail_promo_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
                             Color.WHITE)
-                            .withCustomTarget(new int[]{toolbar.getWidth() - radius * 4 / 5, radius}
-                                    , radius));
+                            .withCustomTarget(new int[]{width - (int)(height * 0.8), 0,width, height}));
             View statusView = topAdsDetailProductFragment.getStatusView();
             if (statusView != null) {
                 showCaseList.add(

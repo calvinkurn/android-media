@@ -11,7 +11,8 @@ import com.tokopedia.showcase.ShowCaseDialog;
 public class ShowCaseDialogFactory {
     public static ShowCaseDialog createTkpdShowCase (){
         return new ShowCaseBuilder()
-                .textColorRes(android.R.color.white)
+                .customView(R.layout.layout_show_case)
+                .textColorRes(R.color.colorGray)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
                 .textSizeRes(R.dimen.fontvs)
