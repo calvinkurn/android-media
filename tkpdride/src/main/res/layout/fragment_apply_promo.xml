@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_bg_rounded_white_rectangle"
+        android:drawableLeft="@drawable/crux_cabs_promo_ad_ic"
+        android:drawableTint="@color/grey_700"
+        android:gravity="center"
+        android:hint="@string/hint_enter_promo_code"
+        android:padding="8dp"
+        android:textAllCaps="true"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:id="@+id/cab_confirmation"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_filled_theme_bttn"
+        android:gravity="center"
+        android:text="@string/btn_apply"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="15sp" />
+
+
+</LinearLayout>
