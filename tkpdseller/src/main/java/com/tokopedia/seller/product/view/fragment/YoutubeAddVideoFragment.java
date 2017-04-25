@@ -5,11 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -17,7 +22,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
-import com.tokopedia.seller.product.view.holder.AddUrlContainerViewHolder;
+import com.tokopedia.seller.product.view.adapter.addurlvideo.AddUrlVideoAdapter;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
@@ -35,16 +40,19 @@ import javax.inject.Inject;
 
 public class YoutubeAddVideoFragment extends BaseDaggerFragment implements YoutubeAddVideoView {
     public static final String TAG = "YoutubeAddVideoFragment";
+    public static final int MAX_ROWS = 3;
     @Inject
     YoutubeVideoUseCase youtubeVideoUseCase;
     @Inject
     YoutubeVideoLinkUtils youtubeVideoLinkUtils;
-    private AddUrlContainerViewHolder addUrlContainerViewHolder;
     private boolean isFirstTime = true;
     private HasComponent<YoutubeVideoComponent> parentComponent;
     private YoutubeVideoComponent component;
     private YoutubeAddVideoPresenter presenter;
     private YoutubeAddVideoActView youtubeAddVideoActView;
+    private RecyclerView recyclerViewAddUrlVideo;
+    private AddUrlVideoAdapter addUrlVideoAdapter;
+    private Button textAddUrlVideo;
 
     public static Fragment createInstance() {
         return new YoutubeAddVideoFragment();
@@ -68,7 +76,19 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_youtube_addvideo, container, false);
-        addUrlContainerViewHolder = new AddUrlContainerViewHolder(view);
+        recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
+        textAddUrlVideo = (Button) view.findViewById(R.id.text_add_url_video);
+        textAddUrlVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                youtubeAddVideoActView.openAddYoutubeDialog();
+            }
+        });
+        addUrlVideoAdapter = new AddUrlVideoAdapter(new ImageHandler(view.getContext()));
+        addUrlVideoAdapter.setMaxRows(MAX_ROWS);
+        addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
+        recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
+        recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         return view;
     }
 
@@ -115,7 +135,15 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     @Override
     public void addAddUrlVideModel(AddUrlVideoModel addUrlVideoModel) {
-        addUrlContainerViewHolder.addAddUrlVideModel(addUrlVideoModel);
+        try {
+            addUrlVideoAdapter.add(addUrlVideoModel);
+        } catch (IllegalArgumentException iae) {
+            Toast.makeText(
+                    getActivity(),
+                    iae.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }
     }
 
     public void addYoutubeUrl(String youtubeUrl) {
@@ -140,7 +168,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public Intent getResultIntent() {
-        List<String> videoIds = addUrlContainerViewHolder.getVideoIds();
+        List<String> videoIds = getVideoIds();
         if (CommonUtils.checkCollectionNotNull(videoIds)) {
             Intent intent = new Intent();
             intent.putStringArrayListExtra(KEY_VIDEOS_LINK, new ArrayList<String>(videoIds));
@@ -148,5 +176,9 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         } else {
             return null;
         }
+    }
+
+    public List<String> getVideoIds() {
+        return addUrlVideoAdapter.getVideoIds();
     }
 }
