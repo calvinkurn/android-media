@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:gravity="center"
+        android:gravity="top|center_horizontal"
         android:orientation="horizontal">
 
         <com.tokopedia.core.customwidget.SquareImageView
@@ -41,20 +41,25 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="2"
                     android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
-                    android:textColor="@color/tkpd_main_green"
+                    android:textColor="@color/black"
                     android:textSize="15sp" />
 
-                <ImageView
-                    android:id="@+id/wishlist_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:background="@drawable/ic_wishlist"
+                <RelativeLayout
+                    android:id="@+id/wishlist_button_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="28dp"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/wishlist_button"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="@drawable/ic_wishlist"
+                        />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

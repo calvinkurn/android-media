@@ -911,6 +911,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         LinearLayout badgesContainer;
         @BindView(R2.id.wishlist_button)
         ImageView wishlistButton;
+        @BindView(R2.id.wishlist_button_container)
+        RelativeLayout wishlistButtonContainer;
         @BindView(R2.id.container)
         View container;
         @BindView(R2.id.rating)
@@ -984,7 +986,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     labelContainer.addView(view);
                 }
             }
-            wishlistButton.setVisibility(View.VISIBLE);
+            wishlistButtonContainer.setVisibility(View.VISIBLE);
             if (data.isProductAlreadyWishlist()) {
                 wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
             } else {
