@@ -466,7 +466,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionDiscussClick() {
-        startActivity(ResCenterDiscussionActivity.createIntent(getActivity(), getResolutionID(), viewData.getDetailData().isReceived()));
+        startActivity(
+                ResCenterDiscussionActivity.createIntent(
+                        getActivity(),
+                        getResolutionID(),
+                        viewData.getDetailData().isReceived(),
+                        !viewData.getDetailData().isCancel() && !viewData.getDetailData().isFinish()
+                )
+        );
     }
 
     @Override

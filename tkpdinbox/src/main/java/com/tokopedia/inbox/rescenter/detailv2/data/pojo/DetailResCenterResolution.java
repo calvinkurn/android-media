@@ -23,6 +23,8 @@ public class DetailResCenterResolution {
     private String expireTimeStr;
     @SerializedName("updateTimeStr")
     private String updateTimeStr;
+    @SerializedName("status")
+    private int statusResolution;
 
     public String getId() {
         return id;
@@ -88,4 +90,11 @@ public class DetailResCenterResolution {
         this.updateTimeStr = updateTimeStr;
     }
 
+    public int getStatusResolution() {
+        return statusResolution;
+    }
+
+    public void setStatusResolution(int statusResolution) {
+        this.statusResolution = statusResolution;
+    }
 }

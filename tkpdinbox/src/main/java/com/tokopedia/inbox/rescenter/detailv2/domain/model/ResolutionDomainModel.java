@@ -18,6 +18,9 @@ public class ResolutionDomainModel {
     private String status;
     private String responseDeadline;
     private boolean deadlineVisibility;
+    private boolean finish;
+    private boolean cancel;
+    private int statusResolutionCode;
 
     public String getOrderID() {
         return orderID;
@@ -121,5 +124,21 @@ public class ResolutionDomainModel {
 
     public boolean isDeadlineVisibility() {
         return deadlineVisibility;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public boolean isCancel() {
+        return cancel;
+    }
+
+    public void setStatusResolutionCode(int statusResolutionCode) {
+        this.statusResolutionCode = statusResolutionCode;
+    }
+
+    public int getStatusResolutionCode() {
+        return statusResolutionCode;
     }
 }

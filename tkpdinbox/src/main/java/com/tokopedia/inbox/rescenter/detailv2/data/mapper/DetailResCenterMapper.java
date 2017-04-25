@@ -168,6 +168,7 @@ public class DetailResCenterMapper implements Func1<Response<TkpdResponse>, Deta
         data.setShopName(shop.getName());
         data.setReceivedFlag(lastSolution.getReceivedFlag());
         data.setStatus(last.getStatus());
+        data.setStatusResolutionCode(resolution.getStatusResolution());
         return data;
     }
 
