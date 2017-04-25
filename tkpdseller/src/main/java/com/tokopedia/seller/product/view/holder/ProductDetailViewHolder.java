@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.holder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -316,9 +317,11 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
-        String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-        etalaseLabelView.setContent(etalaseName);
+        if (resultCode == Activity.RESULT_OK) {
+            etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+            String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+            etalaseLabelView.setContent(etalaseName);
+        }
     }
 
     private boolean isPriceValid() {
