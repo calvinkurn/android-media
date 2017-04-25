@@ -224,7 +224,7 @@ public class BuildAndShowNotification {
         Intent trackingIntent = new Intent(mContext, PushTrackingActivity.class);
         Bundle extras = notificationPass.getExtraData();
         String deeplink = data.getString("url");
-        //extras.putString("ll_deep_link_url", deeplink != null ? deeplink : "SOME_DEFAULT");
+        extras.putString("ll_deep_link_url", deeplink != null ? deeplink : "SOME_DEFAULT");
         extras.remove("url");
         trackingIntent.putExtras(extras);
 
