@@ -1,6 +1,8 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,6 +47,8 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     RideHistoryAdapter adapter;
 
     RideHistoryContract.Presenter mPresenter;
+
+    OnFragmentInteractionListener mOnFragmentInteractionListener;
 
     public static Fragment newInstance() {
         return new RideHistoryFragment();
@@ -91,7 +95,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
-
+        mOnFragmentInteractionListener.actionNavigateToDetail(viewModel.getRequestId());
     }
 
     @Override
@@ -167,5 +171,29 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
                 mPresenter.actionRefreshHistoriesData();
             }
         };
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionNavigateToDetail(String requestId);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
     }
 }

@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 
-public class RideHistoryActivity extends BaseActivity {
+public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener {
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHistoryActivity.class);
@@ -52,5 +52,11 @@ public class RideHistoryActivity extends BaseActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void actionNavigateToDetail(String requestId) {
+        Intent intent = RideHistoryDetailActivity.getCallingIntent(this, requestId);
+        startActivity(intent);
     }
 }

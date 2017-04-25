@@ -75,6 +75,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setStartLongitude(rideHistory.getPickup().getLongitude());
                         viewModel.setEndLatitude(rideHistory.getDestination().getLatitude());
                         viewModel.setEndLongitude(rideHistory.getDestination().getLongitude());
+                        viewModel.setRequestId(rideHistory.getRequestId());
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();

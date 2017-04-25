@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFactory> {
+    private String requestId;
     private String requestTime;
     private String driverCarDisplay;
     private String fare;
@@ -96,5 +97,13 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
 
     public void setEndLongitude(double endLongitude) {
         this.endLongitude = endLongitude;
+    }
+
+    public String getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 }
