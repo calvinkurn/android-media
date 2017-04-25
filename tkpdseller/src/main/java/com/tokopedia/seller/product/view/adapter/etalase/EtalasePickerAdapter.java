@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.product.view.model.etalase.AddEtalaseViewModel;
 import com.tokopedia.seller.product.view.model.etalase.EtalaseViewModel;
@@ -20,8 +21,10 @@ import java.util.List;
 
 public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
     private List<EtalaseViewModel> data = new ArrayList<>();
+    private List<EtalaseViewModel> dataRendered = new ArrayList<>();
     private final EtalasePickerAdapterListener listener;
     private long selectedEtalase;
+    private String query = "";
 
     public EtalasePickerAdapter(EtalasePickerAdapterListener listener) {
         this.listener = listener;
@@ -61,8 +64,8 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
 
         } else if (viewType == MyEtalaseViewModel.LAYOUT) {
             ((MyEtalaseViewHolder)holder).renderView(
-                    (MyEtalaseViewModel) data.get(position),
-                    ((MyEtalaseViewModel) data.get(position)).getEtalaseId() == selectedEtalase
+                    (MyEtalaseViewModel) dataRendered.get(position),
+                    ((MyEtalaseViewModel) dataRendered.get(position)).getEtalaseId() == selectedEtalase
             );
         } else {
             super.onBindViewHolder(holder, viewType);
@@ -71,28 +74,63 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter{
 
     @Override
     public int getItemViewType(int position) {
-        if (data.isEmpty() || isLoading() || isRetry()){
+        if (dataRendered.isEmpty() || isLoading() || isRetry()){
             return super.getItemViewType(position);
         } else {
-            return data.get(position).getType();
+            return dataRendered.get(position).getType();
         }
     }
 
     @Override
     public int getItemCount() {
-        return data.size() + super.getItemCount();
+        return getDataSize() + super.getItemCount();
+    }
+
+    private int getDataSize() {
+        if (StringUtils.isBlank(query)) {
+            dataRendered = data;
+            return data.size();
+        } else {
+            int dataCount = 0;
+            dataRendered = new ArrayList<>();
+            for (EtalaseViewModel viewModel : data){
+                if (viewModel instanceof AddEtalaseViewModel){
+                    dataRendered.add(viewModel);
+                    dataCount++;
+                } else if (viewModel instanceof MyEtalaseViewModel &&
+                        ((MyEtalaseViewModel) viewModel).getEtalaseName()
+                                .toLowerCase()
+                                .contains(query.toLowerCase())){
+                    dataRendered.add(viewModel);
+                    dataCount++;
+                }
+            }
+            return dataCount;
+        }
     }
 
     public void renderData(List<MyEtalaseViewModel> etalases) {
         data.add(new AddEtalaseViewModel());
         data.addAll(etalases);
+        notifyDataSetChanged();
     }
 
     public void clearEtalaseList() {
         data.clear();
+        notifyDataSetChanged();
     }
 
     public void setSelectedEtalase(long selectedEtalase) {
         this.selectedEtalase = selectedEtalase;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+        notifyDataSetChanged();
+    }
+
+    public void clearQuery() {
+        this.query = "";
+        notifyDataSetChanged();
     }
 }

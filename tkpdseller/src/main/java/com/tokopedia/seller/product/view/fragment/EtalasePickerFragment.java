@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -33,7 +37,7 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/5/17.
  */
-public class EtalasePickerFragment extends BaseDaggerFragment implements EtalasePickerView, EtalasePickerAdapterListener {
+public class EtalasePickerFragment extends BaseDaggerFragment implements EtalasePickerView, EtalasePickerAdapterListener, SearchView.OnQueryTextListener {
     public static final String TAG = "EtalasePicker";
     public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
     public static final int UNSELECTED_ETALASE_ID = -1;
@@ -67,6 +71,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -188,6 +193,15 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_etalase_picker, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setOnQueryTextListener(this);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public void addNewEtalase(String newEtalaseName) {
         presenter.addNewEtalase(newEtalaseName);
     }
@@ -200,5 +214,23 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Override
     public void selectEtalase(Integer etalaseId, String etalaseName) {
         listener.selectEtalase(etalaseId, etalaseName);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        if (StringUtils.isNotBlank(query)){
+            onQueryTextChange(query);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        if (StringUtils.isNotBlank(newText)) {
+            adapter.setQuery(newText);
+        } else {
+            adapter.clearQuery();
+        }
+        return true;
     }
 }
