@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class UploadProductInputViewModel {
     private String productEtalaseName;
     private int productMinOrder;
     private int productMustInsurance;
+    @CurrencyTypeDef
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
@@ -160,6 +163,7 @@ public class UploadProductInputViewModel {
         this.productPrice = productPrice;
     }
 
+    @CurrencyTypeDef
     public int getProductPriceCurrency() {
         return productPriceCurrency;
     }

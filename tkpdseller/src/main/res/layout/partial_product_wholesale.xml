@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/LabelLayoutWithoutBorder"
-    android:layout_marginTop="@dimen/product_margin_cards"
     android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_wholesale"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/topads_detail_padding_item">
+        android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
 

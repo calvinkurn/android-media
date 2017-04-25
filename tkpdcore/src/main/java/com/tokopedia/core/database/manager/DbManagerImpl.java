@@ -2,44 +2,29 @@ package com.tokopedia.core.database.manager;
 
 import android.util.Log;
 
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
-import com.raizlabs.android.dbflow.sql.language.Where;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.Bank_Table;
-import com.tokopedia.core.database.model.CatalogDB;
-import com.tokopedia.core.database.model.CatalogDB_Table;
-import com.tokopedia.core.database.model.CatalogItemDB;
-import com.tokopedia.core.database.model.CatalogItemDB_Table;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
-import com.tokopedia.core.database.model.CurrencyDB;
 import com.tokopedia.core.database.model.EtalaseDB;
 import com.tokopedia.core.database.model.EtalaseDB_Table;
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.database.model.PictureDB_Table;
-import com.tokopedia.core.database.model.ProductDB;
-import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
 import com.tokopedia.core.database.model.WholesalePriceDB;
 import com.tokopedia.core.database.model.WholesalePriceDB_Table;
 import com.tokopedia.core.etalase.EtalaseVariable;
-import com.tokopedia.core.myproduct.model.CatalogDataModel;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
 import static com.tkpd.library.utils.CommonUtils.dumper;
 
 /**
@@ -226,5 +211,13 @@ public class DbManagerImpl implements DbManager{
                 .from(City.class)
                 .where(City_Table.cityId.eq(cityId))
                 .querySingle();
+    }
+
+    @Override
+    public List<Bank> getBankBasedOnText(String query) {
+        return new Select()
+                .from(Bank.class)
+                .where(Bank_Table.bank_name.like("%" + query + "%"))
+                .queryList();
     }
 }

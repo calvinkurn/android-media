@@ -1,9 +1,10 @@
 
 package com.tokopedia.seller.product.data.source.cloud.model.editproductform;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 public class DataEditProductForm {
 
@@ -24,7 +25,7 @@ public class DataEditProductForm {
     private String serverId;
     @SerializedName("wholesale_price")
     @Expose
-    private List<Object> wholesalePriceList = null;
+    private List<WholesalePrice> wholesalePriceList = null;
     @SerializedName("etalase")
     @Expose
     private List<Etalase> etalaseList = null;
@@ -84,11 +85,11 @@ public class DataEditProductForm {
         this.serverId = serverId;
     }
 
-    public List<Object> getWholesalePriceList() {
+    public List<WholesalePrice> getWholesalePriceList() {
         return wholesalePriceList;
     }
 
-    public void setWholesalePriceList(List<Object> wholesalePriceList) {
+    public void setWholesalePriceList(List<WholesalePrice> wholesalePriceList) {
         this.wholesalePriceList = wholesalePriceList;
     }
 
