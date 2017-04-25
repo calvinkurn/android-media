@@ -21,11 +21,11 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
 
@@ -162,6 +162,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     private void setupToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
+            mToolbar.setTitle(getString(R.string.title_requesting_ride));
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

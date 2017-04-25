@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -733,6 +734,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideContactPanel() {
+        //do not hide,if layout is already hidden
+        if (contactPanelLayout.getVisibility() == View.GONE) {
+            return;
+        }
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -761,6 +767,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideCancelPanel() {
+        //do not hide, layout is already hidden
+        if (cancelPanelLayout.getVisibility() == View.GONE) {
+            return;
+        }
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -884,8 +895,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick(R2.id.block_translucent_view)
     public void actionBlockTranslucentClicked() {
-        hideContactPanel();
-        hideCancelPanel();
+        //hideContactPanel();
+        //hideCancelPanel();
     }
 
     private void openCallIntent() {
@@ -930,5 +941,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 presenter.actionOnReceivePushNotification(rideRequest);
             }
         };
+    }
+
+    private void setTitle(String title) {
+        if (getActivity() == null) return;
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 }
