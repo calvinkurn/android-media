@@ -146,6 +146,8 @@ public class ProductDetailEntity {
         private String imageThumb;
         @SerializedName("url")
         private String url;
+        @SerializedName("isVideo")
+        private int isVideo;
 
         public String getImageThumb() {
             return imageThumb;
@@ -161,6 +163,14 @@ public class ProductDetailEntity {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public int getIsVideo() {
+            return isVideo;
+        }
+
+        public void setIsVideo(int isVideo) {
+            this.isVideo = isVideo;
         }
     }
 }

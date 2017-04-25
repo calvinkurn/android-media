@@ -69,6 +69,7 @@ public class GetProductDetailSubscriber extends Subscriber<ProductDetailData> {
             Attachment data = new Attachment();
             data.setThumbUrl(item.getThumbUrl());
             data.setUrl(item.getUrl());
+            data.setVideo(item.isVideo());
             list.add(data);
         }
         return list;
