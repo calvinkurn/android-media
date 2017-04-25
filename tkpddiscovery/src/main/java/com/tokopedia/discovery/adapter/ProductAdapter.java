@@ -17,6 +17,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
@@ -1000,7 +1002,12 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     onItemClicked(position);
                 }
             });
-            float rateAmount = Float.parseFloat(data.getRating());
+            float rateAmount;
+            if (TextUtils.isEmpty(data.getRating())) {
+                rateAmount = 0;
+            } else {
+                rateAmount = Float.parseFloat(data.getRating());
+            }
             rating.setImageResource(
                     RatingView.getRatingDrawable(getStarCount(rateAmount))
             );
