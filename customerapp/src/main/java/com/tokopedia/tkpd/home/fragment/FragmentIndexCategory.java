@@ -27,6 +27,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -37,8 +38,12 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
+import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.TopPicksWebView;
+import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -104,7 +109,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         SectionListCategoryAdapter.OnCategoryClickedListener,
         SectionListCategoryAdapter.OnGimmicClickedListener, HomeCatMenuView, TopPicksView,
         TopPicksItemAdapter.OnTitleClickedListener, TopPicksItemAdapter.OnItemClickedListener,
-        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed {
+        TopPicksAdapter.OnClickViewAll, TickerAdapter.OnTickerClosed, TokoCashUpdateListener {
 
     private static final long SLIDE_DELAY = 5000;
     private static final long TICKER_DELAY = 5000;
@@ -128,6 +133,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private TokoCashBroadcastReceiver tokoCashBroadcastReceiver;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -143,6 +149,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         private View banner;
         private ConvenientBanner bannerPager;
         private RelativeLayout bannerContainer;
+        private TokoCashHeaderView tokoCashHeaderView;
         TabLayout tabLayoutRecharge;
         WrapContentViewPager viewpagerRecharge;
         RecyclerView tickerContainer;
@@ -327,6 +334,10 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             }
         });
         rechargeCategoryPresenter.fecthDataRechargeCategory();
+        tokoCashBroadcastReceiver = new TokoCashBroadcastReceiver(this);
+        getActivity().registerReceiver(tokoCashBroadcastReceiver, new IntentFilter(
+                TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH
+        ));
     }
 
     private void startSlideTicker() {
@@ -410,6 +421,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
         holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
+        holder.tokoCashHeaderView = (TokoCashHeaderView) holder
+                .MainView.findViewById(R.id.toko_cash_header_layout);
         initCategoryRecyclerView();
         initTopPicks();
         initBrands();
@@ -659,6 +672,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         homeCatMenuPresenter.OnDestroy();
         topPicksPresenter.onDestroy();
         brandsPresenter.onDestroy();
+        getActivity().unregisterReceiver(tokoCashBroadcastReceiver);
     }
 
     //region recharge
@@ -831,5 +845,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         category.closeTicker();
     }
 
+    @Override
+    public void onReceivedTokoCashData(TopCashItem tokoCashData) {
+        holder.tokoCashHeaderView.setVisibility(View.VISIBLE);
+        holder.tokoCashHeaderView.renderData(tokoCashData);
+        CommonUtils.dumper("PORING RECEIVED");
+    }
+
+    @Override
+    public void onTokoCashDataError(String errorMessage) {
+
+    }
 
 }
