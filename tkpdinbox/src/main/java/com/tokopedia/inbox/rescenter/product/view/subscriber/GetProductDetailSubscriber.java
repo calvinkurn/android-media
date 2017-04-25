@@ -56,6 +56,7 @@ public class GetProductDetailSubscriber extends Subscriber<ProductDetailData> {
         viewData.setProductPrice(domainData.getProductPrice());
         viewData.setTrouble(domainData.getTrouble());
         viewData.setTroubleReason(domainData.getTroubleReason());
+        viewData.setQuantity(domainData.getQuantity());
         viewData.setAttachment(
                 domainData.getAttachment() != null && !domainData.getAttachment().isEmpty() ?
                         mappingAttachment(domainData.getAttachment()) : null

@@ -17,6 +17,7 @@ public class ProductDetailViewData implements Parcelable {
     private String productThumbUrl;
     private String trouble;
     private String troubleReason;
+    private int quantity;
 
     public ProductDetailViewData() {
     }
@@ -70,6 +71,14 @@ public class ProductDetailViewData implements Parcelable {
         this.troubleReason = troubleReason;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -83,6 +92,7 @@ public class ProductDetailViewData implements Parcelable {
         dest.writeString(this.productThumbUrl);
         dest.writeString(this.trouble);
         dest.writeString(this.troubleReason);
+        dest.writeInt(this.quantity);
     }
 
     protected ProductDetailViewData(Parcel in) {
@@ -92,6 +102,7 @@ public class ProductDetailViewData implements Parcelable {
         this.productThumbUrl = in.readString();
         this.trouble = in.readString();
         this.troubleReason = in.readString();
+        this.quantity = in.readInt();
     }
 
     public static final Creator<ProductDetailViewData> CREATOR = new Creator<ProductDetailViewData>() {

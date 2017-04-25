@@ -177,7 +177,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         ImageHandler.loadImage2(
                 productImage, viewData.getProductThumbUrl(), R.drawable.remove_thin
         );
-        troubleName.setText(viewData.getTrouble());
+        troubleName.setText(getTroubleText());
         troubleReason.setText(viewData.getTroubleReason());
         if (viewData.getAttachment() != null && !viewData.getAttachment().isEmpty()) {
             attachmentView.setVisibility(View.VISIBLE);
@@ -185,6 +185,18 @@ public class ProductDetailFragment extends BaseDaggerFragment
         } else {
             attachmentView.setVisibility(View.GONE);
         }
+    }
+
+    private String getTroubleText() {
+        String troubleText;
+        if (viewData.getQuantity() == 0) {
+            troubleText = viewData.getTrouble();
+        } else {
+            troubleText = getString(R.string.template_product_detail_trouble)
+                    .replace("X12", viewData.getTrouble())
+                    .replace("Y12", String.valueOf(viewData.getQuantity()));
+        }
+        return troubleText;
     }
 
     private void renderAttachment() {

@@ -16,6 +16,7 @@ public class ProductDetailData {
     private String trouble;
     private String troubleReason;
     private List<AttachmentProductDomainData> attachment;
+    private int quantity;
 
     public boolean isSuccess() {
         return success;
@@ -88,5 +89,13 @@ public class ProductDetailData {
 
     public void setAttachment(List<AttachmentProductDomainData> attachment) {
         this.attachment = attachment;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
