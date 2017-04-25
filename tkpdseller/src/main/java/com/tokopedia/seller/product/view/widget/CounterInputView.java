@@ -55,7 +55,7 @@ public class CounterInputView extends FrameLayout {
             valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
             minValue = styledAttributes.getInt(R.styleable.CounterInputView_counter_min, DEFAULT_MIN_VALUE);
             showCounterButton = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_show_counter_button, true);
-            allEnable = styledAttributes.getBoolean(R.styleable.CounterInputView_all_enable, true);
+            allEnable = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_all_enable, true);
         } finally {
             styledAttributes.recycle();
         }
