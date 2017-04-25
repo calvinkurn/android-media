@@ -64,4 +64,8 @@ public interface RideApi {
 
     @GET(RideUrl.REQUEST_CURRENT)
     Observable<RideRequestEntity> getCurrentRequest(@QueryMap TKPDMapParam<String, Object> parameters);
+
+    @POST(RideUrl.PROMO_APPLY)
+    @FormUrlEncoded
+    Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters);
 }

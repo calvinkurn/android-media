@@ -115,4 +115,9 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     public Observable<RideRequestEntity> getCurrentRequest(TKPDMapParam<String, Object> parameters) {
         return mRideApi.getCurrentRequest(parameters);
     }
+
+    @Override
+    public Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters) {
+        return mRideApi.applyPromo(parameters);
+    }
 }

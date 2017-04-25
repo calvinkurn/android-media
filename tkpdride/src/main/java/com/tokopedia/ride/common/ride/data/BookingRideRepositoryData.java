@@ -11,6 +11,7 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
@@ -183,6 +184,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public RideHistory call(RideHistoryEntity rideHistoryEntity) {
                         return rideHistoryEntityMapper.transform(rideHistoryEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<ApplyPromo> applyPromo(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .applyPromo(parameters)
+                .map(new Func1<PromoEntity, ApplyPromo>() {
+                    @Override
+                    public ApplyPromo call(PromoEntity promoEntity) {
+                        return new ApplyPromo();
                     }
                 });
     }
