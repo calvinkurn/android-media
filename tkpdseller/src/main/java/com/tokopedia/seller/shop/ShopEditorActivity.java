@@ -50,6 +50,7 @@ public class ShopEditorActivity extends TkpdActivity implements
 
     FragmentManager supportFragmentManager;
     String FRAGMENT;
+    Toolbar toolbar;
 
     @BindView(R2.id.container)
     FrameLayout container;
@@ -65,6 +66,10 @@ public class ShopEditorActivity extends TkpdActivity implements
         super.onCreate(savedInstanceState);
 
         inflateView(R.layout.activity_simple_fragment);
+        toolbar = (Toolbar) this.findViewById(R.id.app_bar);
+        toolbar.removeAllViews();
+        setSupportActionBar(toolbar);
+
         fetchExtras(getIntent(), savedInstanceState);
 
         supportFragmentManager = getSupportFragmentManager();
@@ -244,13 +249,6 @@ public class ShopEditorActivity extends TkpdActivity implements
     }
 
     private void createCustomToolbar(String shopTitle) {
-        Toolbar toolbar = (Toolbar) this.findViewById(R.id.app_bar);
-        toolbar.removeAllViews();
-//        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
-//        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
-//        titleTextView.setText(shopTitle);
-//        toolbar.addView(title);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(shopTitle);
 
