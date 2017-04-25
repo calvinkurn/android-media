@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spanned;
 import android.util.Log;
@@ -639,6 +640,8 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.PartialButton.setVisibility(View.GONE);
         holder.RejectButton.setVisibility(View.GONE);
         holder.AcceptButton.setText(getString(R.string.title_order_processed));
+        holder.AcceptButton.setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.seller.R.color.black_twelve_percent));
+        holder.AcceptButton.setTextColor(ContextCompat.getColor(activity, com.tokopedia.seller.R.color.black_twenty_five_percent));
         holder.AcceptButton.setOnClickListener(null);
         isConfirmDone = true;
         if (!isAfterSaveInstance) {
