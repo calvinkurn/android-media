@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/img_thumb_holder"
-    android:background="@color/white"
+    android:background="@drawable/cards_ui"
     android:gravity="center"
     android:padding="@dimen/padding_small">
 
@@ -36,7 +36,6 @@
             android:id="@+id/header_toko_cash_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_vs"
             android:textSize="@dimen/font_medium"
             android:text="@string/title_rupiah_empty"/>
     </LinearLayout>
