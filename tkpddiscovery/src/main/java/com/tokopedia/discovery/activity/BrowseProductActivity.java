@@ -536,7 +536,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     @Override
     public void renderUpperCategoryLevel(SimpleCategory simpleCategory) {
-        browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId(), simpleCategory.getName());
+        browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
         renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(),true);
     }
@@ -637,8 +637,14 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
-        if (departementId!=null && name!=null) {
-            toolbar.setTitle(name);
+        if (departementId!=null) {
+            String toolbarTitle;
+            if (name!=null) {
+                toolbarTitle = name;
+            } else {
+                toolbarTitle = getString(R.string.title_activity_browse_category);
+            }
+            toolbar.setTitle(toolbarTitle);
             setFragment(
                     BrowseParentFragment.newInstance(browsePresenter.getBrowseProductActivityModel()),
                     BrowseParentFragment.FRAGMENT_TAG
