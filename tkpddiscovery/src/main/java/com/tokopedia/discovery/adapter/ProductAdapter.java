@@ -1004,16 +1004,19 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     onItemClicked(position);
                 }
             });
-            float rateAmount;
-            if (TextUtils.isEmpty(data.getRating())) {
-                rateAmount = 0;
+
+            if (TextUtils.isEmpty(data.getRating()) || ("0").equals(data.getReviewCount())) {
+                rating.setVisibility(View.GONE);
+                reviewCount.setVisibility(View.GONE);
             } else {
-                rateAmount = Float.parseFloat(data.getRating());
+                float rateAmount = Float.parseFloat(data.getRating());
+                rating.setVisibility(View.VISIBLE);
+                reviewCount.setVisibility(View.VISIBLE);
+                rating.setImageResource(
+                        RatingView.getRatingDrawable(getStarCount(rateAmount))
+                );
+                reviewCount.setText("(" + data.getReviewCount() + ")");
             }
-            rating.setImageResource(
-                    RatingView.getRatingDrawable(getStarCount(rateAmount))
-            );
-            reviewCount.setText("(" + data.getReviewCount() + ")");
         }
 
         private int getStarCount(float rating) {
