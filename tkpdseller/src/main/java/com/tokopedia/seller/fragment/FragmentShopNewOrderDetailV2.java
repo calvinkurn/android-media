@@ -640,7 +640,7 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
         holder.PartialButton.setVisibility(View.GONE);
         holder.RejectButton.setVisibility(View.GONE);
         holder.AcceptButton.setText(getString(R.string.title_order_processed));
-        holder.AcceptButton.setBackgroundColor(ContextCompat.getColor(activity, com.tokopedia.seller.R.color.black_twelve_percent));
+        holder.AcceptButton.setBackgroundResource(com.tokopedia.seller.R.drawable.button_finish_disable);
         holder.AcceptButton.setTextColor(ContextCompat.getColor(activity, com.tokopedia.seller.R.color.black_twenty_five_percent));
         holder.AcceptButton.setOnClickListener(null);
         isConfirmDone = true;
