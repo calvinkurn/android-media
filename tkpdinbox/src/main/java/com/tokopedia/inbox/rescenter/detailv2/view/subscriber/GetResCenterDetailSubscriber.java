@@ -188,6 +188,8 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
         data.setShopID(domainModel.getShopID());
         data.setShopName(domainModel.getShopName());
         data.setReceived(domainModel.getReceivedFlag() == 1);
+        data.setFinish(domainModel.getStatusResolutionCode() == 500);
+        data.setCancel(domainModel.getStatusResolutionCode() == 0);
         return data;
     }
 

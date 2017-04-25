@@ -155,7 +155,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     public void onRestoreState(Bundle savedState) {
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setViewData((DetailViewModel) savedState.getParcelable(EXTRA_PARAM_VIEW_DATA));
-        doOnInitSuccess();
+        renderData();
     }
 
     @Override
@@ -244,6 +244,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     @Override
     public void doOnInitSuccess() {
         showLoading(false);
+        if (getViewData().isSuccess()) {
+            renderData();
+        } else {
+            showEmptyState(getViewData().getMessageError(), null);
+        }
+    }
+
+    private void renderData() {
         if (getViewData().getButtonData() != null) {
             buttonView.renderData(getViewData().getButtonData());
         }
@@ -458,7 +466,14 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionDiscussClick() {
-        startActivity(ResCenterDiscussionActivity.createIntent(getActivity(), getResolutionID(), viewData.getDetailData().isReceived()));
+        startActivity(
+                ResCenterDiscussionActivity.createIntent(
+                        getActivity(),
+                        getResolutionID(),
+                        viewData.getDetailData().isReceived(),
+                        !viewData.getDetailData().isCancel() && !viewData.getDetailData().isFinish()
+                )
+        );
     }
 
     @Override

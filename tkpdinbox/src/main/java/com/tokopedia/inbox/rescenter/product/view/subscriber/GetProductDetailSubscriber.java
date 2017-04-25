@@ -56,8 +56,9 @@ public class GetProductDetailSubscriber extends Subscriber<ProductDetailData> {
         viewData.setProductPrice(domainData.getProductPrice());
         viewData.setTrouble(domainData.getTrouble());
         viewData.setTroubleReason(domainData.getTroubleReason());
+        viewData.setQuantity(domainData.getQuantity());
         viewData.setAttachment(
-                domainData.getAttachment() != null && domainData.getAttachment().isEmpty() ?
+                domainData.getAttachment() != null && !domainData.getAttachment().isEmpty() ?
                         mappingAttachment(domainData.getAttachment()) : null
         );
         return viewData;
@@ -69,6 +70,7 @@ public class GetProductDetailSubscriber extends Subscriber<ProductDetailData> {
             Attachment data = new Attachment();
             data.setThumbUrl(item.getThumbUrl());
             data.setUrl(item.getUrl());
+            data.setVideo(item.isVideo());
             list.add(data);
         }
         return list;

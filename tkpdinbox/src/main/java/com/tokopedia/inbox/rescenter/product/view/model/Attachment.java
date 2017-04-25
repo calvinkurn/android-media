@@ -11,6 +11,7 @@ public class Attachment implements Parcelable {
 
     private String thumbUrl;
     private String url;
+    private boolean video;
 
     public String getThumbUrl() {
         return thumbUrl;
@@ -28,6 +29,17 @@ public class Attachment implements Parcelable {
         this.url = url;
     }
 
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
+    }
+
+    public Attachment() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -37,17 +49,16 @@ public class Attachment implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.thumbUrl);
         dest.writeString(this.url);
-    }
-
-    public Attachment() {
+        dest.writeByte(this.video ? (byte) 1 : (byte) 0);
     }
 
     protected Attachment(Parcel in) {
         this.thumbUrl = in.readString();
         this.url = in.readString();
+        this.video = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<Attachment> CREATOR = new Parcelable.Creator<Attachment>() {
+    public static final Creator<Attachment> CREATOR = new Creator<Attachment>() {
         @Override
         public Attachment createFromParcel(Parcel source) {
             return new Attachment(source);

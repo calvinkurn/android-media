@@ -65,6 +65,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private static final String ARGS_ATTACHMENT = "ARGS_ATTACHMENT";
     private static final String ARGS_CAN_LOAD_MORE = "ARGS_CAN_LOAD_MORE";
     private static final String ARGS_REPLY = "ARGS_REPLY";
+    private static final String PARAM_FLAG_ALLOW_REPLY = "PARAM_FLAG_ALLOW_REPLY";
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
@@ -72,20 +73,22 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private EditText replyEditText;
     private ImageView sendButton;
     private ImageView attachButton;
+    private View replyView;
     private LinearLayoutManager layoutManager;
     private ImageUploadHandler uploadImageDialog;
     private TkpdProgressDialog progressDialog;
     private Bundle savedInstance;
+    private boolean flagAllowReply;
 
     @Inject
     ResCenterDiscussionPresenterImpl presenter;
 
-    public static Fragment createInstance(String resolutionID, boolean flagReceived) {
+    public static Fragment createInstance(String resolutionID, boolean flagReceived, boolean flagAllowReply) {
         Fragment fragment = new ResCenterDiscussionFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_RESOLUTION_ID, resolutionID);
         bundle.putBoolean(PARAM_FLAG_RECEIVED, flagReceived);
-
+        bundle.putBoolean(PARAM_FLAG_ALLOW_REPLY, flagAllowReply);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -111,12 +114,12 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putBoolean(PARAM_FLAG_ALLOW_REPLY, flagAllowReply);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        flagAllowReply = savedState.getBoolean(PARAM_FLAG_ALLOW_REPLY);
     }
 
     @Override
@@ -137,7 +140,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        flagAllowReply = arguments.getBoolean(PARAM_FLAG_ALLOW_REPLY);
     }
 
     @Override
@@ -147,6 +150,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @Override
     protected void initView(View view) {
+        replyView = view.findViewById(R.id.reply_view);
         replyEditText = (EditText) view.findViewById(R.id.reply_box);
         sendButton = (ImageView) view.findViewById(R.id.send_button);
         attachButton = (ImageView) view.findViewById(R.id.attach_but);
@@ -313,6 +317,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         uploadImageDialog = ImageUploadHandler.createInstance(this);
+        replyView.setVisibility(flagAllowReply ? View.VISIBLE : View.GONE);
     }
 
     @Override

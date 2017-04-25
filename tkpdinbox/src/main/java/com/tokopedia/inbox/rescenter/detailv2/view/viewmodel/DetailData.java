@@ -20,6 +20,8 @@ public class DetailData implements Parcelable {
     private String invoiceUrl;
     private String orderID;
     private boolean received;
+    private boolean cancel;
+    private boolean finish;
 
     public String getAwbNumber() {
         return awbNumber;
@@ -118,6 +120,25 @@ public class DetailData implements Parcelable {
         this.received = received;
     }
 
+    public DetailData() {
+    }
+
+    public void setCancel(boolean cancel) {
+        this.cancel = cancel;
+    }
+
+    public boolean isCancel() {
+        return cancel;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+    public boolean isFinish() {
+        return finish;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -137,9 +158,8 @@ public class DetailData implements Parcelable {
         dest.writeString(this.invoiceUrl);
         dest.writeString(this.orderID);
         dest.writeByte(this.received ? (byte) 1 : (byte) 0);
-    }
-
-    public DetailData() {
+        dest.writeByte(this.cancel ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.finish ? (byte) 1 : (byte) 0);
     }
 
     protected DetailData(Parcel in) {
@@ -155,9 +175,11 @@ public class DetailData implements Parcelable {
         this.invoiceUrl = in.readString();
         this.orderID = in.readString();
         this.received = in.readByte() != 0;
+        this.cancel = in.readByte() != 0;
+        this.finish = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<DetailData> CREATOR = new Parcelable.Creator<DetailData>() {
+    public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {
         @Override
         public DetailData createFromParcel(Parcel source) {
             return new DetailData(source);

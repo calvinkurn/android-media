@@ -29,6 +29,7 @@ public class ProductDetailMapper implements Func1<Response<TkpdResponse>, Produc
                 domainData.setProductThumbUrl(entity.getProduct().getPhoto().getImageThumb());
                 domainData.setTrouble(entity.getTrouble().getName());
                 domainData.setTroubleReason(entity.getRemark());
+                domainData.setQuantity(entity.getCount());
                 domainData.setAttachment(
                         entity.getAttachments() != null && !entity.getAttachments().isEmpty() ?
                                 mappingAttachment(entity.getAttachments()) : null
@@ -50,6 +51,7 @@ public class ProductDetailMapper implements Func1<Response<TkpdResponse>, Produc
             AttachmentProductDomainData data = new AttachmentProductDomainData();
             data.setThumbUrl(item.getImageThumb());
             data.setUrl(item.getUrl());
+            data.setVideo(item.getIsVideo() == 1);
             list.add(data);
         }
         return list;

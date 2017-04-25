@@ -7,6 +7,7 @@ package com.tokopedia.inbox.rescenter.product.domain.model;
 public class AttachmentProductDomainData {
     private String thumbUrl;
     private String url;
+    private boolean video;
 
     public String getThumbUrl() {
         return thumbUrl;
@@ -22,5 +23,13 @@ public class AttachmentProductDomainData {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public void setVideo(boolean video) {
+        this.video = video;
     }
 }

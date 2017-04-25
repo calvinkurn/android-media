@@ -19,6 +19,8 @@ public class ProductDetailEntity {
     private String remark;
     @SerializedName("attachments")
     private List<Attachments> attachments;
+    @SerializedName("count")
+    private int count;
 
     public Product getProduct() {
         return product;
@@ -50,6 +52,14 @@ public class ProductDetailEntity {
 
     public void setAttachments(List<Attachments> attachments) {
         this.attachments = attachments;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public static class Product {
@@ -146,6 +156,8 @@ public class ProductDetailEntity {
         private String imageThumb;
         @SerializedName("url")
         private String url;
+        @SerializedName("isVideo")
+        private int isVideo;
 
         public String getImageThumb() {
             return imageThumb;
@@ -161,6 +173,14 @@ public class ProductDetailEntity {
 
         public void setUrl(String url) {
             this.url = url;
+        }
+
+        public int getIsVideo() {
+            return isVideo;
+        }
+
+        public void setIsVideo(int isVideo) {
+            this.isVideo = isVideo;
         }
     }
 }
