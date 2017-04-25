@@ -2,8 +2,10 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -79,19 +81,21 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
 
-    // url got from gallery or camera or other paths
-    private ArrayList<String> tkpdImageUrls;
-
     @Inject
     public ProductAddPresenter presenter;
+
     protected ProductScoreViewHolder productScoreViewHolder;
     protected ProductImageViewHolder productImageViewHolder;
     protected ProductDetailViewHolder productDetailViewHolder;
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
 
-    protected ValueIndicatorScoreModel valueIndicatorScoreModel;
-    protected Listener listener;
+    private ValueIndicatorScoreModel valueIndicatorScoreModel;
+    /**
+     * Url got from gallery or camera or other paths
+     */
+    private ArrayList<String> imageUrlList;
+    private Listener listener;
 
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
@@ -103,13 +107,37 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         return fragment;
     }
 
+    @TargetApi(23)
+    @Override
+    public final void onAttach(Context context) {
+        super.onAttach(context);
+        onAttachToContext(context);
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public final void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            onAttachToContext(activity);
+        }
+    }
+
+    private void onAttachToContext(Context context) {
+        if (context instanceof Listener) {
+            this.listener = (Listener) context;
+        } else {
+            throw new RuntimeException("Activity must implement Listener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
-            tkpdImageUrls = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
+            imageUrlList = args.getStringArrayList(ProductAddActivity.EXTRA_IMAGE_URLS);
         }
     }
 
@@ -123,17 +151,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 .inject(this);
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof Listener) {
-            this.listener = (Listener) context;
-        } else {
-            throw new RuntimeException("Activity must implement Listener");
-        }
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -143,8 +160,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         productImageViewHolder = new ProductImageViewHolder(view.findViewById(R.id.view_group_product_image));
         productImageViewHolder.setListener(this);
-        if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
-            productImageViewHolder.setImages(tkpdImageUrls);
+        if (CommonUtils.checkCollectionNotNull(imageUrlList)) {
+            productImageViewHolder.setImages(imageUrlList);
         }
         productDetailViewHolder = new ProductDetailViewHolder(view);
         productDetailViewHolder.setListener(this);
@@ -185,11 +202,64 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ProductInfoViewHolder.REQUEST_CODE_CATEGORY:
+                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ProductInfoViewHolder.REQUEST_CODE_CATALOG:
+                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
+                productDetailViewHolder.onActivityResult(requestCode, resultCode, data);
+                break;
+            case YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO:
+                productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    // Permission part
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // NOTE: delegate the permission handling to generated method
+        ProductAddFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    @TargetApi(16)
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForExternalStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForExternalStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @TargetApi(16)
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForExternalStorage(final PermissionRequest request) {
+        request.proceed();
+    }
+
+    // View holder listener part
+    @Override
     public void onProductNameChanged(String productName) {
-        presenter.getCategoryRecommendation(productName);
+        getCategoryRecommendation(productName);
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
         valueIndicatorScoreModel.setLengthProductName(productName.length());
         updateProductScoring();
+    }
+
+    protected void getCategoryRecommendation(String productName) {
+        presenter.getCategoryRecommendation(productName);
     }
 
     @Override
@@ -222,42 +292,19 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         updateProductScoring();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case ProductInfoViewHolder.REQUEST_CODE_CATEGORY:
-                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductInfoViewHolder.REQUEST_CODE_CATALOG:
-                productInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
-                productImageViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case ProductDetailViewHolder.REQUEST_CODE_ETALASE:
-                productDetailViewHolder.onActivityResult(requestCode, resultCode, data);
-                break;
-            case YoutubeAddVideoView.REQUEST_CODE_GET_VIDEO:
-                productAdditionalInfoViewHolder.onActivityResult(requestCode, resultCode, data);
-            default:
-                super.onActivityResult(requestCode, resultCode, data);
-        }
+    private void updateProductScoring() {
+        presenter.getProductScoring(valueIndicatorScoreModel);
     }
 
+    // Presenter listener part
     @Override
-    public void onDetailProductScoringClicked() {
-        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), valueIndicatorScoreModel);
-        startActivity(intent);
-    }
-
-    @Override
-    public void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView) {
+    public void onSuccessLoadScoringProduct(DataScoringProductView dataScoringProductView) {
         productScoreViewHolder.setValueProductScoreToView(dataScoringProductView);
     }
 
     @Override
-    public void updateProductScoring() {
-        presenter.getProductScoring(valueIndicatorScoreModel);
+    public void onErrorLoadScoringProduct(String errorMessage) {
+
     }
 
     @Override
@@ -267,6 +314,50 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         } else {
             listener.startUploadProduct(productId);
         }
+    }
+
+    @Override
+    public void onErrorStoreProductToDraft(String errorMessage) {
+
+    }
+
+    @Override
+    public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows) {
+        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
+    }
+
+    @Override
+    public void onErrorLoadCatalog(String errorMessage) {
+        productInfoViewHolder.hideAndClearCatalog();
+    }
+
+    @Override
+    public void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList) {
+        productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
+    }
+
+    @Override
+    public void onErrorLoadRecommendationCategory(String errorMessage) {
+        productInfoViewHolder.showCatRecommError();
+    }
+
+    @Override
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
+        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.setGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+    }
+
+    @Override
+    public void onErrorLoadShopInfo(String errorMessage) {
+
+    }
+
+    // Clicked Part
+    @Override
+    public void onDetailProductScoringClicked() {
+        Intent intent = ProductScoringDetailActivity.createIntent(getActivity(), valueIndicatorScoreModel);
+        startActivity(intent);
     }
 
     @Override
@@ -310,41 +401,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         });
     }
 
-    @Override
-    public void onResolutionImageCheckFailed(String uri) {
-        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
-    }
-
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
         GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, false);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // NOTE: delegate the permission handling to generated method
-        ProductAddFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-    }
-
-    @TargetApi(16)
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForExternalStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForExternalStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @TargetApi(16)
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForExternalStorage(final PermissionRequest request) {
-        request.proceed();
     }
 
     @Override
@@ -357,38 +418,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void showCatalogError(Throwable e) {
-        productInfoViewHolder.hideAndClearCatalog();
-    }
-
-    @Override
-    public void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows) {
-        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
-    }
-
-    @Override
-    public void showCatRecommError(Throwable e) {
-        productInfoViewHolder.showCatRecommError();
-    }
-
-    @Override
-    public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
-        productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
-    }
-
-    @Override
-    public void showErrorGetShopInfo(Throwable e) {
-
-    }
-
-    @Override
-    public void onSuccessGetShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
-        productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
-        productDetailViewHolder.setGoldMerchant(isGoldMerchant);
-        productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
-    }
-
-    @Override
     public void onCategoryPickerClicked(long categoryId) {
         CategoryPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATEGORY, categoryId);
     }
@@ -396,6 +425,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCatalogPickerClicked(String keyword, long depId, long selectedCatalogId) {
         CatalogPickerActivity.start(this, getActivity(), ProductInfoViewHolder.REQUEST_CODE_CATALOG, keyword, depId, selectedCatalogId);
+    }
+
+    @Override
+    public void onEtalaseViewClicked() {
+        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+        this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
+    }
+
+    // Others
+    @Override
+    public void onResolutionImageCheckFailed(String uri) {
+        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -420,12 +461,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onUSDClickedNotAllowed() {
         Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onEtalaseViewClicked() {
-        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
-        this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 
     private UploadProductInputViewModel collectDataFromView() {

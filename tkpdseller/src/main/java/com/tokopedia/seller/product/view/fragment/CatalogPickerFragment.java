@@ -15,11 +15,11 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.di.component.CatalogPickerComponent;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.adapter.CatalogPickerAdapter;
 import com.tokopedia.seller.product.view.listener.CatalogPickerView;
 import com.tokopedia.seller.product.view.presenter.CatalogPickerPresenter;
-import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 
 import java.util.List;

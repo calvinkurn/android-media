@@ -49,24 +49,13 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         presenter.attachView(this);
-        String productId = getProductId(getArguments());
+        String productId = getArguments().getString(EDIT_PRODUCT_ID);
         presenter.fetchEditProductData(productId);
         return view;
     }
 
-    private String getProductId(Bundle arguments) {
-        return arguments.getString(EDIT_PRODUCT_ID);
-    }
-
     @Override
-    public void onProductNameChanged(String productName) {
-        checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
-        valueIndicatorScoreModel.setLengthProductName(productName.length());
-        updateProductScoring();
-    }
-
-    @Override
-    public void populateView(UploadProductInputViewModel model) {
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
@@ -98,5 +87,15 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
             productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
             productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
         }
+    }
+
+    @Override
+    public void onErrorLoadProduct(String errorMessage) {
+
+    }
+
+    @Override
+    protected void getCategoryRecommendation(String productName) {
+        // Do nothing
     }
 }

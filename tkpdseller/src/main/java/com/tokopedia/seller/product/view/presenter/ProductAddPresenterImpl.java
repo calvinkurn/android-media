@@ -14,6 +14,7 @@ import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
@@ -71,14 +72,14 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showErrorGetShopInfo(e);
+                        getView().onErrorLoadShopInfo(ViewUtils.getErrorMessage(e));
                     }
 
                     @Override
                     public void onNext(ShopModel shopModel) {
                         boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
                         boolean isFreeReturn = shopModel.info.isFreeReturns();
-                        getView().onSuccessGetShopInfo(isGoldMerchant, isFreeReturn);
+                        getView().onSuccessLoadShopInfo(isGoldMerchant, isFreeReturn);
                     }
                 });
     }
@@ -188,12 +189,12 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showCatalogError(e);
+                        getView().onErrorLoadCatalog(ViewUtils.getErrorMessage(e));
                     }
 
                     @Override
                     public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().successFetchCatalogData(
+                        getView().onSuccessLoadCatalog(
                                 catalogDataModel.getResult().getCatalogs(),
                                 catalogDataModel.getResult().getTotalRecord());
                     }
@@ -211,12 +212,12 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onError(Throwable e) {
-                        getView().showCatRecommError(e);
+                        getView().onErrorLoadRecommendationCategory(ViewUtils.getErrorMessage(e));
                     }
 
                     @Override
                     public void onNext(CategoryRecommDataModel categoryRecommDataModel) {
-                        getView().successGetCategoryRecommData(
+                        getView().onSuccessLoadRecommendationCategory(
                                 categoryRecommDataModel.getData().get(0).getProductCategoryPrediction()
                         );
                     }
@@ -246,13 +247,14 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
             @Override
             public void onError(Throwable e) {
                 checkViewAttached();
+                getView().onErrorLoadScoringProduct(ViewUtils.getErrorMessage(e));
             }
 
             @Override
             public void onNext(DataScoringProductView dataScoringProductView) {
                 checkViewAttached();
                 if (dataScoringProductView != null) {
-                    getView().onSuccessGetScoringProduct(dataScoringProductView);
+                    getView().onSuccessLoadScoringProduct(dataScoringProductView);
                 }
             }
         };
@@ -305,6 +307,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
+            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
         }
 
         @Override

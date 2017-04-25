@@ -8,5 +8,8 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
  */
 
 public interface ProductEditView extends ProductAddView {
-    void populateView(UploadProductInputViewModel model);
+
+    void onSuccessLoadProduct(UploadProductInputViewModel model);
+
+    void onErrorLoadProduct(String errorMessage);
 }

@@ -44,18 +44,6 @@ public class ViewUtils {
         return errorMessage;
     }
 
-    public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
-        if (t instanceof UnknownHostException) {
-            return context.getString(R.string.msg_no_connection);
-        } else if (t instanceof SocketTimeoutException) {
-            return context.getString(R.string.default_request_error_timeout);
-        } else if (t instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server);
-        } else {
-            return context.getString(R.string.default_request_error_unknown);
-        }
-    }
-
     public static String getClickBudgetError(Context context, float clickBudget) {
         if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
             return context.getString(R.string.error_top_ads_click_budget_minimum, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));

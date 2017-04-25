@@ -13,21 +13,24 @@ import java.util.List;
  */
 
 public interface ProductAddView extends CustomerView {
-    void onSuccessGetScoringProduct(DataScoringProductView dataScoringProductView);
 
-    void updateProductScoring();
+    void onSuccessLoadScoringProduct(DataScoringProductView dataScoringProductView);
 
-    void showCatalogError(Throwable e);
+    void onErrorLoadScoringProduct(String errorMessage);
 
-    void successFetchCatalogData(List<Catalog> catalogViewModelList, int maxRows);
+    void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows);
 
-    void showCatRecommError(Throwable e);
+    void onErrorLoadCatalog(String errorMessage);
 
-    void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList);
+    void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList);
+
+    void onErrorLoadRecommendationCategory(String errorMessage);
 
     void onSuccessStoreProductToDraft(long productId);
 
-    void onSuccessGetShopInfo(boolean goldMerchant, boolean freeReturn);
+    void onErrorStoreProductToDraft(String errorMessage);
 
-    void showErrorGetShopInfo(Throwable e);
+    void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn);
+
+    void onErrorLoadShopInfo(String errorMessage);
 }
