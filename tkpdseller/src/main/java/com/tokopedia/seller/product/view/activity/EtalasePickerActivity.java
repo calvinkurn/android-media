@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,8 +32,16 @@ public class EtalasePickerActivity
 
     public static final String ETALASE_ID = "ETALASE_ID";
     public static final String ETALASE_NAME = "ETALASE_NAME";
+    public static final int UNSELECTED_ETALASE_ID = -1;
+    public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
     private FragmentManager fragmentManager;
     private EtalasePickerComponent component;
+
+    public static Intent createInstance(Context context, long etalaseId) {
+        Intent intent = new Intent(context, EtalasePickerActivity.class);
+        intent.putExtra(SELECTED_ETALASE_ID, etalaseId);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +57,8 @@ public class EtalasePickerActivity
     private void inflateEtalasePickerFragment() {
         Fragment fragment = fragmentManager.findFragmentByTag(EtalasePickerFragment.TAG);
         if (fragment == null) {
-            fragment = EtalasePickerFragment.createInstance();
+            long etalaseId = getIntent().getLongExtra(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);
+            fragment = EtalasePickerFragment.createInstance(etalaseId);
         }
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment, EtalasePickerFragment.TAG);

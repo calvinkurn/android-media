@@ -2,7 +2,9 @@ package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.mapper.AddProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductSubmitMapper;
+import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductValidationMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.EditProductMapper;
 import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
@@ -12,7 +14,6 @@ import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
-import com.tokopedia.seller.product.domain.model.EditProductDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
@@ -23,14 +24,19 @@ import rx.Observable;
 
 public class UploadProductRepositoryImpl implements UploadProductRepository {
     private final UploadProductDataSource uploadProductDataSource;
+    private final AddProductValidationInputMapper addProductValidationInputMapper;
+    private final EditProductInputMapper editProductInputMapper;
 
-    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource) {
+    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource, AddProductValidationInputMapper addProductValidationInputMapper, EditProductInputMapper editProductInputMapper) {
         this.uploadProductDataSource = uploadProductDataSource;
+        this.addProductValidationInputMapper = addProductValidationInputMapper;
+        this.editProductInputMapper = editProductInputMapper;
     }
 
     @Override
     public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel) {
-        AddProductValidationInputServiceModel serviceModel = AddProductInputMapper.mapValidation(domainModel);
+        AddProductValidationInputServiceModel serviceModel = new AddProductValidationInputServiceModel();
+        addProductValidationInputMapper.map(serviceModel, domainModel);
         return uploadProductDataSource.addProductValidation(serviceModel)
                 .map(new AddProductValidationMapper());
     }
@@ -43,8 +49,9 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<EditProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
-        EditProductInputServiceModel serviceModel = AddProductInputMapper.mapEdit(uploadProductInputDomainModel);
+    public Observable<AddProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
+        EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
+        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
         return uploadProductDataSource.editProduct(serviceModel)
                 .map(new EditProductMapper());
     }

@@ -54,7 +54,7 @@
           },
           {
             "indicator_type": "resolution",
-            "indicator_desc": "Resolusi foto produk masih jauh dari ukuran yang direkomendasikan. Gunakan foto dengan resolusi >700 pixels.",
+            "indicator_desc": "Tips: Gunakan foto dengan resolusi >700 pixels.",
             "indicator_scoring": [
               {
                 "min": 0,
@@ -168,7 +168,7 @@
         "value_indicator": [
           {
             "indicator_type": "use",
-            "indicator_desc": "Pengaturan stok belum diaktifkan. Masukkan jumlah stok yang tersedia untuk produk ini.",
+            "indicator_desc": "Tips: Masukkan jumlah stok yang tersedia untuk produk ini.",
             "indicator_scoring": [
               {
                 "min": 0,

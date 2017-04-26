@@ -4,7 +4,7 @@ import com.tokopedia.seller.product.data.source.cloud.UploadProductCloud;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.EditProductServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 
@@ -33,6 +33,6 @@ public class UploadProductDataSource {
     }
 
     public Observable<EditProductServiceModel> editProduct(EditProductInputServiceModel serviceModel) {
-        return null;
+        return uploadProductCloud.editProduct(serviceModel);
     }
 }

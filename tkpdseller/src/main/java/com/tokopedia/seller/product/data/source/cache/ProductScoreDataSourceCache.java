@@ -92,6 +92,12 @@ public class ProductScoreDataSourceCache {
             }
             indicatorScoreView.setIndicatorDescs(descs);
 
+            if(indicatorScore.getIndicatorId() == FREE_RETURN_INDICATOR){
+                if(!valueIndicatorScoreModel.isFreeReturnActive()){
+                    continue;
+                }
+            }
+
             indicatorScoreViews.add(indicatorScoreView);
         }
 
