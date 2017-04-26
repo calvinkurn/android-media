@@ -14,12 +14,11 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
-import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
-
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
+import com.tokopedia.seller.product.view.widget.SpinnerCounterInputView;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
 import java.util.ArrayList;
@@ -31,22 +30,6 @@ import java.util.List;
 
 public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
-    /**
-     * @author normansyahputa on 4/18/17.
-     *         <p>
-     *         this represent contract for {@link ProductAdditionalInfoViewHolder}
-     *         <p>
-     *         for example calling {@link ProductAddFragment#startActivityForResult(Intent, int)}
-     *         this will delefate to {@link ProductAddFragment} for doing that
-     */
-    public interface Listener {
-
-        void startYoutubeVideoActivity(ArrayList<String> videoIds);
-
-        void onDescriptionTextChanged(String text);
-
-    }
-
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
     private LabelView labelAddVideoView;
@@ -54,15 +37,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     private SpinnerCounterInputView preOrderSpinnerCounterInputView;
     private LabelSwitch shareLabelSwitch;
     private Listener listener;
-
     /**
      * this prevent duplication at videoIdList;
      */
     private List<String> videoIdList;
-
-    public void setListener(Listener listener) {
-        this.listener = listener;
-    }
 
     public ProductAdditionalInfoViewHolder(View view) {
         videoIdList = new ArrayList<>();
@@ -126,6 +104,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
     }
 
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
     public void updateViewGoldMerchant(boolean isShown) {
         if (isShown) {
             labelAddVideoView.setVisibility(View.VISIBLE);
@@ -137,6 +119,10 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     public String getDescription() {
         return descriptionEditText.getText().toString();
+    }
+
+    public void setDescription(String description) {
+        descriptionEditText.setText(description);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,37 +163,33 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void expandPreOrder(boolean expand) {
-//        preOrderExpandableOptionSwitch.setExpand(expand);
+        preOrderExpandableOptionSwitch.setExpand(expand);
     }
 
     public int getPreOrderUnit() {
         return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
     }
 
-    public int getPreOrderValue() {
-        return (int) preOrderSpinnerCounterInputView.getCounterValue();
-    }
-
-    public boolean isShare() {
-        return shareLabelSwitch.isChecked();
-    }
-
-    public void setDescription(String description) {
-        descriptionEditText.setText(description);
-    }
-
     public void setPreOrderUnit(int unit) {
         preOrderSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
+    }
+
+    public int getPreOrderValue() {
+        return (int) preOrderSpinnerCounterInputView.getCounterValue();
     }
 
     public void setPreOrderValue(float value) {
         preOrderSpinnerCounterInputView.setCounterValue(value);
     }
 
+    public boolean isShare() {
+        return shareLabelSwitch.isChecked();
+    }
+
     private boolean isPreOrderValid() {
-//        if (!preOrderExpandableOptionSwitch.isExpanded()) {
-//            return true;
-//        }
+        if (!preOrderExpandableOptionSwitch.isExpanded()) {
+            return true;
+        }
         String minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_day));
         String maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_day));
         if (preOrderSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_pre_order_value_week))) {
@@ -231,5 +213,21 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @author normansyahputa on 4/18/17.
+     *         <p>
+     *         this represent contract for {@link ProductAdditionalInfoViewHolder}
+     *         <p>
+     *         for example calling {@link ProductAddFragment#startActivityForResult(Intent, int)}
+     *         this will delefate to {@link ProductAddFragment} for doing that
+     */
+    public interface Listener {
+
+        void startYoutubeVideoActivity(ArrayList<String> videoIds);
+
+        void onDescriptionTextChanged(String text);
+
     }
 }

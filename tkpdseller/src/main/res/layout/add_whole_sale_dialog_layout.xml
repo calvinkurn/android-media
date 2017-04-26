@@ -16,6 +16,7 @@
         android:id="@+id/counter_input_view_minimum_whole_sale"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
+        app:counter_all_enable="false"
         app:counter_hint="@string/product_label_minimum_whole_sale" />
 
     <com.tokopedia.seller.product.view.widget.CounterInputView
@@ -28,7 +29,8 @@
         android:id="@+id/counter_input_view_wholesale_price"
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:counter_hint="@string/product_label_price_whole_sale" />
+        app:counter_hint="@string/product_label_price_whole_sale"
+        app:counter_show_counter_button="false" />
 
     <RelativeLayout
         android:layout_width="match_parent"

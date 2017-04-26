@@ -4,9 +4,9 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.editproductform.Etalase;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductImage;
+import com.tokopedia.seller.product.data.source.cloud.model.editproductform.WholesalePrice;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.ProductWholesaleDomainModel;
@@ -83,8 +83,20 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         return domainModels;
     }
 
-    private List<ProductWholesaleDomainModel> mapWholesale(List<Object> wholesalePrice) {
-        return null;
+    private List<ProductWholesaleDomainModel> mapWholesale(List<WholesalePrice> wholesalePrice) {
+        List<ProductWholesaleDomainModel> wholesaleDomainModels
+                = new ArrayList<>();
+        for (WholesalePrice price : wholesalePrice) {
+            ProductWholesaleDomainModel productWholesaleDomainModel
+                    = new ProductWholesaleDomainModel();
+            productWholesaleDomainModel.setPrice(Double.valueOf(price.getWholesalePrice()));
+            productWholesaleDomainModel.setQtyMax(price.getWholesaleMax());
+            productWholesaleDomainModel.setQtyMin(price.getWholesaleMin());
+
+            wholesaleDomainModels.add(productWholesaleDomainModel);
+        }
+
+        return wholesaleDomainModels;
     }
 
 
