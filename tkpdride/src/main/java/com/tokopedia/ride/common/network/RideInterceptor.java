@@ -1,16 +1,11 @@
 package com.tokopedia.ride.common.network;
 
-import android.content.Intent;
-import android.util.Log;
-
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.ride.BuildConfig;
-import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
+import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
+import com.tokopedia.ride.common.exception.InvalidFareIdHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
 import org.json.JSONException;
@@ -18,7 +13,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -112,13 +106,15 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                 .method(request.method(), request.body());
     }
 
+
     protected Response getResponse(Chain chain, Request request) throws IOException {
         Response response = chain.proceed(request);
         if (!response.isSuccessful()) {
             switch (response.code()) {
+                case 422:
+                    throw new InvalidFareIdHttpException(response.body().string());
                 case 409:
-                    String errorMessage = response.body().string();
-                    throw new TosConfirmationHttpException(errorMessage);
+                    throw new InterruptConfirmationHttpException(response.body().string());
                 default:
                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }

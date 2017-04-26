@@ -11,7 +11,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface ConfirmBookingContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
         RequestParams getParam();
 
         void showErrorChangeSeat(String message);
@@ -43,14 +43,10 @@ public interface ConfirmBookingContract {
         void showNotActivatedTokoCashLayout(String redirectUrl);
     }
 
-    interface Presenter extends CustomerPresenter<View>{
-
-        void actionCheckBalance();
+    interface Presenter extends CustomerPresenter<View> {
 
         void actionGetFareAndEstimate();
 
         void initialize();
-
-        void clearTokoCashCache();
     }
 }

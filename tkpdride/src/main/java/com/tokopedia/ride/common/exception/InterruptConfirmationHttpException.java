@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.ride.common.exception.model.TosConfirmationExceptionEntity;
+import com.tokopedia.ride.common.exception.model.InterruptConfirmationExceptionEntity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,21 +15,20 @@ import java.io.IOException;
  * Created by alvarisi on 3/29/17.
  */
 
-public class TosConfirmationHttpException extends IOException {
+public class InterruptConfirmationHttpException extends IOException {
     private String tosUrl;
-    private String tosId;
     private String message;
     private String type;
 
-    public TosConfirmationHttpException() {
+    public InterruptConfirmationHttpException() {
         super("Request data is invalid, please check message");
     }
 
-    public TosConfirmationHttpException(String message, Throwable cause) {
+    public InterruptConfirmationHttpException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public TosConfirmationHttpException(String errorMessage) {
+    public InterruptConfirmationHttpException(String errorMessage) {
         super(errorMessage);
         String newResponseString = null;
         JSONObject jsonObject;
@@ -44,20 +43,23 @@ public class TosConfirmationHttpException extends IOException {
         }
         Gson gson = new GsonBuilder().create();
         try {
-            TosConfirmationExceptionEntity entity = gson.fromJson(newResponseString, TosConfirmationExceptionEntity.class);
-            if (entity.getErrors().size() > 0) {
-                switch (entity.getErrors().get(0).getCode()){
-                    case "tos_confirm":
-                        tosId = entity.getMeta().getTosAcceptConfirmationEntity().getTosId();
+            InterruptConfirmationExceptionEntity entity = gson.fromJson(newResponseString, InterruptConfirmationExceptionEntity.class);
+            if (entity.getCode() != null && entity.getCode().length() > 0) {
+                message = entity.getMessage();
+                setType(entity.getCode());
+
+                switch (entity.getCode()) {
+                    case "tos_accept_confirmation":
                         tosUrl = entity.getMeta().getTosAcceptConfirmationEntity().getHref();
-                        message = entity.getErrors().get(0).getTitle();
-                        setType(entity.getErrors().get(0).getCode());
                         break;
-                    case "surge":
-                        tosId = entity.getMeta().getSurgeConfirmationEntity().getSurgeConfirmationId();
+                    case "surge_confirmation":
                         tosUrl = entity.getMeta().getSurgeConfirmationEntity().getHref();
-                        message = entity.getErrors().get(0).getTitle();
-                        setType(entity.getErrors().get(0).getCode());
+                        break;
+                    case "wallet_activation":
+                        tosUrl = entity.getMeta().getWalletActivationEntity().getHref();
+                        break;
+                    case "wallet_topup":
+                        tosUrl = entity.getMeta().getWalletTopupEntity().getHref();
                         break;
                 }
 
@@ -66,7 +68,7 @@ public class TosConfirmationHttpException extends IOException {
             }
         } catch (JsonSyntaxException exception) {
             initCause(exception);
-        } catch (RuntimeException e){
+        } catch (RuntimeException e) {
             initCause(e);
         }
     }
@@ -77,14 +79,6 @@ public class TosConfirmationHttpException extends IOException {
 
     public void setTosUrl(String tosUrl) {
         this.tosUrl = tosUrl;
-    }
-
-    public String getTosId() {
-        return tosId;
-    }
-
-    public void setTosId(String tosId) {
-        this.tosId = tosId;
     }
 
     @Override

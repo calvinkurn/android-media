@@ -53,6 +53,8 @@ public interface RideHomeMapContract {
         void showEnterDestError();
 
         boolean isAlreadySelectDestination();
+
+        boolean isLaunchedWithLocation();
     }
 
     interface Presenter extends CustomerPresenter<View> {

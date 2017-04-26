@@ -150,8 +150,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

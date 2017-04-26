@@ -11,6 +11,7 @@ import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.network.RideInterceptor;
 import com.tokopedia.ride.common.place.data.DirectionEntityMapper;
@@ -227,7 +228,8 @@ public class OnTripDependencyInjection {
         GetRideRequestMapUseCase getRideRequestMapUseCase = injection.provideGetRideRequestMapUseCase(token, userId);
         GetOverviewPolylineUseCase getOverviewPolylineUseCase = injection.getOverviewPolylineUseCase(context);
         GetRideRequestDetailUseCase getRideReuquestUseCase = injection.createGetDetailUseCase(context);
-        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase, getRideReuquestUseCase);
+        GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
+        return new OnTripMapPresenter(createRideRequestUseCase, cancelRideRequestUseCase, getOverviewPolylineUseCase, getRideRequestMapUseCase, getRideReuquestUseCase, getFareEstimateUseCase);
     }
 
     private GetRideRequestMapUseCase provideGetRideRequestMapUseCase(String token, String userId) {
@@ -260,6 +262,30 @@ public class OnTripDependencyInjection {
         OnTripDependencyInjection injection = new OnTripDependencyInjection();
         String userId = sessionHandler.getLoginID();
         return injection.provideGetCurrentDetailRideRequestUseCase(token, userId);
+    }
+
+    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId) {
+        return new GetFareEstimateUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
     }
 
 

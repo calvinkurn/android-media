@@ -155,14 +155,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setViewListener() {
-        if (getArguments() != null) {
-            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-                if (mSource != null && mDestination != null) {
-                    setSourceLocationText(mSource.getTitle());
-                    setDestinationLocationText(mDestination.getTitle());
-                    hideMarkerCenter();
-                }
-            }
+        if (isLaunchedWithLocation() && mSource != null && mDestination != null) {
+            setSourceLocationText(mSource.getTitle());
+            setDestinationLocationText(mDestination.getTitle());
+            proccessToRenderRideProduct();
+            hideMarkerCenter();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -360,14 +357,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
-        if (getArguments() != null) {
-            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-                mSource = getArguments().getParcelable(EXTRA_SOURCE);
-                mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
-                isAlreadySelectDestination = true;
-            }
-
-
+        if (isLaunchedWithLocation()) {
+            mSource = getArguments().getParcelable(EXTRA_SOURCE);
+            mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
+            isAlreadySelectDestination = true;
         }
     }
 
@@ -574,6 +567,15 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public boolean isAlreadySelectDestination() {
         return isAlreadySelectDestination;
+    }
+
+    @Override
+    public boolean isLaunchedWithLocation() {
+        if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
+            return true;
+        }
+
+        return false;
     }
 
     public void setMarkerText(String timeEst) {

@@ -54,4 +54,5 @@
     <string name="apply_promo_toolbar_title">Apply Promo</string>
     <string name="title_requesting_ride">Requesting Ride</string>
     <string name="trip_detail_toolbar_title">Trip Detail</string>
+    <string name="error_invalid_fare_id">Not able to request a ride, please try again</string>
 </resources>

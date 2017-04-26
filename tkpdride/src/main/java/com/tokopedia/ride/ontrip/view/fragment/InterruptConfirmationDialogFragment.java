@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
-import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -30,16 +29,18 @@ import com.tokopedia.ride.R;
  * Created by alvarisi on 3/29/17.
  */
 
-public class TosConfirmationDialogFragment extends DialogFragment {
+public class InterruptConfirmationDialogFragment extends DialogFragment {
     public static final String EXTRA_URL = "EXTRA_URL";
     public static final String EXTRA_ID = "EXTRA_ID";
+    public static final String EXTRA_KEY = "EXTRA_KEY";
 
     private ProgressBar progressBar;
-    private TkpdWebView webviewRecharge;
+    private TkpdWebView webview;
 
-    public static TosConfirmationDialogFragment newInstance(String url) {
-        TosConfirmationDialogFragment fragment = new TosConfirmationDialogFragment();
+    public static InterruptConfirmationDialogFragment newInstance(String url) {
+        InterruptConfirmationDialogFragment fragment = new InterruptConfirmationDialogFragment();
         Bundle bundle = new Bundle();
+        System.out.println("Vishal InterruptConfirmationDialogFragment newInstance = " + url);
         bundle.putString(EXTRA_URL, url);
         fragment.setArguments(bundle);
         return fragment;
@@ -67,7 +68,7 @@ public class TosConfirmationDialogFragment extends DialogFragment {
         }
     }
 
-    private class TosConfirmationWebClient extends WebViewClient {
+    private class InterruptConfirmationWebClient extends WebViewClient {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -81,17 +82,26 @@ public class TosConfirmationDialogFragment extends DialogFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
+            System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading: " + urlString);
+
             Uri uri = Uri.parse(urlString);
-            if (uri.getScheme().equals("toko")){
-                String id = null;
-                if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))){
+            if (uri.getScheme().equals("toko")) {
+                String id = "";
+                String key = "";
+                if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))) {
+                    key = "tos_confirmation_id";
                     id = uri.getQueryParameter("tos_confirmation_id");
-                }else if (!TextUtils.isEmpty(uri.getQueryParameter("surge_confirmation_id"))){
+                } else if (!TextUtils.isEmpty(uri.getQueryParameter("surge_confirmation_id"))) {
+                    key = "surge_confirmation_id";
                     id = uri.getQueryParameter("surge_confirmation_id");
                 }
 
+                System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading key: " + key);
+                System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading id: " + id);
+
                 Intent intent = getActivity().getIntent();
                 intent.putExtra(EXTRA_ID, id);
+                intent.putExtra(EXTRA_KEY, key);
                 getTargetFragment().onActivityResult(
                         getTargetRequestCode(),
                         Activity.RESULT_OK,
@@ -115,16 +125,16 @@ public class TosConfirmationDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        webviewRecharge = (TkpdWebView) view.findViewById(R.id.webview);
+        webview = (TkpdWebView) view.findViewById(R.id.webview);
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
 
         String url = getArguments().getString(EXTRA_URL);
         progressBar.setIndeterminate(true);
-        clearCache(webviewRecharge);
-        webviewRecharge.loadAuthUrlWithFlags(url);
-        webviewRecharge.setWebViewClient(new TosConfirmationWebClient());
-        webviewRecharge.setWebChromeClient(new MyWebViewClient());
-        WebSettings webSettings = webviewRecharge.getSettings();
+        clearCache(webview);
+        webview.loadAuthUrlWithFlags(url);
+        webview.setWebViewClient(new InterruptConfirmationWebClient());
+        webview.setWebChromeClient(new MyWebViewClient());
+        WebSettings webSettings = webview.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(true);
         optimizeWebView();
@@ -139,9 +149,9 @@ public class TosConfirmationDialogFragment extends DialogFragment {
 
     private void optimizeWebView() {
         if (Build.VERSION.SDK_INT >= 19) {
-            webviewRecharge.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            webview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         } else {
-            webviewRecharge.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
     }
 

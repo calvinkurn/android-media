@@ -57,6 +57,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
@@ -87,9 +88,8 @@ import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.FINDI
 
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
         DriverDetailFragment.OnFragmentInteractionListener {
-    private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
+    private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
-    private static final int REQUEST_CODE_SURGE_CONFIRM_DIALOG = 1007;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
@@ -229,6 +229,22 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public RequestParams getFareEstimateParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(confirmBookingViewModel.getSource().getLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getSource().getLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(confirmBookingViewModel.getProductId()));
+
+        //add seat count for Uber Pool only
+        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
+        }
+        return requestParams;
+    }
+
+    @Override
     public boolean isWaitingResponse() {
         return rideConfiguration.isWaitingDriverState();
     }
@@ -316,29 +332,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void openTosConfirmationWebView(String tosUrl) {
+    public void openInterruptConfirmationWebView(String tosUrl) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("tos_dialog");
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
         if (previousDialog != null) {
             fragmentTransaction.remove(previousDialog);
         }
         fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_TOS_CONFIRM_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "tos_dialog");
-    }
-
-    @Override
-    public void openSurgeConfirmationWebView(String tosUrl) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("surge_dialog");
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
-        }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_SURGE_CONFIRM_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "surge_dialog");
+        DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
     }
 
     @Override
@@ -351,24 +354,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_CODE_TOS_CONFIRM_DIALOG:
+            case REQUEST_CODE_INTERRUPT_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
-                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
+                    String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
+                    String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
                     RequestParams requestParams = getParam();
-                    requestParams.putString("tos_confirmation_id", id);
-                    presenter.actionRetryRideRequest(requestParams);
+                    if (key != null && key.length() > 0) {
+                        requestParams.putString(key, id);
+                    }
+                    presenter.actionRideRequest(requestParams);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(getActivity(), R.string.create_request_failed_tos_confirmation, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_CODE_SURGE_CONFIRM_DIALOG:
-                if (resultCode == Activity.RESULT_OK) {
-                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
-                    RequestParams requestParams = getParam();
-                    requestParams.putString("surge_confirmation_id", id);
-                    presenter.actionRetryRideRequest(requestParams);
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(getActivity(), R.string.create_request_failed_surge_confirm, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), R.string.create_request_failed_tos_confirmation, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
@@ -864,6 +860,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void clearActiveNotification() {
         RidePushNotificationBuildAndShow.cancelActiveNotification(getActivity());
+    }
+
+    @Override
+    public String getResourceString(int resourceId) {
+        return getString(resourceId);
     }
 
     @OnClick(R2.id.btn_call)
