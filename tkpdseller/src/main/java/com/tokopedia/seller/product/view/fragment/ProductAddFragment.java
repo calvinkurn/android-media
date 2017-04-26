@@ -334,6 +334,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
     }
 
     @Override
