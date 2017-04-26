@@ -30,6 +30,7 @@ public class SmartLockActivity extends AppCompatActivity implements
     private static final String TAG = "SmartLock";
     public static final int RC_SAVE = 1;
     public static final int RC_READ = 3;
+    public static final int RC_SAVE_SECURITY_QUESTION = 4;
     private static final String IS_RESOLVING = "is_resolving";
     private static final String IS_REQUESTING = "is_requesting";
     public static final String USERNAME = "username";
@@ -46,7 +47,7 @@ public class SmartLockActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple_fragment);
+        setContentView(R.layout.activity_smartlock);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -95,7 +96,7 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     private void resolveResult(Status status, int requestCode) {
         // We don't want to fire multiple resolutions at once since that
-        // can   result in stacked dialogs after rotation or another
+        // can result in stacked dialogs after rotation or another
         // similar event.
         if (mIsResolving) {
             Log.w(TAG, "resolveResult: already resolving.");
@@ -223,7 +224,9 @@ public class SmartLockActivity extends AppCompatActivity implements
 
     private void goToContent() {
         setResult(getIntent().getExtras().getInt(STATE));
-        Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+        if(mGoogleApiClient.isConnected()) {
+            Auth.CredentialsApi.disableAutoSignIn(mGoogleApiClient);
+        }
         finish();
     }
 
@@ -246,6 +249,7 @@ public class SmartLockActivity extends AppCompatActivity implements
                 requestCredentials();
                 break;
             case RC_SAVE:
+            case RC_SAVE_SECURITY_QUESTION:
                 processBundle(getIntent().getExtras());
                 break;
             default:
