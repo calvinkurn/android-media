@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +51,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
     private StreamPlacer placer;
 
-    public TopAdsRecyclerAdapter(@NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
+    public TopAdsRecyclerAdapter(
+            @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
+
         mOriginalAdapter = originalAdapter;
         mContext = context;
         typeFactory = new TopAdsAdapterTypeFactory(context);
@@ -97,7 +98,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 notifyDataSetChanged();
                 break;
             case ObserverType.ITEM_RANGE_INSERTED:
-                notifyItemRangeInserted(placer.getAjustedPositionStart(), placer.getAjustedItemCount());
+                notifyItemRangeInserted(
+                        placer.getAjustedPositionStart(), placer.getAjustedItemCount());
+
                 break;
         }
     }

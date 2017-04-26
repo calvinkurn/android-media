@@ -42,7 +42,8 @@ public class StreamPlacer implements AdsView, LocalAdsClickListener {
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
 
-    public StreamPlacer(Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
+    public StreamPlacer(
+            Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         adsParams = new TopAdsParams();
         this.observer = observer;

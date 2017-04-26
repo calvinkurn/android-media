@@ -11,6 +11,7 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
+import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.view.AdsView;
 
 /**
@@ -19,7 +20,7 @@ import com.tokopedia.topads.sdk.view.AdsView;
 
 public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
-    private static final String TAG = TopAdsPresenter.class.getSimpleName();
+    private static final String TAG = "TopAdsPresenter";
     private AdsView adsView;
     private Context context;
     private TopAdsUseCase adsUseCase;
@@ -32,7 +33,8 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         this.context = context;
         this.adsUseCase = new TopAdsUseCase(context);
         this.openTopAdsUseCase = new OpenTopAdsUseCase(context);
-        this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this);
+        CacheHandler cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
+        this.preferedCategoryUseCase = new PreferedCategoryUseCase(context, this, cacheHandler);
         this.adsParams = new TopAdsParams();
     }
 

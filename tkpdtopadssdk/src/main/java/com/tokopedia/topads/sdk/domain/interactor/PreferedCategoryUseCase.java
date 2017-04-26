@@ -12,8 +12,10 @@ import com.tokopedia.topads.sdk.data.datasource.TopAdsDataSource;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.PreferedCategory;
 import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
+import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.view.AdsView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -28,11 +30,15 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
     private AsyncTask<TopAdsParams, Void, PreferedCategory> task;
     private boolean execute = false;
     private PreferedCategoryListener listener;
+    private final CacheHandler cacheHandler;
     private Random random;
 
-    public PreferedCategoryUseCase(Context context, PreferedCategoryListener listener) {
+    public PreferedCategoryUseCase(
+            Context context, PreferedCategoryListener listener, CacheHandler cacheHandler) {
+
         this.dataSource = new CloudTopAdsDataSource(context);
         this.listener = listener;
+        this.cacheHandler = cacheHandler;
         this.random = new Random();
     }
 
@@ -43,46 +49,63 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
 
     @Override
     public void execute(TopAdsParams params, final AdsView view) {
-        if (execute) {
-            Log.d(TAG, "executor already executed cancel execution");
-            return;
-        }
-        execute = true;
-        task = new AsyncTask<TopAdsParams, Void, PreferedCategory>() {
-
-            @Override
-            protected void onPreExecute() {
-                view.initLoading();
+        if (cacheHandler.isExpired()) {
+            if (execute) {
+                Log.d(TAG, "executor already executed cancel execution");
+                return;
             }
+            execute = true;
+            task = new AsyncTask<TopAdsParams, Void, PreferedCategory>() {
 
-            @Override
-            protected PreferedCategory doInBackground(TopAdsParams... params) {
-                return dataSource.getPreferenceCategory();
-            }
-
-            @Override
-            protected void onPostExecute(PreferedCategory preferedCategory) {
-                if(preferedCategory.getErrorMessage() == null && preferedCategory.getUserType() != 1){
-                    listener.onSuccessLoadPrefered(getRandomId(preferedCategory.getUserCategoriesId()));
-                } else {
-                    listener.onErrorLoadPrefed();
-                    view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE, preferedCategory.getErrorMessage());
+                @Override
+                protected void onPreExecute() {
+                    view.initLoading();
                 }
-                view.finishLoading();
-                execute = false;
-            }
 
-            @Override
-            protected void onCancelled() {
-                super.onCancelled();
-                view.finishLoading();
+                @Override
+                protected PreferedCategory doInBackground(TopAdsParams... params) {
+                    return dataSource.getPreferenceCategory();
+                }
+
+                @Override
+                protected void onPostExecute(PreferedCategory preferedCategory) {
+                    if (preferedCategory.getErrorMessage() == null && preferedCategory.getUserType() != 1) {
+                        listener.onSuccessLoadPrefered(getRandomId(preferedCategory.getUserCategoriesId()));
+                        saveToCache(preferedCategory);
+                    } else {
+                        listener.onErrorLoadPrefed();
+                        view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE, preferedCategory.getErrorMessage());
+                    }
+                    view.finishLoading();
+                    execute = false;
+                }
+
+                @Override
+                protected void onCancelled() {
+                    super.onCancelled();
+                    view.finishLoading();
+                }
+            };
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
+            } else {
+                task.execute(params);
             }
-        };
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, params);
         } else {
-            task.execute(params);
+            ArrayList<Integer> preferredCacheList
+                    = cacheHandler.getArrayListInteger(CacheHandler.KEY_PREFERRED_CATEGORY);
+            listener.onSuccessLoadPrefered(getRandomId(preferredCacheList));
         }
+    }
+
+    private void saveToCache(PreferedCategory preferedCategory) {
+        ArrayList<Integer> userCategoriesId
+                = (ArrayList<Integer>) preferedCategory.getUserCategoriesId();
+
+        cacheHandler.putArrayListInteger(
+                CacheHandler.KEY_PREFERRED_CATEGORY, userCategoriesId);
+        int fifteenMinuteInsecond = 900;
+        cacheHandler.setExpire(fifteenMinuteInsecond);
     }
 
 
