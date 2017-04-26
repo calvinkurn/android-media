@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
@@ -19,7 +18,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +38,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     private Drawable addPictureDrawable;
     private OnImageSelectionListener onImageSelectionListener;
     private String mainPrimaryImageString;
+    private RecyclerView recyclerView;
 
     public static final int VIEW_TYPE_ITEM = 1;
     public static final int VIEW_TYPE_ADD = 2;
@@ -335,16 +334,31 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         if (isPrimary) {
             unselectPreviousPrimaryIfExist(currentPrimaryImageIndex);
             currentPrimaryImageIndex = position;
+            ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
+            imageSelectModel.setPrimary(true);
+
+            movePrimaryToFirst();
         } else { // if make it to not primary, make the first position primary
             if (currentPrimaryImageIndex == position && currentPrimaryImageIndex != 0) {
                 currentPrimaryImageIndex = 0;
                 imageSelectModelList.get(0).setPrimary(true);
                 notifyItemChanged(0);
             }
+            ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
+            imageSelectModel.setPrimary(false);
+            notifyItemChanged(position);
         }
-        ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-        imageSelectModel.setPrimary(isPrimary);
-        notifyItemChanged(position);
+    }
+
+    private void movePrimaryToFirst(){
+        ImageSelectModel model = imageSelectModelList.remove(currentPrimaryImageIndex);
+        imageSelectModelList.add(0,model);
+        currentPrimaryImageIndex = 0;
+        notifyDataSetChanged();
+
+        if (recyclerView!= null) {
+            recyclerView.smoothScrollToPosition(0);
+        }
     }
 
     private void unselectPreviousPrimaryIfExist(int previousPrimaryIndex) {
@@ -386,4 +400,15 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         return currentSelectedIndex;
     }
 
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        this.recyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        this.recyclerView = null;
+    }
 }
