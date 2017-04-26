@@ -16,8 +16,6 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.localytics.android.PushTrackingActivity;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
@@ -219,18 +217,6 @@ public class BuildAndShowNotification {
         }
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
-
-
-        Intent trackingIntent = new Intent(mContext, PushTrackingActivity.class);
-        Bundle extras = notificationPass.getExtraData();
-        String deeplink = data.getString("url");
-        extras.putString("ll_deep_link_url", deeplink != null ? deeplink : "SOME_DEFAULT");
-        extras.remove("url");
-        trackingIntent.putExtras(extras);
-
-        stackBuilder.addNextIntent(trackingIntent);
-
-        CommonUtils.dumper("FCM deeplink goes here "+deeplink+" data "+extras);
 
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
