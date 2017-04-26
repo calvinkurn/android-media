@@ -20,7 +20,7 @@ public class Dispute {
     private int disputeIsExpired;
     @SerializedName("dispute_is_call_admin")
     @Expose
-    private int disputeIsCallAdmin;
+    private String disputeIsCallAdmin;
 
     public String getDisputeDeadline() {
         return disputeDeadline;
@@ -54,11 +54,11 @@ public class Dispute {
         this.disputeIsExpired = disputeIsExpired;
     }
 
-    public int getDisputeIsCallAdmin() {
+    public String getDisputeIsCallAdmin() {
         return disputeIsCallAdmin;
     }
 
-    public void setDisputeIsCallAdmin(int disputeIsCallAdmin) {
+    public void setDisputeIsCallAdmin(String disputeIsCallAdmin) {
         this.disputeIsCallAdmin = disputeIsCallAdmin;
     }
 
