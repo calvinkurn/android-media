@@ -143,7 +143,11 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
+    public void clearAll() {
+        wholesaleModels.clear();
+    }
+
+    public synchronized List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         List<ProductWholesaleViewModel> productWholesaleViewModels =
                 new ArrayList<>();
         for (int i = 0; i < wholesaleModels.size(); i++) {
@@ -153,6 +157,8 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             productWholesaleViewModel.setQtyMin(wholesaleModel.getQtyOne());
             productWholesaleViewModel.setQtyMax(wholesaleModel.getQtyTwo());
             productWholesaleViewModel.setPrice(wholesaleModel.getQtyPrice());
+
+            productWholesaleViewModels.add(productWholesaleViewModel);
         }
         return productWholesaleViewModels;
     }

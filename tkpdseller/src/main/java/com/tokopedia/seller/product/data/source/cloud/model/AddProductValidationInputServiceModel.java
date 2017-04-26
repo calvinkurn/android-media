@@ -82,10 +82,10 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
 
     public TKPDMapParam<String, String> getWholesaleParams() {
         TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
-        for (int i = 0; i < productWholesale.size(); i++) {
-            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i).getPrice()));
-            wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i).getQtyMax()));
-            wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i).getQtyMin()));
+        for (int i = 1; i <= productWholesale.size(); i++) {
+            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i - 1).getPrice()));
+            wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i - 1).getQtyMax()));
+            wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i - 1).getQtyMin()));
         }
         return wholesaleParams;
     }
