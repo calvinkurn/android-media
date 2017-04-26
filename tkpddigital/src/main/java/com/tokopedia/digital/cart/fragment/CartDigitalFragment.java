@@ -288,6 +288,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
+        voucherCartHolderView.setVisibility(
+                cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
+        );
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
