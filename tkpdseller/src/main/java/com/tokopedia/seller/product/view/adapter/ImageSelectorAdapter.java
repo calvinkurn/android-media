@@ -356,8 +356,17 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         currentPrimaryImageIndex = 0;
         notifyDataSetChanged();
 
+        scrollToFirst();
+    }
+
+    private void scrollToFirst(){
         if (recyclerView!= null) {
-            recyclerView.smoothScrollToPosition(0);
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.smoothScrollToPosition(0);
+                }
+            },500);
         }
     }
 
