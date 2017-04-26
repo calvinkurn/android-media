@@ -986,7 +986,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     labelContainer.addView(view);
                 }
             }
-            wishlistButtonContainer.setVisibility(View.VISIBLE);
+            if (data.getIsTopAds()) {
+                wishlistButtonContainer.setVisibility(View.GONE);
+            } else {
+                wishlistButtonContainer.setVisibility(View.VISIBLE);
+            }
             if (data.isProductAlreadyWishlist()) {
                 wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
             } else {

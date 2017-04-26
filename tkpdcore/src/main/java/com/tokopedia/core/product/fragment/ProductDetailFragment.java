@@ -446,7 +446,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
                 getActivity().getIntent().getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1));
         resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, status == STATUS_IN_WISHLIST);
-        getActivity().setResult(Activity.RESULT_OK, resultIntent);
+        getActivity().setResult(Activity.RESULT_CANCELED, resultIntent);
     }
 
     @Override

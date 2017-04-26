@@ -269,7 +269,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_OK) {
+        if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
             int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
             boolean isWishlist = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
             if (position != -1) {
