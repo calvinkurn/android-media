@@ -305,7 +305,7 @@
     </style>
 
     <style name="ExpandableSwitchStyle" parent="eo_switch_style">
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
+        <item name="theme">@style/ColorSwitchCompat</item>
     </style>
 
     <color name="textinput_error_color_light">#FFD50000</color>

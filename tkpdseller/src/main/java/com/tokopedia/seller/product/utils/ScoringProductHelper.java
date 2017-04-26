@@ -30,17 +30,4 @@ public class ScoringProductHelper {
                 return ContextCompat.getColor(context, R.color.low_score_value);
         }
     }
-
-    public static int getImageResolution(String pathFile){
-        BitmapFactory.Options bitMapOption = new BitmapFactory.Options();
-        bitMapOption.inJustDecodeBounds=true;
-        BitmapFactory.decodeFile(pathFile, bitMapOption);
-        int imageWidth = bitMapOption.outWidth;
-        int imageHeight = bitMapOption.outHeight;
-        if(imageWidth > imageHeight){
-            return imageHeight;
-        }else{
-            return imageWidth;
-        }
-    }
 }

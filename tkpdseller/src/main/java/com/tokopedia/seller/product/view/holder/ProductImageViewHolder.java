@@ -91,7 +91,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
                 int imageCount = productPhotoListViewModel.getPhotos().size();
                 if (imageCount > 0) {
                     ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos().get(productPhotoListViewModel.getProductDefaultPicture());
-                    listener.onImageResolutionChanged(ScoringProductHelper.getImageResolution(imageProductInputViewModel.getImagePath()));
+                    listener.onImageResolutionChanged(imageProductInputViewModel.getImageResolution());
                 }
             }
         });
@@ -131,6 +131,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             imageViewModel.setImagePath(selectModel.getUri());
             imageViewModel.setImageDescription(selectModel.getDescription());
+            imageViewModel.setImageResolution(selectModel.getMinResolution());
 
             if (selectModel.isPrimary()) {
                 productPhotos.setProductDefaultPicture(i);
