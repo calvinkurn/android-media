@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
@@ -37,7 +37,6 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
-    private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
     private final ShopInfoUseCase shopInfoUseCase;
@@ -47,13 +46,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private Subscription subscriptionDebounceCatalog;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                   AddProductUseCase addProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                    ProductScoringUseCase productScoringUseCase,
                                    ShopInfoUseCase shopInfoUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
-        this.addProductUseCase = addProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
@@ -319,7 +316,6 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     public void detachView() {
         super.detachView();
-        addProductUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
         fetchCatalogDataUseCase.unsubscribe();
         getCategoryRecommUseCase.unsubscribe();

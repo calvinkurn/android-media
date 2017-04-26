@@ -59,9 +59,14 @@ public class CategoryDataManager {
     }
 
     public CategoryDataBase fetchCategoryWithId(long categoryId) {
-        return new Select()
+        CategoryDataBase categoryDataBase = new Select()
                 .from(CategoryDataBase.class)
                 .where(CategoryDataBase_Table.id.like(categoryId))
                 .querySingle();
+        if (categoryDataBase != null) {
+            return categoryDataBase;
+        } else {
+            throw new RuntimeException("No category found");
+        }
     }
 }

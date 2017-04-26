@@ -25,7 +25,7 @@ import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.service.AddProductService;
+import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -264,13 +264,15 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     public void startUploadProduct(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         finish();
     }
 
     public void startUploadProductWithShare(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         startActivity(ProductInfoActivity.createInstance(this));
         finish();
     }
+
+
 }

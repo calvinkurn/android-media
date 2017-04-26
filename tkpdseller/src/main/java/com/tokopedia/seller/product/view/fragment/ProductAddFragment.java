@@ -47,6 +47,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
@@ -74,17 +75,18 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
+
     protected ProductImageViewHolder productImageViewHolder;
     protected ProductDetailViewHolder productDetailViewHolder;
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
+
     /**
      * Url got from gallery or camera or other paths
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
-
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
         if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
@@ -164,10 +166,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDataValid()) {
+//                if (isDataValid()) {
                     UploadProductInputViewModel viewModel = collectDataFromView();
                     presenter.saveDraft(viewModel);
-                }
+//                }
             }
 
             private boolean isDataValid() {
@@ -417,8 +419,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onEtalaseViewClicked() {
-        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+    public void onEtalaseViewClicked(long etalaseId) {
+        Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 
@@ -454,7 +456,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
     }
 
-    private UploadProductInputViewModel collectDataFromView() {
+    protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
@@ -477,6 +479,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
             viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
         }
+        viewModel.setProductStatus(getStatusUpload());
         return viewModel;
     }
 
@@ -489,6 +492,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @ProductStatus
+    protected int getStatusUpload() {
+        return ProductStatus.ADD;
     }
 
     public interface Listener {
