@@ -13,8 +13,8 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.sellerapp.R;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by normansyahputa on 9/1/16.
@@ -45,27 +45,19 @@ public class BadgeContainer extends FrameLayout implements BaseView<BadgeContain
             LinearLayout.LayoutParams params = new LinearLayout.
                     LayoutParams(dpWidthInPx, dpHeightInPx);
 
-//            int sizeInDP = 1;
-//            int marginInDp = (int) TypedValue.applyDimension(
-//                    TypedValue.COMPLEX_UNIT_DIP, sizeInDP, getResources()
-//                            .getDisplayMetrics());
-//            params.setMargins(marginInDp, marginInDp, marginInDp, marginInDp);
-
             ImageView goldMerchant = new ImageView(getContext());
             goldMerchant.setLayoutParams(params);
             goldMerchant.setImageResource(R.drawable.ic_shop_gold);
-//            imageHandler.loadImageWithIdWithoutPlaceholder(goldMerchant, R.drawable.ic_shop_gold);
 
             badgeContainerLinLay.removeAllViews();
             badgeContainerLinLay.addView(goldMerchant);
+        } else {
+            badgeContainerLinLay.removeAllViews();
         }
 
         luckyShop.setVisibility(View.GONE);
 
         if(data.luckyUrl != null && !data.luckyUrl.isEmpty()){
-//            final ImageView luckMerchant = new ImageView(getContext());
-//            luckMerchant.setLayoutParams(new LinearLayout.LayoutParams(10,10));
-//            badgeContainerLinLay.addView(luckMerchant);
 
             imageHandler.loadImage(luckyShop, data.luckyUrl, new SimpleTarget<Bitmap>() {
                 @Override
@@ -90,6 +82,8 @@ public class BadgeContainer extends FrameLayout implements BaseView<BadgeContain
                     Log.d(ImageHandler.class.getSimpleName(), "start load url");
                 }
             });
+        } else {
+            luckyShop.setVisibility(View.GONE);
         }
     }
 

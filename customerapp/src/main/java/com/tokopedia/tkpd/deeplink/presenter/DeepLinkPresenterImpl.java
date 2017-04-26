@@ -107,7 +107,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             case INVOICE:
                 return false;
             case RECHARGE:
-                return false;
+                return true;
             default:
                 return true;
         }
@@ -174,10 +174,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openInvoice(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                     break;
+                /*
                 case RECHARGE:
                     openRecharge(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_RECHARGE;
                     break;
+                   */
                 case APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0){
                         openWebView(Uri.parse(String.valueOf(linkSegment.get(0))));
@@ -536,7 +538,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             else if (isProduct(linkSegment))
                 return PRODUCT;
             else if (isPulsa(linkSegment))
-                return RECHARGE;
+                return OTHER;
             else if (isShop(linkSegment))
                 return SHOP;
             else return OTHER;
@@ -582,6 +584,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 && !linkSegment.get(0).equals("search")
                 && !linkSegment.get(0).equals("hot")
                 && !linkSegment.get(0).equals("about")
+                && !linkSegment.get(0).equals("kartu-kredit")
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl")
                 && !linkSegment.get(0).equals("privacy.pl")
