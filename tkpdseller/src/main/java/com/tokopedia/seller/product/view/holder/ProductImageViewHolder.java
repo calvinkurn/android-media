@@ -121,7 +121,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public ProductPhotoListViewModel getProductPhotos() {
-        
+
         ProductPhotoListViewModel productPhotos = new ProductPhotoListViewModel();
         List<ImageProductInputViewModel> listImageViewModel = new ArrayList<>();
 
