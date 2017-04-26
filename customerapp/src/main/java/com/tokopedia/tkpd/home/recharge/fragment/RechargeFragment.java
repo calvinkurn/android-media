@@ -383,8 +383,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-//                    goToCheckout(getUrlCheckout());
-                    goToNativeCheckout();
+                    goToCheckout(getUrlCheckout());
+//                    goToNativeCheckout();
             }
         } else {
             gotoLogin();
@@ -527,6 +527,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void setOperatorView(RechargeOperatorModel operator) {
         try {
+            selectedOperator = operator;
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(
                     new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)}
@@ -711,13 +712,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     hideFormAndShowImageOperator();
                 }
             }
-        } else {
-            hideFormAndImageOperator();
         }
     }
 
     private void setPhoneBookVisibility() {
-
         if (category != null && category.getAttributes() != null) {
             CategoryAttributes categoryAttributes = category.getAttributes();
             if (categoryAttributes.getUsePhonebook() && rechargeEditText != null) {
@@ -752,7 +750,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         } else {
             hideKeyboard();
-            hideFormAndImageOperator();
         }
     }
 

@@ -379,8 +379,10 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
 
                 if (resultCode == RESULT_DELETE) {
                     int position = data.getExtras().getInt("position");
-                    adapter.getList().remove(position);
-                    adapter.notifyDataSetChanged();
+                    if (!adapter.getList().isEmpty()) {
+                        adapter.getList().remove(position);
+                        adapter.notifyDataSetChanged();
+                    }
                     SnackbarManager.make(getActivity(),
                             getString(R.string.message_success_delete_talk), Snackbar.LENGTH_LONG).show();
                 } else if (resultCode == Activity.RESULT_OK) {
@@ -388,10 +390,12 @@ public class ShopTalkFragment extends BasePresenterFragment<ShopTalkPresenter>
                     int size = data.getExtras().getInt("total_comment");
                     int followStatus = data.getExtras().getInt("is_follow");
                     int readStatus = data.getExtras().getInt("read_status");
-                    (adapter.getList().get(position)).setTalkTotalComment(String.valueOf(size));
-                    (adapter.getList().get(position)).setTalkFollowStatus(followStatus);
-                    (adapter.getList().get(position)).setTalkReadStatus(readStatus);
-                    adapter.notifyDataSetChanged();
+                    if (!adapter.getList().isEmpty()) {
+                        (adapter.getList().get(position)).setTalkTotalComment(String.valueOf(size));
+                        (adapter.getList().get(position)).setTalkFollowStatus(followStatus);
+                        (adapter.getList().get(position)).setTalkReadStatus(readStatus);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
                 break;
             default:
