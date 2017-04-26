@@ -69,6 +69,7 @@ public class UploadProductMapper {
         for (ImageProductInputViewModel viewModel : photos){
             ImageProductInputDomainModel domainModel = new ImageProductInputDomainModel();
             domainModel.setImagePath(viewModel.getImagePath());
+            domainModel.setDescription(viewModel.getImageDescription());
             domainModels.add(domainModel);
         }
         return domainModels;
