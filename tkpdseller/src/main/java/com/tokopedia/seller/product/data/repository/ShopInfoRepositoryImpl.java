@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.data.mapper.ShopInfoDataToDomainMapper;
 import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
@@ -34,13 +35,6 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
 
     @Override
     public Observable<AddProductShopInfoDomainModel> getAddProductShopInfo(String shopId, String shopDomain) {
-        return shopInfoDataSource.getShopInfo(shopId, shopDomain).map(new Func1<ShopModel, AddProductShopInfoDomainModel>() {
-            @Override
-            public AddProductShopInfoDomainModel call(ShopModel shopModel) {
-                boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
-                boolean isFreeReturn = shopModel.info.isFreeReturns();
-                return new AddProductShopInfoDomainModel(isGoldMerchant, isFreeReturn);
-            }
-        });
+        return shopInfoDataSource.getShopInfo(shopId, shopDomain).map(new ShopInfoDataToDomainMapper());
     }
 }

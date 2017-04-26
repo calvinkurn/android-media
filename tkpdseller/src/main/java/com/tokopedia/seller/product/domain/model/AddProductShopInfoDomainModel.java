@@ -8,11 +8,6 @@ public class AddProductShopInfoDomainModel {
     private boolean isGoldMerchant;
     private boolean isFreeReturn;
 
-    public AddProductShopInfoDomainModel(boolean isGoldMerchant, boolean isFreeReturn) {
-        this.isGoldMerchant = isGoldMerchant;
-        this.isFreeReturn = isFreeReturn;
-    }
-
     public boolean isGoldMerchant() {
         return isGoldMerchant;
     }
