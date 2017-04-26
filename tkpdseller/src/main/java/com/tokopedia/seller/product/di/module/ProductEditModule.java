@@ -18,7 +18,7 @@ import retrofit2.Retrofit;
 
 @ProductAddScope
 @Module
-public class ProductEditModule extends ProductAddModule {
+public class ProductEditModule extends ProductDraftModule {
 
     @ProductAddScope
     @Provides

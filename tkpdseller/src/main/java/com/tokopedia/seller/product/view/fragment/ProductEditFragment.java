@@ -20,7 +20,7 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/21/17.
  */
 
-public class ProductEditFragment extends ProductAddFragment implements ProductEditView {
+public class ProductEditFragment extends ProductDraftFragment implements ProductEditView {
 
     public static final String EDIT_PRODUCT_ID = "EDIT_PRODUCT_ID";
 
@@ -57,45 +57,9 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+    public void onSuccessLoadProduct(UploadProductInputViewModel model){
         productId = model.getProductId();
-        productInfoViewHolder.setName(model.getProductName());
-        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
-        if (model.getProductCatalogId() > 0) {
-            productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
-        }
-        productImageViewHolder.setProductPhotos(model.getProductPhotos());
-
-        productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
-        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
-        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
-        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
-        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
-        productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
-//        productDetailViewHolder.setStockStatus(model.get);
-//        productDetailViewHolder.setTotalStock();
-        if (model.getProductEtalaseId() > 0) {
-            productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
-            productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
-        }
-        productDetailViewHolder.setCondition(model.getProductCondition());
-        productDetailViewHolder.setInsurance(model.getProductMustInsurance());
-        productDetailViewHolder.setFreeReturn(model.getProductReturnable());
-
-        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
-        if (model.getProductVideos() != null) {
-            productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
-        }
-        if (model.getPoProcessValue() > 0) {
-            productAdditionalInfoViewHolder.expandPreOrder(true);
-            productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
-            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
-        }
-    }
-
-    @Override
-    public void onErrorLoadProduct(String errorMessage) {
-
+        super.onSuccessLoadProduct(model);
     }
 
     @Override
