@@ -14,6 +14,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
     private int lengthDescProduct;
     private boolean stockStatus;
     private boolean freeReturnStatus;
+    private boolean freeReturnActive;
 
     public ValueIndicatorScoreModel(int imageCount, int imageResolution,
                                     int lengthProductName, int lengthDescProduct, boolean stockStatus,
@@ -77,6 +78,14 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.freeReturnStatus = freeReturnStatus;
     }
 
+    public boolean isFreeReturnActive() {
+        return freeReturnActive;
+    }
+
+    public void setFreeReturnActive(boolean freeReturnActive) {
+        this.freeReturnActive = freeReturnActive;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,6 +99,7 @@ public class ValueIndicatorScoreModel implements Parcelable {
         dest.writeInt(this.lengthDescProduct);
         dest.writeByte(this.stockStatus ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeReturnStatus ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.freeReturnActive ? (byte) 1 : (byte) 0);
     }
 
     protected ValueIndicatorScoreModel(Parcel in) {
@@ -99,9 +109,10 @@ public class ValueIndicatorScoreModel implements Parcelable {
         this.lengthDescProduct = in.readInt();
         this.stockStatus = in.readByte() != 0;
         this.freeReturnStatus = in.readByte() != 0;
+        this.freeReturnActive = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<ValueIndicatorScoreModel> CREATOR = new Parcelable.Creator<ValueIndicatorScoreModel>() {
+    public static final Creator<ValueIndicatorScoreModel> CREATOR = new Creator<ValueIndicatorScoreModel>() {
         @Override
         public ValueIndicatorScoreModel createFromParcel(Parcel source) {
             return new ValueIndicatorScoreModel(source);
