@@ -7,12 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
+import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductEditView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -27,6 +33,7 @@ public class ProductEditFragment extends ProductDraftFragment implements Product
     @Inject
     public ProductEditPresenter presenter;
     private String productId;
+    private ProductPhotoListViewModel productPhotosBeforeEdit;
 
     public static ProductEditFragment createInstance(String productId) {
         ProductEditFragment fragment = new ProductEditFragment();
@@ -57,8 +64,9 @@ public class ProductEditFragment extends ProductDraftFragment implements Product
     }
 
     @Override
-    public void onSuccessLoadProduct(UploadProductInputViewModel model){
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         productId = model.getProductId();
+        productPhotosBeforeEdit = model.getProductPhotos();
         super.onSuccessLoadProduct(model);
     }
 
@@ -71,7 +79,65 @@ public class ProductEditFragment extends ProductDraftFragment implements Product
     protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = super.collectDataFromView();
         viewModel.setProductId(productId);
+        if (proccessEditImage(viewModel.getProductPhotos(), productPhotosBeforeEdit)){
+            viewModel.setProductChangePhoto(1);
+        } else {
+            viewModel.setProductChangePhoto(0);
+        }
         return viewModel;
+    }
+
+    private boolean proccessEditImage(ProductPhotoListViewModel productPhotos, ProductPhotoListViewModel productPhotosBeforeEdit) {
+        boolean isChanging = false;
+        List<ImageProductInputViewModel> photos = productPhotos.getPhotos();
+        int defaultImage = productPhotos.getProductDefaultPicture();
+
+        List<ImageProductInputViewModel> newPhotosList = new ArrayList<>();
+
+        // loop in new photos
+        // if found as path, then ready to upload,
+        // if not found as path, find the model before edit to get the photos id
+        for (int i = 0; i < photos.size(); i++) {
+            ImageProductInputViewModel viewModel = photos.get(i);
+            String url = viewModel.getUrl();
+            if (StringUtils.isNotBlank(url)) {
+                viewModel = findImage(url, productPhotosBeforeEdit.getPhotos());
+            } else {
+                isChanging = true;
+            }
+            if (i == productPhotos.getProductDefaultPicture()){
+                newPhotosList.add(0, viewModel);
+                defaultImage = 0;
+            } else {
+                newPhotosList.add(viewModel);
+            }
+        }
+
+        // loop in photo before edit
+        // if there is a photo without url existed in new photo list, the prepare it to be deleted
+        for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
+            try {
+                findImage(viewModel.getUrl(), productPhotos.getPhotos());
+            } catch (RuntimeException e){
+                viewModel.setUrl("");
+                newPhotosList.add(viewModel);
+                isChanging = true;
+            }
+        }
+
+        productPhotos.setProductDefaultPicture(defaultImage);
+        productPhotos.setPhotos(newPhotosList);
+        return isChanging;
+    }
+
+    private ImageProductInputViewModel findImage(String url, List<ImageProductInputViewModel> photoList) {
+        for (ImageProductInputViewModel viewModel : photoList) {
+            if (viewModel.getUrl().equals(url)) {
+                return viewModel;
+            }
+        }
+        throw new RuntimeException("photo with image url not found");
+
     }
 
     @ProductStatus

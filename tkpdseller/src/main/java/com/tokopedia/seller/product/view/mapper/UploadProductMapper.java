@@ -69,7 +69,9 @@ public class UploadProductMapper {
         for (ImageProductInputViewModel viewModel : photos){
             ImageProductInputDomainModel domainModel = new ImageProductInputDomainModel();
             domainModel.setImagePath(viewModel.getImagePath());
+            domainModel.setUrl(viewModel.getUrl());
             domainModel.setDescription(viewModel.getImageDescription());
+            domainModel.setPicId(viewModel.getPicId());
             domainModels.add(domainModel);
         }
         return domainModels;
@@ -82,7 +84,6 @@ public class UploadProductMapper {
         viewModel.setProductVideos(domainModel.getProductVideos());
         viewModel.setProductName(domainModel.getProductName());
         viewModel.setProductDescription(domainModel.getProductDescription());
-        viewModel.setProductChangePhoto(domainModel.getProductChangePhoto());
         viewModel.setProductCatalogId(domainModel.getProductCatalogId());
         viewModel.setProductCatalogName(domainModel.getProductCatalogName());
         viewModel.setProductDepartmentId(domainModel.getProductDepartmentId());
@@ -132,9 +133,9 @@ public class UploadProductMapper {
         for (ImageProductInputDomainModel domainModel : photos) {
             ImageProductInputViewModel viewModel = new ImageProductInputViewModel();
             viewModel.setImagePath(domainModel.getImagePath());
+            viewModel.setUrl(domainModel.getUrl());
             viewModel.setImageDescription(domainModel.getDescription());
             viewModel.setPicId(domainModel.getPicId());
-            viewModel.setUrl(domainModel.getUrl());
             viewModels.add(viewModel);
         }
         return viewModels;
