@@ -12,6 +12,6 @@ import dagger.Component;
  */
 @ProductAddScope
 @Component(modules = ProductEditModule.class, dependencies = AppComponent.class)
-public interface ProductEditComponent extends ProductAddComponent {
+public interface ProductEditComponent extends ProductDraftComponent {
     void inject(ProductEditFragment fragment);
 }

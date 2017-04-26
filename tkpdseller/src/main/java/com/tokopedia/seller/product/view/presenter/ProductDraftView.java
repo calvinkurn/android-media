@@ -4,10 +4,13 @@ import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
 /**
- * @author sebastianuskh on 4/21/17.
+ * @author sebastianuskh on 4/26/17.
  */
 
-public interface ProductEditView extends ProductDraftView {
+public interface ProductDraftView extends ProductAddView {
 
+    void onSuccessLoadProduct(UploadProductInputViewModel model);
+
+    void onErrorLoadProduct(String errorMessage);
 
 }
