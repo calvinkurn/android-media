@@ -15,4 +15,6 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
+    Intent instanceIntentDigitalProduct(String categoryId);
+
 }
