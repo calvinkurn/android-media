@@ -996,7 +996,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             } else {
                 wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
             }
-            wishlistButton.setOnClickListener(new View.OnClickListener() {
+            wishlistButtonContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     fragmentBrowseProductView.onWishlistButtonClick(data, position);
