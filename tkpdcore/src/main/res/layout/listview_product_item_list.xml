@@ -43,7 +43,7 @@
                     android:layout_weight="1"
                     android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
                     android:textColor="@color/black"
-                    android:textSize="15sp" />
+                    android:textSize="13sp" />
 
                 <RelativeLayout
                     android:id="@+id/wishlist_button_container"
@@ -78,7 +78,7 @@
                     android:minHeight="23dp"
                     android:text="Rp 3.121.500"
                     android:textColor="@color/orange_red"
-                    android:textSize="12sp" />
+                    android:textSize="13sp" />
 
                 <com.tokopedia.core.customwidget.FlowLayout
                     android:id="@+id/label_container"
@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textSize="12sp"
+                    android:textSize="11sp"
                     />
 
             </LinearLayout>
@@ -118,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ORIGINAL-ZONE"
-                android:textSize="12sp" />
+                android:textSize="11sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,7 +134,7 @@
                     android:drawableLeft="@drawable/ic_place_black_24dp"
                     android:gravity="center_vertical"
                     android:text="Jakarta"
-                    android:textSize="10sp" />
+                    android:textSize="11sp" />
 
                 <LinearLayout
                     android:id="@+id/badges_container"
