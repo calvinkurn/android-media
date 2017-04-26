@@ -28,6 +28,14 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
     public ProductEditPresenter presenter;
     private String productId;
 
+    public static ProductEditFragment createInstance(String productId) {
+        ProductEditFragment fragment = new ProductEditFragment();
+        Bundle args = new Bundle();
+        args.putString(EDIT_PRODUCT_ID, productId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     protected void initInjector() {
         DaggerProductEditComponent
@@ -36,14 +44,6 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
                 .productEditModule(new ProductEditModule())
                 .build()
                 .inject(this);
-    }
-
-    public static ProductEditFragment createInstance(String productId) {
-        ProductEditFragment fragment = new ProductEditFragment();
-        Bundle args = new Bundle();
-        args.putString(EDIT_PRODUCT_ID, productId);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Nullable
@@ -71,6 +71,7 @@ public class ProductEditFragment extends ProductAddFragment implements ProductEd
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
         productDetailViewHolder.setWeightValue((float) model.getProductWeight());
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+        productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
 //        productDetailViewHolder.setStockStatus(model.get);
 //        productDetailViewHolder.setTotalStock();
         if (model.getProductEtalaseId() > 0) {

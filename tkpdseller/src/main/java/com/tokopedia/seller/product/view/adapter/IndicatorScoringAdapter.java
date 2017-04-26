@@ -68,6 +68,7 @@ public class IndicatorScoringAdapter extends RecyclerView.Adapter<IndicatorScori
             progressScoring.setMax(indicatorScoreView.getMaxScoreIndicator());
             progressScoring.setProgressColor(ScoringProductHelper.getColorOfScore(indicatorScoreView.getIndicatorColor(),
                     context));
+
             containerDescription.removeAllViews();
             for(String desc: indicatorScoreView.getIndicatorDescs()){
                 View itemViewDesc = LayoutInflater.from(context).

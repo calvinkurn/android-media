@@ -24,6 +24,7 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
@@ -32,9 +33,7 @@ import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
-
 import com.tokopedia.seller.product.view.activity.ProductScoringDetailActivity;
-
 import com.tokopedia.seller.product.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.view.dialog.ImageDescriptionDialog;
 import com.tokopedia.seller.product.view.dialog.ImageEditDialogFragment;
@@ -72,19 +71,9 @@ import permissions.dispatcher.RuntimePermissions;
 public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView,
         ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener, ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
 
-    public interface Listener {
-
-        void startUploadProduct(long productId);
-        void startUploadProductWithShare(long productId);
-
-        void startAddWholeSaleDialog(WholesaleModel baseValue);
-
-    }
     public static final String TAG = ProductAddFragment.class.getSimpleName();
-
     @Inject
     public ProductAddPresenter presenter;
-
     protected ProductScoreViewHolder productScoreViewHolder;
 
     protected ProductImageViewHolder productImageViewHolder;
@@ -347,6 +336,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
+        valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
     }
 
     @Override
@@ -455,8 +445,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void startAddWholeSaleDialog(WholesaleModel baseValue) {
-        listener.startAddWholeSaleDialog(baseValue);
+    public void startAddWholeSaleDialog(WholesaleModel fixedPrice,
+                                        @CurrencyTypeDef int currencyType,
+                                        WholesaleModel previousWholesalePrice) {
+        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
     }
 
     @Override
@@ -472,7 +464,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
-//        viewModel.setProductWholesaleList();
+        viewModel.setProductWholesaleList(productDetailViewHolder.getProductWholesaleViewModels());
         viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
@@ -505,5 +497,15 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @ProductStatus
     protected int getStatusUpload() {
         return ProductStatus.ADD;
+    }
+
+    public interface Listener {
+        void startUploadProduct(long productId);
+
+        void startUploadProductWithShare(long productId);
+
+        void startAddWholeSaleDialog(WholesaleModel fixedPrice,
+                                     @CurrencyTypeDef int currencyType,
+                                     WholesaleModel previousWholesalePrice);
     }
 }

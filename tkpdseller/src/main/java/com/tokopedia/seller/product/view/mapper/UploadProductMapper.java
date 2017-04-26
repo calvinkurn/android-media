@@ -104,7 +104,19 @@ public class UploadProductMapper {
     }
 
     private static List<ProductWholesaleViewModel> mapWholesaleDomainToView(List<ProductWholesaleDomainModel> productWholesaleList) {
-        return null;
+        List<ProductWholesaleViewModel> wholesaleDomainModels
+                = new ArrayList<>();
+        for (ProductWholesaleDomainModel price : productWholesaleList) {
+            ProductWholesaleViewModel productWholesaleDomainModel
+                    = new ProductWholesaleViewModel();
+            productWholesaleDomainModel.setPrice(Double.valueOf(price.getPrice()));
+            productWholesaleDomainModel.setQtyMax(price.getQtyMax());
+            productWholesaleDomainModel.setQtyMin(price.getQtyMin());
+
+            wholesaleDomainModels.add(productWholesaleDomainModel);
+        }
+
+        return wholesaleDomainModels;
     }
 
     private static ProductPhotoListViewModel mapProductPhotoDomainToView(ProductPhotoListDomainModel productPhotos) {
