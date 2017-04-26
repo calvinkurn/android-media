@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
@@ -253,9 +254,9 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         @Override
         public Observable<AddProductDomainModel> call(AddProductValidationDomainModel addProductValidationDomainModel) {
             String postKey = addProductValidationDomainModel.getPostKey();
-            if (!TextUtils.isEmpty(postKey)) {
-                AddProductPictureInputDomainModel addProductPictureInputModel = AddProductDomainMapper.mapUploadToPicture(uploadProductInputDomainModel);
-                return Observable.just(addProductPictureInputModel)
+            if (StringUtils.isNotBlank(postKey)) {
+                uploadProductInputDomainModel.setPostKey(postKey);
+                return Observable.just(uploadProductInputDomainModel)
                         .flatMap(new AddProductPicture())
                         .map(new ProcessAddProductPicture(uploadProductInputDomainModel, postKey))
                         .flatMap(new AddProductSubmit());
@@ -266,11 +267,11 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
     }
 
-    private class AddProductPicture implements Func1<AddProductPictureInputDomainModel, Observable<AddProductPictureDomainModel>> {
+    private class AddProductPicture implements Func1<UploadProductInputDomainModel, Observable<AddProductPictureDomainModel>> {
         @Override
-        public Observable<AddProductPictureDomainModel> call(AddProductPictureInputDomainModel addProductPictureInputDomainModel) {
+        public Observable<AddProductPictureDomainModel> call(UploadProductInputDomainModel domainModel) {
             return imageProductUploadRepository
-                    .addProductPicture(addProductPictureInputDomainModel);
+                    .addProductPicture(domainModel);
         }
 
     }

@@ -48,7 +48,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
-            String errorMessage = "unknown error";
+            String errorMessage = e.getLocalizedMessage();
             if (e instanceof ResponseErrorListStringException) {
                 errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
             }

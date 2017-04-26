@@ -1,6 +1,9 @@
 package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductInputMapper;
+import com.tokopedia.seller.product.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
@@ -51,14 +54,14 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource){
-        return new UploadProductRepositoryImpl(uploadProductDataSource);
+    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource, AddProductValidationInputMapper addProductValidationInputMapper, EditProductInputMapper editProductInputMapper){
+        return new UploadProductRepositoryImpl(uploadProductDataSource, addProductValidationInputMapper, editProductInputMapper);
     }
 
     @AddProductServiceScope
     @Provides
-    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource){
-        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource);
+    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource, UploadProductPictureInputMapper uploadProductPictureInputMapper){
+        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource, uploadProductPictureInputMapper);
     }
 
     @AddProductServiceScope

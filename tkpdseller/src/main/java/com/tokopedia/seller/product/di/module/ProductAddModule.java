@@ -11,7 +11,10 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.product.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.CategoryRecommRepositoryImpl;
@@ -43,7 +46,6 @@ import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
@@ -79,36 +81,6 @@ public class ProductAddModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource){
         return new ProductDraftRepositoryImpl(productDraftDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    GenerateHostRepository provideGenerateHostRepository(GenerateHostDataSource generateHostDataSource) {
-        return new GenerateHostRepositoryImpl(generateHostDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource){
-        return new UploadProductRepositoryImpl(uploadProductDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource){
-        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    GenerateHostApi provideGenerateHostApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(GenerateHostApi.class);
-    }
-
-    @ProductAddScope
-    @Provides
-    UploadProductApi provideUploadProductApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(UploadProductApi.class);
     }
 
     @ProductAddScope

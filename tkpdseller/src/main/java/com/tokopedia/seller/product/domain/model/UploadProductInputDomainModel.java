@@ -39,6 +39,9 @@ public class UploadProductInputDomainModel {
     private int nameEditable;
     @ProductStatus
     private int productStatus;
+    private String postKey;
+    private int productChangeCatalog;
+    private int productChangeWholesale;
 
     public long getId() {
         return id;
@@ -267,5 +270,21 @@ public class UploadProductInputDomainModel {
 
     public int getNameEditable() {
         return nameEditable;
+    }
+
+    public void setPostKey(String postKey) {
+        this.postKey = postKey;
+    }
+
+    public String getPostKey() {
+        return postKey;
+    }
+
+    public int getProductChangeCatalog() {
+        return productChangeCatalog;
+    }
+
+    public int getProductChangeWholesale() {
+        return productChangeWholesale;
     }
 }
