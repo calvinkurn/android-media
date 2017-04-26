@@ -4,15 +4,16 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
+import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
@@ -37,34 +38,31 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     private final SaveDraftProductUseCase saveDraftProductUseCase;
     private final ProductScoringUseCase productScoringUseCase;
-    private final AddProductUseCase addProductUseCase;
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
-    private final ShopInfoUseCase shopInfoUseCase;
+    private final AddProductShopInfoUseCase addProductShopInfoUseCase;
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
     private Subscription subscriptionDebounceCatalog;
 
     public ProductAddPresenterImpl(SaveDraftProductUseCase saveDraftProductUseCase,
-                                   AddProductUseCase addProductUseCase,
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                    ProductScoringUseCase productScoringUseCase,
-                                   ShopInfoUseCase shopInfoUseCase) {
+                                   AddProductShopInfoUseCase addProductShopInfoUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
-        this.addProductUseCase = addProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
-        this.shopInfoUseCase = shopInfoUseCase;
+        this.addProductShopInfoUseCase = addProductShopInfoUseCase;
     }
 
     @Override
-    public void getShopInfo(String userId, String deviceId, String shopId) {
-        shopInfoUseCase.execute(
-                ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId),
-                new Subscriber<ShopModel>() {
+    public void getShopInfo(String shopId) {
+        addProductShopInfoUseCase.execute(
+                ShopInfoUseCase.createRequestParamByShopId(shopId),
+                new Subscriber<AddProductShopInfoDomainModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -76,10 +74,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
                     }
 
                     @Override
-                    public void onNext(ShopModel shopModel) {
-                        boolean isGoldMerchant = shopModel.info.shopIsGold == 1;
-                        boolean isFreeReturn = shopModel.info.isFreeReturns();
-                        getView().onSuccessLoadShopInfo(isGoldMerchant, isFreeReturn);
+                    public void onNext(AddProductShopInfoDomainModel model) {
+                        getView().onSuccessLoadShopInfo(model.isGoldMerchant(), model.isFreeReturn());
                     }
                 });
     }
@@ -319,11 +315,10 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     public void detachView() {
         super.detachView();
-        addProductUseCase.unsubscribe();
         saveDraftProductUseCase.unsubscribe();
         fetchCatalogDataUseCase.unsubscribe();
         getCategoryRecommUseCase.unsubscribe();
-        shopInfoUseCase.unsubscribe();
+        addProductShopInfoUseCase.unsubscribe();
 
         if (subscriptionDebounceCategoryRecomm != null) {
             subscriptionDebounceCategoryRecomm.unsubscribe();

@@ -5,11 +5,9 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.network.core.TkpdErrorResponse;
+import com.tokopedia.core.network.core.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -94,7 +92,7 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor(){
-        return new TkpdErrorResponseInterceptor(TkpdErrorResponse.class);
+        return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
 }

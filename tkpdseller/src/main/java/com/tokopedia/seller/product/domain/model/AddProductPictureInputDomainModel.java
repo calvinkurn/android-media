@@ -5,18 +5,9 @@ package com.tokopedia.seller.product.domain.model;
  */
 
 public class AddProductPictureInputDomainModel {
-    private String duplicate;
     private int serverId;
     private ProductPhotoListDomainModel productPhotos;
     private String hostUrl;
-
-    public String getDuplicate() {
-        return duplicate;
-    }
-
-    public void setDuplicate(String duplicate) {
-        this.duplicate = duplicate;
-    }
 
     public int getServerId() {
         return serverId;

@@ -1,6 +1,9 @@
 package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductInputMapper;
+import com.tokopedia.seller.product.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ImageProductUploadRepositoryImpl;
 import com.tokopedia.seller.product.data.repository.ProductDraftRepositoryImpl;
@@ -12,12 +15,11 @@ import com.tokopedia.seller.product.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.GenerateHostApi;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.di.scope.AddProductServiceScope;
-import com.tokopedia.seller.product.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenterImpl;
 
@@ -34,8 +36,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    AddProductServicePresenter provideAddProductServicePresenter(AddProductUseCase addProductUseCase){
-        return new AddProductServicePresenterImpl(addProductUseCase);
+    AddProductServicePresenter provideAddProductServicePresenter(UploadProductUseCase uploadProductUseCase){
+        return new AddProductServicePresenterImpl(uploadProductUseCase);
     }
 
     @AddProductServiceScope
@@ -52,14 +54,14 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource){
-        return new UploadProductRepositoryImpl(uploadProductDataSource);
+    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource, AddProductValidationInputMapper addProductValidationInputMapper, EditProductInputMapper editProductInputMapper){
+        return new UploadProductRepositoryImpl(uploadProductDataSource, addProductValidationInputMapper, editProductInputMapper);
     }
 
     @AddProductServiceScope
     @Provides
-    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource){
-        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource);
+    ImageProductUploadRepository provideImageProductUploadRepository(ImageProductUploadDataSource iageProductUploadDataSource, UploadProductPictureInputMapper uploadProductPictureInputMapper){
+        return new ImageProductUploadRepositoryImpl(iageProductUploadDataSource, uploadProductPictureInputMapper);
     }
 
     @AddProductServiceScope

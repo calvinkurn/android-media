@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.domain;
 
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+
 import rx.Observable;
 
 /**
@@ -8,6 +10,7 @@ import rx.Observable;
  */
 
 public interface ShopInfoRepository {
-    Observable<ShopModel> getShopInfo(String userId, String deviceId, String shopId, String shopDomain);
-    Observable<ShopModel> getShopInfoFromNetwork(String userId, String deviceId, String shopId, String shopDomain);
+    Observable<ShopModel> getShopInfo(String shopId, String shopDomain);
+    Observable<ShopModel> getShopInfoFromNetwork(String shopId, String shopDomain);
+    Observable<AddProductShopInfoDomainModel> getAddProductShopInfo(String shopId, String shopDomain);
 }

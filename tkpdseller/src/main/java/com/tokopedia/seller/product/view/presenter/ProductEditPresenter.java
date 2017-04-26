@@ -1,7 +1,8 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.domain.interactor.AddProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
+import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchEditProductFormUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
@@ -27,13 +28,12 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
 
     @Inject
     public ProductEditPresenter(SaveDraftProductUseCase saveDraftProductUseCase,
-                                AddProductUseCase addProductUseCase,
                                 FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                 GetCategoryRecommUseCase getCategoryRecommUseCase,
                                 ProductScoringUseCase productScoringUseCase,
-                                ShopInfoUseCase shopInfoUseCase,
+                                AddProductShopInfoUseCase addProductShopInfoUseCase,
                                 FetchEditProductFormUseCase fetchEditProductFormUseCase) {
-        super(saveDraftProductUseCase, addProductUseCase, fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase, shopInfoUseCase);
+        super(saveDraftProductUseCase, fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase, addProductShopInfoUseCase);
         this.fetchEditProductFormUseCase = fetchEditProductFormUseCase;
     }
 

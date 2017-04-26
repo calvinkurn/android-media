@@ -47,6 +47,7 @@ import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
 
@@ -68,23 +69,26 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView,
-        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener, ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener,
+        ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener,
+        ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
+
     protected ProductImageViewHolder productImageViewHolder;
     protected ProductDetailViewHolder productDetailViewHolder;
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
+
     /**
      * Url got from gallery or camera or other paths
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
-
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
         if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
@@ -158,16 +162,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder = new ProductScoreViewHolder(view);
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
-        presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
-                GCMHandler.getRegistrationId(getContext()),
-                SessionHandler.getShopID(getContext()));
+        presenter.getShopInfo(SessionHandler.getShopID(getContext()));
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDataValid()) {
+//                if (isDataValid()) {
                     UploadProductInputViewModel viewModel = collectDataFromView();
                     presenter.saveDraft(viewModel);
-                }
+//                }
             }
 
             private boolean isDataValid() {
@@ -326,7 +328,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onErrorLoadRecommendationCategory(String errorMessage) {
-        productInfoViewHolder.showCatRecommError();
+
     }
 
     @Override
@@ -362,14 +364,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, false);
+                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
             }
 
             @Override
             public void clickEditImageDesc(int position) {
                 String currentDescription = productImageViewHolder.getImagesSelectView().getImageAt(position).getDescription();
                 ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
-                fragment.show(fragment.getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
+                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
                 fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
                     @Override
                     public void onImageDescDialogOK(String newDescription) {
@@ -394,7 +396,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, false);
+        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @Override
@@ -417,8 +419,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onEtalaseViewClicked() {
-        Intent intent = new Intent(getActivity(), EtalasePickerActivity.class);
+    public void onEtalaseViewClicked(long etalaseId) {
+        Intent intent = EtalasePickerActivity.createInstance(getActivity(), etalaseId);
         this.startActivityForResult(intent, ProductDetailViewHolder.REQUEST_CODE_ETALASE);
     }
 
@@ -454,7 +456,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
     }
 
-    private UploadProductInputViewModel collectDataFromView() {
+    protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
@@ -477,6 +479,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
             viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
         }
+        viewModel.setProductStatus(getStatusUpload());
         return viewModel;
     }
 
@@ -489,6 +492,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @ProductStatus
+    protected int getStatusUpload() {
+        return ProductStatus.ADD;
     }
 
     public interface Listener {

@@ -96,16 +96,4 @@ public class CatalogPickerActivity extends TActivity implements HasComponent<Cat
         return component;
     }
 
-    @Override
-    public void onBackPressed() {
-        CatalogPickerFragment fragment = (CatalogPickerFragment)
-                getSupportFragmentManager().findFragmentByTag(CatalogPickerFragment.TAG);
-        if (fragment!= null) {
-            Intent intent = fragment.getResultIntent();
-            if (intent != null) {
-                setResult(RESULT_OK, intent);
-            }
-        }
-        super.onBackPressed();
-    }
 }

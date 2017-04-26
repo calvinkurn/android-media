@@ -12,7 +12,7 @@ import java.util.List;
  * @author sebastianuskh on 4/17/17.
  */
 
-public class TkpdErrorResponse extends BaseResponseError {
+public class TkpdV4ResponseError extends BaseResponseError {
 
     private static final String ERROR_KEY = "message_error";
 

@@ -1,9 +1,13 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
+import android.content.Context;
 import android.text.TextUtils;
 
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
@@ -21,18 +25,23 @@ import rx.Observable;
 
 public class ShopInfoCloud {
     private final ShopApi api;
+    private final Context context;
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOW_ALL = "show_all";
     public static final String SHOP_DOMAIN = "shop_domain";
 
     @Inject
-    public ShopInfoCloud(ShopApi api) {
+    public ShopInfoCloud(@ApplicationContext Context context,
+                         ShopApi api) {
         this.api = api;
+        this.context = context;
     }
 
-    public Observable<Response<DataResponse<ShopModel>>> getShopInfo(String userId, String deviceId,
-                                                                     String shopId, String shopDomain) {
+    public Observable<Response<DataResponse<ShopModel>>> getShopInfo(String shopId, String shopDomain) {
+        String userId = SessionHandler.getLoginID(context);
+        String deviceId = GCMHandler.getRegistrationId(context);
+
         Map<String, String> params = new HashMap<>();
         if (!TextUtils.isEmpty(shopId)) {
             params.put(SHOP_ID, shopId);

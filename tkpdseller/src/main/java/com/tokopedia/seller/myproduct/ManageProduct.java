@@ -1,6 +1,7 @@
 package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -357,14 +358,16 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
+    @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
-        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5, true);
+        GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
+    @TargetApi(16)
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
-        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1, true);
+        GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);
     }
 
     private void checkLogin() {

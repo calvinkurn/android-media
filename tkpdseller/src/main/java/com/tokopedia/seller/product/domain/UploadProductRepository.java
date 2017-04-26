@@ -17,5 +17,5 @@ public interface UploadProductRepository {
 
     Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel addProductPictureDomainModel);
 
-    Observable<EditProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);
+    Observable<AddProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel);
 }

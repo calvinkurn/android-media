@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -25,10 +26,11 @@ import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
-import com.tokopedia.seller.product.view.service.AddProductService;
+import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -38,6 +40,8 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tkpd.library.utils.CommonUtils.checkCollectionNotNull;
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 /**
  * Created by nathan on 4/3/17.
@@ -53,6 +57,8 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     public static final int MAX_IMAGES = 5;
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
+
+    TkpdProgressDialog tkpdProgressDialog;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, ProductAddActivity.class);
@@ -73,7 +79,9 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
 
     protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
-        checkImageUrls();
+        if (getSupportFragmentManager().findFragmentByTag(ProductAddFragment.class.getSimpleName()) == null) {
+            checkIntentImageUrls();
+        }
     }
 
     private void createProductAddFragment() {
@@ -82,7 +90,7 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
                 .commit();
     }
 
-    private void checkImageUrls() {
+    private void checkIntentImageUrls() {
         if (checkExplicitImageUrls()) {
             ProductAddActivityPermissionsDispatcher.handleImageUrlFromExternalWithCheck(this);
         } else if (checkImplicitImageUrls()) {
@@ -147,6 +155,7 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     private void processMultipleImage(ArrayList<Uri> imageUris) {
+        showProgressDialog();
         int imagescount = (imageUris.size() > MAX_IMAGES) ? MAX_IMAGES : imageUris.size();
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagescount; i++) {
@@ -155,36 +164,33 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
             if (uriString.startsWith(CONTENT_GMAIL_LS)) {// get email attachment from gmail
                 imageUrls.add(FileUtils.getPathFromGmail(this, imageUri));
             } else { // get extras for import from gallery
-                String fileNameToMove = FileUtils.generateUniqueFileName(uriString);
-                File tkpdCacheFile = FileUtils.getTkpdCacheFile(fileNameToMove);
-                if (tkpdCacheFile != null) {
-                    // already in cache, return as is
-                    imageUrls.add(tkpdCacheFile.getAbsolutePath());
-                } else {
-                    File photo = FileUtils.writeImageToTkpdPath(
-                            FileUtils.compressImage(uriString,
-                                    GalleryActivity.DEF_WIDTH_CMPR,
-                                    GalleryActivity.DEF_WIDTH_CMPR,
-                                    GalleryActivity.DEF_QLTY_COMPRESS),
-                            fileNameToMove);
-                    if (photo != null) {
-                        imageUrls.add(photo.getAbsolutePath());
-                    }
-                }
+                imageUrls.add(FileUtils.getRealPathFromURI(this, imageUri));
             }
         }
+        dismissDialog();
         createProductAddFragment();
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {
-        imageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
-        ArrayList<Uri> imageUris = new ArrayList<>();
-        for (int i = 0; i < imageUrls.size(); i++) {
-            imageUris.add(Uri.parse(imageUrls.get(i)));
+        showProgressDialog();
+        List<String> oriImageUrls = getIntent().getStringArrayListExtra(EXTRA_IMAGE_URLS);
+        int imagescount = (oriImageUrls.size() > MAX_IMAGES) ? MAX_IMAGES : oriImageUrls.size();
+        imageUrls = new ArrayList<>();
+        for (int i = 0; i < imagescount; i++) {
+            String imageUrl = oriImageUrls.get(i);
+            String fileNameToMove = FileUtils.generateUniqueFileName(imageUrl);
+            File photo = FileUtils.writeImageToTkpdPath(
+                    FileUtils.compressImage(imageUrl, DEF_WIDTH_CMPR,
+                            DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                    fileNameToMove);
+            if (photo != null) {
+                imageUrls.add(photo.getAbsolutePath());
+            }
         }
-        processMultipleImage(imageUris);
+        dismissDialog();
+        createProductAddFragment();
     }
 
     @TargetApi(16)
@@ -232,6 +238,19 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
         return getApplicationComponent();
     }
 
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    public void dismissDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
     @Override
     public void onTextPickerSubmitted(String newEtalaseName) {
 
@@ -264,13 +283,15 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     public void startUploadProduct(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         finish();
     }
 
     public void startUploadProductWithShare(long productId) {
-        startService(AddProductService.getIntent(this, productId));
+        startService(UploadProductService.getIntent(this, productId));
         startActivity(ProductInfoActivity.createInstance(this));
         finish();
     }
+
+
 }
