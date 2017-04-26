@@ -20,8 +20,7 @@
             android:layout_marginBottom="3dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextView"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_score_label_title"
@@ -30,8 +29,7 @@
 
             <TextView
                 android:id="@+id/text_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/TextView"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:textColor="@color/low_score_value"
@@ -45,7 +43,7 @@
             android:layout_height="4dp"
             app:rcBackgroundColor="@color/black_five_percent"
             app:rcMax="100"
-            app:rcProgress="1"
+            app:rcProgress="0"
             app:rcProgressColor="@color/low_score_value"
             app:rcRadius="2dp" />
     </LinearLayout>

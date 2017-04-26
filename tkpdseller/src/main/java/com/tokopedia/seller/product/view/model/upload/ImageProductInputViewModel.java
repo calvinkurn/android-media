@@ -10,6 +10,8 @@ public class ImageProductInputViewModel {
     private String picId;
     private String url;
 
+    private int imageResolution;
+
     public String getImagePath() {
         return imagePath;
     }
@@ -40,5 +42,13 @@ public class ImageProductInputViewModel {
 
     public String getUrl() {
         return url;
+    }
+
+    public void setImageResolution(int imageResolution) {
+        this.imageResolution = imageResolution;
+    }
+
+    public int getImageResolution() {
+        return imageResolution;
     }
 }
