@@ -50,6 +50,7 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -452,6 +453,14 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                     Uri.encode(redirectUrl), MainApplication.getAppContext());
 
             navigateToGimmicWebview(resultGenerateUrl, categoryItemModel.getRedirectValue());
+        }
+    }
+
+    @Override
+    public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
+                    .instanceIntentDigitalProduct(itemModel.getCategoryId()));
         }
     }
 

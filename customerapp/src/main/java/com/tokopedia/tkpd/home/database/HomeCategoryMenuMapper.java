@@ -21,6 +21,7 @@ import java.util.List;
 class HomeCategoryMenuMapper {
 
     private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
     private final HomeCategoryMenuModelDb homeCategoryMenuModelDb;
 
     HomeCategoryMenuMapper(HomeCategoryMenuModelDb homeCategoryMenuModelDb) {
@@ -63,8 +64,10 @@ class HomeCategoryMenuMapper {
 
             if (isCategoryItemMarketPlace(layoutRow)) {
                 new CategoryItemMarketPlaceMapper(layoutRow, categoryItemModel).invoke();
-            } else {
+            } else if (isCategoryItemDigital(layoutRow)) {
                 new CategoryItemDigitalMapper(layoutRow, categoryItemModel).invoke();
+            } else {
+                new CategoryItemDefaultMapper(layoutRow, categoryItemModel).invoke();
             }
             listCategoryItemModels.add(categoryItemModel);
 
@@ -74,6 +77,10 @@ class HomeCategoryMenuMapper {
 
     private boolean isCategoryItemMarketPlace(LayoutRow aLayoutRow) {
         return MARKETPLACE.equalsIgnoreCase(aLayoutRow.getType());
+    }
+
+    private boolean isCategoryItemDigital(LayoutRow aLayoutRow) {
+        return DIGITAL.equalsIgnoreCase(aLayoutRow.getType());
     }
 
 
@@ -102,6 +109,22 @@ class HomeCategoryMenuMapper {
         private CategoryItemModel mCategoryItemModel;
 
         CategoryItemDigitalMapper(LayoutRow layoutRow, CategoryItemModel categoryItemModel) {
+            mLayoutRow = layoutRow;
+            mCategoryItemModel = categoryItemModel;
+        }
+
+        void invoke() {
+            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
+            mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
+            mCategoryItemModel.setType(CategoryItemModel.TYPE.DIGITAL);
+        }
+    }
+
+    private class CategoryItemDefaultMapper {
+        private LayoutRow mLayoutRow;
+        private CategoryItemModel mCategoryItemModel;
+
+        CategoryItemDefaultMapper(LayoutRow layoutRow, CategoryItemModel categoryItemModel) {
             mLayoutRow = layoutRow;
             mCategoryItemModel = categoryItemModel;
         }

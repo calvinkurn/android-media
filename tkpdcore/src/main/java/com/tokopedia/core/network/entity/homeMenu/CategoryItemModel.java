@@ -17,6 +17,7 @@ public class CategoryItemModel {
     private String imageUrl;
     private String description;
     private String redirectValue; // DepId or redirect url if category type is Digital
+    private String categoryId;
     private TYPE type;
 
     public CategoryItemModel() {
@@ -28,6 +29,14 @@ public class CategoryItemModel {
         this.type = type;
         this.redirectValue = redirectValue;
 
+    }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getImageUrl() {
@@ -72,6 +81,7 @@ public class CategoryItemModel {
 
     public enum TYPE {
         CATEGORY,
-        GIMMIC
+        GIMMIC,
+        DIGITAL
     }
 }
