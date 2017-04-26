@@ -101,6 +101,10 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
+                /**
+                 * any change toward currency unit, delete wholesale.
+                 */
+                clearWholesaleItems();
             }
         });
 
@@ -329,6 +333,11 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             return wholesaleAdapter.getLastItem();
         }
         return null;
+    }
+
+    private void clearWholesaleItems() {
+        wholesaleAdapter.clearAll();
+        wholesaleAdapter.notifyDataSetChanged();
     }
 
     public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {

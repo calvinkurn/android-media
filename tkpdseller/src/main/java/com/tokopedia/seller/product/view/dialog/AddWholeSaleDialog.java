@@ -21,6 +21,11 @@ import com.tokopedia.seller.util.NumberTextWatcher;
 
 /**
  * @author normansyahputa on 4/20/17.
+ *
+ * KEEP IN MIND !!!
+ * rules for minimum and maximum
+ *
+ * { 1 < minimum quantity <= maximum quantity <= INFINITY }
  */
 public class AddWholeSaleDialog extends DialogFragment {
 
@@ -39,6 +44,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     private int currencyType;
     private WholesaleModel previousValue;
     private boolean isErrorReturn;
+    private int minQuantityRaw = 0;
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
@@ -85,9 +91,6 @@ public class AddWholeSaleDialog extends DialogFragment {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-//                        if(!checkRangePrice())
-//                            return;
-
                         addItem(getItem());
                     }
                 });
@@ -119,25 +122,34 @@ public class AddWholeSaleDialog extends DialogFragment {
         // set min based on previous data
         String minQuantity = null;
         if (previousValue == null) {
-            minQuantity = Integer.toString(baseValue.getQtyTwo() + 1);
+            minQuantityRaw = baseValue.getQtyTwo() + 1;
+            minQuantity = Integer.toString(minQuantityRaw);
         } else {
-            minQuantity = Integer.toString(previousValue.getQtyTwo() + 1);
+            minQuantityRaw = previousValue.getQtyTwo() + 1;
+            minQuantity = Integer.toString(minQuantityRaw);
         }
         minWholeSale.getEditText().setText(minQuantity);
+
 
         maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText(), minQuantity) {
             @Override
             public void onNumberChanged(float maxQuantity) {
                 super.onNumberChanged(maxQuantity);
-                if (maxQuantity <= baseValue.getQtyOne()) {
+                /**
+                 * less than minimum is not allowed, equal and larger is a must.
+                 */
+                if (maxQuantity < minQuantityRaw) {
                     maxWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
                     isErrorReturn = true;
+                    return;
                 }
 
                 isErrorReturn = false;
                 maxWholeSale.setError(null);
             }
         });
+        maxWholeSale.getEditText().setText(Integer.toString(minQuantityRaw + 1));
+
         wholesalePrice.addTextChangedListener(new NumberTextWatcher(wholesalePrice.getEditText()) {
             @Override
             public void onNumberChanged(float currencyValue) {
@@ -162,10 +174,6 @@ public class AddWholeSaleDialog extends DialogFragment {
         });
 
         return view;
-    }
-
-    private boolean checkRangePrice() {
-        return false;
     }
 
     @Override
