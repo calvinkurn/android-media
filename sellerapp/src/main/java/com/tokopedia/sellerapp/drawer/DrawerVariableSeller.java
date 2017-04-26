@@ -678,9 +678,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
                     false));
-            model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
+            model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contactus, TkpdState.DrawerPosition.CONTACT_US, false));
             if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-                model.data.add(new DrawerItem("Bantuan", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.HELP, false));
+                model.data.add(new DrawerItem("Bantuan", 0, R.drawable.ic_help, TkpdState.DrawerPosition.HELP, false));
             }
             model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT,
                     false));
