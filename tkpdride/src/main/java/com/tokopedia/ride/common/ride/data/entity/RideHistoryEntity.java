@@ -77,7 +77,7 @@ public class RideHistoryEntity {
     @SerializedName("vehicle")
     @Expose
     VehicleEntity vehicleEntity;
-    @SerializedName("request_time")
+    @SerializedName("create_time")
     @Expose
     String requestTime;
 

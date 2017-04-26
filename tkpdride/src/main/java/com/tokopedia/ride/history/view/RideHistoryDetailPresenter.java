@@ -4,7 +4,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
-import com.tokopedia.ride.history.domain.model.RideHistory;
+import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import java.io.IOException;
 
@@ -29,58 +29,30 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
 
     @Override
     public void initialize() {
-        getView().showProgressBar();
-        getView().hideMainLayout();
-        actionGetSingleHistory();
+        getView().showMainLayout();
+        getView().renderHistory();
+        actionGetRenderedLocation(getView().getRideHistory());
     }
 
-    private void actionGetSingleHistory() {
-        getView().showProgressBar();
-        getSingleRideHistoryUseCase.execute(getView().getSingleHistoryParam(), new Subscriber<RideHistory>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().showMainLayout();
-                    getView().hideProgressBar();
-                    getView().showErrorLayout();
-                }
-            }
-
-            @Override
-            public void onNext(RideHistory rideHistory) {
-                if (isViewAttached()) {
-                    getView().showMainLayout();
-                    getView().hideProgressBar();
-                    getView().renderHistory(rideHistory);
-                    actionGetRenderedLocation(rideHistory);
-                }
-            }
-        });
-    }
-
-    private void actionGetRenderedLocation(final RideHistory rideHistory) {
-        if (rideHistory.getPickup() != null) {
+    private void actionGetRenderedLocation(final RideHistoryViewModel rideHistory) {
+        if (rideHistory.getStartLatitude() != 0 && rideHistory.getStartLongitude() != 0) {
             Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     try {
                         subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                                rideHistory.getPickup().getLatitude(),
-                                rideHistory.getPickup().getLongitude()
+                                rideHistory.getStartLatitude(),
+                                rideHistory.getStartLongitude()
                         ));
                     } catch (IOException e) {
                         e.printStackTrace();
-                        subscriber.onNext(String.valueOf(rideHistory.getPickup().getLatitude()) + ", " + String.valueOf(rideHistory.getPickup().getLongitude()));
+                        subscriber.onNext(String.valueOf(rideHistory.getStartLatitude()) + ", " + String.valueOf(rideHistory.getStartLongitude()));
                     }
                 }
             }).onErrorReturn(new Func1<Throwable, String>() {
                 @Override
                 public String call(Throwable throwable) {
-                    return String.valueOf(String.valueOf(rideHistory.getPickup().getLatitude()) + ", " + String.valueOf(rideHistory.getPickup().getLongitude()));
+                    return String.valueOf(String.valueOf(rideHistory.getStartLatitude()) + ", " + String.valueOf(rideHistory.getStartLongitude()));
                 }
             })
                     .subscribeOn(Schedulers.newThread())
@@ -105,24 +77,24 @@ public class RideHistoryDetailPresenter extends BaseDaggerPresenter<RideHistoryD
                     });
         }
 
-        if (rideHistory.getDestination() != null) {
+        if (rideHistory.getEndLatitude() != 0 && rideHistory.getEndLongitude() != 0) {
             Observable.create(new Observable.OnSubscribe<String>() {
                 @Override
                 public void call(Subscriber<? super String> subscriber) {
                     try {
                         subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                                rideHistory.getPickup().getLatitude(),
-                                rideHistory.getPickup().getLongitude()
+                                rideHistory.getEndLatitude(),
+                                rideHistory.getEndLongitude()
                         ));
                     } catch (IOException e) {
                         e.printStackTrace();
-                        subscriber.onNext(String.valueOf(rideHistory.getPickup().getLatitude()) + ", " + String.valueOf(rideHistory.getPickup().getLongitude()));
+                        subscriber.onNext(String.valueOf(rideHistory.getEndLatitude()) + ", " + String.valueOf(rideHistory.getEndLongitude()));
                     }
                 }
             }).onErrorReturn(new Func1<Throwable, String>() {
                 @Override
                 public String call(Throwable throwable) {
-                    return String.valueOf(String.valueOf(rideHistory.getPickup().getLatitude()) + ", " + String.valueOf(rideHistory.getPickup().getLongitude()));
+                    return String.valueOf(String.valueOf(rideHistory.getEndLatitude()) + ", " + String.valueOf(rideHistory.getEndLongitude()));
                 }
             })
                     .subscribeOn(Schedulers.newThread())

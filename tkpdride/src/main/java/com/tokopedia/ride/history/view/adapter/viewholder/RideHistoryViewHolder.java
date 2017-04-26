@@ -1,19 +1,15 @@
 package com.tokopedia.ride.history.view.adapter.viewholder;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
-import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.history.view.adapter.ItemClickListener;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
@@ -24,9 +20,10 @@ import butterknife.OnClick;
  * Created by alvarisi on 4/11/17.
  */
 
-public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewModel> implements OnMapReadyCallback {
+public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.row_ride_history;
+    private final Context mContext;
 
     private RideHistoryViewModel mItem;
 
@@ -39,20 +36,14 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
     @BindView(R2.id.tv_ride_status)
     TextView rideStatusTextView;
     @BindView(R2.id.mapview)
-    MapView mapView;
-
-    GoogleMap googleMap;
+    ImageView mapView;
 
     private final ItemClickListener mItemClickListener;
 
-    public RideHistoryViewHolder(View itemView, ItemClickListener mItemClickListener) {
-        super(itemView);
+    public RideHistoryViewHolder(View parent, ItemClickListener mItemClickListener) {
+        super(parent);
+        mContext = parent.getContext();
         this.mItemClickListener = mItemClickListener;
-        if (mapView != null) {
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
     }
 
     @Override
@@ -62,33 +53,16 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
         driverCarDisplayNameTextView.setText(element.getDriverCarDisplay());
         rideFareTextView.setText(element.getFare());
         rideStatusTextView.setText(element.getStatus());
-        if (element.getLatLngs() != null && element.getLatLngs().size() > 1) {
-            RouteMapAnimator.getInstance().animateRoute(googleMap, element.getLatLngs());
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(
-                            element.getLatLngs().get(0).latitude,
-                            element.getLatLngs().get(0).longitude
-                    ))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-            );
 
-            googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(
-                            element.getLatLngs().get(element.getLatLngs().size() - 1).latitude,
-                            element.getLatLngs().get(element.getLatLngs().size() - 1).longitude
-                    ))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-            );
-        }
+        Glide.with(mContext).load(element.getMapImage())
+                .asBitmap()
+                .centerCrop()
+                .error(R.drawable.staticmap_dummy)
+                .into(mapView);
     }
 
     @OnClick(R2.id.container)
     public void actionItemClicked() {
         mItemClickListener.onHistoryClicked(mItem);
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
     }
 }

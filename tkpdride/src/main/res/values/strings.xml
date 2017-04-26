@@ -53,4 +53,5 @@
     <string name="hint_enter_promo_code">Enter Promo Code</string>
     <string name="apply_promo_toolbar_title">Apply Promo</string>
     <string name="title_requesting_ride">Requesting Ride</string>
+    <string name="trip_detail_toolbar_title">Trip Detail</string>
 </resources>

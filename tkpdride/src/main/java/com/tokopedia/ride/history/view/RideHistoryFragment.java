@@ -95,7 +95,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
-        mOnFragmentInteractionListener.actionNavigateToDetail(viewModel.getRequestId());
+        mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 
     @Override
@@ -163,6 +163,11 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), getRetryGetHistoriesListener());
     }
 
+    @Override
+    public String getMapKey() {
+        return getString(R.string.GOOGLE_API_KEY);
+    }
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryGetHistoriesListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
@@ -174,7 +179,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     }
 
     public interface OnFragmentInteractionListener {
-        void actionNavigateToDetail(String requestId);
+        void actionNavigateToDetail(RideHistoryViewModel rideHistory);
     }
 
     @Override

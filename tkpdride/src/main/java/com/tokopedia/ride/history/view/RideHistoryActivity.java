@@ -10,6 +10,8 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.history.domain.model.RideHistory;
+import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener {
 
@@ -55,8 +57,8 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     }
 
     @Override
-    public void actionNavigateToDetail(String requestId) {
-        Intent intent = RideHistoryDetailActivity.getCallingIntent(this, requestId);
+    public void actionNavigateToDetail(RideHistoryViewModel rideHistory) {
+        Intent intent = RideHistoryDetailActivity.getCallingIntent(this, rideHistory);
         startActivity(intent);
     }
 }

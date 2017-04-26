@@ -76,19 +76,28 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setEndLatitude(rideHistory.getDestination().getLatitude());
                         viewModel.setEndLongitude(rideHistory.getDestination().getLongitude());
                         viewModel.setRequestId(rideHistory.getRequestId());
+                        viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
+                        viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
+                        viewModel.setMapImage(getMapImageUrl(rideHistory.getPickup().getLatitude(), rideHistory.getPickup().getLongitude()));
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();
                     getView().setRefreshLayoutToFalse();
                     if (histories.size() > 0) {
                         getView().renderHistoryLists(histories);
-                        actionGetOverviewPolyline(histories);
+                        //actionGetOverviewPolyline(histories);
                     } else {
                         getView().showEmptyResultLayout();
                     }
                 }
             }
         });
+    }
+
+    private String getMapImageUrl(double startlatitude, double startLongitude) {
+        String pickupLatLonString = startlatitude + "," + startLongitude;
+        String mapImageUrl = "https://maps.googleapis.com/maps/api/staticmap?size=500x140&markers=color:green|label:S|" + pickupLatLonString + "&zoom=13&key=" + getView().getMapKey();
+        return mapImageUrl;
     }
 
     private void actionGetOverviewPolyline(ArrayList<Visitable> histories) {
