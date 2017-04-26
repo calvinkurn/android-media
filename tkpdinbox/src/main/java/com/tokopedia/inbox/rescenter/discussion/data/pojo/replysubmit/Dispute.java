@@ -14,7 +14,7 @@ public class Dispute {
     private Integer disputeCsIsRejected;
     @SerializedName("dispute_is_call_admin")
     @Expose
-    private Integer disputeIsCallAdmin;
+    private String disputeIsCallAdmin;
     @SerializedName("dispute_deadline")
     @Expose
     private String disputeDeadline;
@@ -38,11 +38,11 @@ public class Dispute {
         this.disputeCsIsRejected = disputeCsIsRejected;
     }
 
-    public Integer getDisputeIsCallAdmin() {
+    public String getDisputeIsCallAdmin() {
         return disputeIsCallAdmin;
     }
 
-    public void setDisputeIsCallAdmin(Integer disputeIsCallAdmin) {
+    public void setDisputeIsCallAdmin(String disputeIsCallAdmin) {
         this.disputeIsCallAdmin = disputeIsCallAdmin;
     }
 
