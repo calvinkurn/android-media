@@ -10,7 +10,6 @@ import com.tokopedia.tkpd.home.feed.domain.FeedRepository;
 import com.tokopedia.tkpd.home.feed.domain.model.DataFeed;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 import com.tokopedia.tkpd.home.feed.domain.model.ProductFeed;
-import com.tokopedia.tkpd.home.feed.domain.model.TopAds;
 
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 
 /**
  * @author kulomady on 12/8/16.
@@ -101,19 +99,5 @@ public class GetDataFeedCacheUseCase extends UseCase<DataFeed> {
             }
         };
     }
-
-    private Observable<List<TopAds>> getTopAdsObservable() {
-        return feedRepository.getTopAdsCache().onErrorReturn(topAdsErrorReturn());
-    }
-
-    private Func1<Throwable, List<TopAds>> topAdsErrorReturn() {
-        return new Func1<Throwable, List<TopAds>>() {
-            @Override
-            public List<TopAds> call(Throwable throwable) {
-                return Collections.emptyList();
-            }
-        };
-    }
-
 
 }

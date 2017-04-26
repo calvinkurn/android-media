@@ -89,7 +89,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
         requestParams.putString(GetFeedUseCase.KEY_START, String.valueOf(getPagingIndex()));
         requestParams.putString((GetFeedUseCase.KEY_DEVICE), GetFeedUseCase.DEVICE_VALUE_DEFAULT);
         requestParams.putString(GetFeedUseCase.KEY_OB, GetFeedUseCase.OB_VALUE_DEFAULT);
-        requestParams.putBoolean(LoadMoreFeedUseCase.KEY_IS_INCLUDE_TOPADS, false);
         requestParams.putBoolean(GetFeedUseCase.KEY_IS_FIRST_PAGE, false);
         return requestParams;
     }
@@ -113,10 +112,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
                         ? pagingHandler.getPagingHandlerModel().getStartIndex()
                         : 0
                 : 0;
-    }
-
-    private boolean isPageOdd() {
-        return pagingHandler.getPage() % 2 != 0;
     }
 
     private boolean isHasHistoryProduct(DataFeed dataFeed) {

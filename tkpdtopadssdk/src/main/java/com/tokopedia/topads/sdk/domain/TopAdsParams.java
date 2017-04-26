@@ -37,6 +37,8 @@ public class TopAdsParams {
     public static final String DEFAULT_KEY_EP = "product";
     public static final String DEFAULT_KEY_DEVICE = "android";
 
+    public static final String SRC_PRODUCT_FEED = "fav_product";
+
 
 
     private final TKPDMapParam<String, String> param;
