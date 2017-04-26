@@ -53,7 +53,7 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private int poProcessValue;
 
     public TKPDMapParam<String, String> generateMapParam() {
-        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        TKPDMapParam<String, String> params = super.generateMapParam();
         if (StringUtils.isNotBlank(getProductName())) {
             params.put(PRODUCT_NAME, getProductName());
         }
@@ -75,7 +75,6 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         params.put(PO_PROCESS_TYPE, String.valueOf(getPoProcessType()));
         params.put(PO_PROCESS_VALUE, String.valueOf(getPoProcessValue()));
         params.put(SERVER_ID, String.valueOf(getServerId()));
-        params.putAll(getPhotosParams());
         params.putAll(getWholesaleParams());
         params.putAll(getVideosParams());
         return params;
@@ -83,10 +82,10 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
 
     public TKPDMapParam<String, String> getWholesaleParams() {
         TKPDMapParam<String, String> wholesaleParams = new TKPDMapParam<>();
-        for (int i = 0; i < productWholesale.size(); i++) {
-            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i).getPrice()));
-            wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i).getQtyMax()));
-            wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i).getQtyMin()));
+        for (int i = 1; i <= productWholesale.size(); i++) {
+            wholesaleParams.put(PRD_PRC_ + i, formatDecimal(productWholesale.get(i - 1).getPrice()));
+            wholesaleParams.put(QTY_MAX_ + i, String.valueOf(productWholesale.get(i - 1).getQtyMax()));
+            wholesaleParams.put(QTY_MIN_ + i, String.valueOf(productWholesale.get(i - 1).getQtyMin()));
         }
         return wholesaleParams;
     }

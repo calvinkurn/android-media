@@ -40,6 +40,8 @@ public class UploadProductMapper {
         domainModel.setPoProcessType(viewModel.getPoProcessType());
         domainModel.setPoProcessValue(viewModel.getPoProcessValue());
         domainModel.setServerId(viewModel.getServerId());
+        domainModel.setProductStatus(viewModel.getProductStatus());
+        domainModel.setProductId(viewModel.getProductId());
         return domainModel;
     }
 
@@ -97,6 +99,7 @@ public class UploadProductMapper {
         viewModel.setPoProcessType(domainModel.getPoProcessType());
         viewModel.setPoProcessValue(domainModel.getPoProcessValue());
         viewModel.setServerId(domainModel.getServerId());
+        viewModel.setProductId(domainModel.getProductId());
         return viewModel;
     }
 

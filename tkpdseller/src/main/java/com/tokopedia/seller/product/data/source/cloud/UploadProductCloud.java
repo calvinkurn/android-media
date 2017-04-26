@@ -7,6 +7,8 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
@@ -24,7 +26,7 @@ public class UploadProductCloud {
     private final Context context;
 
     @Inject
-    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context, GenerateHostCloud generateHost) {
+    public UploadProductCloud(UploadProductApi api, @ActivityContext Context context) {
         this.api = api;
         this.context = context;
     }
@@ -37,5 +39,9 @@ public class UploadProductCloud {
     public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
         return api.addProductSubmit(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()))
                 .map(new GetData<AddProductSubmitServiceModel>());
+    }
+
+    public Observable<EditProductServiceModel> editProduct(EditProductInputServiceModel serviceModel) {
+        return api.editProduct(AuthUtil.generateParamsNetwork(context, serviceModel.generateMapParam()));
     }
 }

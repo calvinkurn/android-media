@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.di.scope.AddProductServiceScope;
-import com.tokopedia.seller.product.view.service.AddProductService;
+import com.tokopedia.seller.product.view.service.UploadProductService;
 
 import dagger.Component;
 
@@ -13,5 +13,5 @@ import dagger.Component;
 @AddProductServiceScope
 @Component(modules = AddProductserviceModule.class, dependencies = AppComponent.class)
 public interface AddProductServiceComponent {
-    void inject(AddProductService addProductService);
+    void inject(UploadProductService uploadProductService);
 }

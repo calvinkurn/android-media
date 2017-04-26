@@ -113,6 +113,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         @Override
         public void onError(Throwable e) {
             checkViewAttached();
+            fetchCategoryLevelOne();
         }
 
         @Override

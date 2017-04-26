@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.holder;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -101,6 +102,10 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
+                /**
+                 * any change toward currency unit, delete wholesale.
+                 */
+                clearWholesaleItems();
             }
         });
 
@@ -154,7 +159,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    listener.onEtalaseViewClicked();
+                    listener.onEtalaseViewClicked(etalaseId);
                 }
             }
         });
@@ -331,14 +336,21 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         return null;
     }
 
+    private void clearWholesaleItems() {
+        wholesaleAdapter.clearAll();
+        wholesaleAdapter.notifyDataSetChanged();
+    }
+
     public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
         return wholesaleAdapter.getProductWholesaleViewModels();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
-        String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-        etalaseLabelView.setContent(etalaseName);
+        if (resultCode == Activity.RESULT_OK) {
+            etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
+            String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+            etalaseLabelView.setContent(etalaseName);
+        }
     }
 
     private boolean isPriceValid() {
@@ -415,7 +427,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
         void onTotalStockUpdated(int total);
 
-        void onEtalaseViewClicked();
+        void onEtalaseViewClicked(long etalaseId);
 
         void onFreeReturnChecked(boolean checked);
     }
