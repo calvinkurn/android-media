@@ -69,7 +69,9 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class ProductAddFragment extends BaseDaggerFragment implements ProductAddView,
-        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener, ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener, ProductDetailViewHolder.Listener {
+        ProductScoreViewHolder.Listener, ProductAdditionalInfoViewHolder.Listener,
+        ProductImageViewHolder.Listener, ProductInfoViewHolder.Listener,
+        ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
     @Inject
@@ -160,9 +162,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder = new ProductScoreViewHolder(view);
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
-        presenter.getShopInfo(SessionHandler.getLoginID(getContext()),
-                GCMHandler.getRegistrationId(getContext()),
-                SessionHandler.getShopID(getContext()));
+        presenter.getShopInfo(SessionHandler.getShopID(getContext()));
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -328,7 +328,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onErrorLoadRecommendationCategory(String errorMessage) {
-        productInfoViewHolder.showCatRecommError();
+
     }
 
     @Override
@@ -364,14 +364,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
             public void clickEditImagePath(int position) {
-                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, false);
+                GalleryActivity.moveToImageGallery(getActivity(), ProductAddFragment.this, position, 1, true);
             }
 
             @Override
             public void clickEditImageDesc(int position) {
                 String currentDescription = productImageViewHolder.getImagesSelectView().getImageAt(position).getDescription();
                 ImageDescriptionDialog fragment = ImageDescriptionDialog.newInstance(currentDescription);
-                fragment.show(fragment.getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
+                fragment.show(getActivity().getSupportFragmentManager(), ImageDescriptionDialog.TAG);
                 fragment.setListener(new ImageDescriptionDialog.OnImageDescDialogListener() {
                     @Override
                     public void onImageDescDialogOK(String newDescription) {
@@ -396,7 +396,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery(int imagePosition) {
         int remainingEmptySlot = productImageViewHolder.getImagesSelectView().getRemainingEmptySlot();
-        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, false);
+        GalleryActivity.moveToImageGallery(getActivity(), this, imagePosition, remainingEmptySlot, true);
     }
 
     @Override

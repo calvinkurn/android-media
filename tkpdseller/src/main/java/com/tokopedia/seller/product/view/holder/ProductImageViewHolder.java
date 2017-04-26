@@ -121,6 +121,9 @@ public class ProductImageViewHolder extends ProductViewHolder {
     }
 
     public ProductPhotoListViewModel getProductPhotos() {
+
+        imagesSelectView.getImageList().get(0).getMinResolution();
+
         ProductPhotoListViewModel productPhotos = new ProductPhotoListViewModel();
         List<ImageProductInputViewModel> listImageViewModel = new ArrayList<>();
 

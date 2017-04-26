@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.adapter;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
@@ -135,7 +139,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         if (getItemViewType(position) == VIEW_TYPE_ADD) {
             holder.imageView.setImageDrawable(addPictureDrawable);
@@ -144,15 +148,34 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             }
             return;
         }
-        ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
-        if (!isValidURL(imageSelectModel.getUri())) {
+        final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
+        if (imageSelectModel.isValidURL()) {
+            ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUri(), new SimpleTarget<Bitmap>() {
+                @Override
+                public void onLoadStarted(Drawable placeholder) {
+                    super.onLoadStarted(placeholder);
+                    holder.imageView.setImageDrawable(placeholder);
+                }
+
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    holder.imageView.setImageBitmap(resource);
+                    imageSelectModel.setWidth(resource.getWidth());
+                    imageSelectModel.setHeight(resource.getHeight());
+                }
+
+                @Override
+                public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                    super.onLoadFailed(e, errorDrawable);
+                    holder.imageView.setImageDrawable(errorDrawable);
+                }
+            });
+        } else { // local Uri
             ImageHandler.loadImageFromFileFitCenter(
                     holder.itemView.getContext(),
                     holder.imageView,
                     new File(imageSelectModel.getUri())
             );
-        } else {
-            ImageHandler.LoadImage(holder.imageView, imageSelectModel.getUri());
         }
 
         if (currentPrimaryImageIndex == position) {
@@ -362,21 +385,5 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     public int getSelectedImageIndex() {
         return currentSelectedIndex;
     }
-
-    /**
-     * check if path is url or not
-     *
-     * @param urlStr url or sdcard path
-     * @return
-     */
-    public static boolean isValidURL(String urlStr) {
-        try {
-            URI uri = new URI(urlStr);
-            return uri.getScheme().equals("http") || uri.getScheme().equals("https");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
 
 }

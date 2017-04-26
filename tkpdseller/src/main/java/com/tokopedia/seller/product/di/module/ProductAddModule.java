@@ -46,6 +46,7 @@ import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.ProductScoreRepository;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
+import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
@@ -71,10 +72,10 @@ public class ProductAddModule {
                                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                                    ProductScoringUseCase productScoringUseCase,
-                                                   ShopInfoUseCase shopInfoUseCase){
+                                                   AddProductShopInfoUseCase addProductShopInfoUseCase){
         return new ProductAddPresenterImpl(saveDraftProductUseCase,
                 fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase,
-                shopInfoUseCase);
+                addProductShopInfoUseCase);
     }
 
     @ProductAddScope

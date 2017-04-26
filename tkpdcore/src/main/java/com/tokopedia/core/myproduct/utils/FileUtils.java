@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -97,7 +98,8 @@ public class FileUtils {
         return null;
     }
 
-    public static File getTkpdCacheFile(String fileName){
+    @NonNull
+    private static File getTkpdCacheFile(String fileName){
         String externalDirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         String tkpdFolderPath = FileUtils.getFolderPathForUploadNoRand(externalDirPath);
 
@@ -105,13 +107,7 @@ public class FileUtils {
         if (!tkpdRootdirectory.exists()) {
             tkpdRootdirectory.mkdirs();
         }
-        File photo = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA+fileName +".jpg");
-        if (photo.exists()) {
-            return photo;
-        }
-        else {
-            return null;
-        }
+        return new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA+fileName +".jpg");
     }
 
     // URI starts with "content://gmail-ls/"

@@ -9,8 +9,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:clickable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:background="@drawable/selector_selected_gray">
+    android:foreground="?attr/selectableItemBackground">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_catalog"
@@ -21,9 +20,17 @@
         tools:src="@mipmap/ic_launcher"/>
     <TextView
         android:id="@+id/text_catalog_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         tools:text="@string/title_catalog"/>
+
+    <RadioButton
+        android:id="@+id/radio_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:button="@drawable/top_ads_set_date_radio_button" />
 
 </LinearLayout>

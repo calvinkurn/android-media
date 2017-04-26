@@ -85,19 +85,4 @@ public class ImageDescriptionDialog extends DialogFragment {
         });
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        try {
-            mListener = (OnImageDescDialogListener) context;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("must implement OnImageDescDialogListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 }

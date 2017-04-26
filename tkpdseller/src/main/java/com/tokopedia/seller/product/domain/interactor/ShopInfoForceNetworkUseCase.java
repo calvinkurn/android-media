@@ -26,16 +26,16 @@ public class ShopInfoForceNetworkUseCase extends ShopInfoUseCase {
     }
 
     @Override
-    protected Observable<ShopModel> getShopInfo(String userId, String deviceId, String shopId, String shopDomain) {
-        return shopInfoRepository.getShopInfoFromNetwork(userId, deviceId, shopId, shopDomain);
+    protected Observable<ShopModel> getShopInfo(String shopId, String shopDomain) {
+        return shopInfoRepository.getShopInfoFromNetwork(shopId, shopDomain);
     }
 
-    public static RequestParams createRequestParamByShopId(String userId, String deviceId, String shopId) {
-        return ShopInfoUseCase.createRequestParamByShopId(userId, deviceId, shopId);
+    public static RequestParams createRequestParamByShopId(String shopId) {
+        return ShopInfoUseCase.createRequestParamByShopId(shopId);
     }
 
-    public static RequestParams createRequestParamByShopDomain(String userId, String deviceId, String shopDomain) {
-        return ShopInfoUseCase.createRequestParamByShopDomain(userId, deviceId, shopDomain);
+    public static RequestParams createRequestParamByShopDomain(String shopDomain) {
+        return ShopInfoUseCase.createRequestParamByShopDomain(shopDomain);
     }
 
 }
