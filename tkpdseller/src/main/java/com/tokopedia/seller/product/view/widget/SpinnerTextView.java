@@ -35,6 +35,7 @@ public class SpinnerTextView extends FrameLayout {
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
+    private boolean enabled;
     private AdapterView.OnItemClickListener onItemClickListener;
 
     private OnItemChangeListener onItemChangeListener;
@@ -70,6 +71,7 @@ public class SpinnerTextView extends FrameLayout {
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerTextView_spinner_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
+            enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -109,6 +111,12 @@ public class SpinnerTextView extends FrameLayout {
                 updateOnItemChanged(position);
             }
         });
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        textInputLayout.setEnabled(enabled);
+        textAutoComplete.setEnabled(enabled);
     }
 
     public void setHint(String hintText) {

@@ -27,6 +27,7 @@ public class DecimalInputView extends FrameLayout {
 
     private String hintText;
     private String valueText;
+    private boolean enabled;
 
     public DecimalInputView(Context context) {
         super(context);
@@ -49,6 +50,7 @@ public class DecimalInputView extends FrameLayout {
         try {
             hintText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_hint);
             valueText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_text);
+            enabled = styledAttributes.getBoolean(R.styleable.DecimalInputView_decimal_input_enabled, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -63,6 +65,7 @@ public class DecimalInputView extends FrameLayout {
         if (!TextUtils.isEmpty(valueText)) {
             editText.setText(valueText);
         }
+        setEnabled(enabled);
         invalidate();
         requestLayout();
     }
@@ -72,6 +75,12 @@ public class DecimalInputView extends FrameLayout {
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         editText = (EditText) view.findViewById(R.id.edit_text);
         addTextChangedListener(new NumberTextWatcher(editText, DEFAULT_VALUE));
+    }
+
+    @Override
+    public void setEnabled(boolean enable) {
+        textInputLayout.setEnabled(enable);
+        editText.setEnabled(enable);
     }
 
     public void setHint(String hintText) {

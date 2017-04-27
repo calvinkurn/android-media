@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -38,7 +39,9 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     public static final int REQUEST_CODE_ETALASE = 301;
     private final RecyclerView recyclerViewWholesale;
     private WholesaleAdapter wholesaleAdapter;
+    private ImageButton editPriceImageButton;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
+    private ExpandableOptionSwitch wholesaleExpandableOptionSwitch;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private CounterInputView minimumOrderCounterInputView;
     private SpinnerTextView stockStatusSpinnerTextView;
@@ -59,7 +62,9 @@ public class ProductDetailViewHolder extends ProductViewHolder {
 
     public ProductDetailViewHolder(View view) {
         etalaseId = -1;
+        editPriceImageButton = (ImageButton) view.findViewById(R.id.image_button_edit_price);
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
+        wholesaleExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_wholesale);
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
         minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
@@ -90,6 +95,8 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             @Override
             public void onItemChanged(int position, String entry, String value) {
                 setTextWatcher(value);
+                // any change toward currency unit, delete wholesale.
+                clearWholesaleItems();
             }
 
             private void setTextWatcher(String spinnerValue) {
@@ -102,10 +109,6 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
-                /**
-                 * any change toward currency unit, delete wholesale.
-                 */
-                clearWholesaleItems();
             }
         });
 
@@ -135,6 +138,19 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                 priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
             }
         });
+
+        wholesaleExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
+            @Override
+            public void onExpandViewChange(boolean isExpand) {
+                setPriceEnabled(!isExpand);
+            }
+
+            private void setPriceEnabled(boolean enable) {
+                priceSpinnerCounterInputView.setEnabled(enable);
+                editPriceImageButton.setVisibility(enable ? View.GONE : View.VISIBLE);
+            }
+        });
+
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
             public void onNumberChanged(float currencyValue) {

@@ -27,6 +27,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     private CharSequence[] values;
     private int selectionIndex;
     private boolean showCounterButton;
+    private boolean enabled;
 
     public SpinnerCounterInputView(Context context) {
         super(context);
@@ -52,6 +53,7 @@ public class SpinnerCounterInputView extends FrameLayout {
             entries = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
+            enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -70,6 +72,7 @@ public class SpinnerCounterInputView extends FrameLayout {
             spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
         }
         counterInputView.showCounterButton(showCounterButton);
+        setEnabled(enabled);
         invalidate();
         requestLayout();
     }
@@ -78,6 +81,12 @@ public class SpinnerCounterInputView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_spinner_counter_input_view, this);
         spinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view);
         counterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        spinnerTextView.setEnabled(enabled);
+        counterInputView.setEnabled(enabled);
     }
 
     public void setHint(String hintText) {
@@ -130,7 +139,7 @@ public class SpinnerCounterInputView extends FrameLayout {
         counterInputView.removeTextChangedListener(watcher);
     }
 
-    public void setSpinnerPosition(int position){
+    public void setSpinnerPosition(int position) {
         spinnerTextView.setSpinnerPosition(position);
     }
 

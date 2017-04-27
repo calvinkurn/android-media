@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -30,7 +29,7 @@ public class CounterInputView extends FrameLayout {
     private String valueText;
     private int minValue;
     private boolean showCounterButton;
-    private boolean allEnable;
+    private boolean enabled;
 
     public CounterInputView(Context context) {
         super(context);
@@ -55,7 +54,7 @@ public class CounterInputView extends FrameLayout {
             valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
             minValue = styledAttributes.getInt(R.styleable.CounterInputView_counter_min, DEFAULT_MIN_VALUE);
             showCounterButton = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_show_counter_button, true);
-            allEnable = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_all_enable, true);
+            enabled = styledAttributes.getBoolean(R.styleable.CounterInputView_counter_enabled, true);
         } finally {
             styledAttributes.recycle();
         }
@@ -64,50 +63,42 @@ public class CounterInputView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        if (allEnable) {
-            decimalInputView.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        decimalInputView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    updateButtonState();
-                }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                updateButtonState();
+            }
 
-                @Override
-                public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
 
-                }
-            });
-            minusImageButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    try {
-                        long result = (long) decimalInputView.getFloatValue() - 1;
-                        if (result >= 0) {
-                            decimalInputView.setText(String.valueOf(result));
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            }
+        });
+        minusImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    long result = (long) decimalInputView.getFloatValue() - 1;
+                    if (result >= 0) {
+                        decimalInputView.setText(String.valueOf(result));
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-            plusImageButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
-                }
-            });
-            enableEdittext();
-            enablePlusButton(true);
-            enableMinusButton(true);
-        } else {
-            disableEdittext();
-            enablePlusButton(false);
-            enableMinusButton(false);
-        }
+            }
+        });
+        plusImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
+            }
+        });
+
         if (!TextUtils.isEmpty(hintText)) {
             decimalInputView.setHint(hintText);
         }
@@ -116,6 +107,7 @@ public class CounterInputView extends FrameLayout {
         }
         updateCounterButtonView(showCounterButton);
         updateButtonState();
+        setEnabled(enabled);
         invalidate();
         requestLayout();
     }
@@ -133,14 +125,11 @@ public class CounterInputView extends FrameLayout {
 
     }
 
-    private void enableMinusButton(boolean enabled) {
-        minusImageButton.setEnabled(enabled);
-        minusImageButton.setClickable(enabled);
-    }
-
-    private void enablePlusButton(boolean enabled) {
-        plusImageButton.setEnabled(enabled);
-        plusImageButton.setClickable(enabled);
+    @Override
+    public void setEnabled(boolean enable) {
+        decimalInputView.setEnabled(enable);
+        minusImageButton.setEnabled(enable);
+        minusImageButton.setClickable(enable);
     }
 
     private void updateButtonState() {
@@ -191,17 +180,5 @@ public class CounterInputView extends FrameLayout {
 
     public EditText getEditText() {
         return decimalInputView.getEditText();
-    }
-
-    public void disableEdittext() {
-        getEditText().setEnabled(false);
-        getEditText().setInputType(InputType.TYPE_NULL);
-        getEditText().setFocusable(false);
-    }
-
-    public void enableEdittext() {
-        getEditText().setEnabled(true);
-        getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-        getEditText().setFocusable(true);
     }
 }
