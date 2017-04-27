@@ -17,6 +17,9 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
+import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.AddProductServiceListener;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 
@@ -76,8 +79,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     @Override
-    public void notificationFailed(String errorMessage) {
-        Notification notification = buildFailedNotification(errorMessage);
+    public void notificationFailed(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
+        Notification notification = buildFailedNotification(errorMessage, productDraftId, productStatus);
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
@@ -134,13 +137,19 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setGroup(getString(R.string.group_notification));
     }
 
-    private Notification buildFailedNotification(String errorMessage) {
+    private Notification buildFailedNotification(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
+        Intent pendingIntent = ProductDraftAddActivity.createInstance(this, productDraftId);
+        if(productStatus == ProductStatus.EDIT){
+            pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
+        }
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return notificationBuilder
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
                         .bigText(errorMessage)
                 )
+                .setContentIntent(pIntent)
                 .setProgress(0, 0, false)
                 .setOngoing(false)
                 .build();

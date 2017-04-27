@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
@@ -12,7 +11,7 @@ import com.tokopedia.seller.product.view.fragment.ProductEditFragment;
  * @author sebastianuskh on 4/21/17.
  */
 
-public class ProductEditActivity extends ProductDraftActivity {
+public class ProductEditActivity extends ProductDraftEditActivity {
 
     public static final String PRODUCT_ID = "PRODUCT_ID";
 

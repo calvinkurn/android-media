@@ -5,6 +5,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.seller.product.data.exception.UploadProductException;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
@@ -81,7 +82,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(new UploadProduct());
+                .flatMap(new UploadProduct(productId));
     }
 
     private class GetProductModelObservable implements Func1<Long, Observable<UploadProductInputDomainModel>> {
@@ -94,14 +95,35 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class UploadProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
+        private long productId;
+
+        public UploadProduct(long productId) {
+            this.productId = productId;
+        }
+
         @Override
-        public Observable<AddProductDomainModel> call(UploadProductInputDomainModel domainModel) {
+        public Observable<AddProductDomainModel> call(final UploadProductInputDomainModel domainModel) {
             createNotification(domainModel.getProductName());
             return Observable.just(domainModel)
                     .flatMap(new GetGeneratedHost())
                     .doOnNext(new UpdateNotification())
                     .map(new PrepareUploadImage(domainModel))
-                    .flatMap(new ProceedUploadProduct());
+                    .flatMap(new ProceedUploadProduct())
+                    .onErrorResumeNext(new AddProductStatusToError(domainModel.getProductStatus()));
+        }
+
+        private class AddProductStatusToError implements Func1<Throwable, Observable<? extends AddProductDomainModel>> {
+            @ProductStatus
+            private int productStatus;
+
+            public AddProductStatusToError(@ProductStatus int productStatus) {
+                this.productStatus = productStatus;
+            }
+
+            @Override
+            public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
+                throw new UploadProductException(String.valueOf(productId), productStatus, throwable);
+            }
         }
     }
 
@@ -162,9 +184,26 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
                         .flatMap(new EditProductImage())
                         .doOnNext(new UpdateNotification())
                         .map(new PrepareEditProduct(domainModel))
-                        .flatMap(new EditProduct());
+                        .flatMap(new EditProduct())
+                        .map(new ToUploadProductModel(domainModel));
             } else {
                 throw new RuntimeException("No product status available");
+            }
+        }
+
+        private class ToUploadProductModel implements Func1<Boolean, AddProductDomainModel> {
+            private final UploadProductInputDomainModel domainModel;
+
+            public ToUploadProductModel(UploadProductInputDomainModel domainModel) {
+                this.domainModel = domainModel;
+            }
+
+            @Override
+            public AddProductDomainModel call(Boolean aBoolean) {
+                AddProductDomainModel uploadProductDomainModel = new AddProductDomainModel();
+                uploadProductDomainModel.setProductName(domainModel.getProductName());
+                uploadProductDomainModel.setProductDesc(domainModel.getProductDescription());
+                return uploadProductDomainModel;
             }
         }
     }
@@ -398,9 +437,9 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
     }
 
-    private class EditProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
+    private class EditProduct implements Func1<UploadProductInputDomainModel, Observable<Boolean>> {
         @Override
-        public Observable<AddProductDomainModel> call(UploadProductInputDomainModel editProductInputServiceModel) {
+        public Observable<Boolean> call(UploadProductInputDomainModel editProductInputServiceModel) {
             return uploadProductRepository.editProduct(editProductInputServiceModel);
         }
     }
