@@ -24,6 +24,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
+import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
@@ -40,6 +41,7 @@ import butterknife.OnClick;
  */
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
+    private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -191,6 +193,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
         }
         return requestParams;
+    }
+
+    @OnClick(R2.id.apply_promo_card_layout)
+    public void actionApplyPromoLayoutClicked() {
+        startActivityForResult(ApplyPromoActivity.getCallingActivity(getActivity()), APPLY_PROMO_ACTIVITY_REQUEST_CODE);
     }
 
     @OnClick(R2.id.cab_confirmation)
