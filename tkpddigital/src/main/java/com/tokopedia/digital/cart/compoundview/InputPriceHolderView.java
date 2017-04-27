@@ -62,10 +62,10 @@ public class InputPriceHolderView extends LinearLayout {
     }
 
     public void setInputPriceInfo(String totalPayment, long minPayment, long maxPayment) {
-        inputPriceEdittext.setText(totalPayment);
         inputPriceEdittext.setCursorVisible(true);
         inputPriceEdittext.addTextChangedListener(getEditTextChanged(minPayment,
                 maxPayment));
+        inputPriceEdittext.setText(totalPayment);
     }
 
     private TextWatcher getEditTextChanged(final long minPayment, final long maxPayment) {
