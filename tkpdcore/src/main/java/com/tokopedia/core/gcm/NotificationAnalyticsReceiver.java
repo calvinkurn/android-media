@@ -51,8 +51,21 @@ public class NotificationAnalyticsReceiver implements INotificationAnalyticsRece
 
     @Override
     public Bundle buildAnalyticNotificationData(Bundle data) {
-        CommonUtils.dumper("FCM GAv4 inside localytics bundle notif "+data);
-        sendLocalyticsPushReceived(data);
+        if (data != null && data.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
+            HashMap<String, Object> maps = new HashMap<>();
+            try {
+                JSONObject llObject = new JSONObject(data.getString(AppEventTracking.LOCA.NOTIFICATION_BUNDLE));
+                Iterator<?> keys = llObject.keys();
+                while (keys.hasNext()) {
+                    String key = (String) keys.next();
+                    maps.put(key, llObject.getString(key));
+                }
+                data.putSerializable(AppEventTracking.LOCA.NOTIFICATION_BUNDLE, maps);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            sendLocalyticsPushReceived(data);
+        }
         return data;
 
     }

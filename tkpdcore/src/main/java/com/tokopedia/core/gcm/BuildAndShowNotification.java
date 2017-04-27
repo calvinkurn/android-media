@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
@@ -207,6 +208,10 @@ public class BuildAndShowNotification {
 
         mBuilder = configureBigPictureNotification(data, mBuilder);
 
+        CommonUtils.dumper("FCM data bundle before showing "+data+"" +
+                " intent pass data "+notificationPass.getIntent().getExtras()+
+                " intent pass next "+homeIntent.getExtras());
+
         mBuilder = configureIconNotification(data, mBuilder);
 
         if (configuration.isBell()) {
@@ -218,7 +223,7 @@ public class BuildAndShowNotification {
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
 
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (configuration.isVibrate() && configuration.isBell()) {
