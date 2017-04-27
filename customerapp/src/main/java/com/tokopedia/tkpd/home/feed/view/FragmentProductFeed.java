@@ -92,7 +92,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private Unbinder unbinder;
     private RetryHandler retryHandler;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private int currentTopAdsPage;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -255,8 +254,8 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 topAdsRecyclerAdapter.setHasHeader(false);
             }
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
+            topAdsRecyclerAdapter.reset();
             adapter.setData(dataFeedList);
-            currentTopAdsPage = 3;
         }
     }
 
@@ -270,30 +269,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         contentRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void showRefreshFailed() {
-        feedPresenter.initializeDataFeed();
-        if (adapter.getData().size() > 0) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                    new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            feedPresenter.refreshDataFeed();
-                        }
-                    }).showRetrySnackbar();
-
-        }
-    }
-
-    @Override
-    public String getTopAdsPage() {
-        return String.valueOf(currentTopAdsPage);
-    }
-
-    @Override
-    public void increaseTopAdsPage() {
-        currentTopAdsPage += 2;
-    }
 
     @Override
     public void showEmptyHistoryProduct() {
@@ -311,11 +286,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showEmptyFeed() {
-        emptyFeedView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showInvalidFeed() {
         emptyFeedView.setVisibility(View.VISIBLE);
     }
 
@@ -340,7 +310,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         return !adapter.getData().isEmpty();
     }
 
-
     @Override
     public void showErrorFeed() {
         NetworkErrorHelper.showEmptyState(getContext(), parentView,
@@ -351,7 +320,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                     }
                 });
     }
-
 
     @Override
     public HistoryProductListItem getViewmodelHistory() {

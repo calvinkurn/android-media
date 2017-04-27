@@ -76,7 +76,7 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             checkViewAttached();
             getView().hideRefreshLoading();
             pagingHandler.nextPage();
-            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber(false));
+            loadMoreFeedUseCase.execute(getFeedRequestParams(), new LoadMoreFeedSubcriber());
 
         }
 
@@ -205,13 +205,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
     private class LoadMoreFeedSubcriber extends DefaultSubscriber<DataFeed> {
 
-        private boolean isIncludeTopAds;
-
-        LoadMoreFeedSubcriber(boolean isIncludeTopAds) {
-
-            this.isIncludeTopAds = isIncludeTopAds;
-        }
-
         @Override
         public void onCompleted() {
 
@@ -229,7 +222,6 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
             if (isViewAttached()) {
                 ProductFeedViewModel productFeedViewModel = new ProductFeedViewModel(dataFeed);
                 setPagging(productFeedViewModel.getPagingHandlerModel());
-                if (isIncludeTopAds) getView().increaseTopAdsPage();
                 getView().showLoadMoreFeed(productFeedViewModel.getData());
                 doCheckLoadMore();
             }

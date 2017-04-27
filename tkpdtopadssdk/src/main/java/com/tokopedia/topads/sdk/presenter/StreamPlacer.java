@@ -131,7 +131,7 @@ public class StreamPlacer implements AdsView, LocalAdsClickListener {
         return mPage;
     }
 
-    private void reset(){
+    public void reset() {
         ajustedPositionStart = 0;
         mPage = 1;
         items.clear();

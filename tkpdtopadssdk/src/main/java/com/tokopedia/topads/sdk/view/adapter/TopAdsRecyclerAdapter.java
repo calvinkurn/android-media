@@ -250,6 +250,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return position == placer.getItems().indexOf(loadingViewModel);
     }
 
+    public void reset() {
+        placer.reset();
+        notifyDataSetChanged();
+    }
+
     public void showLoading() {
         new Handler().post(new Runnable() {
             @Override
