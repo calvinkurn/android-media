@@ -86,8 +86,10 @@ public class InputPriceHolderView extends LinearLayout {
                     priceInput = Long.parseLong(s.toString());
                     errorInputError.setVisibility(GONE);
                     actionListener.onInputPriceByUserFilled(priceInput);
+                    actionListener.enableCheckoutButton();
                 } else {
                     errorInputError.setVisibility(VISIBLE);
+                    actionListener.disableCheckoutButton();
                 }
             }
         };
@@ -112,5 +114,9 @@ public class InputPriceHolderView extends LinearLayout {
 
     public interface ActionListener {
         void onInputPriceByUserFilled(long paymentAmount);
+
+        void enableCheckoutButton();
+
+        void disableCheckoutButton();
     }
 }

@@ -591,6 +591,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void enableCheckoutButton() {
+        checkoutHolderView.enableCheckoutButton();
+    }
+
+    @Override
+    public void disableCheckoutButton() {
+        checkoutHolderView.disableCheckoutButton();
+    }
+
+    @Override
     public void onVoucherCheckButtonClicked() {
         presenter.processCheckVoucher();
         KeyboardHandler.hideSoftKeyboard(getActivity());
