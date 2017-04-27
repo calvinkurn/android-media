@@ -20,7 +20,6 @@ import com.tokopedia.payment.listener.ITopPayView;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class ScroogeWebView extends WebView {
@@ -180,7 +179,7 @@ public class ScroogeWebView extends WebView {
         String urlThanks;
         try {
             urlThanks = URLDecoder.decode(ld, CHARSET_UTF_8);
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             urlThanks = "";
         }

@@ -146,7 +146,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
         }
         cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
-        retrieveLastGridConfig(browseModel.getParentDepartement());
+        if (isFromCategory()) {
+            retrieveLastGridConfig(browseModel.getParentDepartement());
+        }
         if (SessionHandler.isV4Login(context)) {
             String userId = SessionHandler.getLoginID(context);
             browseModel.setUnique_id(AuthUtil.md5(userId));
@@ -314,7 +316,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
                 isCustomGridType = true;
 
-                saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+                if (isFromCategory()) {
+                    saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+                }
 
                 browseView.sendChangeGridBroadcast(gridType);
                 browseView.changeBottomBarGridIcon(gridIcon, gridTitleResId);
@@ -520,7 +524,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     private void changeGridTypeIfNeeded(Integer viewType) {
-        if (isCustomGridType) {
+        if (!isFromCategory() || isCustomGridType) {
             return;
         }
 
@@ -551,6 +555,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
         browseView.sendChangeGridBroadcast(gridType);
         browseView.changeBottomBarGridIcon(gridIcon, gridTitleRes);
+    }
+
+    private boolean isFromCategory() {
+        return !TextUtils.isEmpty(browseModel.getParentDepartement())
+                && !("0").equals(browseModel.getParentDepartement());
     }
 
     @Override

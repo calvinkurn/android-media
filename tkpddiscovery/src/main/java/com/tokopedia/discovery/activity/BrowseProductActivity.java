@@ -302,10 +302,10 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     }
 
     @Override
-    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
+    public BrowseProductModel getDataForBrowseProduct() {
         Fragment fragment = fragmentManager.findFragmentByTag(BrowseParentFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof BrowseProductParentView) {
-            return ((BrowseProductParentView) fragment).getDataForBrowseProduct(firstTimeOnly);
+            return ((BrowseProductParentView) fragment).getDataForBrowseProduct();
         } else {
             return null;
         }
@@ -558,6 +558,15 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
             shareUrl = "";
         }
         return shareUrl;
+    }
+
+    @Override
+    public String getSource() {
+        if (browsePresenter != null && browsePresenter.getBrowseProductActivityModel() != null) {
+            return browsePresenter.getBrowseProductActivityModel().getSource();
+        } else {
+            return "";
+        }
     }
 
     public void removeEmptyState() {

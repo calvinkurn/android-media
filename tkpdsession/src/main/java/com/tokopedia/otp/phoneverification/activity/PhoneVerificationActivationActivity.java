@@ -65,6 +65,9 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
+        } else if (((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container)).getListener() == null) {
+            ((PhoneVerificationFragment) getFragmentManager().findFragmentById(R.id.container))
+                    .setPhoneVerificationListener(getPhoneVerificationListener());
         }
         fragmentTransaction.commit();
     }
