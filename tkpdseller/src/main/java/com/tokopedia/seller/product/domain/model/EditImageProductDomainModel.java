@@ -10,4 +10,8 @@ public class EditImageProductDomainModel {
     public String getPicId() {
         return picId;
     }
+
+    public void setPicId(String picId) {
+        this.picId = picId;
+    }
 }

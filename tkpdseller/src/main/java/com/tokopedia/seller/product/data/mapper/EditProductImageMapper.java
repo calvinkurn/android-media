@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
-import com.tokopedia.seller.product.data.source.cloud.model.EditImageProductServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
 import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
 
 import rx.functions.Func1;
@@ -13,6 +13,7 @@ public class EditProductImageMapper implements Func1<EditImageProductServiceMode
     @Override
     public EditImageProductDomainModel call(EditImageProductServiceModel serviceModel) {
         EditImageProductDomainModel domainModel = new EditImageProductDomainModel();
+        domainModel.setPicId(serviceModel.getData().getPicId());
         return domainModel;
     }
 }
