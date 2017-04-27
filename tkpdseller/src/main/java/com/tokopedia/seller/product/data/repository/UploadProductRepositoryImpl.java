@@ -4,6 +4,8 @@ import com.tokopedia.seller.product.data.mapper.AddProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductSubmitMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductValidationInputMapper;
 import com.tokopedia.seller.product.data.mapper.AddProductValidationMapper;
+import com.tokopedia.seller.product.data.mapper.DeleteProductPictureMapper;
+import com.tokopedia.seller.product.data.mapper.EditProductImageMapper;
 import com.tokopedia.seller.product.data.mapper.EditProductInputMapper;
 import com.tokopedia.seller.product.data.mapper.EditProductMapper;
 import com.tokopedia.seller.product.data.source.UploadProductDataSource;
@@ -14,6 +16,8 @@ import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
 import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
+import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
+import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import rx.Observable;
@@ -54,5 +58,17 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
         editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
         return uploadProductDataSource.editProduct(serviceModel)
                 .map(new EditProductMapper());
+    }
+
+    @Override
+    public Observable<EditImageProductDomainModel> editImageProduct(String picObj) {
+        return uploadProductDataSource.editProductImage(picObj)
+                .map(new EditProductImageMapper());
+    }
+
+    @Override
+    public Observable<ImageProductInputDomainModel> deleteProductPicture(String picId, String productId) {
+        return uploadProductDataSource.deleteProductPicture(picId, productId)
+                .map(new DeleteProductPictureMapper());
     }
 }

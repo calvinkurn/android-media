@@ -41,6 +41,7 @@ public class UploadProductPictureInputMapper {
         for (ImageProductInputDomainModel domainModel : photos){
             ProductPhotoServiceModel serviceModel = new ProductPhotoServiceModel();
             serviceModel.setUrl(domainModel.getUrl());
+            serviceModel.setPicureId(domainModel.getPicId());
             serviceModel.setDescription(domainModel.getDescription());
             serviceModelList.add(serviceModel);
         }

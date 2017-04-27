@@ -92,6 +92,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
             ImageProductInputDomainModel domainModel = new ImageProductInputDomainModel();
             domainModel.setDescription(draftModel.getDescription());
             domainModel.setImagePath(draftModel.getImagePath());
+            domainModel.setUrl(draftModel.getUrl());
             domainModel.setPicId(draftModel.getPicId());
             domainModel.setPicObj(draftModel.getPicObj());
             domainModels.add(domainModel);
@@ -157,6 +158,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         for (ImageProductInputDomainModel domainModel : photos){
             ImageProductInputDraftModel draftModel = new ImageProductInputDraftModel();
             draftModel.setDescription(domainModel.getDescription());
+            draftModel.setUrl(domainModel.getUrl());
             draftModel.setImagePath(domainModel.getImagePath());
             draftModel.setPicId(domainModel.getPicId());
             draftModel.setPicObj(domainModel.getPicObj());

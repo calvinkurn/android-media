@@ -7,6 +7,7 @@ package com.tokopedia.seller.product.data.source.cloud.model;
 public class ProductPhotoServiceModel {
     private String url;
     private String description;
+    private String picureId;
     private boolean defaultPicture;
 
     public void setUrl(String url) {
@@ -27,5 +28,21 @@ public class ProductPhotoServiceModel {
 
     public boolean isDefault() {
         return defaultPicture;
+    }
+
+    public String getPicureId() {
+        return picureId;
+    }
+
+    public void setPicureId(String picureId) {
+        this.picureId = picureId;
+    }
+
+    public boolean isDefaultPicture() {
+        return defaultPicture;
+    }
+
+    public void setDefaultPicture(boolean defaultPicture) {
+        this.defaultPicture = defaultPicture;
     }
 }
