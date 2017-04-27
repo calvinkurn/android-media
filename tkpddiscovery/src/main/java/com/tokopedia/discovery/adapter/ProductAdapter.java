@@ -742,7 +742,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             if (productIsEmpty) {
                 setSearchNotFound();
             }
-            notifyItemInserted(posTop);
+            notifyDataSetChanged();
             return posTop;
         }
         return 0;
