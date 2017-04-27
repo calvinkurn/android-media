@@ -5,7 +5,7 @@ package com.tokopedia.seller.product.domain.listener;
  */
 
 public interface AddProductNotificationListener {
-    void createNotification(String productName);
+    void createNotification(String productDraftId, String productName);
 
-    void notificationUpdate(int stepNotification);
+    void notificationUpdate(String productDraftId);
 }
