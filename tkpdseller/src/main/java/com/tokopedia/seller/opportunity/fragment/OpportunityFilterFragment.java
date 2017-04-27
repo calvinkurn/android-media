@@ -27,7 +27,6 @@ public class OpportunityFilterFragment extends BasePresenterFragment
     FilterViewModel filterViewModel;
 
     public OpportunityFilterFragment() {
-        this.filterViewModel = new FilterViewModel();
     }
 
     public static Fragment createInstance(FilterViewModel filterViewModel) {
@@ -109,17 +108,16 @@ public class OpportunityFilterFragment extends BasePresenterFragment
     @Override
     public void onResume() {
         super.onResume();
-        if ((filterViewModel == null)
-                && getArguments().getParcelable(ARGS_FILTER_DATA) != null) {
+        if (filterViewModel == null && getArguments().getParcelable(ARGS_FILTER_DATA) != null) {
             filterViewModel = getArguments().getParcelable(ARGS_FILTER_DATA);
         }
 
-        adapter.setData(filterViewModel);
+        if (adapter != null && filterViewModel != null)
+            adapter.setData(filterViewModel);
     }
 
     @Override
     public void updateData(FilterViewModel viewModel) {
-        if (adapter != null)
-            adapter.setData(viewModel);
+        this.filterViewModel = viewModel;
     }
 }

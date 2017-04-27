@@ -26,10 +26,8 @@ import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
@@ -287,27 +285,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), filterData);
+                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), filterData.getListFilter());
                 startActivityForResult(intent, REQUEST_FILTER);
             }
         });
-    }
-
-    private ArrayList<FilterItemViewModel> getFilterTitles() {
-        ArrayList<FilterItemViewModel> listTitle = new ArrayList<>();
-        listTitle.add(new FilterItemViewModel(
-                getActivity().getString(R.string.title_category),
-                presenter.getPass().getCategory() != null && !presenter.getPass().getCategory().equals("")));
-        listTitle.add(new FilterItemViewModel(
-                getActivity().getString(R.string.title_supported_shipping),
-                presenter.getPass().getShippingType() != null && !presenter.getPass().getShippingType().equals("")));
-        return listTitle;
-    }
-
-    private int getSelectedFilter() {
-        return presenter.getPass().getCategory() != null ?
-                Integer.parseInt(presenter.getPass().getCategory()) :
-                DEFAULT_CATEGORY_SELECTED;
     }
 
     private void finishRefresh() {
@@ -422,20 +403,18 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             resetOpportunityList();
 
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
-            CommonUtils.dumper("NISNIS Shipping" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE));
-            CommonUtils.dumper("NISNIS Category" + data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY));
 
-            String shippingType = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE, "");
-            String category = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY, "");
+            CommonUtils.dumper("NISNIS Filter " + data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_FILTER_VIEW_MODEL));
 
-//            ArrayList<FilterViewModel> listCategory = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_CATEGORY_LIST);
-//            filterData.setListCategory(listCategory);
-//            ArrayList<ShippingTypeViewModel> listShipping = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_SHIPPING_LIST);
-//            filterData.setListShippingType(listShipping);
+            ArrayList<FilterViewModel> listFilter = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_FILTER_VIEW_MODEL);
+            filterData.setListFilter(listFilter);
 
-            presenter.getPass().setShippingType(shippingType);
-            presenter.getPass().setCategory(category);
-            resetOpportunityList();
+            CommonUtils.dumper("NISNIS Filter " + data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_SELECTED_FILTER));
+            ArrayList<FilterPass> listPass = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_SELECTED_FILTER);
+            if (listPass != null) {
+                presenter.getPass().setListFilter(listPass);
+                resetOpportunityList();
+            }
 
         } else {
             super.onActivityResult(requestCode, resultCode, data);

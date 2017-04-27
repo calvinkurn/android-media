@@ -12,6 +12,7 @@ import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunityFilterSubscriber;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunitySubscriber;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 /**
  * Created by nisie on 3/2/17.
@@ -53,14 +54,11 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         RequestParams param = RequestParams.create();
         param.putString(GetOpportunityUseCase.PAGE, String.valueOf(viewListener.getPage()));
         param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
-        if (opportunityParam.getSort() != null)
-            param.putString(GetOpportunityUseCase.ORDER_BY, opportunityParam.getSort());
-        if (opportunityParam.getShippingType() != null)
-            param.putString(GetOpportunityUseCase.SHIP_TYPE, opportunityParam.getShippingType());
-        if (opportunityParam.getCategory() != null)
-            param.putString(GetOpportunityUseCase.CAT_1, opportunityParam.getCategory());
-        if (opportunityParam.getQuery() != null)
-            param.putString(GetOpportunityUseCase.QUERY, opportunityParam.getQuery());
+        if (opportunityParam.getListFilter() != null && opportunityParam.getListFilter().size() > 0 ){
+            for(FilterPass filterPass : opportunityParam.getListFilter()){
+                param.putString(filterPass.getKey(), filterPass.getValue());
+            }
+        }
         return param;
     }
 

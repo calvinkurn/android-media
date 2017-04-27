@@ -111,7 +111,7 @@ public class OpportunityFilterTitleFragment extends BasePresenterFragment
     }
 
     @Override
-    public void updateData(ArrayList<FilterViewModel> viewModel) {
-        adapter.setList(viewModel);
+    public void updateData(ArrayList<FilterViewModel> listFilter) {
+        adapter.setList(listFilter);
     }
 }

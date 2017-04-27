@@ -15,6 +15,7 @@ public class FilterViewModel implements Parcelable {
     private ArrayList<OptionViewModel> listChild;
     private boolean isSelected;
     private boolean isActive;
+    private int position;
 
     public FilterViewModel() {
         this.listChild = new ArrayList<>();
@@ -27,6 +28,7 @@ public class FilterViewModel implements Parcelable {
         listChild = in.createTypedArrayList(OptionViewModel.CREATOR);
         isSelected = in.readByte() != 0;
         isActive = in.readByte() != 0;
+        position = in.readInt();
     }
 
     public static final Creator<FilterViewModel> CREATOR = new Creator<FilterViewModel>() {
@@ -53,6 +55,7 @@ public class FilterViewModel implements Parcelable {
         dest.writeTypedList(listChild);
         dest.writeByte((byte) (isSelected ? 1 : 0));
         dest.writeByte((byte) (isActive ? 1 : 0));
+        dest.writeInt(position);
     }
 
     public String getName() {
@@ -93,5 +96,13 @@ public class FilterViewModel implements Parcelable {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }

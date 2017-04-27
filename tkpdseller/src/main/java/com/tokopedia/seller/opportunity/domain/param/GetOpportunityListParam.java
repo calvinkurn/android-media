@@ -1,5 +1,10 @@
 package com.tokopedia.seller.opportunity.domain.param;
 
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Created by nisie on 3/2/17.
  */
@@ -7,8 +12,7 @@ public class GetOpportunityListParam {
     private String page;
     private String query;
     private String sort;
-    private String category;
-    private String shippingType;
+    private ArrayList<FilterPass> listFilter;
 
     public String getPage() {
         return page;
@@ -34,19 +38,11 @@ public class GetOpportunityListParam {
         this.sort = sort;
     }
 
-    public String getCategory() {
-        return category;
+    public ArrayList<FilterPass> getListFilter() {
+        return listFilter;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getShippingType() {
-        return shippingType;
-    }
-
-    public void setShippingType(String shippingType) {
-        this.shippingType = shippingType;
+    public void setListFilter(ArrayList<FilterPass> listFilter) {
+        this.listFilter = listFilter;
     }
 }

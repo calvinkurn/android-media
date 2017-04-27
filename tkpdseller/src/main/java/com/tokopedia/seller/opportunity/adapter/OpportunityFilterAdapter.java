@@ -105,12 +105,7 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
             public void onClick(View v) {
                 filterViewModel.getListChild().get(position)
                         .setSelected(!filterViewModel.getListChild().get(position).isSelected());
-                for (OptionViewModel viewModel : filterViewModel.getListChild()) {
-                    if (viewModel != filterViewModel.getListChild().get(position))
-                        viewModel.setSelected(false);
-                }
                 listener.onFilterSelected(position, filterViewModel);
-                notifyDataSetChanged();
             }
         });
     }

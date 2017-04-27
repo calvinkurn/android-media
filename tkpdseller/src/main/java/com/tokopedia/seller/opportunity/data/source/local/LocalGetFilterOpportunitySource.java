@@ -77,12 +77,13 @@ public class LocalGetFilterOpportunitySource {
         ArrayList<OptionItem> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             OptionItem item = new OptionItem();
-            item.setName(String.valueOf(i));
+            item.setValue("value" + i);
             item.setHidden(0);
             item.setIdentifier("asdasdasd" + i);
             item.setTree(1);
             item.setName("child " + i + " of " + name);
             item.setParent(1);
+            item.setKey("key" + i);
             item.setListChild(createFakeChild2CategoryData(item.getName()));
             list.add(item);
         }
@@ -93,12 +94,13 @@ public class LocalGetFilterOpportunitySource {
         ArrayList<OptionItem> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             OptionItem item = new OptionItem();
-            item.setName(String.valueOf(i));
+            item.setValue("childvalue" + i);
             item.setHidden(0);
             item.setIdentifier("asdasdasd" + i);
             item.setTree(1);
             item.setName("grandchild " + i + " of " + name);
             item.setParent(1);
+            item.setKey("childkey" + i);
             item.setListChild(new ArrayList<OptionItem>());
             list.add(item);
         }
