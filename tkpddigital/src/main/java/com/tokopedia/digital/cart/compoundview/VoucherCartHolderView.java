@@ -95,6 +95,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     if (actionListener != null) {
                         hideHolderVoucher();
                         editTextVoucher.setText("");
+                        errorVoucher.setVisibility(GONE);
                         actionListener.forceHideSoftKeyboardVoucherInput();
                         actionListener.disableVoucherDiscount();
                     }
