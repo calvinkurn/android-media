@@ -119,5 +119,9 @@ public class OpportunityFilterFragment extends BasePresenterFragment
     @Override
     public void updateData(FilterViewModel viewModel) {
         this.filterViewModel = viewModel;
+        if (adapter != null) {
+            adapter.setData(viewModel);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

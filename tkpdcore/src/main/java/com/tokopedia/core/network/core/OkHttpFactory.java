@@ -78,6 +78,7 @@ public class OkHttpFactory {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
                 .build();

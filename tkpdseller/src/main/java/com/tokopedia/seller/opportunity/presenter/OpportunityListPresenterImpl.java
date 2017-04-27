@@ -54,8 +54,12 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         RequestParams param = RequestParams.create();
         param.putString(GetOpportunityUseCase.PAGE, String.valueOf(viewListener.getPage()));
         param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
-        if (opportunityParam.getListFilter() != null && opportunityParam.getListFilter().size() > 0 ){
-            for(FilterPass filterPass : opportunityParam.getListFilter()){
+        if (opportunityParam.getQuery() != null)
+            param.putString(GetOpportunityUseCase.QUERY, opportunityParam.getQuery());
+        if (opportunityParam.getSort() != null)
+            param.putString(GetOpportunityUseCase.ORDER_BY, opportunityParam.getSort());
+        if (opportunityParam.getListFilter() != null && opportunityParam.getListFilter().size() > 0) {
+            for (FilterPass filterPass : opportunityParam.getListFilter()) {
                 param.putString(filterPass.getKey(), filterPass.getValue());
             }
         }

@@ -14,6 +14,7 @@ import android.view.View;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterTitleAdapter;
@@ -152,36 +153,32 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                resetFilter(viewModel.getListCategory());
-//                resetShipping(viewModel.getListShipping());
-//                resetTitle(viewModel.getListTitle());
+                resetFilter(listFilter);
                 updateFilterTitleFragment();
             }
         };
     }
 
-//    private void resetTitle(ArrayList<FilterItemViewModel> listTitle) {
-//        for (int i = 0; i < listTitle.size(); i++) {
-//            listTitle.get(i).setActive(false);
-//            if (listTitle.get(i).isSelected())
-//                onTitleClicked(i);
-//        }
-//    }
-//
-//    private void resetShipping(List<ShippingTypeViewModel> listShipping) {
-//        for (ShippingTypeViewModel shipping : listShipping) {
-//            shipping.setSelected(false);
-//        }
-//    }
-//
-//    private void resetFilter(List<FilterViewModel> listCategory) {
-//        for (FilterViewModel category : listCategory) {
-//            if (category.getListChild().size() > 0)
-//                resetFilter(category.getListChild());
-//            else
-//                category.setSelected(false);
-//        }
-//    }
+    private void resetFilter(List<FilterViewModel> listFilter) {
+        for (FilterViewModel filter : listFilter) {
+            if (filter.isActive()) {
+                filter.setActive(false);
+                resetOption(filter.getListChild());
+                ((FilterListener) listFragment.get(filter.getPosition()))
+                        .updateData(listFilter.get(filter.getPosition()));
+            }
+        }
+    }
+
+    private void resetOption(ArrayList<OptionViewModel> listChild) {
+        for (OptionViewModel optionViewModel : listChild) {
+            if (optionViewModel.getListChild().size() > 0) {
+                resetOption(optionViewModel.getListChild());
+            } else if (optionViewModel.isSelected()) {
+                optionViewModel.setSelected(false);
+            }
+        }
+    }
 
     private View.OnClickListener onSaveClicked() {
         return new View.OnClickListener() {
@@ -209,7 +206,8 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return list;
     }
 
-    private void addSelectedFilterToList(ArrayList<FilterPass> list, ArrayList<OptionViewModel> listChild) {
+    private void addSelectedFilterToList(ArrayList<FilterPass> list,
+                                         ArrayList<OptionViewModel> listChild) {
         for (OptionViewModel optionViewModel : listChild) {
             if (optionViewModel.getListChild().size() > 0) {
                 addSelectedFilterToList(list, optionViewModel.getListChild());
