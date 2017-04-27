@@ -20,7 +20,7 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/26/17.
  */
 
-public class ProductDraftFragment extends ProductAddFragment implements ProductDraftView{
+public class ProductDraftAddFragment extends ProductAddFragment implements ProductDraftView{
 
     @Inject
     public ProductDraftPresenter presenter;
@@ -28,7 +28,7 @@ public class ProductDraftFragment extends ProductAddFragment implements ProductD
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
     public static Fragment createInstance(String productDraftId) {
-        ProductDraftFragment fragment = new ProductDraftFragment();
+        ProductDraftAddFragment fragment = new ProductDraftAddFragment();
         Bundle args = new Bundle();
         args.putString(DRAFT_PRODUCT_ID, productDraftId);
         fragment.setArguments(args);

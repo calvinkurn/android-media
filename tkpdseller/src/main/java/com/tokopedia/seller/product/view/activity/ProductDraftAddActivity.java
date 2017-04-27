@@ -6,18 +6,18 @@ import android.content.Intent;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.fragment.ProductDraftFragment;
+import com.tokopedia.seller.product.view.fragment.ProductDraftAddFragment;
 
 /**
  * @author sebastianuskh on 4/26/17.
  */
 
-public class ProductDraftActivity extends ProductAddActivity {
+public class ProductDraftAddActivity extends ProductAddActivity {
 
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
 
     public static Intent createInstance(Context context, String productId){
-        Intent intent = new Intent(context, ProductDraftActivity.class);
+        Intent intent = new Intent(context, ProductDraftAddActivity.class);
         intent.putExtra(PRODUCT_DRAFT_ID, productId);
         return intent;
     }
@@ -30,7 +30,7 @@ public class ProductDraftActivity extends ProductAddActivity {
             throw new RuntimeException("Product id is not selected");
         }
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, ProductDraftFragment.createInstance(productId), ProductDraftFragment.class.getSimpleName())
+                .replace(R.id.container, ProductDraftAddFragment.createInstance(productId), ProductDraftAddFragment.class.getSimpleName())
                 .commit();
     }
 

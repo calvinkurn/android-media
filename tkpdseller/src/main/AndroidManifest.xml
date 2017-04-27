@@ -205,7 +205,11 @@
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".product.view.activity.ProductDraftActivity"
+            android:name=".product.view.activity.ProductDraftAddActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait" />
 

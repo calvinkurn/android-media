@@ -2,9 +2,11 @@ package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
+import com.tokopedia.seller.product.data.exception.UploadProductException;
 import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import rx.Subscriber;
 
@@ -24,7 +26,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     public void uploadProduct(long productDraftId) {
         checkViewAttached();
         RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId)));
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber());
     }
 
     @Override
@@ -41,10 +43,8 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
 
     private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
 
-        private String productDraftId;
+        public AddProductSubscriber() {
 
-        public AddProductSubscriber(String productDraftId) {
-            this.productDraftId = productDraftId;
         }
 
         @Override
@@ -53,14 +53,24 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         }
 
         @Override
-        public void onError(Throwable e) {
+        public void onError(Throwable uploadThrowable) {
+            Throwable e = uploadThrowable;
+            String productDraftId = "";
+            @ProductStatus
+            int productStatus = ProductStatus.ADD;
+            if (uploadThrowable instanceof UploadProductException){
+                e = ((UploadProductException) uploadThrowable).getThrowable();
+                productDraftId = ((UploadProductException) uploadThrowable).getProductDraftId();
+                productStatus = ((UploadProductException) uploadThrowable).getProductStatus();
+            }
+
             checkViewAttached();
             String errorMessage = e.getLocalizedMessage();
             if (e instanceof ResponseErrorListStringException) {
                 errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
             }
             getView().onFailedAddProduct();
-            getView().notificationFailed(errorMessage, productDraftId);
+            getView().notificationFailed(errorMessage, productDraftId, productStatus);
             getView().sendFailedBroadcast(errorMessage);
         }
 
