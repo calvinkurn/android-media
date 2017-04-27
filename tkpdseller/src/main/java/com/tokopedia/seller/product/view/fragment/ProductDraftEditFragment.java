@@ -77,6 +77,18 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
 
         List<ImageProductInputViewModel> newPhotosList = new ArrayList<>();
 
+        // loop in photo before edit
+        // if there is a photo without url existed in new photo list, the prepare it to be deleted
+        for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
+            try {
+                findImage(viewModel.getUrl(), productPhotos.getPhotos());
+            } catch (RuntimeException e){
+                viewModel.setUrl("");
+                newPhotosList.add(viewModel);
+                isChanging = true;
+            }
+        }
+
         // loop in new photos
         // if found as path, then ready to upload,
         // if not found as path, find the model before edit to get the photos id
@@ -93,18 +105,6 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
                 defaultImage = 0;
             } else {
                 newPhotosList.add(viewModel);
-            }
-        }
-
-        // loop in photo before edit
-        // if there is a photo without url existed in new photo list, the prepare it to be deleted
-        for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
-            try {
-                findImage(viewModel.getUrl(), productPhotos.getPhotos());
-            } catch (RuntimeException e){
-                viewModel.setUrl("");
-                newPhotosList.add(viewModel);
-                isChanging = true;
             }
         }
 
