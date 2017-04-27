@@ -9,9 +9,13 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/12/17.
  */
 
-public class EditProductMapper implements Func1<EditProductServiceModel, AddProductDomainModel> {
+public class EditProductMapper implements Func1<EditProductServiceModel, Boolean> {
     @Override
-    public AddProductDomainModel call(EditProductServiceModel editProductServiceModel) {
-        return null;
+    public Boolean call(EditProductServiceModel editProductServiceModel) {
+        if (editProductServiceModel.getData().getIsSuccess() == 1) {
+            return true;
+        } else {
+            throw new RuntimeException("Edit Product Failed");
+        }
     }
 }

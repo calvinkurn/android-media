@@ -53,7 +53,7 @@ public class UploadProductRepositoryImpl implements UploadProductRepository {
     }
 
     @Override
-    public Observable<AddProductDomainModel> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
+    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
         EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
         editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
         return uploadProductDataSource.editProduct(serviceModel)
