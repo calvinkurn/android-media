@@ -550,7 +550,7 @@ public class TkpdBaseURL {
 
 
     public static class Recharge {
-        public static final String VERSION = "v1.1";
+        public static final String VERSION = "v1.3";
         public static final String RECHARGE = "recharge";
 
         public static final String PATH_STATUS = VERSION + "/status";
