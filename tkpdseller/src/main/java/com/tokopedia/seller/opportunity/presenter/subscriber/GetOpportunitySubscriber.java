@@ -113,8 +113,10 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
     @Override
     public void onNext(OpportunityModel opportunityModel) {
 
-        viewListener.onSuccessGetOpportunity(mappingToViewModel(opportunityModel));
-
+        if (opportunityModel.isSuccess())
+            viewListener.onSuccessGetOpportunity(mappingToViewModel(opportunityModel));
+        else
+            viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
 
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,33 +11,64 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
-import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
-
-import java.util.ArrayList;
+import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 
 /**
- * Created by nisie on 4/7/17.
+ * Created by nisie on 3/15/17.
  */
 
-public class OpportunityFilterFragment extends BasePresenterFragment implements OpportunityFilterActivity.FilterListener {
+public class OpportunityFilterFragment extends BasePresenterFragment
+        implements OpportunityFilterActivity.FilterListener {
 
-    private static final String ARGS_LIST_TITLE = "ARGS_LIST_TITLE";
-    RecyclerView opportunityFilter;
+
+    private static final String ARGS_FILTER_DATA = "ARGS_FILTER_DATA";
+    RecyclerView categoryList;
     OpportunityFilterAdapter adapter;
-    ArrayList<FilterItemViewModel> listTitle;
+    FilterViewModel filterViewModel;
 
     public OpportunityFilterFragment() {
-        this.listTitle = new ArrayList<>();
+        this.filterViewModel = new FilterViewModel();
     }
 
-    public static OpportunityFilterFragment createInstance(ArrayList<FilterItemViewModel> listTitle) {
+    public static Fragment createInstance(FilterViewModel filterViewModel) {
         OpportunityFilterFragment fragment = new OpportunityFilterFragment();
         Bundle bundle = new Bundle();
-        listTitle.get(0).setSelected(true);
-        bundle.putParcelableArrayList(ARGS_LIST_TITLE, listTitle);
+        bundle.putParcelable(ARGS_FILTER_DATA, filterViewModel);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_opportunity_category;
+    }
+
+    @Override
+    protected void initView(View view) {
+        categoryList = (RecyclerView) view.findViewById(R.id.list);
+        categoryList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        adapter = OpportunityFilterAdapter.createInstance((OpportunityFilterActivity) getActivity());
+        categoryList.setAdapter(adapter);
+    }
+
+    @Override
+    protected void setViewListener() {
+
+    }
+
+    @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
     }
 
     @Override
@@ -46,9 +78,7 @@ public class OpportunityFilterFragment extends BasePresenterFragment implements 
 
     @Override
     protected void onFirstTimeLaunched() {
-        if (getArguments().getParcelableArrayList(ARGS_LIST_TITLE) != null)
-            listTitle = getArguments().getParcelableArrayList(ARGS_LIST_TITLE);
-        adapter.setList(listTitle);
+
     }
 
     @Override
@@ -77,40 +107,19 @@ public class OpportunityFilterFragment extends BasePresenterFragment implements 
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
+    public void onResume() {
+        super.onResume();
+        if ((filterViewModel == null)
+                && getArguments().getParcelable(ARGS_FILTER_DATA) != null) {
+            filterViewModel = getArguments().getParcelable(ARGS_FILTER_DATA);
+        }
 
+        adapter.setData(filterViewModel);
     }
 
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_opportunity_filter;
-    }
-
-    @Override
-    protected void initView(View view) {
-        opportunityFilter = (RecyclerView) view.findViewById(R.id.opportunity_filter);
-        opportunityFilter.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        adapter = OpportunityFilterAdapter.createInstance(getActivity(), (OpportunityFilterActivity) getActivity());
-        opportunityFilter.setAdapter(adapter);
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public void updateData(OpportunityFilterActivityViewModel viewModel) {
-        adapter.setList(viewModel.getListTitle());
+    public void updateData(FilterViewModel viewModel) {
+        if (adapter != null)
+            adapter.setData(viewModel);
     }
 }

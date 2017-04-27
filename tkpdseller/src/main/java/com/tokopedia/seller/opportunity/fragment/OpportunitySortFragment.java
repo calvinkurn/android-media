@@ -136,8 +136,8 @@ public class OpportunitySortFragment extends BasePresenterFragment {
         for (SortingTypeViewModel sortingTypeViewModel : listSort) {
             SimpleCheckListItemModel itemModel = new SimpleCheckListItemModel();
             itemModel.setSelected(sortingTypeViewModel.isSelected());
-            itemModel.setTitle(sortingTypeViewModel.getSortingTypeName());
-            itemModel.setValue(String.valueOf(sortingTypeViewModel.getSortingTypeId()));
+            itemModel.setTitle(sortingTypeViewModel.getName());
+            itemModel.setValue(String.valueOf(sortingTypeViewModel.getValue()));
             listData.add(itemModel);
         }
 

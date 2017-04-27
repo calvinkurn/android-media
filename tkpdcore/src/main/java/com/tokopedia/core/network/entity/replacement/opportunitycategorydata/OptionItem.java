@@ -1,4 +1,3 @@
-
 package com.tokopedia.core.network.entity.replacement.opportunitycategorydata;
 
 import com.google.gson.annotations.Expose;
@@ -6,11 +5,15 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-public class CategoryList {
+/**
+ * Created by nisie on 4/26/17.
+ */
 
-    @SerializedName("id")
+public class OptionItem {
+
+    @SerializedName("value")
     @Expose
-    private String id;
+    private String value;
     @SerializedName("name")
     @Expose
     private String name;
@@ -23,19 +26,22 @@ public class CategoryList {
     @SerializedName("tree")
     @Expose
     private int tree;
+    @SerializedName("key")
+    @Expose
+    private String key;
     @SerializedName("identifier")
     @Expose
     private String identifier;
     @SerializedName("child")
     @Expose
-    private ArrayList<CategoryList> child = null;
+    private ArrayList<OptionItem> listChild;
 
-    public String getId() {
-        return id;
+    public String getValue() {
+        return value;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     public String getName() {
@@ -70,6 +76,14 @@ public class CategoryList {
         this.tree = tree;
     }
 
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getIdentifier() {
         return identifier;
     }
@@ -78,12 +92,11 @@ public class CategoryList {
         this.identifier = identifier;
     }
 
-    public ArrayList<CategoryList> getChild() {
-        return child;
+    public ArrayList<OptionItem> getListChild() {
+        return listChild;
     }
 
-    public void setChild(ArrayList<CategoryList> child) {
-        this.child = child;
+    public void setListChild(ArrayList<OptionItem> listChild) {
+        this.listChild = listChild;
     }
-
 }

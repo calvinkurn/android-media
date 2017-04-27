@@ -4,14 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nisie on 4/7/17.
  */
 
 public class OpportunityFilterActivityViewModel implements Parcelable{
-    private ArrayList<CategoryViewModel> listCategory;
+    private ArrayList<FilterViewModel> listCategory;
     private ArrayList<ShippingTypeViewModel> listShipping;
     private ArrayList<FilterItemViewModel> listTitle;
 
@@ -19,7 +18,7 @@ public class OpportunityFilterActivityViewModel implements Parcelable{
     }
 
     protected OpportunityFilterActivityViewModel(Parcel in) {
-        listCategory = in.createTypedArrayList(CategoryViewModel.CREATOR);
+        listCategory = in.createTypedArrayList(FilterViewModel.CREATOR);
         listShipping = in.createTypedArrayList(ShippingTypeViewModel.CREATOR);
         listTitle = in.createTypedArrayList(FilterItemViewModel.CREATOR);
     }
@@ -36,11 +35,11 @@ public class OpportunityFilterActivityViewModel implements Parcelable{
         }
     };
 
-    public ArrayList<CategoryViewModel> getListCategory() {
+    public ArrayList<FilterViewModel> getListCategory() {
         return listCategory;
     }
 
-    public void setListCategory(ArrayList<CategoryViewModel> listCategory) {
+    public void setListCategory(ArrayList<FilterViewModel> listCategory) {
         this.listCategory = listCategory;
     }
 

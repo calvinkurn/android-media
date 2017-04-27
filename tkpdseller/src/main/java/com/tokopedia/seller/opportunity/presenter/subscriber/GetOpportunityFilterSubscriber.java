@@ -2,16 +2,20 @@ package com.tokopedia.seller.opportunity.presenter.subscriber;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.CategoryList;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.FilterData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OptionItem;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SearchData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.ShippingType;
-import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortingType;
+import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.SortData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.data.OpportunityCategoryModel;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
-import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.SearchViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
@@ -29,7 +33,7 @@ import rx.Subscriber;
  */
 
 public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCategoryModel> {
-    
+
     private final OpportunityListView viewListener;
 
     public GetOpportunityFilterSubscriber(OpportunityListView viewListener) {
@@ -38,7 +42,7 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
 
     @Override
     public void onCompleted() {
-        
+
     }
 
     @Override
@@ -101,51 +105,58 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
 
     private OpportunityFilterViewModel mappingToViewModel(OpportunityCategoryData opportunityCategoryData) {
         OpportunityFilterViewModel viewModel = new OpportunityFilterViewModel();
-        viewModel.setListCategory(getListCategory(opportunityCategoryData.getCategoryList()));
-        viewModel.setListShippingType(getListShippingType(opportunityCategoryData.getShippingType()));
-        viewModel.setListSortingType(getListSortingType(opportunityCategoryData.getSortingType()));
+        viewModel.setListFilter(mapplingFilterToViewModel(opportunityCategoryData.getFilter()));
+        viewModel.setListSortingType(mappingSortToViewModel(opportunityCategoryData.getSort()));
         return viewModel;
     }
 
-
-    private ArrayList<SortingTypeViewModel> getListSortingType(
-            ArrayList<SortingType> sortingTypes) {
+    private ArrayList<SortingTypeViewModel> mappingSortToViewModel(ArrayList<SortData> sort) {
         ArrayList<SortingTypeViewModel> list = new ArrayList<>();
-        for (SortingType sortingType : sortingTypes) {
-            list.add(new SortingTypeViewModel(sortingType.getSortingTypeName(),
-                    sortingType.getSortingTypeID()));
+
+        for (SortData sortData : sort) {
+            SortingTypeViewModel sortingTypeViewModel = new SortingTypeViewModel();
+            sortingTypeViewModel.setName(sortData.getName());
+            sortingTypeViewModel.setValue(sortData.getValue());
+            sortingTypeViewModel.setKey(sortData.getKey());
+            list.add(sortingTypeViewModel);
         }
         return list;
     }
 
-    private ArrayList<ShippingTypeViewModel> getListShippingType(
-            ArrayList<ShippingType> shippingTypes) {
-        ArrayList<ShippingTypeViewModel> list = new ArrayList<>();
-        for (ShippingType shippingType : shippingTypes) {
-            list.add(new ShippingTypeViewModel(shippingType.getShippingTypeName(),
-                    shippingType.getShippingTypeID()));
+    private ArrayList<FilterViewModel> mapplingFilterToViewModel(
+            ArrayList<FilterData> filterDatas) {
+        ArrayList<FilterViewModel> list = new ArrayList<>();
+
+        for (FilterData filterData : filterDatas) {
+            FilterViewModel filterViewModel = new FilterViewModel();
+            filterViewModel.setName(filterData.getTitle());
+            filterViewModel.setListChild(mappingListOption(filterData.getOptionItemList()));
+            filterViewModel.setSearchViewModel(mappingSearch(filterData.getSearchData()));
+            list.add(filterViewModel);
         }
         return list;
     }
 
-    private ArrayList<CategoryViewModel> getListCategory(
-            ArrayList<CategoryList> categoryLists) {
-        ArrayList<CategoryViewModel> list = new ArrayList<>();
+    private SearchViewModel mappingSearch(SearchData searchData) {
+        SearchViewModel searchViewModel = new SearchViewModel();
+        searchViewModel.setIsSearchable(searchData.getSearchable());
+        searchViewModel.setPlaceholder(searchData.getPlaceholder());
+        return searchViewModel;
+    }
 
-        for (CategoryList categoryList : categoryLists) {
-            CategoryViewModel categoryViewModel = new CategoryViewModel();
-            categoryViewModel.setCategoryId(Integer.parseInt(categoryList.getId()));
-            categoryViewModel.setCategoryName(categoryList.getName());
-            categoryViewModel.setParent(categoryList.getParent());
-            categoryViewModel.setIsHidden(categoryList.getHidden());
-            categoryViewModel.setTreeLevel(categoryList.getTree());
-            categoryViewModel.setIdentifier(categoryList.getIdentifier());
-            if (categoryList.getChild() != null)
-                categoryViewModel.setListChild(getListCategory(categoryList.getChild()));
-            else
-                categoryViewModel.setListChild(new ArrayList<CategoryViewModel>());
-
-            list.add(categoryViewModel);
+    private ArrayList<OptionViewModel> mappingListOption(List<OptionItem> optionItemList) {
+        ArrayList<OptionViewModel> list = new ArrayList<>();
+        for (OptionItem optionItem : optionItemList) {
+            OptionViewModel viewModel = new OptionViewModel();
+            viewModel.setName(optionItem.getName());
+            viewModel.setIdentifier(optionItem.getIdentifier());
+            viewModel.setIsHidden(optionItem.getHidden());
+            viewModel.setKey(optionItem.getKey());
+            viewModel.setParent(optionItem.getParent());
+            viewModel.setValue(optionItem.getValue());
+            viewModel.setTreeLevel(optionItem.getTree());
+            viewModel.setListChild(mappingListOption(optionItem.getListChild()));
+            list.add(viewModel);
         }
         return list;
     }

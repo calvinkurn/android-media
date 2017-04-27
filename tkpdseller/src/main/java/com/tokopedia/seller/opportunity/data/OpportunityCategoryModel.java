@@ -43,8 +43,4 @@ public class OpportunityCategoryModel {
     public int getErrorCode() {
         return errorCode;
     }
-
-    public static OpportunityCategoryModel createEmptyModel() {
-        return new OpportunityCategoryModel();
-    }
 }

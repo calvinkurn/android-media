@@ -3,30 +3,26 @@ package com.tokopedia.seller.opportunity.viewmodel.opportunitylist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by nisie on 3/6/17.
  */
 
-public class OpportunityFilterViewModel implements Parcelable{
-    ArrayList<ShippingTypeViewModel> listShippingType;
-    ArrayList<SortingTypeViewModel> listSortingType;
-    ArrayList<CategoryViewModel> listCategory;
+public class OpportunityFilterViewModel implements Parcelable {
+    private ArrayList<SortingTypeViewModel> listSortingType;
+    private ArrayList<FilterViewModel> listFilter;
 
     public OpportunityFilterViewModel() {
 
     }
 
-    protected OpportunityFilterViewModel(Parcel in) {
-        listShippingType = in.createTypedArrayList(ShippingTypeViewModel.CREATOR);
+    private OpportunityFilterViewModel(Parcel in) {
         listSortingType = in.createTypedArrayList(SortingTypeViewModel.CREATOR);
-        listCategory = in.createTypedArrayList(CategoryViewModel.CREATOR);
+        listFilter = in.createTypedArrayList(FilterViewModel.CREATOR);
     }
 
     public static final Creator<OpportunityFilterViewModel> CREATOR = new Creator<OpportunityFilterViewModel>() {
@@ -41,14 +37,6 @@ public class OpportunityFilterViewModel implements Parcelable{
         }
     };
 
-    public ArrayList<ShippingTypeViewModel> getListShippingType() {
-        return listShippingType;
-    }
-
-    public void setListShippingType(ArrayList<ShippingTypeViewModel> listShippingType) {
-        this.listShippingType = listShippingType;
-    }
-
     public ArrayList<SortingTypeViewModel> getListSortingType() {
         return listSortingType;
     }
@@ -57,12 +45,12 @@ public class OpportunityFilterViewModel implements Parcelable{
         this.listSortingType = listSortingType;
     }
 
-    public ArrayList<CategoryViewModel> getListCategory() {
-        return listCategory;
+    public ArrayList<FilterViewModel> getListFilter() {
+        return listFilter;
     }
 
-    public void setListCategory(ArrayList<CategoryViewModel> listCategory) {
-        this.listCategory = listCategory;
+    public void setListFilter(ArrayList<FilterViewModel> listFilter) {
+        this.listFilter = listFilter;
     }
 
     @Override
@@ -72,8 +60,7 @@ public class OpportunityFilterViewModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(listShippingType);
         dest.writeTypedList(listSortingType);
-        dest.writeTypedList(listCategory);
+        dest.writeTypedList(listFilter);
     }
 }

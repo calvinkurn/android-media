@@ -25,7 +25,7 @@ import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
-import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
@@ -287,18 +287,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         filterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), createFilterData());
+                Intent intent = OpportunityFilterActivity.createIntent(getActivity(), filterData);
                 startActivityForResult(intent, REQUEST_FILTER);
             }
         });
-    }
-
-    private OpportunityFilterActivityViewModel createFilterData() {
-        OpportunityFilterActivityViewModel viewModel = new OpportunityFilterActivityViewModel();
-        viewModel.setListCategory(filterData.getListCategory());
-        viewModel.setListShipping(filterData.getListShippingType());
-        viewModel.setListTitle(getFilterTitles());
-        return viewModel;
     }
 
     private ArrayList<FilterItemViewModel> getFilterTitles() {
@@ -313,7 +305,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     private int getSelectedFilter() {
-        return presenter.getPass().getCategory() != null ? Integer.parseInt(presenter.getPass().getCategory()) : DEFAULT_CATEGORY_SELECTED;
+        return presenter.getPass().getCategory() != null ?
+                Integer.parseInt(presenter.getPass().getCategory()) :
+                DEFAULT_CATEGORY_SELECTED;
     }
 
     private void finishRefresh() {
@@ -368,11 +362,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     public boolean isFilterEmpty() {
         return filterData != null
-                && (
-                (filterData.getListCategory() == null || (filterData != null && filterData.getListCategory().size() == 0))
-                        || (filterData.getListSortingType() == null || (filterData != null && filterData.getListSortingType().size() == 0))
-                        || (filterData.getListShippingType() == null || (filterData != null && filterData.getListShippingType().size() == 0))
-        );
+                && ((filterData.getListFilter() == null ||
+                (filterData != null && filterData.getListFilter().size() == 0))
+                || (filterData.getListSortingType() == null ||
+                (filterData != null && filterData.getListSortingType().size() == 0)));
     }
 
     @Override
@@ -435,10 +428,10 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             String shippingType = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_SHIPPING_TYPE, "");
             String category = data.getExtras().getString(OpportunityFilterActivity.PARAM_SELECTED_CATEGORY, "");
 
-            ArrayList<CategoryViewModel> listCategory = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_CATEGORY_LIST);
-            filterData.setListCategory(listCategory);
-            ArrayList<ShippingTypeViewModel> listShipping = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_SHIPPING_LIST);
-            filterData.setListShippingType(listShipping);
+//            ArrayList<FilterViewModel> listCategory = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_CATEGORY_LIST);
+//            filterData.setListCategory(listCategory);
+//            ArrayList<ShippingTypeViewModel> listShipping = data.getExtras().getParcelableArrayList(OpportunityFilterActivity.PARAM_SHIPPING_LIST);
+//            filterData.setListShippingType(listShipping);
 
             presenter.getPass().setShippingType(shippingType);
             presenter.getPass().setCategory(category);

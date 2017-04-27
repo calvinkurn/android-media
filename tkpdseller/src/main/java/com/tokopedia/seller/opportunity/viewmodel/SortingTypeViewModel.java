@@ -7,22 +7,19 @@ import android.os.Parcelable;
  * Created by nisie on 3/6/17.
  */
 
-public class SortingTypeViewModel implements Parcelable{
-    int sortingTypeId;
-    String sortingTypeName;
+public class SortingTypeViewModel implements Parcelable {
+    private String value;
+    private String name;
+    private String key;
     private boolean isSelected;
 
     public SortingTypeViewModel() {
     }
 
-    public SortingTypeViewModel(String sortingTypeName, int sortingTypeId) {
-        this.sortingTypeId = sortingTypeId;
-        this.sortingTypeName= sortingTypeName;
-    }
-
     protected SortingTypeViewModel(Parcel in) {
-        sortingTypeId = in.readInt();
-        sortingTypeName = in.readString();
+        value = in.readString();
+        name = in.readString();
+        key = in.readString();
         isSelected = in.readByte() != 0;
     }
 
@@ -38,20 +35,41 @@ public class SortingTypeViewModel implements Parcelable{
         }
     };
 
-    public int getSortingTypeId() {
-        return sortingTypeId;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setSortingTypeId(int sortingTypeId) {
-        this.sortingTypeId = sortingTypeId;
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(value);
+        dest.writeString(name);
+        dest.writeString(key);
+        dest.writeByte((byte) (isSelected ? 1 : 0));
     }
 
-    public String getSortingTypeName() {
-        return sortingTypeName;
+    public String getValue() {
+        return value;
     }
 
-    public void setSortingTypeName(String sortingTypeName) {
-        this.sortingTypeName = sortingTypeName;
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public boolean isSelected() {
@@ -60,17 +78,5 @@ public class SortingTypeViewModel implements Parcelable{
 
     public void setSelected(boolean selected) {
         isSelected = selected;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(sortingTypeId);
-        dest.writeString(sortingTypeName);
-        dest.writeByte((byte) (isSelected ? 1 : 0));
     }
 }

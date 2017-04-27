@@ -8,38 +8,26 @@ import java.util.ArrayList;
 
 public class OpportunityCategoryData {
 
-    @SerializedName("shippingType")
+    @SerializedName("sort")
     @Expose
-    private ArrayList<ShippingType> shippingType = null;
-    @SerializedName("sortingType")
+    private ArrayList<SortData> sort = null;
+    @SerializedName("filter")
     @Expose
-    private ArrayList<SortingType> sortingType = null;
-    @SerializedName("categoryList")
-    @Expose
-    private ArrayList<CategoryList> categoryList = null;
+    private ArrayList<FilterData> filter = null;
 
-    public ArrayList<ShippingType> getShippingType() {
-        return shippingType;
+    public ArrayList<SortData> getSort() {
+        return sort;
     }
 
-    public void setShippingType(ArrayList<ShippingType> shippingType) {
-        this.shippingType = shippingType;
+    public void setSort(ArrayList<SortData> sort) {
+        this.sort = sort;
     }
 
-    public ArrayList<SortingType> getSortingType() {
-        return sortingType;
+    public ArrayList<FilterData> getFilter() {
+        return filter;
     }
 
-    public void setSortingType(ArrayList<SortingType> sortingType) {
-        this.sortingType = sortingType;
+    public void setFilter(ArrayList<FilterData> filter) {
+        this.filter = filter;
     }
-
-    public ArrayList<CategoryList> getCategoryList() {
-        return categoryList;
-    }
-
-    public void setCategoryList(ArrayList<CategoryList> categoryList) {
-        this.categoryList = categoryList;
-    }
-
 }

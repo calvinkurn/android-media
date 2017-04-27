@@ -7,25 +7,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.adapter.OpportunityCategoryAdapter;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
-import com.tokopedia.seller.opportunity.adapter.OpportunityShippingAdapter;
-import com.tokopedia.seller.opportunity.fragment.OpportunityCategoryFragment;
+import com.tokopedia.seller.opportunity.adapter.OpportunityFilterTitleAdapter;
 import com.tokopedia.seller.opportunity.fragment.OpportunityFilterFragment;
-import com.tokopedia.seller.opportunity.fragment.OpportunityShippingFragment;
-import com.tokopedia.seller.opportunity.viewmodel.CategoryViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.FilterItemViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterActivityViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.ShippingTypeViewModel;
+import com.tokopedia.seller.opportunity.fragment.OpportunityFilterTitleFragment;
+import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,10 +31,15 @@ import java.util.List;
  */
 
 public class OpportunityFilterActivity extends BasePresenterActivity
-        implements OpportunityFilterAdapter.FilterListener, OpportunityShippingAdapter.ShippingListener, OpportunityCategoryAdapter.CategoryListener {
+        implements OpportunityFilterTitleAdapter.FilterListener,
+        OpportunityFilterAdapter.CategoryListener {
+
+    public interface FilterTitleListener {
+        void updateData(ArrayList<FilterViewModel> viewModel);
+    }
 
     public interface FilterListener {
-        void updateData(OpportunityFilterActivityViewModel viewModel);
+        void updateData(FilterViewModel viewModel);
     }
 
     private static final String ARGS_DATA = "OpportunityFilterActivity_ARGS_DATA";
@@ -52,11 +53,11 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     View saveButton;
     View resetButton;
     private List<Fragment> listFragment;
-    private OpportunityFilterActivityViewModel viewModel;
+    private OpportunityFilterViewModel viewModel;
     private String selectedShipping;
     private String selectedCategory;
 
-    public static Intent createIntent(Context context, OpportunityFilterActivityViewModel data) {
+    public static Intent createIntent(Context context, OpportunityFilterViewModel data) {
         Intent intent = new Intent(context, OpportunityFilterActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(PARAM_FILTER_VIEW_MODEL, data);
@@ -74,7 +75,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
                 getIntent().getExtras().getParcelable(PARAM_FILTER_VIEW_MODEL) != null) {
             viewModel = getIntent().getExtras().getParcelable(PARAM_FILTER_VIEW_MODEL);
         } else {
-            viewModel = new OpportunityFilterActivityViewModel();
+            viewModel = new OpportunityFilterViewModel();
         }
         super.onCreate(savedInstanceState);
 
@@ -131,12 +132,14 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
-        OpportunityFilterFragment fragment = OpportunityFilterFragment.createInstance(viewModel.getListTitle());
+        OpportunityFilterTitleFragment fragment =
+                OpportunityFilterTitleFragment.createInstance(viewModel.getListFilter());
         fragmentTransaction.replace(R.id.filter, fragment);
 
         listFragment = new ArrayList<>();
-        listFragment.add(OpportunityCategoryFragment.createInstance(viewModel.getListCategory()));
-        listFragment.add(OpportunityShippingFragment.createInstance(viewModel.getListShipping()));
+        for (FilterViewModel filterModel : viewModel.getListFilter()) {
+            listFragment.add(OpportunityFilterFragment.createInstance(filterModel));
+        }
         fragmentTransaction.replace(R.id.container, listFragment.get(0));
 
         fragmentTransaction.commit();
@@ -152,76 +155,48 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                resetCategory(viewModel.getListCategory());
-                resetShipping(viewModel.getListShipping());
-                resetTitle(viewModel.getListTitle());
+//                resetFilter(viewModel.getListCategory());
+//                resetShipping(viewModel.getListShipping());
+//                resetTitle(viewModel.getListTitle());
                 updateFilterTitleFragment();
             }
         };
     }
 
-    private void resetTitle(ArrayList<FilterItemViewModel> listTitle) {
-        for (int i = 0; i < listTitle.size(); i++) {
-            listTitle.get(i).setActive(false);
-            if (listTitle.get(i).isSelected())
-                onFilterClicked(i);
-        }
-    }
-
-    private void resetShipping(List<ShippingTypeViewModel> listShipping) {
-        for (ShippingTypeViewModel shipping : listShipping) {
-            shipping.setSelected(false);
-        }
-    }
-
-    private void resetCategory(List<CategoryViewModel> listCategory) {
-        for (CategoryViewModel category : listCategory) {
-            if (category.getListChild().size() > 0)
-                resetCategory(category.getListChild());
-            else
-                category.setSelected(false);
-        }
-    }
+//    private void resetTitle(ArrayList<FilterItemViewModel> listTitle) {
+//        for (int i = 0; i < listTitle.size(); i++) {
+//            listTitle.get(i).setActive(false);
+//            if (listTitle.get(i).isSelected())
+//                onTitleClicked(i);
+//        }
+//    }
+//
+//    private void resetShipping(List<ShippingTypeViewModel> listShipping) {
+//        for (ShippingTypeViewModel shipping : listShipping) {
+//            shipping.setSelected(false);
+//        }
+//    }
+//
+//    private void resetFilter(List<FilterViewModel> listCategory) {
+//        for (FilterViewModel category : listCategory) {
+//            if (category.getListChild().size() > 0)
+//                resetFilter(category.getListChild());
+//            else
+//                category.setSelected(false);
+//        }
+//    }
 
     private View.OnClickListener onSaveClicked() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(PARAM_SELECTED_SHIPPING_TYPE, getSelectedShipping());
-                intent.putExtra(PARAM_SELECTED_CATEGORY, getSelectedCategory());
-                intent.putParcelableArrayListExtra(PARAM_SHIPPING_LIST, viewModel.getListShipping());
-                intent.putParcelableArrayListExtra(PARAM_CATEGORY_LIST, viewModel.getListCategory());
+
 
                 setResult(Activity.RESULT_OK, intent);
                 finish();
             }
         };
-    }
-
-    private String getSelectedCategory() {
-        if (selectedCategory.equals(""))
-            checkChildren(viewModel.getListCategory());
-        return selectedCategory;
-    }
-
-    private void checkChildren(ArrayList<CategoryViewModel> categories) {
-        for (CategoryViewModel item : categories) {
-            if (item.getListChild().size() > 0)
-                checkChildren(item.getListChild());
-            else if (item.isSelected())
-                selectedCategory = String.valueOf(item.getCategoryId());
-        }
-    }
-
-
-    public String getSelectedShipping() {
-        if (selectedShipping.equals(""))
-            for (ShippingTypeViewModel shipping : viewModel.getListShipping()) {
-                if (shipping.isSelected())
-                    selectedShipping = String.valueOf(shipping.getShippingTypeId());
-            }
-        return selectedShipping;
     }
 
     @Override
@@ -241,10 +216,10 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     }
 
     @Override
-    public void onFilterClicked(int pos) {
+    public void onTitleClicked(int pos) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (listFragment.get(pos) instanceof FilterListener)
-            ((FilterListener) listFragment.get(pos)).updateData(viewModel);
+            ((FilterListener) listFragment.get(pos)).updateData(viewModel.getListFilter().get(pos));
         fragmentTransaction.replace(R.id.container, listFragment.get(pos));
         fragmentTransaction.commit();
     }
@@ -257,43 +232,36 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         super.onSaveInstanceState(outState);
     }
 
-
-    @Override
-    public void onShippingSelected(int position, ShippingTypeViewModel shippingTypeViewModel) {
-        selectedShipping = "";
-        viewModel.getListShipping().get(position)
-                .setSelected(shippingTypeViewModel.isSelected());
-        if (shippingTypeViewModel.isSelected())
-            selectedShipping = String.valueOf(shippingTypeViewModel.getShippingTypeId());
-
-        viewModel.getListTitle().get(1).setActive(!selectedShipping.equals(""));
-        updateFilterTitleFragment();
-    }
-
     private void updateFilterTitleFragment() {
-        ((OpportunityFilterFragment) getFragmentManager().findFragmentById(R.id.filter))
-                .updateData(viewModel);
+        ((OpportunityFilterTitleFragment) getFragmentManager().findFragmentById(R.id.filter))
+                .updateData(viewModel.getListFilter());
     }
 
-
     @Override
-    public void onCategorySelected(int position, ArrayList<CategoryViewModel> listCategory) {
-        selectedCategory = "";
-        viewModel.setListCategory(listCategory);
-        for (CategoryViewModel model : viewModel.getListCategory()) {
-            if (model.isSelected()) {
-                selectedCategory = String.valueOf(listCategory.get(position).getCategoryId());
-                break;
-            }
-        }
+    public void onFilterSelected(int position, FilterViewModel filterViewModel) {
+        CommonUtils.dumper("NISNIS isSelected " + filterViewModel.getListChild().size()
+                + " " + filterViewModel.isSelected());
 
-        viewModel.getListTitle().get(0).setActive(!selectedCategory.equals(""));
+//        selectedCategory = "";
+//        viewModel.getListFilter(listCategory);
+//        for (FilterViewModel model : viewModel.getListFilter()) {
+//            if (model.isSelected()) {
+//                selectedCategory = String.valueOf(listCategory.get(position).getCategoryId());
+//                break;
+//            }
+//        }
+//
+//        viewModel.getListTitle().get(0).setActive(!selectedCategory.equals(""));
         updateFilterTitleFragment();
 
     }
 
     @Override
-    public void onCategoryExpanded(int position, ArrayList<CategoryViewModel> listCategory) {
-        viewModel.setListCategory(listCategory);
+    public void onFilterExpanded(int position, FilterViewModel filterViewModel) {
+//        viewModel.getListFilter().set(position, filterViewModel);
+        CommonUtils.dumper("NISNIS isExpanded" + filterViewModel.getListChild().size());
+
     }
+
+
 }
