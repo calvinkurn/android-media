@@ -24,7 +24,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     public void uploadProduct(long productDraftId) {
         checkViewAttached();
         RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber());
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId)));
     }
 
     @Override
@@ -40,6 +40,13 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     }
 
     private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
+
+        private String productDraftId;
+
+        public AddProductSubscriber(String productDraftId) {
+            this.productDraftId = productDraftId;
+        }
+
         @Override
         public void onCompleted() {
 
@@ -53,7 +60,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
                 errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
             }
             getView().onFailedAddProduct();
-            getView().notificationFailed(errorMessage);
+            getView().notificationFailed(errorMessage, productDraftId);
             getView().sendFailedBroadcast(errorMessage);
         }
 

@@ -46,14 +46,10 @@ public class ProductEditFragment extends ProductDraftFragment implements Product
                 .inject(this);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
-        presenter.attachView(this);
+    protected void fetchInputData() {
         String productId = getArguments().getString(EDIT_PRODUCT_ID);
         presenter.fetchEditProductData(productId);
-        return view;
     }
 
     @Override

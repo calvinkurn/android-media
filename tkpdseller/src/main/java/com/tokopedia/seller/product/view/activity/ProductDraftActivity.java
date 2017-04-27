@@ -30,7 +30,7 @@ public class ProductDraftActivity extends ProductAddActivity {
             throw new RuntimeException("Product id is not selected");
         }
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, ProductDraftFragment.createInstance(productId), ProductDraftFragment.class.getSimpleName())
+                .replace(R.id.container, ProductDraftFragment.createInstance(productId), ProductDraftFragment.class.getSimpleName())
                 .commit();
     }
 

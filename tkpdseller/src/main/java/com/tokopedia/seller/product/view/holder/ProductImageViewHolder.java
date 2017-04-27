@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ScoringProductHelper;
@@ -150,8 +151,12 @@ public class ProductImageViewHolder extends ProductViewHolder {
         int defaultPicture = productPhotos.getProductDefaultPicture();
         for (int i = 0; i < productPhotos.getPhotos().size(); i ++){
             ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
+            String url = productPhoto.getUrl();
+            if(StringUtils.isBlank(url)){
+                url = productPhoto.getImagePath();
+            }
             ImageSelectModel image = new ImageSelectModel(
-                    productPhoto.getUrl(),
+                    url,
                     productPhoto.getImageDescription(),
                     i == defaultPicture
             );

@@ -20,7 +20,7 @@ public interface AddProductServiceListener extends CustomerView {
 
     void onFailedAddProduct();
 
-    void notificationFailed(String errorMessage);
+    void notificationFailed(String errorMessage, String productDraftId);
 
     void sendFailedBroadcast(String errorMessage);
 }
