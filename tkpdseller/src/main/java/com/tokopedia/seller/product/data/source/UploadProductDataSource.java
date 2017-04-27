@@ -3,10 +3,14 @@ package com.tokopedia.seller.product.data.source;
 import com.tokopedia.seller.product.data.source.cloud.UploadProductCloud;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.EditImageProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
+import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
+import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 
 import javax.inject.Inject;
 
@@ -34,5 +38,13 @@ public class UploadProductDataSource {
 
     public Observable<EditProductServiceModel> editProduct(EditProductInputServiceModel serviceModel) {
         return uploadProductCloud.editProduct(serviceModel);
+    }
+
+    public Observable<EditImageProductServiceModel> editProductImage(String picObj) {
+        return uploadProductCloud.editProductImage(picObj);
+    }
+
+    public Observable<DeleteProductPictureServiceModel> deleteProductPicture(String picId, String productId) {
+        return uploadProductCloud.deleteProductPicture(picId, productId);
     }
 }

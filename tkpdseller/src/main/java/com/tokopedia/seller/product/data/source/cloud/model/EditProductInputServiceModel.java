@@ -28,6 +28,11 @@ public class EditProductInputServiceModel extends AddProductValidationInputServi
         return param;
     }
 
+    @Override
+    protected String getPhotoParam(ProductPhotoServiceModel productPhoto) {
+        return productPhoto.getPicureId();
+    }
+
     public int getProductChangeCatalog() {
         return productChangeCatalog;
     }

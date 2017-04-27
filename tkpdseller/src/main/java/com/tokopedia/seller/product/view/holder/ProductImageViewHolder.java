@@ -130,7 +130,12 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageProductInputViewModel imageViewModel = new ImageProductInputViewModel();
             ImageSelectModel selectModel = selectModelList.get(i);
 
-            imageViewModel.setImagePath(selectModel.getUri());
+            if (selectModel.isValidURL()) {
+                imageViewModel.setUrl(selectModel.getUri());
+            } else {
+                imageViewModel.setImagePath(selectModel.getUri());
+            }
+
             imageViewModel.setImageDescription(selectModel.getDescription());
             imageViewModel.setImageResolution(selectModel.getMinResolution());
 
