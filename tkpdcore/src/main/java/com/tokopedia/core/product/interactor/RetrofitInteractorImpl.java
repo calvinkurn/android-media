@@ -35,9 +35,11 @@ import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
 import com.tokopedia.core.util.SessionHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -69,6 +71,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final MojitoAuthService mojitoAuthService;
     private final GoldMerchantService goldMerchantService;
     private final int SERVER_ERROR_CODE = 500;
+    private static final String ERROR_MESSAGE = "message_error";
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -465,7 +468,20 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.code() == ResponseStatus.SC_CREATED) {
                     listener.onSuccess();
-                } else {
+                } else if (response.code() == ResponseStatus.SC_BAD_REQUEST) {
+                    try {
+                        String msgError = "";
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                msgError+=jsonArray.get(i).toString()+" ";
+                            }
+                        listener.onError(msgError);
+                    } catch (Exception e) {
+                        listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                }
+                else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
