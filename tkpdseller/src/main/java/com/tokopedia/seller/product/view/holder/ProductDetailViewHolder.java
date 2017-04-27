@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -77,6 +79,12 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         conditionSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_condition);
         insuranceSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_insurance);
         freeReturnsSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_free_returns);
+        editPriceImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEditPriceDialog();
+            }
+        });
         idrTextWatcher = new CurrencyIdrTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
             public void onNumberChanged(float currencyValue) {
@@ -217,8 +225,32 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         });
     }
 
+    private void showEditPriceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext());
+        builder.setMessage(R.string.product_confirmation_change_wholesale_price);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                expandWholesale(false);
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     private void updateWholesaleButton() {
         textViewAddWholesale.setVisibility(wholesaleAdapter.getItemCount() < MAX_WHOLESALE ? View.VISIBLE : View.GONE);
+    }
+
+    public void expandWholesale(boolean expand) {
+        wholesaleExpandableOptionSwitch.setExpand(expand);
     }
 
     public void setWholesalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
@@ -361,7 +393,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public List<ProductWholesaleViewModel> getProductWholesaleViewModels() {
-        if (!wholesaleExpandableOptionSwitch.isActivated()) {
+        if (!wholesaleExpandableOptionSwitch.isExpanded()) {
             return new ArrayList<>();
         }
         return wholesaleAdapter.getProductWholesaleViewModels();

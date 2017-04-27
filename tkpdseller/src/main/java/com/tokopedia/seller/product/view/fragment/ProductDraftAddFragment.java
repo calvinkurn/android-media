@@ -73,7 +73,10 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
         productDetailViewHolder.setWeightValue((float) model.getProductWeight());
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
-        productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+        if (model.getProductWholesaleList().size() > 0) {
+            productDetailViewHolder.expandWholesale(true);
+            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+        }
 //        productDetailViewHolder.setStockStatus(model.get);
 //        productDetailViewHolder.setTotalStock();
         if (model.getProductEtalaseId() > 0) {

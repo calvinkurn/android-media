@@ -424,6 +424,7 @@
     <string name="product_minimum_pre_order_week">1</string>
     <string name="product_maximum_pre_order_week">4</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
+    <string name="product_confirmation_change_wholesale_price">Jika anda mengubah harga satuan, harga grosir anda akan dihapus. Lanjut ?</string>
 
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
