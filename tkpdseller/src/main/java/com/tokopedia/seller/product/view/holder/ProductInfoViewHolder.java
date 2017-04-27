@@ -287,4 +287,8 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         }
         return true;
     }
+
+    public void setNameAvailable(boolean isAvailable){
+        nameEditText.setEnabled(isAvailable);
+    }
 }

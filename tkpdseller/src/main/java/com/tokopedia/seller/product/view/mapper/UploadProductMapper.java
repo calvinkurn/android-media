@@ -83,6 +83,7 @@ public class UploadProductMapper {
         viewModel.setProductWholesaleList(mapWholesaleDomainToView(domainModel.getProductWholesaleList()));
         viewModel.setProductVideos(domainModel.getProductVideos());
         viewModel.setProductName(domainModel.getProductName());
+        viewModel.setProductNameEditable(domainModel.getNameEditable());
         viewModel.setProductDescription(domainModel.getProductDescription());
         viewModel.setProductCatalogId(domainModel.getProductCatalogId());
         viewModel.setProductCatalogName(domainModel.getProductCatalogName());
