@@ -424,28 +424,32 @@
     <string name="product_minimum_pre_order_week">1</string>
     <string name="product_maximum_pre_order_week">4</string>
     <string name="product_error_product_pre_order_not_valid">Waktu Proses Preorder harus antara %1$s &#8212; %2$s</string>
+    <string name="product_confirmation_change_wholesale_price">Jika anda mengubah harga satuan, harga grosir anda akan dihapus. Lanjut ?</string>
 
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
     <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
     <string name="video_same_warn">Anda sudah menambahkan video ini</string>
     <string name="insert_a_url_video">Masukkan URL Video</string>
-    <string name="add_url_video">+ Tambah URL Video</string>
+    <string name="add_url_video">Tambah URL Video</string>
     <string name="url_video">URL Video</string>
     <string name="error_no_video_url_name">Url Video harus diisi</string>
     <string name="youtube_add_url_title">Tambah URL Video</string>
-    <string name="product_label_video">Video</string>
+    <string name="product_label_video">Video Produk</string>
     <string name="product_video_count">%1d Video</string>
     <string name="title_notification_upload_product">Mengunggah</string>
     <string name="group_notification">com.tokopedia</string>
     <string name="notification_start_upload_product">Mulai mengunggah produk</string>
     <string name="notification_progress_upload_product">Sedang meunggah produk</string>
     <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
-    <string name="error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
+    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
     <string name="add_whole_sale_title">Tambah Harga Grosir</string>
     <string name="price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
     <string name="quantity_range_is_not_valid">Kelompok Jumlah tidak valid.</string>
     <string name="wholesale_range_format">%1$s - %2$s buah</string>
+    <string name="from_to_video">%1$d dari %2$d Video</string>
+    <string name="add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
+    <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
 
 </resources>

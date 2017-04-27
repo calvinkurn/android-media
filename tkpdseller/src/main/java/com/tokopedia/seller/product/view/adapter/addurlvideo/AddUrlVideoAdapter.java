@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.adapter.addurlvideo;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
     private int maxRows;
     private ImageHandler imageHandler;
     private String videoSameWarn;
+    private Listener listener;
 
     public AddUrlVideoAdapter(ImageHandler imageHandler) {
         this.imageHandler = imageHandler;
@@ -35,12 +37,17 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         this.videoSameWarn = videoSameWarn;
     }
 
+    @Nullable
+    public void setListener(Listener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case AddUrlVideoModel.TYPE:
                 View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.item_add_video_url_ll, viewGroup, false);
+                        .inflate(R.layout.item_add_video_ll_2, viewGroup, false);
                 return new AddUrlVideoViewHolder(itemLayoutView, imageHandler);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
@@ -96,7 +103,19 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void remove(int index) {
         addUrlVideoModels.remove(index);
-        notifyItemRemoved(index);
+
+        if (addUrlVideoModels.size() <= 0) {
+            if (listener != null) {
+                listener.notifyEmpty();
+            }
+        } else {
+            if (listener != null) {
+                listener.notifyNonEmpty();
+            }
+            notifyItemRemoved(index);
+        }
+
+
     }
 
     public void add(AddUrlVideoModel addUrlVideoModel) {
@@ -109,6 +128,22 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
             throw new IllegalArgumentException(videoSameWarn);
 
         addUrlVideoModels.add(addUrlVideoModel);
-        notifyItemInserted(addUrlVideoModels.size() - 1);
+
+        if (addUrlVideoModels.size() <= 0) {
+            if (listener != null) {
+                listener.notifyEmpty();
+            }
+        } else {
+            if (listener != null) {
+                listener.notifyNonEmpty();
+            }
+            notifyItemInserted(addUrlVideoModels.size() - 1);
+        }
+    }
+
+    public interface Listener {
+        void notifyEmpty();
+
+        void notifyNonEmpty();
     }
 }

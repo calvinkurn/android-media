@@ -16,15 +16,30 @@
 
     </LinearLayout>
 
-    <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
-        android:id="@+id/spinner_counter_input_view_price"
-        style="@style/LabelLayoutWithoutBorder"
-        app:spinner_decimal_entries="@array/product_currency_entries"
-        app:spinner_decimal_hint="@string/product_label_product_price"
-        app:spinner_decimal_show_counter_button="false"
-        app:spinner_decimal_values="@array/product_currency_values" />
+    <LinearLayout style="@style/LabelLayoutWithoutBorder">
+
+        <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
+            android:id="@+id/spinner_counter_input_view_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:spinner_decimal_entries="@array/product_currency_entries"
+            app:spinner_decimal_hint="@string/product_label_product_price"
+            app:spinner_decimal_show_counter_button="false"
+            app:spinner_decimal_values="@array/product_currency_values" />
+
+        <ImageButton
+            android:id="@+id/image_button_edit_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/ic_action_edit"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
     <com.tokopedia.expandable.ExpandableOptionSwitch
+        android:id="@+id/expandable_option_switch_wholesale"
         style="@style/LabelLayoutWithoutBorder"
         app:eo_checked="false"
         app:eo_theme="@style/ExpandableStyle"

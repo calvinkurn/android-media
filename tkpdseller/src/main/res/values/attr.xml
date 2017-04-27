@@ -146,24 +146,26 @@
     <declare-styleable name="ShopScoreLimitProgressBar">
         <attr name="default_limit" format="float" />
     </declare-styleable>
+
     <declare-styleable name="DecimalInputView">
         <attr name="decimal_input_hint" format="string"/>
         <attr name="decimal_input_text" format="string"/>
+        <attr name="decimal_input_enabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="CounterInputView">
         <attr name="counter_hint" format="string"/>
         <attr name="counter_text" format="string"/>
         <attr name="counter_min" format="integer"/>
         <attr name="counter_show_counter_button" format="boolean"/>
-        <attr name="counter_all_enable" format="boolean" />
+        <attr name="counter_enabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="SpinnerTextView">
         <attr name="spinner_hint" format="string"/>
         <attr name="spinner_selection_index" format="integer"/>
         <attr name="spinner_entries" format="reference"/>
         <attr name="spinner_values" format="reference"/>
+        <attr name="spinner_enabled" format="reference"/>
     </declare-styleable>
-
     <declare-styleable name="SpinnerCounterInputView">
         <attr name="spinner_decimal_entries" format="reference"/>
         <attr name="spinner_decimal_values" format="reference"/>
@@ -171,7 +173,9 @@
         <attr name="spinner_decimal_hint" format="string"/>
         <attr name="spinner_decimal_min" format="integer"/>
         <attr name="spinner_decimal_show_counter_button" format="boolean"/>
+        <attr name="spinner_decimal_enabled" format="reference"/>
     </declare-styleable>
+
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />
     </declare-styleable>
