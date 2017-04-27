@@ -1911,4 +1911,10 @@ di Tokopedia Sekarang!</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
 
+    <!-- Official Store Homepage START -->
+    <string name="os_home_title_product">Produk</string>
+    <string name="os_view_all_product">Lihat Semua Barang</string>
+
+    <!-- Official Store Homepage END -->
+
 </resources>

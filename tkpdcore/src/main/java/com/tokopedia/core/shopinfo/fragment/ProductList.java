@@ -19,11 +19,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.V2BaseFragment;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -43,6 +46,8 @@ import java.util.List;
  * Created by Tkpd_Eka on 10/8/2015.
  */
 public class ProductList extends V2BaseFragment {
+
+    private final String CACHE_SHOP_PRODUCT = "CACHE_SHOP_PRODUCT";
 
     private boolean mHasFocus;
 
@@ -68,6 +73,8 @@ public class ProductList extends V2BaseFragment {
     private GetShopInfoRetrofit facadeShopInfo;
     private GetShopProductRetrofit facadeShopProd;
     public static final String ETALASE_ID_BUNDLE = "ETALASE_ID";
+
+    private ProductListCallback callback;
 
     public static ProductList newInstance() {
 
@@ -185,6 +192,20 @@ public class ProductList extends V2BaseFragment {
         adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
         adapter.setEtalaseAdapter(etalaseAdapter);
         configSearchView();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof ProductListCallback) {
+            this.callback = (ProductListCallback) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        this.callback = null;
     }
 
     private void configSearchView() {
@@ -441,6 +462,10 @@ public class ProductList extends V2BaseFragment {
                     productShopParam.setPage(productShopParam.getPage() + 1);
                 else
                     productShopParam.setPage(-1);
+
+                if(productShopParam.getPage() == 2) {
+                    saveToCache(model);
+                }
             }
 
             @Override
@@ -479,6 +504,24 @@ public class ProductList extends V2BaseFragment {
                 }
             }
         };
+    }
+
+    private void saveToCache(ProductModel product) {
+        try {
+            GlobalCacheManager cache = new GlobalCacheManager();
+            cache.delete(CACHE_SHOP_PRODUCT);
+
+            cache.setKey(CACHE_SHOP_PRODUCT);
+            cache.setValue(CacheUtil.convertModelToString(
+                    product,
+                    new TypeToken<ProductModel>() {
+                    }.getType()
+            ));
+            cache.store();
+            if (callback != null) callback.onProductListCompleted();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private GetShopInfoRetrofit.OnGetShopEtalase onGetEtalaseListener() {
@@ -591,5 +634,9 @@ public class ProductList extends V2BaseFragment {
                 .setProductName(productModel.list.get(position).productName)
                 .setProductImage(productModel.list.get(position).productImage)
                 .build();
+    }
+
+    public interface ProductListCallback {
+        void onProductListCompleted();
     }
 }

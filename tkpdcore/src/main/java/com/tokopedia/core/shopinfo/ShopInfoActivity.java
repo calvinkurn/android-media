@@ -59,6 +59,7 @@ import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.fragment.OfficialShopHomeFragment;
 import com.tokopedia.core.shopinfo.fragment.ProductList;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
+import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 import com.tokopedia.core.shopinfo.models.shopmodel.Info;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -77,7 +78,9 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
  */
 
 public class ShopInfoActivity extends BaseActivity
-        implements OfficialShopHomeFragment.OfficialShopInteractionListener {
+        implements OfficialShopHomeFragment.OfficialShopInteractionListener,
+        ProductList.ProductListCallback {
+
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
@@ -809,6 +812,19 @@ public class ShopInfoActivity extends BaseActivity
         }
 
 
+    }
+
+    @Override
+    public void OnProductListPageRedirected() {
+        holder.pager.setCurrentItem(1, true);
+    }
+
+    @Override
+    public void onProductListCompleted() {
+        if(shopModel.info.shopIsOfficial == 1) {
+            OfficialShopHomeFragment fragment = (OfficialShopHomeFragment) adapter.getItem(0);
+            fragment.onRefreshProductData();
+        }
     }
 
     private String encodeUrl(String url) {
