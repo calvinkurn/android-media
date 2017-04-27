@@ -9,7 +9,9 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
+import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+
 
 public class GooglePlacePickerActivity extends BaseActivity
         implements PlaceAutocompleteFragment.OnFragmentInteractionListener {
@@ -24,7 +26,13 @@ public class GooglePlacePickerActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_place_picker);
-        addFragment(R.id.container, PlaceAutocompleteFragment.newInstance());
+
+        boolean showAutoDetectLocation = true;
+        if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
+            showAutoDetectLocation  =false;
+        }
+
+        addFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation));
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

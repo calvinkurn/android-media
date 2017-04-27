@@ -1,16 +1,9 @@
 package com.tokopedia.ride.bookingride.view;
 
-import android.content.Intent;
-import android.net.Uri;
-
-import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
-import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
@@ -52,7 +45,19 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
-                getView().renderFareEstimate(fareEstimate.getFare().getFareId(), fareEstimate.getFare().getDisplay(), fareEstimate.getFare().getValue());
+
+                float surgeMultiplier = 0;
+                String display = "";
+                String surgeConfirmationHref = null;
+                if (fareEstimate.getEstimate() != null) {
+                    surgeMultiplier = fareEstimate.getEstimate().getSurgeMultiplier();
+                    display = fareEstimate.getEstimate().getDisplay();
+                    surgeConfirmationHref = fareEstimate.getEstimate().getSurgeConfirmationHref();
+                } else {
+                    display = fareEstimate.getFare().getDisplay();
+                }
+
+                getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref);
             }
         });
     }

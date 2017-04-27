@@ -100,8 +100,9 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                 .header("Authorization", oAuth)
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                //TODO remove skip payment
-                .header("tkpd-skip-payment", "true")
+                //TODO remove skip payment and auto ride
+                //.header("tkpd-skip-payment", "true")
+                .header("AUTO_RIDE", "true")
                 .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
                 .method(request.method(), request.body());
     }

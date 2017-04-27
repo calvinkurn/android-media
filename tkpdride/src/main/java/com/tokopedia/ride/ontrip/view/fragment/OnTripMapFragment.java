@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -364,7 +363,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     }
                     presenter.actionRideRequest(requestParams);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    //Toast.makeText(getActivity(), R.string.create_request_failed_tos_confirmation, Toast.LENGTH_SHORT).show();
+                    //TODO: we may need to update the fare status again
+                    getActivity().finish();
                 }
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
@@ -554,12 +554,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(source.getLatitude(), source.getLongitude()))
-                .icon(getMarkerIcon("#569222"))
+                .icon(getMarkerIcon(R.drawable.marker_green))
                 .title(source.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
-                .icon(getMarkerIcon("#DE2F34"))
+                .icon(getMarkerIcon(R.drawable.marker_red))
                 .title(destination.getAddress()));
 
         //zoom map to fit both source and dest
@@ -569,10 +569,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
-    public BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    public BitmapDescriptor getMarkerIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     private void reDrawDriverMarker(RideRequest result) {
@@ -582,11 +582,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                .icon(getCarMapIcon(R.drawable.car_map_icon))
                 .rotation(result.getLocation().getBearing())
                 .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
+    }
+
+    private BitmapDescriptor getCarMapIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     @Override
@@ -865,6 +871,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public String getResourceString(int resourceId) {
         return getString(resourceId);
+    }
+
+    @Override
+    public boolean isSurge() {
+        return confirmBookingViewModel.getSurgeMultiplier() > 0;
+    }
+
+    @Override
+    public String getSurgeConfirmationHref() {
+        return confirmBookingViewModel.getSurgeConfirmationHref();
     }
 
     @OnClick(R2.id.btn_call)

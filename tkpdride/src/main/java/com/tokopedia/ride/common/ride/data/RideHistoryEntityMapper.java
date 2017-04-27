@@ -21,13 +21,17 @@ public class RideHistoryEntityMapper {
 
     public List<RideHistory> transform(List<RideHistoryEntity> rideHistoryEntities) {
         List<RideHistory> rideHistories = new ArrayList<>();
-        RideHistory rideHistory;
-        for (RideHistoryEntity entity : rideHistoryEntities) {
-            rideHistory = transform(entity);
-            if (rideHistory != null) {
-                rideHistories.add(rideHistory);
+
+        if (rideHistoryEntities != null) {
+            RideHistory rideHistory;
+            for (RideHistoryEntity entity : rideHistoryEntities) {
+                rideHistory = transform(entity);
+                if (rideHistory != null) {
+                    rideHistories.add(rideHistory);
+                }
             }
         }
+
         return rideHistories;
     }
 

@@ -84,7 +84,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     public ConfirmBookingRideFragment() {
-
     }
 
     public static ConfirmBookingRideFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
@@ -122,6 +121,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
         priceTextView.setText(confirmBookingViewModel.getPriceFmt());
         bookingConfirmationTextView.setText(getString(R.string.btn_request) + " " + confirmBookingViewModel.getProductDisplayName());
+
+        if (confirmBookingViewModel.getSurgeMultiplier() > 0) {
+            surgeRateTextView.setText(confirmBookingViewModel.getSurgeMultiplier() + "x");
+            surgeRateTextView.setVisibility(View.VISIBLE);
+        } else {
+            surgeRateTextView.setVisibility(View.GONE);
+        }
 //        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 
@@ -204,7 +210,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void renderFareEstimate(String fareId, String display, float price) {
+    public void renderFareEstimate(String fareId, String display, float price, float surgeMultiplier, String surgeConfirmationHref) {
         if (isRemoving()) {
             return;
         }
@@ -212,7 +218,16 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel.setFareId(fareId);
         confirmBookingViewModel.setPriceFmt(display);
         confirmBookingViewModel.setPrice(price);
+        confirmBookingViewModel.setSurgeMultiplier(surgeMultiplier);
+        confirmBookingViewModel.setSurgeConfirmationHref(surgeConfirmationHref);
         priceTextView.setText(display);
+
+        if (surgeMultiplier > 0) {
+            surgeRateTextView.setText(surgeMultiplier + "x");
+            surgeRateTextView.setVisibility(View.VISIBLE);
+        } else {
+            surgeRateTextView.setVisibility(View.GONE);
+        }
 
         updateSeatCountUi();
     }

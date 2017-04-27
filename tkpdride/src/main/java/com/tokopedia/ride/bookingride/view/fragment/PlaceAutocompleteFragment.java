@@ -53,6 +53,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         GoogleApiClient.OnConnectionFailedListener,
         ItemClickListener {
     private static final String TAG = "addressautocomplete";
+    private static final String SHOW_AUTO_DETECT_LOCATION = "SHOW_AUTO_DETECT_LOCATION";
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
@@ -76,13 +77,18 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     RecyclerView mAutoCompleteRecylerView;
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
+    private boolean showAutodetectLocation;
 
     public interface OnFragmentInteractionListener {
         void onLocationSelected(PlacePassViewModel placeId);
     }
 
-    public static Fragment newInstance() {
-        return new PlaceAutocompleteFragment();
+    public static Fragment newInstance(boolean showAutoDetectLocation) {
+        PlaceAutocompleteFragment fragment = new PlaceAutocompleteFragment();
+        Bundle arguments = new Bundle();
+        arguments.putBoolean(SHOW_AUTO_DETECT_LOCATION, showAutoDetectLocation);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     public PlaceAutocompleteFragment() {
@@ -93,6 +99,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         super.onCreate(savedInstanceState);
         peopleAddressPaging = new PeopleAddressPaging();
         peopleAddressPaging.setPage(1);
+
+        showAutodetectLocation = getArguments().getBoolean(SHOW_AUTO_DETECT_LOCATION, true);
     }
 
     @Override
@@ -101,6 +109,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter();
         mPresenter.attachView(this);
         mPresenter.initialize();
+
+        mAutoDetectLocationRelativeLayout.setVisibility(showAutodetectLocation ? View.VISIBLE : View.GONE);
 
         mAutocompleteEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -114,8 +124,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                     CommonUtils.dumper("Executed OTC M");
                     setActiveMarketplaceSource();
                     mPresenter.actionGetPeopleAddresses(false);
-                }
-                else {
+                } else {
                     setActiveGooglePlaceSource();
                     CommonUtils.dumper("Executed OTC G");
                     mPresenter.actionQueryPlacesByKeyword(String.valueOf(s));

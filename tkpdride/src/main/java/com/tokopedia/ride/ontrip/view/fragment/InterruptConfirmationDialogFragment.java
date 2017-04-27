@@ -73,7 +73,9 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
             try {
-                getActivity().setProgressBarIndeterminateVisibility(true);
+                if (getActivity() != null) {
+                    getActivity().setProgressBarIndeterminateVisibility(true);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

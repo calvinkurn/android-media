@@ -7,6 +7,7 @@ package com.tokopedia.ride.common.ride.domain.model;
 public class FareEstimate {
     private Fare fare;
     private Trip trip;
+    private Estimate estimate;
     private String pickupEstimate;
 
     public FareEstimate() {
@@ -34,5 +35,13 @@ public class FareEstimate {
 
     public void setPickupEstimate(String pickupEstimate) {
         this.pickupEstimate = pickupEstimate;
+    }
+
+    public Estimate getEstimate() {
+        return estimate;
+    }
+
+    public void setEstimate(Estimate estimate) {
+        this.estimate = estimate;
     }
 }

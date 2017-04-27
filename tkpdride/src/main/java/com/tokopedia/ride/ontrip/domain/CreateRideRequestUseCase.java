@@ -24,8 +24,10 @@ public class CreateRideRequestUseCase extends UseCase<RideRequest> {
     public static final String PARAM_HASH = "hash";
     public static final String PARAM_OS_TYPE = "os_type";
     public static final String PARAM_TIMESTAMP = "device_time";
+    public static final String PARAM_SURGE_CONFIRMATION_ID = "surge_confirmation_id";
 
     private BookingRideRepository bookingRideRepository;
+
     public CreateRideRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
                                     BookingRideRepository bookingRideRepository) {
         super(threadExecutor, postExecutionThread);

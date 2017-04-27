@@ -108,6 +108,11 @@ public interface OnTripMapContract {
         void clearActiveNotification();
 
         String getResourceString(int resourceId);
+
+        boolean isSurge();
+
+        String getSurgeConfirmationHref();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

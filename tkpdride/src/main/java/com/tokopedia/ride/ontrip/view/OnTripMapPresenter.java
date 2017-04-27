@@ -81,10 +81,20 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (getView().isWaitingResponse()) {
             getView().startPeriodicService(getView().getRequestId());
         } else {
-            actionRideRequest(getView().getParam());
+            if (getView().isSurge()) {
+                getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
+                return;
+            } else {
+                actionRideRequest(getView().getParam());
+            }
         }
     }
 
+    /**
+     * This function combines first checks the fare estimate again and then make a create ride request with latest fare id.
+     *
+     * @param requestParam, parameters required for ride request
+     */
     @Override
     public void actionRideRequest(final RequestParams requestParam) {
         getFareEstimateUseCase.execute(getView().getFareEstimateParam(), new Subscriber<FareEstimate>() {
@@ -102,9 +112,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
-                //update fare id with latest fare id
-                requestParam.putString(CreateRideRequestUseCase.PARAM_FARE_ID, fareEstimate.getFare().getFareId());
-                createRideRequest(requestParam);
+                if (fareEstimate.getFare() != null) {
+                    //update fare id with latest fare id
+                    requestParam.putString(CreateRideRequestUseCase.PARAM_FARE_ID, fareEstimate.getFare().getFareId());
+                    createRideRequest(requestParam);
+                } else if (fareEstimate.getEstimate() != null) {
+                    //open surge confirmation webview
+                    getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
+                }
             }
         });
     }

@@ -21,6 +21,8 @@ public class ConfirmBookingViewModel implements Parcelable {
     private float price;
     private String headerTitle;
     private int maxCapacity;
+    private float surgeMultiplier;
+    private String surgeConfirmationHref;
 
     public ConfirmBookingViewModel() {
     }
@@ -39,6 +41,8 @@ public class ConfirmBookingViewModel implements Parcelable {
         price = in.readFloat();
         headerTitle = in.readString();
         maxCapacity = in.readInt();
+        surgeMultiplier = in.readFloat();
+        surgeConfirmationHref = in.readString();
     }
 
     public static final Creator<ConfirmBookingViewModel> CREATOR = new Creator<ConfirmBookingViewModel>() {
@@ -156,6 +160,22 @@ public class ConfirmBookingViewModel implements Parcelable {
         this.productDisplayName = productDisplayName;
     }
 
+    public float getSurgeMultiplier() {
+        return surgeMultiplier;
+    }
+
+    public void setSurgeMultiplier(float surgeMultiplier) {
+        this.surgeMultiplier = surgeMultiplier;
+    }
+
+    public String getSurgeConfirmationHref() {
+        return surgeConfirmationHref;
+    }
+
+    public void setSurgeConfirmationHref(String surgeConfirmationHref) {
+        this.surgeConfirmationHref = surgeConfirmationHref;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -175,5 +195,7 @@ public class ConfirmBookingViewModel implements Parcelable {
         parcel.writeFloat(price);
         parcel.writeString(headerTitle);
         parcel.writeInt(maxCapacity);
+        parcel.writeFloat(surgeMultiplier);
+        parcel.writeString(surgeConfirmationHref);
     }
 }

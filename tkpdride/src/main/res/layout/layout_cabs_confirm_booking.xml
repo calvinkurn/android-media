@@ -53,7 +53,7 @@
             android:layout_centerVertical="true"
             android:drawableLeft="@drawable/cab_surge"
             android:drawablePadding="5dp"
-            android:text="1.2x"
+            android:text="1x"
             android:textColor="#25a8ed"
             android:textSize="13sp"
             android:visibility="gone" />

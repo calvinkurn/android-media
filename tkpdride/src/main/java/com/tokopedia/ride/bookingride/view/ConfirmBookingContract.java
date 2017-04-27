@@ -16,7 +16,7 @@ public interface ConfirmBookingContract {
 
         void showErrorChangeSeat(String message);
 
-        void renderFareEstimate(String fareId, String display, float value);
+        void renderFareEstimate(String fareId, String display, float value, float surgeMultipliers, String surgeConfirmationHref);
 
         void hideConfirmButton();
 

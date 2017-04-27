@@ -1,8 +1,10 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.tokopedia.ride.common.ride.data.entity.EstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TripEntity;
+import com.tokopedia.ride.common.ride.domain.model.Estimate;
 import com.tokopedia.ride.common.ride.domain.model.Fare;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Trip;
@@ -21,6 +23,7 @@ public class FareEstimateMapper {
             fareEstimate = new FareEstimate();
             fareEstimate.setFare(transformFareEntity(estimateEntity.getFare()));
             fareEstimate.setTrip(transformTripEntity(estimateEntity.getTrip()));
+            fareEstimate.setEstimate(transformEstimateEntity(estimateEntity.getEstimate()));
             fareEstimate.setPickupEstimate(estimateEntity.getPickupEstimate());
         }
         return fareEstimate;
@@ -48,6 +51,21 @@ public class FareEstimateMapper {
             fare1.setValue(entity.getValue());
         }
         return fare1;
+    }
+
+    private Estimate transformEstimateEntity(EstimateEntity entity) {
+        Estimate estimate = null;
+        if (entity != null) {
+            estimate = new Estimate();
+            estimate.setCurrencyCode(entity.getCurrencyCode());
+            estimate.setDisplay(entity.getDisplay());
+            estimate.setHighEstimate(entity.getHighEstimate());
+            estimate.setLowEstimate(entity.getLowEstimate());
+            estimate.setSurgeConfirmationHref(entity.getSurgeConfirmationHref());
+            estimate.setSurgeConfirmationId(entity.getSurgeConfirmationId());
+            estimate.setSurgeMultiplier(entity.getSurgeMultiplier().floatValue());
+        }
+        return estimate;
     }
 
     /**
