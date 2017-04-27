@@ -2,7 +2,6 @@ package com.tokopedia.core.gcm;
 
 import android.os.Bundle;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 
