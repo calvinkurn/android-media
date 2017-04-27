@@ -155,7 +155,7 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 hideHolderVoucher();
                 editTextVoucher.setText("");
-
+                actionListener.disableVoucherDiscount();
             }
         };
     }
