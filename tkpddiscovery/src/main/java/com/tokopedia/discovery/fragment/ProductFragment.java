@@ -24,7 +24,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
@@ -341,7 +340,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onAddFavorite(Shop shop) {
+    public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data shop) {
 
     }
 

@@ -142,6 +142,10 @@
         <activity android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".truecaller.TruecallerActivity"/>
+
+        <service
+            android:name="com.tokopedia.topads.sdk.network.service.AddFavoriteShopService"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.Html;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.view.View;
@@ -71,7 +70,7 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         int id = v.getId();
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
-                itemClickListener.onAddFavorite(getAdapterPosition(), data.getShop());
+                itemClickListener.onAddFavorite(getAdapterPosition(), data);
             } else {
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }

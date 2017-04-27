@@ -246,9 +246,9 @@ public class StreamPlacer implements AdsView, LocalAdsClickListener {
     }
 
     @Override
-    public void onAddFavorite(int position, Shop shop) {
+    public void onAddFavorite(int position, Data dataShop) {
         if (adsItemClickListener != null) {
-            adsItemClickListener.onAddFavorite(shop);
+            adsItemClickListener.onAddFavorite(dataShop);
         }
     }
 

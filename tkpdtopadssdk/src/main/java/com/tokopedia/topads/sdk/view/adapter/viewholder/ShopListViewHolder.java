@@ -69,7 +69,7 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
         int id = v.getId();
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
-                itemClickListener.onAddFavorite(getAdapterPosition(), data.getShop());
+                itemClickListener.onAddFavorite(getAdapterPosition(), data);
             } else {
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }
