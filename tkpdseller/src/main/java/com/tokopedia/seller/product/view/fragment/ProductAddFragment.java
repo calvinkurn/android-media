@@ -166,10 +166,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (isDataValid()) {
+                if (isDataValid()) {
                     UploadProductInputViewModel viewModel = collectDataFromView();
                     presenter.saveDraft(viewModel);
-//                }
+                }
             }
 
             private boolean isDataValid() {
@@ -449,11 +449,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                                         @CurrencyTypeDef int currencyType,
                                         WholesaleModel previousWholesalePrice) {
         listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
-    }
-
-    @Override
-    public void onUSDClickedNotAllowed() {
-        Snackbar.make(getView(), getString(R.string.error_must_be_gold_merchant), Snackbar.LENGTH_LONG).show();
     }
 
     protected UploadProductInputViewModel collectDataFromView() {

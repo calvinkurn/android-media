@@ -137,9 +137,9 @@ public class ProductDetailViewHolder extends ProductViewHolder {
                     return;
                 }
                 if (priceSpinnerCounterInputView.getSpinnerValue(position).equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
-                    if (listener != null) {
-                        listener.onUSDClickedNotAllowed();
-                    }
+                    Snackbar.make(priceSpinnerCounterInputView.getRootView().findViewById(android.R.id.content), R.string.product_error_must_be_gold_merchant, Snackbar.LENGTH_LONG)
+                            .setActionTextColor(ContextCompat.getColor(priceSpinnerCounterInputView.getContext(), R.color.green_400))
+                            .show();
 
                 }
                 priceSpinnerCounterInputView.setSpinnerValue(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_idr));
@@ -470,8 +470,6 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     }
 
     public interface Listener {
-
-        void onUSDClickedNotAllowed();
 
         /**
          * @param fixedPrice             means for fixed price.

@@ -442,7 +442,7 @@
     <string name="notification_start_upload_product">Mulai mengunggah produk</string>
     <string name="notification_progress_upload_product">Sedang meunggah produk</string>
     <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
-    <string name="error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
+    <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
     <string name="add_whole_sale_title">Tambah Harga Grosir</string>
     <string name="price_should_be_cheaper_than_fix_price">Harga harus lebih murah dari harga pas.</string>
     <string name="price_should_be_cheaper_than_previous_wholesale_price">Harga harus lebih murah dari harga grosir sebelumnya.</string>
