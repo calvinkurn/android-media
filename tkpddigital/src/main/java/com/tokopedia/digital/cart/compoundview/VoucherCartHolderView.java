@@ -128,6 +128,8 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public String getVoucherCode() {
+        if (TextUtils.isEmpty(voucherCode) && checkBoxVoucher.isChecked())
+            checkBoxVoucher.setChecked(false);
         return voucherCode;
     }
 
@@ -155,7 +157,7 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 hideHolderVoucher();
                 editTextVoucher.setText("");
-                actionListener.disableVoucherDiscount();
+                checkBoxVoucher.setChecked(false);
             }
         };
     }
