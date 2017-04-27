@@ -10,12 +10,11 @@ import com.tokopedia.seller.product.data.source.cloud.api.UploadProductApi;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductSubmitInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductValidationInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
-import com.tokopedia.seller.product.data.source.cloud.model.EditImageProductServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.shopscore.data.common.GetData;
 
 import javax.inject.Inject;
