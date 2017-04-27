@@ -5,13 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.image.ImageHandler;
@@ -23,11 +25,13 @@ import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
 import com.tokopedia.seller.product.view.adapter.addurlvideo.AddUrlVideoAdapter;
+import com.tokopedia.seller.product.view.adapter.addurlvideo.EmptyAddUrlVideoDataBinder;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,24 +56,33 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     private YoutubeAddVideoActView youtubeAddVideoActView;
     private RecyclerView recyclerViewAddUrlVideo;
     private AddUrlVideoAdapter addUrlVideoAdapter;
-    private Button textAddUrlVideo;
 
     public static Fragment createInstance() {
         return new YoutubeAddVideoFragment();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if ((context != null) && (context instanceof HasComponent<?>)) {
-            parentComponent
-                    = (HasComponent<YoutubeVideoComponent>) context;
+            HasComponent<?> hasComponent = (HasComponent<?>) context;
+            Object component = hasComponent.getComponent();
+            if (component instanceof YoutubeVideoComponent) {
+                parentComponent = (HasComponent<YoutubeVideoComponent>) context;
+            } else {
+                throw new RuntimeException(
+                        "Activity must implement HasComponent<YoutubeVideoComponent>"
+                );
+            }
         }
 
         if ((context != null) && (context instanceof YoutubeAddVideoActView)) {
             youtubeAddVideoActView
                     = (YoutubeAddVideoActView) context;
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -77,18 +90,31 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_youtube_addvideo, container, false);
         recyclerViewAddUrlVideo = (RecyclerView) view.findViewById(R.id.recycler_view_add_url_video);
-        textAddUrlVideo = (Button) view.findViewById(R.id.text_add_url_video);
-        textAddUrlVideo.setOnClickListener(new View.OnClickListener() {
+        addUrlVideoAdapter = new AddUrlVideoAdapter(new ImageHandler(view.getContext()));
+        EmptyAddUrlVideoDataBinder emptyAddUrlVideoDataBinder = new EmptyAddUrlVideoDataBinder(addUrlVideoAdapter);
+        emptyAddUrlVideoDataBinder.setCallback(new TopAdsEmptyAdDataBinder.Callback() {
             @Override
-            public void onClick(View v) {
+            public void onEmptyContentItemTextClicked() {
                 youtubeAddVideoActView.openAddYoutubeDialog();
             }
         });
-        addUrlVideoAdapter = new AddUrlVideoAdapter(new ImageHandler(view.getContext()));
+        addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
         addUrlVideoAdapter.setMaxRows(MAX_ROWS);
+        addUrlVideoAdapter.setListener(new AddUrlVideoAdapter.Listener() {
+            @Override
+            public void notifyEmpty() {
+                addUrlVideoAdapter.showEmptyFull(true);
+            }
+
+            @Override
+            public void notifyNonEmpty() {
+                addUrlVideoAdapter.showEmptyFull(false);
+            }
+        });
         addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
+        setVideoSubtitle();
         return view;
     }
 
@@ -137,13 +163,19 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     public void addAddUrlVideModel(AddUrlVideoModel addUrlVideoModel) {
         try {
             addUrlVideoAdapter.add(addUrlVideoModel);
+            setVideoSubtitle();
         } catch (IllegalArgumentException iae) {
-            Toast.makeText(
-                    getActivity(),
-                    iae.getMessage(),
-                    Toast.LENGTH_LONG
-            ).show();
+            NetworkErrorHelper.showSnackbar(getActivity(), iae.getMessage());
         }
+    }
+
+    private void setVideoSubtitle(int from, int max) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar()
+                .setSubtitle(String.format(getString(R.string.from_to_video), from, max));
+    }
+
+    private void setVideoSubtitle() {
+        setVideoSubtitle(addUrlVideoAdapter.getVideoIds().size(), MAX_ROWS);
     }
 
     public void addYoutubeUrl(String youtubeUrl) {
@@ -180,5 +212,23 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     public List<String> getVideoIds() {
         return addUrlVideoAdapter.getVideoIds();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(com.tokopedia.core.R.menu.talk_product, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            getActivity().onBackPressed();
+            return true;
+        } else if (item.getItemId() == com.tokopedia.core.R.id.action_talk_add) {
+            youtubeAddVideoActView.openAddYoutubeDialog();
+            return true;
+        }
+        return false;
     }
 }
