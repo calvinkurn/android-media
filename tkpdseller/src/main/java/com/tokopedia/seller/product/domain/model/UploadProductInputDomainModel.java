@@ -287,4 +287,12 @@ public class UploadProductInputDomainModel {
     public int getProductChangeWholesale() {
         return productChangeWholesale;
     }
+
+    public void setProductChangeCatalog(int productChangeCatalog) {
+        this.productChangeCatalog = productChangeCatalog;
+    }
+
+    public void setProductChangeWholesale(int productChangeWholesale) {
+        this.productChangeWholesale = productChangeWholesale;
+    }
 }

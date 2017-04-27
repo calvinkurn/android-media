@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
@@ -69,20 +70,19 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
 
     private ProductPhotoListDomainModel mapPhotos(List<ProductImage> productImages) {
         ProductPhotoListDomainModel domainModels = new ProductPhotoListDomainModel();
-        domainModels.setProductDefaultPicture(0);
-        domainModels.setPhotos(mapListPhotos(productImages));
-        return domainModels;
-    }
-
-    private List<ImageProductInputDomainModel> mapListPhotos(List<ProductImage> productImages) {
-        List<ImageProductInputDomainModel> domainModels = new ArrayList<>();
-        for (ProductImage image : productImages){
+        List<ImageProductInputDomainModel> domainModelList = new ArrayList<>();
+        for (int i = 0; i < productImages.size(); i ++){
             ImageProductInputDomainModel domainModel = new ImageProductInputDomainModel();
+            ProductImage image = productImages.get(i);
             domainModel.setPicId(image.getImageId());
             domainModel.setUrl(image.getImageSrc());
             domainModel.setDescription(image.getImageDescription());
-            domainModels.add(domainModel);
+            domainModelList.add(domainModel);
+            if (image.getImagePrimary() == 1){
+                domainModels.setProductDefaultPicture(i);
+            }
         }
+        domainModels.setPhotos(domainModelList);
         return domainModels;
     }
 

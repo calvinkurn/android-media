@@ -30,7 +30,7 @@ public class AddProductPictureInputServiceModel {
             String productPhotosDescriptionString = "";
             for (int i = 0; i < getProductPhoto().getPhotosServiceModelList().size(); i++) {
                 ProductPhotoServiceModel productPhoto = getProductPhoto().getPhotosServiceModelList().get(i);
-                productPhotosString += productPhoto.getUrl();
+                productPhotosString += getPhotoParam(productPhoto);
                 productPhotosDescriptionString += productPhoto.getDescription();
                 if (i < getProductPhoto().getPhotosServiceModelList().size() - 1) {
                     productPhotosString += DELIMITER;
@@ -42,6 +42,10 @@ public class AddProductPictureInputServiceModel {
             params.put(PRODUCT_PHOTO_DESC, productPhotosDescriptionString);
         }
         return params;
+    }
+
+    protected String getPhotoParam(ProductPhotoServiceModel productPhoto) {
+        return productPhoto.getUrl();
     }
 
     public ProductPhotoListServiceModel getProductPhoto() {

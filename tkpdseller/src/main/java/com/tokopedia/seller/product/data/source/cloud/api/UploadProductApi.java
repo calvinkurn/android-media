@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.seller.product.data.source.cloud.model.DeleteProductPictureServiceModel;
+import com.tokopedia.seller.product.data.source.cloud.model.EditImageProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductsubmit.AddProductSubmitServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
@@ -28,5 +30,13 @@ public interface UploadProductApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_EDIT_PRODUCT)
-    Observable<EditProductServiceModel> editProduct(@FieldMap TKPDMapParam<String, String> param);
+    Observable<Response<EditProductServiceModel>> editProduct(@FieldMap TKPDMapParam<String, String> param);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_EDIT_PICTURE)
+    Observable<Response<EditImageProductServiceModel>> editProductPicture(@FieldMap TKPDMapParam<String, String> param);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Product.V4_ACTION_PRODUCT + TkpdBaseURL.Product.PATH_DELETE_PICTURE)
+    Observable<Response<DeleteProductPictureServiceModel>> deleteProductPicture(@FieldMap TKPDMapParam<String, String> param);
 }
