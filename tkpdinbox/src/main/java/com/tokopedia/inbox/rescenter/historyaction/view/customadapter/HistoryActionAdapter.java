@@ -92,11 +92,8 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
-        String additionalText = context.getString(R.string.template_history_additional_information);
         holder.date.setText(
-                additionalText
-                        .replace("X123", item.getActionByText())
-                        .replace("Y123", item.getDate())
+                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
         );
         holder.history.setText(item.getHistoryText());
     }

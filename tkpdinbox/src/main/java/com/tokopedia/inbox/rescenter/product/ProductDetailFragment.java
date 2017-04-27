@@ -192,9 +192,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         if (viewData.getQuantity() == 0) {
             troubleText = viewData.getTrouble();
         } else {
-            troubleText = getString(R.string.template_product_detail_trouble)
-                    .replace("X12", viewData.getTrouble())
-                    .replace("Y12", String.valueOf(viewData.getQuantity()));
+            troubleText = getString(R.string.template_product_detail_trouble, viewData.getTrouble(), viewData.getQuantity());
         }
         return troubleText;
     }

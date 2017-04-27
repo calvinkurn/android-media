@@ -78,9 +78,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
     }
 
     private String generateInformationText(SolutionData data) {
-        return getContext().getString(R.string.template_last_solution_provider)
-                .replace("X123", data.getSolutionProvider())
-                .replace("Y123", data.getSolutionDate());
+        return getContext().getString(R.string.template_last_solution_provider, data.getSolutionProvider(), data.getSolutionDate());
     }
 
     private class SolutionViewOnClickListener implements OnClickListener {

@@ -72,8 +72,7 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
     }
 
     private String generateInformationText(AwbData data) {
-        return getContext().getString(R.string.template_awb_additional_text)
-                .replace("X123", data.getAwbDate());
+        return getContext().getString(R.string.template_awb_additional_text, data.getAwbDate());
     }
 
     private class AwbViewOnClickListener implements OnClickListener {
