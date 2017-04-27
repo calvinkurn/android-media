@@ -142,7 +142,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         if(productStatus == ProductStatus.EDIT){
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
+        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return notificationBuilder
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat
