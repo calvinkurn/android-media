@@ -30,6 +30,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    public static final String SHOP_AD_PARCELABLE = "SHOP_AD_PARCELABLE";
     private MenuItem deleteMenuItem;
     private ShopAd ad;
 
@@ -115,5 +116,18 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
         super.onCreateOptionsMenu(menu, inflater);
         deleteMenuItem = menu.findItem(R.id.menu_delete);
         deleteMenuItem.setVisible(false);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        super.onSaveState(state);
+        state.putParcelable(SHOP_AD_PARCELABLE, ad);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        ad = savedState.getParcelable(SHOP_AD_PARCELABLE);
+        onAdLoaded(ad);
     }
 }
