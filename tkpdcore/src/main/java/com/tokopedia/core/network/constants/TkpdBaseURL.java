@@ -669,7 +669,8 @@ public class TkpdBaseURL {
         public static final String HMAC_KEY = "web_service_v4";
 
         public static final String PATH_STATUS = "status";
-        public static final String PATH_CATEGORY = "category/list";
+        public static final String PATH_CATEGORY_LIST = "category/list";
+        public static final String PATH_CATEGORY = "category";
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
         public static final String PATH_RECENT_NUMBER = "recent-number";
