@@ -23,14 +23,20 @@ import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.AddProductServiceListener;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javax.inject.Inject;
 
 public class UploadProductService extends BaseService implements AddProductServiceListener {
-
+    public static final String TAG = "upload_product";
+    ;
     public static final String PRODUCT_DRAFT_ID = "PRODUCT_DRAFT_ID";
-    private static final int NOTIFICATION_ID = 100;
     private NotificationManager notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
+
+    ArrayList<String> productDraftIdList = new ArrayList<>();
+    HashMap<String, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
+    HashMap<String, Integer> progressMap = new HashMap<>();
 
     public static Intent getIntent(Context context, long productId) {
         Intent intent = new Intent(context, UploadProductService.class);
@@ -68,39 +74,65 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void onSuccessAddProduct() {
-        stopForeground(false);
-        stopSelf();
+        /*stopForeground(false);
+        stopSelf();*/
     }
 
     @Override
     public void onFailedAddProduct() {
-        stopForeground(false);
-        stopSelf();
+        /*stopForeground(false);
+        stopSelf();*/
     }
 
     @Override
     public void notificationFailed(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
         Notification notification = buildFailedNotification(errorMessage, productDraftId, productStatus);
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
+        removeNotifFromList(productDraftId);
+    }
+
+    private void removeNotifFromList(String productDraftId) {
+        productDraftIdList.remove(productDraftId);
+        notificationBuilderMap.remove(productDraftId);
+        progressMap.remove(productDraftId);
+        if (productDraftIdList.size() == 0) {
+            stopSelf();
+        }
+    }
+
+    private int getNotifIdByDraft(String productDraftId) {
+        return Integer.parseInt(productDraftId);
     }
 
     @Override
-    public void createNotification(String productName){
-        buildBaseNotification(productName);
-        Notification notification = buildStartNotification();
-        startForeground(NOTIFICATION_ID, notification);
+    public void createNotification(String productDraftId, String productName) {
+        NotificationCompat.Builder builder = buildBaseNotification(productName);
+        Notification notification = buildStartNotification(builder);
+
+        notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
+
+        productDraftIdList.add(productDraftId);
+        notificationBuilderMap.put(productDraftId, builder);
+        progressMap.put(productDraftId, 0);
     }
 
     @Override
-    public void notificationUpdate(int stepNotification) {
-        Notification notification = buildProgressNotification(stepNotification);
-        notificationManager.notify(NOTIFICATION_ID, notification);
+    public void notificationUpdate(String productDraftId) {
+        //get progress from list and update the progress
+        int stepNotification = progressMap.get(productDraftId);
+        progressMap.put(productDraftId, stepNotification++);
+        Notification notification = buildProgressNotification(productDraftId, stepNotification);
+        notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
     }
 
     @Override
-    public void notificationComplete() {
-        Notification notification = buildCompleteNotification();
-        notificationManager.notify(NOTIFICATION_ID, notification);
+    public void notificationComplete(String productDraftId) {
+        Notification notification = buildCompleteNotification(productDraftId);
+        if (notification == null) {
+            return;
+        }
+        notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
+        removeNotifFromList(productDraftId);
     }
 
     @Override
@@ -126,11 +158,11 @@ public class UploadProductService extends BaseService implements AddProductServi
         sendBroadcast(result);
     }
 
-    private void buildBaseNotification(String productName) {
+    private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.title_notification_upload_product) + " " + productName;
         Intent pendingIntent = new Intent(this, ManageProduct.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
-        notificationBuilder = new NotificationCompat.Builder(this)
+        return new NotificationCompat.Builder(this)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.qc_launcher2)
                 .setContentIntent(pIntent)
@@ -139,11 +171,11 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private Notification buildFailedNotification(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
         Intent pendingIntent = ProductDraftAddActivity.createInstance(this, productDraftId);
-        if(productStatus == ProductStatus.EDIT){
+        if (productStatus == ProductStatus.EDIT) {
             pendingIntent = ProductDraftEditActivity.createInstance(this, productDraftId);
         }
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return notificationBuilder
+        return notificationBuilderMap.get(productDraftId)
                 .setContentText(errorMessage)
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
@@ -152,11 +184,12 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .setContentIntent(pIntent)
                 .setProgress(0, 0, false)
                 .setOngoing(false)
+                .setAutoCancel(true)
                 .build();
     }
 
-    private Notification buildStartNotification() {
-        return notificationBuilder
+    private Notification buildStartNotification(NotificationCompat.Builder builder) {
+        return builder
                 .setContentText(getString(R.string.notification_start_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
@@ -165,8 +198,8 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .build();
     }
 
-    private Notification buildProgressNotification(int stepNotification) {
-        return notificationBuilder
+    private Notification buildProgressNotification(String productDraftId, int stepNotification) {
+        return notificationBuilderMap.get(productDraftId)
                 .setContentText(getString(R.string.notification_progress_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
@@ -175,8 +208,8 @@ public class UploadProductService extends BaseService implements AddProductServi
                 .build();
     }
 
-    private Notification buildCompleteNotification() {
-        return notificationBuilder
+    private Notification buildCompleteNotification(String productDraftId) {
+        return notificationBuilderMap.get(productDraftId)
                 .setContentText(getString(R.string.notification_complete_upload_product))
                 .setStyle(new NotificationCompat
                         .BigTextStyle()
@@ -184,6 +217,7 @@ public class UploadProductService extends BaseService implements AddProductServi
                 )
                 .setProgress(0, 0, false)
                 .setOngoing(false)
+                .setAutoCancel(true)
                 .build();
     }
 

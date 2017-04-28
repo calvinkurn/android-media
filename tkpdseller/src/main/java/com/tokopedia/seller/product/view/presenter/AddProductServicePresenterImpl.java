@@ -26,25 +26,26 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
     public void uploadProduct(long productDraftId) {
         checkViewAttached();
         RequestParams requestParams = UploadProductUseCase.generateUploadProductParam(productDraftId);
-        uploadProductUseCase.execute(requestParams, new AddProductSubscriber());
+        uploadProductUseCase.execute(requestParams, new AddProductSubscriber(String.valueOf(productDraftId)));
     }
 
     @Override
-    public void createNotification(String productName) {
+    public void createNotification(String productDraftId, String productName) {
         checkViewAttached();
-        getView().createNotification(productName);
+        getView().createNotification(productDraftId, productName);
     }
 
     @Override
-    public void notificationUpdate(int stepNotification) {
+    public void notificationUpdate(String productDraftId) {
         checkViewAttached();
-        getView().notificationUpdate(stepNotification);
+        getView().notificationUpdate(productDraftId);
     }
 
     private class AddProductSubscriber extends Subscriber<AddProductDomainModel> {
 
-        public AddProductSubscriber() {
-
+        private String productDraftId;
+        public AddProductSubscriber(String productDraftId) {
+            this.productDraftId = productDraftId;
         }
 
         @Override
@@ -78,7 +79,7 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
         public void onNext(AddProductDomainModel addProductDomainModel) {
             checkViewAttached();
             getView().onSuccessAddProduct();
-            getView().notificationComplete();
+            getView().notificationComplete(productDraftId);
             getView().sendSuccessBroadcast(addProductDomainModel);
         }
     }

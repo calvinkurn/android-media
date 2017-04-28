@@ -25,6 +25,7 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -47,7 +48,6 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final UploadProductRepository uploadProductRepository;
 
     private AddProductNotificationListener listener;
-    private int stepNotification;
 
     @Inject
     public UploadProductUseCase(
@@ -103,12 +103,12 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
         @Override
         public Observable<AddProductDomainModel> call(final UploadProductInputDomainModel domainModel) {
-            createNotification(domainModel.getProductName());
+            createNotification(String.valueOf(productId), domainModel.getProductName());
             return Observable.just(domainModel)
                     .flatMap(new GetGeneratedHost())
-                    .doOnNext(new UpdateNotification())
+                    .doOnNext(new UpdateNotification(String.valueOf(productId)))
                     .map(new PrepareUploadImage(domainModel))
-                    .flatMap(new ProceedUploadProduct())
+                    .flatMap(new ProceedUploadProduct(String.valueOf(productId)))
                     .onErrorResumeNext(new AddProductStatusToError(domainModel.getProductStatus()));
         }
 
@@ -128,19 +128,23 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class UpdateNotification implements Action1<Object> {
+        private String productId;
+
+        public UpdateNotification(String productId) {
+            this.productId = productId;
+        }
+
         @Override
         public void call(Object o) {
             if (listener != null) {
-                stepNotification ++;
-                listener.notificationUpdate(stepNotification);
+                listener.notificationUpdate(productId);
             }
         }
     }
 
-    private void createNotification(String productName) {
+    private void createNotification(String productDraftId, String productName) {
         if (listener != null) {
-            stepNotification = 0;
-            listener.createNotification(productName);
+            listener.createNotification(productDraftId, productName);
         }
     }
 
@@ -168,21 +172,27 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     }
 
     private class ProceedUploadProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
+        private String productId;
+
+        public ProceedUploadProduct(String productId) {
+            this.productId = productId;
+        }
+
         @Override
         public Observable<AddProductDomainModel> call(UploadProductInputDomainModel domainModel) {
             if (domainModel.getProductStatus() == ProductStatus.ADD){
                 return Observable.just(domainModel)
                         .flatMap(new AddProductImage())
-                        .doOnNext(new UpdateNotification())
+                        .doOnNext(new UpdateNotification(productId))
                         .map(new PrepareAddProductValidation(domainModel))
                         .flatMap(new AddProductValidation())
-                        .doOnNext(new UpdateNotification())
+                        .doOnNext(new UpdateNotification(productId))
                         .flatMap(new ProcessAddProductValidation(domainModel))
-                        .doOnNext(new UpdateNotification());
+                        .doOnNext(new UpdateNotification(productId));
             } else if (domainModel.getProductStatus() == ProductStatus.EDIT){
                 return Observable.just(domainModel)
                         .flatMap(new EditProductImage())
-                        .doOnNext(new UpdateNotification())
+                        .doOnNext(new UpdateNotification(productId))
                         .map(new PrepareEditProduct(domainModel))
                         .flatMap(new EditProduct())
                         .map(new ToUploadProductModel(domainModel));
