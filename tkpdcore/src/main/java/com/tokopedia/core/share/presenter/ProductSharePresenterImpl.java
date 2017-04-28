@@ -36,7 +36,7 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareBBM(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.BBM);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.BBM);
         } else {
             UnifyTracking.eventShare(
                     data.getSource() != null ? data.getSource() : "",
@@ -51,9 +51,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareFb(final ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.FACEBOOK
             );
         }
@@ -75,9 +75,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareTwitter(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.TWITTER);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.TWITTER);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.TWITTER
             );
         }
@@ -97,9 +97,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareWhatsApp(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.WHATSHAPP);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.WHATSHAPP
             );
         }
@@ -112,9 +112,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareLine(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.LINE);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.LINE);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.LINE
             );
         }
@@ -127,9 +127,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void sharePinterest(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.PINTEREST);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.PINTEREST);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.PINTEREST
             );
         }
@@ -147,9 +147,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareMore(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.OTHER);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.OTHER);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.OTHER
             );
         }
@@ -166,9 +166,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareInstagram(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.INSTAGRAM);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.INSTAGRAM
             );
         }
@@ -186,9 +186,9 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     @Override
     public void shareGPlus(ShareData data) {
         if (data.getType().equals(ShareData.CATEGORY_TYPE)) {
-            UnifyTracking.eventShareCategory(data.getDescription()+"-"+AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
+            UnifyTracking.eventShareCategory(data.getDescription() + "-" + AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
         } else {
-            UnifyTracking.eventShare( data.getSource() != null ? data.getSource() : "",
+            UnifyTracking.eventShare(data.getSource() != null ? data.getSource() : "",
                     AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS
             );
         }

@@ -14,12 +14,11 @@ import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEdit
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
 import com.tokopedia.core.gcm.notification.promotions.CartNotification;
+import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
-import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -39,8 +38,7 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseRejectedShippingNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewEditedNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ReviewReplyNotification;
+import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
 

@@ -29,10 +29,7 @@
                 app:title="@string/label_top_ads_groups" />
 
             <include
-                layout="@layout/include_topads_content_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/topads_detail_padding_item" />
+                layout="@layout/include_topads_content_detail" />
 
         </LinearLayout>
 

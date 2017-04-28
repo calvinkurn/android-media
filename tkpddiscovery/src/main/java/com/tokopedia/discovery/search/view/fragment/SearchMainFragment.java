@@ -3,12 +3,14 @@ package com.tokopedia.discovery.search.view.fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -46,6 +48,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
     private SearchPageAdapter pageAdapter;
     private String mSearch = "";
+    private String networkErrorMessage;
 
     public static SearchMainFragment newInstance() {
         
@@ -68,8 +71,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initResources();
         presenter = new SearchPresenter(getActivity());
         setRetainInstance(true);
+    }
+
+    private void initResources() {
+        networkErrorMessage = getString(R.string.msg_network_error);
     }
 
     @Nullable
@@ -130,6 +138,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                 resultFragment.addSearchResult(visitable);
             }
         }
+    }
+
+    @Override
+    public void showNetworkErrorMessage() {
+        SnackbarManager.make(getActivity(), networkErrorMessage, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -36,6 +38,7 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
+import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
@@ -338,7 +341,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                     }
                 });
     }
-
 
 
     @Override

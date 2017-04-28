@@ -32,7 +32,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
     }
 
     @Override
-    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, HEADER_DATE_FORMAT);
         SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.ENGLISH);
         String date = dateFormat.format(new Date());

@@ -17,7 +17,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
@@ -94,6 +96,7 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     public void onClick() {
         String url = promoItem.promoUrl;
         try {
+            UnifyTracking.eventSlideBannerClicked(url);
             Uri uri = Uri.parse(url);
             String host = uri.getHost();
             List<String> linkSegment = uri.getPathSegments();

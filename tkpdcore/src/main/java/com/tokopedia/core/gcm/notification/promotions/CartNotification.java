@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.Cart;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.util.SessionHandler;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -22,11 +22,13 @@ public class CartNotification extends BasePromoNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, Cart.class),
-                data
-        );
-        mNotificationPass.classParentStack = Cart.class;
+        Intent intentCart = TransactionCartRouter.createInstanceCartActivity(mContext);
+        mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(intentCart, data);
+        try {
+            mNotificationPass.classParentStack = TransactionCartRouter.createInstanceCartClass();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");

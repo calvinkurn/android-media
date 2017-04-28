@@ -5,13 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -102,6 +103,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
 
     @Override
     public void onItemClicked(SearchItem item) {
+        probeAnalytics(item);
         if (item.getEventAction().equals("shop") && item.getApplink() != null) {
             List<String> segments = Uri.parse(item.getApplink()).getPathSegments();
             if (segments != null && segments.size() > 0) {
@@ -114,6 +116,28 @@ public class SearchResultFragment extends TkpdBaseV4Fragment
             ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword(), item.getSc());
         } else {
             ((BrowseProductActivity) getActivity()).sendQuery(item.getKeyword());
+        }
+    }
+
+
+    private void probeAnalytics(SearchItem item){
+        switch (item.getEventAction())
+        {
+            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE :
+                UnifyTracking.eventClickAutoCompleteSearch(item.getKeyword());
+                break;
+            case AppEventTracking.GTM.SEARCH_HOTLIST :
+                UnifyTracking.eventClickHotListSearch(item.getKeyword());
+                break;
+            case AppEventTracking.GTM.SEARCH_RECENT :
+                UnifyTracking.eventClickRecentSearch(item.getKeyword());
+                break;
+            case AppEventTracking.GTM.SEARCH_POPULAR :
+                UnifyTracking.eventClickPopularSearch(item.getKeyword());
+                break;
+            case AppEventTracking.GTM.SEARCH_AUTOCOMPLETE_IN_CAT :
+                UnifyTracking.eventClickAutoCompleteCategory(item.getSc(), item.getKeyword());
+                break;
         }
     }
 

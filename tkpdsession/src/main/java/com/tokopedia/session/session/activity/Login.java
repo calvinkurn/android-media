@@ -101,10 +101,11 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         , OTPResultReceiver.Receiver
         , ErrorNetworkReceiver.ReceiveListener {
 
-    private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
-    private static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
+    public static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
+    public static final String INTENT_EXTRA_PARAM_PASSWORD = "INTENT_EXTRA_PARAM_PASSWORD";
     private static final String INTENT_AUTOMATIC_LOGIN = "INTENT_AUTOMATIC_LOGIN";
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
+    public static final String DEFAULT = "not";
 
     //    int whichFragmentKey;
     LocalCacheHandler cacheGTM;
@@ -146,6 +147,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_PASSWORD, password);
         callingIntent.putExtra(INTENT_AUTOMATIC_LOGIN, true);
+        callingIntent.putExtra("login", DEFAULT);
         callingIntent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         if (GlobalConfig.isSellerApp())
             callingIntent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.SELLER_HOME);
@@ -433,7 +435,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 if (isFragmentCreated(SECURITY_QUESTION_TAG)) {
                     Log.d(TAG, messageTAG + FragmentSecurityQuestion.class.getSimpleName() + " is created !!!");
                     Fragment fragment = FragmentSecurityQuestion
-                            .newInstance(0, 0, "", null);
+                            .newInstance(0, 0, "", "", null);
                     moveToFragment(fragment, false, SECURITY_QUESTION_TAG, TkpdState.DrawerPosition.SECURITY_QUESTION);
                 } else {
                     Log.d(TAG, messageTAG + FragmentSecurityQuestion.class.getSimpleName() + " is not created !!!");
@@ -451,9 +453,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
     }
 
     @Override
-    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email) {
         Fragment fragment = FragmentSecurityQuestion
-                .newInstance(security1, security2, userId + "", null);
+                .newInstance(security1, security2, String.valueOf(userId), email, null);
         moveToFragment(fragment, false, SECURITY_QUESTION_TAG, TkpdState.DrawerPosition.SECURITY_QUESTION);
 
         // Change the header

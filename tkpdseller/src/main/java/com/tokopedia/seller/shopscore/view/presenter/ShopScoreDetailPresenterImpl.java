@@ -50,6 +50,10 @@ public class ShopScoreDetailPresenterImpl extends BaseDaggerPresenter<ShopScoreD
         getView().renderShopScoreState(shopScoreDetailStateEnum);
     }
 
+    public void unsubscribe() {
+        getShopScoreDetailUseCase.unsubscribe();
+    }
+
     private class GetShopScoreDetailSubscriber extends Subscriber<ShopScoreDetailDomainModel> {
         @Override
         public void onCompleted() {

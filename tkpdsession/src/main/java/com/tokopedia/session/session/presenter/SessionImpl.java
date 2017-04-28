@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.analytics.AppEventTracking;
 
 import java.util.HashMap;
 import java.util.Map;

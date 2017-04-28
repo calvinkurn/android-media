@@ -23,8 +23,6 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
 import java.util.Map;
 
 /**
@@ -249,7 +247,7 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().sendEvent(dataLayers);
     }
 
-    public static String getClientID(){
+    public static String getClientID() {
         return getGTMEngine().getClientIDString();
     }
 

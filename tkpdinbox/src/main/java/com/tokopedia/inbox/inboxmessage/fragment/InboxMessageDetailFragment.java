@@ -178,7 +178,7 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if ( bottom < oldBottom) {
+                if (bottom < oldBottom) {
                     mainList.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -290,7 +290,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
 
         if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
             toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
-            toolbar.setSubtitle(inboxMessageDetail.getOpponent().getUserLabel());
+            InboxMessageItem messageItem = getArguments().getParcelable(PARAM_MESSAGE);
+            if (messageItem != null)
+                toolbar.setSubtitle(messageItem.getUserLabel());
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 

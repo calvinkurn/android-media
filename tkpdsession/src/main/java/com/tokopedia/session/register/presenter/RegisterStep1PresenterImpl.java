@@ -133,7 +133,7 @@ public class RegisterStep1PresenterImpl implements RegisterStep1Presenter, Regis
                 viewListener.goToRegisterStep2();
                 break;
             case GO_TO_ACTIVATION_PAGE:
-                viewListener.goToAutomaticActivationPage();
+                viewListener.goToActivationPage();
                 break;
             case GO_TO_RESET_PASSWORD:
                 viewListener.goToAutomaticResetPassword();

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -21,10 +25,11 @@ import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
- * Created by normansyahputa on 12/15/16.
+ * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -59,6 +64,11 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     @Override
     public void startInstopedActivity(Context context) {
         InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
     }
 
     @Override
@@ -99,6 +109,11 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return CartDigitalActivity.newInstance(this, passData);
     }
 
     @Override
