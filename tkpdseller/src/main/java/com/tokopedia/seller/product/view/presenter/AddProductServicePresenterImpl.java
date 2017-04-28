@@ -6,6 +6,7 @@ import com.tokopedia.seller.product.data.exception.UploadProductException;
 import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import rx.Subscriber;
@@ -65,13 +66,9 @@ public class AddProductServicePresenterImpl extends AddProductServicePresenter i
             }
 
             checkViewAttached();
-            String errorMessage = e.getLocalizedMessage();
-            if (e instanceof ResponseErrorListStringException) {
-                errorMessage = ((ResponseErrorListStringException) e).getErrorList().get(0);
-            }
             getView().onFailedAddProduct();
-            getView().notificationFailed(errorMessage, productDraftId, productStatus);
-            getView().sendFailedBroadcast(errorMessage);
+            getView().notificationFailed(e, productDraftId, productStatus);
+            getView().sendFailedBroadcast(e);
         }
 
         @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.seller.R;
 
 import java.io.IOException;
@@ -31,7 +32,9 @@ public class ViewUtils {
             return context.getString(R.string.default_request_error_timeout);
         } else if (t instanceof IOException) {
             return context.getString(R.string.default_request_error_internal_server);
-        } else {
+        }else if (t instanceof ResponseErrorListStringException) {
+            return ((ResponseErrorListStringException) t).getErrorList().get(0);
+        }else {
             return context.getString(R.string.default_request_error_unknown);
         }
     }
