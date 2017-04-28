@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.listener;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 
+import java.util.List;
+
 /**
  * @author normansyahputa on 4/17/17.
  */
@@ -15,4 +17,6 @@ public interface YoutubeAddVideoView extends CustomerView {
     void addYoutubeUrl(String youtubeUrl);
 
     void showMessageError(String message);
+
+    void addAddUrlVideModels(List<AddUrlVideoModel> convert);
 }

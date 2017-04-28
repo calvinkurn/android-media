@@ -14,4 +14,8 @@ public interface YoutubeAddVideoActView {
     void openAddYoutubeDialog();
 
     List<String> videoIds();
+
+    void addVideoIds(String videoId);
+
+    void removeVideoIds(int index);
 }
