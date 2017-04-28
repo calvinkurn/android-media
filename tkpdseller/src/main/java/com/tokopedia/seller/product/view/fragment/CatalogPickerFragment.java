@@ -92,6 +92,8 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         View view = inflater.inflate(R.layout.fragment_catalog_picker, container, false);
         setupRecyclerView(view);
         presenter.attachView(this);
+
+        adapter.showLoading(true);
         presenter.fetchCatalogData(keyword, departmentId, 0, ROWS);
 
         return view;
