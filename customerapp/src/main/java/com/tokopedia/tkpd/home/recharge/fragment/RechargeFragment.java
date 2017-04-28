@@ -187,7 +187,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
                     if (intent.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                         String message = intent.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
-                        if (TextUtils.isEmpty(message)) {
+                        if (!TextUtils.isEmpty(message)) {
                             NetworkErrorHelper.showSnackbar(getActivity(), message);
                         }
                     }
@@ -383,7 +383,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-                    goToNativeCheckout();
+                    goToCheckout(getUrlCheckout());
+//                    goToNativeCheckout();
             }
         } else {
             gotoLogin();
@@ -526,6 +527,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void setOperatorView(RechargeOperatorModel operator) {
         try {
+            selectedOperator = operator;
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(
                     new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)}
@@ -549,8 +551,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void showProductById(Product product) {
         selectedProduct = product;
         if (checkStockProduct(selectedProduct))
-            goToNativeCheckout();
-//            goToCheckout(getUrlCheckout());
+//            goToNativeCheckout();
+            goToCheckout(getUrlCheckout());
     }
 
     @Override
@@ -710,13 +712,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     hideFormAndShowImageOperator();
                 }
             }
-        } else {
-            hideFormAndImageOperator();
         }
     }
 
     private void setPhoneBookVisibility() {
-
         if (category != null && category.getAttributes() != null) {
             CategoryAttributes categoryAttributes = category.getAttributes();
             if (categoryAttributes.getUsePhonebook() && rechargeEditText != null) {
@@ -751,7 +750,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         } else {
             hideKeyboard();
-            hideFormAndImageOperator();
         }
     }
 

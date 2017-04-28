@@ -31,4 +31,8 @@ public interface ServiceV4 {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Etc.PATH_GET_FAVORITE_SHOP)
     Observable<Response<String>> getFavoriteShop(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.URL_POST_FAVORITE_SHOP)
+    Observable<Response<String>> postFavoriteShop(@FieldMap Map<String, String> params);
 }

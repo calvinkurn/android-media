@@ -55,7 +55,9 @@ public class InputPriceHolderView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_input_price_digital_module, this, true);
+        LayoutInflater.from(context).inflate(
+                R.layout.view_holder_checkout_input_price_digital_module, this, true
+        );
         ButterKnife.bind(this);
     }
 
@@ -93,7 +95,7 @@ public class InputPriceHolderView extends LinearLayout {
 
     private boolean isUserInputValid(String userInput, long minPayment, long maxPayment) {
         long priceInput = 0;
-        if (TextUtils.isEmpty(userInput)) {
+        if (!TextUtils.isEmpty(userInput)) {
             try {
                 priceInput = Long.parseLong(userInput);
             } catch (NumberFormatException e) {

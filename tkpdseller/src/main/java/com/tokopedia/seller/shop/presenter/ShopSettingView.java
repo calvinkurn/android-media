@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.presenter;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 /**
@@ -19,7 +20,7 @@ public interface ShopSettingView {
 
     void initFragment(String FRAGMENT_TAG);
     void moveToFragment(Fragment fragment, boolean isAddtoBackStack, String TAG);
-    void fetchExtras(Intent intent);
+    void fetchExtras(Intent intent, Bundle savedInstanceState);
     boolean isFragmentCreated(String tag);
 }
 
