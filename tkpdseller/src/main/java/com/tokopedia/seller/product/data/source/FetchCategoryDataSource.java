@@ -36,6 +36,13 @@ public class FetchCategoryDataSource {
         return Observable.just(categoryId).map(new FetchCategoryFromSelected());
     }
 
+    public Observable<List<String>> fetchCategoryDisplay(long categoryId) {
+        return Observable
+                .just(categoryId)
+                .map(new FetchCategoryFromSelected())
+                .map(new GetStringListCategory());
+    }
+
     private class FetchCategoryFromSelected implements Func1<Long, List<CategoryLevelDomainModel>> {
         @Override
         public List<CategoryLevelDomainModel> call(Long categoryId) {
@@ -74,5 +81,18 @@ public class FetchCategoryDataSource {
     private long getParentId(long categoryId) {
         CategoryDataBase selectedCategory = categoryDataManager.fetchCategoryWithId(categoryId);
         return selectedCategory.getParentId();
+    }
+
+    private class GetStringListCategory implements Func1<List<CategoryLevelDomainModel>, List<String>> {
+        @Override
+        public List<String> call(List<CategoryLevelDomainModel> categoryLevelDomainModels) {
+            List<String> listString = new ArrayList<>();
+            for (CategoryLevelDomainModel domainModel : categoryLevelDomainModels) {
+                CategoryDataBase categoryDataBase = categoryDataManager
+                        .fetchCategoryWithId(domainModel.getSelectedCategoryId());
+                listString.add(categoryDataBase.getName());
+            }
+            return listString;
+        }
     }
 }

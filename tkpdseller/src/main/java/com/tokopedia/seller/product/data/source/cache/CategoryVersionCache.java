@@ -12,7 +12,6 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 3/8/17.
  */
-@CategoryPickerScope
 public class CategoryVersionCache {
     private static final String CATEGORY_HADES_VERSION = "STORED_CATEGORY_HADES_VERSION";
     private static final String VERSION_NUMBER = "VERSION_NUMBER";

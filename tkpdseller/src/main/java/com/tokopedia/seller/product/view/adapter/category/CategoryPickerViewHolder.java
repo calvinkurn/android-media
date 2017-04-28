@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
@@ -42,8 +42,8 @@ public abstract class CategoryPickerViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void setIndentation(int level) {
-        RelativeLayout.LayoutParams layoutParams =
-                (RelativeLayout.LayoutParams) categoryName.getLayoutParams();
+        LinearLayout.LayoutParams layoutParams =
+                (LinearLayout.LayoutParams) categoryName.getLayoutParams();
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         float dp = level * 16;
         int marginStart = (int) ((dp * displayMetrics.density) + 0.5);

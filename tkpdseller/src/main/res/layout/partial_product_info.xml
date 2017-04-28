@@ -75,6 +75,7 @@
             app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
             app:label_show_arrow="true"
+            app:content_max_lines="5"
             app:title="@string/product_label_category" />
     </LinearLayout>
 

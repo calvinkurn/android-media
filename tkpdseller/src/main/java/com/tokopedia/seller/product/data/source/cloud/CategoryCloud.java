@@ -13,7 +13,6 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 4/4/17.
  */
-@CategoryPickerScope
 public class CategoryCloud {
 
     private final HadesCategoryApi api;

@@ -16,7 +16,9 @@ public interface CategoryRepository {
 
     Observable<Boolean> checkCategoryAvailable();
 
-    Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(long categoryId);
+    Observable<List<CategoryDomainModel>> fetchCategoryWithParent(long categoryId);
 
     Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId);
+
+    Observable<List<String>> fetchCategoryDisplay(long categoryId);
 }

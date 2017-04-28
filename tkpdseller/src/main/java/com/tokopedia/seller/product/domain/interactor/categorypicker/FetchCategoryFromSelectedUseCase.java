@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.domain.interactor;
+package com.tokopedia.seller.product.domain.interactor.categorypicker;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -17,11 +17,10 @@ import rx.Observable;
  * @author sebastianuskh on 4/7/17.
  */
 
-public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevelDomainModel>> {
+public class FetchCategoryFromSelectedUseCase extends BaseCategoryUseCase<List<CategoryLevelDomainModel>> {
 
     public static final String INIT_SELECTED = "INIT_SELECTED";
     public static final int INIT_UNSELECTED = -1;
-    private final CategoryRepository categoryRepository;
 
     @Inject
     public FetchCategoryFromSelectedUseCase(
@@ -29,12 +28,11 @@ public class FetchCategoryFromSelectedUseCase extends UseCase<List<CategoryLevel
             PostExecutionThread postExecutionThread,
             CategoryRepository categoryRepository
     ) {
-        super(threadExecutor, postExecutionThread);
-        this.categoryRepository = categoryRepository;
+        super(threadExecutor, postExecutionThread, categoryRepository);
     }
 
     @Override
-    public Observable<List<CategoryLevelDomainModel>> createObservable(RequestParams requestParams) {
+    protected Observable<List<CategoryLevelDomainModel>> createObservableCategory(RequestParams requestParams) {
         long initSelected = requestParams.getLong(INIT_SELECTED, INIT_UNSELECTED);
         if (initSelected == INIT_UNSELECTED) {
             throw new RuntimeException("Init category is unselected");

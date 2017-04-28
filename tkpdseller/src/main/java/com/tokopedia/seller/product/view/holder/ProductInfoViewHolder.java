@@ -205,7 +205,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         categoryLabelView.setContent(category);
     }
 
-    private void processCategory(String[] categoryNameArr) {
+    public void processCategory(String[] categoryNameArr) {
         String category = "";
         for (int i = 0, sizei = categoryNameArr.length; i < sizei; i++) {
             String categoryName = categoryNameArr[i];
