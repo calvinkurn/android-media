@@ -49,4 +49,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId) {
         return fetchCategoryDataSource.fetchCategoryFromSelected(categoryId);
     }
+
+    @Override
+    public Observable<List<String>> fetchCategoryDisplay(long categoryId) {
+        return fetchCategoryDataSource.fetchCategoryDisplay(categoryId);
+    }
 }

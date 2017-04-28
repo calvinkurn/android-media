@@ -7,7 +7,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
  * @author sebastianuskh on 4/26/17.
  */
 
-public interface ProductDraftView extends ProductAddView {
+public interface ProductDraftView extends ProductPopulateView {
 
     void onSuccessLoadProduct(UploadProductInputViewModel model);
 

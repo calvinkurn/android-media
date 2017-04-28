@@ -9,6 +9,7 @@ import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
@@ -22,7 +23,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/21/17.
  */
 
-public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditView> {
+public class ProductEditPresenter extends ProductPopulatePresenter<ProductEditView> {
 
     private final FetchEditProductFormUseCase fetchEditProductFormUseCase;
 
@@ -32,8 +33,14 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
                                 GetCategoryRecommUseCase getCategoryRecommUseCase,
                                 ProductScoringUseCase productScoringUseCase,
                                 AddProductShopInfoUseCase addProductShopInfoUseCase,
-                                FetchEditProductFormUseCase fetchEditProductFormUseCase) {
-        super(saveDraftProductUseCase, fetchCatalogDataUseCase, getCategoryRecommUseCase, productScoringUseCase, addProductShopInfoUseCase);
+                                FetchEditProductFormUseCase fetchEditProductFormUseCase,
+                                FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase) {
+        super(saveDraftProductUseCase,
+                fetchCatalogDataUseCase,
+                getCategoryRecommUseCase,
+                productScoringUseCase,
+                addProductShopInfoUseCase,
+                fetchCategoryDisplayUseCase);
         this.fetchEditProductFormUseCase = fetchEditProductFormUseCase;
     }
 

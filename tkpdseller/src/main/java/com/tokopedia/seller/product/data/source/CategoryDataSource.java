@@ -21,7 +21,6 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/4/17.
  */
 
-@CategoryPickerScope
 public class CategoryDataSource {
     private final CategoryDataManager categoryDataManager;
     private final CategoryCloud categoryCloud;

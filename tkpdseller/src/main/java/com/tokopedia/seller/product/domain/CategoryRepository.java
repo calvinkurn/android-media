@@ -19,4 +19,6 @@ public interface CategoryRepository {
     Observable<List<CategoryDomainModel>> fetchCategoryWithParent(long categoryId);
 
     Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId);
+
+    Observable<List<String>> fetchCategoryDisplay(long categoryId);
 }

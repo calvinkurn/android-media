@@ -14,6 +14,8 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 import com.tokopedia.seller.product.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductDraftView;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -63,6 +65,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+        presenter.fetchCategoryDisplay(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
         }
@@ -100,4 +103,10 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     }
 
+    @Override
+    public void populateCategory(List<String> strings) {
+        String[] stringArray = new String[strings.size()];
+        stringArray = strings.toArray(stringArray);
+        productInfoViewHolder.processCategory(stringArray);
+    }
 }

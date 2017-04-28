@@ -18,7 +18,6 @@ import javax.inject.Inject;
 /**
  * @author sebastianuskh on 4/3/17.
  */
-@CategoryPickerScope
 public class CategoryDataManager {
 
     @Inject
