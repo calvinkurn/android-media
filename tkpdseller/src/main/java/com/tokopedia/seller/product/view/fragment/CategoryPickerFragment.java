@@ -127,8 +127,8 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     @Override
-    public void renderCategory(List<CategoryViewModel> listCategory) {
-        adapter.addLevelItem(listCategory);
+    public void renderCategory(List<CategoryViewModel> listCategory, long categoryId) {
+        adapter.addLevelItem(listCategory, categoryId);
     }
 
     @Override

@@ -18,13 +18,13 @@ import rx.Observable;
  * @author sebastianuskh on 4/3/17.
  */
 @CategoryPickerViewScope
-public class FetchCategoryUseCaseChildUseCase extends BaseCategoryUseCase<List<CategoryDomainModel>> {
+public class FetchCategoryWithParentChildUseCase extends BaseCategoryUseCase<List<CategoryDomainModel>> {
 
-    private static final int UNSELECTED = -2;
+    public static final int UNSELECTED = -2;
     public static final String CATEGORY_PARENT = "CATEGORY_PARENT";
 
     @Inject
-    public FetchCategoryUseCaseChildUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
+    public FetchCategoryWithParentChildUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CategoryRepository categoryRepository) {
         super(threadExecutor, postExecutionThread, categoryRepository);
     }
 
