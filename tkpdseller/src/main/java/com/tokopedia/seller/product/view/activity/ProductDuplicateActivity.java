@@ -32,4 +32,9 @@ public class ProductDuplicateActivity extends ProductDraftAddActivity {
                 .add(R.id.container, ProductDuplicateFragment.createInstance(productId), ProductDuplicateFragment.class.getSimpleName())
                 .commit();
     }
+
+    @Override
+    protected String getFragmentTAG() {
+        return ProductDuplicateFragment.class.getSimpleName();
+    }
 }

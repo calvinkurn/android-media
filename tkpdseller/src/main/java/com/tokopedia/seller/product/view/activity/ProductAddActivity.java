@@ -14,7 +14,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.myproduct.utils.FileUtils;
-import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -55,10 +54,9 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
     public static final int MAX_IMAGES = 5;
+    TkpdProgressDialog tkpdProgressDialog;
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
-
-    TkpdProgressDialog tkpdProgressDialog;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, ProductAddActivity.class);
@@ -264,11 +262,15 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     public ProductAddFragment getProductAddFragment() {
-        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.class.getSimpleName());
+        Fragment fragmentByTag = getSupportFragmentManager().findFragmentByTag(getFragmentTAG());
         if (fragmentByTag != null && fragmentByTag instanceof ProductAddFragment) {
             return (ProductAddFragment) fragmentByTag;
         }
         return null;
+    }
+
+    protected String getFragmentTAG() {
+        return ProductAddFragment.class.getSimpleName();
     }
 
     @Override

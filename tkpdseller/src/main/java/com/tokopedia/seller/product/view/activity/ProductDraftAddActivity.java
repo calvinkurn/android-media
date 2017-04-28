@@ -34,4 +34,8 @@ public class ProductDraftAddActivity extends ProductAddActivity {
                 .commit();
     }
 
+    @Override
+    protected String getFragmentTAG() {
+        return ProductDraftAddFragment.class.getSimpleName();
+    }
 }

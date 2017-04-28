@@ -5,17 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.fragment.ProductDraftAddFragment;
 import com.tokopedia.seller.product.view.fragment.ProductDraftEditFragment;
-import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
-import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
-import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.view.presenter.ProductEditPresenter;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 4/27/17.
@@ -41,4 +31,8 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
                 .commit();
     }
 
+    @Override
+    protected String getFragmentTAG() {
+        return ProductDraftEditFragment.class.getSimpleName();
+    }
 }

@@ -7,7 +7,14 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.YoutubeVideoRepository;
 import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
 
+import java.util.List;
+
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author normansyahputa on 4/12/17.
@@ -16,6 +23,7 @@ public class YoutubeVideoUseCase extends UseCase<YoutubeVideoModel> {
     public static final String KEY_YOUTUBE_ID = "KEY_YOUTUBE_ID";
     public static final String KEY_VIDEO_ID = "KEY_VIDEO_ID";
     private YoutubeVideoRepository youtubeVideoRepository;
+    private Subscription listSubscription;
 
     public YoutubeVideoUseCase(
             ThreadExecutor threadExecutor,
@@ -31,6 +39,37 @@ public class YoutubeVideoUseCase extends UseCase<YoutubeVideoModel> {
                 requestParams.getString(KEY_VIDEO_ID, ""),
                 requestParams.getString(KEY_YOUTUBE_ID, "")
         );
+    }
+
+    public Observable<List<YoutubeVideoModel>> createObservable(List<RequestParams> requestParams) {
+        return Observable.from(requestParams)
+                .flatMap(
+                        new Func1<RequestParams, Observable<YoutubeVideoModel>>() {
+                            @Override
+                            public Observable<YoutubeVideoModel> call(RequestParams requestParams) {
+                                return createObservable(requestParams);
+                            }
+                        }
+                ).toList();
+    }
+
+    public void executeList(List<RequestParams> requestParams, Subscriber<List<YoutubeVideoModel>> subscriber) {
+        this.listSubscription = createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
+    @Override
+    public void unsubscribe() {
+        super.unsubscribe();
+        if (listSubscription == null)
+            return;
+
+        if (!listSubscription.isUnsubscribed()) {
+            listSubscription.unsubscribe();
+        }
     }
 
     public RequestParams generateParam(String keyId, String videoId) {

@@ -73,6 +73,10 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         return wholesaleModels.size() + super.getItemCount();
     }
 
+    public int getItemSize() {
+        return wholesaleModels.size();
+    }
+
     public synchronized int addItem(WholesaleModel wholesaleModel) {
         int lastIndex = wholesaleModels.size() - 1;
         WholesaleModel prev = getItem(lastIndex);
