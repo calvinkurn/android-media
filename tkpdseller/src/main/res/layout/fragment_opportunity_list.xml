@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
                 android:layout_gravity="center"
-                android:drawableLeft="@drawable/ic_sort_black_24dp"
+                android:drawableLeft="@drawable/ic_sort"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:text="@string/sort" />
@@ -50,7 +50,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/btn_height"
-                android:drawableLeft="@drawable/ic_filter_list_black_24dp"
+                android:drawableLeft="@drawable/ic_filter_black"
                 android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:text="@string/filter" />

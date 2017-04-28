@@ -60,6 +60,16 @@ public class OpportunityFilterFragment extends BasePresenterFragment
         categoryList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         adapter = OpportunityFilterAdapter.createInstance((OpportunityFilterActivity) getActivity());
         categoryList.setAdapter(adapter);
+        setSearchVisibility();
+    }
+
+    private void setSearchVisibility() {
+        if (filterViewModel != null
+                && filterViewModel.getSearchViewModel() != null
+                && filterViewModel.getSearchViewModel().isSearchable())
+            searchView.setVisibility(View.VISIBLE);
+        else
+            searchView.setVisibility(View.GONE);
     }
 
     @Override
