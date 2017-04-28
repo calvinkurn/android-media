@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.adapter.category;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
@@ -13,10 +14,12 @@ import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 class CategoryParentViewHolder extends CategoryPickerViewHolder  {
     private final ImageView imageChevron;
+    private final ProgressBar progressBar;
 
     public CategoryParentViewHolder(View view, final CategoryParentViewHolderListener listener) {
         super(view);
         imageChevron = (ImageView) view.findViewById(R.id.category_picker_chevron);
+        progressBar = (ProgressBar) view.findViewById(R.id.category_picker_progress_bar);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -24,6 +27,8 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
                     listener.unselectParent();
                 } else {
                     listener.selectParent(getCategoryId());
+                    progressBar.setVisibility(View.VISIBLE);
+                    imageChevron.setVisibility(View.GONE);
                 }
             }
         });
@@ -31,6 +36,8 @@ class CategoryParentViewHolder extends CategoryPickerViewHolder  {
 
     public void renderData(CategoryViewModel categoryViewModel, boolean isSelected, int level) {
         super.renderData(categoryViewModel, isSelected, level);
+        progressBar.setVisibility(View.GONE);
+        imageChevron.setVisibility(View.VISIBLE);
         if (isSelected){
             setView(context.getResources().getColor(R.color.font_top_ads_green), context
                     .getResources()
