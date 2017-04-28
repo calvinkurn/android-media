@@ -212,6 +212,10 @@
             android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.view.activity.ProductDuplicateActivity"
+            android:label="@string/title_activity_duplicate_product"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".selling.SellingService"
