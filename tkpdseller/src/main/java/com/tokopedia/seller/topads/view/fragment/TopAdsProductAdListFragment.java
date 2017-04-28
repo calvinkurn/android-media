@@ -58,7 +58,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_product_title_promo_text));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_empty_text));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_text));
         return emptyGroupAdsDataBinder;
     }
 

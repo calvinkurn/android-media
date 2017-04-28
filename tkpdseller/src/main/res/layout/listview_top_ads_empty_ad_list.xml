@@ -34,7 +34,7 @@
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:maxLines="3"
-        tools:text="@string/top_ads_empty_group_promo_content_empty_text"/>
+        tools:text="@string/top_ads_empty_group_promo_content_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
