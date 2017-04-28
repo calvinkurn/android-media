@@ -435,16 +435,19 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        voucherDigitalState = null;
         voucherCartHolderView.setErrorVoucher(message);
     }
 
     @Override
     public void renderErrorHttpCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showSnackBarAlert(message);
     }
 
@@ -457,6 +460,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorTimeoutConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
