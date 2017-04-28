@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -27,11 +28,20 @@ class MyEtalaseViewHolder extends RecyclerView.ViewHolder {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                MyEtalaseViewModel viewModel = getEtalaseViewModel();
-                listener.selectEtalase(viewModel.getEtalaseId(), viewModel.getEtalaseName());
+                selectItem(listener);
             }
         });
+        etalaseRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectItem(listener);
+            }
+        });
+    }
+
+    private void selectItem(EtalasePickerAdapterListener listener) {
+        MyEtalaseViewModel viewModel = getEtalaseViewModel();
+        listener.selectEtalase(viewModel.getEtalaseId(), viewModel.getEtalaseName());
     }
 
     private MyEtalaseViewModel getEtalaseViewModel() {
