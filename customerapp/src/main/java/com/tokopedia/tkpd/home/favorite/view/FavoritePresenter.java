@@ -210,6 +210,16 @@ public class FavoritePresenter
         }
     }
 
+    private void returnPagingHandlerToPreviousPage() {
+        final int firstPage = 1;
+        int currentPage = pagingHandler.getPage();
+        if (currentPage <= firstPage) {
+            pagingHandler.resetPage();
+        } else {
+            pagingHandler.setPage(currentPage - 1);
+        }
+    }
+
     private class InitialDataSubscriber extends Subscriber<DataFavorite> {
 
         @Override
@@ -292,6 +302,7 @@ public class FavoritePresenter
         @Override
         public void onError(Throwable e) {
             e.printStackTrace();
+            returnPagingHandlerToPreviousPage();
             getView().showErrorLoadMore();
         }
 

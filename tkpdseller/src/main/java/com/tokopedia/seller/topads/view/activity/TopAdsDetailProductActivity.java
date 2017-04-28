@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.app.Fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
@@ -10,6 +11,8 @@ import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
+
+    public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +25,13 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        if(fragment == null){
+            fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
+        }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailProductFragment.createInstance(ad, adId), TopAdsDetailProductFragment.class.getSimpleName())
+                .replace(R.id.container, fragment,
+                        TAG)
                 .commit();
     }
 

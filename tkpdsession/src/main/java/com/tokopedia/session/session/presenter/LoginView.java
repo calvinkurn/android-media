@@ -54,4 +54,6 @@ public interface LoginView extends BaseView {
     void triggerSaveAccount();
 
     void setSmartLock(int rcRead);
+
+    void setSmartLock(int rcSaveSecurityQuestion, String username, String password);
 }

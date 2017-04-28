@@ -26,4 +26,6 @@ public interface PhoneVerificationFragmentView {
     String getOTPCode();
 
     void onErrorVerifyPhoneNumber(String errorMessage);
+
+    void setViewEnabled(boolean isEnabled);
 }
