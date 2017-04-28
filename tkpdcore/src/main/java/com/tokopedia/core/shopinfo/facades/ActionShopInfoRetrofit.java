@@ -2,6 +2,7 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -83,9 +84,14 @@ public class ActionShopInfoRetrofit {
                     if (!tkpdResponseResponse.body().isError()) {
                         onActionToggleFavListener.onSuccess();
                     } else {
-                        if (tkpdResponseResponse.body().isNullData())
+                        String errorMessage = tkpdResponseResponse.body().getErrorMessages().toString();
+                        if (!TextUtils.isEmpty(errorMessage)) {
+                            onActionToggleFavListener.onFailure(errorMessage);
+                        } else if (tkpdResponseResponse.body().isNullData()) {
                             onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_null_data));
-                        else onActionToggleFavListener.onFailure(tkpdResponseResponse.body().getErrorMessages().toString());
+                        } else {
+                            onActionToggleFavListener.onFailure(context.getString(R.string.default_request_error_unknown_short));
+                        }
                     }
                 else {
                     onResponseError(tkpdResponseResponse.code());

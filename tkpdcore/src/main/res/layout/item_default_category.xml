@@ -12,13 +12,15 @@
         android:orientation="horizontal"
         android:paddingLeft="@dimen/padding_vs"
         android:paddingRight="@dimen/padding_vs"
-        android:paddingTop="@dimen/padding_small"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/padding_vs">
 
         <TextView
             android:id="@id/categoryTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
@@ -28,6 +30,12 @@
             android:padding="@dimen/padding_vs"
             android:textColor="@color/tkpd_dark_gray"
             android:textSize="@dimen/textsize" />
+
+        <View
+            android:id="@id/separator"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
 
 
     </LinearLayout>

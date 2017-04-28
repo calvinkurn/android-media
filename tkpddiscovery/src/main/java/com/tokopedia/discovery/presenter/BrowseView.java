@@ -25,7 +25,7 @@ public interface BrowseView {
 
     boolean isFragmentCreated(String TAG);
 
-    BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly);
+    BrowseProductModel getDataForBrowseProduct();
     NetworkParam.Product getProductParam();
     Context getContext();
     boolean checkHasFilterAttrIsNull(int activeTab);
@@ -67,4 +67,5 @@ public interface BrowseView {
     void startShareActivity(ShareData shareData);
 
     String getShareUrl();
+    String getSource();
 }

@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
+import com.tokopedia.transaction.cart.interactor.exception.WrongEditCartException;
 import com.tokopedia.transaction.cart.listener.IShipmentCartView;
 import com.tokopedia.transaction.cart.model.calculateshipment.CalculateShipmentWrapper;
 import com.tokopedia.transaction.cart.model.calculateshipment.Shipment;
@@ -111,6 +112,8 @@ public class ShipmentCartPresenter implements IShipmentCartPresenter {
                 view.renderErrorEditShipment(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_SHORT);
             } else if (e instanceof SocketTimeoutException) {
                 view.renderErrorEditShipment(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT_SHORT);
+            } else if (e instanceof WrongEditCartException) {
+                view.renderEditShipmentErrorSnackbar(e.getMessage());
             } else {
                 view.renderErrorEditShipment(e.getMessage());
             }

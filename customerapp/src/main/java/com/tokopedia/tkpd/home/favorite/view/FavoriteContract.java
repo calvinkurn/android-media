@@ -8,7 +8,6 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopItem;
-import com.tokopedia.tkpd.home.favorite.view.viewmodel.TopAdsShopViewModel;
 
 import java.util.List;
 
@@ -19,8 +18,6 @@ import java.util.List;
 interface FavoriteContract {
 
     interface View extends CustomerView {
-
-        void addTopAdsShop(TopAdsShopViewModel shopViewModel);
 
         void refreshDataFavorite(List<Visitable> elementList);
 

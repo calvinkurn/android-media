@@ -21,7 +21,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.categoriesHades.SimpleCategory;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
@@ -87,6 +87,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     private static final String LAYOUT_GRID_BOX = "2";
     private static final String LAYOUT_LIST = "3";
     private static final String KEY_GTM = "GTMFilterData";
+    private static final String LABEL_TRACKING = "label";
 
     enum FDest {
         SORT, FILTER
@@ -146,7 +147,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
         }
         cacheGridType = new LocalCacheHandler(context, TkpdCache.DEFAULT_GRID_SETTINGS);
-        retrieveLastGridConfig(browseModel.getParentDepartement());
+        if (isFromCategory()) {
+            retrieveLastGridConfig(browseModel.getParentDepartement());
+        }
         if (SessionHandler.isV4Login(context)) {
             String userId = SessionHandler.getLoginID(context);
             browseModel.setUnique_id(AuthUtil.md5(userId));
@@ -293,19 +296,19 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         gridType = GRID_2;
                         gridIcon = R.drawable.ic_grid_default;
                         gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_GRID_DEFAULT);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_DEFAULT);
                         break;
                     case GRID_2:
                         gridType = GRID_3;
                         gridIcon = R.drawable.ic_grid_box;
                         gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_GRID_BOX);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_BOX);
                         break;
                     case GRID_3:
                         gridType = GRID_1;
                         gridIcon = R.drawable.ic_list;
                         gridTitleResId = R.string.list;
-                        UnifyTracking.eventDisplayCategory(LAYOUT_LIST);
+                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_LIST);
                         break;
                     default:
                         gridIcon = R.drawable.ic_grid_default;
@@ -314,7 +317,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
                 isCustomGridType = true;
 
-                saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+                if (isFromCategory()) {
+                    saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+                }
 
                 browseView.sendChangeGridBroadcast(gridType);
                 browseView.changeBottomBarGridIcon(gridIcon, gridTitleResId);
@@ -330,7 +335,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                             .build();
                     if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
                         shareData.setType(ShareData.CATEGORY_TYPE);
-                        shareData.setDescription(browseModel.getDepartmentId());
+                        shareData.setDescription(browseModel.getParentDepartement()+","
+                                +browseModel.getDepartmentId());
                     }
                     browseView.startShareActivity(shareData);
                 }
@@ -488,12 +494,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
             @Override
             public void onFailed(int type, Pair<String, ? extends ObjContainer> data) {
-                browseView.showEmptyState(new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        fetchCategoriesHeader(departementId);
-                    }
-                });
+                //only show ace products
             }
 
             @Override
@@ -502,9 +503,9 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                     case DiscoveryListener.CATEGORY_HEADER:
 
                         ObjContainer objContainer = data.getModel2();
-                        CategoriesHadesModel.CategoriesHadesContainer categoriesHadesContainer
-                                = (CategoriesHadesModel.CategoriesHadesContainer) objContainer;
-                        CategoriesHadesModel body = categoriesHadesContainer.body();
+                        CategoryHadesModel.CategoriesHadesContainer categoriesHadesContainer
+                                = (CategoryHadesModel.CategoriesHadesContainer) objContainer;
+                        CategoryHadesModel body = categoriesHadesContainer.body();
 
                         if (browseModel != null && body != null && body.getData() != null) {
                             browseModel.categoryHeader = body.getData();
@@ -516,11 +517,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             }
         });
         ((DiscoveryInteractorImpl) discoveryInteractor).setCompositeSubscription(compositeSubscription);
-        discoveryInteractor.getCategoryHeader(departementId);
+        discoveryInteractor.getCategoryHeader(departementId,categoryLevel.size()+1);
     }
 
     private void changeGridTypeIfNeeded(Integer viewType) {
-        if (isCustomGridType) {
+        if (!isFromCategory() || isCustomGridType) {
             return;
         }
 
@@ -551,6 +552,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
 
         browseView.sendChangeGridBroadcast(gridType);
         browseView.changeBottomBarGridIcon(gridIcon, gridTitleRes);
+    }
+
+    private boolean isFromCategory() {
+        return !TextUtils.isEmpty(browseModel.getParentDepartement())
+                && !("0").equals(browseModel.getParentDepartement());
     }
 
     @Override
@@ -651,8 +657,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onRenderUpperCategoryLevel(String departmentId, String name) {
-        if (departmentId != null && name != null) {
+    public void onRenderUpperCategoryLevel(String departmentId) {
+        if (departmentId != null) {
             browseModel.setDepartmentId(departmentId);
         }
     }
@@ -827,9 +833,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                         if (item.getString("key").equalsIgnoreCase(map.getKey())) {
                             if (TextUtils.isEmpty(item.getString("value")) ||
                                     item.getString("value").equalsIgnoreCase(map.getValue())) {
-                                UnifyTracking.eventDiscoveryFilter(item.getString("label"));
-                                if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                                    UnifyTracking.eventFilterCategory(item.getString("label"));
+                                UnifyTracking.eventDiscoveryFilter(item.getString(LABEL_TRACKING));
+                                if (browseModel.getSource().equals(BrowseProductRouter.
+                                        VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+                                    UnifyTracking.eventFilterCategory(browseModel.getParentDepartement(),
+                                            item.getString(LABEL_TRACKING));
                                 }
                             }
                             break;
@@ -861,9 +869,10 @@ public class BrowsePresenterImpl implements BrowsePresenter {
             for (int i = 0; i < dynamicSort.length(); i++) {
                 JSONObject item = (JSONObject) dynamicSort.get(i);
                 if (item.getString("value").equalsIgnoreCase(valueSort)) {
-                    UnifyTracking.eventDiscoverySort(item.getString("label"));
+                    UnifyTracking.eventDiscoverySort(item.getString(LABEL_TRACKING));
                     if (browseModel.getSource().equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
-                        UnifyTracking.eventSortCategory(item.getString("label"));
+                        UnifyTracking.eventSortCategory(browseModel.getParentDepartement(),
+                                item.getString(LABEL_TRACKING));
                     }
                     break;
                 }

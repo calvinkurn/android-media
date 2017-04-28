@@ -451,11 +451,7 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
     private static boolean checkFileSize(File imagePath) {
         int fileSize = Integer.parseInt(String.valueOf(imagePath.length() / 1024));
         Log.d(TAG, "File size" + fileSize);
-        if (fileSize < 10000) {
-            return true;
-        } else {
-            return false;
-        }
+        return fileSize < 10000;
     }
 
     @NonNull
@@ -2584,9 +2580,9 @@ public class AddProductFragment extends TkpdBaseV4Fragment implements AddProduct
 
     public void toggleWholeSale() {
         Pair<Boolean, String> verif = VerificationUtils.validatePrice(getActivity(), selectedCurrencyDesc, addProductPrice.getText().toString(), "checkwholesale");
+        addProductPrice.requestFocus();
         if (!verif.getModel1()) {
             addProductPriceAlert.setError(verif.getModel2());
-            addProductPrice.requestFocus();
         } else {
             toggleWholeSaleAfterVerify();
         }
