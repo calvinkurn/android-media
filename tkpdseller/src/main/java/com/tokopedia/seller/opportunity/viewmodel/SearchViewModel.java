@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by nisie on 4/26/17.
  */
 
-public class SearchViewModel implements Parcelable{
+public class SearchViewModel implements Parcelable {
     private String placeholder;
     private int isSearchable;
 
@@ -56,5 +56,9 @@ public class SearchViewModel implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(placeholder);
         dest.writeInt(isSearchable);
+    }
+
+    public boolean isSearchable() {
+        return isSearchable == 1;
     }
 }

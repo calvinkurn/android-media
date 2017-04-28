@@ -279,5 +279,37 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     }
 
+    @Override
+    public void onFilterSelected(int selectedFilterPosition, String selectedOption) {
+        CommonUtils.dumper("NISNIS isSelected " + selectedOption);
 
+        setSelected(selectedOption, listFilter.get(selectedFilterPosition).getListChild());
+        listFilter.get(selectedFilterPosition).setActive(checkIsActive(listFilter.get(selectedFilterPosition).getListChild()));
+        updateFilterTitleFragment();
+
+    }
+
+    private boolean checkIsActive(ArrayList<OptionViewModel> listOption) {
+        boolean isActive = false;
+        for (OptionViewModel optionViewModel : listOption) {
+            if (optionViewModel.getListChild().size() > 0
+                    && !optionViewModel.isExpanded()
+                    && checkIsActive(optionViewModel.getListChild())) {
+                isActive = true;
+            } else if (optionViewModel.isSelected()) {
+                isActive = true;
+            }
+        }
+        return isActive;
+    }
+
+    private void setSelected(String selectedOption, ArrayList<OptionViewModel> listOption) {
+        for (OptionViewModel optionViewModel : listOption) {
+            if (optionViewModel.getListChild().size() > 0 && !optionViewModel.isExpanded()) {
+                setSelected(selectedOption, optionViewModel.getListChild());
+            } else if (optionViewModel.getName().equals(selectedOption)) {
+                optionViewModel.setSelected(!optionViewModel.isSelected());
+            }
+        }
+    }
 }

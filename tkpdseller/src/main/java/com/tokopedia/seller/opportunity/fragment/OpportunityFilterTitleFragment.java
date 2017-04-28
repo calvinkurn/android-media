@@ -7,11 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.widgets.FilterView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterTitleAdapter;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
-import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 
 import java.util.ArrayList;
 
@@ -34,6 +34,9 @@ public class OpportunityFilterTitleFragment extends BasePresenterFragment
     public static OpportunityFilterTitleFragment createInstance(ArrayList<FilterViewModel> listTitle) {
         OpportunityFilterTitleFragment fragment = new OpportunityFilterTitleFragment();
         Bundle bundle = new Bundle();
+        for (FilterViewModel filterViewModel : listTitle) {
+            filterViewModel.setSelected(false);
+        }
         listTitle.get(0).setSelected(true);
         bundle.putParcelableArrayList(ARGS_LIST_FILTER, listTitle);
         fragment.setArguments(bundle);
@@ -84,7 +87,7 @@ public class OpportunityFilterTitleFragment extends BasePresenterFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_opportunity_filter;
+        return R.layout.fragment_opportunity_filter_title;
     }
 
     @Override

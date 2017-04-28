@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
@@ -24,11 +25,12 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int VIEW_PARENT = 100;
     private static final int VIEW_CHILD = 101;
 
-
     public interface CategoryListener {
         void onFilterSelected(int position, FilterViewModel filterViewModel);
 
         void onFilterExpanded(int position, FilterViewModel filterViewModel);
+
+        void onFilterSelected(int position, String optionViewModel);
     }
 
     public class ParentViewHolder extends RecyclerView.ViewHolder {
@@ -103,11 +105,10 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                filterViewModel.getListChild().get(position)
-                        .setSelected(!filterViewModel.getListChild().get(position).isSelected());
-                listener.onFilterSelected(position, filterViewModel);
+                listener.onFilterSelected(filterViewModel.getPosition(), filterViewModel.getListChild().get(position).getName());
             }
         });
+
     }
 
     private void bindParentViewHolder(ParentViewHolder holder, final int position) {
@@ -165,4 +166,5 @@ public class OpportunityFilterAdapter extends RecyclerView.Adapter<RecyclerView.
     public int getItemCount() {
         return filterViewModel.getListChild().size();
     }
+
 }

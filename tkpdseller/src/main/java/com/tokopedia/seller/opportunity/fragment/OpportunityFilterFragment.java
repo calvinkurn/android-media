@@ -5,13 +5,18 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.widgets.FilterView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityFilterAdapter;
 import com.tokopedia.seller.opportunity.viewmodel.FilterViewModel;
+import com.tokopedia.seller.opportunity.viewmodel.OptionViewModel;
+
+import java.util.ArrayList;
 
 /**
  * Created by nisie on 3/15/17.
@@ -25,6 +30,7 @@ public class OpportunityFilterFragment extends BasePresenterFragment
     RecyclerView categoryList;
     OpportunityFilterAdapter adapter;
     FilterViewModel filterViewModel;
+    SearchView searchView;
 
     public OpportunityFilterFragment() {
     }
@@ -44,11 +50,12 @@ public class OpportunityFilterFragment extends BasePresenterFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_opportunity_category;
+        return R.layout.fragment_opportunity_filter;
     }
 
     @Override
     protected void initView(View view) {
+        searchView = (SearchView) view.findViewById(R.id.search);
         categoryList = (RecyclerView) view.findViewById(R.id.list);
         categoryList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         adapter = OpportunityFilterAdapter.createInstance((OpportunityFilterActivity) getActivity());
@@ -57,7 +64,46 @@ public class OpportunityFilterFragment extends BasePresenterFragment
 
     @Override
     protected void setViewListener() {
+        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+
+                ArrayList<OptionViewModel> tempListOption = new ArrayList<OptionViewModel>();
+                tempListOption.addAll(searchFilter(newText, filterViewModel.getListChild()));
+
+                FilterViewModel tempViewModel = new FilterViewModel();
+                tempViewModel.setActive(filterViewModel.isActive());
+                tempViewModel.setListChild(tempListOption);
+                tempViewModel.setSelected(filterViewModel.isSelected());
+                tempViewModel.setName(filterViewModel.getName());
+                tempViewModel.setSearchViewModel(filterViewModel.getSearchViewModel());
+                tempViewModel.setPosition(filterViewModel.getPosition());
+                adapter.setData(tempViewModel);
+
+                return false;
+            }
+        });
+    }
+
+    private ArrayList<OptionViewModel> searchFilter(String newText, ArrayList<OptionViewModel> listFilter) {
+        ArrayList<OptionViewModel> newList = new ArrayList<>();
+        for (OptionViewModel viewModel : listFilter) {
+            if (viewModel.getName().contains(newText)
+                    && viewModel.getListChild().size() == 0) {
+                newList.add(viewModel);
+            }
+
+            if (viewModel.getListChild().size() > 0 && !viewModel.isExpanded()) {
+                newList.addAll(searchFilter(newText, viewModel.getListChild()));
+            }
+        }
+        return newList;
     }
 
     @Override
