@@ -21,7 +21,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         Bundle data = convertMap(remoteMessage);
-        CommonUtils.dumper(data.toString());
+        CommonUtils.dumper("FCM "+data.toString());
         IAppNotificationReceiver appNotificationReceiver = null;
         if (GlobalConfig.isSellerApp()) {
             appNotificationReceiver = SellerAppRouter.getAppNotificationReceiver();

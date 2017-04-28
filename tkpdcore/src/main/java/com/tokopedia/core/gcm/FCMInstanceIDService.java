@@ -36,6 +36,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
 
     @Override
     public void updateMoEngageToken(String token) {
+        CommonUtils.dumper("Moengage RefreshedToken: " + token);
         PushManager.getInstance().refreshToken(getApplicationContext(), token);
     }
 
