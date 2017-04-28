@@ -58,6 +58,7 @@ import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -466,11 +467,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void navigateToNextActivity(String depID, String title) {
-        BrowseProductActivity.moveTo(
+        IntermediaryActivity.moveTo(
                 getActivity(),
                 depID,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 title
         );
 
