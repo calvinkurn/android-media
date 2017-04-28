@@ -148,6 +148,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_RESOLUTION_CENTER_DETAIL = "get_resolution_center_detail_new.pl";
         public static final String PATH_GET_RESOLUTION_CENTER_SHOW_MORE = "get_resolution_center_show_more.pl";
         public static final String PATH_TRACK_SHIPPING_REF = "track_shipping_ref.pl";
+        public static final String PATH_TRACK_SHIPPING_REF_V2 = "v4/inbox-resolution-center/track_shipping_ref.pl";
 
         public static final String PATH_GET_INBOX_REVIEW = "get_inbox_review.pl";
 
@@ -380,6 +381,15 @@ public class TkpdBaseURL {
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_NEW = "reply_conversation_validation_new.pl";
         public static final String PATH_REPORT_REOLUTION = "report_resolution.pl";
         public static final String PATH_RESOLUTION_CENTER = "resolution-center.pl";
+        public static final String PATH_CANCEL_RESOLUTION_V2 = "v4/action/resolution-center/cancel_resolution.pl";
+        public static final String PATH_REPORT_RESOLUTION_V2 = "v4/action/resolution-center/report_resolution.pl";
+        public static final String PATH_FINISH_RES_RETURN_V2 = "v4/action/resolution-center/finish_resolution_retur.pl";
+        public static final String PATH_ACCEPT_ADMIN_RESOLUTION_V2 = "v4/action/resolution-center/accept_admin_resolution.pl";
+        public static final String PATH_ACCEPT_RESOLUTION_V2 = "v4/action/resolution-center/accept_resolution.pl";
+        public static final String PATH_INPUT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/input_address_resolution.pl";
+        public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
+        public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
+        public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
     }
 
     public static class Search {
@@ -495,6 +505,7 @@ public class TkpdBaseURL {
         public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
+        public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
 
@@ -689,5 +700,21 @@ public class TkpdBaseURL {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
         public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+    }
+
+    public static class ResCenterV2 {
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
+        public static final String BASE_INBOX_RESOLUTION = "inbox";
+        public static final String BASE_DETAIL_RESOLUTION = "detail/{resolution_id}";
+
+        public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
+        public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
+        public static final String GET_RESOLUTION_CONVERSATION = BASE_DETAIL_RESOLUTION + "/conversation";
+        public static final String GET_RESOLUTION_CONVERSATION_MORE = BASE_DETAIL_RESOLUTION + "/conversation/more";
+        public static final String GET_RESOLUTION_HISTORY_AWB = BASE_DETAIL_RESOLUTION + "/history/awb";
+        public static final String GET_RESOLUTION_HISTORY_ACTION = BASE_DETAIL_RESOLUTION + "/history/action";
+        public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
+        public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
+        public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
     }
 }
