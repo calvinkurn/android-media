@@ -26,15 +26,19 @@ public class TkpdDigitalResponse {
     private static final String TAG = TkpdDigitalResponse.class.getSimpleName();
 
     private static final String KEY_DATA = "data";
+    private static final String KEY_INCLUDED = "included";
     private static final String KEY_ERROR = "errors";
     private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
 
 
     private JsonElement jsonElementData;
+    private JsonElement jsonElementIncluded;
     private Object objData;
+    private Object objIncluded;
     private String message;
     private String strResponse;
     private String strData;
+    private String strIncluded;
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static TkpdDigitalResponse factory(String strResponse) throws IOException {
@@ -43,6 +47,7 @@ public class TkpdDigitalResponse {
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
         String strData;
+        String strIncluded;
         if (!jsonResponse.has(KEY_DATA) || jsonResponse.get(KEY_DATA).isJsonNull()) {
             if (jsonResponse.has(KEY_ERROR)) {
                 try {
@@ -65,9 +70,21 @@ public class TkpdDigitalResponse {
         } else {
             throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         }
+
+        if (!jsonResponse.has(KEY_INCLUDED) || jsonResponse.get(KEY_INCLUDED).isJsonNull()) {
+            strIncluded = null;
+        } else if (jsonResponse.has(KEY_INCLUDED) && jsonResponse.get(KEY_INCLUDED).isJsonObject()) {
+            strIncluded = jsonResponse.get(KEY_INCLUDED).getAsJsonObject().toString();
+        } else if (jsonResponse.has(KEY_INCLUDED) && jsonResponse.get(KEY_INCLUDED).isJsonArray()) {
+            strIncluded = jsonResponse.get(KEY_INCLUDED).getAsJsonArray().toString();
+        } else {
+            strIncluded = null;
+        }
         tkpdDigitalResponse.setJsonElementData(jsonResponse.get(KEY_DATA));
+        tkpdDigitalResponse.setJsonElementIncluded(jsonResponse.get(KEY_INCLUDED));
         tkpdDigitalResponse.setMessage("");
         tkpdDigitalResponse.setStrData(strData);
+        tkpdDigitalResponse.setStrIncluded(strIncluded);
         tkpdDigitalResponse.setStrResponse(strResponse);
         return tkpdDigitalResponse;
     }
@@ -104,6 +121,30 @@ public class TkpdDigitalResponse {
         this.strData = strData;
     }
 
+    public Object getObjIncluded() {
+        return objIncluded;
+    }
+
+    public void setObjIncluded(Object objIncluded) {
+        this.objIncluded = objIncluded;
+    }
+
+    public String getStrIncluded() {
+        return strIncluded;
+    }
+
+    private void setStrIncluded(String strIncluded) {
+        this.strIncluded = strIncluded;
+    }
+
+    public JsonElement getJsonElementIncluded() {
+        return jsonElementIncluded;
+    }
+
+    private void setJsonElementIncluded(JsonElement jsonElementIncluded) {
+        this.jsonElementIncluded = jsonElementIncluded;
+    }
+
     @SuppressWarnings("unchecked")
     public <T> T convertDataObj(Class<T> clazz) {
         if (objData == null) {
@@ -131,6 +172,38 @@ public class TkpdDigitalResponse {
             }
         } else {
             return (List<T>) objData;
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public <T> T convertIncludedObj(Class<T> clazz) {
+        if (objIncluded == null) {
+            try {
+                this.objIncluded = gson.fromJson(strIncluded, clazz);
+                return (T) objIncluded;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (T) objIncluded;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> convertIncludedList(Class<T[]> clazz) {
+        if (objIncluded == null) {
+            try {
+                this.objIncluded = Arrays.asList((T[])
+                        (this.objIncluded = gson.fromJson(strIncluded, clazz)));
+                return (List<T>) objIncluded;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (List<T>) objIncluded;
         }
     }
 
