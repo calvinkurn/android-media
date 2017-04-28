@@ -46,5 +46,5 @@ public interface BrowsePresenter {
 
     BrowseProductRouter.GridType getGridType();
 
-    void onRenderUpperCategoryLevel(String departmentId, String name);
+    void onRenderUpperCategoryLevel(String departmentId);
 }
