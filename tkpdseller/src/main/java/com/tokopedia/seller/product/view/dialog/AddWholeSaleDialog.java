@@ -17,6 +17,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
+import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
+import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
 /**
@@ -45,6 +47,8 @@ public class AddWholeSaleDialog extends DialogFragment {
     private WholesaleModel previousValue;
     private boolean isErrorReturn;
     private int minQuantityRaw = 0;
+    private CurrencyIdrTextWatcher idrTextWatcher;
+    private CurrencyUsdTextWatcher usdTextWatcher;
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
@@ -150,30 +154,68 @@ public class AddWholeSaleDialog extends DialogFragment {
         });
         maxWholeSale.getEditText().setText(Integer.toString(minQuantityRaw + 1));
 
-        wholesalePrice.addTextChangedListener(new NumberTextWatcher(wholesalePrice.getEditText()) {
+        double idrBaseMinimumValue = 0;
+        if (previousValue == null) {
+            idrBaseMinimumValue = baseValue.getQtyPrice() - 1;
+        } else {
+            idrBaseMinimumValue = previousValue.getQtyPrice() - 1;
+        }
+
+        idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText(),
+                Double.toString(idrBaseMinimumValue)) {
             @Override
             public void onNumberChanged(float currencyValue) {
-                super.onNumberChanged(currencyValue);
-                if (currencyValue >= baseValue.getQtyPrice()) {
-                    wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_fix_price));
-                    isErrorReturn = true;
-                    return;
-                }
-
-                if (previousValue != null) {
-                    if (currencyValue >= previousValue.getQtyPrice()) {
-                        wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_previous_wholesale_price));
-                        isErrorReturn = true;
-                        return;
-                    }
-                }
-
-                isErrorReturn = false;
-                wholesalePrice.setError(null);
+                validatePrice(currencyValue);
             }
-        });
+        };
+
+        double usdBaseMinimumValue = 0;
+        if (previousValue == null) {
+            usdBaseMinimumValue = baseValue.getQtyPrice() - 0.01;
+        } else {
+            usdBaseMinimumValue = previousValue.getQtyPrice() - 0.01;
+        }
+        usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText(),
+                Double.toString(usdBaseMinimumValue)) {
+            @Override
+            public void onNumberChanged(float currencyValue) {
+                validatePrice(currencyValue);
+            }
+        };
+
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                wholesalePrice.addTextChangedListener(usdTextWatcher);
+                wholesalePrice.getEditText().setText(Double.toString(usdBaseMinimumValue));
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                wholesalePrice.addTextChangedListener(idrTextWatcher);
+                wholesalePrice.getEditText().setText(Double.toString(idrBaseMinimumValue));
+                break;
+
+        }
 
         return view;
+    }
+
+    protected void validatePrice(float currencyValue) {
+        if (currencyValue >= baseValue.getQtyPrice()) {
+            wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_fix_price));
+            isErrorReturn = true;
+            return;
+        }
+
+        if (previousValue != null) {
+            if (currencyValue >= previousValue.getQtyPrice()) {
+                wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_previous_wholesale_price));
+                isErrorReturn = true;
+                return;
+            }
+        }
+
+        isErrorReturn = false;
+        wholesalePrice.setError(null);
     }
 
     @Override
