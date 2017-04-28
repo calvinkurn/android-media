@@ -30,6 +30,7 @@ public class LabelView extends FrameLayout {
     private int titleTextStyleValue;
     private boolean contentSmall;
     private boolean showArrow;
+    private int maxLines;
 
     public LabelView(Context context) {
         super(context);
@@ -57,6 +58,7 @@ public class LabelView extends FrameLayout {
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
             contentSmall = styledAttributes.getBoolean(R.styleable.LabelView_content_small, false);
             showArrow = styledAttributes.getBoolean(R.styleable.LabelView_label_show_arrow, false);
+            maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
         } finally {
             styledAttributes.recycle();
         }
@@ -69,6 +71,7 @@ public class LabelView extends FrameLayout {
         contentTextView.setText(valueText);
         contentTextView.setTextColor(colorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
+        contentTextView.setMaxLines(maxLines);
         titleTextView.setTypeface(null, titleTextStyleValue);
         if(contentSmall){
             setContentSmall();
