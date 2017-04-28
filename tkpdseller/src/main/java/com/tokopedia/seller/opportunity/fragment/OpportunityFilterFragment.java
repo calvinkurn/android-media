@@ -73,18 +73,20 @@ public class OpportunityFilterFragment extends BasePresenterFragment
             @Override
             public boolean onQueryTextChange(String newText) {
 
-
-                ArrayList<OptionViewModel> tempListOption = new ArrayList<OptionViewModel>();
-                tempListOption.addAll(searchFilter(newText, filterViewModel.getListChild()));
-
-                FilterViewModel tempViewModel = new FilterViewModel();
-                tempViewModel.setActive(filterViewModel.isActive());
-                tempViewModel.setListChild(tempListOption);
-                tempViewModel.setSelected(filterViewModel.isSelected());
-                tempViewModel.setName(filterViewModel.getName());
-                tempViewModel.setSearchViewModel(filterViewModel.getSearchViewModel());
-                tempViewModel.setPosition(filterViewModel.getPosition());
-                adapter.setData(tempViewModel);
+                if (newText.length() > 0) {
+                    ArrayList<OptionViewModel> tempListOption = new ArrayList<OptionViewModel>();
+                    tempListOption.addAll(searchFilter(newText, filterViewModel.getListChild()));
+                    FilterViewModel tempViewModel = new FilterViewModel();
+                    tempViewModel.setActive(filterViewModel.isActive());
+                    tempViewModel.setListChild(tempListOption);
+                    tempViewModel.setSelected(filterViewModel.isSelected());
+                    tempViewModel.setName(filterViewModel.getName());
+                    tempViewModel.setSearchViewModel(filterViewModel.getSearchViewModel());
+                    tempViewModel.setPosition(filterViewModel.getPosition());
+                    adapter.setData(tempViewModel);
+                } else {
+                    adapter.setData(filterViewModel);
+                }
 
                 return false;
             }
@@ -169,5 +171,7 @@ public class OpportunityFilterFragment extends BasePresenterFragment
             adapter.setData(viewModel);
             adapter.notifyDataSetChanged();
         }
+        if (searchView != null)
+            searchView.setQuery("", true);
     }
 }
