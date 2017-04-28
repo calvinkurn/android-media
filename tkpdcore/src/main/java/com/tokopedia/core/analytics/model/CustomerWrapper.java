@@ -13,6 +13,13 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String mFullName;
     private String mEmailAddress;
     private String mMethod;
+    private String phoneNumber;
+    private boolean isGoldMerchant;
+    private boolean isSeller;
+    private String shopId;
+    private String shopName;
+    private String dateOfBirth;
+
     private Map<String, String> mAttr;
 
     public CustomerWrapper() {
@@ -29,6 +36,9 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         mAttr = builder.mAttr;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
     public String getCustomerId() {
         return this.mCustomerId;
@@ -55,9 +65,53 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         return null;
     }
 
+    public boolean isGoldMerchant() {
+        return isGoldMerchant;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setGoldMerchant(boolean goldMerchant) {
+        isGoldMerchant = goldMerchant;
+    }
+
+    public boolean isSeller() {
+        return isSeller;
+    }
+
+    public void setSeller(boolean seller) {
+        isSeller = seller;
+    }
+
     @Override
     public void setName(String name) {
 
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -130,6 +184,12 @@ public class CustomerWrapper extends BaseAnalyticsModel {
                 ", mFullName='" + mFullName + '\'' +
                 ", mEmailAddress='" + mEmailAddress + '\'' +
                 ", mMethod='" + mMethod + '\'' +
+                ", phonenumber='" + phoneNumber + '\'' +
+                ", isgoldmerch='" + isGoldMerchant + '\'' +
+                ", isseller='" + isSeller + '\'' +
+                ", shopId='" + shopId + '\'' +
+                ", shopName='" + shopName + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", mAttr=" + mAttr.toString() +
                 '}';
     }
@@ -141,9 +201,64 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String mFullName;
         private String mEmailAddress;
         private String mMethod;
+        private String phoneNumber;
+        private boolean isGoldMerchant;
+        private boolean isSeller;
+        private String shopId;
+        private String shopName;
+        private String dateOfBirth;
+
         private Map<String, String> mAttr;
 
         public Builder() {
+        }
+
+        public void setShopId(String shopId) {
+            this.shopId = shopId;
+        }
+
+        public String getShopId() {
+            return shopId;
+        }
+
+        public void setShopName(String shopName) {
+            this.shopName = shopName;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public String getDateOfBirth() {
+            return dateOfBirth;
+        }
+
+        public void setDateOfBirth(String dateOfBirth) {
+            this.dateOfBirth = dateOfBirth;
+        }
+
+        public boolean isGoldMerchant() {
+            return isGoldMerchant;
+        }
+
+        public void setGoldMerchant(boolean goldMerchant) {
+            isGoldMerchant = goldMerchant;
+        }
+
+        public boolean isSeller() {
+            return isSeller;
+        }
+
+        public void setSeller(boolean seller) {
+            isSeller = seller;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
         }
 
         public CustomerWrapper.Builder setCustomerId(String customerId) {
