@@ -39,6 +39,7 @@ public class UploadProductInputViewModel {
     @ProductStatus
     private int productStatus;
     private String productId;
+    private int productNameEditable;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -248,5 +249,13 @@ public class UploadProductInputViewModel {
 
     public void setProductStatus(@ProductStatus int productStatus) {
         this.productStatus = productStatus;
+    }
+
+    public void setProductNameEditable(int productNameEditable) {
+        this.productNameEditable = productNameEditable;
+    }
+
+    public int getProductNameEditable() {
+        return productNameEditable;
     }
 }
