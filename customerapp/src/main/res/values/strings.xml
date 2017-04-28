@@ -14,4 +14,6 @@
 
     <!--favorite page-->
     <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="msg_fav_shop_success">Sukses memfavoritkan toko</string>
+    <string name="msg_fav_shop_failed">Gagal memfavoritkan toko silahkan coba lagi</string>
 </resources>

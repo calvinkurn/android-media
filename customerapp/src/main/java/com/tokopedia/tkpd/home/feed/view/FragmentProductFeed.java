@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.google.gson.Gson;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
@@ -44,18 +42,16 @@ import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
+import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.feed.di.component.DaggerDataFeedComponent;
 import com.tokopedia.tkpd.home.util.DefaultRetryListener;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.GlobalConstant;
-import com.tokopedia.topads.sdk.base.TKPDMapParam;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.network.service.AddFavoriteShopService;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
@@ -412,14 +408,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void onAddFavorite(Data dataShop) {
-        TKPDMapParam<String, String> param = new TKPDMapParam<>();
         Shop shop = dataShop.getShop();
-        Log.d(TAG, "onAddFavorite() called with: shop = [" + new Gson().toJson(shop) + "]");
-
-        param.put(GlobalConstant.KEY_USER_ID, SessionHandler.getLoginID(getContext()));
-        param.put(GlobalConstant.KEY_SHOP_ID, shop.getId());
-        param.put(GlobalConstant.KEY_AD_KEY, dataShop.getAdRefKey());
-
         Intent intent = new Intent(getActivity(), AddFavoriteShopService.class);
         intent.putExtra(
                 AddFavoriteShopService.EXTRAS_SESSION_ID, SessionHandler.getLoginID(getContext()));

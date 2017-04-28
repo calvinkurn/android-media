@@ -144,7 +144,7 @@
         <activity android:name=".truecaller.TruecallerActivity"/>
 
         <service
-            android:name="com.tokopedia.topads.sdk.network.service.AddFavoriteShopService"
+            android:name=".home.feed.data.source.cloud.AddFavoriteShopService"
             android:exported="false" />
     </application>
 

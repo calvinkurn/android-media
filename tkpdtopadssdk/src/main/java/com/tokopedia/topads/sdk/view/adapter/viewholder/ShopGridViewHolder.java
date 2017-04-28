@@ -60,6 +60,8 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
         itemView.setOnClickListener(this);
+        favBtn.setSelected(false);
+        favBtn.setClickable(true);
         favBtn.setOnClickListener(this);
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(shopListImage);
@@ -68,9 +70,11 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(itemClickListener!=null) {
+        if (itemClickListener != null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(getAdapterPosition(), data);
+                v.setSelected(true);
+                v.setClickable(false);
             } else {
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }
@@ -81,10 +85,10 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
     public void bind(ShopGridViewModel element) {
         data = element.getData();
         Shop shop = data.getShop();
-        if(shop!=null){
+        if (shop != null) {
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
                     shopImage);
-            if(shop.getImageProduct()!=null){
+            if (shop.getImageProduct() != null) {
                 ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader, shop.getImageProduct(), this);
                 shopListImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                 shopListImage.setHasFixedSize(true);
@@ -99,9 +103,9 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
                 shopSubtitle.setText(Html.fromHtml(shop.getTagline()));
             }
 
-            if(shop.isGoldShopBadge()){
+            if (shop.isGoldShopBadge()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
-            } else if(shop.isShop_is_official()) {
+            } else if (shop.isShop_is_official()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
             } else {
                 shopTitle.setText(title);
@@ -109,8 +113,8 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         }
     }
 
-    private Spanned spannedBadgeString(Spanned text, int drawable){
-        SpannableString spannableString = new SpannableString("  "+text);
+    private Spanned spannedBadgeString(Spanned text, int drawable) {
+        SpannableString spannableString = new SpannableString("  " + text);
         Drawable image;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image = context.getResources().getDrawable(drawable, null);
