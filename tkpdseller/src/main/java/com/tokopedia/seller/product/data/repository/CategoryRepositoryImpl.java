@@ -41,7 +41,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Observable<List<CategoryDomainModel>> fetchCategoryLevelOne(long categoryId) {
+    public Observable<List<CategoryDomainModel>> fetchCategoryWithParent(long categoryId) {
         return fetchCategoryDataSource.fetchCategoryLevelOne(categoryId);
     }
 

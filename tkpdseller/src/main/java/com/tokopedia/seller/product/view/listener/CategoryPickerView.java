@@ -17,7 +17,5 @@ public interface CategoryPickerView extends CustomerView {
 
     void renderCategory(List<CategoryViewModel> map);
 
-    void onSuccessFetchAllCategoryData();
-
     void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels);
 }

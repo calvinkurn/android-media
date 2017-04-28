@@ -102,7 +102,11 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     }
 
     private void initVar() {
-        presenter.fetchAllCategoryData();
+        if (selectedCategoryId == INIT_UNSELECTED){
+            presenter.fetchCategoryLevelOne();
+        } else {
+            presenter.fetchCategoryFromSelected(selectedCategoryId);
+        }
     }
 
     @Override
@@ -118,15 +122,6 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void renderCategory(List<CategoryViewModel> listCategory) {
         adapter.addLevelItem(listCategory);
-    }
-
-    @Override
-    public void onSuccessFetchAllCategoryData() {
-        if (selectedCategoryId == INIT_UNSELECTED){
-            presenter.fetchCategoryLevelOne();
-        } else {
-            presenter.fetchCategoryFromSelected(selectedCategoryId);
-        }
     }
 
     @Override
