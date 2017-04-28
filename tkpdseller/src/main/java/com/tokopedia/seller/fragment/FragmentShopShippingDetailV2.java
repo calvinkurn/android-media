@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -561,6 +562,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     private void finishShipping(boolean isAfterSaveInstance) {
         cancelButton.setVisibility(View.GONE);
         confirmButton.setText(getActivity().getString(R.string.title_order_processed));
+        confirmButton.setBackgroundResource(com.tokopedia.seller.R.drawable.button_finish_disable);
+        confirmButton.setTextColor(ContextCompat.getColor(getActivity(), com.tokopedia.seller.R.color.black_twenty_five_percent));
         confirmButton.setOnClickListener(null);
         referenceNumber.setClickable(false);
         referenceNumber.setFocusable(false);

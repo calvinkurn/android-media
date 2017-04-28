@@ -454,6 +454,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     rechargeEditText.setEmptyString();
                     selectedOperator = operatorList.get(i);
+                    setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                     selectedOperatorId = Integer.toString(selectedOperator.operatorId);
                     if (!category.getAttributes().getClientNumber().getIsShown()) {
                         setUpForNotUsingTextEdit();
@@ -527,6 +528,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     @Override
     public void setOperatorView(RechargeOperatorModel operator) {
         try {
+            selectedOperator = operator;
             this.minLengthDefaultOperator = operator.minimumLength;
             this.rechargeEditText.getAutoCompleteTextView().setFilters(
                     new InputFilter[]{new InputFilter.LengthFilter(operator.maximumLength)}
@@ -623,6 +625,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
     }
 
+    private void setInputTypeEditTextRecharge(boolean allowAlphanumeric) {
+        if (allowAlphanumeric) {
+            rechargeEditText.setInputTypeText();
+        } else {
+            rechargeEditText.setInputTypeNumber();
+        }
+    }
+
     private void setUpForNotUsingTextEdit() {
         tlpLabelTextView.setVisibility(View.GONE);
         rechargeEditText.setVisibility(View.GONE);
@@ -650,6 +660,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
         radGroup.check(radGroup.getChildAt(0).getId());
         selectedOperator = operators.get(radGroup.getChildAt(0).getId());
+        setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
         checkRadioButtonBasedOnLastOrder(operators, radGroup);
         selectedOperatorId = Integer.toString(selectedOperator.operatorId);
         minLengthDefaultOperator = selectedOperator.minimumLength;
@@ -660,6 +671,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 rechargeEditText.setEmptyString();
                 selectedProduct = null;
                 selectedOperator = operators.get(i);
+                setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                 selectedOperatorId = Integer.toString(operators.get(i).operatorId);
                 minLengthDefaultOperator = selectedOperator.minimumLength;
                 rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
@@ -711,13 +723,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     hideFormAndShowImageOperator();
                 }
             }
-        } else {
-            hideFormAndImageOperator();
         }
     }
 
     private void setPhoneBookVisibility() {
-
         if (category != null && category.getAttributes() != null) {
             CategoryAttributes categoryAttributes = category.getAttributes();
             if (categoryAttributes.getUsePhonebook() && rechargeEditText != null) {
@@ -752,7 +761,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
         } else {
             hideKeyboard();
-            hideFormAndImageOperator();
         }
     }
 

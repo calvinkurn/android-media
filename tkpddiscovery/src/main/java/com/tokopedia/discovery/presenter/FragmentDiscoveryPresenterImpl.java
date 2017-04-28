@@ -187,7 +187,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         switch (TAG) {
             case ProductFragment.TAG:
-                if (view.setupRecyclerView()) {
+                if ( !isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
                         browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 

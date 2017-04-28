@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.app.Fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
@@ -11,6 +12,8 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDetailShopFragment;
 
 public class TopAdsDetailShopActivity extends TActivity {
 
+    public static final String TAG = TopAdsDetailShopFragment.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,8 +24,13 @@ public class TopAdsDetailShopActivity extends TActivity {
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
+
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        if(fragment == null){
+            fragment = TopAdsDetailShopFragment.createInstance(ad, adId);
+        }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailShopFragment.createInstance(ad, adId), TopAdsDetailProductFragment.class.getSimpleName())
+                .replace(R.id.container, fragment, TAG)
                 .commit();
     }
 
