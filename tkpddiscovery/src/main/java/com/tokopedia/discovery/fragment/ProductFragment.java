@@ -390,7 +390,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
                     presenter.loadMore(getActivity());
                 }
-                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()){
+                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
+                        && productAdapter.getPagingHandlerModel() != null
+                        && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()){
                     ((BrowseProductActivity) getActivity()).showBottomBar();
                 }
             }
