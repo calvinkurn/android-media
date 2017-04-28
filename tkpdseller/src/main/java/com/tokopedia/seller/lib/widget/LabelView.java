@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -66,7 +67,7 @@ public class LabelView extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         titleTextView.setText(titleText);
-        contentTextView.setText(valueText);
+        setContent(valueText);
         contentTextView.setTextColor(colorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
         titleTextView.setTypeface(null, titleTextStyleValue);
@@ -79,7 +80,7 @@ public class LabelView extends FrameLayout {
     }
 
     public void resetContentText() {
-        contentTextView.setText(valueText);
+        setContent(valueText);
         setVisibleArrow(showArrow);
         invalidate();
         requestLayout();
@@ -98,7 +99,11 @@ public class LabelView extends FrameLayout {
     }
 
     public void setContent(String textValue) {
-        contentTextView.setText(textValue);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            contentTextView.setText(Html.fromHtml(textValue,Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            contentTextView.setText(Html.fromHtml(textValue));
+        }
         invalidate();
         requestLayout();
     }
