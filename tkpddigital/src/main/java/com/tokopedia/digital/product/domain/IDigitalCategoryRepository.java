@@ -1,7 +1,10 @@
 package com.tokopedia.digital.product.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.product.model.BannerData;
+import com.tokopedia.digital.product.model.CategoryData;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -10,5 +13,11 @@ import rx.Observable;
  */
 
 public interface IDigitalCategoryRepository {
-    Observable<ProductDigitalData> getCategoryAndBanner(TKPDMapParam<String, String> param);
+    Observable<CategoryData> getCategory(
+            String categoryId, TKPDMapParam<String, String> param
+    );
+
+    Observable<List<BannerData>> getBanner(
+            TKPDMapParam<String, String> param
+    );
 }

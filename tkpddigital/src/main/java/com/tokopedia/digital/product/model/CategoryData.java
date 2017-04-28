@@ -5,4 +5,5 @@ package com.tokopedia.digital.product.model;
  */
 
 public class CategoryData {
+
 }
