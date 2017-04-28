@@ -86,11 +86,11 @@
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
             app:cardCornerRadius="0dip"
             app:cardElevation="0dip"
-            app:contentPadding="5dp">
+            app:contentPadding="@dimen/padding_vs">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="2dp">
+                    android:padding="@dimen/margin_vvvs">
 
                     <TextView
                         android:id="@id/tv_title"
@@ -131,8 +131,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/rl_title_layout"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
                     android:layout_centerInParent="true"
                     android:nestedScrollingEnabled="false"
                     android:scrollbars="none" />
@@ -143,8 +143,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/rv_brands_list"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_small"
                     android:clickable="true"
                     android:drawableRight="@drawable/ic_chevron_right"
                     android:text="@string/see_all"

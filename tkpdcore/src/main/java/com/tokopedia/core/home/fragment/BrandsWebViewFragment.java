@@ -96,7 +96,6 @@ public class BrandsWebViewFragment extends Fragment {
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            CommonUtils.dumper("BrandsWebView " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
             progressBar.setVisibility(View.GONE);
         }
@@ -118,7 +117,6 @@ public class BrandsWebViewFragment extends Fragment {
         webview.setWebChromeClient(new BrandsWebViewFragment.MyWebViewClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            CommonUtils.dumper("webviewconf debugging = true");
         } else {
             webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
