@@ -29,6 +29,8 @@ public class DecimalInputView extends FrameLayout {
     private String valueText;
     private boolean enabled;
 
+    private TextWatcher currentTextWatcher;
+
     public DecimalInputView(Context context) {
         super(context);
         init();
@@ -74,7 +76,7 @@ public class DecimalInputView extends FrameLayout {
         View view = inflate(getContext(), R.layout.widget_decimal_input_view, this);
         textInputLayout = (TextInputLayout) view.findViewById(R.id.text_input_layout);
         editText = (EditText) view.findViewById(R.id.edit_text);
-        addTextChangedListener(new NumberTextWatcher(editText, DEFAULT_VALUE));
+        addTextChangedListener(currentTextWatcher = new NumberTextWatcher(editText, DEFAULT_VALUE));
     }
 
     @Override
@@ -97,11 +99,18 @@ public class DecimalInputView extends FrameLayout {
 
     public void addTextChangedListener(TextWatcher watcher) {
         if (watcher != null) {
+            if (currentTextWatcher!= null) {
+                editText.removeTextChangedListener(currentTextWatcher);
+            }
+            currentTextWatcher = watcher;
             editText.addTextChangedListener(watcher);
         }
     }
 
     public void removeTextChangedListener(TextWatcher watcher) {
+        if (watcher == currentTextWatcher) {
+            currentTextWatcher = null;
+        }
         editText.removeTextChangedListener(watcher);
     }
 
