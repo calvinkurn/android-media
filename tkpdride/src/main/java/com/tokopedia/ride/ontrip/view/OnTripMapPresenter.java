@@ -144,8 +144,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         getView().showFailedRideRequestMessage(e.getMessage());
                         getView().failedToRequestRide(e.getMessage());
                     }
-                    getView().hideLoadingWaitingResponse();
-                    getView().hideRideRequestStatus();
+                    ///getView().hideLoadingWaitingResponse();
+                    //getView().hideRideRequestStatus();
                 } else if (e instanceof InvalidFareIdHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));

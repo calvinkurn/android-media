@@ -8,6 +8,7 @@ import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.exception.InvalidFareIdHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -44,7 +45,21 @@ public class RideInterceptor extends TkpdBaseInterceptor {
             JSONObject jsonResponse = new JSONObject(bodyResponse);
             String JSON_ERROR_KEY = "message_error";
             if (jsonResponse.has(JSON_ERROR_KEY)) {
-                handleError(jsonResponse.getString(JSON_ERROR_KEY));
+                JSONArray messageErrorArray = jsonResponse.optJSONArray(JSON_ERROR_KEY);
+                if (messageErrorArray != null) {
+                    String message = "";
+                    for (int index = 0; index < messageErrorArray.length(); index++) {
+                        if (index > 0) {
+                            message += ", ";
+                        }
+
+                        message = message + messageErrorArray.getString(index);
+                    }
+                    handleError(message);
+
+                } else {
+                    handleError(jsonResponse.getString(JSON_ERROR_KEY));
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,7 +137,22 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                         JSONObject jsonResponse = new JSONObject(bodyResponse);
                         String JSON_ERROR_KEY = "message_error";
                         if (jsonResponse.has(JSON_ERROR_KEY)) {
-                            handleError(jsonResponse.getString(JSON_ERROR_KEY));
+
+                            JSONArray messageErrorArray = jsonResponse.optJSONArray(JSON_ERROR_KEY);
+                            if (messageErrorArray != null) {
+                                String message = "";
+                                for (int index = 0; index < messageErrorArray.length(); index++) {
+                                    if (index > 0) {
+                                        message += ", ";
+                                    }
+
+                                    message = message + messageErrorArray.getString(index);
+                                }
+                                handleError(message);
+
+                            } else {
+                                handleError(jsonResponse.getString(JSON_ERROR_KEY));
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
