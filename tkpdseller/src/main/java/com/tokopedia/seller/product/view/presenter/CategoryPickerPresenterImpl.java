@@ -7,6 +7,7 @@ import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 import com.tokopedia.seller.product.domain.model.CategoryLevelDomainModel;
 import com.tokopedia.seller.product.view.mapper.CategoryViewMapper;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
+import com.tokopedia.seller.product.view.model.CategoryViewModel;
 
 import java.util.List;
 
@@ -30,8 +31,9 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     @Override
     public void fetchCategoryLevelOne() {
         checkViewAttached();
+        getView().showLoadingDialog();
         RequestParams requestParam = FetchCategoryUseCaseChildUseCase.generateLevelOne();
-        fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryChildSubscriber());
+        fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryParentSubscriber());
     }
 
     @Override
@@ -90,6 +92,27 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
             checkViewAttached();
             List<CategoryLevelViewModel> categoryLevelViewModels = CategoryViewMapper.mapLevel(categoryLevelDomainModels);
             getView().renderCategoryFromSelected(categoryLevelViewModels);
+        }
+    }
+
+    private class FetchCategoryParentSubscriber extends Subscriber<List<CategoryDomainModel>> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            checkViewAttached();
+            getView().dismissLoadingDialog();
+            getView().showRetryEmpty();
+        }
+
+        @Override
+        public void onNext(List<CategoryDomainModel> domainModels) {
+            getView().dismissLoadingDialog();
+            List<CategoryViewModel> map = CategoryViewMapper.mapList(domainModels);
+            getView().renderCategory(map);
         }
     }
 }

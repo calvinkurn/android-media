@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
 import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
@@ -98,6 +99,12 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryPickerLevelAdapter(this);
+        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                initVar();
+            }
+        });
         categoryRecyclerView.setAdapter(adapter);
     }
 
@@ -127,6 +134,11 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels) {
         adapter.render(categoryLevelDomainModels);
+    }
+
+    @Override
+    public void showRetryEmpty() {
+        adapter.showRetryFull(true);
     }
 
     @Override
