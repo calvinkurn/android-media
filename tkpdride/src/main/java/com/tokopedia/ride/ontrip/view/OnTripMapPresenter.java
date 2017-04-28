@@ -107,7 +107,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onError(Throwable e) {
                 e.printStackTrace();
                 getView().showFailedRideRequestMessage(e.getMessage());
-                getView().failedToRequestRide();
+                getView().failedToRequestRide(e.getMessage());
             }
 
             @Override
@@ -142,17 +142,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
-                        getView().failedToRequestRide();
+                        getView().failedToRequestRide(e.getMessage());
                     }
                     getView().hideLoadingWaitingResponse();
                     getView().hideRideRequestStatus();
                 } else if (e instanceof InvalidFareIdHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
-                    getView().failedToRequestRide();
+                    getView().failedToRequestRide(getView().getResourceString(R.string.error_invalid_fare_id));
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().failedToRequestRide();
+                    getView().failedToRequestRide(e.getMessage());
                 }
             }
 

@@ -40,7 +40,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().showErrorChangeSeat(e.getMessage());
+                getView().showErrorMessage(e.getMessage());
             }
 
             @Override

@@ -117,6 +117,16 @@ public class RideInterceptor extends TkpdBaseInterceptor {
                 case 409:
                     throw new InterruptConfirmationHttpException(response.body().string());
                 default:
+                    try {
+                        String bodyResponse = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(bodyResponse);
+                        String JSON_ERROR_KEY = "message_error";
+                        if (jsonResponse.has(JSON_ERROR_KEY)) {
+                            handleError(jsonResponse.getString(JSON_ERROR_KEY));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     throw new RuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
             }
         }

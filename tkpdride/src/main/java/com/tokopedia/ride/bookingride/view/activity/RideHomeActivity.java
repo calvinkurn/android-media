@@ -215,6 +215,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                     }
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
+                    //message on confirm booking fragment
+                    if (data != null) {
+                        String message = data.getStringExtra(OnTripActivity.EXTRA_FAILED_MESSAGE);
+
+                        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+                        if (bottomFragment instanceof ConfirmBookingRideFragment) {
+                            ((ConfirmBookingRideFragment) bottomFragment).showErrorMessage(message);
+                        }
+                    }
                     break;
             }
         }

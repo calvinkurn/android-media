@@ -344,8 +344,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void failedToRequestRide() {
-        getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE);
+    public void failedToRequestRide(String message) {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(OnTripActivity.EXTRA_FAILED_MESSAGE, message);
+
+        getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE, intent);
         getActivity().finish();
     }
 

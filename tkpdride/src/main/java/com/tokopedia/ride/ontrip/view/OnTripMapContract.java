@@ -51,7 +51,7 @@ public interface OnTripMapContract {
 
         void openInterruptConfirmationWebView(String tosUrl);
 
-        void failedToRequestRide();
+        void failedToRequestRide(String message);
 
         void startPeriodicService(String requestId);
 

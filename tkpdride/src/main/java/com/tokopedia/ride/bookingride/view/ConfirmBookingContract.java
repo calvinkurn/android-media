@@ -14,8 +14,6 @@ public interface ConfirmBookingContract {
     interface View extends CustomerView {
         RequestParams getParam();
 
-        void showErrorChangeSeat(String message);
-
         void renderFareEstimate(String fareId, String display, float value, float surgeMultipliers, String surgeConfirmationHref);
 
         void hideConfirmButton();
@@ -41,6 +39,10 @@ public interface ConfirmBookingContract {
         void hideNotActivatedTokoCashLayout();
 
         void showNotActivatedTokoCashLayout(String redirectUrl);
+
+        void showErrorMessage(String message);
+
+        void hideErrorMessage();
     }
 
     interface Presenter extends CustomerPresenter<View> {

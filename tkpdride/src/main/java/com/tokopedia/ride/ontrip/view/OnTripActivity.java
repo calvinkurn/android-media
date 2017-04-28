@@ -39,6 +39,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     public static final String EXTRA_PLACE_DESTINATION = "EXTRA_PLACE_DESTINATION";
     public static String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     public static String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
+    public static String EXTRA_FAILED_MESSAGE = "EXTRA_FAILED_MESSAGE";
     public static final int RIDE_HOME_RESULT_CODE = 11;
     public static final int RIDE_BOOKING_RESULT_CODE = 12;
     public static final int APP_HOME_RESULT_CODE = 13;

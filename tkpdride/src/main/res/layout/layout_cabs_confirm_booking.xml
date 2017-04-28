@@ -109,6 +109,15 @@
         android:visibility="gone" />
 
     <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Error"
+        android:textColor="@color/red_600"
+        android:visibility="gone" />
+
+    <TextView
         android:id="@+id/cab_confirmation"
         android:layout_width="match_parent"
         android:layout_height="42dp"

@@ -74,6 +74,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashActivationLabelTextView;
     @BindView(R2.id.tv_activation_button)
     TextView tokoCashActivationButton;
+    @BindView(R2.id.tv_error)
+    TextView errortextView;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -157,6 +159,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.cab_select_seat)
     public void actionSelectSeatButtonClicked() {
+        hideErrorMessage();
+
         if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
             if (confirmBookingViewModel.getMaxCapacity() > 1) {
                 List<SeatViewModel> seatViewModels = new ArrayList<>();
@@ -203,17 +207,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @OnClick(R2.id.cab_confirmation)
     public void actionConfirmButtonClicked() {
         clearConfiguration();
+        hideErrorMessage();
         mListener.actionRequestRide(confirmBookingViewModel);
     }
 
     private void clearConfiguration() {
         RideConfiguration rideConfiguration = new RideConfiguration();
         rideConfiguration.clearActiveRequest();
-    }
-
-    @Override
-    public void showErrorChangeSeat(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -331,6 +331,17 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                 startActivityForResult(intent, WALLET_WEB_VIEW_REQUEST_CODE);
             }
         });
+    }
+
+    @Override
+    public void showErrorMessage(String message) {
+        errortextView.setVisibility(View.VISIBLE);
+        errortextView.setText(message);
+    }
+
+    @Override
+    public void hideErrorMessage() {
+        errortextView.setVisibility(View.GONE);
     }
 
     @Override
