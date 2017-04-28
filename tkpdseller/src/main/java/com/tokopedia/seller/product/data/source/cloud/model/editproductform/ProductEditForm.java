@@ -26,7 +26,7 @@ public class ProductEditForm {
     private String productEtalase;
     @SerializedName("product_status")
     @Expose
-    private String productStatus;
+    private String productUploadTo;
     @SerializedName("product_id")
     @Expose
     private String productId;
@@ -115,12 +115,12 @@ public class ProductEditForm {
         this.productEtalase = productEtalase;
     }
 
-    public String getProductStatus() {
-        return productStatus;
+    public String getProductUploadTo() {
+        return productUploadTo;
     }
 
-    public void setProductStatus(String productStatus) {
-        this.productStatus = productStatus;
+    public void setProductUploadTo(String productUploadTo) {
+        this.productUploadTo = productUploadTo;
     }
 
     public String getProductId() {

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.domain.model;
 
+import com.tokopedia.seller.product.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class UploadProductInputDomainModel {
     private int productMustInsurance;
     private int productPriceCurrency;
     private int productReturnable;
+    @UploadToTypeDef
     private int productUploadTo;
     private int productWeight;
     private int productWeightUnit;
@@ -179,7 +181,7 @@ public class UploadProductInputDomainModel {
         return productUploadTo;
     }
 
-    public void setProductUploadTo(int productUploadTo) {
+    public void setProductUploadTo(@UploadToTypeDef int productUploadTo) {
         this.productUploadTo = productUploadTo;
     }
 
