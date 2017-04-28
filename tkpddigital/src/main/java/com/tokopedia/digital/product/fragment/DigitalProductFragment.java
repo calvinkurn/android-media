@@ -1,20 +1,41 @@
 package com.tokopedia.digital.product.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.app.IntentService;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
+import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
+import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
+import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
+import com.tokopedia.digital.product.listener.IProductDigitalView;
+import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
+import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
 
-public class DigitalProductFragment extends BasePresenterFragment {
+public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
+        implements IProductDigitalView {
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private String categoryId;
+
+    private CompositeSubscription compositeSubscription;
 
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
@@ -31,7 +52,7 @@ public class DigitalProductFragment extends BasePresenterFragment {
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        presenter.processGetCategoryAndBannerData();
     }
 
     @Override
@@ -51,7 +72,14 @@ public class DigitalProductFragment extends BasePresenterFragment {
 
     @Override
     protected void initialPresenter() {
-
+        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+        IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        IDigitalCategoryRepository digitalCategoryRepository =
+                new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
+        IProductDigitalInteractor productDigitalInteractor =
+                new ProductDigitalInteractor(compositeSubscription, digitalCategoryRepository);
+        presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
 
     @Override
@@ -89,4 +117,86 @@ public class DigitalProductFragment extends BasePresenterFragment {
 
     }
 
+    @Override
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+
+    }
+
+    @Override
+    public void showInitialProgressLoading() {
+
+    }
+
+    @Override
+    public void hideInitialProgressLoading() {
+
+    }
+
+    @Override
+    public void clearContentRendered() {
+
+    }
+
+    @Override
+    public void showProgressLoading() {
+
+    }
+
+    @Override
+    public void hideProgressLoading() {
+
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(@StringRes int resId) {
+        return null;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
+            TKPDMapParam<String, String> originParams) {
+        return AuthUtil.generateParamsNetwork(getActivity(), originParams);
+    }
+
+    @Override
+    public void closeView() {
+        getActivity().finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+        super.onDestroy();
+    }
 }
