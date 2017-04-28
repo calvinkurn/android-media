@@ -144,6 +144,7 @@ public class VoucherCartHolderView extends RelativeLayout {
         hideHolderVoucher();
         errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);
+        actionListener.disableVoucherDiscount();
     }
 
     private boolean isEditTextVoucherEmpty() {
