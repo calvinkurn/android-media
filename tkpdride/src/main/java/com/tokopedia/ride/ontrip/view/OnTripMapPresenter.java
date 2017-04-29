@@ -268,7 +268,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
                 getView().renderInProgressRequest(result);
-                getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
+                getView().showRequestRideStatus(String.format("On Trip", String.valueOf(result.getDestination().getEta())));
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideFindingUberNotification();
@@ -361,7 +361,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Runnable timedTask = new Runnable() {
         @Override
         public void run() {
+
+            //if get view is null
             if (getView() == null) {
+                if (handler != null) {
+                    handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                }
+
                 return;
             }
 

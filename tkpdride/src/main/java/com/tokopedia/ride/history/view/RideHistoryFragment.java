@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -166,6 +167,17 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     @Override
     public String getMapKey() {
         return getString(R.string.GOOGLE_API_KEY);
+    }
+
+    @Override
+    public String getMapImageSize() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.thirty_two_dp);
+        int height = getResources().getDimensionPixelSize(R.dimen.history_map_height);
+
+        String size = width + "x" + height;
+        return size;
     }
 
     @NonNull

@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -197,8 +195,19 @@ public class DriverDetailFragment extends BaseFragment {
         startActivity(callIntent);
     }
 
-    private void openSmsIntent(){
+    private void openSmsIntent() {
 
+    }
+
+    /**
+     * This function set the trip status
+     *
+     * @param message
+     */
+    public void setStatus(String message) {
+        if (driverEtaTextView != null) {
+            driverEtaTextView.setText(message);
+        }
     }
 
     @OnClick(R2.id.layout_cancel_ride)

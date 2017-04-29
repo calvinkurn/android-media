@@ -55,4 +55,8 @@
     <string name="title_requesting_ride">Requesting Ride</string>
     <string name="trip_detail_toolbar_title">Trip Detail</string>
     <string name="error_invalid_fare_id">Not able to request a ride, please try again</string>
+    <string name="title_trip_in_progress">On Trip</string>
+    <string name="title_trip_accepted">Ride Accepted</string>
+    <string name="title_trip_arriving">Driver Arriving</string>
+    <string name="message_trip_in_arriving">Driver is arriving now</string>
 </resources>

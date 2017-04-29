@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -409,6 +410,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        setTitle(R.string.title_trip_accepted);
     }
 
     private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
@@ -424,6 +427,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (bottomFragment instanceof DriverDetailFragment) {
+            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.title_trip_in_progress));
+        }
+
+        setTitle(R.string.title_trip_in_progress);
+    }
+
+    public void setTitle(int resId) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(resId);
     }
 
     @Override
@@ -485,6 +499,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (bottomFragment instanceof DriverDetailFragment) {
+            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.message_trip_in_arriving));
+        }
+
+        setTitle(R.string.title_trip_arriving);
     }
 
     @Override

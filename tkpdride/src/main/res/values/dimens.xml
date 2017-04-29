@@ -24,5 +24,7 @@
     <dimen name="marker_height">30dp</dimen>
     <dimen name="car_marker_width">15dp</dimen>
     <dimen name="car_marker_height">35dp</dimen>
+    <dimen name="thirty_two_dp">32dp</dimen>
+    <dimen name="history_map_height">120dp</dimen>
     <integer name="anim_duration_medium">300</integer>
 </resources>
