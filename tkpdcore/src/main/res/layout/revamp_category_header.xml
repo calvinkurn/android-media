@@ -24,10 +24,6 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_sm"
-            android:shadowColor="@color/checkbox_text"
-            android:shadowDx="3"
-            android:shadowDy="3"
-            android:shadowRadius="0.3"
             />
 
     </RelativeLayout>

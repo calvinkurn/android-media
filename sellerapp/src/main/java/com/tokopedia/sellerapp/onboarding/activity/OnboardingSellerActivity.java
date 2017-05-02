@@ -77,6 +77,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             startActivity(new Intent(this, SellerHomeActivity.class)
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
+            SessionHandler.setFirstTimeUser(this, false);
         } else if (SessionHandler.isMsisdnVerified()) {
             Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
             intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,

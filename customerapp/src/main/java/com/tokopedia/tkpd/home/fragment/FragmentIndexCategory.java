@@ -38,10 +38,12 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
 import com.tokopedia.core.network.entity.home.Brands;
@@ -59,6 +61,7 @@ import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
@@ -152,6 +155,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         RecyclerView topPicksRecyclerView;
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
+        TextView textViewAllBrands;
         public LinearLayout wrapperLinearLayout;
 
         private ViewHolder() {
@@ -475,11 +479,9 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void navigateToNextActivity(String depID, String title) {
-        BrowseProductActivity.moveTo(
+        IntermediaryActivity.moveTo(
                 getActivity(),
                 depID,
-                TopAdsApi.SRC_DIRECTORY,
-                BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
                 title
         );
 
@@ -494,9 +496,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     /**
      * Brands a.k.a. Official Store
      * Created by Hafizh Herdi 20173001
+     * Modified by Oka 20170315 (add view all official store)
      */
     private void initBrands() {
         holder.brandsRecyclerView = (RecyclerView) holder.MainView.findViewById(R.id.rv_brands_list);
+        holder.textViewAllBrands = (TextView) holder.MainView.findViewById(R.id.text_view_all_brands);
         holder.brandsRecyclerView.setHasFixedSize(true);
         holder.brandsRecyclerView.setNestedScrollingEnabled(false);
         brandsRecyclerViewAdapter = new BrandsRecyclerViewAdapter(new BrandsRecyclerViewAdapter.OnItemClickListener() {
@@ -515,8 +519,29 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                         false)
         );
         holder.brandsRecyclerView.setAdapter(brandsRecyclerViewAdapter);
+        holder.textViewAllBrands.setOnClickListener(onMoreBrandsClicked());
     }
 
+    private View.OnClickListener onMoreBrandsClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SessionHandler.isV4Login(getContext())) {
+                    UnifyTracking.eventViewAllOSLogin();
+                } else {
+                    UnifyTracking.eventViewAllOSNonLogin();
+                }
+
+                openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
+            }
+        };
+    }
+
+    private void openWebViewBrandsURL(String url) {
+        if (!url.trim().equals("")) {
+            startActivity(BrandsWebViewActivity.newInstance(getActivity(), url));
+        }
+    }
 
     /* TOP PICKS */
     private void initTopPicks() {
