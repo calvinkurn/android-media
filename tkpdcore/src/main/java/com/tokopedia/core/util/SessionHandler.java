@@ -14,6 +14,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -24,6 +27,7 @@ import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
+import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
@@ -43,6 +47,7 @@ import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 public class SessionHandler {
@@ -74,6 +79,7 @@ public class SessionHandler {
     private static final String DEFAULT_UUID_VALUE = "";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
+    private static final String USER_DATA = "USER_DATA";
 
     private Context context;
 
@@ -589,6 +595,27 @@ public class SessionHandler {
     public String getTokenType(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(TOKEN_TYPE, "");
+    }
+
+    public static ProfileData getUserData(Context context){
+        CommonUtils.dumper("moengage get user data");
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        Type dataObject = new TypeToken<ProfileData>(){}.getType();
+        return gson.fromJson(sharedPrefs.getString(USER_DATA, ""),dataObject);
+    }
+
+    public static String isUserDataCached(Context context){
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(USER_DATA, "");
+    }
+
+    public void setUserData(String userData){
+        CommonUtils.dumper("moengage save user data");
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        saveToSharedPref(editor, USER_DATA, userData);
+        editor.apply();
     }
 
     public interface onLogoutListener {

@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.CacheUtil;
@@ -25,6 +26,7 @@ import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import retrofit2.Response;
@@ -79,6 +81,9 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 if (response.isSuccessful()) {
                     listener.onSuccess(parseToDrawerHeader(response.body()
                             .convertDataObj(ProfileData.class)));
+                    CommonUtils.dumper("moengage user data first time "+response.toString()+" "+response.body().getStringData());
+
+                    saveUserData(context, response.body().convertDataObj(ProfileData.class));
                 } else {
                     listener.onError(response.message());
                 }
@@ -89,6 +94,19 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    private void saveUserData(Context context, ProfileData userData){
+        try {
+            SessionHandler sessionHandler = new SessionHandler(context);
+            Gson gson = new Gson();
+            Type dataObject = new TypeToken<ProfileData>() {
+            }.getType();
+            String json = gson.toJson(userData, dataObject);
+            sessionHandler.setUserData(json);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void getDeposit(Context context, final DepositListener listener) {
