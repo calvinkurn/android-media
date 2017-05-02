@@ -19,6 +19,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
     private List<Breadcrumb> breadcrumbs;
     private List<Filter> filterList;
     private String currentCategory;
+    private String departmentId;
 
 
     public DynamicFilterPresenterImpl(DynamicFilterView dynamicFilterView) {
@@ -35,6 +36,7 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
                     intent.getParcelableExtra(EXTRA_FILTER_CATEGORY_LIST));
 
             currentCategory = intent.getStringExtra(EXTRA_CURRENT_CATEGORY);
+            departmentId = intent.getStringExtra(EXTRA_DEPARTMENT_ID);
 
             if (bcr != null) {
                 breadcrumbs = bcr;
@@ -64,5 +66,10 @@ public class DynamicFilterPresenterImpl implements DynamicFilterPresenter {
     @Override
     public String getCurrentCategory() {
         return currentCategory;
+    }
+
+    @Override
+    public String getDepartmentId() {
+        return departmentId;
     }
 }

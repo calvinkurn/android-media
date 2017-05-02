@@ -84,8 +84,8 @@ public class RecyclerViewCategoryMenuAdapter extends
         itemRowHolder.recycler_view_list.setHasFixedSize(true);
         itemRowHolder.recycler_view_list.setLayoutManager(
                 new NonScrollGridLayoutManager(mContext, 2,
-                        GridLayoutManager.VERTICAL, false));
-        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext));
+                GridLayoutManager.VERTICAL, false));
+        itemRowHolder.recycler_view_list.addItemDecoration(new DividerItemDecoration(mContext,R.drawable.divider300));
         itemRowHolder.recycler_view_list.setAdapter(itemListDataAdapter);
     }
 

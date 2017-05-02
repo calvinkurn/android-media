@@ -5,7 +5,8 @@ package com.tokopedia.core.network;
  */
 
 public class ErrorMessageException extends RuntimeException {
-    public ErrorMessageException(String s) {
-        super(s);
+
+    public ErrorMessageException(String errorMessage) {
+        super(errorMessage);
     }
 }

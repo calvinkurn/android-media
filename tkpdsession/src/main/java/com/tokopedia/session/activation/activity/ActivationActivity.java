@@ -1,6 +1,5 @@
 package com.tokopedia.session.activation.activity;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -20,7 +19,6 @@ public class ActivationActivity extends BasePresenterActivity {
 
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_PARAM_NAME = "INTENT_EXTRA_PARAM_NAME";
-    private static final String INTENT_EXTRA_AUTO_ACTIVATE = "INTENT_EXTRA_AUTO_ACTIVATE";
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -47,8 +45,8 @@ public class ActivationActivity extends BasePresenterActivity {
 
         RegisterActivationFragment fragment = RegisterActivationFragment.createInstance(
                 getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL),
-                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_NAME),
-                getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_ACTIVATE,false));
+                getIntent().getExtras().getString(INTENT_EXTRA_PARAM_NAME)
+        );
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
@@ -90,15 +88,6 @@ public class ActivationActivity extends BasePresenterActivity {
         Intent callingIntent = new Intent(context, ActivationActivity.class);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, "");
-        return callingIntent;
-    }
-
-    public static Intent getAutomaticActivationIntent(Context context, String email, String name) {
-        Intent callingIntent = new Intent(context, ActivationActivity.class);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_NAME, name);
-        callingIntent.putExtra(INTENT_EXTRA_AUTO_ACTIVATE, true);
-
         return callingIntent;
     }
 }

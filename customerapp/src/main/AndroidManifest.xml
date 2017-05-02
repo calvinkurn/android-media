@@ -106,7 +106,7 @@
             android:value="@string/key_gtm" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/key_ga" />
+            android:value="@string/key_ga"/>
         <meta-data
             android:name="APPSFLYER_KEY"
             android:value="@string/key_appsflyer" />

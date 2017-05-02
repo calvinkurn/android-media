@@ -11,6 +11,11 @@ public class LocalCacheHandler {
     private Editor editor;
     private SharedPreferences sharedPrefs;
 
+    public LocalCacheHandler(SharedPreferences sharedPreferences) {
+        sharedPrefs = sharedPreferences;
+        editor = sharedPrefs.edit();
+    }
+
     public LocalCacheHandler(Context context, String name) {
         sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
@@ -197,8 +202,7 @@ public class LocalCacheHandler {
         int interval = getInt("expired_time");
         Long time = getLong("timestamp");
         Long curr_time = System.currentTimeMillis() / 1000;
-        if ((curr_time - time) > interval) return true;
-        return false;
+        return (curr_time - time) > interval;
     }
 
     public int getRemainingTime() {

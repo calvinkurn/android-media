@@ -236,7 +236,6 @@ public class InboxReputationFormFragmentPresenterImpl
                 .setImageUrl(Uri.parse(inboxReputationDetail.getProductImageUrl()))
                 .setContentUrl(Uri.parse(stringDomain+inboxReputationDetail.getProductUri()))
                 .setContentDescription(contentDescription)
-                .setShareHashtag(new ShareHashtag.Builder().setHashtag(fragment.getActivity().getString(R.string.title_tokopedia_hashtag)).build())
                 .build();
 
         LoginManager.getInstance().logInWithPublishPermissions(fragment, FacebookContainer.writePermissions);

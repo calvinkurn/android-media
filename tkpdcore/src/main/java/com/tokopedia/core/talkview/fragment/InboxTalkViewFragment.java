@@ -2,7 +2,6 @@ package com.tokopedia.core.talkview.fragment;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.view.View;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;

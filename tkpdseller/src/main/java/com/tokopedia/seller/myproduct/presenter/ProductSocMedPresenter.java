@@ -12,5 +12,4 @@ public interface ProductSocMedPresenter {
     int getCurrentFragmentPosition();
     void removeFragment(int position);
     void noitfyCompleted(int position);
-    String PRODUCT_SOC_MED_DATA = "PRODUCT_SOC_MED_DATA";
 }

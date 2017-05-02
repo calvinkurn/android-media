@@ -133,4 +133,6 @@ public interface InstagramMediaFragmentView extends BaseView {
     void loadingShow(boolean isLoading);
 
     void showEmptyData();
+
+    int getMaxItem();
 }

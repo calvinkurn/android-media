@@ -19,7 +19,6 @@ import android.os.Environment;
 import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -39,12 +38,8 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.fragment.TwitterDialogV4;
-import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
-import com.tokopedia.core.myproduct.fragment.ImageGalleryFragment;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.fragment.ChooserDialogFragment;
@@ -106,8 +101,6 @@ public class ProductActivity extends BaseProductActivity implements
 
     Toolbar toolbar;
     FrameLayout container;
-
-    FloatingActionButton fab;
 
     String FRAGMENT = "";
     int position;
@@ -625,9 +618,8 @@ public class ProductActivity extends BaseProductActivity implements
             if (fragment != null && fragment instanceof AddProductFragment && checkNotNull(imageUrl)) {
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrl, position);
             }
-
             ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryBrowser.IMAGE_URLS);
-            if(fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)){
+            if (fragment != null && fragment instanceof AddProductFragment && checkCollectionNotNull(imageUrls)) {
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrls.get(0), position);
                 imageUrls.remove(0);
                 ((AddProductFragment) fragment).addImageAfterSelect(imageUrls);

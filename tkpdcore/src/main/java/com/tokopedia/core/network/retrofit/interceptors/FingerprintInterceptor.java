@@ -2,11 +2,9 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
-import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.Request;

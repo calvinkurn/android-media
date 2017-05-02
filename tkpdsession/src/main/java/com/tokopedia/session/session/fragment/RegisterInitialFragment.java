@@ -12,7 +12,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,30 +24,22 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookAuthorizationException;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.core.session.model.LoginGoogleModel;
@@ -57,17 +48,11 @@ import com.tokopedia.session.session.presenter.RegisterInitialPresenter;
 import com.tokopedia.session.session.presenter.RegisterInitialPresenterImpl;
 import com.tokopedia.session.session.presenter.RegisterInitialView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.var.TkpdState;
 
-import org.json.JSONObject;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -246,7 +231,7 @@ public class RegisterInitialFragment extends BaseFragment<RegisterInitialPresent
     @Override
     public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
         if (getActivity() != null) {// && !((AppCompatActivity)mContext).isFinishing()
-            ((SessionView) getActivity()).moveToFragmentSecurityQuestion(security1, security2, userId);
+            ((SessionView) getActivity()).moveToFragmentSecurityQuestion(security1, security2, userId, "");
         }
     }
 

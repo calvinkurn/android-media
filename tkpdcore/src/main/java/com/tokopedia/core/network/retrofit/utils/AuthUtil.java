@@ -3,6 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -57,9 +58,10 @@ public class AuthUtil {
      * default key is KEY_WSV$
      */
     public static class KEY {
-        public static String KEY_WSV4 = "web_service_v4";
-        public static String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_WSV4 = "web_service_v4";
+        public static final String KEY_MOJITO = "mojito_api_v1";
+        public static final String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
     }
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
@@ -67,6 +69,18 @@ public class AuthUtil {
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
     }
+
+    public static Map<String, String> generateHeaders(
+            String path, String strParam, String method, String authKey, String contentType
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        return finalHeader;
+    }
+
 
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
@@ -93,6 +107,9 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+
+        headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
@@ -218,6 +235,20 @@ public class AuthUtil {
 
     public static TKPDMapParam<String, String> generateParamsNetwork(String userId, String deviceId, TKPDMapParam<String, String> params) {
         String hash = md5(userId + "~" + deviceId);
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(PARAM_HASH, hash);
+        params.put(PARAM_OS_TYPE, "1");
+        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return params;
+    }
+
+    public static TKPDMapParam<String, Object> generateParamsNetwork2(Context context, TKPDMapParam<String, Object> params) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+
         params.put(PARAM_USER_ID, userId);
         params.put(PARAM_DEVICE_ID, deviceId);
         params.put(PARAM_HASH, hash);

@@ -120,7 +120,6 @@ dependencies {
     compile 'com.shootr:KMNumbers:1.0.0'
     compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile rootProject.ext.miscDependencies.chips
-    compile 'com.nispok:snackbar:2.11.+'
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

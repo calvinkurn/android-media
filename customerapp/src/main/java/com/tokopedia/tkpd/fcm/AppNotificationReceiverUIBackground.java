@@ -14,6 +14,7 @@ import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerEdit
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToBuyerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
 import com.tokopedia.core.gcm.notification.promotions.CartNotification;
+import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
@@ -42,6 +43,7 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseRejectedShippingNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
+import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
 
 import java.util.Map;
 
@@ -132,7 +134,10 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            prepareAndExecuteApplinkNotification(data);
+            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
+                prepareAndExecuteApplinkPromoNotification(data);
+            else
+                prepareAndExecuteApplinkNotification(data);
         }
     }
 
@@ -231,6 +236,12 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
+    }
+
+    private void prepareAndExecuteApplinkPromoNotification(Bundle data) {
+        ApplinkBuildAndShowNotification applinkBuildAndShowNotification =
+                new ApplinkBuildAndShowNotification(AppNotificationReceiverUIBackground.this.mContext);
+        applinkBuildAndShowNotification.showPromoNotification(data);
     }
 
     private void prepareAndExecuteDedicatedNotification(Bundle data) {

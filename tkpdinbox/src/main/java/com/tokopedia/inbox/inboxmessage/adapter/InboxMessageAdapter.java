@@ -240,7 +240,7 @@ public class InboxMessageAdapter extends BaseLinearRecyclerViewAdapter
     private void setHour(ViewHolder holder, int position) {
         try {
             SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            holder.hour.setText(newSdf.format(sdf.parse(list.get(position).getMessageCreateTimeFmt())) + " WIB");
+            holder.hour.setText(newSdf.format(sdf.parse(list.get(position).getMessageCreateTimeFmt())));
         } catch (ParseException e) {
             holder.hour.setVisibility(View.GONE);
         }

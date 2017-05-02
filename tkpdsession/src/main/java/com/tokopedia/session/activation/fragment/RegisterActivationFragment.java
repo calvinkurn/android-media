@@ -34,7 +34,6 @@ import rx.subscriptions.CompositeSubscription;
 public class RegisterActivationFragment extends BasePresenterFragment<RegisterActivationPresenter>
         implements RegisterConstant, RegisterActivationView {
 
-    private static final String ARGS_AUTO_ACTIVATE = "ARGS_AUTO_ACTIVATE";
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
     private static final String ARGS_NAME = "ARGS_NAME";
 
@@ -48,12 +47,11 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     TkpdProgressDialog progressDialog;
 
-    public static RegisterActivationFragment createInstance(String email, String name, boolean isAutoActivate) {
+    public static RegisterActivationFragment createInstance(String email, String name) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARGS_EMAIL, email);
         bundle.putString(ARGS_NAME, name);
-        bundle.putBoolean(ARGS_AUTO_ACTIVATE, isAutoActivate);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -65,9 +63,6 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected void onFirstTimeLaunched() {
-        if (getArguments().getBoolean(ARGS_AUTO_ACTIVATE, false)) {
-            presenter.resendActivation();
-        }
     }
 
     @Override

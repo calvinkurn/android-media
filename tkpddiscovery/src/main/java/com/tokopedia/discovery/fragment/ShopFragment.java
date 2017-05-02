@@ -24,7 +24,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Shop;
 import com.tokopedia.discovery.presenter.browseparent.ShopImpl;
 import com.tokopedia.discovery.view.ShopView;
@@ -124,6 +124,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setupRecyclerView() {
+        if (list_shop.getAdapter() != null) {
+            return;
+        }
         list_shop.setLayoutManager(gridLayoutManager);
         list_shop.setAdapter(browseShopAdapter);
         list_shop.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -144,6 +147,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void initAdapter() {
+        if (browseShopAdapter != null) {
+            return;
+        }
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
         browseShopAdapter.setIsLoading(true);
         gridLayoutManager = new GridLayoutManager(getActivity(),
@@ -237,9 +243,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     @Override
     public void onCallNetwork() {
         Log.d(TAG, "onCallNetwork");
-        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
-            DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
-            presenter.callNetwork(discoveryActivityPresenter);
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
         }
     }
 
@@ -253,6 +259,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 }

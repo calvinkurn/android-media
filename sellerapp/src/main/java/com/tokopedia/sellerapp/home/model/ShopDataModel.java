@@ -2,31 +2,27 @@ package com.tokopedia.sellerapp.home.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 /**
  * Created by m.normansyah on 05/01/2016.
  */
 public class ShopDataModel {
-    @SerializedName("status")
-    @Expose
-    private String status;
-
-    @SerializedName("data")
-    @Expose
-    private ShopModel shopModel;
-
-    @SerializedName("config")
-    @Expose
-    private String config;
-
-    @SerializedName("server_process_time")
-    @Expose
-    private String serverProcessTime;
-
     @SerializedName("message_error")
     @Expose
     String[] messageError;
+    @SerializedName("status")
+    @Expose
+    private String status;
+    @SerializedName("data")
+    @Expose
+    private ShopModel shopModel;
+    @SerializedName("config")
+    @Expose
+    private String config;
+    @SerializedName("server_process_time")
+    @Expose
+    private String serverProcessTime;
 
     public String getStatus() {
         return status;

@@ -10,7 +10,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -29,10 +28,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.di.module.NetModule;
+import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.NotificationVariable;
+import com.tokopedia.core.network.di.module.*;
 
 import java.util.List;
 
@@ -261,9 +261,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
     public static boolean isLandscape(Activity context) {
-        if (getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE)
-            return true;
-        else return false;
+        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public static int getOrientation(Context context) {
@@ -271,9 +269,7 @@ public class MainApplication extends TkpdMultiDexApplication {
     }
 
     public static boolean isLandscape(Context context) {
-        if (getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE)
-            return true;
-        else return false;
+        return getOrientation(context) == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     public static boolean isDebug() {
