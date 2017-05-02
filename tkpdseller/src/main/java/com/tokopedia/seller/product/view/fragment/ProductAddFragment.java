@@ -188,6 +188,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 return true;
             }
         });
+        view.requestFocus();
         return view;
     }
 

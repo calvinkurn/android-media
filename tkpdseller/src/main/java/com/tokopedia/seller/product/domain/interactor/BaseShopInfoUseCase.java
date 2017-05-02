@@ -1,8 +1,10 @@
 package com.tokopedia.seller.product.domain.interactor;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 
 import javax.inject.Inject;
@@ -13,19 +15,23 @@ import rx.Observable;
  * Created by Hendry on 4/20/2017.
  */
 
-public class ShopInfoForceNetworkUseCase extends BaseShopInfoUseCase<ShopModel> {
+public abstract class BaseShopInfoUseCase<T> extends UseCase<T> {
+    protected ShopInfoRepository shopInfoRepository;
 
-    @Inject
-    public ShopInfoForceNetworkUseCase(
+    public BaseShopInfoUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ShopInfoRepository shopInfoRepository) {
-        super(threadExecutor, postExecutionThread, shopInfoRepository);
+        super(threadExecutor, postExecutionThread);
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
-    protected Observable<ShopModel> getShopInfo() {
-        return shopInfoRepository.getShopInfoFromNetwork();
+    public Observable<T> createObservable(RequestParams requestParams) {
+        return getShopInfo();
     }
+
+    // to be overridden by other use cases
+    abstract Observable<T> getShopInfo() ;
 
 }

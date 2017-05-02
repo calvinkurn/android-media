@@ -24,17 +24,17 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     }
 
     @Override
-    public Observable<ShopModel> getShopInfo(String shopId, String shopDomain) {
-        return shopInfoDataSource.getShopInfo(shopId, shopDomain);
+    public Observable<ShopModel> getShopInfo() {
+        return shopInfoDataSource.getShopInfo();
     }
 
     @Override
-    public Observable<ShopModel> getShopInfoFromNetwork(String shopId, String shopDomain) {
-        return shopInfoDataSource.getShopInfoFromNetwork(shopId, shopDomain);
+    public Observable<ShopModel> getShopInfoFromNetwork() {
+        return shopInfoDataSource.getShopInfoFromNetwork();
     }
 
     @Override
-    public Observable<AddProductShopInfoDomainModel> getAddProductShopInfo(String shopId, String shopDomain) {
-        return shopInfoDataSource.getShopInfo(shopId, shopDomain).map(new ShopInfoDataToDomainMapper());
+    public Observable<AddProductShopInfoDomainModel> getAddProductShopInfo() {
+        return shopInfoDataSource.getShopInfo().map(new ShopInfoDataToDomainMapper());
     }
 }
