@@ -66,7 +66,6 @@ public class TkpdDigitalResponse {
             strData = jsonResponse.get(KEY_DATA).getAsJsonObject().toString();
         } else if (jsonResponse.has(KEY_DATA) && jsonResponse.get(KEY_DATA).isJsonArray()) {
             strData = jsonResponse.get(KEY_DATA).getAsJsonArray().toString();
-            throw new ResponseDataNullException(strData);
         } else {
             throw new ResponseDataNullException(DEFAULT_ERROR_MESSAGE_DATA_NULL);
         }

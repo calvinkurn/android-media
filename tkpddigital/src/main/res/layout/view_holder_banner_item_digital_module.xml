@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewDigital"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_vs">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_vs">
+
+            <TextView
+                android:id="@+id/tv_desc_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/padding_small"
+                android:textSize="@dimen/text_size_small"
+                tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_vs">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kode Voucher: "
+                    android:textSize="@dimen/text_size_small"/>
+
+                <TextView
+                    android:id="@+id/tv_voucher_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/padding_vs"
+                    android:paddingStart="@dimen/padding_vs"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textSize="@dimen/text_size_small"
+                    tools:text="ANGGAKEREN"/>
+
+                <TextView
+                    android:id="@+id/btn_copy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/digital_white_grey_button_rounded"
+                    android:paddingBottom="@dimen/padding_vvs"
+                    android:paddingEnd="@dimen/padding_small"
+                    android:paddingStart="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvs"
+                    android:text="salin"
+                    android:textSize="@dimen/text_size_xxsmall"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

@@ -1,7 +1,5 @@
 package com.tokopedia.digital.product.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
@@ -47,7 +45,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
                     @Override
                     public void onNext(ProductDigitalData productDigitalData) {
-                        Log.d(TAG, productDigitalData.toString());
+                        view.renderProductDigitalData(
+                                productDigitalData.getCategoryData(),
+                                productDigitalData.getBannerDataList()
+                        );
                     }
                 }
         );
