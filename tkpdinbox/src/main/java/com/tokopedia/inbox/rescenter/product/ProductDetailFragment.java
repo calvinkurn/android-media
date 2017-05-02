@@ -114,6 +114,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailFr
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setTroubleID(savedState.getString(EXTRA_PARAM_TROUBLE_ID));
         setViewData((ProductDetailViewData) savedState.getParcelable(EXTRA_PARAM_VIEW_DATA));
+        renderData();
     }
 
     @Override
