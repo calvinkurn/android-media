@@ -120,12 +120,6 @@ public class ConfirmBookingDependencyInjection {
         return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
     }
 
-    private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
-        OkHttpClient.Builder client = new OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .cache(cache);
-        return client.build();
-    }
     private static Retrofit createRetrofit(String baseUrl,
                                            OkHttpClient client,
                                            GeneratedHostConverter hostConverter,

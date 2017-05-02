@@ -23,6 +23,8 @@ public interface OnTripMapContract {
 
         RequestParams getParam();
 
+        RequestParams getFareEstimateParam();
+
         boolean isWaitingResponse();
 
         void hideRideRequestStatus();
@@ -47,9 +49,9 @@ public interface OnTripMapContract {
 
         void showCancelRequestButton();
 
-        void openTosConfirmationWebView(String tosUrl);
+        void openInterruptConfirmationWebView(String tosUrl);
 
-        void failedToRequestRide();
+        void failedToRequestRide(String message);
 
         void startPeriodicService(String requestId);
 
@@ -101,11 +103,16 @@ public interface OnTripMapContract {
 
         void showContactPanel();
 
-        void openSurgeConfirmationWebView(String tosUrl);
-
         RequestParams getCurrentRequestParams(String requestId);
 
         void clearActiveNotification();
+
+        String getResourceString(int resourceId);
+
+        boolean isSurge();
+
+        String getSurgeConfirmationHref();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -114,7 +121,12 @@ public interface OnTripMapContract {
 
         void actionCancelRide();
 
-        void actionRetryRideRequest(RequestParams requestParams);
+        /**
+         * This function handles an action to create ride request. It makes composite call, first for fare-estimate  and then uber/request
+         *
+         * @param requestParam, parameters required for ride request
+         */
+        void actionRideRequest(RequestParams requestParam);
 
         void proccessGetCurrentRideRequest(RideRequest result);
 

@@ -26,7 +26,7 @@ public class BottomSheetHelper {
 
     public void showBottomSheet() {
         isShown = true;
-        mBottomSheetBehavior.setPeekHeight((int) (peakView.getHeight() + actionBarSize));
+        mBottomSheetBehavior.setPeekHeight((int) (((View)peakView.getParent()).getHeight() + actionBarSize));
         peakView.requestLayout();
     }
 

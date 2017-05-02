@@ -31,6 +31,10 @@ public interface RideHistoryContract {
         void showEmptyResultLayout();
 
         void showRetryLayout();
+
+        String getMapKey();
+
+        String getMapImageSize();
     }
 
     interface Presenter extends CustomerPresenter<View>{

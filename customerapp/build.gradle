@@ -228,6 +228,8 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpdride')
+    compile project(':tkpddigital')
+
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

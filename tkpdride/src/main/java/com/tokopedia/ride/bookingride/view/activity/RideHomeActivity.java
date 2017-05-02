@@ -206,8 +206,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
-        addFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
-        addFragment(R.id.bottom_container, UberProductFragment.newInstance());
+        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
+        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
@@ -271,6 +271,15 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                     }
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
+                    //message on confirm booking fragment
+                    if (data != null) {
+                        String message = data.getStringExtra(OnTripActivity.EXTRA_FAILED_MESSAGE);
+
+                        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+                        if (bottomFragment instanceof ConfirmBookingRideFragment) {
+                            ((ConfirmBookingRideFragment) bottomFragment).showErrorMessage(message);
+                        }
+                    }
                     break;
             }
         }
@@ -350,12 +359,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition = new Slide(Gravity.RIGHT);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
         }
 
         ChangeBounds changeBoundsTransition = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             changeBoundsTransition = new ChangeBounds();
             changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
         }

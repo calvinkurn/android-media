@@ -22,6 +22,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
     private String fareId;
     private int capacity;
     private boolean enabled;
+    private float surgeMultiplier;
+    private String surgeConfirmationHref;
 
     public RideProductViewModel() {
     }
@@ -38,6 +40,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         fareId = in.readString();
         capacity = in.readInt();
         enabled = in.readByte() != 0;
+        surgeMultiplier = in.readFloat();
+        surgeConfirmationHref = in.readString();
     }
 
     public static final Creator<RideProductViewModel> CREATOR = new Creator<RideProductViewModel>() {
@@ -145,6 +149,22 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         this.enabled = enabled;
     }
 
+    public float getSurgeMultiplier() {
+        return surgeMultiplier;
+    }
+
+    public void setSurgeMultiplier(float surgeMultiplier) {
+        this.surgeMultiplier = surgeMultiplier;
+    }
+
+    public String getSurgeConfirmationHref() {
+        return surgeConfirmationHref;
+    }
+
+    public void setSurgeConfirmationHref(String surgeConfirmationHref) {
+        this.surgeConfirmationHref = surgeConfirmationHref;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -163,6 +183,8 @@ public class RideProductViewModel implements Visitable<RideProductTypeFactory>, 
         parcel.writeString(fareId);
         parcel.writeInt(capacity);
         parcel.writeByte((byte) (enabled ? 1 : 0));
+        parcel.writeFloat(surgeMultiplier);
+        parcel.writeString(surgeConfirmationHref);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -45,6 +48,8 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
     RideHistoryAdapter adapter;
 
     RideHistoryContract.Presenter mPresenter;
+
+    OnFragmentInteractionListener mOnFragmentInteractionListener;
 
     public static Fragment newInstance() {
         return new RideHistoryFragment();
@@ -91,7 +96,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
-
+        mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 
     @Override
@@ -159,6 +164,22 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
         NetworkErrorHelper.showEmptyState(getActivity(), getView(), getRetryGetHistoriesListener());
     }
 
+    @Override
+    public String getMapKey() {
+        return getString(R.string.GOOGLE_API_KEY);
+    }
+
+    @Override
+    public String getMapImageSize() {
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels - getResources().getDimensionPixelSize(R.dimen.thirty_two_dp);
+        int height = getResources().getDimensionPixelSize(R.dimen.history_map_height);
+
+        String size = width + "x" + height;
+        return size;
+    }
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryGetHistoriesListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
@@ -167,5 +188,29 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
                 mPresenter.actionRefreshHistoriesData();
             }
         };
+    }
+
+    public interface OnFragmentInteractionListener {
+        void actionNavigateToDetail(RideHistoryViewModel rideHistory);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mOnFragmentInteractionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException("must implement OnFragmentInteractionListener");
+        }
     }
 }

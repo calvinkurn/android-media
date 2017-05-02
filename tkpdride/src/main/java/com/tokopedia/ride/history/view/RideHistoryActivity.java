@@ -10,8 +10,10 @@ import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.history.domain.model.RideHistory;
+import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryActivity extends BaseActivity {
+public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener {
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, RideHistoryActivity.class);
@@ -52,5 +54,11 @@ public class RideHistoryActivity extends BaseActivity {
         } else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void actionNavigateToDetail(RideHistoryViewModel rideHistory) {
+        Intent intent = RideHistoryDetailActivity.getCallingIntent(this, rideHistory);
+        startActivity(intent);
     }
 }

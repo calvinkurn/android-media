@@ -11,9 +11,13 @@ import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
-import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
+import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
+import com.tokopedia.ride.common.exception.InvalidFareIdHttpException;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
@@ -48,6 +52,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GetRideRequestDetailUseCase getRideRequestUseCase;
+    private GetFareEstimateUseCase getFareEstimateUseCase;
 
     private Handler handler = new Handler();
     private String mRequestId;
@@ -56,12 +61,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               CancelRideRequestUseCase cancelRideRequestUseCase,
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
-                              GetRideRequestDetailUseCase getRideRequestUseCase) {
+                              GetRideRequestDetailUseCase getRideRequestUseCase,
+                              GetFareEstimateUseCase getFareEstimateUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
+        this.getFareEstimateUseCase = getFareEstimateUseCase;
     }
 
 
@@ -74,12 +81,49 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         if (getView().isWaitingResponse()) {
             getView().startPeriodicService(getView().getRequestId());
         } else {
-            actionRideRequest(getView().getParam());
+            if (getView().isSurge()) {
+                getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
+            } else {
+                actionRideRequest(getView().getParam());
+            }
         }
     }
 
+    /**
+     * This function combines first checks the fare estimate again and then make a create ride request with latest fare id.
+     *
+     * @param requestParam, parameters required for ride request
+     */
+    @Override
+    public void actionRideRequest(final RequestParams requestParam) {
+        getFareEstimateUseCase.execute(getView().getFareEstimateParam(), new Subscriber<FareEstimate>() {
+            @Override
+            public void onCompleted() {
 
-    private void actionRideRequest(RequestParams requestParams) {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                getView().showFailedRideRequestMessage(e.getMessage());
+                getView().failedToRequestRide(e.getMessage());
+            }
+
+            @Override
+            public void onNext(FareEstimate fareEstimate) {
+                if (fareEstimate.getFare() != null) {
+                    //update fare id with latest fare id
+                    requestParam.putString(CreateRideRequestUseCase.PARAM_FARE_ID, fareEstimate.getFare().getFareId());
+                    createRideRequest(requestParam);
+                } else if (fareEstimate.getEstimate() != null) {
+                    //open surge confirmation webview
+                    getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
+                }
+            }
+        });
+    }
+
+    public void createRideRequest(RequestParams requestParams) {
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
@@ -92,22 +136,22 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                 if (!isViewAttached()) return;
 
-                if (e instanceof TosConfirmationHttpException) {
+                if (e instanceof InterruptConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
-                        if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("tos_confirm")) {
-                            getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
-                        } else if (((TosConfirmationHttpException) e).getType().equalsIgnoreCase("surge")) {
-                            getView().openSurgeConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
-                        }
+                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
                     } else {
                         getView().showFailedRideRequestMessage(e.getMessage());
-                        getView().failedToRequestRide();
+                        getView().failedToRequestRide(e.getMessage());
                     }
-                    getView().hideLoadingWaitingResponse();
-                    getView().hideRideRequestStatus();
+                    ///getView().hideLoadingWaitingResponse();
+                    //getView().hideRideRequestStatus();
+                } else if (e instanceof InvalidFareIdHttpException) {
+                    //get fare id again
+                    getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
+                    getView().failedToRequestRide(getView().getResourceString(R.string.error_invalid_fare_id));
                 } else {
                     getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().failedToRequestRide();
+                    getView().failedToRequestRide(e.getMessage());
                 }
             }
 
@@ -146,44 +190,45 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     }
 
+//    @Override
+//    public void actionRetryRideRequest(RequestParams requestParams) {
+//        createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                e.printStackTrace();
+//                if (!isViewAttached()) return;
+//                if (e instanceof InterruptConfirmationHttpException) {
+//                    if (!(e.getCause() instanceof JsonSyntaxException)) {
+//                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
+//                    } else {
+//                        getView().failedToRequestRide();
+//                    }
+//                    getView().hideLoadingWaitingResponse();
+//                    getView().hideRideRequestStatus();
+//                } else {
+//                    getView().showFailedRideRequestMessage(e.getMessage());
+//                    getView().failedToRequestRide();
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(RideRequest rideRequest) {
+//                if (isViewAttached()) {
+//                    proccessGetCurrentRideRequest(rideRequest);
+//                    getView().onSuccessCreateRideRequest(rideRequest);
+//                }
+//            }
+//        });
+//    }
+
     @Override
-    public void actionRetryRideRequest(RequestParams requestParams) {
-        createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (!isViewAttached()) return;
-                if (e instanceof TosConfirmationHttpException) {
-                    if (!(e.getCause() instanceof JsonSyntaxException)) {
-                        getView().openTosConfirmationWebView(((TosConfirmationHttpException) e).getTosUrl());
-                    } else {
-                        getView().failedToRequestRide();
-                    }
-                    getView().hideLoadingWaitingResponse();
-                    getView().hideRideRequestStatus();
-                } else {
-                    getView().showFailedRideRequestMessage(e.getMessage());
-                    getView().failedToRequestRide();
-                }
-            }
-
-            @Override
-            public void onNext(RideRequest rideRequest) {
-                if (isViewAttached()) {
-                    proccessGetCurrentRideRequest(rideRequest);
-                    getView().onSuccessCreateRideRequest(rideRequest);
-                }
-            }
-        });
-    }
-
-    @Override
-    public void proccessGetCurrentRideRequest(RideRequest result) {
+    public void
+    proccessGetCurrentRideRequest(RideRequest result) {
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
@@ -222,7 +267,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
                 getView().renderInProgressRequest(result);
-                getView().showRequestRideStatus(String.format("Will arrive to destination in %s minutes", String.valueOf(result.getDestination().getEta())));
+                getView().showRequestRideStatus(String.format("On Trip", String.valueOf(result.getDestination().getEta())));
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideFindingUberNotification();
@@ -315,7 +360,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private Runnable timedTask = new Runnable() {
         @Override
         public void run() {
+
+            //if get view is null
             if (getView() == null) {
+                if (handler != null) {
+                    handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                }
+
                 return;
             }
 

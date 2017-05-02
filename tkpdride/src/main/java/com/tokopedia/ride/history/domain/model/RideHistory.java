@@ -1,5 +1,8 @@
 package com.tokopedia.ride.history.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
@@ -8,7 +11,7 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
  * Created by alvarisi on 4/11/17.
  */
 
-public class RideHistory {
+public class RideHistory implements Parcelable {
     private String requestId;
     private String productId;
     private String status;
@@ -99,4 +102,53 @@ public class RideHistory {
     public void setRequestTime(String requestTime) {
         this.requestTime = requestTime;
     }
+
+    public RideHistory() {
+
+    }
+
+    protected RideHistory(Parcel in) {
+        requestId = in.readString();
+        productId = in.readString();
+        status = in.readString();
+        vehicle = (Vehicle) in.readValue(Vehicle.class.getClassLoader());
+        driver = (Driver) in.readValue(Driver.class.getClassLoader());
+        pickup = (LocationLatLng) in.readValue(LocationLatLng.class.getClassLoader());
+        destination = (LocationLatLng) in.readValue(LocationLatLng.class.getClassLoader());
+        shared = in.readByte() != 0x00;
+        payment = (Payment) in.readValue(Payment.class.getClassLoader());
+        requestTime = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(requestId);
+        dest.writeString(productId);
+        dest.writeString(status);
+        dest.writeValue(vehicle);
+        dest.writeValue(driver);
+        dest.writeValue(pickup);
+        dest.writeValue(destination);
+        dest.writeByte((byte) (shared ? 0x01 : 0x00));
+        dest.writeValue(payment);
+        dest.writeString(requestTime);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<RideHistory> CREATOR = new Parcelable.Creator<RideHistory>() {
+        @Override
+        public RideHistory createFromParcel(Parcel in) {
+            return new RideHistory(in);
+        }
+
+        @Override
+        public RideHistory[] newArray(int size) {
+            return new RideHistory[size];
+        }
+    };
 }

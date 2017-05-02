@@ -113,10 +113,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         public void onConnected(@Nullable Bundle bundle) {
                             if (getFuzedLocation() != null) {
                                 mCurrentLocation = getFuzedLocation();
-                                //enable boolean to update prodct list based on actual location
-                                mRenderProductListBasedOnLocationUpdates = true;
+                                if (!getView().isLaunchedWithLocation()) {
+                                    setSourceAsCurrentLocation();
+                                    mRenderProductListBasedOnLocationUpdates = true;
+                                } else {
+                                    mRenderProductListBasedOnLocationUpdates = false;
+                                }
+
                                 startLocationUpdates();
-                                setSourceAsCurrentLocation();
                             } else {
                                 //getView().showMessage(getView().getActivity().getString(R.string.msg_enter_location), getView().getActivity().getString(R.string.btn_enter_location));
                                 checkLocationSettings();
@@ -165,7 +169,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         // initialize location requests here.
                         mCurrentLocation = getFuzedLocation();
                         startLocationUpdates();
-                        setSourceAsCurrentLocation();
+                        if (!getView().isLaunchedWithLocation()) {
+                            setSourceAsCurrentLocation();
+                        }
 
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:

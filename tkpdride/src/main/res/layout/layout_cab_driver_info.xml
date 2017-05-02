@@ -87,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:singleLine="true"
-            android:text="10 min away"
+            android:text="1 min away"
             android:textColor="@color/accent_material_light"
             android:textSize="15sp" />
     </RelativeLayout>

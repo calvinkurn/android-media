@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
@@ -48,6 +49,16 @@ public class FragmentRechargeWebView extends Fragment {
                 e.printStackTrace();
             }
             super.onProgressChanged(view, newProgress);
+        }
+
+        @SuppressWarnings("deprecation")
+        public void onConsoleMessage(String message, int lineNumber, String sourceID) {
+            Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
+        }
+
+        public boolean onConsoleMessage(ConsoleMessage cm) {
+            Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
+            return true;
         }
     }
 

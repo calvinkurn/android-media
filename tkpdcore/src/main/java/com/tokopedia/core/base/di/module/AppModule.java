@@ -10,6 +10,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.di.module.*;
 
 import dagger.Module;
 import dagger.Provides;

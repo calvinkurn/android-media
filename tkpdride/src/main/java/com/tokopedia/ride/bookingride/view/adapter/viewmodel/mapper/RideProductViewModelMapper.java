@@ -72,13 +72,22 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setProductName(product.getProduct().getDisplayName());
             rideProductViewModel.setProductId(product.getProduct().getProductId());
             rideProductViewModel.setProductImage(product.getProduct().getImage());
-            rideProductViewModel.setProductPriceFmt(fareEstimate.getFare().getDisplay());
-            rideProductViewModel.setProductPrice(fareEstimate.getFare().getValue());
-            rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(true);
+
+            if (fareEstimate.getFare() != null) {
+                rideProductViewModel.setProductPriceFmt(fareEstimate.getFare().getDisplay());
+                rideProductViewModel.setProductPrice(fareEstimate.getFare().getValue());
+                rideProductViewModel.setFareId(fareEstimate.getFare().getFareId());
+            }
+
+            if (fareEstimate.getEstimate() != null) {
+                rideProductViewModel.setSurgePrice(true);
+                rideProductViewModel.setSurgeMultiplier(fareEstimate.getEstimate().getSurgeMultiplier());
+                rideProductViewModel.setSurgeConfirmationHref(fareEstimate.getEstimate().getSurgeConfirmationHref());
+            }
         }
         return rideProductViewModel;
     }

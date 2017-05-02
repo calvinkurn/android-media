@@ -16,4 +16,5 @@ public interface OtpRepository {
 
     Observable<ValidateOtpModel> validateOtp(TKPDMapParam<String, Object> parameters);
 
+    Observable<RequestOtpModel> requestOtpToEmail(TKPDMapParam<String, Object> parameters);
 }

@@ -101,39 +101,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:paddingTop="5dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="5dp">
                     <TextView
                         android:id="@+id/gold_merchant_announcement_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/tkpd_green_header"
-                        android:layout_marginRight="5dp"
                         android:layout_marginEnd="5dp"
+                        android:layout_marginRight="5dp"
+                        android:textColor="@color/tkpd_green_header"
                         android:textSize="13dp"/>
                     <ImageView
                         android:id="@+id/gold_merchant_announcement_image"
-                        android:src="@drawable/chevron_right"
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:src="@drawable/chevron_right"
+                        android:visibility="gone"
                         />
                 </LinearLayout>
 
 
 
                 <RelativeLayout
-                    android:background="@drawable/background_header_home_seller"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:layout_marginTop="13dp">
+                    android:layout_marginTop="13dp"
+                    android:background="@drawable/background_header_home_seller">
 
                     <RelativeLayout
-                        android:layout_centerVertical="true"
                         android:id="@+id/seller_home_deposit_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_toLeftOf="@+id/seller_home_separator">
 
                         <TextView
@@ -163,11 +163,11 @@
                         android:layout_centerInParent="true"
                         android:background="@color/colorLineSellerHome"/>
 
-                    <com.tokopedia.sellerapp.home.view.ReputationView
-                        android:layout_centerVertical="true"
+                    <com.tokopedia.seller.home.view.ReputationView
                         android:id="@+id/seller_home_reputation_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_toRightOf="@+id/seller_home_separator"/>
 
                 </RelativeLayout>

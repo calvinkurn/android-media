@@ -58,6 +58,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
             public void onNext(List<RideHistory> rideHistories) {
                 if (isViewAttached()) {
                     ArrayList<Visitable> histories = new ArrayList<>();
+                    String mapSize = getView().getMapImageSize();
                     for (RideHistory rideHistory : rideHistories) {
                         RideHistoryViewModel viewModel = new RideHistoryViewModel();
                         viewModel.setDriverCarDisplay(String.format("%s %s %s",
@@ -75,19 +76,47 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setStartLongitude(rideHistory.getPickup().getLongitude());
                         viewModel.setEndLatitude(rideHistory.getDestination().getLatitude());
                         viewModel.setEndLongitude(rideHistory.getDestination().getLongitude());
+                        viewModel.setRequestId(rideHistory.getRequestId());
+                        viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
+                        viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
+
+                        double endLatitude = rideHistory.getDestination() == null ? 0 : rideHistory.getDestination().getLatitude();
+                        double endLogitude = rideHistory.getDestination() == null ? 0 : rideHistory.getDestination().getLongitude();
+                        viewModel.setMapImage(getMapImageUrl(rideHistory.getPickup().getLatitude(), rideHistory.getPickup().getLongitude(), endLatitude, endLogitude, mapSize));
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();
                     getView().setRefreshLayoutToFalse();
                     if (histories.size() > 0) {
                         getView().renderHistoryLists(histories);
-                        actionGetOverviewPolyline(histories);
+                        //actionGetOverviewPolyline(histories);
                     } else {
                         getView().showEmptyResultLayout();
                     }
                 }
             }
         });
+    }
+
+    private String getMapImageUrl(double startlatitude, double startLongitude, double endLatitude, double endLongitude, String mapSize) {
+        //get screen width
+        getView().getMapImageSize();
+
+
+        StringBuffer urlBuffer = new StringBuffer("https://maps.googleapis.com/maps/api/staticmap?size=").append(mapSize);
+        urlBuffer.append("&markers=color:green|label:S|").append(startlatitude + "," + startLongitude)
+                .append("&zoom=13")
+                .append("&key=").append(getView().getMapKey());
+
+
+        if (endLatitude != 0 && endLongitude != 0) {
+            urlBuffer.append("&markers=color:red|label:D|").append(endLatitude + "," + endLongitude);
+        }
+
+        return urlBuffer.toString();
+
+        //String mapImageUrl = "https://maps.googleapis.com/maps/api/staticmap?size=500x140&markers=color:green|label:S|" + pickupLatLonString + "&zoom=13&key=" + getView().getMapKey();
+        //return mapImageUrl;
     }
 
     private void actionGetOverviewPolyline(ArrayList<Visitable> histories) {

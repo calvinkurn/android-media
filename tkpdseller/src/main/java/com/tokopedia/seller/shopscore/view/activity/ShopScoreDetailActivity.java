@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shopscore.view.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragment;
@@ -20,6 +23,12 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     private static final String SELLER_CENTER_LINK = "https://seller.tokopedia.com/";
     private static final String SHOP_SCORE_INFORMATION = "https://help.tokopedia.com/hc/en-us/articles/115000854466-Performa-Toko";
     private FragmentManager fragmentManager;
+
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_SELLER_SHOP_SCORE;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -87,13 +96,20 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
 
     @Override
     public void goToSellerCenter() {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SELLER_CENTER_LINK));
-        startActivity(myIntent);
+        openUrl(Uri.parse(SELLER_CENTER_LINK));
     }
 
     @Override
     public void goToCompleteInformation() {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(SHOP_SCORE_INFORMATION));
-        startActivity(myIntent);
+        openUrl(Uri.parse(SHOP_SCORE_INFORMATION));
+    }
+
+    private void openUrl(Uri parse) {
+        try {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW, parse);
+            startActivity(myIntent);
+        } catch (ActivityNotFoundException e) {
+            NetworkErrorHelper.showSnackbar(this, getString(R.string.error_no_browser));
+        }
     }
 }

@@ -24,6 +24,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ConfirmBookingDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
+import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
@@ -40,6 +41,7 @@ import butterknife.OnClick;
  */
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
+    private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -72,6 +74,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashActivationLabelTextView;
     @BindView(R2.id.tv_activation_button)
     TextView tokoCashActivationButton;
+    @BindView(R2.id.tv_error)
+    TextView errortextView;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -84,7 +88,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     public ConfirmBookingRideFragment() {
-
     }
 
     public static ConfirmBookingRideFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
@@ -122,6 +125,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         headerTextView.setText(confirmBookingViewModel.getHeaderTitle());
         priceTextView.setText(confirmBookingViewModel.getPriceFmt());
         bookingConfirmationTextView.setText(getString(R.string.btn_request) + " " + confirmBookingViewModel.getProductDisplayName());
+
+        if (confirmBookingViewModel.getSurgeMultiplier() > 0) {
+            surgeRateTextView.setText(confirmBookingViewModel.getSurgeMultiplier() + "x");
+            surgeRateTextView.setVisibility(View.VISIBLE);
+        } else {
+            surgeRateTextView.setVisibility(View.GONE);
+        }
 //        seatsTextView.setText(confirmBookingViewModel.getSeatCount());
     }
 
@@ -149,6 +159,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.cab_select_seat)
     public void actionSelectSeatButtonClicked() {
+        hideErrorMessage();
+
         if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
             if (confirmBookingViewModel.getMaxCapacity() > 1) {
                 List<SeatViewModel> seatViewModels = new ArrayList<>();
@@ -187,9 +199,15 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         return requestParams;
     }
 
+    @OnClick(R2.id.apply_promo_card_layout)
+    public void actionApplyPromoLayoutClicked() {
+        startActivityForResult(ApplyPromoActivity.getCallingActivity(getActivity()), APPLY_PROMO_ACTIVITY_REQUEST_CODE);
+    }
+
     @OnClick(R2.id.cab_confirmation)
     public void actionConfirmButtonClicked() {
         clearConfiguration();
+        hideErrorMessage();
         mListener.actionRequestRide(confirmBookingViewModel);
     }
 
@@ -199,12 +217,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
-    public void showErrorChangeSeat(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void renderFareEstimate(String fareId, String display, float price) {
+    public void renderFareEstimate(String fareId, String display, float price, float surgeMultiplier, String surgeConfirmationHref) {
         if (isRemoving()) {
             return;
         }
@@ -212,7 +225,16 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         confirmBookingViewModel.setFareId(fareId);
         confirmBookingViewModel.setPriceFmt(display);
         confirmBookingViewModel.setPrice(price);
+        confirmBookingViewModel.setSurgeMultiplier(surgeMultiplier);
+        confirmBookingViewModel.setSurgeConfirmationHref(surgeConfirmationHref);
         priceTextView.setText(display);
+
+        if (surgeMultiplier > 0) {
+            surgeRateTextView.setText(surgeMultiplier + "x");
+            surgeRateTextView.setVisibility(View.VISIBLE);
+        } else {
+            surgeRateTextView.setVisibility(View.GONE);
+        }
 
         updateSeatCountUi();
     }
@@ -312,18 +334,29 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     }
 
     @Override
+    public void showErrorMessage(String message) {
+        errortextView.setVisibility(View.VISIBLE);
+        errortextView.setText(message);
+    }
+
+    @Override
+    public void hideErrorMessage() {
+        errortextView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WALLET_WEB_VIEW_REQUEST_CODE) {
-            presenter.clearTokoCashCache();
-            presenter.actionCheckBalance();
+            //presenter.clearTokoCashCache();
+            //presenter.actionCheckBalance();
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        presenter.actionCheckBalance();
+        //presenter.actionCheckBalance();
     }
 
     @Override

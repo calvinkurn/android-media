@@ -19,7 +19,6 @@ import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.PeopleAddressRepository;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompletePresenter;
-import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

@@ -186,7 +186,7 @@ public abstract class TopAdsBaseManageGroupPromoFragment<T extends TopAdsManageG
 
     @Override
     protected void initialVar() {
-        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), android.R.layout.simple_dropdown_item_1line);
+        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
         adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
             @Override
             public ArrayList<String> getData() {

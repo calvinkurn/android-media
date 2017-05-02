@@ -14,29 +14,34 @@ import java.util.List;
 
 public class RideHistoryEntityMapper {
     private RideRequestEntityMapper rideRequestEntityMapper;
+
     public RideHistoryEntityMapper() {
         rideRequestEntityMapper = new RideRequestEntityMapper();
     }
 
-    public List<RideHistory> transform(List<RideHistoryEntity> rideHistoryEntities){
+    public List<RideHistory> transform(List<RideHistoryEntity> rideHistoryEntities) {
         List<RideHistory> rideHistories = new ArrayList<>();
-        RideHistory rideHistory;
-        for (RideHistoryEntity entity : rideHistoryEntities){
-            rideHistory = transform(entity);
-            if (rideHistory != null){
-                rideHistories.add(rideHistory);
+
+        if (rideHistoryEntities != null) {
+            RideHistory rideHistory;
+            for (RideHistoryEntity entity : rideHistoryEntities) {
+                rideHistory = transform(entity);
+                if (rideHistory != null) {
+                    rideHistories.add(rideHistory);
+                }
             }
         }
+
         return rideHistories;
     }
 
     public RideHistory transform(RideHistoryEntity entity) {
         RideHistory rideHistory = null;
-        if (entity != null){
+        if (entity != null) {
             rideHistory = new RideHistory();
             rideHistory.setProductId(entity.getProductId());
             rideHistory.setRequestId(entity.getRequestId());
-            rideHistory.setStatus(entity.getStatus());
+            rideHistory.setStatus(entity.getStatus() == null ? "" : entity.getStatus().toUpperCase());
             rideHistory.setShared(entity.isShared());
             rideHistory.setVehicle(rideRequestEntityMapper.transform(entity.getVehicleEntity()));
             rideHistory.setDriver(rideRequestEntityMapper.transform(entity.getDriverEntity()));
@@ -50,7 +55,7 @@ public class RideHistoryEntityMapper {
 
     private Payment transform(PaymentEntity paymentEntity) {
         Payment payment = null;
-        if (paymentEntity != null){
+        if (paymentEntity != null) {
             payment = new Payment();
             payment.setCurrency(paymentEntity.getCurrencyCode());
             payment.setValue(paymentEntity.getAmount());

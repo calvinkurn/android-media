@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -17,7 +18,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +25,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -56,6 +57,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
@@ -86,9 +88,8 @@ import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.FINDI
 
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
         DriverDetailFragment.OnFragmentInteractionListener {
-    private static final int REQUEST_CODE_TOS_CONFIRM_DIALOG = 1005;
+    private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
-    private static final int REQUEST_CODE_SURGE_CONFIRM_DIALOG = 1007;
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
@@ -219,11 +220,31 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getSource().getLongitude()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_ADDRESS, String.valueOf(confirmBookingViewModel.getSource().getAddress()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_ADDRESS_NAME, String.valueOf(confirmBookingViewModel.getSource().getTitle()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_ADDRESS, String.valueOf(confirmBookingViewModel.getDestination().getAddress()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_ADDRESS_NAME, String.valueOf(confirmBookingViewModel.getDestination().getTitle()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_USER_ID, userId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_HASH, hash);
         requestParams.putString(CreateRideRequestUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
+    }
+
+    @Override
+    public RequestParams getFareEstimateParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(confirmBookingViewModel.getSource().getLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getSource().getLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
+        requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(confirmBookingViewModel.getProductId()));
+
+        //add seat count for Uber Pool only
+        if (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.confirm_booking_uber_pool_key))) {
+            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(confirmBookingViewModel.getSeatCount()));
+        }
         return requestParams;
     }
 
@@ -315,34 +336,24 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void openTosConfirmationWebView(String tosUrl) {
+    public void openInterruptConfirmationWebView(String tosUrl) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("tos_dialog");
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("interrupt_dialog");
         if (previousDialog != null) {
             fragmentTransaction.remove(previousDialog);
         }
         fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_TOS_CONFIRM_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "tos_dialog");
+        DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "interrupt_dialog");
     }
 
     @Override
-    public void openSurgeConfirmationWebView(String tosUrl) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("surge_dialog");
-        if (previousDialog != null) {
-            fragmentTransaction.remove(previousDialog);
-        }
-        fragmentTransaction.addToBackStack(null);
-        DialogFragment dialogFragment = TosConfirmationDialogFragment.newInstance(tosUrl);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_SURGE_CONFIRM_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), "surge_dialog");
-    }
+    public void failedToRequestRide(String message) {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(OnTripActivity.EXTRA_FAILED_MESSAGE, message);
 
-    @Override
-    public void failedToRequestRide() {
-        getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE);
+        getActivity().setResult(OnTripActivity.RIDE_BOOKING_RESULT_CODE, intent);
         getActivity().finish();
     }
 
@@ -350,24 +361,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case REQUEST_CODE_TOS_CONFIRM_DIALOG:
+            case REQUEST_CODE_INTERRUPT_DIALOG:
                 if (resultCode == Activity.RESULT_OK) {
-                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
+                    String id = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_ID);
+                    String key = data.getStringExtra(InterruptConfirmationDialogFragment.EXTRA_KEY);
                     RequestParams requestParams = getParam();
-                    requestParams.putString("tos_confirmation_id", id);
-                    presenter.actionRetryRideRequest(requestParams);
+                    if (key != null && key.length() > 0) {
+                        requestParams.putString(key, id);
+                    }
+                    presenter.actionRideRequest(requestParams);
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(getActivity(), R.string.create_request_failed_tos_confirmation, Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case REQUEST_CODE_SURGE_CONFIRM_DIALOG:
-                if (resultCode == Activity.RESULT_OK) {
-                    String id = data.getStringExtra(TosConfirmationDialogFragment.EXTRA_ID);
-                    RequestParams requestParams = getParam();
-                    requestParams.putString("surge_confirmation_id", id);
-                    presenter.actionRetryRideRequest(requestParams);
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    Toast.makeText(getActivity(), R.string.create_request_failed_surge_confirm, Toast.LENGTH_SHORT).show();
+                    //TODO: we may need to update the fare status again
+                    getActivity().finish();
                 }
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
@@ -409,6 +414,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        setTitle(R.string.title_trip_accepted);
     }
 
     private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
@@ -424,6 +431,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (bottomFragment instanceof DriverDetailFragment) {
+            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.title_trip_in_progress));
+        }
+
+        setTitle(R.string.title_trip_in_progress);
+    }
+
+    public void setTitle(int resId) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(resId);
     }
 
     @Override
@@ -485,6 +503,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
+
+        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+        if (bottomFragment instanceof DriverDetailFragment) {
+            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.message_trip_in_arriving));
+        }
+
+        setTitle(R.string.title_trip_arriving);
     }
 
     @Override
@@ -557,12 +582,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(source.getLatitude(), source.getLongitude()))
-                .icon(getMarkerIcon("#569222"))
+                .icon(getMarkerIcon(R.drawable.marker_green))
                 .title(source.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
-                .icon(getMarkerIcon("#DE2F34"))
+                .icon(getMarkerIcon(R.drawable.marker_red))
                 .title(destination.getAddress()));
 
         //zoom map to fit both source and dest
@@ -572,10 +597,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
-    public BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    public BitmapDescriptor getMarkerIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     private void reDrawDriverMarker(RideRequest result) {
@@ -585,11 +610,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                .icon(getCarMapIcon(R.drawable.car_map_icon))
                 .rotation(result.getLocation().getBearing())
                 .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
+    }
+
+    private BitmapDescriptor getCarMapIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.car_marker_width), getResources().getDimensionPixelSize(R.dimen.car_marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     @Override
@@ -733,6 +764,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideContactPanel() {
+        //do not hide,if layout is already hidden
+        if (contactPanelLayout.getVisibility() == View.GONE) {
+            return;
+        }
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -761,6 +797,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideCancelPanel() {
+        //do not hide, layout is already hidden
+        if (cancelPanelLayout.getVisibility() == View.GONE) {
+            return;
+        }
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -855,6 +896,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         RidePushNotificationBuildAndShow.cancelActiveNotification(getActivity());
     }
 
+    @Override
+    public String getResourceString(int resourceId) {
+        return getString(resourceId);
+    }
+
+    @Override
+    public boolean isSurge() {
+        return confirmBookingViewModel.getSurgeMultiplier() > 0;
+    }
+
+    @Override
+    public String getSurgeConfirmationHref() {
+        return confirmBookingViewModel.getSurgeConfirmationHref();
+    }
+
     @OnClick(R2.id.btn_call)
     public void actionCallBtnClicked() {
         openCallIntent();
@@ -884,8 +940,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick(R2.id.block_translucent_view)
     public void actionBlockTranslucentClicked() {
-        hideContactPanel();
-        hideCancelPanel();
+        //hideContactPanel();
+        //hideCancelPanel();
     }
 
     private void openCallIntent() {
@@ -930,5 +986,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 presenter.actionOnReceivePushNotification(rideRequest);
             }
         };
+    }
+
+    private void setTitle(String title) {
+        if (getActivity() == null) return;
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 }

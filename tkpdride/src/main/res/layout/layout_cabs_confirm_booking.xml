@@ -53,7 +53,7 @@
             android:layout_centerVertical="true"
             android:drawableLeft="@drawable/cab_surge"
             android:drawablePadding="5dp"
-            android:text="1.2x"
+            android:text="1x"
             android:textColor="#25a8ed"
             android:textSize="13sp"
             android:visibility="gone" />
@@ -105,7 +105,17 @@
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_gravity="center"
-        android:padding="12dp" />
+        android:padding="12dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Error"
+        android:textColor="@color/red_600"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/cab_confirmation"
@@ -125,7 +135,8 @@
         android:id="@+id/toko_cash_topup_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_tokocash_label"
@@ -154,7 +165,8 @@
         android:id="@+id/toko_cash_activation_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_activation_label"

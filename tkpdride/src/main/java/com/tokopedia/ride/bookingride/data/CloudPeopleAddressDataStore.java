@@ -5,8 +5,6 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
 import com.tokopedia.ride.common.exception.ResponseErrorException;
 
-import org.json.JSONException;
-
 import java.util.Map;
 
 import retrofit2.Response;

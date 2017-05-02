@@ -106,7 +106,7 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
         LuckyShopImage.loadImage(ivLuckyShop, data.getShopInfo().getShopLucky());
 
         ivBtnFav.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
-        ivGoldShop.setVisibility(data.getShopInfo().getShopIsGold() == 1 ? VISIBLE : GONE);
+        ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
         ivShopMessage.setVisibility(data.getShopInfo().getShopId()
                 .equals(SessionHandler.getShopID(getContext())) ? GONE : VISIBLE);
@@ -285,5 +285,9 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
             ivGoldShop.setVisibility(GONE);
             ivOfficialStore.setVisibility(VISIBLE);
         }
+    }
+
+    private boolean showGoldBadge(ProductDetailData data) {
+        return data.getShopInfo().getShopIsGold() == 1 && data.getShopInfo().shopIsGoldBadge();
     }
 }

@@ -29,4 +29,9 @@ public class OtpRepositoryImpl implements OtpRepository {
     public Observable<ValidateOtpModel> validateOtp(TKPDMapParam<String, Object> parameters) {
         return otpSourceFactory.createCloudOtpSource().validateOtp(parameters);
     }
+
+    @Override
+    public Observable<RequestOtpModel> requestOtpToEmail(TKPDMapParam<String, Object> parameters) {
+        return otpSourceFactory.createCloudOtpSource().requestOtpToEmail(parameters);
+    }
 }

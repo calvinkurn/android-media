@@ -5,12 +5,15 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.Map;
 
+import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.QueryMap;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -89,4 +92,54 @@ public interface ResCenterActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION)
     Observable<Response<TkpdResponse>> editAddressResolution(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_CANCEL_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> cancelResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPORT_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> reportResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_FINISH_RES_RETURN_V2)
+    Observable<Response<TkpdResponse>> finishResolutionReturn2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_ADMIN_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> acceptAdminResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_ACCEPT_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> acceptResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_INPUT_ADDRESS_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> inputAddressResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_EDIT_ADDRESS_RESOLUTION_V2)
+    Observable<Response<TkpdResponse>> editAddressResolution2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_SUBMIT_V2)
+    Observable<Response<TkpdResponse>> replyConversationSubmit2(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.ResCenter.PATH_REPLY_CONVERSATION_VALIDATION_V2)
+    Observable<Response<TkpdResponse>> replyConversationValidation2(@FieldMap Map<String, Object> params);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> uploadImage(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params,
+                                                   @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
+
+    @Multipart
+    @POST("")
+    Observable<Response<TkpdResponse>> createImage(@Url String url,
+                                                   @PartMap Map<String, RequestBody> params);
+
+
 }
+

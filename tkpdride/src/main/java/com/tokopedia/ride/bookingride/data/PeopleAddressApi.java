@@ -2,7 +2,6 @@ package com.tokopedia.ride.bookingride.data;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
 
 import java.util.Map;
 

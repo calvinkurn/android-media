@@ -5,7 +5,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,8 +61,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
 
     public static final int LOGIN_REQUEST_CODE = 1005;
-    private static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
-    private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
+    public static final int PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE = 1006;
+    public static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 1008;
 
     private static final float DEFAUL_MAP_ZOOM = 16;
@@ -155,14 +156,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setViewListener() {
-        if (getArguments() != null) {
-            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-                if (mSource != null && mDestination != null) {
-                    setSourceLocationText(mSource.getTitle());
-                    setDestinationLocationText(mDestination.getTitle());
-                    hideMarkerCenter();
-                }
-            }
+        if (isLaunchedWithLocation() && mSource != null && mDestination != null) {
+            setSourceLocationText(mSource.getTitle());
+            setDestinationLocationText(mDestination.getTitle());
+            proccessToRenderRideProduct();
+            hideMarkerCenter();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -360,14 +358,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
-        if (getArguments() != null) {
-            if (getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
-                mSource = getArguments().getParcelable(EXTRA_SOURCE);
-                mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
-                isAlreadySelectDestination = true;
-            }
-
-
+        if (isLaunchedWithLocation()) {
+            mSource = getArguments().getParcelable(EXTRA_SOURCE);
+            mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
+            isAlreadySelectDestination = true;
         }
     }
 
@@ -513,12 +507,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         //add markers on source and destination
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mSource.getLatitude(), mSource.getLongitude()))
-                .icon(getMarkerIcon("#569222"))
+                .icon(getMarkerIcon(R.drawable.marker_green))
                 .title(mSource.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()))
-                .icon(getMarkerIcon("#DE2F34"))
+                .icon(getMarkerIcon(R.drawable.marker_red))
                 .title(mDestination.getAddress()));
 
         //zoom map to fit both source and dest
@@ -528,10 +522,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
-    public BitmapDescriptor getMarkerIcon(String color) {
-        float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor(color), hsv);
-        return BitmapDescriptorFactory.defaultMarker(hsv[0]);
+    public BitmapDescriptor getMarkerIcon(int resourceId) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height), false);
+        return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
     @OnClick(R2.id.iv_my_location_button)
@@ -574,6 +568,15 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public boolean isAlreadySelectDestination() {
         return isAlreadySelectDestination;
+    }
+
+    @Override
+    public boolean isLaunchedWithLocation() {
+        if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ALREADY_HAVE_LOC, false)) {
+            return true;
+        }
+
+        return false;
     }
 
     public void setMarkerText(String timeEst) {

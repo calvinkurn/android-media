@@ -59,7 +59,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    protected Ad adFromIntent;
+    private Ad ad;
     protected String adId;
 
     protected abstract void refreshAd();
@@ -106,7 +106,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        adFromIntent = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
@@ -130,16 +130,24 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         }
     }
 
+    boolean adStatusChanged = false;
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
         if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
-            boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
-            if (adStatusChanged) {
-                refreshAd();
-                setResultAdDetailChanged();
-            }
+            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adStatusChanged) {
+            refreshAd();
+            setResultAdDetailChanged();
+            adStatusChanged = false;
         }
     }
 
@@ -147,9 +155,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected void loadData() {
         showLoading();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
-        if (adFromIntent != null) {
-            onAdLoaded(adFromIntent);
-            adFromIntent = null;
+        if (ad != null) {
+            onAdLoaded(ad);
         } else {
             refreshAd();
         }
@@ -189,8 +196,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onAdLoaded(Ad ad) {
+        this.ad = ad;
         hideLoading();
         loadAdDetail(ad);
+        getActivity().invalidateOptionsMenu();
     }
 
     private void hideLoading() {
@@ -209,10 +218,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             }
         });
         snackbarRetry.showRetrySnackbar();
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
     public void onTurnOnAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -234,6 +245,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOffAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -329,6 +341,8 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_top_ads_detail, menu);
+        menu.findItem(R.id.menu_edit).setVisible(ad != null);
+        menu.findItem(R.id.menu_delete).setVisible(ad != null);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

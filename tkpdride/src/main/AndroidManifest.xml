@@ -36,22 +36,30 @@
             android:name=".history.view.RideHistoryActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
 
-        <receiver
-            android:name=".ontrip.receiver.CallDriverReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.calldriver" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".ontrip.receiver.ShareEtaReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.tkpd.shareeta" />
-            </intent-filter>
-        </receiver>
 
-        <activity android:name=".history.view.RideHistoryDetailActivity"></activity>
+        <activity
+            android:name=".history.view.RideHistoryDetailActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+        <activity
+            android:name=".bookingride.view.activity.ApplyPromoActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar"></activity>
     </application>
+
+    <receiver
+        android:name=".ontrip.receiver.CallDriverReceiver"
+        android:exported="false">
+        <intent-filter>
+            <action android:name="com.tokopedia.tkpd.calldriver" />
+        </intent-filter>
+    </receiver>
+
+    
+    <receiver
+        android:name=".ontrip.receiver.ShareEtaReceiver"
+        android:exported="false">
+        <intent-filter>
+            <action android:name="com.tokopedia.tkpd.shareeta" />
+        </intent-filter>
+    </receiver>
 
 </manifest>

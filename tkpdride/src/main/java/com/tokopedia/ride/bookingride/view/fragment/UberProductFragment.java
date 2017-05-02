@@ -176,6 +176,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
                             rideProductViewModel.getTimeEstimate())
             );
             confirmBookingViewModel.setMaxCapacity(rideProductViewModel.getCapacity());
+            confirmBookingViewModel.setSurgeMultiplier(rideProductViewModel.getSurgeMultiplier());
+            confirmBookingViewModel.setSurgeConfirmationHref(rideProductViewModel.getSurgeConfirmationHref());
             mInteractionListener.onProductClicked(confirmBookingViewModel);
         } else {
             //show message to enter destianation

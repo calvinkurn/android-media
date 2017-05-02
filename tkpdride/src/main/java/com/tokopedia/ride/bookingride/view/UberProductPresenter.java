@@ -12,7 +12,7 @@ import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
-import com.tokopedia.ride.common.exception.TosConfirmationHttpException;
+import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.List;
@@ -162,8 +162,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (e instanceof TosConfirmationHttpException) {
-                    //show TOS Confirmation Dialog
+                if (e instanceof InterruptConfirmationHttpException) {
+                    //show Interrupt Confirmation Dialog
                 } else {
                     //show error message
                     getView().hideProductList();

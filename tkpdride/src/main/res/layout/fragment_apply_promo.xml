@@ -1,33 +1,44 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-
-    <EditText
-        android:layout_width="match_parent"
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_bg_rounded_white_rectangle"
-        android:drawableLeft="@drawable/crux_cabs_promo_ad_ic"
-        android:drawableTint="@color/grey_700"
-        android:gravity="center"
-        android:hint="@string/hint_enter_promo_code"
-        android:padding="8dp"
-        android:textAllCaps="true"
-        android:textColor="@color/black" />
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/cab_confirmation"
+    <LinearLayout
+        android:id="@+id/ll_promo_layout"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_filled_theme_bttn"
-        android:gravity="center"
-        android:text="@string/btn_apply"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="15sp" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
 
+        <EditText
+            android:id="@+id/et_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_bg_rounded_white_rectangle"
+            android:drawableLeft="@drawable/crux_cabs_promo_ad_ic"
+            android:drawableTint="@color/grey_700"
+            android:gravity="center"
+            android:hint="@string/hint_enter_promo_code"
+            android:inputType="textCapCharacters"
+            android:padding="8dp"
+            android:textColor="@color/black" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tv_submit_promo"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_filled_theme_bttn"
+            android:gravity="center"
+            android:text="@string/btn_apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+    </LinearLayout>
+</RelativeLayout>
