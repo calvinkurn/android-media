@@ -37,15 +37,18 @@ import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -71,15 +74,17 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private OnQueryListener mOnQueryListener;
     private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
     private CompositeSubscription compositeSubscription;
-
+    private GetUserAddressUseCase getUserAddressUseCase;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
     }
 
-    public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase) {
+    public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase,
+                                      GetUserAddressUseCase getUserAddressUseCase) {
         mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
         compositeSubscription = new CompositeSubscription();
+        this.getUserAddressUseCase = getUserAddressUseCase;
     }
 
     @Override
@@ -111,8 +116,94 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             .subscribe(new AutoCompletePlaceTextChanged())
             );
             getView().setActiveMarketplaceSource();
-            actionGetPeopleAddresses(false);
+            actionGetUserAddresses(false);
         }
+    }
+
+    @Override
+    public void actionGetUserAddresses(final boolean isLoadMore) {
+        getView().showAutoDetectLocationButton();
+        getUserAddressUseCase.execute(getView().getUserAddressParam(),
+                new Subscriber<List<RideAddress>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<RideAddress> rideAddresses) {
+                        if (isViewAttached() && !isUnsubscribed()) {
+                            if (!getView().isActiveMarketPlaceSource()) return;
+                            compositeSubscription.clear();
+                            ArrayList<Visitable> addresses = new ArrayList<>();
+                            for (RideAddress rideAddress : rideAddresses){
+                                if (!TextUtils.isEmpty(rideAddress.getLongitude()) && !TextUtils.isEmpty(rideAddress.getLatitude())) {
+                                    PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                                    address.setAddress(String.valueOf(rideAddress.getAddressDescription()));
+                                    address.setTitle(String.valueOf(rideAddress.getAddressName()));
+                                    address.setAddressId("0");
+                                    address.setLatitude(Double.parseDouble(rideAddress.getLatitude()));
+                                    address.setLongitude(Double.parseDouble(rideAddress.getLongitude()));
+                                    address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
+                                    addresses.add(address);
+                                }
+                            }
+                            getView().showListPlaces();
+                            getView().setPagingConfiguration(null);
+                            if (!isLoadMore) {
+                                getView().renderPlacesList(addresses);
+                            } else {
+                                getView().renderMorePlacesList(addresses);
+                            }
+                            getView().hideAutoCompleteLoadingCross();
+                        }
+                    }
+                });
+                /* new Subscriber<PeopleAddressWrapper>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(PeopleAddressWrapper wrapper) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (!getView().isActiveMarketPlaceSource()) return;
+                    compositeSubscription.clear();
+                    ArrayList<Visitable> addresses = new ArrayList<>();
+                    for (PeopleAddress peopleAddress : wrapper.getAddresses()) {
+                        if (!TextUtils.isEmpty(peopleAddress.getLongitude()) && !TextUtils.isEmpty(peopleAddress.getLatitude())) {
+                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                            address.setAddress(String.valueOf(peopleAddress.getAddressStreet()));
+                            address.setTitle(String.valueOf(peopleAddress.getAddressName()));
+                            address.setAddressId(peopleAddress.getAddressId());
+                            address.setLatitude(Double.parseDouble(peopleAddress.getLatitude()));
+                            address.setLongitude(Double.parseDouble(peopleAddress.getLongitude()));
+                            address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
+                            addresses.add(address);
+                        }
+                    }
+                    getView().showListPlaces();
+                    getView().setPagingConfiguration(wrapper.getPaging());
+                    if (!isLoadMore) {
+                        getView().renderPlacesList(addresses);
+                    } else {
+                        getView().renderMorePlacesList(addresses);
+                    }
+                    getView().hideAutoCompleteLoadingCross();
+                }
+            }
+        });*/
     }
 
     @Override

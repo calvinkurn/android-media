@@ -6,6 +6,7 @@ import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
@@ -14,6 +15,7 @@ import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
@@ -37,6 +39,8 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final ReceiptEntityMapper receiptEntityMapper;
     private final PromoEntityMapper promoEntityMapper;
     private final RideHistoryEntityMapper rideHistoryEntityMapper;
+    private final RideAddressEntityMapper rideAddressEntityMapper;
+
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory,
                                      ProductEntityMapper productEntityMapper,
@@ -49,6 +53,7 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         receiptEntityMapper = new ReceiptEntityMapper();
         promoEntityMapper = new PromoEntityMapper();
         rideHistoryEntityMapper = new RideHistoryEntityMapper();
+        rideAddressEntityMapper = new RideAddressEntityMapper();
     }
 
     @Override
@@ -196,6 +201,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public ApplyPromo call(PromoEntity promoEntity) {
                         return new ApplyPromo();
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<RideAddress>> getAddresses(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getAddresses(parameters)
+                .map(new Func1<List<RideAddressEntity>, List<RideAddress>>() {
+                    @Override
+                    public List<RideAddress> call(List<RideAddressEntity> rideAddressEntities) {
+                        return rideAddressEntityMapper.transform(rideAddressEntities);
                     }
                 });
     }

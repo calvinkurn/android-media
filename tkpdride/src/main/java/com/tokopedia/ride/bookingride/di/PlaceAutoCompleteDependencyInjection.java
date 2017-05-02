@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.di;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -12,13 +14,26 @@ import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.data.PeopleAddressApi;
 import com.tokopedia.ride.bookingride.data.PeopleAddressDataStoreFactory;
 import com.tokopedia.ride.bookingride.data.PeopleAddressRepositoryData;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.PeopleAddressRepository;
+import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompleteContract;
 import com.tokopedia.ride.bookingride.view.PlaceAutoCompletePresenter;
+import com.tokopedia.ride.common.network.RideInterceptor;
+import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
+import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
+import com.tokopedia.ride.common.ride.data.ProductEntityMapper;
+import com.tokopedia.ride.common.ride.data.TimeEstimateEntityMapper;
+import com.tokopedia.ride.common.ride.data.source.api.RideApi;
+import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
+import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -81,10 +96,18 @@ public class PlaceAutoCompleteDependencyInjection {
         return logInterceptor;
     }
 
-    public OkHttpClient provideOkhttpClient(OkHttpRetryPolicy okHttpRetryPolicy) {
-        return OkHttpFactory.create()
-                .addOkHttpRetryPolicy(okHttpRetryPolicy)
-                .buildClientDefaultAuth();
+    private RideInterceptor provideRideInterceptor(String token, String userId) {
+        return new RideInterceptor(token, userId);
+    }
+
+    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor) {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
+        clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
+        clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
+        clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
+        clientBuilder.interceptors().add(rideInterceptor);
+        clientBuilder.interceptors().add(loggingInterceptor);
+        return clientBuilder.build();
     }
 
     private Retrofit provideRideRetrofit(OkHttpClient client,
@@ -93,6 +116,40 @@ public class PlaceAutoCompleteDependencyInjection {
                                          StringResponseConverter stringResponseConverter,
                                          GsonConverterFactory gsonConverterFactory,
                                          RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
+        return createRetrofit(RideUrl.BASE_URL,
+                client,
+                hostConverter,
+                tkpdResponseConverter,
+                stringResponseConverter,
+                gsonConverterFactory,
+                rxJavaCallAdapterFactory);
+    }
+
+    private RideApi provideRideApi(Retrofit retrofit) {
+        return retrofit.create(RideApi.class);
+    }
+
+    private BookingRideDataStoreFactory provideBookingRideDataStoreFactory(RideApi rideApi) {
+        return new BookingRideDataStoreFactory(rideApi);
+    }
+
+    private BookingRideRepository provideBookingRideRepository(BookingRideDataStoreFactory factory,
+                                                               ProductEntityMapper mapper, TimeEstimateEntityMapper estimateEntityMapper) {
+        return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
+    }
+
+    public OkHttpClient provideOkhttpClient(OkHttpRetryPolicy okHttpRetryPolicy) {
+        return OkHttpFactory.create()
+                .addOkHttpRetryPolicy(okHttpRetryPolicy)
+                .buildClientDefaultAuth();
+    }
+
+    private Retrofit provideMarketPlaceRetrofit(OkHttpClient client,
+                                                GeneratedHostConverter hostConverter,
+                                                TkpdResponseConverter tkpdResponseConverter,
+                                                StringResponseConverter stringResponseConverter,
+                                                GsonConverterFactory gsonConverterFactory,
+                                                RxJavaCallAdapterFactory rxJavaCallAdapterFactory) {
         return createRetrofit(TkpdBaseURL.STAGE_DOMAIN,
                 client,
                 hostConverter,
@@ -102,7 +159,7 @@ public class PlaceAutoCompleteDependencyInjection {
                 rxJavaCallAdapterFactory);
     }
 
-    private PeopleAddressApi provideRideApi(Retrofit retrofit) {
+    private PeopleAddressApi providePeopleAddressApi(Retrofit retrofit) {
         return retrofit.create(PeopleAddressApi.class);
     }
 
@@ -129,7 +186,7 @@ public class PlaceAutoCompleteDependencyInjection {
         return new PeopleAddressRepositoryData(peopleAddressDataStore);
     }
 
-    private PeopleAddressDataStoreFactory provideBookingRideDataStoreFactory(PeopleAddressApi peopleAddressApi) {
+    private PeopleAddressDataStoreFactory providePeopleAddressDataStoreFactory(PeopleAddressApi peopleAddressApi) {
         return new PeopleAddressDataStoreFactory(peopleAddressApi);
     }
 
@@ -138,9 +195,9 @@ public class PlaceAutoCompleteDependencyInjection {
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 providePeopleAddressRepository(
-                        provideBookingRideDataStoreFactory(
-                                provideRideApi(
-                                        provideRideRetrofit(
+                        providePeopleAddressDataStoreFactory(
+                                providePeopleAddressApi(
+                                        provideMarketPlaceRetrofit(
                                                 provideOkhttpClient(provideOkHttpRetryPolicy()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
@@ -154,10 +211,38 @@ public class PlaceAutoCompleteDependencyInjection {
         );
     }
 
-    public static PlaceAutoCompleteContract.Presenter createPresenter(){
+    public static PlaceAutoCompleteContract.Presenter createPresenter(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
+        String userId = sessionHandler.getLoginID();
         PlaceAutoCompleteDependencyInjection injection = new PlaceAutoCompleteDependencyInjection();
 
         GetPeopleAddressesUseCase getPeopleAddressesUseCase = injection.provideGetFareEstimateUseCase();
-        return new PlaceAutoCompletePresenter(getPeopleAddressesUseCase);
+        GetUserAddressUseCase getUserAddressUseCase = injection.provideGetUserAddressUseCase(token, userId);
+        return new PlaceAutoCompletePresenter(getPeopleAddressesUseCase, getUserAddressUseCase);
+    }
+
+    private GetUserAddressUseCase provideGetUserAddressUseCase(String token, String userId) {
+        return new GetUserAddressUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
     }
 }

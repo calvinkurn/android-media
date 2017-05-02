@@ -106,7 +106,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter();
+        mPresenter = PlaceAutoCompleteDependencyInjection.createPresenter(getActivity());
         mPresenter.attachView(this);
         mPresenter.initialize();
 
@@ -123,7 +123,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 if (TextUtils.isEmpty(s)) {
                     CommonUtils.dumper("Executed OTC M");
                     setActiveMarketplaceSource();
-                    mPresenter.actionGetPeopleAddresses(false);
+                    mPresenter.actionGetUserAddresses(false);
                 } else {
                     setActiveGooglePlaceSource();
                     CommonUtils.dumper("Executed OTC G");
@@ -155,13 +155,13 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     private void actionOnLoadMoreDetected(int page) {
-        if (isMarketPlaceSource) {
+        /*if (isMarketPlaceSource) {
             if (!TextUtils.isEmpty(peopleAddressPaging.getNextUrl()) && !String.valueOf(peopleAddressPaging.getNextUrl()).equalsIgnoreCase("0")) {
                 peopleAddressPaging.setPage(page);
                 setActiveMarketplaceSource();
                 mPresenter.actionGetPeopleAddresses(true);
             }
-        }
+        }*/
     }
 
     @Override
@@ -331,7 +331,9 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @Override
     public void setPagingConfiguration(PeopleAddressPaging paging) {
-        peopleAddressPaging.setNextUrl(paging.getNextUrl());
+        if (paging != null) {
+            peopleAddressPaging.setNextUrl(paging.getNextUrl());
+        }
     }
 
     @Override
@@ -365,6 +367,20 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public boolean isActiveGooglePlaceSource() {
         return !isMarketPlaceSource;
+    }
+
+    @Override
+    public RequestParams getUserAddressParam() {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetPeopleAddressesUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
     }
 
     @Override

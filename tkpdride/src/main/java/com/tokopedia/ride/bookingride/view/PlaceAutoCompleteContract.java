@@ -63,12 +63,16 @@ public interface PlaceAutoCompleteContract {
         boolean isActiveMarketPlaceSource();
 
         boolean isActiveGooglePlaceSource();
+
+        RequestParams getUserAddressParam();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
         void actionGetPeopleAddresses(boolean isLoadMore);
+
+        void actionGetUserAddresses(boolean isLoadMore);
 
         void actionQueryPlacesByKeyword(String keyword);
 

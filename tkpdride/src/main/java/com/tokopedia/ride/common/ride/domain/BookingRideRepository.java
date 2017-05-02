@@ -5,6 +5,7 @@ import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
+import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.TimesEstimate;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
@@ -44,4 +45,6 @@ public interface BookingRideRepository {
     Observable<RideRequest> getCurrentRequest(TKPDMapParam<String, Object> parameters);
 
     Observable<ApplyPromo> applyPromo(TKPDMapParam<String, Object> parameters);
+
+    Observable<List<RideAddress>> getAddresses(TKPDMapParam<String, Object> parameters);
 }

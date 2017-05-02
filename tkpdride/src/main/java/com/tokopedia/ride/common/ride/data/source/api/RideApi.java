@@ -5,6 +5,7 @@ import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
 import com.tokopedia.ride.common.ride.data.entity.ReceiptEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideHistoryEntity;
@@ -68,4 +69,7 @@ public interface RideApi {
     @POST(RideUrl.PROMO_APPLY)
     @FormUrlEncoded
     Observable<PromoEntity> applyPromo(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(RideUrl.RIDE_ADDRESS)
+    Observable<List<RideAddressEntity>> getAddresses(@QueryMap TKPDMapParam<String, Object> parameters);
 }
