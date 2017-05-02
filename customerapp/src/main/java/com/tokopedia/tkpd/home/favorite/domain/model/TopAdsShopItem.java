@@ -20,6 +20,8 @@ public class TopAdsShopItem {
     private String shopImageUrl;
     private String shopDomain;
 
+    private boolean isSelected;
+
 
     public String getId() {
         return id;
@@ -123,5 +125,13 @@ public class TopAdsShopItem {
 
     public void setShopImageUrl(String shopImageUrl) {
         this.shopImageUrl = shopImageUrl;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

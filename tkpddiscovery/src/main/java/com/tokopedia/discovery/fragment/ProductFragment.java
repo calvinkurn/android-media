@@ -78,13 +78,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private ProductAdapter productAdapter;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
-    private BrowseProductRouter.GridType gridType;
+    private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            if (!isViewInitialized()) {
+                return;
+            }
             BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
             int lastItemPosition = getLastItemPosition();
             changeLayoutType(gridType);
@@ -92,6 +95,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             mRecyclerView.scrollToPosition(lastItemPosition);
         }
     };
+
+    private boolean isViewInitialized() {
+        return productAdapter != null
+                && linearLayoutManager != null
+                && gridLayoutManager != null
+                && mRecyclerView != null;
+    }
 
     private void changeLayoutType(BrowseProductRouter.GridType gridType) {
         this.gridType = gridType;
@@ -241,6 +251,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void setupAdapter() {
+        if (productAdapter != null) {
+            return;
+        }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -279,7 +292,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void setupRecyclerView() {
+    public boolean setupRecyclerView() {
+        if (mRecyclerView.getAdapter() != null) {
+            return false;
+        }
         mRecyclerView.setAdapter(productAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -299,7 +315,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             }
         });
         changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
-
+        return true;
     }
 
     @Override
@@ -436,7 +452,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         isHasCategoryHeader = true;
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
-            if (categoryHeader.getRevamp() != null && categoryHeader.getRevamp()) {
+            if (categoryHeader.getIsRevamp() !=null && categoryHeader.getIsRevamp()) {
                 productAdapter.addCategoryRevampHeader(
                         new ProductAdapter.CategoryHeaderRevampModel(categoryHeader, getActivity(), getCategoryWidth(),
                                 this, browseModel.getTotalDataCategory(), this));
@@ -474,13 +490,15 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCategoryClick(Child child) {
-        UnifyTracking.eventLevelCategory(child.getId());
+        UnifyTracking.eventLevelCategory(((BrowseProductActivity) getActivity()).
+                getBrowseProductActivityModel().getParentDepartement(),child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 
     @Override
     public void onCategoryRevampClick(Child child) {
-        UnifyTracking.eventLevelCategory(child.getId());
+        UnifyTracking.eventLevelCategory(((BrowseProductActivity) getActivity()).
+                getBrowseProductActivityModel().getParentDepartement(),child.getId());
         ((BrowseProductActivity) getActivity()).renderLowerCategoryLevel(child);
     }
 

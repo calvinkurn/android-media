@@ -70,6 +70,7 @@ public class DataFavoriteMapper {
             shopItem.setShopCoverUrl(item.getShopImageCover());
             shopItem.setShopImageUrl(item.getShopImageUrl());
             shopItem.setShopLocation(item.getShopLocation());
+            shopItem.setFav(item.isSelected());
             shopItems.add(shopItem);
         }
         shopViewModel.setAdsShopItems(shopItems);

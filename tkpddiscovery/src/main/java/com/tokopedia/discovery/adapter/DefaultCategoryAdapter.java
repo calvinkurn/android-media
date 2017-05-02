@@ -57,6 +57,11 @@ public class DefaultCategoryAdapter extends
                 categoryListener.onCategoryClick(categories.get(position));
             }
         });
+        if(position % 2 != 0 ){
+            itemRowHolder.separator.setVisibility(View.GONE);
+        } else {
+            itemRowHolder.separator.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -71,6 +76,9 @@ public class DefaultCategoryAdapter extends
 
         @BindView(R2.id.linWrapper)
         LinearLayout container;
+
+        @BindView(R2.id.separator)
+        View separator;
 
         ItemRowHolder(View view) {
             super(view);
