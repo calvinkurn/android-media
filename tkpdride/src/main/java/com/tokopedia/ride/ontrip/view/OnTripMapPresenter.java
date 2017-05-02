@@ -83,7 +83,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         } else {
             if (getView().isSurge()) {
                 getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
-                return;
             } else {
                 actionRideRequest(getView().getParam());
             }
