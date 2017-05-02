@@ -447,9 +447,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     @Override
     public boolean isDataValid() {
         if (!isPriceValid()) {
+            priceSpinnerCounterInputView.requestFocus();
             return false;
         }
         if (!isWeightValid()) {
+            priceSpinnerCounterInputView.requestFocus();
             return false;
         }
         if (getMinimumOrder() <= 0) {
