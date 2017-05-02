@@ -370,6 +370,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         if (TextUtils.isEmpty(view.getUserId())) {
             view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+            return;
         }
 
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
@@ -405,6 +406,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         if (TextUtils.isEmpty(view.getUserId())) {
             view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+            return;
         }
 
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
