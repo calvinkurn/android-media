@@ -402,7 +402,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.home.BrandsWebViewActivity"
-            android:label="@string/title_activity_deep_link"
+            android:label="@string/title_official_store"
             android:screenOrientation="portrait" />
 
         <!--=======================================================-->
