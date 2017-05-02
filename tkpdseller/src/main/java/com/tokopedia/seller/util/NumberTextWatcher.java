@@ -36,15 +36,7 @@ public class NumberTextWatcher implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-        applyFormatter();
-        String valueString = CurrencyFormatHelper.removeCurrencyPrefix(charSequence.toString());
-        valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
-        if (TextUtils.isEmpty(valueString)) {
-            editText.setText(defaultValue);
-            return;
-        }
-        float value = Float.parseFloat(valueString);
-        onNumberChanged(value);
+
     }
 
     protected void applyFormatter() {
@@ -53,7 +45,16 @@ public class NumberTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-
+        applyFormatter();
+        String valueString = CurrencyFormatHelper.removeCurrencyPrefix(s.toString());
+        valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
+        if (TextUtils.isEmpty(valueString)) {
+            editText.setText(defaultValue);
+            editText.setSelection(defaultValue.length());
+            return;
+        }
+        float value = Float.parseFloat(valueString);
+        onNumberChanged(value);
     }
 
     public void onNumberChanged(float currencyValue) {

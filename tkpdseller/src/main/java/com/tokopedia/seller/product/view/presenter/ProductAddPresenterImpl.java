@@ -7,12 +7,10 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.CatalogDataModel;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.CategoryRecommDataModel;
 import com.tokopedia.seller.product.domain.interactor.AddProductShopInfoUseCase;
-import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchCatalogDataUseCase;
 import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
-import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
@@ -61,7 +59,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     @Override
     public void getShopInfo(String shopId) {
         addProductShopInfoUseCase.execute(
-                ShopInfoUseCase.createRequestParamByShopId(shopId),
+                null,
                 new Subscriber<AddProductShopInfoDomainModel>() {
                     @Override
                     public void onCompleted() {

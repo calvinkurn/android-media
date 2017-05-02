@@ -438,8 +438,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
         if (minPrice > getPriceValue() || getPriceValue() > maxPrice) {
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid, minPriceString, maxPriceString));
-            priceSpinnerCounterInputView.clearFocus();
-            priceSpinnerCounterInputView.requestFocus();
             disableWholesaleSwitch();
             return false;
         }
@@ -459,8 +457,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         float maxWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxWeightString));
         if (minWeight > getWeightValue() || getWeightValue() > maxWeight) {
             weightSpinnerCounterInputView.setCounterError(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_weight_not_valid, minWeightString, maxWeightString));
-            weightSpinnerCounterInputView.clearFocus();
-            weightSpinnerCounterInputView.requestFocus();
             return false;
         }
         return true;
@@ -476,8 +472,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         }
         if (getMinimumOrder() <= 0) {
             minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().getString(R.string.product_error_product_minimum_order_not_valid));
-            minimumOrderCounterInputView.clearFocus();
-            minimumOrderCounterInputView.requestFocus();
             return false;
         }
         if (getEtalaseId() < 0) {
