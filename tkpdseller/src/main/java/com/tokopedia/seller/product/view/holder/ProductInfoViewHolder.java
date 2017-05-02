@@ -191,15 +191,24 @@ public class ProductInfoViewHolder extends ProductViewHolder {
             categoryId = viewModel.getId();
             category += viewModel.getName();
             if (i < listCategory.size() - 1) {
-                category += "\n";
+                category += "<br />";
             }
         }
+        // user changed the category(not pressed back)
         if (previousCategoryId != categoryId) {
             if (categoryId <= 0) {
                 hideAndClearCatalog();
             }
             if (listener != null) {
                 listener.onCategoryChanged(categoryId);
+            }
+            // reselect the id if exist on the radio button
+            // unselect if the id not exist
+            RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById((int) categoryId);
+            if (radioButton == null) {
+                radioGroupCategoryRecomm.clearCheck();
+            } else if (!radioButton.isChecked()) {
+                radioButton.setChecked(true);
             }
         }
         categoryLabelView.setContent(category);
@@ -214,7 +223,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
             }
             category += categoryName;
             if (i < sizei - 1) {
-                category += "\n";
+                category += "<br />";
             }
         }
         categoryLabelView.setContent(category);
@@ -288,7 +297,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         return true;
     }
 
-    public void setNameAvailable(boolean isAvailable){
+    public void setNameAvailable(boolean isAvailable) {
         nameEditText.setEnabled(isAvailable);
     }
 }
