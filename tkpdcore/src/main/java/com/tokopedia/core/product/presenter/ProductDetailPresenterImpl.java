@@ -176,6 +176,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void processToIntermediary(@NonNull Context context, @NonNull Bundle bundle) {
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
+        intent.putExtras(bundle);
+        viewListener.navigateToActivity(intent);
+    }
+
+    @Override
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {

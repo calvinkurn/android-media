@@ -28,6 +28,8 @@ public interface ProductDetailPresenter {
 
     void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle);
 
+    void processToIntermediary(@NonNull Context context, @NonNull Bundle bundle);
+
     void processToCreateShop(@NonNull Context context);
 
     void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle);
