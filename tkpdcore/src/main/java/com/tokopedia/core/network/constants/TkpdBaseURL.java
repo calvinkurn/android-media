@@ -702,6 +702,10 @@ public class TkpdBaseURL {
         public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
     }
 
+    public static class OfficialStore {
+        public static final String URL_WEBVIEW = MOBILE_DOMAIN + "official-store/mobile";
+    }
+
     public static class ResCenterV2 {
         public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
         public static final String BASE_INBOX_RESOLUTION = "inbox";
