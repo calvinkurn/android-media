@@ -82,6 +82,15 @@ public class ShopInfoActivity extends BaseActivity
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
 
+    public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
+
+    public final static int TAB_POSITION_HOME = 1;
+    public final static int TAB_POSITION_ETALASE = 2;
+    public final static int TAB_POSITION_TALK = 3;
+    public final static int TAB_POSITION_REVIEW = 4;
+    public final static int TAB_POSITION_NOTE = 5;
+    public final static int NAVIGATION_TO_INFO = 6;
+
     private class ViewHolder {
         ViewPager pager;
         TabLayout indicator;
@@ -529,13 +538,14 @@ public class ShopInfoActivity extends BaseActivity
 
     private void showGoldCover() {
         if (shopModel.info.shopIsGold == 0) {
-            holder.goldShop.setVisibility(View.INVISIBLE);
             holder.infoShop.setBackgroundResource(0);
         } else {
-            holder.goldShop.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
+            if (shopModel.info.shopIsGoldBadge)
+                holder.goldShop.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void showOfficialCover() {
@@ -764,6 +774,9 @@ public class ShopInfoActivity extends BaseActivity
         if (!productParam.getEtalaseId().equalsIgnoreCase("all")) {
             ProductList productListFragment = (ProductList) adapter.getItem(1);
             productListFragment.refreshProductList(productParam);
+        } else {
+            ProductList productListFragment = (ProductList) adapter.getItem(1);
+            productListFragment.refreshProductListFromOffStore();
         }
         holder.pager.setCurrentItem(1, true);
     }

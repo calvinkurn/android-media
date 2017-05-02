@@ -2,13 +2,16 @@ package com.tokopedia.core.talk.talkproduct.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -39,7 +42,7 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
         productName = getIntent().getExtras().getString("prod_name");
         productImage = getIntent().getExtras().getString("product_image");
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             Fragment fragment = TalkProductFragment.createInstance(getIntent().getExtras());
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.container, fragment, TalkProductActivity.class.getSimpleName());
@@ -61,12 +64,12 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
                 case InboxTalkIntentService.STATUS_SUCCESS_FOLLOW:
                 case InboxTalkIntentService.STATUS_SUCCESS_DELETE:
                 case InboxTalkIntentService.STATUS_SUCCESS_REPORT:
-                    onReceiveResultSuccess(fragment,resultData,resultCode);
+                    onReceiveResultSuccess(fragment, resultData, resultCode);
                     break;
                 case InboxTalkIntentService.STATUS_ERROR_FOLLOW:
                 case InboxTalkIntentService.STATUS_ERROR_DELETE:
                 case InboxTalkIntentService.STATUS_ERROR_REPORT:
-                    onReceiveResultError(fragment, resultData,resultCode);
+                    onReceiveResultError(fragment, resultData, resultCode);
                     break;
             }
         }

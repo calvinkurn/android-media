@@ -7,10 +7,21 @@ import android.view.View;
  * Created by stevenfredian on 2/21/17.
  */
 
-public class ShareItem{
+public class ShareItem {
     private Drawable icon;
     private String name;
     private View.OnClickListener onClickListener;
+
+    public ShareItem(Drawable icon, String name) {
+        this.icon = icon;
+        this.name = name;
+    }
+
+    public ShareItem(Drawable icon, String name, View.OnClickListener onClickListener) {
+        this.icon = icon;
+        this.name = name;
+        this.onClickListener = onClickListener;
+    }
 
     public Drawable getIcon() {
         return icon;
@@ -33,17 +44,6 @@ public class ShareItem{
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
-
-    public ShareItem(Drawable icon, String name){
-        this.icon = icon;
-        this.name = name;
-    }
-
-    public ShareItem(Drawable icon, String name, View.OnClickListener onClickListener){
-        this.icon = icon;
-        this.name = name;
         this.onClickListener = onClickListener;
     }
 }

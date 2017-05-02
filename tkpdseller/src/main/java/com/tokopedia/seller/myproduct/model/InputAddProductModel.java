@@ -26,13 +26,13 @@ import com.tokopedia.core.myproduct.model.GenerateHostModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.TextDeleteModel;
 import com.tokopedia.core.myproduct.model.WholeSaleAdapterModel;
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
-import com.tokopedia.seller.myproduct.model.editproduct.EditProductModel;
-import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 import com.tokopedia.core.network.apiservices.upload.apis.GeneratedHostActApi;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.seller.myproduct.model.editproduct.EditProductModel;
 import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.myproduct.utils.ProductEditHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +48,7 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
  */
 public class InputAddProductModel {
     public static final String TAG = "STUART";
+    static final int product_upload_to = 1;
     List<ImageModel> imageModels;
     String productName;
     List<TextDeleteModel> categories;
@@ -69,15 +70,317 @@ public class InputAddProductModel {
     String stockStatus;
     ArrayList<ProductEditHelper.ProductEditImage> productEditImages;
     String shopId;
-
     String productChangeCatalog;
     String productChangePhoto;
     String productChangeWholeSale;
 
-    
-    static final int product_upload_to = 1;
-
     //[START] setter and getter
+    ProductDB produk;
+    NetworkCalculator networkCalculator;
+    GenerateHostModel generateHostModel;
+    List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData;
+    GeneratedHostActApi generatedHostActApi;
+    ProductValidationModel productValidationModel;
+    AddProductPictureModel addProductPictureModel;
+    ProductSubmitModel productSubmitModel;
+    Bitmap bitmap;
+    EditProductModel.Data editProductData;
+    List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> newPairs;
+
+    public static int getProduct_upload_to() {
+        return product_upload_to;
+    }
+
+    /**
+     * compile input from view to match db data
+     * @param inputAddProductModel input that needed for db
+     * @return product
+     */
+    @Deprecated
+    public static ProductDB compileAll(InputAddProductModel inputAddProductModel){
+        // 1
+        WeightUnitDB weightUnitDB =
+                new Select()
+                .from(WeightUnitDB.class)
+                .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
+                .querySingle();
+
+        // 2
+        CurrencyDB mataUang =
+                new Select()
+                .from(CurrencyDB.class)
+                .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
+                .querySingle();
+
+        // 3
+        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
+                .querySingle();
+
+        // 4
+        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
+        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
+
+        // 5
+        ReturnableDB returnableDB = null;
+        if(inputAddProductModel.getReturnable()==1){
+            returnableDB = new Select().from(ReturnableDB.class)
+                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
+                    .querySingle();;
+        }
+
+
+        ProductDB produk = new ProductDB();
+        produk.setWeightUnitDB(weightUnitDB);
+        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
+        produk.setDescProd(inputAddProductModel.getDescription());
+        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
+        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
+        produk.setUnitCurrencyDB(mataUang);
+        produk.setReturnableProd(inputAddProductModel.getReturnable());
+        produk.setEtalaseDB(etalaseDB);
+        produk.setConditionProd(inputAddProductModel.getCondition());
+        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
+        produk.setNameProd(inputAddProductModel.getProductName());
+        produk.setCategoryDB(categoryDB);
+        produk.setKebijakanReturnableDB(returnableDB);
+        produk.save();
+
+        for(ImageModel imageModel : inputAddProductModel.getImageModels()){
+            PictureDB pictureDB = new Select().from(PictureDB.class)
+                    .where(PictureDB_Table.Id.is(imageModel.getDbId()))
+                    .querySingle();
+            pictureDB.setProductDB(produk);
+            pictureDB.save();
+        }
+
+        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
+            WholesalePriceDB wholesalePriceDB = new WholesalePriceDB(
+                    (int)wholeSaleAdapterModel.getQuantityOne(),
+                    (int)wholeSaleAdapterModel.getQuantityTwo(),
+                    wholeSaleAdapterModel.getWholeSalePrice()
+            );
+            wholesalePriceDB.setProduk(produk);
+            wholesalePriceDB.save();
+        }
+
+        Log.d("MNORMANSYAH", PictureDB.class.getSimpleName()+" : "+ produk.getImages());
+        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName()+" : "+produk.getWholeSales());
+        return produk;
+    }
+
+    public static ProductDB compileAllForEdit(InputAddProductModel inputAddProductModel,
+                                              ProductDB produk, EditProductForm.Data editProductForm){
+
+        // 1
+        WeightUnitDB weightUnitDB =
+                new Select()
+                        .from(WeightUnitDB.class)
+                        .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
+                        .querySingle();
+
+        // 2
+        CurrencyDB mataUang =
+                new Select()
+                        .from(CurrencyDB.class)
+                        .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
+                        .querySingle();
+
+        // 3
+        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
+                .querySingle();
+
+        // 4
+        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
+        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
+
+        // 5
+        ReturnableDB returnableDB = null;
+        if(inputAddProductModel.getReturnable()==1){
+            returnableDB = new Select().from(ReturnableDB.class)
+                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
+                    .querySingle();;
+        }
+
+        // 6
+        StockStatusDB stockStatusDB = getStockStatusDB(inputAddProductModel);
+
+        boolean isnew = false;
+        if(produk==null) {
+            produk = new ProductDB();
+            isnew = true;
+        }
+        produk.setWeightUnitDB(weightUnitDB);
+        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
+        produk.setDescProd(inputAddProductModel.getDescription());
+        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
+        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
+        produk.setUnitCurrencyDB(mataUang);
+        produk.setReturnableProd(inputAddProductModel.getReturnable());
+        produk.setEtalaseDB(etalaseDB);
+        produk.setConditionProd(inputAddProductModel.getCondition());
+        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
+        produk.setNameProd(inputAddProductModel.getProductName());
+        produk.setCategoryDB(categoryDB);
+        produk.setKebijakanReturnableDB(returnableDB);
+        produk.setProductPreOrder(inputAddProductModel.getPreOrder());
+        produk.setCatalogid(inputAddProductModel.getCatalog());
+        produk.setProductId(Integer.parseInt(editProductForm.getProduct().getProductId()));// product id
+        produk.setProductUrl(editProductForm.getProduct().getProductUrl());// product url
+        produk.setStockStatusDB(stockStatusDB);
+        for (WholesalePriceDB wholesalePriceDB : produk.getWholeSales()) {
+            wholesalePriceDB.delete();
+        }
+        if (isnew) {
+            produk.save();
+        } else {
+            produk.update();
+        }
+
+        if(checkCollectionNotNull(inputAddProductModel.getImageModels())){
+            for (ImageModel imageModel : inputAddProductModel.getImageModels()) {
+                if (imageModel.getDbId() != 0) {
+                    PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
+                    if (pictureDB != null) {
+                        pictureDB.setProductDB(produk);
+                        pictureDB.save();
+                    }
+                }
+            }
+        }
+
+        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
+            WholesalePriceDB wholesalePriceDB = new Select()
+                    .from(WholesalePriceDB.class)
+                    .where(WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid()))
+                    .querySingle();
+            if(checkNotNull(wholesalePriceDB)) {
+                wholesalePriceDB.setMin((int) wholeSaleAdapterModel.getQuantityOne());
+                wholesalePriceDB.setMax((int) wholeSaleAdapterModel.getQuantityTwo());
+                wholesalePriceDB.setPriceWholesale(wholeSaleAdapterModel.getWholeSalePrice());
+                wholesalePriceDB.setProduk(produk);
+                wholesalePriceDB.save();
+            }
+        }
+
+        Log.d("MNORMANSYAH", PictureDB.class.getSimpleName() + " : " + produk.getImages());
+        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName() + " : " + produk.getWholeSales());
+
+
+        return produk;
+    }
+
+    @NonNull
+    public static StockStatusDB getStockStatusDB(InputAddProductModel inputAddProductModel) {
+        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
+                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
+                .querySingle();
+
+        if(stockStatusDB == null){
+            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
+            stockStatusDB.save();
+        }
+        return stockStatusDB;
+    }
+
+    public static ProductDB compileAll(InputAddProductModel inputAddProductModel,
+                                       ProductDB produk, boolean isWithoutImage){
+        // 1
+        WeightUnitDB weightUnitDB =
+                new Select()
+                        .from(WeightUnitDB.class)
+                        .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
+                        .querySingle();
+
+        // 2
+        CurrencyDB mataUang =
+                new Select()
+                        .from(CurrencyDB.class)
+                        .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
+                        .querySingle();
+
+        // 3
+        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
+                .querySingle();
+
+        // 4
+        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
+        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
+
+        // 5
+        ReturnableDB returnableDB = null;
+        if(inputAddProductModel.getReturnable()==1){
+            returnableDB = new Select().from(ReturnableDB.class)
+                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
+                    .querySingle();
+        }
+
+        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
+                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
+                .querySingle();
+
+        if(stockStatusDB == null){
+            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
+            stockStatusDB.save();
+        }
+
+        if(produk==null)
+            produk = new ProductDB();
+        produk.setWeightUnitDB(weightUnitDB);
+        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
+        produk.setDescProd(inputAddProductModel.getDescription());
+        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
+        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
+        produk.setUnitCurrencyDB(mataUang);
+        produk.setReturnableProd(inputAddProductModel.getReturnable());
+        produk.setEtalaseDB(etalaseDB);
+        produk.setConditionProd(inputAddProductModel.getCondition());
+        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
+        produk.setNameProd(inputAddProductModel.getProductName());
+        produk.setCategoryDB(categoryDB);
+        produk.setKebijakanReturnableDB(returnableDB);
+        produk.setProductPreOrder(inputAddProductModel.getPreOrder());
+        produk.setCatalogid(inputAddProductModel.getCatalog());
+        produk.setStockStatusDB(stockStatusDB);
+        for (WholesalePriceDB wholesalePriceDB : produk.getWholeSales()) {
+            wholesalePriceDB.delete();
+        }
+        produk.save();
+
+        if(!isWithoutImage) {
+            Log.d(TAG,"Product with image");
+            for (ImageModel imageModel : inputAddProductModel.getImageModels()) {
+                if (imageModel.getDbId() != 0) {
+                    PictureDB pictureDB = new Select().from(PictureDB.class).where(PictureDB_Table.Id.is(imageModel.getDbId()))
+                            .querySingle();
+                    if (pictureDB != null) {
+                        pictureDB.setProductDB(produk);
+                        pictureDB.save();
+                    }
+                }
+            }
+            Log.d("MNORMANSYAH", PictureDB.class.getSimpleName() + " : " + produk.getImages());
+        }
+
+        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
+            WholesalePriceDB wholesalePriceDB = new Select()
+                    .from(WholesalePriceDB.class)
+                    .where(WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid()))
+                    .querySingle();
+            wholesalePriceDB.setMin((int)wholeSaleAdapterModel.getQuantityOne());
+            wholesalePriceDB.setMax((int)wholeSaleAdapterModel.getQuantityTwo());
+            wholesalePriceDB.setPriceWholesale(Double.valueOf(wholeSaleAdapterModel.getWholeSalePrice()));
+            wholesalePriceDB.setProduk(produk);
+            wholesalePriceDB.save();
+        }
+
+        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName() + " : " + produk.getWholeSales());
+        return produk;
+    }
+
+    public static ProductDB compileAll(InputAddProductModel inputAddProductModel,
+                                       ProductDB produk){
+        return compileAll(inputAddProductModel, produk, false);
+    }
 
     public String getProductChangeWholeSale() {
         return productChangeWholeSale;
@@ -223,6 +526,8 @@ public class InputAddProductModel {
         this.wholeSales = wholeSales;
     }
 
+    //[END] setter and getter
+
     public List<Pair<PictureDB, UploadProductImageData>> getUploadProductImageData() {
         return uploadProductImageData;
     }
@@ -242,6 +547,9 @@ public class InputAddProductModel {
     public String getEtalaseName() {
         return etalaseName;
     }
+
+
+    // use below for processing
 
     public void setEtalaseName(String etalaseName) {
         this.etalaseName = etalaseName;
@@ -271,10 +579,6 @@ public class InputAddProductModel {
         this.description = description;
     }
 
-    public static int getProduct_upload_to() {
-        return product_upload_to;
-    }
-
     public GenerateHostModel getGenerateHostModel() {
         return generateHostModel;
     }
@@ -290,309 +594,6 @@ public class InputAddProductModel {
     public void setPreOrder(int preOrder) {
         this.preOrder = preOrder;
     }
-
-    //[END] setter and getter
-
-    /**
-     * compile input from view to match db data
-     * @param inputAddProductModel input that needed for db
-     * @return product
-     */
-    @Deprecated
-    public static ProductDB compileAll(InputAddProductModel inputAddProductModel){
-        // 1
-        WeightUnitDB weightUnitDB =
-                new Select()
-                .from(WeightUnitDB.class)
-                .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
-                .querySingle();
-
-        // 2
-        CurrencyDB mataUang =
-                new Select()
-                .from(CurrencyDB.class)
-                .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
-                .querySingle();
-
-        // 3
-        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
-                .querySingle();
-
-        // 4
-        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
-        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
-
-        // 5
-        ReturnableDB returnableDB = null;
-        if(inputAddProductModel.getReturnable()==1){
-            returnableDB = new Select().from(ReturnableDB.class)
-                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
-                    .querySingle();;
-        }
-
-
-        ProductDB produk = new ProductDB();
-        produk.setWeightUnitDB(weightUnitDB);
-        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
-        produk.setDescProd(inputAddProductModel.getDescription());
-        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
-        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
-        produk.setUnitCurrencyDB(mataUang);
-        produk.setReturnableProd(inputAddProductModel.getReturnable());
-        produk.setEtalaseDB(etalaseDB);
-        produk.setConditionProd(inputAddProductModel.getCondition());
-        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
-        produk.setNameProd(inputAddProductModel.getProductName());
-        produk.setCategoryDB(categoryDB);
-        produk.setKebijakanReturnableDB(returnableDB);
-        produk.save();
-
-        for(ImageModel imageModel : inputAddProductModel.getImageModels()){
-            PictureDB pictureDB = new Select().from(PictureDB.class)
-                    .where(PictureDB_Table.Id.is(imageModel.getDbId()))
-                    .querySingle();
-            pictureDB.setProductDB(produk);
-            pictureDB.save();
-        }
-
-        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
-            WholesalePriceDB wholesalePriceDB = new WholesalePriceDB(
-                    (int)wholeSaleAdapterModel.getQuantityOne(),
-                    (int)wholeSaleAdapterModel.getQuantityTwo(),
-                    wholeSaleAdapterModel.getWholeSalePrice()
-            );
-            wholesalePriceDB.setProduk(produk);
-            wholesalePriceDB.save();
-        }
-
-        Log.d("MNORMANSYAH", PictureDB.class.getSimpleName()+" : "+ produk.getImages());
-        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName()+" : "+produk.getWholeSales());
-        return produk;
-    }
-
-    public static ProductDB compileAllForEdit(InputAddProductModel inputAddProductModel,
-                                              ProductDB produk, EditProductForm.Data editProductForm){
-
-        // 1
-        WeightUnitDB weightUnitDB =
-                new Select()
-                        .from(WeightUnitDB.class)
-                        .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
-                        .querySingle();
-
-        // 2
-        CurrencyDB mataUang =
-                new Select()
-                        .from(CurrencyDB.class)
-                        .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
-                        .querySingle();
-
-        // 3
-        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
-                .querySingle();
-
-        // 4
-        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
-        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
-
-        // 5
-        ReturnableDB returnableDB = null;
-        if(inputAddProductModel.getReturnable()==1){
-            returnableDB = new Select().from(ReturnableDB.class)
-                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
-                    .querySingle();;
-        }
-
-        // 6
-        StockStatusDB stockStatusDB = getStockStatusDB(inputAddProductModel);
-
-        boolean isnew = false;
-        if(produk==null) {
-            produk = new ProductDB();
-            isnew = true;
-        }
-        produk.setWeightUnitDB(weightUnitDB);
-        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
-        produk.setDescProd(inputAddProductModel.getDescription());
-        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
-        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
-        produk.setUnitCurrencyDB(mataUang);
-        produk.setReturnableProd(inputAddProductModel.getReturnable());
-        produk.setEtalaseDB(etalaseDB);
-        produk.setConditionProd(inputAddProductModel.getCondition());
-        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
-        produk.setNameProd(inputAddProductModel.getProductName());
-        produk.setCategoryDB(categoryDB);
-        produk.setKebijakanReturnableDB(returnableDB);
-        produk.setProductPreOrder(inputAddProductModel.getPreOrder());
-        produk.setCatalogid(inputAddProductModel.getCatalog());
-        produk.setProductId(Integer.parseInt(editProductForm.getProduct().getProductId()));// product id
-        produk.setProductUrl(editProductForm.getProduct().getProductUrl());// product url
-        produk.setStockStatusDB(stockStatusDB);
-        if (isnew) {
-            produk.save();
-        } else {
-            produk.update();
-        }
-
-        if(checkCollectionNotNull(inputAddProductModel.getImageModels())){
-            for (ImageModel imageModel : inputAddProductModel.getImageModels()) {
-                if (imageModel.getDbId() != 0) {
-                    PictureDB pictureDB = DbManagerImpl.getInstance().getGambarById(imageModel.getDbId());
-                    if (pictureDB != null) {
-                        pictureDB.setProductDB(produk);
-                        pictureDB.save();
-                    }
-                }
-            }
-        }
-
-        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
-            WholesalePriceDB wholesalePriceDB = new Select()
-                    .from(WholesalePriceDB.class)
-                    .where(WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid()))
-                    .querySingle();
-            if(checkNotNull(wholesalePriceDB)) {
-                wholesalePriceDB.setMin((int) wholeSaleAdapterModel.getQuantityOne());
-                wholesalePriceDB.setMax((int) wholeSaleAdapterModel.getQuantityTwo());
-                wholesalePriceDB.setPriceWholesale(wholeSaleAdapterModel.getWholeSalePrice());
-                wholesalePriceDB.setProduk(produk);
-                wholesalePriceDB.save();
-            }
-        }
-
-        Log.d("MNORMANSYAH", PictureDB.class.getSimpleName() + " : " + produk.getImages());
-        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName() + " : " + produk.getWholeSales());
-
-
-        return produk;
-    }
-
-    @NonNull
-    public static StockStatusDB getStockStatusDB(InputAddProductModel inputAddProductModel) {
-        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
-                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
-                .querySingle();
-
-        if(stockStatusDB == null){
-            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
-            stockStatusDB.save();
-        }
-        return stockStatusDB;
-    }
-
-    public static ProductDB compileAll(InputAddProductModel inputAddProductModel,
-                                       ProductDB produk, boolean isWithoutImage){
-        // 1
-        WeightUnitDB weightUnitDB =
-                new Select()
-                        .from(WeightUnitDB.class)
-                        .where(WeightUnitDB_Table.descWeight.eq(inputAddProductModel.getWeightUnit()))
-                        .querySingle();
-
-        // 2
-        CurrencyDB mataUang =
-                new Select()
-                        .from(CurrencyDB.class)
-                        .where(CurrencyDB_Table.descCurr.eq(inputAddProductModel.getCurrencyUnit()))
-                        .querySingle();
-
-        // 3
-        EtalaseDB etalaseDB = new Select().from(EtalaseDB.class).where(EtalaseDB_Table.Id.is(inputAddProductModel.getEtalaseId()))
-                .querySingle();
-
-        // 4
-        TextDeleteModel category = inputAddProductModel.getCategories().get(inputAddProductModel.getCategories().size() - 1);
-        CategoryDB categoryDB = DbManagerImpl.getInstance().getKategoriByDepId(category.getDepartmentId());
-
-        // 5
-        ReturnableDB returnableDB = null;
-        if(inputAddProductModel.getReturnable()==1){
-            returnableDB = new Select().from(ReturnableDB.class)
-                    .where(ReturnableDB_Table.note_title.eq(ReturnableDB.PENGEMBALIAN))
-                    .querySingle();
-        }
-
-        StockStatusDB stockStatusDB = new Select().from(StockStatusDB.class)
-                .where(StockStatusDB_Table.stockDetail.eq(inputAddProductModel.getStockStatus()))
-                .querySingle();
-
-        if(stockStatusDB == null){
-            stockStatusDB = new StockStatusDB(inputAddProductModel.getStockStatus());
-            stockStatusDB.save();
-        }
-
-        if(produk==null)
-            produk = new ProductDB();
-        produk.setWeightUnitDB(weightUnitDB);
-        produk.setWeightProd(Integer.parseInt(inputAddProductModel.getWeight()));
-        produk.setDescProd(inputAddProductModel.getDescription());
-        produk.setAssuranceProd(inputAddProductModel.getMustAsurance());
-        produk.setPriceProd(Double.parseDouble(inputAddProductModel.getPrice()));
-        produk.setUnitCurrencyDB(mataUang);
-        produk.setReturnableProd(inputAddProductModel.getReturnable());
-        produk.setEtalaseDB(etalaseDB);
-        produk.setConditionProd(inputAddProductModel.getCondition());
-        produk.setMinOrderProd(inputAddProductModel.getMinimumOrder());
-        produk.setNameProd(inputAddProductModel.getProductName());
-        produk.setCategoryDB(categoryDB);
-        produk.setKebijakanReturnableDB(returnableDB);
-        produk.setProductPreOrder(inputAddProductModel.getPreOrder());
-        produk.setCatalogid(inputAddProductModel.getCatalog());
-        produk.setStockStatusDB(stockStatusDB);
-        produk.save();
-
-        if(!isWithoutImage) {
-            Log.d(TAG,"Product with image");
-            for (ImageModel imageModel : inputAddProductModel.getImageModels()) {
-                if (imageModel.getDbId() != 0) {
-                    PictureDB pictureDB = new Select().from(PictureDB.class).where(PictureDB_Table.Id.is(imageModel.getDbId()))
-                            .querySingle();
-                    if (pictureDB != null) {
-                        pictureDB.setProductDB(produk);
-                        pictureDB.save();
-                    }
-                }
-            }
-            Log.d("MNORMANSYAH", PictureDB.class.getSimpleName() + " : " + produk.getImages());
-        }
-
-        for(WholeSaleAdapterModel wholeSaleAdapterModel : inputAddProductModel.getWholeSales()){
-            WholesalePriceDB wholesalePriceDB = new Select()
-                    .from(WholesalePriceDB.class)
-                    .where(WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid()))
-                    .querySingle();
-            wholesalePriceDB.setMin((int)wholeSaleAdapterModel.getQuantityOne());
-            wholesalePriceDB.setMax((int)wholeSaleAdapterModel.getQuantityTwo());
-            wholesalePriceDB.setPriceWholesale(Double.valueOf(wholeSaleAdapterModel.getWholeSalePrice()));
-            wholesalePriceDB.setProduk(produk);
-            wholesalePriceDB.save();
-        }
-
-        Log.d("MNORMANSYAH", WholesalePriceDB.class.getSimpleName() + " : " + produk.getWholeSales());
-        return produk;
-    }
-
-    public static ProductDB compileAll(InputAddProductModel inputAddProductModel,
-                                       ProductDB produk){
-        return compileAll(inputAddProductModel, produk, false);
-    }
-
-
-    // use below for processing
-    
-    ProductDB produk;
-    
-    NetworkCalculator networkCalculator;
-    GenerateHostModel generateHostModel;
-    List<Pair<PictureDB, UploadProductImageData>> uploadProductImageData;
-    GeneratedHostActApi generatedHostActApi;
-    ProductValidationModel productValidationModel;
-    AddProductPictureModel addProductPictureModel;
-    ProductSubmitModel productSubmitModel;
-    Bitmap bitmap;
-    EditProductModel.Data editProductData;
-    List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> newPairs;
 
     public List<Pair<Integer, Pair<EditProductPictureModel, ProductService.EditProductInputModel>>> getNewPairs() {
         return newPairs;

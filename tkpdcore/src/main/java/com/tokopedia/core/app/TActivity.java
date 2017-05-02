@@ -11,13 +11,6 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SessionRouter;
@@ -25,8 +18,6 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.HockeyAppHelper;
-import com.tokopedia.core.util.PhoneVerificationUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.var.ToolbarVariable;
@@ -140,5 +131,4 @@ public abstract class TActivity extends BaseActivity {
     public void hideToolbar() {
         getSupportActionBar().hide();
     }
-
 }

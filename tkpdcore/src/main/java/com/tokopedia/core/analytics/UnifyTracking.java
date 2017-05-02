@@ -24,6 +24,8 @@ import java.util.Map;
 
 public class UnifyTracking extends TrackingUtils {
 
+    public static final String EXTRA_LABEL = "label";
+
     public static void eventHomeTab(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE,
@@ -50,6 +52,101 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    /* CATEGORY IMPROVEMENT*/
+
+    public static void eventProductOnCategory(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PRODUCT,
+                AppEventTracking.Action.PRODUCT_CATEGORY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventLevelCategory(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label
+        ).getEvent());
+    }
+
+    public static void eventLevelCategoryIntermediary(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_LEVEL,
+                label
+        ).getEvent());
+    }
+
+    public static void eventHotlistIntermediary(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.HOTLIST,
+                label
+        ).getEvent());
+    }
+
+    public static void eventCuratedIntermediary(String parentCat, String curatedProductName,
+                                                String productName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.INTERMEDIARY_PAGE,
+                AppEventTracking.Category.INTERMEDIAR_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CURATED + " " +curatedProductName,
+                productName
+        ).getEvent());
+    }
+
+    public static void eventShowMoreCategory(String parentCat){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_MORE,
+                AppEventTracking.EventLabel.CATEGORY_SHOW_MORE
+        ).getEvent());
+    }
+
+    public static void eventSortCategory(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_SORT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventFilterCategory(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_FILTER,
+                label
+        ).getEvent());
+    }
+
+    public static void eventDisplayCategory(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_DISLPAY,
+                label
+        ).getEvent());
+    }
+
+    public static void eventShareCategory(String parentCat, String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CATEGORY_PAGE,
+                AppEventTracking.Category.CATEGORY_PAGE+"-"+parentCat,
+                AppEventTracking.Action.CATEGORY_SHARE,
+                label
+        ).getEvent());
+    }
+
+     /* CATEGORY IMPROVEMENT*/
 
     public static void eventHomeTopPicksTitle( String label){
         sendGTMEvent(new EventTracking(
@@ -991,6 +1088,12 @@ public class UnifyTracking extends TrackingUtils {
         getLocaEngine().sendEventLoggedOut(attrs);
     }
 
+    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
+        if (accuracy > 3 && quality > 3){
+            eventLoca(AppScreen.EVENT_GOOD_REVIEW);
+        }
+    }
+
     public static void eventViewATC(){
         eventLoca(AppScreen.SCREEN_VIEWED_ADD_TO_CART);
     }
@@ -1176,6 +1279,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventOTPSuccess(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.OTP_SUCCESS,
+                AppEventTracking.EventLabel.OTP
+        ).getEvent());
+    }
+
     public static void eventChangeCategoryProductGear(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
@@ -1245,6 +1357,133 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU
+        ).getEvent());
+    }
+
+    public static void eventClickPopularSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_POPULAR,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickRecentSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_RECENT,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickHotListSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_HOTLIST,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteShopSearch(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_SHOP,
+                label
+        ).getEvent());
+    }
+
+    public static void eventClickAutoCompleteCategory(String catId, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH,
+                AppEventTracking.Category.SEARCH,
+                AppEventTracking.Action.SEARCH_AUTOCOMPLETE_CATEGORY,
+                catId + " | " + label
+        ).getEvent());
+    }
+
+    public static void eventClickGMSwitcher(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.TOP_SELLER,
+                AppEventTracking.Category.GM_SWITCHER,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OPEN_TOP_SELLER+label
+        ).getEvent());
+    }
+
+
+    public static void eventPersonalizedClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
+
+    public static void eventImageUploadSuccessInstagram(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_ADD_PRODUCT,
+                AppEventTracking.Category.ADD_PRODUCT,
+                AppEventTracking.Action.UPLOAD_SUCCESS,
+                AppEventTracking.EventLabel.INSTAGRAM_IMG_PICKER
+        ).getEvent());
+    }
+
+    public static void eventSlideBannerClicked(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SLIDE_BANNER,
+                AppEventTracking.Category.SLIDER,
+                AppEventTracking.Action.CLICK,
+                label
+        ).getEvent());
+    }
+
+    public static void eventPushNotifLowTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_LOW_CREDIT
+        ).getEvent());
+    }
+
+    public static void eventPushNotifSuccessTopadsReceived() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.RECEIVED,
+                AppEventTracking.EventLabel.TOPADS_SUCCESS_TOPUP
+        ).getEvent());
+    }
+
+    public static void eventOpenTopadsPushNotification(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
+                AppEventTracking.Category.PUSH_NOTIFICATION,
+                AppEventTracking.Action.OPEN,
+                label
+        ).getEvent());
+    }
+
+    public static void eventSmartLock(String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SUCCESS_SMART_LOCK,
+                AppEventTracking.Category.SMART_LOCK,
+                AppEventTracking.Action.SUCCESS,
+                label
         ).getEvent());
     }
 }

@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.tkpd.R;
 
@@ -43,11 +46,15 @@ public class GoldMerchantRedirectActivity extends TActivity{
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent launchIntent = getPackageManager()
-                        .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
-                if(launchIntent != null) startActivity(launchIntent);
-                else startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=" + TOP_SELLER_APPLICATION_PACKAGE)));
+                Intent launchIntent = getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                if(launchIntent != null){
+                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.OPEN_APP);
+                    startActivity(launchIntent);
+                }
+                else {
+                    UnifyTracking.eventClickGMSwitcher(AppEventTracking.EventLabel.DOWNLOAD_APP);
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + TOP_SELLER_APPLICATION_PACKAGE)));
+                }
             }
         };
     }

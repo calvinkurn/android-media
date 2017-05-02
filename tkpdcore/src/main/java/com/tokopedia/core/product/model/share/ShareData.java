@@ -3,7 +3,6 @@ package com.tokopedia.core.product.model.share;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 import android.text.TextUtils;
 
 import com.tokopedia.core.util.MethodChecker;
@@ -16,12 +15,13 @@ public class ShareData implements Parcelable {
     public static final String CATALOG_TYPE = "Catalog";
     public static final String SHOP_TYPE = "Shop";
     public static final String PRODUCT_TYPE = "Product";
+    public static final String CATEGORY_TYPE = "Directory";
     public static final String DISCOVERY_TYPE = "Discovery";
     public static final String HOTLIST_TYPE = "Hotlist";
     private static final String ARG_UTM_MEDIUM = "Android%20Share%20Button";
     private static final String DEFAULT_EMPTY_FIELD = "";
 
-    private String type;
+    private String type = "";
     private String name;
     private String price;
     private String uri;
@@ -165,6 +165,13 @@ public class ShareData implements Parcelable {
         return renderedUrl;
     }
 
+    public String[] getSplittedDescription(String splitWith) {
+        if (description.contains(splitWith))
+            return  description.split(splitWith);
+        else
+            return new String[0];
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -238,5 +245,6 @@ public class ShareData implements Parcelable {
             shareData.setSource(source);
             return shareData;
         }
+
     }
 }

@@ -127,6 +127,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     RecyclerView rvCart;
     @BindView(R2.id.tv_loyalty_balance)
     TextView tvLoyaltyBalance;
+    @BindView(R2.id.cart_loyalty_point_balance)
+    TextView LoyaltyPoint;
     @BindView(R2.id.holder_loyalty_balance)
     LinearLayout holderLoyaltyBalance;
     @BindView(R2.id.et_use_deposit)
@@ -150,6 +152,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalPaymentWithLoyaltyIdr;
     private String totalPaymentWithoutLoyaltyIdr;
     private String totalLoyaltyBalance;
+    private String totalLoyaltyPoint;
     private String donationValue;
 
     public static Fragment newInstance() {
@@ -208,6 +211,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setViewListener() {
+        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cbUseVoucher.setOnCheckedChangeListener(getOnCheckedUseVoucherOptionListener());
         cbUseVoucher.setChecked(false);
     }
@@ -308,9 +312,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
-    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR) {
+    public void renderVisibleLoyaltyBalance(String loyaltyAmountIDR, String loyaltyPoint) {
         this.totalLoyaltyBalance = loyaltyAmountIDR;
+        this.totalLoyaltyPoint = loyaltyPoint;
         tvLoyaltyBalance.setText("(" + loyaltyAmountIDR + ")");
+        LoyaltyPoint.setText(": " + loyaltyPoint + " " + pluralizeGrammar("point", loyaltyPoint));
         holderLoyaltyBalance.setVisibility(View.VISIBLE);
     }
 
@@ -321,7 +327,6 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCartListData(final List<CartItem> cartList) {
-        rvCart.setLayoutManager(new LinearLayoutManagerNonScroll(getActivity()));
         cartItemAdapter = new CartItemAdapter(this, this);
         cartItemAdapter.fillDataList(cartList);
         rvCart.setAdapter(cartItemAdapter);
@@ -503,6 +508,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderCheckboxDonasi(CartDonation donation) {
+        setDonationValue("0");
         donasiTitle.setText(donation.getDonationNoteTitle());
         donasiCheckbox.setText(donation.getDonationNoteInfo());
         donasiCheckbox.setOnCheckedChangeListener(getOnCheckedDonasiListener(donation.getDonationValue()));
@@ -739,7 +745,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     etVoucherCode.setText("");
                     tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
-                        renderVisibleLoyaltyBalance(totalLoyaltyBalance);
+                        renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
                 }
             }
         };
@@ -875,5 +881,18 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 dialog.dismiss();
             }
         });
+    }
+
+    private String pluralizeGrammar(String noun, String amount) {
+        int convertedAmount;
+        try {
+            convertedAmount = Integer.parseInt(amount);
+        } catch (Exception e) {
+            convertedAmount = 0;
+        }
+        if (convertedAmount > 1) {
+            return noun+"s";
+        }
+        return noun;
     }
 }

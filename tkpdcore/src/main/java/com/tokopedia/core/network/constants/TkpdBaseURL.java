@@ -17,6 +17,7 @@ public class TkpdBaseURL {
     public static String MOJITO_DOMAIN = "https://mojito.tokopedia.com/";
     public static String MOJITO_STAGING_DOMAIN = "https://mojito-staging.tokopedia.com/";
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
+    public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
     public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
     public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
@@ -37,6 +38,7 @@ public class TkpdBaseURL {
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
+    public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
     public static class Product {
         public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
@@ -119,6 +121,8 @@ public class TkpdBaseURL {
         public static final String URL_TICKET_ACTION = BASE_DOMAIN + "v4/action/ticket/";
         public static final String URL_REGISTER_NEW = BASE_DOMAIN + "/v4/action/register/";
 
+        public static final String URL_POST_FAVORITE_SHOP = "v4/action/favorite-shop/fav_shop.pl";
+
 
         public static final String REGISTER_NEW = "register.pl";
         public static final String PATH_FAVE_SHOP = "fav_shop.pl";
@@ -145,6 +149,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_RESOLUTION_CENTER_DETAIL = "get_resolution_center_detail_new.pl";
         public static final String PATH_GET_RESOLUTION_CENTER_SHOW_MORE = "get_resolution_center_show_more.pl";
         public static final String PATH_TRACK_SHIPPING_REF = "track_shipping_ref.pl";
+        public static final String PATH_TRACK_SHIPPING_REF_V2 = "v4/inbox-resolution-center/track_shipping_ref.pl";
 
         public static final String PATH_GET_INBOX_REVIEW = "get_inbox_review.pl";
 
@@ -237,7 +242,6 @@ public class TkpdBaseURL {
         public static final String PATH_REMOVE_WISHLIST_PRODUCT = "remove_wishlist_product.pl";
 
         public static final String PATH_IS_ALREADY_WISHLIST_PRODUCT = "is_already_wishlist_product.pl";
-        public static final String PATH_OTP_WITH_CALL = "otp/request";
     }
 
     public static class Shop {
@@ -347,7 +351,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_DEPARTMENT_CHILD = "get_department_child.pl";
         public static final String PATH_GET_DEPARTMENT_PARENT = "get_department_parent.pl";
 
-        public static final String PATH_GET_FAVORITE_SHOP = "get_favorite_shop.pl";
+        public static final String PATH_GET_FAVORITE_SHOP = "v4/home/get_favorite_shop.pl";
         public static final String PATH_GET_PRODUCT_FEED = "get_product_feed.pl";
         public static final String PATH_GET_RECENT_VIEW_PRODUCT = "get_recent_view_product.pl";
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";
@@ -378,6 +382,15 @@ public class TkpdBaseURL {
         public static final String PATH_REPLY_CONVERSATION_VALIDATION_NEW = "reply_conversation_validation_new.pl";
         public static final String PATH_REPORT_REOLUTION = "report_resolution.pl";
         public static final String PATH_RESOLUTION_CENTER = "resolution-center.pl";
+        public static final String PATH_CANCEL_RESOLUTION_V2 = "v4/action/resolution-center/cancel_resolution.pl";
+        public static final String PATH_REPORT_RESOLUTION_V2 = "v4/action/resolution-center/report_resolution.pl";
+        public static final String PATH_FINISH_RES_RETURN_V2 = "v4/action/resolution-center/finish_resolution_retur.pl";
+        public static final String PATH_ACCEPT_ADMIN_RESOLUTION_V2 = "v4/action/resolution-center/accept_admin_resolution.pl";
+        public static final String PATH_ACCEPT_RESOLUTION_V2 = "v4/action/resolution-center/accept_resolution.pl";
+        public static final String PATH_INPUT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/input_address_resolution.pl";
+        public static final String PATH_EDIT_ADDRESS_RESOLUTION_V2 = "v4/action/resolution-center/edit_address_resolution.pl";
+        public static final String PATH_REPLY_CONVERSATION_SUBMIT_V2 = "v4/action/resolution-center/reply_conversation_submit.pl";
+        public static final String PATH_REPLY_CONVERSATION_VALIDATION_V2 = "v4/action/resolution-center/reply_conversation_validation.pl";
     }
 
     public static class Search {
@@ -493,6 +506,7 @@ public class TkpdBaseURL {
         public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
+        public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
 
@@ -514,6 +528,7 @@ public class TkpdBaseURL {
         public static final String PATH_FAV_SHOP_FEED = "catalog/product";
         public static final String PATH_CATALOG = "v1/catalog";
         public static final String PATH_TOP_PICKS = "/hoth/toppicks/widget";
+        public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
 
@@ -529,17 +544,21 @@ public class TkpdBaseURL {
     }
 
     public static class Mojito {
-        public static final String PATH_USER = "v1.0.2/users/";
-        public static final String PATH_PRODUCT = "v1/products/";
+        public static final String PATH_USER = "v1.0.3/users/";
+        public static final String PATH_PRODUCT = "users/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
-        public static final String PATH_WISHLIST_PRODUCT = "wishlist/products";
-        public static final String PATH_WISHLIST = "wishlist";
+        public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
+        public static final String PATH_WISHLIST = "wishlist/";
+        public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
+
 
         public static final String API_HOME_CATEGORY_MENU = "/api/v1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
+        public static final String PATH_USER_WISHLIST = "/users";
+        public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
     }
 
 
@@ -606,18 +625,39 @@ public class TkpdBaseURL {
         public static final String VALIDATE_EMAIL = "/api/register/validate-email";
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
+        public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+
+
+        public class OTP {
+            private static final String BASE_OTP = "/otp";
+            public static final String REQUEST_OTP = BASE_OTP + "/request";
+            public static final String VALIDATE_OTP = BASE_OTP + "/validate";
+            public static final String REQUEST_OTP_EMAIL = BASE_OTP + "/email/request";
+        }
+
+        public class Image {
+            public static final String VALIDATE_SIZE = "/api/image/validate-size";
+            public static final String GET_UPLOAD_HOST = "/api/image/upload-host";
+            public static final String SUBMIT_DETAIL = "/api/image/submit-detail";
+        }
+
+        public class Ktp {
+            public static final String CHECK_STATUS = "/api/ktp/check-status";
+        }
     }
 
     public static class Home {
         public static final String PATH_API_V1_ANNOUNCEMENT_TICKER = "/api/v1/tickers";
     }
 
-    public static class GoldMerchant{
+    public static class GoldMerchant {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
+        public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
+        public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
         public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
     }
 
-    public static class FCM{
+    public static class FCM {
         public static final String UPDATE_FCM = "/api/gcm/update";
     }
 
@@ -629,7 +669,7 @@ public class TkpdBaseURL {
         public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
-    public static class TopCash{
+    public static class TopCash {
         public static final String GET_WALLET = ACCOUNTS_DOMAIN + "api/v1/wallet/";
         public static final String PATH_WALLET = "balance";
     }
@@ -640,5 +680,47 @@ public class TkpdBaseURL {
     }
     public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
+    }
+
+    public static class DigitalApi {
+        public static final String VERSION = "v1.2/";
+        public static final String HMAC_KEY = "web_service_v4";
+
+        public static final String PATH_STATUS = "status";
+        public static final String PATH_CATEGORY = "category/list";
+        public static final String PATH_OPERATOR = "operator/list";
+        public static final String PATH_PRODUCT = "product/list";
+        public static final String PATH_RECENT_NUMBER = "recent-number";
+        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_SALDO = "saldo";
+        public static final String PATH_GET_CART = "cart";
+        public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
+        public static final String PATH_BANNER = "banner";
+        public static final String PATH_ORDER = "order";
+        public static final String PATH_ADD_TO_CART = "cart";
+        public static final String PATH_CHECKOUT = "checkout";
+        public static final String PATH_CHECK_VOUCHER = "voucher/check";
+    }
+
+    public static class HadesCategory {
+        public static final String CHECK_VERSION = "/v1/categories_version";
+        public static final String URL_HADES = HADES_DOMAIN;
+        public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+    }
+
+    public static class ResCenterV2 {
+        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/v1/";
+        public static final String BASE_INBOX_RESOLUTION = "inbox";
+        public static final String BASE_DETAIL_RESOLUTION = "detail/{resolution_id}";
+
+        public static final String GET_RESOLUTION_LIST = BASE_INBOX_RESOLUTION;
+        public static final String GET_RESOLUTION_DETAIL = BASE_DETAIL_RESOLUTION;
+        public static final String GET_RESOLUTION_CONVERSATION = BASE_DETAIL_RESOLUTION + "/conversation";
+        public static final String GET_RESOLUTION_CONVERSATION_MORE = BASE_DETAIL_RESOLUTION + "/conversation/more";
+        public static final String GET_RESOLUTION_HISTORY_AWB = BASE_DETAIL_RESOLUTION + "/history/awb";
+        public static final String GET_RESOLUTION_HISTORY_ACTION = BASE_DETAIL_RESOLUTION + "/history/action";
+        public static final String GET_RESOLUTION_HISTORY_ADDRESS = BASE_DETAIL_RESOLUTION + "/history/address";
+        public static final String GET_RESOLUTION_LIST_PRODUCT = BASE_DETAIL_RESOLUTION + "/product";
+        public static final String GET_RESOLUTION_PRODUCT_DETAIL = BASE_DETAIL_RESOLUTION + "/product/{trouble_id}";
     }
 }

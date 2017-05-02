@@ -423,7 +423,7 @@ public class FacadeShopTransaction {
             model.UserName = orderShippingList.getOrderCustomer().getCustomerName();
             model.AvatarUrl = orderShippingList.getOrderCustomer().getCustomerImage();
             model.Komisi = orderShippingList.getOrderPayment().getPaymentKomisi();
-            model.Deadline = orderShippingList.getOrderPayment().getPaymentShippingDayLeft() + "";
+            model.Deadline = orderShippingList.getOrderDeadline().getDeadlineShipping();
             OrderDetail orderDetail = orderShippingList.getOrderDetail();
             model.Invoice = orderDetail.getDetailInvoice();
             model.BuyerId = orderShippingList.getOrderCustomer().getCustomerId();

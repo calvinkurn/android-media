@@ -1,0 +1,20 @@
+package com.tokopedia.core.network.apiservices.hades.apis;
+
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
+import rx.Observable;
+
+/**
+ * Created by Alifa on 2/22/2017.
+ */
+
+public interface HadesApi {
+
+    @GET(TkpdBaseURL.HadesCategory.PATH_CATEGORIES)
+    Observable<Response<CategoryHadesModel>> getCategories(@Path("catId") String categoryId);
+
+}

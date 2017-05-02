@@ -18,6 +18,7 @@ public class TopAdsRetryDataBinder extends RetryDataBinder {
         super(dataBindAdapter);
     }
 
+    @Override
     public ViewHolder newViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listview_top_ads_network_error, null);
         if (parent.getMeasuredHeight() < parent.getMeasuredWidth()) {

@@ -7,7 +7,6 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.SessionRouter;
@@ -18,8 +17,6 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
 import java.util.Map;
 
 /**
@@ -58,12 +55,6 @@ public class TrackingUtils extends TrackingConfig {
 
     public static String eventHTTP(){
         return getGTMEngine().eventHTTP();
-    }
-
-    public static void eventAuthenticateLogin(Authenticated authenticated){
-        getGTMEngine()
-                .eventAuthenticate(authenticated)
-                .sendScreen(Authenticated.KEY_CD_NAME);
     }
 
     public static void eventError(String className, String errorMessage){
@@ -164,6 +155,10 @@ public class TrackingUtils extends TrackingConfig {
 
     static void sendGTMEvent(Map<String, Object> dataLayers){
         getGTMEngine().sendEvent(dataLayers);
+    }
+
+    public static String getClientID() {
+        return getGTMEngine().getClientIDString();
     }
 
     public static String getGtmString(String key) {

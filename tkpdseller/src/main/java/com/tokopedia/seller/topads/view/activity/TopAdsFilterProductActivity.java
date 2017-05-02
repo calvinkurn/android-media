@@ -18,16 +18,16 @@ import java.util.List;
 public class TopAdsFilterProductActivity extends TopAdsFilterActivity {
 
     private int selectedFilterStatus;
-    private int selectedGroupId;
-    private int currentGroupId;
+    private long selectedGroupId;
+    private long currentGroupId;
     private String currentGroupName;
 
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
-        selectedGroupId = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID);
-        currentGroupId = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID);
+        selectedGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID);
+        currentGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID);
         currentGroupName = extras.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME);
     }
 

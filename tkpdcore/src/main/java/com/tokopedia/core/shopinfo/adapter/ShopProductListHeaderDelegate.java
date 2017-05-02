@@ -25,11 +25,16 @@ public class ShopProductListHeaderDelegate {
     }
 
     private ProductHeaderListListener listener;
+    private SpinnerInteractionListener spinnerInteractionListener;
     private SimpleSpinnerAdapter etalaseAdapter;
     private int spinnerLastPos = 0;
     // if selection == -1, no selection request
     private int spinnerSelectedPos = -1;
     private VHolder vholder;
+
+    public ShopProductListHeaderDelegate() {
+        spinnerInteractionListener = new SpinnerInteractionListener();
+    }
 
     private class VHolder extends RecyclerView.ViewHolder{
 
@@ -50,6 +55,7 @@ public class ShopProductListHeaderDelegate {
     }
 
     public void setSelectedEtalase(int pos){
+        spinnerLastPos = pos;
         spinnerSelectedPos = pos;
         if(listener!=null) {
             listener.onEtalaseClick(pos);
@@ -69,9 +75,8 @@ public class ShopProductListHeaderDelegate {
         vholder = (VHolder) holder;
         vholder.toggle.setOnClickListener(onToggleView());
         vholder.filterClick.setOnClickListener(onFilterClick());
-        SpinnerInteractionListener listener = onEtalaseSelected();
-        vholder.etalase.setOnItemSelectedListener(listener);
-        vholder.etalase.setOnTouchListener(listener);
+        vholder.etalase.setOnItemSelectedListener(spinnerInteractionListener);
+        vholder.etalase.setOnTouchListener(spinnerInteractionListener);
         if(vholder.etalase.getAdapter() == null)
             vholder.etalase.setAdapter(etalaseAdapter);
         vholder.toggle.setImageResource(toggleIcon);
@@ -86,13 +91,6 @@ public class ShopProductListHeaderDelegate {
     public class SpinnerInteractionListener implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
 
         boolean userSelect = false;
-        int spinnerLastPos = 0;
-        ProductHeaderListListener listener;
-
-        public SpinnerInteractionListener(ProductHeaderListListener listener, int spnLastPost){
-            this.spinnerLastPos = spnLastPost;
-            this.listener = listener;
-        }
 
         @Override
         public boolean onTouch(View v, MotionEvent motionEvent) {
@@ -119,12 +117,6 @@ public class ShopProductListHeaderDelegate {
         public void onNothingSelected(AdapterView<?> adapterView) {
         }
 
-    }
-
-
-
-    private SpinnerInteractionListener onEtalaseSelected() {
-        return new SpinnerInteractionListener(listener,spinnerLastPos);
     }
 
     private View.OnClickListener onFilterClick() {

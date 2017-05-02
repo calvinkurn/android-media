@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
@@ -140,6 +141,7 @@ public class ManageProduct extends TkpdActivity implements
     public static final String SORT_MOST_BUY = "8";
     public static final String SORT_LOWEST_PRICE = "9";
     public static final String SORT_HIGHER_PRICE = "10";
+
     public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
     public CompositeSubscription compositeSubscription = new CompositeSubscription();
     SimpleListView lvListProd;
@@ -151,7 +153,7 @@ public class ManageProduct extends TkpdActivity implements
     EditText EtalaseName;
     View footerLV;
     ImageView blurImage;
-    FabSpeedDial fabAddProduct;
+
     ManageProductPresenterImpl manageProductPresenter;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
@@ -206,6 +208,10 @@ public class ManageProduct extends TkpdActivity implements
     private PagingHandler mPaging = new PagingHandler();
     private RetryHandler retryHandler;
     private SimpleSpinnerAdapter simpleSpinnerAdapter;
+
+    FabSpeedDial fabAddProduct;
+
+
     // NEW NETWORK
     private NetworkInteractor networkInteractorImpl;
     private Gson gson;
@@ -246,7 +252,6 @@ public class ManageProduct extends TkpdActivity implements
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         lvListProd = (SimpleListView) findViewById(R.id.prod_list);
         blurImage = (ImageView) findViewById(R.id.blur_image);
-        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
 
         checkLogin();
         if (this.isFinishing()) {
@@ -276,6 +281,7 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
+
                 lvadapter.clearCheckdData();
                 lvListProd.clearChoices();
                 lvListProd.setItemChecked(-1, false);
@@ -309,14 +315,6 @@ public class ManageProduct extends TkpdActivity implements
         SortDialog = SortMenu.create();
         blurImage = (ImageView) findViewById(R.id.blur_image);
 
-        EtalaseFilters.add(getString(R.string.title_all_products));
-        EtalaseFilters.add(getString(R.string.title_all_etalase));
-        EtalaseFilters.add(getString(R.string.title_warehouse));
-        EtalaseFilters.add(getString(R.string.title_under_review));
-        EtalaseIdFilters.add("null");
-        EtalaseIdFilters.add("etalase");
-        EtalaseIdFilters.add("warehouse");
-        EtalaseIdFilters.add("pending");
         CategoriesFilter.add(getString(R.string.title_all_categories));
         CategoriesIdFilter.add("null");
 
@@ -1333,15 +1331,21 @@ public class ManageProduct extends TkpdActivity implements
                     @Override
                     public void onClick(View v) {
 //                        Toast.makeText(ManageProduct.this, "please implement change category", Toast.LENGTH_SHORT).show();
-                        if (!ValidateCategoriesChange()) {
-                            if (!lvadapter.CheckedProductId().isEmpty()) {
-                                changeCategories(mDepartment, lvadapter.CheckedProductId());
+                        try {
+                            if (!ValidateCategoriesChange()) {
+                                if (lvadapter != null && !lvadapter.CheckedProductId().isEmpty()) {
+                                    changeCategories(mDepartment, lvadapter.CheckedProductId());
+                                }
+                                ClearCheckedData();
+                                ActionTaken = false;
+                                alertDialog.dismiss();
+                                LastSpinnerPos = 0;
+                            } else {
+                                Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
+                                        Toast.LENGTH_SHORT).show();
+                                LastSpinnerPos = 0;
                             }
-                            ClearCheckedData();
-                            ActionTaken = false;
-                            alertDialog.dismiss();
-                            LastSpinnerPos = 0;
-                        } else {
+                        } catch (Exception e) {
                             Toast.makeText(ManageProduct.this, getResources().getString(R.string.error_select_category),
                                     Toast.LENGTH_SHORT).show();
                             LastSpinnerPos = 0;
@@ -1386,7 +1390,7 @@ public class ManageProduct extends TkpdActivity implements
     // [BUG] Manage Product - When user want to set multiple product become stok kosong,
     // apps not validate user to input/select the showcase
 
-    public Boolean ValidateCategoriesChange() {
+    public Boolean ValidateCategoriesChange() throws Exception {
         Boolean ContainError = false;
         if (LastSpinnerPos == 0) ContainError = true;
         else {
@@ -1520,6 +1524,16 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
+        EtalaseFilters.clear();
+        EtalaseIdFilters.clear();
+        EtalaseFilters.add(getString(R.string.title_all_products));
+        EtalaseFilters.add(getString(R.string.title_all_etalase));
+        EtalaseFilters.add(getString(R.string.title_warehouse));
+        EtalaseFilters.add(getString(R.string.title_under_review));
+        EtalaseIdFilters.add("null");
+        EtalaseIdFilters.add("etalase");
+        EtalaseIdFilters.add("warehouse");
+        EtalaseIdFilters.add("pending");
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
             EtalaseFilters.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));

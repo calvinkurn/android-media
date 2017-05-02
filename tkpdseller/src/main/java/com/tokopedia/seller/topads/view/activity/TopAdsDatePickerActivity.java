@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
 

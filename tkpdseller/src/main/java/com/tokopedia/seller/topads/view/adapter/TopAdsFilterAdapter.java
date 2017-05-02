@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,19 +102,23 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private void onItemSelected(int position) {
-        selectedPosition = position;
-        notifyDataSetChanged();
+        selectItem(position);
         if (callback != null) {
             callback.onItemSelected(position);
         }
     }
 
     public void selectItem(int position) {
+        int prevPos = selectedPosition;
         selectedPosition = position;
-        notifyDataSetChanged();
+        // notifyDataSetChanged();
+        if (prevPos > -1) {
+            notifyItemChanged(prevPos);
+        }
+        notifyItemChanged(selectedPosition);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         public TextView titleTextView;
         public ImageView statusImageView;
@@ -123,6 +127,12 @@ public class TopAdsFilterAdapter extends BaseLinearRecyclerViewAdapter {
             super(view);
             titleTextView = (TextView) view.findViewById(R.id.text_view_title);
             statusImageView = (ImageView) view.findViewById(R.id.image_view_status);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onItemSelected(getAdapterPosition());
         }
     }
 }

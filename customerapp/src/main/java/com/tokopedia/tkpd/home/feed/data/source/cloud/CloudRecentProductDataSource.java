@@ -40,6 +40,7 @@ public class CloudRecentProductDataSource {
     public Observable<List<ProductFeed>> getRecentProduct() {
 
         return mojitoService.getRecentProduct(SessionHandler.getLoginID(context))
+                .doOnNext(validateError())
                 .doOnNext(saveToCache())
                 .map(recentProductMapper);
     }
@@ -54,6 +55,19 @@ public class CloudRecentProductDataSource {
                     recentProductDb.setLastUpdated(System.currentTimeMillis());
                     recentProductDb.setContentRecentProduct(response.body());
                     recentProductDbManager.store(recentProductDb);
+                }
+            }
+        };
+    }
+
+    private Action1<Response<String>> validateError() {
+        return new Action1<Response<String>>() {
+            @Override
+            public void call(Response<String> stringResponse) {
+                if (stringResponse.code() >= 500 && stringResponse.code() < 600) {
+                    throw new RuntimeException("Server Error!");
+                } else if (stringResponse.code() >= 400 && stringResponse.code() < 500) {
+                    throw new RuntimeException("Client Error!");
                 }
             }
         };

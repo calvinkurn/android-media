@@ -74,8 +74,18 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
     @NonNull
     private DataFeed getValidDataFeed(List<ProductFeed> products, Feed feed, List<TopAds> topAds) {
         DataFeed dataFeed = new DataFeed();
-        dataFeed.setFeed(feed);
-        dataFeed.setRecentProductList(products);
+        if (products == null) {
+            dataFeed.setRecentProductError(true);
+            dataFeed.setRecentProductList(Collections.<ProductFeed>emptyList());
+        } else {
+            dataFeed.setRecentProductList(products);
+        }
+        if (feed == null) {
+            dataFeed.setFeedError(true);
+            dataFeed.setFeed(new Feed());
+        } else {
+            dataFeed.setFeed(feed);
+        }
         dataFeed.setTopAds(topAds);
         dataFeed.setValid(true);
         return dataFeed;
@@ -93,7 +103,7 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                 .onErrorReturn(new Func1<Throwable, List<ProductFeed>>() {
                     @Override
                     public List<ProductFeed> call(Throwable throwable) {
-                        return Collections.emptyList();
+                        return null;
                     }
                 });
     }
@@ -121,7 +131,13 @@ public class GetAllFeedDataPageUseCase extends UseCase<DataFeed> {
                         return new GetFeedUseCase(threadExecutor,
                                 postExecutionThread,
                                 feedRepository)
-                                .createObservable(getFeedRequestParams(shopIdListInString));
+                                .createObservable(getFeedRequestParams(shopIdListInString))
+                                .onErrorReturn(new Func1<Throwable, Feed>() {
+                                    @Override
+                                    public Feed call(Throwable throwable) {
+                                        return null;
+                                    }
+                                });
 
                     }
                 })

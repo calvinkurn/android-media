@@ -141,15 +141,6 @@
             android:label="@string/title_activity_choose_address"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.Cart"
-            android:label="@string/title_activity_cart"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name="com.tokopedia.core.EditAddressCart"
-            android:label="@string/title_activity_cart"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.ManageShop"
             android:label="@string/title_activity_manage_shop"
             android:screenOrientation="portrait" />
@@ -212,10 +203,6 @@
         <activity
             android:name="com.tokopedia.core.deposit.activity.WithdrawActivity"
             android:label="@string/title_activity_people_withdraw_balance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.PaymentConfirmationSuccess"
-            android:label="@string/title_activity_payment_confirmation_success"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.com.tokopedia.seller.OrderHistoryView"
@@ -297,14 +284,6 @@
         <activity
             android:name="com.tokopedia.core.DeveloperOptions"
             android:label="@string/title_activity_developer_options"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.BuyCredit"
-            android:label="@string/title_activity_buy_credit"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.BuyCreditCart"
-            android:label="@string/title_activity_buy_credit_cart"
             android:screenOrientation="portrait" />
         <activity android:name="com.localytics.android.PushTrackingActivity" />
         <activity
@@ -489,6 +468,7 @@
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.FORCE_LOGOUT" />
                 <action android:name="com.tokopedia.tkpd.SERVER_ERROR" />
+                <action android:name="com.tokopedia.tkpd.TIMEZONE_ERROR" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.tokopedia.core.msisdn.IncomingSmsReceiver">
@@ -508,16 +488,15 @@
             android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
         <service
-            android:name="com.tokopedia.core.gcm.FCMMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <service
             android:name=".gcm.FCMInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".gcm.BaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
         <service
@@ -534,10 +513,6 @@
 
         <service
             android:name="com.tokopedia.core.service.HadesService"
-            android:exported="false" />
-
-        <service
-            android:name="com.tokopedia.core.payment.services.PaymentIntentService"
             android:exported="false" />
 
         <service

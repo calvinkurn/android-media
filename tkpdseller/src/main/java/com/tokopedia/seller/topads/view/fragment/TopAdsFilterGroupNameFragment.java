@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +18,15 @@ import java.util.List;
 
 public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragment {
 
-    private int selectedGroupId;
-    private int currentGroupId;
+    private long selectedGroupId;
+    private long currentGroupId;
     private String currentGroupName;
 
-    public static TopAdsFilterGroupNameFragment createInstance(int groupId, int currentGroupId, String currentGroupName) {
+    public static TopAdsFilterGroupNameFragment createInstance(long groupId, long currentGroupId, String currentGroupName) {
         TopAdsFilterGroupNameFragment fragment = new TopAdsFilterGroupNameFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, currentGroupId);
+        bundle.putLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, groupId);
+        bundle.putLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, currentGroupId);
         bundle.putString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME, currentGroupName);
         fragment.setArguments(bundle);
         return fragment;
@@ -40,8 +40,8 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     @Override
     protected void setupArguments(Bundle bundle) {
         super.setupArguments(bundle);
-        selectedGroupId = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, selectedGroupId);
-        currentGroupId = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, currentGroupId);
+        selectedGroupId = bundle.getLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, selectedGroupId);
+        currentGroupId = bundle.getLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID, currentGroupId);
         currentGroupName = bundle.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME, currentGroupName);
     }
 
@@ -70,13 +70,13 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
             if (Integer.valueOf(radioButtonItem.getValue()) == selectedGroupId) {
-                selectedRadioButtonItem = radioButtonItem;
+                selectedAdapterPosition = i;
                 break;
             }
         }
@@ -89,8 +89,8 @@ public class TopAdsFilterGroupNameFragment extends TopAdsFilterRadioButtonFragme
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedAdapterPosition >= 0) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, Long.parseLong(getSelectedRadioValue()));
         }
         return intent;
     }

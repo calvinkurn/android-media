@@ -110,6 +110,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     int paramMaster=0;
 
+    @BindView(R2.id.content_lv) LinearLayout contentLv;
     @BindView(R2.id.new_comment) EditText comment;
     @BindView(R2.id.send_but) ImageView sendBut;
     @BindView(R2.id.comment_list) RecyclerView recyclerView;
@@ -203,6 +204,8 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
     protected void setupArguments(Bundle arguments) {
         from = arguments.getString("from");
         talk = arguments.getParcelable("talk");
+        talkID = arguments.getString("talk_id", "");
+        shopID = arguments.getString("shop_id", "");
         getFromBundle(talk);
         position = arguments.getInt("position");
     }
@@ -223,7 +226,6 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
         if (!SessionHandler.isV4Login(getActivity())) {
             addCommentArea.setVisibility(View.GONE);
         }
-        label.giveLabel(headUserLabel);
         if (SessionHandler.isV4Login(context)) {
             buttonOverflow.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -299,22 +301,26 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     }
 
-    private void parseHeader() {
-        pNameView.setText(productName);
-        ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
-        ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
-        timeView.setText(createTime);
-        messageView.setText(message);
-        userView.setText(userName);
-        reputation.setVisibility(View.GONE);
-        reputationUser.setVisibility(View.VISIBLE);
-        textReputation.setText(String.format("%s%%", reputationHeader));
-        if (noReputationHeader == 0) {
-            iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile_active);
-            textReputation.setVisibility(View.VISIBLE);
-        } else {
-            iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile);
-            textReputation.setVisibility(View.GONE);
+    protected void parseHeader() {
+        if (talk != null){
+
+            label.giveLabel(headUserLabel);
+            pNameView.setText(productName);
+            ImageHandler.loadImageRounded2(context, pImageView, prodImgUri);
+            ImageHandler.loadImageCircle2(context, userTalkImageView, userImgUri);
+            timeView.setText(createTime);
+            messageView.setText(message);
+            userView.setText(userName);
+            reputation.setVisibility(View.GONE);
+            reputationUser.setVisibility(View.VISIBLE);
+            textReputation.setText(String.format("%s%%", reputationHeader));
+            if (noReputationHeader == 0) {
+                iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile_active);
+                textReputation.setVisibility(View.VISIBLE);
+            } else {
+                iconReputation.setImageResource(R.drawable.ic_icon_repsis_smile);
+                textReputation.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -630,14 +636,31 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
     private int getMenuID() {
         int menuID;
-        if (token.getLoginID(context).equals(userIDTalk)) {
-            if (isFollow==1) {
-                menuID = R.menu.unfollow_delete_menu;
-            } else {
-                menuID = R.menu.follow_delete_menu;
-            }
-        } else {
+//        if (token.getLoginID(context).equals(userIDTalk)) {
+//            if (isFollow==1) {
+//                menuID = R.menu.unfollow_delete_menu;
+//            } else {
+//                menuID = R.menu.follow_delete_menu;
+//            }
+//        } else {
+//            menuID = R.menu.report_menu;
+//        }
+        if (shopID.equals(SessionHandler.getShopID(context))) {
             menuID = R.menu.report_menu;
+        } else {
+            if (token.getLoginID(context).equals(userIDTalk)) {
+                if (isFollow == 1) {
+                    menuID = R.menu.unfollow_delete_menu;
+                } else {
+                    menuID = R.menu.follow_delete_menu;
+                }
+            } else {
+                if (isFollow == 1) {
+                    menuID = R.menu.unfollow_report_menu;
+                } else {
+                    menuID = R.menu.follow_report_menu;
+                }
+            }
         }
         return menuID;
     }

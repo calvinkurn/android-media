@@ -5,7 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.common.service.MojitoService;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.base.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.tkpd.home.feed.data.factory.RecentProductSourceFactory;
 import com.tokopedia.tkpd.home.feed.data.mapper.RecentProductMapper;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;

@@ -1,14 +1,9 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.tokopedia.core.database.model.category.CategoryData;
-import com.tokopedia.core.database.recharge.operator.OperatorData;
-import com.tokopedia.core.database.recharge.product.ProductData;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
-import com.tokopedia.core.database.recharge.status.Status;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 
@@ -21,8 +16,8 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * @author  ricoharisin on 7/11/16.
- * Modified by kulomady on 08/23/2016
+ * @author ricoharisin on 7/11/16.
+ *         Modified by kulomady on 08/23/2016
  */
 public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor {
     private static final String TAG = RechargeNetworkInteractorImpl.class.getSimpleName();

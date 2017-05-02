@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.fragment.TopAdsAddCreditFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsPaymentCreditFragment;
 
 /**
@@ -18,7 +17,7 @@ public class TopAdsPaymentCreditActivity extends TActivity {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_top_ads_payment_credit);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, TopAdsPaymentCreditFragment.createInstance(), TopAdsPaymentCreditFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsPaymentCreditFragment.createInstance(), TopAdsPaymentCreditFragment.class.getSimpleName())
                 .commit();
     }
 

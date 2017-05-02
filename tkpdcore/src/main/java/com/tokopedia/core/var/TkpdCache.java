@@ -44,6 +44,7 @@ public class TkpdCache {
     public static String LAST_BRI = "LAST_BRI";
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
+    public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
 
 
     public static void clearAllCache(Context context) {
@@ -90,6 +91,7 @@ public class TkpdCache {
         public static final String SERVER = "server";
         public static final String IMG_DESC = "img_desc";
 
+        public static final String NOTIFICATION_PASS_DATA = "notification_pass_data";
         public static final String NOTIFICATION_CONTENT = "notification_content";
         public static final String NOTIFICATION_DESC = "notification_desc";
         public static final String NOTIFICATION_CODE = "notification_code";
@@ -138,6 +140,7 @@ public class TkpdCache {
         public static final String FAVORITE_SHOP = "FAVORITE_SHOP";
         public static final String RECOMMEND_SHOP = "RECOMMEND_SHOP";
         public static final String FAVORITE_PAGING = "FAVORITE_PAGING";
+        public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
 
         public static final String PROMO = "PROMO";
 
@@ -174,7 +177,12 @@ public class TkpdCache {
         public static final String SHOP_NOTE_LIST = "SHOP_NOTE_LIST";
         public static final String KEBIJAKAN_PENGEMBALIAN_PRODUK = "KEBIJAKAN_PENGEMBALIAN_PRODUK";
 
+        public static final String SHOP_SCORE_SUMMARY = "SHOP_SCORE_SUMMARY";
+        public static final String SHOP_SCORE_DETAIL = "SHOP_SCORE_DETAIL";
+
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
+
+        public static final String CATEOGRY_HEADER_LEVEL = "CATEGORY_LEVEL_";
     }
 
 }

@@ -34,7 +34,7 @@ public interface SessionView {
 
     boolean isFragmentCreated(String tag);
 
-    void moveToFragmentSecurityQuestion(int security1, int security2, int userId);
+    void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email);
 
     String getGenderFromGoogle(Person user);
 

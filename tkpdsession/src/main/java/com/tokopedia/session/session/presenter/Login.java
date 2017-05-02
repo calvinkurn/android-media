@@ -119,7 +119,6 @@ public interface Login {
 
     void updateViewModel(int type, Object... data);
 
-
     void setData(int type, Bundle data);
 
     void getToken(String emailType, LoginViewModel model);
@@ -133,4 +132,16 @@ public interface Login {
     void unSubscribe();
 
     void doFacebookLogin(LoginFragment fragment, CallbackManager callbackManager);
+
+    void setRememberAccountState(Boolean state);
+
+    void saveAccountInfo(String userEmail, String userPassword);
+
+    Boolean getSavedAccountState();
+
+    String getSavedAccountEmail();
+
+    String getSavedAccountPassword();
+
+    void clearSavedAccount();
 }

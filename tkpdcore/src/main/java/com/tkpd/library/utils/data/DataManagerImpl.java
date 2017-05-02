@@ -22,15 +22,12 @@ import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.model.Bank;
 import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.database.model.CategoryDB_Table;
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
 import com.tokopedia.core.database.model.District;
 import com.tokopedia.core.database.model.District_Table;
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
-import com.tokopedia.core.myproduct.api.Department;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.network.apiservices.etc.AddressService;
 import com.tokopedia.core.network.apiservices.etc.apis.AddressApi;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
@@ -137,6 +134,78 @@ public class DataManagerImpl implements DataManager {
             return dataManager = new DataManagerImpl();
         else
             return dataManager;
+    }
+
+    /**
+     * add location jabodetabek for filter in browse product or hot product
+     *
+     * @return
+     */
+    public static String addJabodetabek() {
+        String[] jabodetabek = {"Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi"};
+        City city = new Select().from(City.class)
+                .where(City_Table.cityId.eq("-1"))
+                .querySingle();
+
+        List<District> districts = new ArrayList<>();
+        String result = "";
+        for (String jbdtb : jabodetabek) {
+            District d = new Select().from(District.class)
+                    .where(District_Table.districtName.eq(jbdtb))
+                    .querySingle();
+            districts.add(d);
+            if (d != null)
+                result += d.getDistrictId() + ",";
+        }
+        result = result.substring(0, result.length() - 1);// delete last comma
+        return result;
+    }
+
+    /**
+     * create map for data location and value of data location for browse product and browse hot list
+     *
+     * @return
+     */
+    public static Map<String, ArrayList<String>> createDataLoc() {
+        List<District> districts = getListShippingCity();
+        ArrayList<String> dataLoc = new ArrayList<>();
+        ArrayList<String> dataLocValue = new ArrayList<>();
+        dataLoc.add(0, "Jabodetabek");
+        dataLocValue.add(addJabodetabek());
+
+        for (District d : districts) {
+            dataLoc.add(d.getDistrictName());
+            dataLocValue.add(d.getDistrictId());
+        }
+
+        Map<String, ArrayList<String>> map = new HashMap();
+        map.put(DATA_LOC, dataLoc);
+        map.put(DATA_LOC_VALUE, dataLocValue);
+        return map;
+    }
+
+    public static Map<String, ArrayList<String>> createDataLoc(List<District> districts) {
+        ArrayList<String> dataLoc = new ArrayList<>();
+        ArrayList<String> dataLocValue = new ArrayList<>();
+        dataLoc.add(0, "Jabodetabek");
+        dataLocValue.add(addJabodetabek());
+
+        for (District d : districts) {
+            dataLoc.add(d.getDistrictName());
+            dataLocValue.add(d.getDistrictId());
+        }
+
+        Map<String, ArrayList<String>> map = new HashMap();
+        map.put(DATA_LOC, dataLoc);
+        map.put(DATA_LOC_VALUE, dataLocValue);
+        return map;
+    }
+
+    public static List<District> getListShippingCity() {
+        City city = new Select().from(City.class)
+                .where(City_Table.cityId.eq("-1"))
+                .querySingle();
+        return city.getDistricts();
     }
 
     @Override
@@ -550,79 +619,6 @@ public class DataManagerImpl implements DataManager {
 
     }
 
-    /**
-     * add location jabodetabek for filter in browse product or hot product
-     *
-     * @return
-     */
-    public static String addJabodetabek() {
-        String[] jabodetabek = {"Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi"};
-        City city = new Select().from(City.class)
-                .where(City_Table.cityId.eq("-1"))
-                .querySingle();
-
-        List<District> districts = new ArrayList<>();
-        String result = "";
-        for (String jbdtb : jabodetabek) {
-            District d = new Select().from(District.class)
-                    .where(District_Table.districtName.eq(jbdtb))
-                    .querySingle();
-            districts.add(d);
-            if (d != null)
-                result += d.getDistrictId() + ",";
-        }
-        result = result.substring(0, result.length() - 1);// delete last comma
-        return result;
-    }
-
-    /**
-     * create map for data location and value of data location for browse product and browse hot list
-     *
-     * @return
-     */
-    public static Map<String, ArrayList<String>> createDataLoc() {
-        List<District> districts = getListShippingCity();
-        ArrayList<String> dataLoc = new ArrayList<>();
-        ArrayList<String> dataLocValue = new ArrayList<>();
-        dataLoc.add(0, "Jabodetabek");
-        dataLocValue.add(addJabodetabek());
-
-        for (District d : districts) {
-            dataLoc.add(d.getDistrictName());
-            dataLocValue.add(d.getDistrictId());
-        }
-
-        Map<String, ArrayList<String>> map = new HashMap();
-        map.put(DATA_LOC, dataLoc);
-        map.put(DATA_LOC_VALUE, dataLocValue);
-        return map;
-    }
-
-    public static Map<String, ArrayList<String>> createDataLoc(List<District> districts) {
-        ArrayList<String> dataLoc = new ArrayList<>();
-        ArrayList<String> dataLocValue = new ArrayList<>();
-        dataLoc.add(0, "Jabodetabek");
-        dataLocValue.add(addJabodetabek());
-
-        for (District d : districts) {
-            dataLoc.add(d.getDistrictName());
-            dataLocValue.add(d.getDistrictId());
-        }
-
-        Map<String, ArrayList<String>> map = new HashMap();
-        map.put(DATA_LOC, dataLoc);
-        map.put(DATA_LOC_VALUE, dataLocValue);
-        return map;
-    }
-
-
-    public static List<District> getListShippingCity() {
-        City city = new Select().from(City.class)
-                .where(City_Table.cityId.eq("-1"))
-                .querySingle();
-        return city.getDistricts();
-    }
-
     @Override
     public void getListShippingCity(Context context, final DataReceiver dataReceiver) {
 
@@ -749,200 +745,14 @@ public class DataManagerImpl implements DataManager {
 
     }
 
-    @Override
-    public void getListDepartment(Context context, final DataReceiver dataReceiver, final int departmentId) {
 
-        List<CategoryDB> departments = new Select()
-                .from(CategoryDB.class)
-                .where(CategoryDB_Table.parentId.is(departmentId))
-                .queryList();
-        ;
-
-        //[START] get from network
-        if (departments == null || departments.size() <= 0) {
-            switch (departmentId) {
-                case 0:
-                    NetworkCalculator depParent = new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.Etc.URL_DEPARTMENT + "/" + TkpdBaseURL.Etc.PATH_GET_DEPARTMENT_PARENT)
-                            .setIdentity()
-                            .compileAllParam()
-                            .finish();
-
-                    RetrofitUtils.createRetrofit().create(Department.class).getDepParent(
-                            NetworkCalculator.getContentMd5(depParent),// 1
-                            NetworkCalculator.getDate(depParent),// 2
-                            NetworkCalculator.getAuthorization(depParent),// 3
-                            NetworkCalculator.getxMethod(depParent),// 4
-                            NetworkCalculator.getUserId(context),// 5
-                            NetworkCalculator.getDeviceId(context),// 6
-                            NetworkCalculator.getHash(depParent),// 7
-                            NetworkCalculator.getDeviceTime(depParent)// 8
-                    )
-//                            .retry(5)
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
-                            .subscribe(
-                                    new Subscriber<DepartmentParentModel>() {
-                                        @Override
-                                        public void onCompleted() {
-                                            Log.d("MNORMANSYAH", DataManagerImpl.class.getSimpleName());
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            if (e instanceof UnknownHostException) {
-                                                dataReceiver.onNetworkError("No Connection");
-                                            } else {
-                                                dataReceiver.onTimeout();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onNext(DepartmentParentModel departmentParentModel) {
-                                            // save to db
-                                            DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-                                            database.beginTransaction();
-                                            try {
-                                                for (int i = 0; i < departmentParentModel.getData().getList().length; i++) {
-                                                    DepartmentParentModel.DepartmentParent parent = departmentParentModel.getData().getList()[i];
-                                                    new CategoryDB(parent.getDepartmentName(), Integer.parseInt(parent.getDepartmentTree()), 0, 0, Integer.parseInt(parent.getDepartmentId()), parent.getDepartmentIdentifier())
-                                                            .save();
-                                                }
-                                                database.setTransactionSuccessful();
-                                            } finally {
-                                                database.endTransaction();
-                                            }
-
-                                            //[START] get departments
-                                            List<CategoryDB> departments = new Select()
-                                                    .from(CategoryDB.class)
-                                                    .where(CategoryDB_Table.parentId.is(departmentId))
-                                                    .queryList();
-                                            ;
-                                            //[START] set result to receiver
-                                            dataReceiver.setDepartments(departments);
-                                        }
-                                    }
-                            );
-                    break;
-                default:
-                    depParent = new NetworkCalculator(NetworkConfig.GET, context, TkpdBaseURL.Etc.URL_DEPARTMENT + "/" + TkpdBaseURL.Etc.PATH_GET_DEPARTMENT_CHILD)
-                            .setIdentity()
-                            .addParam(Department.DEPARTMENT_ID, departmentId + "")
-                            .compileAllParam()
-                            .finish();
-
-                    RetrofitUtils.createRetrofit().create(Department.class).getDepChild(
-                            NetworkCalculator.getContentMd5(depParent),// 1
-                            NetworkCalculator.getDate(depParent),// 2
-                            NetworkCalculator.getAuthorization(depParent),// 3
-                            NetworkCalculator.getxMethod(depParent),// 4
-                            NetworkCalculator.getUserId(context),// 5
-                            NetworkCalculator.getDeviceId(context),// 6
-                            NetworkCalculator.getHash(depParent),// 7
-                            NetworkCalculator.getDeviceTime(depParent),// 8
-                            depParent.getContent().get(Department.DEPARTMENT_ID)
-                    )
-//                            .retry(5)
-                            .subscribeOn(Schedulers.newThread())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.newThread())
-                            .subscribe(
-                                    new Subscriber<DepartmentParentModel>() {
-                                        @Override
-                                        public void onCompleted() {
-                                            Log.d("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + "onCompleted()");
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                        }
-
-                                        @Override
-                                        public void onNext(DepartmentParentModel departmentParentModel) {
-                                            // save to db
-                                            DepartmentParentModel.DepartmentParent[] list = departmentParentModel.getData().getList();
-                                            if (list != null) {
-                                                DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
-                                                database.beginTransaction();
-                                                try {
-                                                    for (int i = 0; i < list.length; i++) {
-                                                        DepartmentParentModel.DepartmentParent parent = list[i];
-                                                        new CategoryDB(parent.getDepartmentName(), Integer.parseInt(parent.getDepartmentTree()), 0, departmentId, Integer.parseInt(parent.getDepartmentId()), parent.getDepartmentIdentifier())
-                                                                .save();
-                                                    }
-                                                    database.setTransactionSuccessful();
-                                                } finally {
-                                                    database.endTransaction();
-                                                }
-
-                                                //[START] get departments
-                                                List<CategoryDB> departments = new Select()
-                                                        .from(CategoryDB.class)
-                                                        .where(CategoryDB_Table.parentId.is(departmentId))
-                                                        .queryList();
-                                                //[START] set result to receiver
-                                                dataReceiver.setDepartments(departments);
-                                            } else {
-                                                Log.e("MNORMANSYAH", "failed to get department child");
-                                            }// end of if-else
-                                        }// end of onNext
-                                    }
-                            );
-                    break;
-            }// end of switch-case
-        }//[END] get from network
-        else {
-            dataReceiver.setDepartments(departments);
-        }
-
-
-    }
-
-    @Override
-    public void getListDepartment2(Context context, final DataReceiver dataReceiver, int departmentId, boolean currentThread) {
-        if (currentThread) {
-            dataReceiver.getSubscription().add(
-                    hitHades
-                            .subscribeOn(Schedulers.immediate())
-                            .observeOn(AndroidSchedulers.mainThread())
-//                        .retry(5)
-                            .subscribe(
-                                    new Subscriber<com.tkpd.library.utils.data.model.Department>() {
-                                        @Override
-                                        public void onCompleted() {
-                                            Log.e("MNORMANSYAH", "successfull fetch all department");
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            Log.e("MNORMANSYAH", DataManagerImpl.class.getSimpleName() + " -> " + e.getLocalizedMessage());
-                                            if (e instanceof UnknownHostException) {
-                                                dataReceiver.onNetworkError("No Connection");
-                                            } else {
-                                                dataReceiver.onTimeout();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onNext(com.tkpd.library.utils.data.model.Department department) {
-                                            dataReceiver.setDepartments(new ArrayList<CategoryDB>());
-                                        }
-                                    }
-                            )
-            );
-        } else {
-            getListDepartment2(context, dataReceiver, departmentId);
-        }
-    }
 
     @Override
     public void getListDepartment2(Context context, final DataReceiver dataReceiver, int departmentId) {
         dataReceiver.getSubscription().add(
                 hitHades
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.immediate())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
 //                        .retry(5)
                         .subscribe(
                                 new Subscriber<com.tkpd.library.utils.data.model.Department>() {
@@ -968,8 +778,6 @@ public class DataManagerImpl implements DataManager {
                                 }
                         )
         );
-
-
     }
 
     private Boolean isShippingCityExpired() {

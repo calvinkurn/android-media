@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.DrawerItem;
 import com.tokopedia.core.drawer.model.DrawerItemList;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -62,6 +64,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView deposit;
         TextView topPoint;
         TextView tokoCashValueView;
+        TextView tokoCashActivationButton;
         TextView tokoCashLabel;
         ImageView coverImg;
         RelativeLayout gradientBlack;
@@ -72,6 +75,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         View loadingSaldo;
         View loadingLoyalty;
         View loadingTopCash;
+        View tokoCashRedirectArrow;
 
         public HeaderViewHolder(View itemView) {
             super(itemView);
@@ -81,6 +85,8 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             topPoint = (TextView) itemView.findViewById(R.id.toppoints_text);
             tokoCashLabel = (TextView) itemView.findViewById(R.id.toko_cash_label);
             tokoCashValueView = (TextView) itemView.findViewById(R.id.top_cash_value);
+            tokoCashActivationButton = (TextView) itemView
+                    .findViewById(R.id.toko_cash_activation_button);
             coverImg = (ImageView) itemView.findViewById(R.id.cover_img);
             gradientBlack = (RelativeLayout) itemView.findViewById(R.id.gradient_black);
             drawerPointsLayout = (LinearLayout) itemView.findViewById(R.id.drawer_points_layout);
@@ -90,6 +96,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             loadingSaldo = itemView.findViewById(R.id.loading_saldo);
             loadingLoyalty = itemView.findViewById(R.id.loading_loyalty);
             loadingTopCash = itemView.findViewById(R.id.loading_top_cash);
+            tokoCashRedirectArrow = itemView.findViewById(R.id.toko_cash_redirect_arrow);
         }
     }
 
@@ -465,24 +472,44 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void setTokoCashLayoutValue(HeaderViewHolder holder, DrawerHeader headerValue) {
-        if(isTokoCashDisabled(headerValue) || isTokoNoAction(headerValue)) {
+        if(isTokoCashDisabled(headerValue)) {
            holder.topCashLayout.setVisibility(View.GONE);
-        }else {
-            holder.tokoCashLabel.setText(headerValue.tokoCashText);
+        } else if(isUnregistered(headerValue)) {
+            showTokoCashActivateView(holder);
+            holder.tokoCashActivationButton.setText(headerValue.tokoCashText);
             holder.topCashLayout
                     .setOnClickListener(onLayoutTopCashSelected(headerValue.tokoCashURL));
+            holder.loadingTopCash.setVisibility(View.GONE);
+        } else {
+            showTokoCashBalanceView(holder);
+            holder.tokoCashLabel.setText(headerValue.tokoCashText);
             holder.tokoCashValueView.setText(headerValue.tokoCashValue);
-            holder.topCashLayout.setVisibility(View.VISIBLE);
+            holder.topCashLayout
+                    .setOnClickListener(onLayoutTopCashOTPSelected(headerValue.tokoCashURL));
             holder.loadingTopCash.setVisibility(View.GONE);
         }
     }
 
-    private boolean isTokoNoAction(DrawerHeader headerValue) {
-        return !headerValue.tokoCashToWallet && !headerValue.tokoCashOtherAction;
+    private void showTokoCashBalanceView(HeaderViewHolder holder) {
+        holder.topCashLayout.setVisibility(View.VISIBLE);
+        holder.tokoCashActivationButton.setVisibility(View.GONE);
+        holder.tokoCashValueView.setVisibility(View.VISIBLE);
+        holder.tokoCashRedirectArrow.setVisibility(View.VISIBLE);
+    }
+
+    private void showTokoCashActivateView(HeaderViewHolder holder) {
+        holder.topCashLayout.setVisibility(View.VISIBLE);
+        holder.tokoCashRedirectArrow.setVisibility(View.GONE);
+        holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
+        holder.tokoCashValueView.setVisibility(View.GONE);
     }
 
     private boolean isTokoCashDisabled(DrawerHeader headerValue) {
-        return headerValue.tokoCashValue == null || headerValue.tokoCashText.isEmpty();
+        return headerValue.tokoCashText == null || headerValue.tokoCashText.isEmpty();
+    }
+
+    private boolean isUnregistered(DrawerHeader headerValue) {
+        return !headerValue.tokoCashToWallet;
     }
 
     private View.OnClickListener onLayoutTopCashSelected(final String redirectURL) {
@@ -490,17 +517,34 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             @Override
             public void onClick(View v) {
                 drawerListener.OnClosed();
-                Bundle bundle = new Bundle();
-                bundle.putString("url", redirectURL);
-                if(context instanceof Activity){
-                    if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
-                        ((TkpdCoreRouter)((Activity) context).getApplication())
-                                .goToWallet(context, bundle);
-                    }
-                }
+                String seamlessURL;
+                seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(redirectURL)), context);
+                openTokoCashWebView(seamlessURL);
                 finishActivity();
             }
         };
+    }
+
+    private View.OnClickListener onLayoutTopCashOTPSelected(final String redirectURL) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerListener.OnClosed();
+                openTokoCashWebView(redirectURL);
+                finishActivity();
+            }
+        };
+    }
+
+    private void openTokoCashWebView(String redirectURL) {
+        Bundle bundle = new Bundle();
+        bundle.putString("url", redirectURL);
+        if(context instanceof Activity){
+            if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
+                ((TkpdCoreRouter)((Activity) context).getApplication())
+                        .goToWallet(context, bundle);
+            }
+        }
     }
 
 }

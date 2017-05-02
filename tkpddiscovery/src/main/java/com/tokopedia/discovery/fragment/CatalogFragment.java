@@ -30,7 +30,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseCatalogAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
-import com.tokopedia.discovery.presenter.DiscoveryActivityPresenter;
+import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Catalog;
 import com.tokopedia.discovery.presenter.browseparent.CatalogImpl;
 import com.tokopedia.discovery.view.CatalogView;
@@ -188,14 +188,17 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void onCallNetwork() {
-        if (getActivity() != null && getActivity() instanceof DiscoveryActivityPresenter) {
-            DiscoveryActivityPresenter discoveryActivityPresenter = (DiscoveryActivityPresenter) getActivity();
-            presenter.callNetwork(discoveryActivityPresenter);
+        if (getActivity() != null && getActivity() instanceof BrowseView) {
+            BrowseView browseView = (BrowseView) getActivity();
+            presenter.callNetwork(browseView);
         }
     }
 
     @Override
     public void setupRecyclerView() {
+        if (list_catalog.getAdapter() != null) {
+            return;
+        }
         list_catalog.setLayoutManager(gridLayoutManager);
         list_catalog.setAdapter(browseCatalogAdapter);
         list_catalog.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -217,6 +220,9 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public void initAdapter() {
+        if (browseCatalogAdapter != null) {
+            return;
+        }
         browseCatalogAdapter = new BrowseCatalogAdapter(getActivity().getApplicationContext(), browseCatalogModelList);
         browseCatalogAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
@@ -313,6 +319,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
 
     @Override
     public int getDataSize() {
+        if (browseCatalogAdapter == null) return -1;
         return browseCatalogAdapter.getData() != null ? browseCatalogAdapter.getData().size() : -1;
     }
 
@@ -326,7 +333,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
         if (filterAtrribute.getSort() != null) {
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
-        ((BrowseProductActivity) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+        ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
     }
 
     private int calcColumnSize(int orientation) {

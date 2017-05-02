@@ -23,7 +23,7 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
 public interface OtpOnCallApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_OTP_WITH_CALL)
+    @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOTPWithCall(@Header(HEADER_USER_ID) String userId,
                                                           @FieldMap Map<String, String> params);
 }

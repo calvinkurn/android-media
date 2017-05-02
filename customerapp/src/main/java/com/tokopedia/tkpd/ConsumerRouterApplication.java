@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -18,17 +22,20 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
-import com.tokopedia.transaction.webview.WalletWebView;
+import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
- * Created by normansyahputa on 12/15/16.
+ * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
+
+    public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
+
     @Override
     public void goToHome(Context context) {
-        Intent intent = new Intent(context,
-                ParentIndexHome.class);
+        Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -52,6 +59,11 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     @Override
     public void startInstopedActivity(Context context) {
         InstopedActivity.startInstopedActivity(context);
+    }
+
+    @Override
+    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
     }
 
     @Override
@@ -83,7 +95,7 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
 
     @Override
     public void goToWallet(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, WalletWebView.class);
+        Intent intent = new Intent(context, WalletActivity.class);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
@@ -92,5 +104,20 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return CartDigitalActivity.newInstance(this, passData);
+    }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return new Intent(context, ParentIndexHome.class);
+    }
+
+    @Override
+    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+        return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
 }

@@ -7,7 +7,7 @@ import android.util.Log;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
-import com.tokopedia.core.network.apiservices.goldmerchant.ProductVideoService;
+import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
@@ -33,6 +33,7 @@ import com.tokopedia.core.product.model.productotherace.ProductOtherAce;
 import com.tokopedia.core.product.model.productotherace.ProductOtherDataAce;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
+import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +67,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
     private final MojitoAuthService mojitoAuthService;
-    private final ProductVideoService productVideoService;
+    private final GoldMerchantService goldMerchantService;
     private final int SERVER_ERROR_CODE = 500;
 
     public RetrofitInteractorImpl() {
@@ -77,7 +78,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
         this.mojitoAuthService = new MojitoAuthService();
-        this.productVideoService = new ProductVideoService();
+        this.goldMerchantService = new GoldMerchantService();
     }
 
     @Override
@@ -441,7 +442,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void addToWishList(@NonNull Context context, @NonNull Integer params,
                               @NonNull final AddWishListListener listener) {
         Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .addWishlist(String.valueOf(params));
+                .addWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -479,7 +480,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     public void removeFromWishList(@NonNull Context context, @NonNull Integer params,
                                    @NonNull final RemoveWishListListener listener) {
         final Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
-                .removeWishlist(String.valueOf(params));
+                .removeWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
@@ -558,7 +559,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                     @NonNull String productId,
                                     @NonNull final VideoLoadedListener listener) {
 
-        Observable<Response<ProductVideoData>> observable = productVideoService.getApi()
+        Observable<Response<ProductVideoData>> observable = goldMerchantService.getApi()
                 .fetchVideo(productId);
 
         Subscriber<Response<ProductVideoData>> subscriber =
@@ -576,7 +577,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
                     @Override
                     public void onNext(Response<ProductVideoData> productVideoDataResponse) {
-                        if(productVideoDataResponse.body() != null)
+                        if (productVideoDataResponse.body() != null)
                             listener.onSuccess(productVideoDataResponse.body().getData().get(0));
                     }
                 };

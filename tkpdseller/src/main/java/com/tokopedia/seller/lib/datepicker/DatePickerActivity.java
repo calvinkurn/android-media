@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -43,6 +44,7 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
     private ArrayList<PeriodRangeModel> periodRangeModelList;
     private DatePickerPeriodFragment datePickerPeriodFragment;
     private DatePickerCustomFragment mDatePickerCustomFragment;
+    private boolean forceDisplaySelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,20 +64,42 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
         }
 
         fetchIntent(getIntent().getExtras());
-        viewPager.setAdapter(getViewPagerAdapter());
-        viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-
-        DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
-        tabLayout.setOnTabSelectedListener(tabListener);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
-        viewPager.setCurrentItem(selectionType);
+        if (forceDisplaySelection) {
+            tabLayout.setVisibility(View.GONE);
+            viewPager.setAdapter(getViewPagerAdapter(selectionType));
+        } else {
+            viewPager.setAdapter(getViewPagerAdapter());
+            viewPager.setOffscreenPageLimit(OFFSCREEN_PAGE_LIMIT);
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
+            tabLayout.setOnTabSelectedListener(tabListener);
+            tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_period));
+            tabLayout.addTab(tabLayout.newTab().setText(R.string.label_date_custom));
+            viewPager.setCurrentItem(selectionType);
+        }
         String title = getIntent().getExtras().getString(DatePickerConstant.EXTRA_PAGE_TITLE);
         if (!TextUtils.isEmpty(title)) {
             getSupportActionBar().setTitle(title);
             getSupportActionBar().show();
         }
+
+    }
+
+    private PagerAdapter getViewPagerAdapter(int forceSelectionType) {
+        List<Fragment> fragmentList = new ArrayList<>();
+        switch (forceSelectionType) {
+            case DatePickerConstant.SELECTION_TYPE_PERIOD_DATE:
+                datePickerPeriodFragment = DatePickerPeriodFragment.newInstance(selectionPeriod, periodRangeModelList);
+                datePickerPeriodFragment.setCallback(this);
+                fragmentList.add(datePickerPeriodFragment);
+                break;
+            case DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE:
+                mDatePickerCustomFragment = DatePickerCustomFragment.newInstance(startDate, endDate, minStartDate, maxStartDate, maxDateRange);
+                mDatePickerCustomFragment.setCallback(this);
+                fragmentList.add(mDatePickerCustomFragment);
+                break;
+        }
+        return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
     }
 
     private PagerAdapter getViewPagerAdapter() {
@@ -114,6 +138,7 @@ public class DatePickerActivity extends TActivity implements DatePickerPeriodFra
             maxStartDate = extras.getLong(DatePickerConstant.EXTRA_MAX_END_DATE, -1);
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
+            forceDisplaySelection = extras.getBoolean(DatePickerConstant.EXTRA_FORCE_DISPLAY_SELECTION, false);
         }
     }
 

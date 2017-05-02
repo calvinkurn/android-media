@@ -136,6 +136,20 @@
         <attr name="chart_setSpacing" format="dimension"/>
     </declare-styleable>
 
+    <!-- Top ads widget radio expand view-->
+    <declare-styleable name="TopAdsRadioExpand" >
+        <attr name="title_radio" format="reference|string" />
+        <attr name="checked" format="boolean"/>
+        <attr name="radio_id" format="reference" />
+	</declare-styleable>
+    <declare-styleable name="ShopScoreLimitProgressBar">
+        <attr name="default_limit" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="ReputationView">
+        <attr name="default_layout" format="integer" />
+    </declare-styleable>
+
     <!--gm subscribe home attr-->
     <declare-styleable name="GMFeatureHomeView">
         <attr name="feature_img" format="reference"/>

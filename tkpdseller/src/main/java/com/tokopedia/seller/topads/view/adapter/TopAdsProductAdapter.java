@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.data.Product;
+import com.tokopedia.seller.topads.data.model.data.Product;
 
 import java.util.ArrayList;
 import java.util.List;

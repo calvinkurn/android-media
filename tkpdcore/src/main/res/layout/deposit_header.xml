@@ -62,7 +62,8 @@
         android:textColor="@color/white"
         android:textSize="@dimen/fonts"
         android:paddingStart="@dimen/activity_vertical_margin"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/review_warning_layout"

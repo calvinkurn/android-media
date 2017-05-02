@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelper;
+import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.model.CategoryDB;
 import com.tokopedia.core.discovery.dynamicfilter.facade.HadesNetwork;
@@ -51,18 +53,23 @@ public class CategoryPresenterImpl extends CategoryPresenter {
     }
 
     @Override
-    public void initData(@NonNull Context context) {
+    public void initData(@NonNull final Context context) {
         if (!isAfterRotate) {
 
         }
 
         if (hadesV1Model == null || hadesV1Model.getData().getCategories().isEmpty()) {
-            if (categoryDatabaseManager.getDepartmentParent() != null && categoryDatabaseManager.getDepartmentParent().size() > 0) {
-                view.setupAdapter(getDynamicObjectList());
-                view.setupRecyclerView();
-            } else {
-                fetchAllDepartment(context);
-            }
+            CategoryVersioningHelper.checkVersionCategory(context, new CategoryVersioningHelperListener() {
+                @Override
+                public void doAfterChecking() {
+                    if (categoryDatabaseManager.getDepartmentParent() != null && categoryDatabaseManager.getDepartmentParent().size() > 0) {
+                        view.setupAdapter(getDynamicObjectList());
+                        view.setupRecyclerView();
+                    } else {
+                        fetchAllDepartment(context);
+                    }
+                }
+            });
         } else {
             List<HadesV1Model.Category> categoryList = hadesV1Model.getData().getCategories();
             view.setupAdapter(getDynamicObjectList(categoryList));

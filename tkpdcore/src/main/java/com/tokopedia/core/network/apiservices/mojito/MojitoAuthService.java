@@ -30,5 +30,4 @@ public class MojitoAuthService extends GlobalAuthService<MojitoAuthApi> {
     protected String getKeyAuth() {
         return AuthUtil.KEY.KEY_MOJITO;
     }
-
 }

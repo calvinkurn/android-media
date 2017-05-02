@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
@@ -152,8 +151,6 @@ public class TopPayPresenter implements ITopPayPresenter {
         String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
         int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
         String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
-
-        CommonUtils.dumper("GAv4 process analytics "+revenue+" data "+arrJas);
 
         /**
          * GTM Block

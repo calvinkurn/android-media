@@ -102,6 +102,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Shipment> mShipments;
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
+    private SnackbarRetry snackbarRetry;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -415,6 +416,16 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     }
 
     @Override
+    public void enableQuantityTextWatcher() {
+        etQuantity.addTextChangedListener(this);
+    }
+
+    @Override
+    public void changeQuantity(String quantity) {
+        etQuantity.setText(quantity);
+    }
+
+    @Override
     public void renderProductPrice(String price) {
         this.orderData.setPriceTotal(price);
         tvProductPrice.setText(price);
@@ -492,7 +503,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     public void showUpdateAddressShippingError(String messageError) {
         finishCalculateCartLoading();
-        SnackbarRetry snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, messageError,
+
+        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(this, messageError,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -582,7 +594,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     ).show();
                 }
             } else {
+                renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
+                clearRetryInstantCourierSnackbar();
             }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
@@ -629,16 +643,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
                 case REQUEST_CHOOSE_LOCATION:
+                    etQuantity.removeTextChangedListener(this);
                     Bundle bundle = data.getExtras();
                     LocationPass locationPass = bundle.getParcelable(
                             GeolocationActivity.EXTRA_EXISTING_LOCATION
                     );
                     if (locationPass != null) {
-                        this.orderData.getAddress().setLatitude(locationPass.getLatitude());
-                        this.orderData.getAddress().setLongitude(locationPass.getLongitude());
-                        renderFormAddress(orderData.getAddress());
                         startCalculateCartLoading();
-                        presenter.updateAddressShipping(this, orderData);
+                        presenter.updateAddressShipping(this, orderData, locationPass);
                         this.mLocationPass = locationPass;
                     }
                     break;
@@ -661,6 +673,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick({R2.id.layout_value_geo_location, R2.id.et_geo_location})
     void actionGeoLocation() {
+        clearRetryInstantCourierSnackbar();
         presenter.processChooseGeoLocation(this, orderData);
     }
 
@@ -943,4 +956,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             }
         };
     }
+
+    private void clearRetryInstantCourierSnackbar() {
+        if(snackbarRetry != null && snackbarRetry.isShown()) {
+            snackbarRetry.hideRetrySnackbar();
+            btnBuy.setEnabled(true);
+        }
+    }
+
 }

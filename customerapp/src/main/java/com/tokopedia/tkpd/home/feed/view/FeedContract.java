@@ -11,7 +11,7 @@ import java.util.List;
  * @author Kulomady on 12/15/16.
  */
 
-interface FeedContract {
+public interface FeedContract {
 
     interface View extends CustomerView {
 
@@ -59,8 +59,7 @@ interface FeedContract {
 
         boolean isViewNotEmpty();
 
-        void forceShowEmptyHistory();
-
+        void showErrorFeed();
 
         HistoryProductListItem getViewmodelHistory();
 

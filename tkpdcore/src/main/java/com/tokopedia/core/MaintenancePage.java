@@ -27,10 +27,10 @@ import rx.schedulers.Schedulers;
 
 public class MaintenancePage extends Activity {
 
-    private class ViewHolder {
-        TextView notif;
-        ProgressBar progress;
-    }
+    private static String IS_NETWORK = "is_network";
+    private static String UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
+    private ViewHolder holder;
+    private String maintenanceMessage;
 
     public static Intent createIntentFromNetwork(Context context, String msg) {
         Intent intent = new Intent(context, MaintenancePage.class);
@@ -64,12 +64,6 @@ public class MaintenancePage extends Activity {
         LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.MAINTENANCE);
         return cache.getBoolean(TkpdCache.Key.STATUS2, false);
     }
-
-    private static String IS_NETWORK = "is_network";
-    private static String UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
-
-    private ViewHolder holder;
-    private String maintenanceMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +131,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(new Intent(this, HomeRouter.getHomeActivityClass()));
+        startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
         finish();
     }
 
@@ -162,6 +156,11 @@ public class MaintenancePage extends Activity {
             showProgressBar();
             checkServerMaintenanceStatus();
         }
+    }
+
+    private class ViewHolder {
+        TextView notif;
+        ProgressBar progress;
     }
 
 }

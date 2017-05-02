@@ -107,6 +107,7 @@ public class DefaultSearchResultAdapter extends RecyclerView.Adapter<DefaultSear
         @OnClick(R2.id.container)
         void onTextClicked() {
             SearchItem item = model.getSearchItems().get(getAdapterPosition());
+            item.setEventAction(model.getId());
             clickListener.onItemClicked(item);
         }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.geolocation.model.LocationPass;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
@@ -32,7 +33,9 @@ public interface AddToCartPresenter {
 
     void processChooseGeoLocation(@NonNull Context context, @NonNull OrderData orderData);
 
-    void updateAddressShipping(@NonNull Context context, @NonNull OrderData orderData);
+    void updateAddressShipping(@NonNull Context context,
+                               @NonNull OrderData orderData,
+                               @NonNull LocationPass location);
 
     @Deprecated
     @SuppressWarnings("unused")

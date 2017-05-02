@@ -61,6 +61,12 @@ public class GetShopProductRetrofit {
         onGetShopProductSubs = observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(onGetShopProduct());
     }
 
+    public void unsubscribeGetShopProduct() {
+        if (onGetShopProductSubs != null) {
+            onGetShopProductSubs.unsubscribe();
+        }
+    }
+
     private Observer<Response<TkpdResponse>> onGetShopProduct() {
         return new Observer<Response<TkpdResponse>>() {
             @Override

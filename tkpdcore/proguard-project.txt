@@ -175,3 +175,5 @@ public protected *;
 
 #recharge
 -keep class com.tokopedia.tkpd.recharge.** { *; }
+
+-keep class com.tokopedia.core.gcm.** { *; }

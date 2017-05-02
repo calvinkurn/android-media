@@ -286,6 +286,13 @@
 #selling
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
+-keep class com.tokopedia.tkpd.fcm.** { *; }
+
+-keep class com.airbnb.deeplinkdispatch.** { *; }
+-keepclasseswithmembers class * {
+     @com.airbnb.deeplinkdispatch.DeepLink <methods>;
+}
+
 # Parceler configuration
 -keep interface org.parceler.Parcel
 -keep @org.parceler.Parcel class * { *; }
@@ -298,6 +305,11 @@
 
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
+
+-keep class com.beloo.widget.* { *; }
+ -keep interface com.beloo.widget.io.**
+ -keep enum com.beloo.widget.**
+-dontwarn com.beloo.widget.**
 
 
 

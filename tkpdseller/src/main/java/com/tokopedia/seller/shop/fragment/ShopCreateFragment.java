@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -26,18 +24,22 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.PhoneVerificationUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 
 import java.io.File;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DESC_ERROR;
 import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
@@ -50,73 +52,53 @@ import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
 public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implements ShopCreateView {
 
     public static final int REQUEST_CAMERA = 111;
-    // SUBMIT BUTTON
-    TextView submitButton;
-    // VERIFY PHONE
-    TextView verifyButton;
-    TextView verifyInstruction;
-    // SHOP AVATAR
-    ImageView shopAvatar;
-    TextView imageText;
-    // DOMAIN CHECKER
-    EditText shopDomain;
-    TextInputLayout domainInput;
-    // NAME CHECKER
-    EditText shopName;
-    TextInputLayout nameInput;
-    // TAG CHECKER
-    TextInputLayout tagInput;
-    EditText shopTag;
-    // DESC CHECKER
-    TextInputLayout descInput;
-    EditText shopDesc;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     private TkpdProgressDialog progressDialog;
 
-    public static Fragment newInstance() {
-        ShopCreateFragment fragment = new ShopCreateFragment();
-        return fragment;
-    }
+    // SUBMIT BUTTON
+    @BindView(R2.id.submit_button)
+    TextView submitButton;
 
-    public void showVerificationDialog(){
-        ((BaseActivity)getActivity()).getPhoneVerificationUtil().showVerificationDialog();
-    }
+    // VERIFY PHONE
+    @BindView(R2.id.verify_button)
+    TextView verifyButton;
+    @BindView(R2.id.verify_instruction)
+    TextView verifyInstruction;
 
-    public void startUploadDialog(){
-        ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
-    }
+    // SHOP AVATAR
+    @BindView(R2.id.shop_avatar)
+    ImageView shopAvatar;
+    @BindView(R2.id.myImageViewText)
+    TextView imageText;
 
-    public void SubmitDialog(){
-        showProgress(true);
-        presenter.saveDescTag();
-        presenter.finalCheckDomainName(
-                shopDomain.getText().toString(),
-                shopName.getText().toString()
-        );
-        UnifyTracking.eventCreateShop();
-    }
+    // DOMAIN CHECKER
+    @BindView(R2.id.domain)
+    EditText shopDomain;
+    @BindView(R2.id.domain_input_layout)
+    TextInputLayout domainInput;
 
-    void domainChanged() {
-        if(shopDomain.getText().toString().length() != 0) {
-            domainInput.setHint(getString(R.string.title_hint_domain) + " : "
-                    + getString(R.string.domain) + shopDomain.getText().toString());
-            presenter.checkShopDomain(shopDomain.getText().toString());
-        } else {
-            domainInput.setHint(getString(R.string.title_hint_domain));
-        }
-    }
+    // NAME CHECKER
+    @BindView(R2.id.shop_name)
+    EditText shopName;
+    @BindView(R2.id.name_input_layout)
+    TextInputLayout nameInput;
 
-    void nameChanged() {
-        if (shopName.getText().toString().length() != 0) {
-            presenter.checkShopName(shopName.getText().toString());
-        }
-    }
+    // TAG CHECKER
+    @BindView(R2.id.tag_input_layout)
+    TextInputLayout tagInput;
+    @BindView(R2.id.shop_tag)
+    EditText shopTag;
 
-    void tagChanged() {
-        checkTagError();
-    }
+    // DESC CHECKER
+    @BindView(R2.id.desc_input_layout)
+    TextInputLayout descInput;
+    @BindView(R2.id.shop_desc)
+    EditText shopDesc;
 
-    void descChanged() {
-        checkDescError();
+    @OnClick(R2.id.verify_button)
+    public void showVerificationDialog() {
+        startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
+                REQUEST_VERIFY_PHONE_NUMBER);
     }
 
     @Override
@@ -130,6 +112,22 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
+    @OnClick(R2.id.shop_avatar)
+    public void startUploadDialog() {
+        ImageGalleryEntry.moveToImageGallery((AppCompatActivity) getActivity(), 0, 1);
+    }
+
+    @OnClick(R2.id.submit_button)
+    public void SubmitDialog() {
+        showProgress(true);
+        presenter.saveDescTag();
+        presenter.finalCheckDomainName(
+                shopDomain.getText().toString(),
+                shopName.getText().toString()
+        );
+        UnifyTracking.eventCreateShop();
+    }
+
     @Override
     public void setShopDomain(String shopDomain) {
         if (this.shopDomain != null) {
@@ -137,9 +135,20 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
+    @OnTextChanged(R2.id.domain)
+    void domainChanged() {
+        if (shopDomain.getText().toString().length() != 0) {
+            domainInput.setHint(getString(R.string.title_hint_domain) + " : "
+                    + getString(R.string.domain) + shopDomain.getText().toString());
+            presenter.checkShopDomain(shopDomain.getText().toString());
+        } else {
+            domainInput.setHint(getString(R.string.title_hint_domain));
+        }
+    }
+
     @Override
     public void setShopDomainResult(String message, boolean available) {
-        if(domainInput != null){
+        if (domainInput != null) {
             if (!available) {
                 domainInput.setErrorEnabled(true);
                 domainInput.setError(message);
@@ -152,7 +161,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkDomainError() {
-        if(shopDomain.getText().toString().isEmpty()){
+        if (shopDomain.getText().toString().isEmpty()) {
             domainInput.setError(getString(R.string.error_domain_unfilled));
         }
         return domainInput.isErrorEnabled();
@@ -165,9 +174,16 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         }
     }
 
+    @OnTextChanged(R2.id.shop_name)
+    void nameChanged() {
+        if (shopName.getText().toString().length() != 0) {
+            presenter.checkShopName(shopName.getText().toString());
+        }
+    }
+
     @Override
     public void setShopNameResult(String message, boolean available) {
-        if(nameInput != null){
+        if (nameInput != null) {
             if (!available) {
                 nameInput.setErrorEnabled(true);
                 nameInput.setError(message);
@@ -182,10 +198,23 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkNameError() {
-        if(shopName.getText().toString().isEmpty()){
+        if (shopName.getText().toString().isEmpty()) {
             nameInput.setError(getString(R.string.error_name_unfilled));
         }
         return nameInput.isErrorEnabled();
+    }
+
+    @OnTextChanged(R2.id.shop_tag)
+    void tagChanged() {
+        checkTagError();
+    }
+
+    @Override
+    public void setShopTag(String shopTag) {
+        if (this.shopTag != null) {
+            this.shopTag.setText(shopTag);
+        }
+
     }
 
     @Override
@@ -194,16 +223,8 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @Override
-    public void setShopTag(String shopTag) {
-        if(this.shopTag != null){
-            this.shopTag.setText(shopTag);
-        }
-
-    }
-
-    @Override
     public boolean checkTagError() {
-        if(shopTag.getText().toString().isEmpty()){
+        if (shopTag.getText().toString().isEmpty()) {
             tagInput.setError(getString(R.string.error_tag_unfilled));
         } else if (shopTag.getText().toString().length() > 48) {
             tagInput.setError(getString(R.string.error_tag_too_long));
@@ -213,28 +234,38 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         return tagInput.isErrorEnabled();
     }
 
+    @OnTextChanged(R2.id.shop_desc)
+    void descChanged() {
+        checkDescError();
+    }
+
+    @Override
+    public void setShopDesc(String shopDesc) {
+        if (this.shopDesc != null) {
+            this.shopDesc.setText(shopDesc);
+        }
+    }
+
     @Override
     public String getShopDesc() {
         return shopDesc.getText().toString();
     }
 
     @Override
-    public void setShopDesc(String shopDesc) {
-        if(this.shopDesc != null){
-            this.shopDesc.setText(shopDesc);
-        }
-    }
-
-    @Override
     public boolean checkDescError() {
-        if(shopDesc.getText().toString().isEmpty()){
+        if (shopDesc.getText().toString().isEmpty()) {
             descInput.setError(getString(R.string.error_desc_unfilled));
-        } else if(shopDesc.getText().toString().length() > 140) {
+        } else if (shopDesc.getText().toString().length() > 140) {
             descInput.setError(getString(R.string.error_desc_too_long));
         } else {
             descInput.setErrorEnabled(false);
         }
         return descInput.isErrorEnabled();
+    }
+
+    public static Fragment newInstance() {
+        ShopCreateFragment fragment = new ShopCreateFragment();
+        return fragment;
     }
 
     @Override
@@ -259,17 +290,17 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void onMessageError(int type, Object... data) {
-        switch(type){
-            case DOMAIN_ERROR :
+        switch (type) {
+            case DOMAIN_ERROR:
                 CommonUtils.UniversalToast(getContext(), domainInput.getError().toString());
                 break;
-            case NAME_ERROR :
+            case NAME_ERROR:
                 CommonUtils.UniversalToast(getContext(), nameInput.getError().toString());
                 break;
-            case TAG_ERROR :
+            case TAG_ERROR:
                 CommonUtils.UniversalToast(getContext(), tagInput.getError().toString());
                 break;
-            case DESC_ERROR :
+            case DESC_ERROR:
                 CommonUtils.UniversalToast(getContext(), descInput.getError().toString());
                 break;
             default:
@@ -294,134 +325,18 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public View onCreateView(View parentView, Bundle savedInstanceState) {
         Point size = new Point();
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display	 = wm.getDefaultDisplay();
+        Display display = wm.getDefaultDisplay();
         display.getSize(size);
         int imageWidth = (int) (size.x - 4) / 3;
         shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
-
-        bindView(parentView);
-
         return super.onCreateView(parentView, savedInstanceState);
-    }
-
-    private void bindView(View parentView) {
-        // SUBMIT BUTTON
-        submitButton = (TextView) parentView.findViewById(R.id.submit_button);
-
-        // VERIFY PHONE
-        verifyButton = (TextView) parentView.findViewById(R.id.verify_button);
-        verifyInstruction = (TextView) parentView.findViewById(R.id.verify_instruction);
-
-        // SHOP AVATAR
-        shopAvatar = (ImageView) parentView.findViewById(R.id.shop_avatar);
-        imageText = (TextView) parentView.findViewById(R.id.myImageViewText);
-
-        // DOMAIN CHECKER
-        shopDomain = (EditText) parentView.findViewById(R.id.domain);
-        domainInput = (TextInputLayout) parentView.findViewById(R.id.domain_input_layout);
-
-        // NAME CHECKER
-        shopName = (EditText) parentView.findViewById(R.id.shop_name);
-        nameInput = (TextInputLayout) parentView.findViewById(R.id.name_input_layout);
-
-        // TAG CHECKER
-        tagInput = (TextInputLayout) parentView.findViewById(R.id.tag_input_layout);
-        shopTag = (EditText) parentView.findViewById(R.id.shop_tag);
-
-        // DESC CHECKER
-        descInput = (TextInputLayout) parentView.findViewById(R.id.desc_input_layout);
-        shopDesc = (EditText) parentView.findViewById(R.id.shop_desc);
-
-        parentView.findViewById(R.id.verify_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showVerificationDialog();
-            }
-        });
-        parentView.findViewById(R.id.shop_avatar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startUploadDialog();
-            }
-        });
-
-        parentView.findViewById(R2.id.submit_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SubmitDialog();
-            }
-        });
-        shopDomain.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                domainChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        shopName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                nameChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        shopTag.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                tagChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        shopDesc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                descChanged();
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String imageLocation = null;
-        if(requestCode == REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
+        if (requestCode == REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
                     imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
@@ -431,13 +346,16 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 default:
                     break;
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
+                && resultCode == Activity.RESULT_OK
+                && SessionHandler.isMsisdnVerified()) {
+            showPhoneVerification(false);
         }
         if (imageLocation != null) {
             ImageHandler.LoadImage(shopAvatar, imageLocation);
             imageText.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override
@@ -460,53 +378,9 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void showPhoneVerification(boolean needVerify) {
-        if(needVerify){
-            if(((BaseActivity)getActivity()).getPhoneVerificationUtil() != null)
-                ((BaseActivity)getActivity()).getPhoneVerificationUtil().setMSISDNListener(new PhoneVerificationUtil.MSISDNListener() {
-                    @Override
-                    public void onMSISDNVerified() {
-                        showPhoneVerification(false);
-                    }
-
-                    @Override
-                    public void onMSISDNNotVerified() {
-
-                    }
-
-                    @Override
-                    public void onNoConnection() {
-
-                    }
-
-                    @Override
-                    public void onTimeout() {
-
-                    }
-
-                    @Override
-                    public void onFailAuth() {
-
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-
-                    @Override
-                    public void onThrowable(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                });
-        }
-        submitButton.setVisibility((needVerify)? View.GONE : View.VISIBLE);
-        verifyButton.setVisibility((needVerify)? View.VISIBLE : View.GONE);
-        verifyInstruction.setVisibility((needVerify)? View.VISIBLE : View.GONE);
+        submitButton.setVisibility((needVerify) ? View.GONE : View.VISIBLE);
+        verifyButton.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
+        verifyInstruction.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface WholesaleAdapter {
 
-    void onUpdateData(int type, int position, String value, boolean isShouldCheckError);
+    void onUpdateData(int type, int position, String value, boolean isShouldCheckError) throws NumberFormatException;
 
     void removeWholesaleItem(int position);
 

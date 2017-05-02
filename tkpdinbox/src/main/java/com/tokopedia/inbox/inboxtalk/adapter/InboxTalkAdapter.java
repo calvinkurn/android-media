@@ -406,7 +406,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
     private int getMenuID(InboxTalk talk) {
         int menuID;
         if (talk.getTalkShopId().equals(SessionHandler.getShopID(context))) {
-            menuID = R.menu.delete_report_menu;
+            menuID = R.menu.report_menu;
         } else {
             if (token.getLoginID(context).equals(talk.getTalkUserId())) {
                 if (talk.getTalkFollowStatus() == 1) {

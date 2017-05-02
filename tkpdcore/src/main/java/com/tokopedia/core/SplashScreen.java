@@ -76,7 +76,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 //            public void run() {
                 Pgenerator = new PasswordGenerator(SplashScreen.this);
                 InitNew();
-                getGCMid();
+                registerFCMDeviceID();
             }
 //        }, TIME_DELAY);
 
@@ -108,10 +108,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         };
     }
 
-    private void getGCMid() {
+    private void registerFCMDeviceID() {
 	    GCMHandler gcm = new GCMHandler(this);
-        gcm.commitFCMProcess(getGCMHandlerListener());
-        gcm.commitGCMProcess();
+        gcm.actionRegisterOrUpdateDevice(getGCMHandlerListener());
     }
 
     public void finishSplashScreen() {

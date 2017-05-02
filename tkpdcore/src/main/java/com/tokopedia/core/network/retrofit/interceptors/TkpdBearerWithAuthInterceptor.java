@@ -18,7 +18,7 @@ public abstract class TkpdBearerWithAuthInterceptor extends TkpdAuthInterceptor{
     private static final String BEARER = "Bearer ";
 
     @Override
-    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
+    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, getContentType(), authKey, DATE_FORMAT);
 
         String xTkpdAuthorization = headerMap.get(HEADER_AUTHORIZATION);

@@ -4,12 +4,27 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.otp.data.RequestOtpModel;
+import com.tokopedia.core.otp.data.ValidateOtpModel;
+import com.tokopedia.core.otp.data.factory.OtpSourceFactory;
+import com.tokopedia.core.otp.data.repository.OtpRepositoryImpl;
+import com.tokopedia.core.otp.domain.interactor.RequestOtpEmailUseCase;
+import com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.core.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.VerifyPhoneInteractor;
 import com.tokopedia.core.session.VerifyPhoneInteractorImpl;
@@ -22,8 +37,11 @@ import com.tokopedia.core.util.SessionHandler;
 import org.json.JSONObject;
 import org.parceler.Parcels;
 
-import static com.tokopedia.core.service.constant.DownloadServiceConstant.REQUEST_OTP_MODEL;
+import java.net.UnknownHostException;
 
+import rx.Subscriber;
+
+import static com.tokopedia.core.service.constant.DownloadServiceConstant.REQUEST_OTP_MODEL;
 import static com.tokopedia.core.session.presenter.Login.DEFAULT_UUID_VALUE;
 import static com.tokopedia.core.session.presenter.Login.LOGIN_UUID_KEY;
 import static com.tokopedia.core.session.presenter.Login.UUID_KEY;
@@ -34,9 +52,9 @@ import static com.tokopedia.core.session.presenter.Login.UUID_KEY;
  */
 public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter {
     public static final int SWITCH_REQUEST_OTP = 2;
-    private static final String EXTRA_BUNDLE = "EXTRA_BUNDLE";
-    private int ACTION_REQUEST_OTP = 101;
-    private int ACTION_REQUEST_OTP_WITH_CALL = 102;
+
+    private static final String OTP_TYPE_PHONE_NUMBER_VERIFICATION = "13";
+
     SecurityQuestionView view;
     Context mContext;
     SessionHandler sessionHandler;
@@ -46,6 +64,10 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
     int errorCount;
 
     VerifyPhoneInteractor interactor;
+    private RequestOtpUseCase requestOtpUseCase;
+    private ValidateOtpUseCase validateOtpUseCase;
+    private RequestOtpEmailUseCase requestOtpEmailUseCase;
+    private ErrorListener errorListener;
 
     public SecurityQuestionPresenterImpl(SecurityQuestionView view) {
         this.view = view;
@@ -60,6 +82,47 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
             viewModel = new SecurityQuestionViewModel();
         }
         interactor = VerifyPhoneInteractorImpl.createInstance();
+
+        OtpRepositoryImpl otpRepository = new OtpRepositoryImpl(
+                new OtpSourceFactory(context));
+        this.requestOtpUseCase = new RequestOtpUseCase(new JobExecutor(),
+                new UIThread(), otpRepository);
+        this.validateOtpUseCase = new ValidateOtpUseCase(new JobExecutor(),
+                new UIThread(), otpRepository);
+        this.requestOtpEmailUseCase = new RequestOtpEmailUseCase(new JobExecutor(),
+                new UIThread(), otpRepository);
+
+        errorListener = new ErrorListener() {
+            @Override
+            public void onUnknown() {
+                view.showError(
+                        view.getString(R.string.default_request_error_unknown));
+            }
+
+            @Override
+            public void onTimeout() {
+                view.showError(
+                        view.getString(R.string.default_request_error_timeout));
+            }
+
+            @Override
+            public void onServerError() {
+                view.showError(
+                        view.getString(R.string.default_request_error_internal_server));
+            }
+
+            @Override
+            public void onBadRequest() {
+                view.showError(
+                        view.getString(R.string.default_request_error_bad_request));
+            }
+
+            @Override
+            public void onForbidden() {
+                view.showError(
+                        view.getString(R.string.default_request_error_forbidden_auth));
+            }
+        };
     }
 
     @Override
@@ -102,30 +165,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
                 bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
                 ((SessionView) mContext).sendDataFromInternet(DownloadService.SECURITY_QUESTION_GET, bundle);
                 break;
-            case ANSWER_SECURITY_QUESTION_TYPE:
-                String answer = (String) object[0];
-                String question = "";
-                if (object[1] == null) {
-                    question += questionFormModel.getQuestion();
-                } else {
-                    question = (String) object[1];
-                }
-                security1 = (Integer) object[2];
-                security2 = (Integer) object[3];
 
-                securityQuestionViewModel = new SecurityQuestionViewModel();
-                securityQuestionViewModel.setvAnswer(answer);
-                securityQuestionViewModel.setQuestion(question);
-                securityQuestionViewModel.setSecurity1(security1);
-                securityQuestionViewModel.setSecurity2(security2);
-
-                bundle = new Bundle();
-                bundle.putParcelable(DownloadService.ANSWER_QUESTION_MODEL, Parcels.wrap(securityQuestionViewModel));
-                bundle.putBoolean(DownloadService.IS_NEED_LOGIN, isNeedLogin);
-                ((SessionView) mContext).sendDataFromInternet(DownloadService.ANSWER_SECURITY_QUESTION, bundle);
-
-
-                break;
             case REQUEST_OTP_PHONE_TYPE:
                 String phone = (String) object[0];
                 securityQuestionViewModel = new SecurityQuestionViewModel();
@@ -141,7 +181,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
                 LocalCacheHandler loginUuid = new LocalCacheHandler(mContext, LOGIN_UUID_KEY);
                 String uuid = loginUuid.getString(UUID_KEY, DEFAULT_UUID_VALUE);
                 bundle.putString(UUID_KEY, uuid);
-                ((SessionView)mContext).sendDataFromInternet(DownloadService.MAKE_LOGIN, bundle);
+                ((SessionView) mContext).sendDataFromInternet(DownloadService.MAKE_LOGIN, bundle);
                 break;
         }
     }
@@ -202,29 +242,186 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public void doAnswerQuestion(String answer) {
+        view.displayProgress(true);
+        validateOtpUseCase.execute(getValidateOtpParam(answer), new Subscriber<ValidateOtpModel>() {
+            @Override
+            public void onCompleted() {
+                view.displayProgress(false);
+            }
 
-        fetchDataFromInternet(ANSWER_SECURITY_QUESTION_TYPE
-                , new Object[]{
-                        answer, null, viewModel.getSecurity1(), viewModel.getSecurity2()
-                });
+            @Override
+            public void onError(Throwable e) {
+                view.showError(view.getString(R.string.default_request_error_unknown));
+            }
+
+            @Override
+            public void onNext(ValidateOtpModel validateOtpModel) {
+                if (validateOtpModel.isSuccess()) {
+                    storeUUID(mContext, validateOtpModel.getValidateOtpData().getUuid());
+                    fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN, null);
+                } else {
+                    if (validateOtpModel.getResponseCode() == ResponseStatus.SC_OK) {
+                        if (++errorCount == SWITCH_REQUEST_OTP && viewModel.getEmail() != null) {
+                            viewModel.setIsErrorDisplay(false);
+                            view.displayError(false);
+                            questionFormModel = new QuestionFormModel();
+                            questionFormModel.setType(QuestionFormModel.OTP_Email_TYPE);
+                            questionFormModel.setTitle(" coba pakai OTP ");
+                            questionFormModel.setQuestion(2);
+                            viewModel.setSecurity2(2);
+                            view.setModel(questionFormModel);
+                        } else if (validateOtpModel.getErrorMessage() != null) {
+                            view.showError(validateOtpModel.getErrorMessage());
+                        } else {
+                            viewModel.setIsErrorDisplay(true);
+                            view.displayError(true);
+                        }
+                    } else {
+                        new ErrorHandler(new ErrorListener() {
+                            @Override
+                            public void onUnknown() {
+                                view.showError(view.getString(R.string.default_request_error_unknown));
+                            }
+
+                            @Override
+                            public void onTimeout() {
+                                view.showError(view.getString(R.string.default_request_error_timeout));
+                            }
+
+                            @Override
+                            public void onServerError() {
+                                view.showError(view.getString(R.string.default_request_error_internal_server));
+                            }
+
+                            @Override
+                            public void onBadRequest() {
+                                view.showError(view.getString(R.string.default_request_error_bad_request));
+                            }
+
+                            @Override
+                            public void onForbidden() {
+                                view.showError(view.getString(R.string.default_request_error_forbidden_auth));
+                            }
+                        }, validateOtpModel.getResponseCode());
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void doRequestOtp() {
         view.displayProgress(true);
         view.disableOtpButton();
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_BUNDLE, String.valueOf(viewModel.getSecurity2()));
-        ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP, bundle);
+        doRequestOtpToDevice(getRequestOTPParam());
+    }
+
+
+    @Override
+    public void doRequestOtpToEmail() {
+        view.displayProgress(true);
+        view.disableOtpButton();
+        doRequestOtpToEmail(getRequestOTPWithEmailParam());
     }
 
     @Override
     public void doRequestOtpWithCall() {
         view.displayProgress(true);
         view.disableOtpButton();
-        Bundle bundle = new Bundle();
-        ((SessionView) mContext).sendDataFromInternet(ACTION_REQUEST_OTP_WITH_CALL, bundle);
+        doRequestOtpToDevice(getRequestOTPWithCallParam());
     }
+
+    private void doRequestOtpToDevice(RequestParams requestParams) {
+        requestOtpUseCase.execute(requestParams, new Subscriber<RequestOtpModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof UnknownHostException) {
+                    view.showError(view.getString(R.string.msg_no_connection));
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(errorListener, Integer.parseInt(e.getLocalizedMessage()));
+                } else if (e instanceof ErrorMessageException
+                        && e.getLocalizedMessage() != null) {
+                    view.showError(e.getLocalizedMessage());
+                } else {
+                    view.showError(
+                            view.getString(R.string.default_request_error_unknown));
+                }
+            }
+
+            @Override
+            public void onNext(RequestOtpModel requestOtpModel) {
+                if (requestOtpModel.isSuccess() &&
+                        requestOtpModel.getRequestOtpData().isSuccess()
+                        && requestOtpModel.getErrorMessage() == null
+                        && requestOtpModel.getStatusMessage() != null) {
+                    view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
+                } else if (requestOtpModel.getErrorMessage() != null) {
+                    view.showError(requestOtpModel.getErrorMessage());
+                } else {
+                    new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+                }
+            }
+        });
+    }
+
+    private void doRequestOtpToEmail(RequestParams requestParams) {
+        requestOtpEmailUseCase.execute(requestParams, new Subscriber<RequestOtpModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e instanceof UnknownHostException) {
+                    view.showError(view.getString(R.string.msg_no_connection));
+                } else if (e instanceof RuntimeException &&
+                        e.getLocalizedMessage() != null &&
+                        e.getLocalizedMessage().length() <= 3) {
+                    new ErrorHandler(errorListener, Integer.parseInt(e.getLocalizedMessage()));
+                } else {
+                    view.showError(
+                            view.getString(R.string.default_request_error_unknown));
+                }
+            }
+
+            @Override
+            public void onNext(RequestOtpModel requestOtpModel) {
+//                if (requestOtpModel.isSuccess() &&
+//                        requestOtpModel.getRequestOtpData().isSuccess()
+//                        && requestOtpModel.getErrorMessage() == null
+//                        && requestOtpModel.getStatusMessage() != null) {
+//                    view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
+//                } else if (requestOtpModel.getErrorMessage() != null) {
+//                    view.showError(requestOtpModel.getErrorMessage());
+//                } else {
+//                    new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+//                }
+
+                if (requestOtpModel.isSuccess()) {
+                    if (requestOtpModel.getStatusMessage() != null && !requestOtpModel.getStatusMessage().isEmpty()) {
+                        view.onSuccessRequestOTP(requestOtpModel.getStatusMessage());
+                    } else {
+                        view.onSuccessRequestOTP(requestOtpModel.getErrorMessage());
+                    }
+                } else {
+                    if (requestOtpModel.getErrorMessage() != null) {
+                        view.showError(requestOtpModel.getErrorMessage());
+                    } else {
+                        new ErrorHandler(errorListener, requestOtpModel.getResponseCode());
+                    }
+                }
+            }
+        });
+    }
+
 
     @Override
     public void getDataFromArgument(Bundle argument) {
@@ -232,10 +429,12 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
             int Security1 = argument.getInt("security_1");
             int Security2 = argument.getInt("security_2");
             String UserID = argument.getString("user_id", "");
+            String email = argument.getString(SecurityQuestionView.EMAIL);
 
             viewModel.setSecurity1(Security1);
             viewModel.setSecurity2(Security2);
             viewModel.setUserID(UserID);
+            viewModel.setEmail(email);
 
             Log.d(TAG, messageTAG + " getDataFromArgument :  " + viewModel);
         }
@@ -267,11 +466,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public boolean isValidForm(String text) {
-        if (text == null && text.equals("")) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(TextUtils.isEmpty(text));
     }
 
     @Override
@@ -369,6 +564,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
             public void onError(String error) {
                 view.showError(error);
             }
+
             @Override
             public void onThrowable(Throwable e) {
                 view.showError(context.getString(R.string.default_request_error_unknown));
@@ -381,16 +577,16 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
             @Override
             public void onSuccess(int result, String uuid) {
-                if(result == 0){
+                if (result == 0) {
                     view.showError(context.getString(R.string.error_user_truecaller));
-                }else {
+                } else {
                     storeUUID(context, uuid);
-                    fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN,null);
+                    fetchDataFromInternet(SecurityQuestionPresenter.MAKE_LOGIN, null);
                 }
             }
         };
         interactor.verifyPhone(context, phoneNumber, SessionHandler.getTempLoginSession(context),
-                                listener);
+                listener);
     }
 
     private void storeUUID(Context context, String UUID) {
@@ -409,7 +605,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
 
     @Override
     public void getPhoneTrueCaller() {
-        ((SessionView)mContext).verifyTruecaller();
+        ((SessionView) mContext).verifyTruecaller();
     }
 
     @Override
@@ -420,6 +616,8 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
     @Override
     public void unSubscribe() {
         interactor.unSubscribe();
+        requestOtpUseCase.unsubscribe();
+        validateOtpUseCase.unsubscribe();
     }
 
     private boolean appInstalledOrNot(Context context, String uri) {
@@ -428,8 +626,7 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
         try {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             app_installed = true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
         }
         return app_installed;
@@ -438,5 +635,38 @@ public class SecurityQuestionPresenterImpl implements SecurityQuestionPresenter 
     @Override
     public void doSendAnalytics() {
         ScreenTracking.screen(AppScreen.SCREEN_OTP_SQ);
+    }
+
+    private RequestParams getRequestOTPParam() {
+        RequestParams param = RequestParams.create();
+        param.putString(RequestOtpUseCase.PARAM_MODE, RequestOtpUseCase.MODE_SMS);
+        param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        return param;
+    }
+
+    private RequestParams getRequestOTPWithCallParam() {
+        RequestParams param = RequestParams.create();
+        param.putString(RequestOtpUseCase.PARAM_MODE, RequestOtpUseCase.MODE_CALL);
+        param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        return param;
+    }
+
+    private RequestParams getRequestOTPWithEmailParam() {
+        RequestParams param = RequestParams.create();
+        param.putString("user_email", viewModel.getEmail());
+        param.putString("os_type", "1");
+        param.putString(RequestOtpUseCase.PARAM_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        param.putString(ValidateOtpUseCase.PARAM_USER, SessionHandler.getTempLoginSession(mContext));
+        return param;
+    }
+
+
+    private RequestParams getValidateOtpParam(String answer) {
+        RequestParams param = RequestParams.create();
+        param.putString(RequestOtpUseCase.PARAM_OTP_TYPE, OTP_TYPE_PHONE_NUMBER_VERIFICATION);
+        param.putString("os_type", "1");
+        param.putString(ValidateOtpUseCase.PARAM_CODE, answer);
+        param.putString(ValidateOtpUseCase.PARAM_USER, SessionHandler.getTempLoginSession(mContext));
+        return param;
     }
 }

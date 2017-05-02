@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
-import com.tokopedia.seller.topads.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
 
@@ -92,10 +92,14 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     public void onResume() {
         super.onResume();
         if (datePickerPresenter.isDateUpdated(startDate, endDate)) {
-            startDate = datePickerPresenter.getStartDate();
-            endDate = datePickerPresenter.getEndDate();
+            loadDateFromPresenter();
             loadData();
         }
+    }
+
+    void loadDateFromPresenter() {
+        startDate = datePickerPresenter.getStartDate();
+        endDate = datePickerPresenter.getEndDate();
     }
 
     protected abstract void loadData();
@@ -103,6 +107,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        loadDateFromPresenter();
         if (requestCode == REQUEST_CODE_DATE && intent != null) {
             long startDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
             long endDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);

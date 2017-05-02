@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.other.FilterTitleItem;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 import com.tokopedia.seller.topads.view.adapter.TopAdsFilterAdapter;
 
 import java.util.ArrayList;
@@ -76,6 +77,12 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        adapter = new TopAdsFilterAdapter();
+    }
+
+    @Override
     protected void initialListener(Activity activity) {
 
     }
@@ -91,11 +98,13 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
         return R.layout.fragment_top_ads_filter_list;
     }
 
+
     @Override
     protected void initView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TopAdsFilterAdapter();
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         recyclerView.setAdapter(adapter);
         adapter.setData(filterTitleItemList);
         adapter.setCallback(this);
@@ -111,6 +120,7 @@ public class TopAdsFilterListFragment extends BasePresenterFragment implements T
     protected void initialVar() {
 
     }
+
 
     @Override
     protected void setActionVar() {

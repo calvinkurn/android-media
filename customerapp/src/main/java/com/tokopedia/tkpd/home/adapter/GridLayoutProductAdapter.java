@@ -214,12 +214,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
         if(product.badges == null){
             product.badges = new ArrayList<>();
-            if(product.isGold.equals("1")){
+            if(product.isGold!=null && product.isGold.equals("1")){
                 Badge badge = new Badge();
                 badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
                 product.badges.add(badge);
             }
-            if(!product.luckyShop.isEmpty()){
+            if(product.luckyShop!=null && !product.luckyShop.isEmpty()){
                 Badge badge = new Badge();
                 badge.setImageUrl(product.luckyShop);
                 product.badges.add(badge);

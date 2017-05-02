@@ -9,6 +9,7 @@ import android.os.ResultReceiver;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.service.DownloadService;
@@ -20,7 +21,6 @@ import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.core.session.presenter.RegisterNext;
 import com.tokopedia.session.session.presenter.RegisterPassPhone;
 import com.tokopedia.session.session.subscriber.BaseAccountSubscriber;
-import com.tokopedia.core.util.AppEventTracking;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONObject;

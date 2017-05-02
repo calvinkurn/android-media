@@ -24,6 +24,7 @@ import com.tokopedia.core.inboxreputation.adapter.viewbinder.HeaderReputationDat
 import com.tokopedia.core.inboxreputation.intentservice.InboxReviewIntentService;
 import com.tokopedia.core.inboxreputation.listener.InboxReputationDetailFragmentView;
 import com.tokopedia.core.inboxreputation.model.inboxreputation.InboxReputationItem;
+import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetail;
 import com.tokopedia.core.inboxreputation.model.inboxreputationdetail.InboxReputationDetailItem;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmentPresenter;
 import com.tokopedia.core.inboxreputation.presenter.InboxReputationDetailFragmentPresenterImpl;
@@ -422,6 +423,13 @@ public class
         KeyboardHandler.DropKeyboard(getActivity(),getView());
         dialog.setContent(inboxReputationDetailItem);
         dialog.show();
+    }
+
+    @Override
+    public void onSuccessGetDetail(InboxReputationDetail response) {
+        clearData();
+        adapter.setInboxReputationDetail(response);
+        setActivityResult();
     }
 
 }

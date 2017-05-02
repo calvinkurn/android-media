@@ -1,18 +1,15 @@
 package com.tokopedia.core.router;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
-import com.tokopedia.core.gcm.GCMLegacyListenerService;
+
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
-import static com.raizlabs.android.dbflow.config.FlowLog.Level.I;
 
 /**
  * Created by Nathaniel on 11/11/2016.
@@ -86,6 +83,37 @@ public class InboxRouter {
         return fragment;
     }
 
+    /////////// Class
+    public static Class<?> getInboxticketActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_TICKET_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    public static Class<?> getInboxMessageActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_MESSAGE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
+    public static Class<?> getInboxTalkActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_TALK_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
     /////////// COMPONENT NAME
 
     public static ComponentName getInboxticketActivityComponentName(Context context) {
@@ -107,6 +135,10 @@ public class InboxRouter {
     public static Intent getInboxResCenterActivityIntent(Context context) {
         Intent intent = RouterUtils.getActivityIntent(context, INBOX_RESCENTER_ACTIVITY);
         return intent;
+    }
+
+    public static ComponentName getActivityInboxResCenterName(Context context) {
+        return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
     }
 
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID) {
@@ -139,6 +171,16 @@ public class InboxRouter {
 
     public static ComponentName getInboxResCenterActivityComponentName(Context context) {
         return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
+    }
+
+    public static Class<?> getInboxResCenterActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(INBOX_RESCENTER_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
     }
 
     public static Intent getFreeReturnOnBoardingActivityIntent(Context context, String orderID) {

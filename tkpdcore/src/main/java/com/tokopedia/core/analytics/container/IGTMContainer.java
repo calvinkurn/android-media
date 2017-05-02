@@ -68,6 +68,8 @@ public interface IGTMContainer {
 
     String getString(String key);
 
+    String getClientIDString();
+
     boolean getBoolean(String key);
 
     long getLong(String key);

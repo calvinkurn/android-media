@@ -19,14 +19,13 @@ import java.util.List;
  */
 public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHolderImpl> implements WholesaleAdapter {
 
-    private static final int MAX_WHOLESALE_PRICE = 5;
-    private static final String TAG = "WholesaleAdapter";
     public static final int QTY_ONE = 1;
     public static final int QTY_TWO = 2;
     public static final int QTY_PRICE = 3;
-
-    private List<WholesaleModel> data;
+    private static final int MAX_WHOLESALE_PRICE = 5;
+    private static final String TAG = "WholesaleAdapter";
     private final WholesaleAdapterListener listener;
+    private List<WholesaleModel> data;
     private double mainPrice;
     private int currency;
     private Context context;
@@ -42,13 +41,13 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     @Override
     public WholesaleViewHolderImpl onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.itemview_wholesale, parent, false);
-        return new WholesaleViewHolderImpl(view, currency);
+        return new WholesaleViewHolderImpl(view);
     }
 
     @Override
     public void onBindViewHolder(WholesaleViewHolderImpl holder, int position) {
         data.get(position).setViewHolder(holder);
-        holder.bindView(this, position, data.get(position));
+        holder.bindView(this, position, data.get(position), currency);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class WholesaleAdapterImpl extends RecyclerView.Adapter<WholesaleViewHold
     }
 
     @Override
-    public void onUpdateData(int type, int position, String value, boolean isShouldCheckError) {
+    public void onUpdateData(int type, int position, String value, boolean isShouldCheckError) throws NumberFormatException {
 
         WholesaleModel model = data.get(position);
         if(value.equals("")) value = "0";

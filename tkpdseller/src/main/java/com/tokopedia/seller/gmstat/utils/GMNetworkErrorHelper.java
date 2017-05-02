@@ -14,11 +14,13 @@ import com.tokopedia.seller.gmstat.views.SnackBar;
 
 public class GMNetworkErrorHelper extends BaseNetworkErrorHandlerImpl {
 
+    protected View rootView;
     SnackBar snackBar;
 
     public GMNetworkErrorHelper(NetworkErrorHelper.RetryClickedListener listener, View rootView) {
         super(listener);
         snackBar = new SnackBar().view(rootView);
+        this.rootView = rootView;
     }
 
     public void onResume(View rootView) {

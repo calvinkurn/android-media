@@ -9,6 +9,7 @@ import org.parceler.Parcel;
 public class SecurityQuestionViewModel {
     int security1;
     int security2;
+    String email;
     String userID;
     String question;
     String vAnswer;
@@ -90,6 +91,14 @@ public class SecurityQuestionViewModel {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

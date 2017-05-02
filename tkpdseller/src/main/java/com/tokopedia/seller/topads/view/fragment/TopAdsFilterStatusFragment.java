@@ -6,7 +6,7 @@ import android.os.Bundle;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.other.RadioButtonItem;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,13 +55,13 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
     }
 
     private void updateSelectedPosition(List<RadioButtonItem> radioButtonItemList) {
-        if (selectedRadioButtonItem != null) {
+        if (selectedAdapterPosition > 0) { // has been updated for first time only
             return;
         }
         for (int i = 0; i < radioButtonItemList.size(); i++) {
             RadioButtonItem radioButtonItem = radioButtonItemList.get(i);
             if (Integer.valueOf(radioButtonItem.getValue()) == selectedStatus) {
-                selectedRadioButtonItem = radioButtonItem;
+                selectedAdapterPosition = i;
                 break;
             }
         }
@@ -74,8 +74,8 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selectedRadioButtonItem != null) {
-            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(selectedRadioButtonItem.getValue()));
+        if (selectedAdapterPosition > -1) {
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.parseInt(getSelectedRadioValue()));
         }
         return intent;
     }

@@ -17,7 +17,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -53,6 +52,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
@@ -69,13 +69,17 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
+import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
@@ -84,6 +88,7 @@ import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
 import com.tokopedia.sellerapp.home.boommenu.Types.ButtonType;
 import com.tokopedia.sellerapp.home.boommenu.Types.PlaceType;
 import com.tokopedia.sellerapp.home.boommenu.Util;
+import com.tokopedia.sellerapp.home.di.SellerHomeDependencyInjection;
 import com.tokopedia.sellerapp.home.fragment.CloseAppsDialogFragment;
 import com.tokopedia.sellerapp.home.model.Ticker;
 import com.tokopedia.sellerapp.home.model.deposit.DepositModel;
@@ -91,14 +96,16 @@ import com.tokopedia.sellerapp.home.model.notification.Notification;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingData;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingList;
 import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
-import com.tokopedia.sellerapp.home.model.shopmodel.ShopModel;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
-import com.tokopedia.sellerapp.home.utils.ShopNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
+import com.tokopedia.sellerapp.home.view.model.ShopScoreViewModel;
+import com.tokopedia.sellerapp.home.view.presenter.SellerHomePresenterImpl;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidget;
+import com.tokopedia.sellerapp.home.view.widget.ShopScoreWidgetCallback;
 
 import org.json.JSONObject;
 
@@ -114,8 +121,9 @@ import rx.functions.Action1;
 
 import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
-public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerListener,
-        SessionHandler.onLogoutListener {
+public class SellerHomeActivity extends BaseActivity implements GCMHandlerListener,
+        SessionHandler.onLogoutListener,
+        SellerHomeView, ShopScoreWidgetCallback {
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
@@ -126,7 +134,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     LinearLayout announcementTicker;
 
     @BindView(R.id.seller_home_transaction_view)
-    TransactionView3 sellerHomeTransactionView;
+    TransactionView sellerHomeTransactionView;
 
     @BindView(R.id.activity_seller_home)
     CoordinatorLayout activitySellerHome;
@@ -183,24 +191,28 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     boolean isBoomMenuShown = false;
     @BindView(R.id.seller_home_blank_space)
     LinearLayout sellerHomeBlankSpace;
+    @BindView(R.id.gold_merchant_announcement_image)
+    ImageView goldMerchantAnnouncementImage;
+    @BindView(R.id.gold_merchant_announcement_text)
+    TextView goldMerchantAnnouncementText;
+    @Nullable
+    ShopModel shopModel;
+    @BindView(R.id.drawer_layout_nav)
+    DrawerLayout drawerLayoutNav;
     @BindView(R.id.seller_home_linlay_container)
     LinearLayout sellerHomeLinLayContainer;
     String userId;
     String shopId;
     DrawerVariableSeller drawer;
     ActionBarDrawerToggle mDrawerToggle;
-    @Nullable
-    ShopModel shopModel;
-    @BindView(R.id.drawer_layout_nav)
-    DrawerLayout drawerLayoutNav;
     SellerToolbarVariable toolbar;
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
-    @BindView(R.id.gold_merchant_announcement_image)
-    ImageView goldMerchantAnnouncementImage;
-    @BindView(R.id.gold_merchant_announcement_text)
-    TextView goldMerchantAnnouncementText;
+    @BindView(R.id.widget_shop_score)
+    ShopScoreWidget shopScoreWidget;
     private boolean isInit = false;
+    private SellerHomePresenterImpl presenter;
+    private SessionHandler sessionHandler;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -242,6 +254,13 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         startActivity(new Intent(this, GmSubscribeHomeActivity.class));
     }
 
+    @OnClick(R.id.seller_home_reputation_view)
+    public void goToSellerReputationHistory(){
+        Intent intent = new Intent(this, InboxReputationActivity.class);
+        intent.putExtra(InboxReputationActivity.GO_TO_REPUTATION_HISTORY, true);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -251,7 +270,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             getWindow().setStatusBarColor(getResources().getColor(R.color.green_600));
         }
         setContentView(R.layout.activity_seller_home);
+
         ButterKnife.bind(this);
+        shopScoreWidget.setCallback(this);
 
         ViewTreeObserver vto = smoothAppBarLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -282,6 +303,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                     @Override
                     public void onRetryClicked() {
                         shopController.init(SellerHomeActivity.this);
+                        presenter.getShopScoreMainData();
                     }
                 });
 
@@ -291,6 +313,7 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                     @Override
                     public void onRetryClicked() {
                         shopController.init(SellerHomeActivity.this);
+                        presenter.getShopScoreMainData();
                     }
                 });
 
@@ -324,6 +347,10 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                 inboxResCenterNetworkController, depositNetworkController, shopTransactionController
                 , gson);
         shopController.subscribe();
+
+
+        presenter = SellerHomeDependencyInjection.getPresenter(this);
+        presenter.attachView(this);
     }
 
     public int pxToDp(int px) {
@@ -348,6 +375,8 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                 drawer.openDrawer();
             }
         });
+
+        collapsingToolbar.notifyScrimChange();
     }
 
     @Override
@@ -639,12 +668,20 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
                 badgeContainerModel.isGold = isGold;
                 sellerHomeBadgeContainer.init(badgeContainerModel, imageHandler);
 
+                /*
+                *  This will update gold merchant status all the time
+                *  user enter seller home.
+                */
+                SellerHomeActivity.this.setGoldMerchant(shopModel);
+
                 if(isGold){
                     goldMerchantAnnouncementText.setText(R.string.extend_gold_merchant);
                 }else{
                     goldMerchantAnnouncementText.setText(R.string.upgrade_gold_merchant);
                 }
                 goldMerchantAnnouncementImage.setVisibility(View.VISIBLE);
+
+
             }
 
             @Override
@@ -718,24 +755,19 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
 //        getSupportActionBar().setHomeButtonEnabled(true);
         collapsingToolbar.setTitleEnabled(true);
 
-        smoothAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
+        collapsingToolbar.setOnScrimChangeListener(new CollapsingToolbarLayoutCust.OnScrimChangeListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-
-                if (collapsingToolbar.isScrimsShown) {
+            public void onScrimChange(boolean isScrimShown) {
+                if (isScrimShown) {
                     if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null)
                         toolbar.setTitleText("Home");
                     else
-                        toolbar.setTitleText(shopModel.info.shopName);
+                        toolbar.setTitleText(MethodChecker.fromHtml(shopModel.info.shopName).toString());
                 } else {
                     toolbar.setTitleText(" ");
                 }
             }
         });
-
     }
 
     @Override
@@ -747,6 +779,18 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(intent);
+    }
+
+    @Override
+    public void renderShopScore(ShopScoreViewModel shopScoreViewModel) {
+        shopScoreWidget.renderView(shopScoreViewModel);
+    }
+
+    @Override
+    public void onErrorShopScore() {
+        if (snackbarRetryUndefinite != null) {
+            snackbarRetryUndefinite.showRetrySnackbar();
+        }
     }
 
     @Override
@@ -925,9 +969,9 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
     protected void onResume() {
         super.onResume();
         shopController.init(this);
-        smoothAppBarLayout.setExpanded(true);
         sendToGTM();
         sendToLocalytics();
+
     }
 
     @Override
@@ -975,6 +1019,17 @@ public class SellerHomeActivity extends AppCompatActivity implements GCMHandlerL
             app_installed = false;
         }
         return app_installed;
+    }
+
+    @Override
+    public void goToShopScoreDetail() {
+        Intent intent = new Intent(this, ShopScoreDetailActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public void getShopScoreData() {
+        presenter.getShopScoreMainData();
     }
 
     public static class SellerHomeNewOrderView {

@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.apiservices.product.apis;
 
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.Map;
 
@@ -20,8 +21,8 @@ public interface DynamicFilter {
     String DEVICE = "device";
     String SOURCE = "source";
     String USER_ID = "user_id";
-    String V1_DYNAMIC_ATTRIBUTES = "/v1/dynamic_attributes";
-    String DYNAMIC_FILTER_URL = "https://ace.tokopedia.com";
+    String V1_DYNAMIC_ATTRIBUTES = "v1/dynamic_attributes";
+    String DYNAMIC_FILTER_URL = TkpdBaseURL.ACE_DOMAIN;
     String fullUrl = DYNAMIC_FILTER_URL + V1_DYNAMIC_ATTRIBUTES;
     String SC = "sc";
 

@@ -16,7 +16,7 @@ public interface WholesaleViewHolder {
 
     CharSequence getQtyPriceError();
 
-    void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel);
+    void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel, int currency);
 
     void removeQtyOneTextWatcher();
 
