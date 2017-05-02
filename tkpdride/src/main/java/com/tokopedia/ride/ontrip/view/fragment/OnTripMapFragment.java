@@ -220,8 +220,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_START_LONGITUDE, String.valueOf(confirmBookingViewModel.getSource().getLongitude()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_END_LATITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLatitude()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_END_LONGITUDE, String.valueOf(confirmBookingViewModel.getDestination().getLongitude()));
-        requestParams.putString(CreateRideRequestUseCase.PARAM_START_ADDRESS, String.valueOf(confirmBookingViewModel.getSource().getTitle()));
-        requestParams.putString(CreateRideRequestUseCase.PARAM_END_ADDRESS, String.valueOf(confirmBookingViewModel.getDestination().getTitle()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_ADDRESS, String.valueOf(confirmBookingViewModel.getSource().getAddress()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_START_ADDRESS_NAME, String.valueOf(confirmBookingViewModel.getSource().getTitle()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_ADDRESS, String.valueOf(confirmBookingViewModel.getDestination().getAddress()));
+        requestParams.putString(CreateRideRequestUseCase.PARAM_END_ADDRESS_NAME, String.valueOf(confirmBookingViewModel.getDestination().getTitle()));
         requestParams.putString(CreateRideRequestUseCase.PARAM_USER_ID, userId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_ID, deviceId);
         requestParams.putString(CreateRideRequestUseCase.PARAM_HASH, hash);
