@@ -1,9 +1,8 @@
 package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
-import com.tokopedia.seller.product.domain.interactor.FetchAllCategoryDataUseCase;
-import com.tokopedia.seller.product.domain.interactor.FetchCategoryChildUseCase;
-import com.tokopedia.seller.product.domain.interactor.FetchCategoryFromSelectedUseCase;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenterImpl;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
 
@@ -20,11 +19,10 @@ public class CategoryPickerViewModule {
     @CategoryPickerViewScope
     @Provides
     CategoryPickerPresenter provideCategoryPickerPresenter(
-            FetchCategoryChildUseCase fetchCategoryChildUseCase,
-            FetchAllCategoryDataUseCase fetchAllCategoryDataUseCase,
+            FetchCategoryWithParentChildUseCase fetchCategoryChildUseCase,
             FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
     ){
-        return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchAllCategoryDataUseCase, fetchCategoryFromSelectedUseCase);
+        return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
     }
 
 }

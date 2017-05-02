@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,7 +32,6 @@ import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -65,24 +63,29 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if ((context != null) && (context instanceof HasComponent<?>)) {
-            HasComponent<?> hasComponent = (HasComponent<?>) context;
-            Object component = hasComponent.getComponent();
-            if (component instanceof YoutubeVideoComponent) {
-                parentComponent = (HasComponent<YoutubeVideoComponent>) context;
-            } else {
-                throw new RuntimeException(
-                        "Activity must implement HasComponent<YoutubeVideoComponent>"
-                );
-            }
-        }
+        setYoutubeVideoComponent(context);
 
+        setYoutubeAddVideoActView(context);
+
+        setHasOptionsMenu(true);
+    }
+
+    protected void setYoutubeAddVideoActView(Context context) {
         if ((context != null) && (context instanceof YoutubeAddVideoActView)) {
             youtubeAddVideoActView
                     = (YoutubeAddVideoActView) context;
         }
+    }
 
-        setHasOptionsMenu(true);
+    @SuppressWarnings("unchecked")
+    protected void setYoutubeVideoComponent(Context context) {
+        if ((context != null) && (context instanceof HasComponent<?>)) {
+            HasComponent<?> hasComponent = (HasComponent<?>) context;
+            Object component = hasComponent.getComponent();
+            if (component != null && component instanceof YoutubeVideoComponent) {
+                parentComponent = (HasComponent<YoutubeVideoComponent>) context;
+            }
+        }
     }
 
     @Nullable
@@ -110,11 +113,16 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             public void notifyNonEmpty() {
                 addUrlVideoAdapter.showEmptyFull(false);
             }
+
+            @Override
+            public void remove(int index) {
+                youtubeAddVideoActView.removeVideoIds(index);
+            }
         });
         addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
-        setVideoSubtitle();
+        addUrlVideoAdapter.showEmptyFull(true);
         return view;
     }
 
@@ -129,11 +137,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                     youtubeVideoLinkUtils);
 
             presenter.attachView(this);
+            setYoutubeAddVideoActView(getActivity());
+            setVideoSubtitle();
+            presenter.setYoutubeActView(youtubeAddVideoActView);
             List<String> strings = youtubeAddVideoActView.videoIds();
             if (CommonUtils.checkCollectionNotNull(strings)) {
-                for (String videoId : strings) {
-                    presenter.fetchYoutube(videoId);
-                }
+                presenter.fetchYoutube(strings);
             }
         }
 
@@ -146,6 +155,9 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     private void inject() {
+        if (parentComponent == null) {
+            setYoutubeVideoComponent(getActivity());
+        }
         component = parentComponent.getComponent();
         component.inject(this);
     }
@@ -175,7 +187,9 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     private void setVideoSubtitle() {
-        setVideoSubtitle(addUrlVideoAdapter.getVideoIds().size(), MAX_ROWS);
+        if (youtubeAddVideoActView != null) {
+            setVideoSubtitle(youtubeAddVideoActView.videoIds().size(), MAX_ROWS);
+        }
     }
 
     public void addYoutubeUrl(String youtubeUrl) {
@@ -199,19 +213,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                 .showRetrySnackbar();
     }
 
-    public Intent getResultIntent() {
-        List<String> videoIds = getVideoIds();
-        if (CommonUtils.checkCollectionNotNull(videoIds)) {
-            Intent intent = new Intent();
-            intent.putStringArrayListExtra(KEY_VIDEOS_LINK, new ArrayList<String>(videoIds));
-            return intent;
-        } else {
-            return null;
+    @Override
+    public void addAddUrlVideModels(List<AddUrlVideoModel> convert) {
+        for (AddUrlVideoModel addUrlVideoModel : convert) {
+            addAddUrlVideModel(addUrlVideoModel);
         }
-    }
 
-    public List<String> getVideoIds() {
-        return addUrlVideoAdapter.getVideoIds();
     }
 
     @Override
@@ -231,4 +238,5 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         }
         return false;
     }
+
 }

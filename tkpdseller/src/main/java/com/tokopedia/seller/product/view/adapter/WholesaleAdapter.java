@@ -23,9 +23,14 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
     private List<WholesaleModel> wholesaleModels;
     private List<ProductWholesaleViewModel> productWholesaleViewModels;
+    private Listener listener;
 
     public WholesaleAdapter() {
         wholesaleModels = new CopyOnWriteArrayList<>();
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -68,6 +73,10 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         return wholesaleModels.size() + super.getItemCount();
     }
 
+    public int getItemSize() {
+        return wholesaleModels.size();
+    }
+
     public synchronized int addItem(WholesaleModel wholesaleModel) {
         int lastIndex = wholesaleModels.size() - 1;
         WholesaleModel prev = getItem(lastIndex);
@@ -97,6 +106,10 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         }
 
         notifyItemRemoved(position);
+
+        if (listener != null) {
+            listener.notifySizeChanged(wholesaleModels.size());
+        }
     }
 
     protected WholesaleModel getItem(int prevPosition) {
@@ -161,6 +174,16 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             productWholesaleViewModels.add(productWholesaleViewModel);
         }
         return productWholesaleViewModels;
+    }
+
+    public interface Listener {
+        /**
+         * notify data size changed
+         *
+         * @param currentSize size of {@link WholesaleAdapter#wholesaleModels} not included
+         *                    parent adapter size.
+         */
+        void notifySizeChanged(int currentSize);
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
@@ -44,11 +45,23 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         return ProductStatus.EDIT;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (view != null) {
+            view.findViewById(R.id.button_save_and_add).setVisibility(View.GONE);
+        }
+        return view;
+    }
 
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
+        if (model.getProductNameEditable() == 0){
+            productInfoViewHolder.setNameAvailable(false);
+        }
         super.onSuccessLoadProduct(model);
     }
 

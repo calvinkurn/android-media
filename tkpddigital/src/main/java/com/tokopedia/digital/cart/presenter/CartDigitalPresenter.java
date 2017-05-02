@@ -440,8 +440,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         attributes.setIpAddress(DeviceUtil.getLocalIpAddress());
         attributes.setUserAgent(DeviceUtil.getUserAgentForApiCall());
         attributes.setUserId(Integer.parseInt(view.getUserId()));
-        attributes.setAccessToken(view.getAccountToken());
-        attributes.setWalletRefreshToken(view.getWalletRefreshToken());
         attributes.setProductId(view.getProductId());
         attributes.setFields(fieldList);
         requestBodyAtcDigital.setType("add_cart");

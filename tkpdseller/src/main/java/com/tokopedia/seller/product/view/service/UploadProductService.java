@@ -11,12 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.core.app.BaseService;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.product.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
@@ -85,7 +87,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     @Override
-    public void notificationFailed(String errorMessage, String productDraftId, @ProductStatus int productStatus) {
+    public void notificationFailed(Throwable error, String productDraftId, @ProductStatus int productStatus) {
+        String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
         Notification notification = buildFailedNotification(errorMessage, productDraftId, productStatus);
         notificationManager.notify(TAG, getNotifIdByDraft(productDraftId), notification);
         removeNotifFromList(productDraftId);
@@ -136,7 +139,8 @@ public class UploadProductService extends BaseService implements AddProductServi
     }
 
     @Override
-    public void sendFailedBroadcast(String errorMessage) {
+    public void sendFailedBroadcast(Throwable error) {
+        String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
         Bundle bundle = new Bundle();
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);

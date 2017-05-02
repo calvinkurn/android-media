@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.seller.product.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.DataEditProductForm;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.EditProductFormServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.editproductform.ProductEditForm;
@@ -55,7 +55,11 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setNameEditable(Integer.parseInt(product.getProductNameEditable()));
         domainModel.setProductWeight(Integer.parseInt(product.getProductWeight()));
         domainModel.setProductName(product.getProductName());
-
+        int uploadTo = Integer.parseInt(product.getProductUploadTo());
+        if (uploadTo == UploadToTypeDef.TYPE_WAREHOUSE) {
+            uploadTo = UploadToTypeDef.TYPE_NOT_ACTIVE;
+        }
+        domainModel.setProductUploadTo(uploadTo);
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
 

@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.transaction.R;
@@ -44,6 +45,17 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
         summaryAdapter.notifyDataSetChanged();
         refreshHandler.setPullEnabled(true);
         refreshHandler.finishRefresh();
+    }
+
+    @Override
+    public void showLoadingError() {
+        NetworkErrorHelper.showEmptyState(context, getView(),
+                new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                refreshHandler.startRefresh();
+            }
+        });
     }
 
     @Override

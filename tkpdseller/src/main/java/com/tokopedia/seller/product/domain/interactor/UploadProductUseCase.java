@@ -239,12 +239,16 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
             @Override
             public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel imageProductInputDomainModel) {
-                return imageProductUploadRepository.uploadImageProduct(
-                        hostUrl,
-                        serverId,
-                        imageProductInputDomainModel.getImagePath(),
-                        0)
-                        .map(new MapImageModelToProductInput(imageProductInputDomainModel));
+                if(StringUtils.isNotBlank(imageProductInputDomainModel.getImagePath())){
+                    return imageProductUploadRepository.uploadImageProduct(
+                            hostUrl,
+                            serverId,
+                            imageProductInputDomainModel.getImagePath(),
+                            0)
+                            .map(new MapImageModelToProductInput(imageProductInputDomainModel));
+                }else{
+                    return Observable.just(imageProductInputDomainModel);
+                }
             }
 
             private class MapImageModelToProductInput implements Func1<ImageProcessDomainModel, ImageProductInputDomainModel> {

@@ -49,6 +49,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.view.activity.ProductDuplicateActivity;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 
 import org.json.JSONException;
@@ -490,7 +491,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
             public void onClick(View v) {
                 if (!multiselect) {
                     boolean isEdit = true;
-                    Intent intent = new Intent(activity, ProductAddActivity.class);
+                    Intent intent = ProductDuplicateActivity.createInstance(activity, manageProductModels.get(position).getProdID());
                     activity.startActivityForResult(intent, 1);
                 }
             }
@@ -542,7 +543,7 @@ public class ListViewManageProdAdapter extends BaseAdapter
                     return true;
                 } else if (item.getItemId() == R.id.action_copy) {
                     isCopy = true;
-                    intent = new Intent(activity, ProductAddActivity.class);
+                    intent = ProductDuplicateActivity.createInstance(activity, manageProductModels.get(position).getProdID());
                     activity.startActivityForResult(intent, 1);
 
                     // analytic below : https://phab.tokopedia.com/T18496

@@ -47,6 +47,9 @@ public class ProductShopInfo implements Parcelable{
     @SerializedName("shop_is_gold")
     @Expose
     private Integer shopIsGold;
+    @SerializedName("shop_is_gold_badge")
+    @Expose
+    private boolean shopIsGoldBadge;
     @SerializedName("shop_open_since")
     @Expose
     private String shopOpenSince;
@@ -186,6 +189,14 @@ public class ProductShopInfo implements Parcelable{
 
     public void setShopHasTerms(Integer shopHasTerms) {
         this.shopHasTerms = shopHasTerms;
+    }
+
+    public boolean shopIsGoldBadge() {
+        return shopIsGoldBadge;
+    }
+
+    public void setShopIsGoldBadge(boolean shopIsGoldBadge) {
+        this.shopIsGoldBadge = shopIsGoldBadge;
     }
 
     public Integer getShopIsGold() {
@@ -360,6 +371,7 @@ public class ProductShopInfo implements Parcelable{
         shopCover = in.readString();
         shopHasTerms = in.readByte() == 0x00 ? null : in.readInt();
         shopIsGold = in.readByte() == 0x00 ? null : in.readInt();
+        shopIsGoldBadge = in.readByte() != 0x00;
         shopOpenSince = in.readString();
         shopMinBadgeScore = in.readByte() == 0x00 ? null : in.readInt();
         shopLocation = in.readString();
@@ -414,6 +426,7 @@ public class ProductShopInfo implements Parcelable{
             dest.writeByte((byte) (0x01));
             dest.writeInt(shopIsGold);
         }
+        dest.writeByte((byte) (shopIsGoldBadge ? 0x01 : 0x00));
         dest.writeString(shopOpenSince);
         if (shopMinBadgeScore == null) {
             dest.writeByte((byte) (0x00));

@@ -9,6 +9,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -202,13 +203,17 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
-    public void addNewEtalase(String newEtalaseName) {
-        presenter.addNewEtalase(newEtalaseName);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            listener.openAddNewEtalaseDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void openAddNewEtalaseDialog() {
-        listener.openAddNewEtalaseDialog();
+    public void addNewEtalase(String newEtalaseName) {
+        presenter.addNewEtalase(newEtalaseName);
     }
 
     @Override

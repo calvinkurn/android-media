@@ -6,7 +6,11 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
 import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
 import com.tokopedia.seller.product.utils.YoutubeVideoLinkUtils;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -15,6 +19,7 @@ import rx.Subscriber;
  */
 public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
     private static final String TAG = "YoutubeAddVideoPresente";
+    protected YoutubeAddVideoActView youtubeActView;
     private YoutubeVideoUseCase youtubeVideoUseCase;
     private YoutubeVideoLinkUtils youtubeVideoLinkUtils;
 
@@ -31,9 +36,26 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         youtubeVideoUseCase.execute(requestParams, new DefaultSubscriber(videoId));
     }
 
+    @Override
+    public void fetchYoutube(List<String> videoIds) {
+        List<RequestParams> requestParamses = new ArrayList<>();
+        for (String videoId : videoIds) {
+            requestParamses.add(generateParam(videoId));
+        }
+        youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds));
+
+    }
+
+    public void setYoutubeActView(YoutubeAddVideoActView youtubeActView) {
+        this.youtubeActView = youtubeActView;
+    }
+
     public void fetchYoutubeDescription(String youtubeUrl) {
         youtubeVideoLinkUtils.setYoutubeUrl(youtubeUrl);
         String videoId = youtubeVideoLinkUtils.saveVideoID();
+        if (youtubeActView != null) {
+            youtubeActView.addVideoIds(videoId);
+        }
         RequestParams requestParams = generateParam(videoId);
         youtubeVideoUseCase.execute(requestParams, new DefaultSubscriber(videoId));
     }
@@ -49,6 +71,62 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
     public void detachView() {
         super.detachView();
         youtubeVideoUseCase.unsubscribe();
+    }
+
+    private class DefaultListSubscriber extends Subscriber<List<YoutubeVideoModel>> {
+
+        private List<String> videoIds;
+
+        public DefaultListSubscriber(List<String> videoIds) {
+            this.videoIds = videoIds;
+        }
+
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.i(TAG, "error here : " + e);
+            if (isViewAttached()) {
+                if (videoIds.size() > 0) {
+                    getView().showMessageError(videoIds.get(0));
+                }
+            }
+        }
+
+        @Override
+        public void onNext(List<YoutubeVideoModel> youtubeVideoModels) {
+            Log.i(TAG, "result here : " + youtubeVideoModels);
+            if (isViewAttached()) {
+                getView().addAddUrlVideModels(convert(youtubeVideoModels));
+            }
+        }
+
+        private List<AddUrlVideoModel> convert(List<YoutubeVideoModel> youtubeVideoModels) {
+            List<AddUrlVideoModel> addUrlVideoModels = new ArrayList<>();
+            int i = 0;
+            for (YoutubeVideoModel youtubeVideoModel : youtubeVideoModels) {
+
+                String videoId = videoIds.get(i);
+
+                AddUrlVideoModel addUrlVideoModel = new AddUrlVideoModel();
+                addUrlVideoModel.setHeight(youtubeVideoModel.getHeight());
+                addUrlVideoModel.setWidth(youtubeVideoModel.getWidth());
+                addUrlVideoModel.setSnippetTitle(youtubeVideoModel.getSnippetTitle());
+                addUrlVideoModel.setSnippetDescription(youtubeVideoModel.getSnippetDescription());
+                addUrlVideoModel.setThumbnailUrl(youtubeVideoModel.getThumbnailUrl());
+                addUrlVideoModel.setVideoId(videoId);
+
+                addUrlVideoModels.add(addUrlVideoModel);
+
+                i++;
+            }
+
+
+            return addUrlVideoModels;
+        }
     }
 
     private class DefaultSubscriber extends Subscriber<YoutubeVideoModel> {

@@ -21,7 +21,7 @@ public interface AddProductServiceListener extends CustomerView {
 
     void onFailedAddProduct();
 
-    void notificationFailed(String errorMessage, String productDraftId, @ProductStatus int productStatus);
+    void notificationFailed(Throwable error, String productDraftId, @ProductStatus int productStatus);
 
-    void sendFailedBroadcast(String errorMessage);
+    void sendFailedBroadcast(Throwable error);
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
@@ -122,7 +124,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public void setDescription(String description) {
-        descriptionEditText.setText(description);
+        descriptionEditText.setText(MethodChecker.fromHtml(description));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

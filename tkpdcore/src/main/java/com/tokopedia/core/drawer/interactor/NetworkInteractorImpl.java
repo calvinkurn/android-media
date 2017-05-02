@@ -141,7 +141,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.onError("Terjadi Kesalahan Koneksi");
                     }
 
                     @Override

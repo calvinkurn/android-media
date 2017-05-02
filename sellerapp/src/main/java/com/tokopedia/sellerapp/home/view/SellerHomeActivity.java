@@ -212,6 +212,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     ShopScoreWidget shopScoreWidget;
     private boolean isInit = false;
     private SellerHomePresenterImpl presenter;
+    private SessionHandler sessionHandler;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -667,12 +668,20 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 badgeContainerModel.isGold = isGold;
                 sellerHomeBadgeContainer.init(badgeContainerModel, imageHandler);
 
+                /*
+                *  This will update gold merchant status all the time
+                *  user enter seller home.
+                */
+                SellerHomeActivity.this.setGoldMerchant(shopModel);
+
                 if(isGold){
                     goldMerchantAnnouncementText.setText(R.string.extend_gold_merchant);
                 }else{
                     goldMerchantAnnouncementText.setText(R.string.upgrade_gold_merchant);
                 }
                 goldMerchantAnnouncementImage.setVisibility(View.VISIBLE);
+
+
             }
 
             @Override

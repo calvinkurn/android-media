@@ -14,8 +14,8 @@ import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.di.module.YoutubeVideoModule;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.dialog.YoutubeAddUrlDialog;
-import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.fragment.YoutubeAddVideoFragment;
+import com.tokopedia.seller.product.view.listener.YoutubeAddVideoActView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 
 import java.util.ArrayList;
@@ -30,9 +30,9 @@ public class YoutubeAddVideoActivity extends TActivity
     private YoutubeVideoComponent youtubeVideoComponent;
 
     /**
-     * this is just temporary collection to save videoIds from another activity.
+     * due to limitation of existing dataset videoIds throw back is from here.
      */
-    private ArrayList<String> tempVideoIds;
+    private ArrayList<String> videoIDs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,18 +41,23 @@ public class YoutubeAddVideoActivity extends TActivity
 
         inflateView(R.layout.activity_product_add);
 
+        if (savedInstanceState == null) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                videoIDs = intent.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
+                if (videoIDs == null)
+                    videoIDs = new ArrayList<>();
+            }
+        } else {
+            videoIDs = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
+        }
+
         if (!CommonUtils.checkNotNull(youtubeAddVideoFragment())) {
             getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                     .add(R.id.container, YoutubeAddVideoFragment.createInstance(), YoutubeAddVideoFragment.TAG)
                     .commit();
         }
 
-        if (savedInstanceState == null) {
-            Intent intent = getIntent();
-            if (intent != null) {
-                tempVideoIds = intent.getStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK);
-            }
-        }
     }
 
     private void initInjection() {
@@ -84,7 +89,23 @@ public class YoutubeAddVideoActivity extends TActivity
 
     @Override
     public List<String> videoIds() {
-        return tempVideoIds;
+        return videoIDs;
+    }
+
+    @Override
+    public void addVideoIds(String videoId) {
+        videoIDs.add(videoId);
+    }
+
+    @Override
+    public void removeVideoIds(int index) {
+        videoIDs.remove(index);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIDs);
     }
 
     @Override
@@ -96,13 +117,21 @@ public class YoutubeAddVideoActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        YoutubeAddVideoFragment youtubeAddVideoFragment = youtubeAddVideoFragment();
-        if (youtubeAddVideoFragment != null) {
-            Intent intent = youtubeAddVideoFragment.getResultIntent();
-            if (intent != null) {
-                setResult(RESULT_OK, intent);
-            }
+        Intent intent = getResultIntent();
+        if (intent != null) {
+            setResult(RESULT_OK, intent);
         }
         super.onBackPressed();
+    }
+
+    private Intent getResultIntent() {
+        List<String> videoIds = new ArrayList<>(videoIDs);
+        if (CommonUtils.checkCollectionNotNull(videoIds)) {
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<>(videoIds));
+            return intent;
+        } else {
+            return null;
+        }
     }
 }

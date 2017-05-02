@@ -104,6 +104,10 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
     private void remove(int index) {
         addUrlVideoModels.remove(index);
 
+        if (listener != null) {
+            listener.remove(index);
+        }
+
         if (addUrlVideoModels.size() <= 0) {
             if (listener != null) {
                 listener.notifyEmpty();
@@ -145,5 +149,7 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         void notifyEmpty();
 
         void notifyNonEmpty();
+
+        void remove(int index);
     }
 }

@@ -37,7 +37,8 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductDetailViewHolder extends ProductViewHolder {
+public class ProductDetailViewHolder extends ProductViewHolder
+        implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
     private static final int MAX_WHOLESALE = 5;
@@ -63,7 +64,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
     private CurrencyUsdTextWatcher usdTextWatcher;
     private Listener listener;
     @CurrencyTypeDef
-    private int currencyType;
+    private int currencyType = CurrencyTypeDef.TYPE_IDR;
 
     public ProductDetailViewHolder(View view) {
         etalaseId = -1;
@@ -212,6 +213,7 @@ public class ProductDetailViewHolder extends ProductViewHolder {
         recyclerViewWholesale = (RecyclerView) view.findViewById(R.id.recycler_view_wholesale);
         recyclerViewWholesale.setLayoutManager(new LinearLayoutManager(recyclerViewWholesale.getContext(), LinearLayoutManager.VERTICAL, false));
         wholesaleAdapter = new WholesaleAdapter();
+        wholesaleAdapter.setListener(this);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
 
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
@@ -467,6 +469,11 @@ public class ProductDetailViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void notifySizeChanged(int currentSize) {
+        updateWholesaleButton();
     }
 
     public interface Listener {

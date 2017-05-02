@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductDraftView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,7 +23,7 @@ import javax.inject.Inject;
  * @author sebastianuskh on 4/26/17.
  */
 
-public class ProductDraftAddFragment extends ProductAddFragment implements ProductDraftView{
+public class ProductDraftAddFragment extends ProductAddFragment implements ProductDraftView {
 
     @Inject
     public ProductDraftPresenter presenter;
@@ -63,6 +66,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+        presenter.fetchCategoryDisplay(model.getProductDepartmentId());
         if (model.getProductCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
         }
@@ -70,13 +74,15 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
         productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
         productDetailViewHolder.setPriceValue((float) model.getProductPrice());
-        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
-        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
-        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         if (model.getProductWholesaleList().size() > 0) {
             productDetailViewHolder.expandWholesale(true);
             productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
         }
+        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
+        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+        productDetailViewHolder.setStockStatus(model.getProductUploadTo());
+
 //        productDetailViewHolder.setStockStatus(model.get);
 //        productDetailViewHolder.setTotalStock();
         if (model.getProductEtalaseId() > 0) {
@@ -103,4 +109,10 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     }
 
+    @Override
+    public void populateCategory(List<String> strings) {
+        String[] stringArray = new String[strings.size()];
+        stringArray = strings.toArray(stringArray);
+        productInfoViewHolder.processCategory(stringArray);
+    }
 }

@@ -126,9 +126,7 @@ public class CategoryPickerAdapter
 
     @Override
     public void selectParent(long selectedId) {
-        data.setCategoryId(selectedId);
         this.listener.selectParent(selectedId);
-        notifyDataSetChanged();
     }
 
     @Override

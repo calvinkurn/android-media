@@ -47,6 +47,9 @@ public class Info {
     @SerializedName("shop_is_gold")
     @Expose
     public int shopIsGold;
+    @SerializedName("shop_is_gold_badge")
+    @Expose
+    public boolean shopIsGoldBadge;
     @SerializedName("shop_open_since")
     @Expose
     public String shopOpenSince;

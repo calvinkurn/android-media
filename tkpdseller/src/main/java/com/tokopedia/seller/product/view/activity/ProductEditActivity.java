@@ -32,4 +32,9 @@ public class ProductEditActivity extends ProductDraftEditActivity {
                 .add(R.id.container, ProductEditFragment.createInstance(productId), ProductEditFragment.class.getSimpleName())
                 .commit();
     }
+
+    @Override
+    protected String getFragmentTAG() {
+        return ProductEditFragment.class.getSimpleName();
+    }
 }
