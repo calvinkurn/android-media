@@ -67,5 +67,5 @@ public interface RideApi {
 
     @POST(RideUrl.PROMO_APPLY)
     @FormUrlEncoded
-    Observable<PromoEntity> applyPromo(TKPDMapParam<String, Object> parameters);
+    Observable<PromoEntity> applyPromo(@FieldMap TKPDMapParam<String, Object> parameters);
 }

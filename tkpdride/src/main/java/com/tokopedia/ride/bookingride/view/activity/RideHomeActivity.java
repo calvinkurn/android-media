@@ -303,12 +303,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition = new Slide(Gravity.RIGHT);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             slideTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
         }
 
         ChangeBounds changeBoundsTransition = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             changeBoundsTransition = new ChangeBounds();
             changeBoundsTransition.setDuration(getResources().getInteger(R.integer.anim_duration_medium));
         }
