@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
 import com.tokopedia.ride.bookingride.view.ApplyPromoPresenter;
 import com.tokopedia.ride.common.network.RideInterceptor;
@@ -139,12 +140,36 @@ public class ApplyPromoDependencyInjection {
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();
         ApplyPromoDependencyInjection injection = new ApplyPromoDependencyInjection();
-        ApplyPromoUseCase provideGetFareEstimateUseCase = injection.provideApplyPromoUseCase(token, userId);
+        GetFareEstimateUseCase provideGetFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
         return new ApplyPromoPresenter(provideGetFareEstimateUseCase);
     }
 
     private ApplyPromoUseCase provideApplyPromoUseCase(String token, String userId) {
         return new ApplyPromoUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
+    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId) {
+        return new GetFareEstimateUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
                 provideBookingRideRepository(

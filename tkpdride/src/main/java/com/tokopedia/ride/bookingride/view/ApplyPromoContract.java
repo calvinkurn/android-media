@@ -28,6 +28,8 @@ public interface ApplyPromoContract {
         void showApplyPromoLayout();
 
         void hideApplyPromoLayout();
+
+        RequestParams getParams();
     }
 
     interface Presenter extends CustomerPresenter<View>{

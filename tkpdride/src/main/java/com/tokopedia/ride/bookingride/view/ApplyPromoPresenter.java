@@ -1,8 +1,8 @@
 package com.tokopedia.ride.bookingride.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
-import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
+import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import rx.Subscriber;
 
@@ -12,17 +12,19 @@ import rx.Subscriber;
 
 public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.View>
         implements ApplyPromoContract.Presenter {
-    private ApplyPromoUseCase applyPromoUseCase;
+    private GetFareEstimateUseCase getFareEstimateUseCase;
 
-    public ApplyPromoPresenter(ApplyPromoUseCase applyPromoUseCase) {
-        this.applyPromoUseCase = applyPromoUseCase;
+    public ApplyPromoPresenter(GetFareEstimateUseCase applyPromoUseCase) {
+        this.getFareEstimateUseCase = applyPromoUseCase;
     }
 
     @Override
     public void actionApplyPromo() {
         getView().showApplyPromoLoading();
         getView().hideApplyPromoLayout();
-        this.applyPromoUseCase.execute(getView().getApplyPromoParams(), new Subscriber<ApplyPromo>() {
+
+
+        getFareEstimateUseCase.execute(getView().getParams(), new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
 
@@ -36,16 +38,16 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
             }
 
             @Override
-            public void onNext(ApplyPromo applyPromo) {
+            public void onNext(FareEstimate fareEstimate) {
                 if (isViewAttached()) {
                     getView().showApplyPromoLayout();
                     // TODO : change with response
                     if (true) {
                         getView().hideApplyPromoLoading();
-                        getView().onSuccessApplyPromo(applyPromo);
+                        //getView().onSuccessApplyPromo(fareEstimate);
                     } else {
                         getView().hideApplyPromoLoading();
-                        getView().onFailedApplyPromo(applyPromo);
+                        //getView().onFailedApplyPromo(fareEstimate);
                     }
                 }
             }

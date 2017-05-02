@@ -127,4 +127,9 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     public void hideApplyPromoLayout() {
         promoLayout.setVisibility(View.GONE);
     }
+
+    @Override
+    public RequestParams getParams() {
+        return null;
+    }
 }
