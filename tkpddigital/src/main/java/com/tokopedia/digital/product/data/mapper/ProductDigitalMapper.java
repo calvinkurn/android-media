@@ -2,7 +2,12 @@ package com.tokopedia.digital.product.data.mapper;
 
 import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.data.entity.ResponseBanner;
+import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
+import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.model.BannerData;
+import com.tokopedia.digital.product.model.CategoryData;
+
+import java.util.List;
 
 /**
  * @author anggaprasetiyo on 4/26/17.
@@ -28,5 +33,13 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .promocode(responseBanner.getAttributes().getPromocode())
                 .dataTitle(responseBanner.getAttributes().getDataTitle())
                 .build();
+    }
+
+    @Override
+    public CategoryData transformCategoryData(
+            ResponseCategoryDetailData responseCategoryDetailData,
+            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
+    ) throws MapperDataException {
+        return null;
     }
 }

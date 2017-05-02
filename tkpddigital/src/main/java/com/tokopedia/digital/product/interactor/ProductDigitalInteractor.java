@@ -6,6 +6,7 @@ import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -38,7 +39,8 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-                        categoryRepository.getBanner(paramQueryBanner),
+                        categoryRepository.getBanner(paramQueryBanner)
+                                .onErrorResumeNext(Observable.just(new ArrayList<BannerData>())),
                         new Func2<CategoryData, List<BannerData>, ProductDigitalData>() {
                             @Override
                             public ProductDigitalData call(CategoryData categoryData, List<BannerData> bannerDatas) {

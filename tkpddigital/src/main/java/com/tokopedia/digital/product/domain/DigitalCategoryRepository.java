@@ -4,6 +4,8 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.data.entity.ResponseBanner;
+import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
+import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -38,9 +40,12 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
                 .map(new Func1<Response<TkpdDigitalResponse>, CategoryData>() {
                     @Override
                     public CategoryData call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+                            Response<TkpdDigitalResponse> response
                     ) {
-                        return new CategoryData();
+                        return productDigitalMapper.transformCategoryData(
+                                response.body().convertDataObj(ResponseCategoryDetailData.class),
+                                response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
+                        );
                     }
                 });
     }

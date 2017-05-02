@@ -19,6 +19,7 @@ public class ProductDigitalData {
         setBannerDataList(builder.bannerDataList);
     }
 
+
     public CategoryData getCategoryData() {
         return categoryData;
     }
@@ -38,7 +39,7 @@ public class ProductDigitalData {
 
     public static final class Builder {
         private CategoryData categoryData;
-        private List<BannerData> bannerDataList = new ArrayList<>();
+        private List<BannerData> bannerDataList;
 
         public Builder() {
         }
