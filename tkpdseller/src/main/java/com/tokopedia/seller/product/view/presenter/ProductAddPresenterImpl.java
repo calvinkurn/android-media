@@ -57,7 +57,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void getShopInfo(String shopId) {
+    public void getShopInfo() {
         addProductShopInfoUseCase.execute(
                 null,
                 new Subscriber<AddProductShopInfoDomainModel>() {

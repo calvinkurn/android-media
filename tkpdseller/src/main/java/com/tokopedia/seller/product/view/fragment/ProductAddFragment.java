@@ -162,7 +162,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         productScoreViewHolder = new ProductScoreViewHolder(view);
         productScoreViewHolder.setListener(this);
         presenter.attachView(this);
-        presenter.getShopInfo(SessionHandler.getShopID(getContext()));
+        presenter.getShopInfo();
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
