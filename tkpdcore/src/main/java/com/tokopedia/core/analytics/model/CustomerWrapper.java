@@ -27,13 +27,19 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     }
 
     public CustomerWrapper(CustomerWrapper.Builder builder) {
-        mCustomerId = builder.mCustomerId;
-        mFirstName = builder.mFirstName;
-        mLastName = builder.mLastName;
-        mFullName = builder.mFullName;
-        mEmailAddress = builder.mEmailAddress;
-        mMethod = builder.mMethod;
-        mAttr = builder.mAttr;
+        mCustomerId     = builder.mCustomerId;
+        mFirstName      = builder.mFirstName;
+        mLastName       = builder.mLastName;
+        mFullName       = builder.mFullName;
+        mEmailAddress   = builder.mEmailAddress;
+        mMethod         = builder.mMethod;
+        mAttr           = builder.mAttr;
+        phoneNumber     = builder.phoneNumber;
+        isGoldMerchant  = builder.isGoldMerchant;
+        isSeller        = builder.isSeller;
+        shopId          = builder.shopId;
+        shopName        = builder.shopName;
+        dateOfBirth     = builder.dateOfBirth;
     }
 
     public String getPhoneNumber() {
