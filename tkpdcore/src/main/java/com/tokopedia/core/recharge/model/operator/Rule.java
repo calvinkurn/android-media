@@ -23,6 +23,9 @@ public class Rule {
     @SerializedName("show_product_list_page")
     @Expose
     private Boolean showProductListPage;
+    @SerializedName("allow_alphanumeric_number")
+    @Expose
+    private Boolean allowAphanumericNumber;
 
     /**
      *
@@ -112,5 +115,13 @@ public class Rule {
      */
     public void setShowProductListPage(Boolean showProductListPage) {
         this.showProductListPage = showProductListPage;
+    }
+
+    public Boolean getAllowAphanumericNumber() {
+        return allowAphanumericNumber;
+    }
+
+    public void setAllowAphanumericNumber(Boolean allowAphanumericNumber) {
+        this.allowAphanumericNumber = allowAphanumericNumber;
     }
 }

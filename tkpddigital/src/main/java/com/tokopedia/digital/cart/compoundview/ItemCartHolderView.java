@@ -110,7 +110,7 @@ public class ItemCartHolderView extends RelativeLayout {
     private void addTitleAdditionalInfo(String titleAddInfo) {
         LinearLayout.LayoutParams layoutTitle = new LinearLayout.LayoutParams(
                 LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        layoutTitle.setMargins(0, 20, 0, 5);
+        layoutTitle.setMargins(0, 25, 0, 15);
         TextView title = new TextView(context);
         title.setLayoutParams(layoutTitle);
         title.setTextSize(context.getResources().getDimension(R.dimen.font_small) /
