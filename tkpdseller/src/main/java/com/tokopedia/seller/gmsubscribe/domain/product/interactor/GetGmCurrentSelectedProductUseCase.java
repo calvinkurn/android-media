@@ -8,10 +8,12 @@ import com.tokopedia.seller.gmsubscribe.domain.product.GmSubscribeProductReposit
 import com.tokopedia.seller.gmsubscribe.domain.product.exception.GmProductException;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GetGmCurrentSelectedProductUseCase extends UseCase<GmProductDomainModel> {
     public static final String PRODUCT_SELECTED_ID = "PRODUCT_SELECTED_ID";
@@ -19,6 +21,7 @@ public class GetGmCurrentSelectedProductUseCase extends UseCase<GmProductDomainM
 
     protected final GmSubscribeProductRepository gmSubscribeProductRepository;
 
+    @Inject
     public GetGmCurrentSelectedProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository gmSubscribeProductRepository) {
         super(threadExecutor, postExecutionThread);
         this.gmSubscribeProductRepository = gmSubscribeProductRepository;

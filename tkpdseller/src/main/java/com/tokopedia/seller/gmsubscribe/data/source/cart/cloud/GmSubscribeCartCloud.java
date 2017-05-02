@@ -7,14 +7,17 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.Gm
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmVoucherServiceModel;
 import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GmSubscribeCartCloud {
     private final GmSubscribeCartApi api;
 
+    @Inject
     public GmSubscribeCartCloud(GmSubscribeCartApi api) {
         this.api = api;
     }

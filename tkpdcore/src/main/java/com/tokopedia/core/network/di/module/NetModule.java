@@ -11,7 +11,10 @@ import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
+import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
+import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
+import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
@@ -97,6 +100,22 @@ public class NetModule {
     public Retrofit provideResolutionRetrofit(@BearerAuth OkHttpClient okHttpClient,
                                               Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION).client(okHttpClient).build();
+    }
+
+    @GoldMerchantQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideGoldMerchantRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
+                                                Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GOLD_MERCHANT_DOMAIN).client(okHttpClient).build();
+    }
+
+    @CartQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideCartRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
+                                        Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN).client(okHttpClient).build();
     }
 
 }

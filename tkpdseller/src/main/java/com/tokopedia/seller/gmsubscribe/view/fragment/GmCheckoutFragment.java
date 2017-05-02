@@ -9,9 +9,14 @@ import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.di.GmCheckoutDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmCheckoutPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmAutoSubscribeViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelectedViewModel;
@@ -25,7 +30,7 @@ import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CurrentSelectedProd
 import com.tokopedia.seller.gmsubscribe.view.widget.checkout.CurrentSelectedProductViewHolderCallback;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GmCheckoutFragment
         extends BasePresenterFragment<GmCheckoutPresenterImpl>
@@ -82,7 +87,12 @@ public class GmCheckoutFragment
 
     @Override
     protected void initialPresenter() {
-        presenter = GmCheckoutDependencyInjection.createPresenter();
+        presenter = DaggerGmSubscribeComponent
+                .builder()
+                .appComponent(((HasComponent<AppComponent>)getActivity()).getComponent())
+                .gmSubscribeModule(new GmSubscribeModule())
+                .build()
+                .getCheckoutPresenter();
     }
 
     @Override

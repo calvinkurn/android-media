@@ -10,7 +10,7 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainMo
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 
 public class GmSubscribeCartRepositoryImpl implements GmSubscribeCartRepository {

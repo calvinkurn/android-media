@@ -5,17 +5,20 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/2/17.
+ * @author sebastianuskh on 2/2/17.
  */
 public class GmSubscribeProductCache {
     private static final int ONE_HOUR_IN_SECONDS = 60 * 60;
     private static final String GM_SUBSCRIBE_PRODUCT = "GM_SUBSCRIBE_PRODUCT";
     private final GlobalCacheManager globalCacheManager;
 
+    @Inject
     public GmSubscribeProductCache(GlobalCacheManager globalCacheManager) {
         this.globalCacheManager = globalCacheManager;
     }

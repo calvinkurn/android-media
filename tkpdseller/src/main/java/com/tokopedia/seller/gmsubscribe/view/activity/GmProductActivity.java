@@ -11,13 +11,15 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCurrentProductFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmExtendProductFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmProductFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmProductFragmentListener;
 
-public class GmProductActivity extends BasePresenterActivity implements GmProductFragmentListener {
+public class GmProductActivity extends BasePresenterActivity implements GmProductFragmentListener, HasComponent<AppComponent> {
 
     public static final String PRODUCT_SELECTION_TYPE = "PRODUCT_SELECTION_TYPE";
     public static final int FIRST_SELECT_PRODUCT = 10;
@@ -198,5 +200,10 @@ public class GmProductActivity extends BasePresenterActivity implements GmProduc
         returnIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

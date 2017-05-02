@@ -8,10 +8,12 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class CheckoutGmSubscribeUseCase extends UseCase<GmCheckoutDomainModel> {
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
@@ -21,6 +23,7 @@ public class CheckoutGmSubscribeUseCase extends UseCase<GmCheckoutDomainModel> {
     public static final String EMPTY_VOUCHER = "";
     protected final GmSubscribeCartRepository gmSubscribeCartRepository;
 
+    @Inject
     public CheckoutGmSubscribeUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeCartRepository gmSubscribeCartRepository) {
         super(threadExecutor, postExecutionThread);
         this.gmSubscribeCartRepository = gmSubscribeCartRepository;

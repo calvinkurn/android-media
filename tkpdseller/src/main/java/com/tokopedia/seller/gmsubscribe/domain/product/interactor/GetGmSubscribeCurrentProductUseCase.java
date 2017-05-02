@@ -9,14 +9,17 @@ import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainMode
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/2/17.
+ * @author sebastianuskh on 2/2/17.
  */
 public class GetGmSubscribeCurrentProductUseCase extends UseCase<List<GmProductDomainModel>> {
     private final GmSubscribeProductRepository GmSubscribeProductRepository;
 
+    @Inject
     public GetGmSubscribeCurrentProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeProductRepository GmSubscribeProductRepository) {
         super(threadExecutor, postExecutionThread);
         this.GmSubscribeProductRepository = GmSubscribeProductRepository;

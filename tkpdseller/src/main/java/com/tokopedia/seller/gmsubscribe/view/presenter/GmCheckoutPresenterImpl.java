@@ -19,10 +19,12 @@ import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutCurrentSelected
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmCheckoutViewModel;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmVoucherViewModel;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 
 public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView> implements GmCheckoutPresenter {
@@ -34,6 +36,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
     private final CheckoutGmSubscribeUseCase checkoutGmSubscribeUseCase;
     private final CheckoutGmSubscribeWithVoucherCheckUseCase checkoutGMSubscribeWithVoucherCheckUseCase;
 
+    @Inject
     public GmCheckoutPresenterImpl(GetGmCurrentSelectedProductUseCase getCurrentSelectedProduct,
                                    GetGmAutoSubscribeSelectedProductUseCase getGmAutoSubscribeSelectedProductUseCase,
                                    CheckGmSubscribeVoucherUseCase checkGmSubscribeVoucherUseCase,

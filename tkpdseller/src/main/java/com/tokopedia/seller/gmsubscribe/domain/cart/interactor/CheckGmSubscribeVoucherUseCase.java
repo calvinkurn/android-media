@@ -8,10 +8,12 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class CheckGmSubscribeVoucherUseCase extends UseCase<GmVoucherCheckDomainModel> {
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
@@ -20,6 +22,7 @@ public class CheckGmSubscribeVoucherUseCase extends UseCase<GmVoucherCheckDomain
     public static final String EMPTY_VOUCHER = "";
     private final GmSubscribeCartRepository gmSubscribeCartRepository;
 
+    @Inject
     public CheckGmSubscribeVoucherUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, GmSubscribeCartRepository gmSubscribeCartRepository) {
         super(threadExecutor, postExecutionThread);
         this.gmSubscribeCartRepository = gmSubscribeCartRepository;

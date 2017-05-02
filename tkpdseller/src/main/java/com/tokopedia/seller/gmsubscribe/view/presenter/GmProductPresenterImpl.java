@@ -14,16 +14,19 @@ import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
- * Created by sebastianuskh on 11/23/16.
+ * @author sebastianuskh on 11/23/16.
  */
 
 public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> implements GmProductPresenter {
     private final GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase;
     private final GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase;
 
+    @Inject
     public GmProductPresenterImpl(GetGmSubscribeCurrentProductUseCase getGmSubscribeCurrentProductUseCase, GetGmSubscribeExtendProductUseCase getGmSubscribeExtendProductUseCase) {
         this.getGmSubscribeCurrentProductUseCase = getGmSubscribeCurrentProductUseCase;
         this.getGmSubscribeExtendProductUseCase = getGmSubscribeExtendProductUseCase;

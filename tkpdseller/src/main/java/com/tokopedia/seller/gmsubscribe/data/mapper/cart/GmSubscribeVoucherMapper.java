@@ -4,12 +4,19 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.voucher.GmV
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainModel;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GmSubscribeVoucherMapper implements Func1<GmVoucherServiceModel, GmVoucherCheckDomainModel> {
+
+    @Inject
+    public GmSubscribeVoucherMapper() {
+    }
+
     @Override
     public GmVoucherCheckDomainModel call(GmVoucherServiceModel serviceModel) {
         return mapServiceToDomain(serviceModel);

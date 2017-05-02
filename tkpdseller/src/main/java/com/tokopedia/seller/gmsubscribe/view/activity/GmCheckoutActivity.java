@@ -11,15 +11,17 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragmentCallback;
 
 /**
- * Created by sebastianuskh on 1/31/17.
+ * @author sebastianuskh on 1/31/17.
  */
 
-public class GmCheckoutActivity extends BasePresenterActivity implements GmCheckoutFragmentCallback {
+public class GmCheckoutActivity extends BasePresenterActivity implements GmCheckoutFragmentCallback, HasComponent<AppComponent> {
 
     public static final String CURRENT_SELECTED_PRODUCT = "CURRENT_SELECTED_PRODUCT";
     private static final int CHANGE_SELECTED_PRODUCT = 100;
@@ -169,5 +171,10 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
             ft.addToBackStack(null);
         }
         ft.commit();
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

@@ -8,12 +8,19 @@ import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainMode
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/2/17.
+ * @author sebastianuskh on 2/2/17.
  */
 public class GmSubscribeProductMapper implements Func1<GmServiceModel, GmProductDomainModelGroup> {
+
+    @Inject
+    public GmSubscribeProductMapper() {
+    }
+
     @Override
     public GmProductDomainModelGroup call(GmServiceModel gmServiceModel) {
         return mapServiceToDomain(gmServiceModel);

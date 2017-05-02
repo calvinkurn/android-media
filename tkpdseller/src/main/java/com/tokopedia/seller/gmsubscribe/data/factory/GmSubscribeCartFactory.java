@@ -6,14 +6,17 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeCheckoutSour
 import com.tokopedia.seller.gmsubscribe.data.source.cart.GmSubscribeVoucherSource;
 import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.GmSubscribeCartCloud;
 
+import javax.inject.Inject;
+
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GmSubscribeCartFactory {
     private final GmSubscribeCartCloud cartCloud;
     private final GmSubscribeVoucherMapper voucherMapper;
     private final GmSubscribeCheckoutMapper checkoutMapper;
 
+    @Inject
     public GmSubscribeCartFactory(GmSubscribeCartCloud cartCloud, GmSubscribeVoucherMapper voucherMapper, GmSubscribeCheckoutMapper checkoutMapper) {
         this.cartCloud = cartCloud;
         this.voucherMapper = voucherMapper;

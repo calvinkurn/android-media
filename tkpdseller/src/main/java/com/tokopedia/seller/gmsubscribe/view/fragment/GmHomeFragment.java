@@ -7,15 +7,20 @@ import android.view.View;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.di.GmHomeDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
 
 import butterknife.OnClick;
 
 /**
- * Created by sebastianuskh on 12/2/16.
+ * @author sebastianuskh on 12/2/16.
  */
 
 public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> implements GmHomeView {
@@ -73,7 +78,12 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
 
     @Override
     protected void initialPresenter() {
-        presenter = GmHomeDependencyInjection.getPresenter();
+        presenter = DaggerGmSubscribeComponent
+                .builder()
+                .appComponent(((HasComponent<AppComponent>)getActivity()).getComponent())
+                .gmSubscribeModule(new GmSubscribeModule())
+                .build()
+                .getHomePresenter();
     }
 
     @Override

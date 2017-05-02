@@ -4,12 +4,19 @@ import com.tokopedia.seller.gmsubscribe.data.source.cart.cloud.model.checkout.Gm
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmCheckoutCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmCheckoutDomainModel;
 
+import javax.inject.Inject;
+
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/3/17.
+ * @author sebastianuskh on 2/3/17.
  */
 public class GmSubscribeCheckoutMapper implements Func1<GmCheckoutServiceModel, GmCheckoutDomainModel> {
+
+    @Inject
+    public GmSubscribeCheckoutMapper() {
+    }
+
     @Override
     public GmCheckoutDomainModel call(GmCheckoutServiceModel gmCheckoutServiceModel) {
         try {

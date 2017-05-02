@@ -9,12 +9,17 @@ import android.view.View;
 import android.widget.Button;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.di.GmProductDependencyInjection;
+import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
+import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmProductPresenterImpl;
 import com.tokopedia.seller.gmsubscribe.view.recyclerview.GmProductAdapter;
 import com.tokopedia.seller.gmsubscribe.view.recyclerview.GmProductAdapterCallback;
@@ -27,7 +32,7 @@ import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by sebastianuskh on 11/23/16.
+ * @author sebastianuskh on 11/23/16.
  */
 
 public abstract class GmProductFragment
@@ -51,6 +56,7 @@ public abstract class GmProductFragment
     private Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
     private GmProductAdapter adapter;
     private GmProductFragmentListener listener;
+    private GmSubscribeComponent component;
 
     public static GmProductFragment createFragment(GmProductFragment fragment,
                                                    String buttonString,
@@ -109,7 +115,12 @@ public abstract class GmProductFragment
     @Override
     protected void initialPresenter() {
         subscriber = RxUtils.getNewCompositeSubIfUnsubscribed(subscriber);
-        presenter = GmProductDependencyInjection.getPresenter();
+        presenter = DaggerGmSubscribeComponent
+                .builder()
+                .appComponent(((HasComponent<AppComponent>)getActivity()).getComponent())
+                .gmSubscribeModule(new GmSubscribeModule())
+                .build()
+                .getProductPresenter();
     }
 
     @Override

@@ -8,12 +8,14 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.GmSubscribePro
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 import com.tokopedia.seller.gmsubscribe.domain.product.model.GmProductDomainModelGroup;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
- * Created by sebastianuskh on 2/2/17.
+ * @author sebastianuskh on 2/2/17.
  */
 public class GmSubscribeProductDataSource {
 
@@ -23,6 +25,7 @@ public class GmSubscribeProductDataSource {
     private final GmSubscribeProductMapper gmSubscribeProductMapper;
 
 
+    @Inject
     public GmSubscribeProductDataSource(GmSubscribeProductCache gmSubscribeProductCache,
                                         GmSubscribeProductCloud gmSubscribeProductCloud,
                                         GmSubscribeProductMapper gmSubscribeProductMapper) {

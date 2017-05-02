@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragment;
@@ -21,7 +23,8 @@ import com.tokopedia.seller.gmsubscribe.view.fragment.GmHomeFragmentCallback;
 
 public class GmSubscribeHomeActivity
         extends DrawerPresenterActivity
-        implements GmHomeFragmentCallback {
+        implements GmHomeFragmentCallback,
+        HasComponent<AppComponent> {
 
 
     public static final int REQUEST_PRODUCT = 1;
@@ -121,5 +124,10 @@ public class GmSubscribeHomeActivity
     @Override
     protected int setDrawerPosition() {
         return TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

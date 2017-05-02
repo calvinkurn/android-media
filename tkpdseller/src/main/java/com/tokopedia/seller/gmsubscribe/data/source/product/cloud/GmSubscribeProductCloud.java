@@ -4,15 +4,18 @@ import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.api.GoldMercha
 import com.tokopedia.seller.gmsubscribe.data.source.product.cloud.model.GmServiceModel;
 import com.tokopedia.seller.gmsubscribe.data.tools.GetResponse;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
- * Created by sebastianuskh on 2/2/17.
+ * @author sebastianuskh on 2/2/17.
  */
 public class GmSubscribeProductCloud {
 
     private final GoldMerchantApi api;
 
+    @Inject
     public GmSubscribeProductCloud(GoldMerchantApi api) {
         this.api = api;
     }
