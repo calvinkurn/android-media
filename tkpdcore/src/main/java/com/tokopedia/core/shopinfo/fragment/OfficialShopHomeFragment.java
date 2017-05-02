@@ -120,6 +120,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     @Override
     public void onGetProduct(ProductModel model) {
         if (model != null && model.list != null) {
+            productModel.list.clear();
             productModel.list.addAll(model.list);
             adapter.notifyDataSetChanged();
         }
@@ -179,7 +180,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     @Override
     protected void initialPresenter() {
-        presenter = new OsHomePresenterImpl(this);
+        this.presenter = new OsHomePresenterImpl(this);
     }
 
     @Override
@@ -266,13 +267,11 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     private void initWebView() {
         progressBar.setIndeterminate(true);
         String url = getArguments().getString(SHOP_URL);
-        CommonUtils.dumper("webviewconf URL address " + url);
         webView.loadUrl(url);
         webView.setWebViewClient(new OfficialStoreWebViewClient());
         webView.setWebChromeClient(new OfficialStoreWebChromeClient());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
-            CommonUtils.dumper("webviewconf debugging = true");
         }
         getActivity().setProgressBarIndeterminateVisibility(true);
         WebSettings webSettings = webView.getSettings();
@@ -321,7 +320,6 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            CommonUtils.dumper("DEEPLINK " + errorCode + "  " + description + " " + failingUrl);
             super.onReceivedError(view, errorCode, description, failingUrl);
             finishLoading();
         }
@@ -412,12 +410,12 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
                 );
             }
         });
-
         recyclerProduct.setLayoutManager(adapter.getLayoutManager(getActivity()));
         recyclerProduct.setAdapter(adapter);
+        presenter.onRefresh();
     }
 
     public void onRefreshProductData() {
-        presenter.onRefresh();
+        this.presenter.onRefresh();
     }
 }

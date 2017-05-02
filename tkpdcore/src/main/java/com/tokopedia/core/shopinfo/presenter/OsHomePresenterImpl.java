@@ -47,6 +47,6 @@ public class OsHomePresenterImpl implements OsHomePresenter {
 
     @Override
     public void onDestroyView() {
-        cacheInteractor.deleteShopProductCache();
+//        cacheInteractor.deleteShopProductCache();
     }
 }

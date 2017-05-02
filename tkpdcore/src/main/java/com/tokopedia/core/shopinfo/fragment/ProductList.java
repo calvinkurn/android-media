@@ -463,7 +463,8 @@ public class ProductList extends V2BaseFragment {
                 else
                     productShopParam.setPage(-1);
 
-                if(productShopParam.getPage() == 2) {
+                if(productShopParam.getPage() == 2
+                        && productShopParam.getEtalaseId().equalsIgnoreCase("etalase")) {
                     saveToCache(model);
                 }
             }
