@@ -14,7 +14,7 @@ import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
-import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
@@ -65,7 +65,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     CompositeSubscription compositeSubscription;
     Gson gson = new GsonBuilder().create();
     GlobalCacheManager cacheManager;
-    private MojitoService mojitoService;
+    private MojitoSimpleService mojitoSimpleService;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -82,7 +82,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
         cacheManager = new GlobalCacheManager();
-        mojitoService = new MojitoService();
+        mojitoSimpleService = new MojitoSimpleService();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -321,7 +321,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
         productIds.deleteCharAt(productIds.length() - 1);
 
-        return mojitoService.getApi().checkWishlist(userId, productIds.toString())
+        return mojitoSimpleService.getApi().checkWishlist(userId, productIds.toString())
                 .map(new Func1<Response<WishlistCheckResult>, Map<String, Boolean>>() {
                     @Override
                     public Map<String, Boolean> call(Response<WishlistCheckResult> wishlistCheckResultResponse) {
