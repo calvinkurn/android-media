@@ -95,7 +95,7 @@ public class CounterInputView extends FrameLayout {
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
+                decimalInputView.setText(String.valueOf((long) decimalInputView.getFloatValue() + 1));
             }
         });
 

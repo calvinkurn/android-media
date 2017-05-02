@@ -328,6 +328,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
         stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
+    public boolean isStockManaged() {
+        return stockTotalExpandableOptionSwitch.isExpanded();
+    }
+
+    public void setStockManaged(boolean stockManaged) {
+        stockTotalExpandableOptionSwitch.setExpand(stockManaged);
+    }
+
     public int getTotalStock() {
         return (int) stockTotalCounterInputView.getFloatValue();
     }
