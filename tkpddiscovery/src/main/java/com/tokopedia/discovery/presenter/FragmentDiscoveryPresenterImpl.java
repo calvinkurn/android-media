@@ -373,6 +373,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             return;
         }
 
+        Log.d(TAG, "getProduct2 startMojito");
+
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -389,6 +391,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onNext(Map<String, Boolean> checkResultMap) {
+                        Log.d(TAG, "getProduct2 finishMojito");
                         for (ProductItem item : productItems) {
                             if (checkResultMap.get(item.getId()) != null) {
                                 item.setProductAlreadyWishlist(true);
@@ -409,6 +412,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             return;
         }
 
+        Log.d(TAG, "getProduct2 startMojito");
+
         discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -425,6 +430,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
                     @Override
                     public void onNext(Map<String, Boolean> checkResultMap) {
+                        Log.d(TAG, "getProduct2 finishMojito");
                         for (ProductItem item : productItems) {
                             if (checkResultMap.get(item.getId()) != null) {
                                 item.setProductAlreadyWishlist(true);
