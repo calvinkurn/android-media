@@ -82,8 +82,8 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         productDetailViewHolder.setStockStatus(model.getProductUploadTo());
 
-        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
-        productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
+//        productDetailViewHolder.setStockStatus(model.get);
+//        productDetailViewHolder.setTotalStock();
         if (model.getProductEtalaseId() > 0) {
             productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
             productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());

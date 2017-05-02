@@ -31,7 +31,7 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductInfoViewHolder extends ProductViewHolder {
+public class ProductInfoViewHolder extends ProductViewHolder implements RadioGroup.OnCheckedChangeListener{
 
     public interface Listener {
         void onCategoryPickerClicked(long categoryId);
@@ -110,31 +110,31 @@ public class ProductInfoViewHolder extends ProductViewHolder {
                 }
             }
         });
-        radioGroupCategoryRecomm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                if (checkedId != categoryId) {
-                    categoryId = checkedId;
-                    if (categoryId <= 0) {
-                        hideAndClearCatalog();
-                    }
-                    if (listener != null) {
-                        listener.onCategoryChanged(categoryId);
-                    }
-                }
-                View radioButton = group.findViewById(checkedId);
-                if (radioButton == null) {
-                    categoryLabelView.resetContentText();
-                    return;
-                }
-                ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
-                if (productCategoryPrediction == null) {
-                    categoryLabelView.resetContentText();
-                    return;
-                }
-                processCategory(productCategoryPrediction.getCategoryName());
+        radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        if (checkedId != categoryId) {
+            categoryId = checkedId;
+            if (categoryId <= 0) {
+                hideAndClearCatalog();
             }
-        });
+            if (listener != null) {
+                listener.onCategoryChanged(categoryId);
+            }
+        }
+        View radioButton = group.findViewById(checkedId);
+        if (radioButton == null) {
+            categoryLabelView.resetContentText();
+            return;
+        }
+        ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
+        if (productCategoryPrediction == null) {
+            categoryLabelView.resetContentText();
+            return;
+        }
+        processCategory(productCategoryPrediction.getCategoryName());
     }
 
     public String getName() {
@@ -196,12 +196,14 @@ public class ProductInfoViewHolder extends ProductViewHolder {
             }
             // reselect the id if exist on the radio button
             // unselect if the id not exist
+            radioGroupCategoryRecomm.setOnCheckedChangeListener(null);
             RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById((int) categoryId);
             if (radioButton == null) {
                 radioGroupCategoryRecomm.clearCheck();
             } else if (!radioButton.isChecked()) {
                 radioButton.setChecked(true);
             }
+            radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
         }
         listener.fetchCategory(categoryId);
     }
@@ -215,7 +217,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
             }
             category += categoryName;
             if (i < sizei - 1) {
-                category += "<br />";
+                category += "\n";
             }
         }
         categoryLabelView.setContent(category);
