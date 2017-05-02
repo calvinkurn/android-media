@@ -3,6 +3,8 @@ package com.tokopedia.seller.gmsubscribe.view.presenter;
 import android.util.Log;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.exception.GmVoucherCheckException;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckGmSubscribeVoucherUseCase;
 import com.tokopedia.seller.gmsubscribe.domain.cart.interactor.CheckoutGmSubscribeUseCase;
@@ -178,8 +180,14 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
         @Override
         public void onError(Throwable e) {
             Log.e(TAG, "Error");
-            getView().dismissProgressDialog();
-            getView().failedCheckout();
+            if (e instanceof ResponseV4ErrorException){
+                String string = ((ResponseV4ErrorException)e).getErrorList().get(0);
+                getView().showMessageError(string);
+                getView().dismissProgressDialog();
+            } else {
+                getView().dismissProgressDialog();
+                getView().failedCheckout();
+            }
         }
 
         @Override

@@ -289,5 +289,10 @@ public class GmCheckoutFragment
         codeVoucherViewHolder.dismissKeyboard();
     }
 
+    @Override
+    public void showMessageError(String string) {
+        NetworkErrorHelper.showSnackbar(getActivity(), string);
+    }
+
 }
 

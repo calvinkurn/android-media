@@ -13,6 +13,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJs
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdResponseError;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.util.GlobalConfig;
 
 import okhttp3.Interceptor;
@@ -235,6 +236,7 @@ public class OkHttpFactory {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
+                .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

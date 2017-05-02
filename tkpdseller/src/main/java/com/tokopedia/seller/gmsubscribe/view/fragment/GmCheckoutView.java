@@ -37,4 +37,6 @@ public interface GmCheckoutView extends CustomerView {
     void showGenericError();
 
     void dismissKeyboardFromVoucherEditText();
+
+    void showMessageError(String string);
 }
