@@ -33,4 +33,6 @@ public interface ProductAddView extends CustomerView {
     void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn);
 
     void onErrorLoadShopInfo(String errorMessage);
+
+    void populateCategory(List<String> categorys);
 }

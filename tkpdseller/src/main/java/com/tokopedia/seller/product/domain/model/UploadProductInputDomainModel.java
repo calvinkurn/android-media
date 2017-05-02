@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.domain.model;
 
+import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.constant.UploadToTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -31,6 +32,9 @@ public class UploadProductInputDomainModel {
     private int productReturnable;
     @UploadToTypeDef
     private int productUploadTo;
+    @SwitchTypeDef
+    private int productInvenageSwitch;
+    private int productInvenageValue;
     private int productWeight;
     private int productWeightUnit;
     private int poProcessType;
@@ -183,6 +187,22 @@ public class UploadProductInputDomainModel {
 
     public void setProductUploadTo(@UploadToTypeDef int productUploadTo) {
         this.productUploadTo = productUploadTo;
+    }
+
+    public int getProductInvenageSwitch() {
+        return productInvenageSwitch;
+    }
+
+    public void setProductInvenageSwitch(int productInvenageSwitch) {
+        this.productInvenageSwitch = productInvenageSwitch;
+    }
+
+    public int getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public void setProductInvenageValue(int productInvenageValue) {
+        this.productInvenageValue = productInvenageValue;
     }
 
     public int getProductWeight() {

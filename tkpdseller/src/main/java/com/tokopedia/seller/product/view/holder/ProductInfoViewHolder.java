@@ -41,6 +41,8 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         void onProductNameChanged(String productName);
 
         void onCategoryChanged(long categoryId);
+
+        void fetchCategory(long categoryId);
     }
 
     private static final int DEFAULT_CATEGORY_ID = -1;
@@ -183,18 +185,8 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     }
 
     private void processCategory(Intent data) {
-        List<CategoryViewModel> listCategory = Parcels.unwrap(data.getParcelableExtra(CategoryPickerActivity.CATEGORY_RESULT_LEVEL));
-        String category = "";
         long previousCategoryId = categoryId;
-        for (int i = 0; i < listCategory.size(); i++) {
-            CategoryViewModel viewModel = listCategory.get(i);
-            categoryId = viewModel.getId();
-            category += viewModel.getName();
-            if (i < listCategory.size() - 1) {
-                category += "<br />";
-            }
-        }
-        // user changed the category(not pressed back)
+        categoryId = data.getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, 0);
         if (previousCategoryId != categoryId) {
             if (categoryId <= 0) {
                 hideAndClearCatalog();
@@ -211,7 +203,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
                 radioButton.setChecked(true);
             }
         }
-        categoryLabelView.setContent(category);
+        listener.fetchCategory(categoryId);
     }
 
     public void processCategory(String[] categoryNameArr) {

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
@@ -58,6 +59,12 @@ public class ProductDraftModel {
 
     @SerializedName("product_upload_to")
     private int productUploadTo;
+
+    @SerializedName("product_switch_invenage")
+    private int productInvenageSwitch;
+
+    @SerializedName("product_invenage_value")
+    private int productInvenageValue;
 
     @SerializedName("product_weight")
     private int productWeight;
@@ -205,6 +212,22 @@ public class ProductDraftModel {
 
     public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
+    }
+
+    public int getProductInvenageSwitch() {
+        return productInvenageSwitch;
+    }
+
+    public void setProductInvenageSwitch(int productInvenageSwitch) {
+        this.productInvenageSwitch = productInvenageSwitch;
+    }
+
+    public int getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public void setProductInvenageValue(int productInvenageValue) {
+        this.productInvenageValue = productInvenageValue;
     }
 
     public int getProductWeight() {

@@ -19,12 +19,12 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
@@ -437,6 +437,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
     }
 
+    @Override
+    public void fetchCategory(long categoryId) {
+        presenter.fetchCategory(categoryId);
+    }
+
     protected void checkIfCatalogExist(String productName, long categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
@@ -452,6 +457,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
     }
 
+    @Override
+    public void populateCategory(List<String> strings) {
+        String[] stringArray = new String[strings.size()];
+        stringArray = strings.toArray(stringArray);
+        productInfoViewHolder.processCategory(stringArray);
+    }
+
     protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
@@ -465,6 +477,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
         viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+        viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? SwitchTypeDef.TYPE_ACTIVE : SwitchTypeDef.TYPE_NOT_ACTIVE);
+        viewModel.setProductInvenageValue(productDetailViewHolder.getTotalStock());
         viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
         viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());

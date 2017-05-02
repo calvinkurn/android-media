@@ -20,7 +20,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/26/17.
  */
 
-public class ProductDraftPresenter extends ProductPopulatePresenter<ProductDraftView>{
+public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftView>{
 
     private FetchDraftProductUseCase fetchDraftProductUseCase;
 

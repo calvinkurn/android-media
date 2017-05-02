@@ -8,6 +8,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.SpannedString;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -325,6 +328,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
         stockStatusSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
+    public boolean isStockManaged() {
+        return stockTotalExpandableOptionSwitch.isExpanded();
+    }
+
+    public void setStockManaged(boolean stockManaged) {
+        stockTotalExpandableOptionSwitch.setExpand(stockManaged);
+    }
+
     public int getTotalStock() {
         return (int) stockTotalCounterInputView.getFloatValue();
     }
@@ -404,7 +415,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
-            String etalaseName = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+            String etalaseNameString = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
+            CharSequence etalaseName;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                etalaseName = Html.fromHtml(etalaseNameString, Html.FROM_HTML_MODE_LEGACY);
+            } else {
+                etalaseName = Html.fromHtml(etalaseNameString);
+            }
             etalaseLabelView.setContent(etalaseName);
         }
     }
