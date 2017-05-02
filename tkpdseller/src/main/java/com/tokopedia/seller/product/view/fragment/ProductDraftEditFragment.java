@@ -7,21 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
-import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
-import com.tokopedia.seller.product.view.presenter.ProductDraftPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by zulfikarrahman on 4/27/17.

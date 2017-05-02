@@ -19,4 +19,6 @@ public abstract class ProductAddPresenter<T extends ProductAddView> extends Base
     public abstract void getCategoryRecommendation(String productTitle);
 
     public abstract void getShopInfo(String shopId);
+
+    public abstract void fetchCategory(long categoryId);
 }

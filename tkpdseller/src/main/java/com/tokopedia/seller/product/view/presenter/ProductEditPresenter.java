@@ -23,7 +23,7 @@ import rx.Subscriber;
  * @author sebastianuskh on 4/21/17.
  */
 
-public class ProductEditPresenter extends ProductPopulatePresenter<ProductEditView> {
+public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditView> {
 
     private final FetchEditProductFormUseCase fetchEditProductFormUseCase;
 

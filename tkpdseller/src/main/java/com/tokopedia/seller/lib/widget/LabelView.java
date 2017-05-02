@@ -101,12 +101,8 @@ public class LabelView extends FrameLayout {
         arrow = (ImageView) view.findViewById(R.id.arrow_left);
     }
 
-    public void setContent(String textValue) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            contentTextView.setText(Html.fromHtml(textValue,Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            contentTextView.setText(Html.fromHtml(textValue));
-        }
+    public void setContent(CharSequence textValue) {
+        contentTextView.setText(textValue);
         invalidate();
         requestLayout();
     }

@@ -32,6 +32,7 @@ public class CategoryPickerActivity
 
     public static final String CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED";
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
+    public static final String CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID";
     private FragmentManager fragmentManager;
     private CategoryPickerComponent component;
 
@@ -97,6 +98,7 @@ public class CategoryPickerActivity
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         Intent intent = new Intent();
         intent.putExtra(CATEGORY_RESULT_LEVEL, Parcels.wrap(listCategory));
+        intent.putExtra(CATEGORY_RESULT_ID, listCategory.get(listCategory.size()-1).getId());
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

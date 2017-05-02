@@ -436,6 +436,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         checkIfCatalogExist(productInfoViewHolder.getName(), categoryId);
     }
 
+    @Override
+    public void fetchCategory(long categoryId) {
+        presenter.fetchCategory(categoryId);
+    }
+
     protected void checkIfCatalogExist(String productName, long categoryId) {
         presenter.fetchCatalogData(productName, categoryId, 0, 1);
     }
@@ -449,6 +454,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                                         @CurrencyTypeDef int currencyType,
                                         WholesaleModel previousWholesalePrice) {
         listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
+    }
+
+    @Override
+    public void populateCategory(List<String> strings) {
+        String[] stringArray = new String[strings.size()];
+        stringArray = strings.toArray(stringArray);
+        productInfoViewHolder.processCategory(stringArray);
     }
 
     protected UploadProductInputViewModel collectDataFromView() {

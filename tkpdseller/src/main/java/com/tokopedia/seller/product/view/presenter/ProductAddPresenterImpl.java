@@ -13,6 +13,7 @@ import com.tokopedia.seller.product.domain.interactor.GetCategoryRecommUseCase;
 import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.ShopInfoUseCase;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
@@ -22,6 +23,7 @@ import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProduct
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -41,6 +43,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     private final FetchCatalogDataUseCase fetchCatalogDataUseCase;
     private final GetCategoryRecommUseCase getCategoryRecommUseCase;
     private final AddProductShopInfoUseCase addProductShopInfoUseCase;
+    private final FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase;
     private QueryListener getCategoryRecomListener;
     private Subscription subscriptionDebounceCategoryRecomm;
     private CatalogQueryListener getCatalogListener;
@@ -50,12 +53,39 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
                                    FetchCatalogDataUseCase fetchCatalogDataUseCase,
                                    GetCategoryRecommUseCase getCategoryRecommUseCase,
                                    ProductScoringUseCase productScoringUseCase,
-                                   AddProductShopInfoUseCase addProductShopInfoUseCase) {
+                                   AddProductShopInfoUseCase addProductShopInfoUseCase,
+                                   FetchCategoryDisplayUseCase fetchCategoryDisplayUseCase) {
         this.saveDraftProductUseCase = saveDraftProductUseCase;
         this.fetchCatalogDataUseCase = fetchCatalogDataUseCase;
         this.getCategoryRecommUseCase = getCategoryRecommUseCase;
         this.productScoringUseCase = productScoringUseCase;
         this.addProductShopInfoUseCase = addProductShopInfoUseCase;
+        this.fetchCategoryDisplayUseCase = fetchCategoryDisplayUseCase;
+    }
+
+    @Override
+    public void fetchCategory(long categoryId) {
+        RequestParams requestParam = FetchCategoryDisplayUseCase.generateParam(categoryId);
+        fetchCategoryDisplayUseCase.execute(requestParam, new FetchCategoryDisplaySubscriber());
+    }
+
+
+    private class FetchCategoryDisplaySubscriber extends Subscriber<List<String>> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            checkViewAttached();
+        }
+
+        @Override
+        public void onNext(List<String> strings) {
+            checkViewAttached();
+            getView().populateCategory(strings);
+        }
     }
 
     @Override
