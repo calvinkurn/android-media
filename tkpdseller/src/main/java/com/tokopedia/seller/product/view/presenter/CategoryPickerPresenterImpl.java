@@ -117,6 +117,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         @Override
         public void onNext(List<CategoryDomainModel> domainModels) {
             getView().dismissLoadingDialog();
+            getView().hideRetryEmpty();
             List<CategoryViewModel> map = CategoryViewMapper.mapList(domainModels);
             getView().renderCategory(map, FetchCategoryWithParentChildUseCase.UNSELECTED);
         }
