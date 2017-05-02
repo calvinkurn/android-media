@@ -5,7 +5,7 @@ import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
-import com.tokopedia.ride.common.exception.InvalidFareIdHttpException;
+import com.tokopedia.ride.common.exception.UnProcessableHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 
 import org.json.JSONArray;
@@ -128,7 +128,7 @@ public class RideInterceptor extends TkpdBaseInterceptor {
         if (!response.isSuccessful()) {
             switch (response.code()) {
                 case 422:
-                    throw new InvalidFareIdHttpException(response.body().string());
+                    throw new UnProcessableHttpException(response.body().string());
                 case 409:
                     throw new InterruptConfirmationHttpException(response.body().string());
                 default:

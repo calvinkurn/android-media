@@ -16,7 +16,7 @@ import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
-import com.tokopedia.ride.common.exception.InvalidFareIdHttpException;
+import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
@@ -145,7 +145,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     }
                     ///getView().hideLoadingWaitingResponse();
                     //getView().hideRideRequestStatus();
-                } else if (e instanceof InvalidFareIdHttpException) {
+                } else if (e instanceof UnprocessableEntityHttpException) {
                     //get fare id again
                     getView().showFailedRideRequestMessage(getView().getResourceString(R.string.error_invalid_fare_id));
                     getView().failedToRequestRide(getView().getResourceString(R.string.error_invalid_fare_id));

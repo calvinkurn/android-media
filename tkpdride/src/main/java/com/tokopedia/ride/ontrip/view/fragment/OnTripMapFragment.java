@@ -504,11 +504,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             reDrawDriverMarker(result);
         }
 
-        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
-        if (bottomFragment instanceof DriverDetailFragment) {
-            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.message_trip_in_arriving));
-        }
-
         setTitle(R.string.title_trip_arriving);
     }
 
