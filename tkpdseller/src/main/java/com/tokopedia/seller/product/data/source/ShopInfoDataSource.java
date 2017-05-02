@@ -29,16 +29,16 @@ public class ShopInfoDataSource {
         this.mapper = mapper;
     }
 
-    public Observable<ShopModel> getShopInfo(String shopId, String shopDomain) {
+    public Observable<ShopModel> getShopInfo() {
         Observable<ShopModel> cacheShopModel = ShopInfoCache.getShopInfo();
         if (cacheShopModel == null) {
-            return getShopInfoFromNetwork(shopId, shopDomain);
+            return getShopInfoFromNetwork();
         }
         return cacheShopModel;
     }
 
-    public Observable<ShopModel> getShopInfoFromNetwork(String shopId, String shopDomain) {
-        return shopInfoCloud.getShopInfo(shopId, shopDomain)
+    public Observable<ShopModel> getShopInfoFromNetwork() {
+        return shopInfoCloud.getShopInfo()
                 .map(mapper)
                 .doOnNext(new Action1<ShopModel>() {
                     @Override

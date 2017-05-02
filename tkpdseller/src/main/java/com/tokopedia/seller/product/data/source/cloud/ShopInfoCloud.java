@@ -29,7 +29,6 @@ public class ShopInfoCloud {
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOW_ALL = "show_all";
-    public static final String SHOP_DOMAIN = "shop_domain";
 
     @Inject
     public ShopInfoCloud(@ApplicationContext Context context,
@@ -38,17 +37,13 @@ public class ShopInfoCloud {
         this.context = context;
     }
 
-    public Observable<Response<DataResponse<ShopModel>>> getShopInfo(String shopId, String shopDomain) {
+    public Observable<Response<DataResponse<ShopModel>>> getShopInfo() {
         String userId = SessionHandler.getLoginID(context);
         String deviceId = GCMHandler.getRegistrationId(context);
+        String shopId = SessionHandler.getShopID(context);
 
         Map<String, String> params = new HashMap<>();
-        if (!TextUtils.isEmpty(shopId)) {
-            params.put(SHOP_ID, shopId);
-        }
-        if (!TextUtils.isEmpty(shopDomain)) {
-            params.put(SHOP_DOMAIN, shopDomain);
-        }
+        params.put(SHOP_ID, shopId);
         params.put(SHOW_ALL, "1");
         params = AuthUtil.generateParams(userId, deviceId, params);
         return api.getShopInfo(params);
