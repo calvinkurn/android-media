@@ -5,9 +5,11 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.exception.TypeNotSupportedException;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
+import com.tokopedia.core.base.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.core.base.adapter.viewholders.LoadingViewholder;
 
 
@@ -16,7 +18,6 @@ import com.tokopedia.core.base.adapter.viewholders.LoadingViewholder;
  */
 
 public class BaseAdapterTypeFactory implements AdapterTypeFactory {
-
 
     @Override
     public int type(EmptyModel viewModel) {
@@ -28,6 +29,11 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
         return LoadingViewholder.LAYOUT;
     }
 
+    @Override
+    public int type(ErrorNetworkModel viewModel) {
+        return ErrorNetworkViewHolder.LAYOUT;
+    }
+
     @CallSuper
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
@@ -36,6 +42,8 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
             creatViewHolder = new EmptyViewHolder(parent);
         } else if (type == LoadingViewholder.LAYOUT) {
             creatViewHolder = new LoadingViewholder(parent);
+        } else if (type == ErrorNetworkViewHolder.LAYOUT) {
+            creatViewHolder = new ErrorNetworkViewHolder(parent);
         } else {
             throw TypeNotSupportedException.create("Layout not supported");
         }

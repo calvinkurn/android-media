@@ -11,7 +11,7 @@ import java.util.List;
  * @author Kulomady on 12/15/16.
  */
 
-interface FeedContract {
+public interface FeedContract {
 
     interface View extends CustomerView {
 

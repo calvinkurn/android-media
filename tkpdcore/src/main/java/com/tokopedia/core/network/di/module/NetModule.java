@@ -1,7 +1,13 @@
 package com.tokopedia.core.network.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
@@ -12,8 +18,10 @@ import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
 import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
+import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -81,6 +89,14 @@ public class NetModule {
     public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
+    }
+
+    @ResolutionQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideResolutionRetrofit(@BearerAuth OkHttpClient okHttpClient,
+                                              Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION).client(okHttpClient).build();
     }
 
 }

@@ -104,6 +104,14 @@ public class CheckoutHolderView extends RelativeLayout {
         return kursIndonesia.format(value).replace(",", ".");
     }
 
+    public void enableCheckoutButton() {
+        btnNext.setEnabled(true);
+    }
+
+    public void disableCheckoutButton() {
+        btnNext.setEnabled(false);
+    }
+
 
     public interface IAction {
         void onClickButtonNext();

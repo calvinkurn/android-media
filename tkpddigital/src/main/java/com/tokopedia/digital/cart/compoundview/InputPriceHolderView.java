@@ -55,15 +55,17 @@ public class InputPriceHolderView extends LinearLayout {
 
     private void init(Context context) {
         this.context = context;
-        LayoutInflater.from(context).inflate(R.layout.view_holder_checkout_input_price_digital_module, this, true);
+        LayoutInflater.from(context).inflate(
+                R.layout.view_holder_checkout_input_price_digital_module, this, true
+        );
         ButterKnife.bind(this);
     }
 
     public void setInputPriceInfo(String totalPayment, long minPayment, long maxPayment) {
-        inputPriceEdittext.setText(totalPayment);
         inputPriceEdittext.setCursorVisible(true);
         inputPriceEdittext.addTextChangedListener(getEditTextChanged(minPayment,
                 maxPayment));
+        inputPriceEdittext.setText(totalPayment);
     }
 
     private TextWatcher getEditTextChanged(final long minPayment, final long maxPayment) {
@@ -84,8 +86,10 @@ public class InputPriceHolderView extends LinearLayout {
                     priceInput = Long.parseLong(s.toString());
                     errorInputError.setVisibility(GONE);
                     actionListener.onInputPriceByUserFilled(priceInput);
+                    actionListener.enableCheckoutButton();
                 } else {
                     errorInputError.setVisibility(VISIBLE);
+                    actionListener.disableCheckoutButton();
                 }
             }
         };
@@ -110,5 +114,9 @@ public class InputPriceHolderView extends LinearLayout {
 
     public interface ActionListener {
         void onInputPriceByUserFilled(long paymentAmount);
+
+        void enableCheckoutButton();
+
+        void disableCheckoutButton();
     }
 }

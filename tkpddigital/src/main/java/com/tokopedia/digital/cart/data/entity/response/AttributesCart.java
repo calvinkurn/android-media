@@ -41,6 +41,9 @@ public class AttributesCart {
     @SerializedName("need_otp")
     @Expose
     private boolean needOtp;
+    @SerializedName("enable_voucher")
+    @Expose
+    private boolean enableVoucher;
     @SerializedName("sms_state")
     @Expose
     private String smsState;
@@ -108,5 +111,9 @@ public class AttributesCart {
 
     public List<AdditionalInfo> getAdditionalInfo() {
         return additionalInfo;
+    }
+
+    public boolean isEnableVoucher() {
+        return enableVoucher;
     }
 }

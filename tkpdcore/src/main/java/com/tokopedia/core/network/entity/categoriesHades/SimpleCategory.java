@@ -1,5 +1,8 @@
 package com.tokopedia.core.network.entity.categoriesHades;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Alifa on 3/8/2017.
  */
 
-public class SimpleCategory {
+public class SimpleCategory implements Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -36,4 +39,33 @@ public class SimpleCategory {
     public void setName(String name) {
         this.name = name;
     }
+
+    protected SimpleCategory(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<SimpleCategory> CREATOR = new Parcelable.Creator<SimpleCategory>() {
+        @Override
+        public SimpleCategory createFromParcel(Parcel in) {
+            return new SimpleCategory(in);
+        }
+
+        @Override
+        public SimpleCategory[] newArray(int size) {
+            return new SimpleCategory[size];
+        }
+    };
 }

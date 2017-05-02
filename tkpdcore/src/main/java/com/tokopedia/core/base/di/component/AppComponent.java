@@ -12,6 +12,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 
@@ -38,6 +39,9 @@ public interface AppComponent {
 
     @MojitoQualifier
     Retrofit mojitoRetrofit();
+
+    @ResolutionQualifier
+    Retrofit resolutionRetrofit();
 
     Gson gson();
 

@@ -133,4 +133,20 @@
     <item name="separator" type="id"/>
     <item name="thumbnail" type="id"/>
 
+    <item name="recycler_view_curation" type="id"/>
+    <item name="recycler_view_revamp_categories" type="id"/>
+    <item name="image_header" type="id"/>
+    <item name="title_header" type="id"/>
+    <item name="expand_layout" type="id"/>
+    <item name="hide_layout" type="id"/>
+    <item name="card_hoth_intermediary" type="id"/>
+    <item name="product_image_hoth" type="id"/>
+    <item name="title_header_hoth" type="id"/>
+    <item name="recycler_view_hot_list" type="id"/>
+    <item name="category_view_all" type="id"/>
+    <item name="top_ads_view" type="id"/>
+    <item name="nested_intermediary" type="id"/>
+
+
+
 </resources>

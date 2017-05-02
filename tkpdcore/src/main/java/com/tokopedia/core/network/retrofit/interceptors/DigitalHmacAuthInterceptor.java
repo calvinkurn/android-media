@@ -6,8 +6,10 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -15,7 +17,7 @@ import okhttp3.Response;
  * @author anggaprasetiyo on 3/3/17.
  */
 
-public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
+public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = DigitalHmacAuthInterceptor.class.getSimpleName();
 
     public DigitalHmacAuthInterceptor(String hmacKey) {
@@ -23,12 +25,7 @@ public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
     }
 
     @Override
-    protected boolean isAutoRetry() {
-        return false;
-    }
-
-    @Override
-    protected void throwChainProcessCauseHttpError(Response response) throws IOException {
+    public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String errorBody = response.body().string();
         response.body().close();
         Log.d(TAG, "Error body response : " + errorBody);
@@ -44,5 +41,14 @@ public class DigitalHmacAuthInterceptor extends AuthHmacInterceptor {
             }
         }
         throw new HttpErrorException(response.code());
+    }
+
+    @Override
+    protected Map<String, String> getHeaderMap(
+            String path, String strParam, String method, String authKey, String contentTypeHeader
+    ) {
+        return AuthUtil.generateHeadersWithXUserId(
+                path, strParam, method, authKey, contentTypeHeader
+        );
     }
 }
