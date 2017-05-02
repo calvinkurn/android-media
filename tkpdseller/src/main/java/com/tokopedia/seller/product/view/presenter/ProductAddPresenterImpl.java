@@ -226,6 +226,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     private void getCategoryRecommendationFromServer(String productTitle, int expectRow) {
+        //invalidate previous request
+        getCategoryRecommUseCase.unsubscribe();
         getCategoryRecommUseCase.execute(
                 GetCategoryRecommUseCase.createRequestParams(productTitle, expectRow),
                 new Subscriber<CategoryRecommDataModel>() {
