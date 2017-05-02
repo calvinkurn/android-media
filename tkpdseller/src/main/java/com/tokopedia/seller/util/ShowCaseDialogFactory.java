@@ -14,7 +14,7 @@ public class ShowCaseDialogFactory {
                 .customView(R.layout.layout_show_case)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.margin_med)
+                .arrowWidth(R.dimen.arrow_width_show_case)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(R.color.black)
