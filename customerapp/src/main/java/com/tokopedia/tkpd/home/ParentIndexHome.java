@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -231,6 +232,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+
+
+        CommonUtils.dumper("moengage user data cache "+SessionHandler.getUserData(this).getUserInfo().getUserEmail());
+
+        if(TextUtils.isEmpty(SessionHandler.isUserDataCached(this))){
+            drawer.getUserInfo();
+            CommonUtils.dumper("moengage user inside");
+        }
     }
 
 
