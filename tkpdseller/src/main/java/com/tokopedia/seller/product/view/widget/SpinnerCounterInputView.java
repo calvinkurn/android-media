@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -146,4 +147,10 @@ public class SpinnerCounterInputView extends FrameLayout {
     public EditText getCounterEditText() {
         return counterInputView.getEditText();
     }
+
+    @Override
+    public boolean requestFocus(int direction, Rect previouslyFocusedRect) {
+        return counterInputView.requestFocus(direction, previouslyFocusedRect);
+    }
+
 }

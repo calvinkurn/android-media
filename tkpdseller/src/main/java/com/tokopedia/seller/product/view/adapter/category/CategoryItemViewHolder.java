@@ -28,6 +28,12 @@ class CategoryItemViewHolder extends CategoryPickerViewHolder {
                 listener.selectItemCategory(getCategoryId());
             }
         });
+        radioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.selectItemCategory(getCategoryId());
+            }
+        });
     }
 
     @Override
