@@ -65,6 +65,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
     public static final int STATUS_ERROR = 2;
 
     public static final String EXTRA_PARCELABLE = "EXTRA_PARCELABLE";
+    public static final String ACCOUNTS = "accounts";
 
     private ResultReceiver receiver;
     private SessionHandler sessionHandler;
@@ -401,7 +402,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 sessionHandler.setTempLoginName(accountsParameter.getInfoModel().getName());
                                 sessionHandler.setTempLoginSession(Integer.toString(securityModel.getUser_id()));
                                 result.putParcelable(LOGIN_SECURITY_QUESTION_DATA, securityModel);
-                                result.putParcelable("accounts", accountsParameter);
+                                result.putParcelable(ACCOUNTS, accountsParameter);
                             } else {
                                 Log.d("steven", "berhasil make login");
                                 sendLocalyticsUserAttr(data.getAccountsModel().getUserId() + "", data.getAccountsModel().getFullName(), data.getEmail());
@@ -412,6 +413,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                                 result.putString(AppEventTracking.FULLNAME_KEY, accountsModel.getFullName());
                                 result.putString(AppEventTracking.EMAIL_KEY, accountsParameter.getEmail());
                                 result.putInt(VALIDATION_OF_DEVICE_ID, accountsModel.getIsRegisterDevice());
+                                result.putParcelable(ACCOUNTS, accountsParameter);
                                 sessionHandler.setGoldMerchant(getApplicationContext(), accountsModel.getShopIsGold());
 
                             }

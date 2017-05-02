@@ -195,6 +195,7 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
 
     @Override
     protected void initView(View view) {
+        this.rootView = view;
         listViewBalance = (RecyclerView) view.findViewById(R.id.balance_list);
         mainView = view.findViewById(R.id.main_view);
         topSlideOffBar = (RelativeLayout) view.findViewById(R.id.seller_reputation_header);
@@ -250,7 +251,17 @@ public class SellerReputationFragment extends BasePresenterFragment<SellerReputa
                                 presenter.setNetworkStatus(
                                         TopAdsAddProductListPresenter.NetworkStatus.PULLTOREFRESH);
                                 adapter.showLoadingFull(true);
-                                swipeToRefresh.setEnabled(false);
+                                /*
+                                below is a must otherwise it will throw
+                                "CalledFromWrongThreadException: Only the original thread that created a view hierarchy can touch its views"
+                                because it doesn't use any subscriber.
+                                 */
+                                SellerReputationFragment.this.getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        swipeToRefresh.setEnabled(false);
+                                    }
+                                });
                                 firstTimeNetworkCall();
 
                                 isFirstTime = false;
