@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -30,6 +31,7 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private ImageButton editPriceImageButton;
     private SpinnerCounterInputView priceSpinnerCounterInputView;
     private ExpandableOptionSwitch wholesaleExpandableOptionSwitch;
+    private SwitchCompat wholesaleSwitch;
     private SpinnerCounterInputView weightSpinnerCounterInputView;
     private CounterInputView minimumOrderCounterInputView;
     private SpinnerTextView stockStatusSpinnerTextView;
@@ -71,6 +74,21 @@ public class ProductDetailViewHolder extends ProductViewHolder
         editPriceImageButton = (ImageButton) view.findViewById(R.id.image_button_edit_price);
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         wholesaleExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_wholesale);
+
+        /**
+         * replace below code if wholesale switch could be access
+         * within client code.
+         */
+        try {
+            Field f = wholesaleExpandableOptionSwitch.getClass().getDeclaredField("switchCompat"); //NoSuchFieldException
+            f.setAccessible(true);
+            wholesaleSwitch = (SwitchCompat) f.get(wholesaleExpandableOptionSwitch); //IllegalAccessException
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
         weightSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_weight);
         minimumOrderCounterInputView = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_order);
         stockStatusSpinnerTextView = (SpinnerTextView) view.findViewById(R.id.spinner_text_view_stock_status);
@@ -422,11 +440,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid, minPriceString, maxPriceString));
             priceSpinnerCounterInputView.clearFocus();
             priceSpinnerCounterInputView.requestFocus();
-            wholesaleExpandableOptionSwitch.setEnabled(false);
+            disableWholesaleSwitch();
             return false;
         }
         priceSpinnerCounterInputView.setCounterError(null);
-        wholesaleExpandableOptionSwitch.setEnabled(true);
+        enableWholesaleSwitch();
         return true;
     }
 
@@ -469,6 +487,16 @@ public class ProductDetailViewHolder extends ProductViewHolder
             return false;
         }
         return true;
+    }
+
+    private void disableWholesaleSwitch() {
+        wholesaleSwitch.setEnabled(false);
+        wholesaleSwitch.setClickable(false);
+    }
+
+    private void enableWholesaleSwitch() {
+        wholesaleSwitch.setEnabled(true);
+        wholesaleSwitch.setClickable(true);
     }
 
     @Override
