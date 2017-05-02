@@ -86,8 +86,12 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         dataList.clear();
         notifyDataSetChanged();
         dataList.add(new BannerTitle(title));
-        dataList.addAll(bannerDataList);
-        notifyDataSetChanged();
+        notifyItemInserted(0);
+        for (int i = 0; i < bannerDataList.size(); i++) {
+            BannerData bannerData = bannerDataList.get(i);
+            dataList.add(bannerData);
+            notifyItemInserted(i + 1);
+        }
     }
 
     static class BannerItemHolder extends RecyclerView.ViewHolder {
