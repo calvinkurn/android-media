@@ -57,12 +57,29 @@ public class RidePhoneNumberVerificationActivity extends BasePresenterActivity {
 
     @Override
     protected void setActionVar() {
-        addFragment(R.id.container, PhoneVerificationFragment.createInstance());
+        addFragment(R.id.container, PhoneVerificationFragment.createInstance(getPhoneVerificationListener()));
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
         FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
         fragmentTransaction.add(containerViewId, fragment);
         fragmentTransaction.commit();
+    }
+
+    private PhoneVerificationFragment.PhoneVerificationFragmentListener getPhoneVerificationListener() {
+        return new PhoneVerificationFragment.PhoneVerificationFragmentListener() {
+            @Override
+            public void onSkipVerification() {
+                RidePhoneNumberVerificationActivity.this.setResult(Activity.RESULT_CANCELED);
+                RidePhoneNumberVerificationActivity.this.finish();
+            }
+
+
+            @Override
+            public void onSuccessVerification() {
+                RidePhoneNumberVerificationActivity.this.setResult(Activity.RESULT_OK);
+                RidePhoneNumberVerificationActivity.this.finish();
+            }
+        };
     }
 }
