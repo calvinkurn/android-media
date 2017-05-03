@@ -98,17 +98,18 @@ public class DecimalInputView extends FrameLayout {
         requestLayout();
     }
 
-    public void addTextChangedListener(TextWatcher watcher) {
-        if (watcher instanceof NumberTextWatcher) {
-            if (watcher != null) {
-                if (currentTextWatcher!= null) {
-                    editText.removeTextChangedListener(currentTextWatcher);
-                }
-                currentTextWatcher = watcher;
-                editText.addTextChangedListener(watcher);
+    public void addTextChangedListener(TextWatcher textWatcher) {
+        if (textWatcher == null) {
+            return;
+        }
+        if (textWatcher instanceof NumberTextWatcher) {
+            if (currentTextWatcher!= null) {
+                editText.removeTextChangedListener(currentTextWatcher);
             }
+            currentTextWatcher = textWatcher;
+            editText.addTextChangedListener(textWatcher);
         } else {
-            editText.addTextChangedListener(watcher);
+            editText.addTextChangedListener(textWatcher);
         }
     }
 
