@@ -287,6 +287,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         nestedScrollView.smoothScrollTo(0, 0);
     }
 
+    @Override
+    public void updateDepartementId(String id) {
+        departmentId = id;
+    }
+
     private void showErrorEmptyState() {
         NetworkErrorHelper.showEmptyState(getActivity(),  ((IntermediaryActivity) getActivity())
                         .getFrameLayout(),
