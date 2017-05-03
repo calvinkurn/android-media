@@ -63,6 +63,8 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     private static final String URL_PATH_PRODUCT = "product";
     private static final String URL_PATH_PAGE = "page";
 
+    private static final String STATE_PRODUCT_MODEL = "STATE_PRODUCT_MODEL";
+
     @BindView(R2.id.webview)
     WebView webView;
     @BindView(R2.id.progress)
@@ -159,12 +161,16 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     @Override
     public void onSaveState(Bundle state) {
-
+        if(productModel != null) {
+            state.putParcelable(STATE_PRODUCT_MODEL, productModel);
+        }
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        if(!savedState.isEmpty()){
+            onGetProduct((ProductModel) savedState.getParcelable(STATE_PRODUCT_MODEL));
+        }
     }
 
     @Override
@@ -179,7 +185,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new OsHomePresenterImpl(this);
+        presenter = new OsHomePresenterImpl(this);
     }
 
     @Override
@@ -416,6 +422,6 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     }
 
     public void onRefreshProductData() {
-        this.presenter.onRefresh();
+        presenter.onRefresh();
     }
 }
