@@ -42,14 +42,23 @@ public class TokoCashHeaderView extends RelativeLayout {
 
     public void renderData(final TopCashItem tokoCashData) {
         String tokoCashRedirectUrl = tokoCashData.getData().getRedirectUrl();
+        String tokoCashActionRedirectUrl = getTokoCashActionRedirectUrl(tokoCashData);
         if(tokoCashData.getData().getLink().equals(1)) {
+            setOnClickListener(onMainViewClickedListener(tokoCashRedirectUrl));
             tokoCashAmount.setText(tokoCashData.getData().getBalance());
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_top_up));
-            tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashRedirectUrl));
+            tokoCashButton.setOnClickListener(onTopUpClickedListener(tokoCashActionRedirectUrl));
         } else {
-            tokoCashButton.setOnClickListener(onActivationClickedListener(tokoCashRedirectUrl));
+            tokoCashButton.setOnClickListener(onActivationClickedListener(
+                    tokoCashActionRedirectUrl
+            ));
             tokoCashButton.setText(getContext().getString(R.string.toko_cash_activation));
         }
+    }
+
+    private String getTokoCashActionRedirectUrl(TopCashItem tokoCashData) {
+        if(tokoCashData.getData().getAction() == null) return "";
+        else return tokoCashData.getData().getAction().getRedirectUrl();
     }
 
     private OnClickListener onActivationClickedListener(final String redirectUrl) {
@@ -91,6 +100,15 @@ public class TokoCashHeaderView extends RelativeLayout {
                         .goToWallet(getContext(), bundle);
             }
         }
+    }
+
+    private OnClickListener onMainViewClickedListener(final String redirectUrl) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openTokoCashWebView(redirectUrl);
+            }
+        };
     }
 
 }
