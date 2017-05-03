@@ -118,6 +118,7 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
     private List<HotListModel> mapHotList(HotListResponse hotListResponse) {
 
         List<HotListModel> hotListModels = new ArrayList<>();
+        if (hotListResponse==null) return hotListModels;
         for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
             HotListModel hotListModel = new HotListModel();
             hotListModel.setId(list.getHotProductId());
