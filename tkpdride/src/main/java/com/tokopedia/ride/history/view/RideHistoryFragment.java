@@ -96,6 +96,7 @@ public class RideHistoryFragment extends BaseFragment implements ItemClickListen
 
     @Override
     public void onHistoryClicked(RideHistoryViewModel viewModel) {
+        System.out.println("Vishal onHistoryClicked = " + viewModel.getStartAddress());
         mOnFragmentInteractionListener.actionNavigateToDetail(viewModel);
     }
 

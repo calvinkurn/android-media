@@ -115,11 +115,16 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @Override
     public void renderHistory() {
+        System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
+
         requestTimeTextView.setText(rideHistory.getRequestTime());
         rideStatusTextView.setText(rideHistory.getStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
         driverNameTextView.setText(rideHistory.getDriverName());
         rideFareTextView.setText(rideHistory.getFare());
+        setPickupLocationText(rideHistory.getStartAddress());
+        setDestinationLocation(rideHistory.getEndAddress());
+
 
         if (rideHistory.getDriverPictureUrl().length() > 0) {
             Glide.with(getActivity()).load(rideHistory.getDriverPictureUrl())

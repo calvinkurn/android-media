@@ -24,6 +24,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String driverPictureUrl;
     private List<LatLng> latLngs;
     private double startLatitude, startLongitude, endLatitude, endLongitude;
+    private String startAddress;
+    private String endAddress;
     private String mapImage;
 
     public RideHistoryViewModel() {
@@ -138,6 +140,22 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.mapImage = mapImage;
     }
 
+    public String getStartAddress() {
+        return startAddress;
+    }
+
+    public void setStartAddress(String startAddress) {
+        this.startAddress = startAddress;
+    }
+
+    public String getEndAddress() {
+        return endAddress;
+    }
+
+    public void setEndAddress(String endAddress) {
+        this.endAddress = endAddress;
+    }
+
     protected RideHistoryViewModel(Parcel in) {
         requestId = in.readString();
         requestTime = in.readString();
@@ -153,6 +171,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
             latLngs = null;
         }
         mapImage = in.readString();
+        startAddress = in.readString();
+        endAddress = in.readString();
     }
 
     @Override
@@ -176,6 +196,8 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
             dest.writeList(latLngs);
         }
         dest.writeString(mapImage);
+        dest.writeString(startAddress);
+        dest.writeString(endAddress);
     }
 
     @SuppressWarnings("unused")
