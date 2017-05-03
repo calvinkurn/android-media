@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -82,8 +80,8 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         productDetailViewHolder.setStockStatus(model.getProductUploadTo());
 
-        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
-        productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
+//        productDetailViewHolder.setStockStatus(model.get);
+//        productDetailViewHolder.setTotalStock();
         if (model.getProductEtalaseId() > 0) {
             productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
             productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
