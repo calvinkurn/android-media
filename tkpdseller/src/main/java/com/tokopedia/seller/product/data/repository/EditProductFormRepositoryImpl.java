@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.data.repository;
 
 import com.tokopedia.seller.product.data.mapper.EditProductFormMapper;
 import com.tokopedia.seller.product.data.source.EditProductFormDataSource;
+import com.tokopedia.seller.product.data.source.FetchVideoEditProductDataSource;
 import com.tokopedia.seller.product.domain.EditProductFormRepository;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
@@ -14,14 +15,19 @@ import rx.Observable;
 public class EditProductFormRepositoryImpl implements EditProductFormRepository {
     private final EditProductFormDataSource editProductFormDataSource;
     private final EditProductFormMapper editProductFormMapper;
+    private final FetchVideoEditProductDataSource fetchVideoEditProductDataSource;
 
-    public EditProductFormRepositoryImpl(EditProductFormDataSource editProductFormDataSource, EditProductFormMapper editProductFormMapper) {
+    public EditProductFormRepositoryImpl(EditProductFormDataSource editProductFormDataSource, EditProductFormMapper editProductFormMapper, FetchVideoEditProductDataSource fetchVideoEditProductDataSource) {
         this.editProductFormDataSource = editProductFormDataSource;
         this.editProductFormMapper = editProductFormMapper;
+        this.fetchVideoEditProductDataSource = fetchVideoEditProductDataSource;
     }
 
     @Override
-    public Observable<UploadProductInputDomainModel> fetchEditProduct(String productId) {
-        return editProductFormDataSource.fetchEditProductForm(productId).map(editProductFormMapper);
+    public Observable<UploadProductInputDomainModel> fetchEditProduct(final String productId) {
+        fetchVideoEditProductDataSource.setProductId(productId);
+
+        return editProductFormDataSource.fetchEditProductForm(productId).map(editProductFormMapper)
+                .flatMap(fetchVideoEditProductDataSource);
     }
 }
