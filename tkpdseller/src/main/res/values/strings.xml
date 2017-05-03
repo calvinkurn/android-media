@@ -14,20 +14,6 @@
     <string name="thirty_days_ago">30 hari terakhir</string>
 
     <!-- untuk tanggal gmstat -->
-    <string-array name="month_names">
-        <item>Januari</item>
-        <item>Februari</item>
-        <item>Maret</item>
-        <item>April</item>
-        <item>Mei</item>
-        <item>Juni</item>
-        <item>Juli</item>
-        <item>Agustus</item>
-        <item>September</item>
-        <item>Oktober</item>
-        <item>November</item>
-        <item>Desember</item>
-    </string-array>
 
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names_abrev">
@@ -49,8 +35,6 @@
         <item>Pria</item>
         <item>Wanita</item>
     </string-array>
-
-    <string name="title_activity_reputation_">Reputasi Toko</string>
 
     <string name="try_again">COBA KEMBALI</string>
     <string name="unknown_exception_description">Tidak ada koneksi.\nSilahkan coba kembali</string>
@@ -84,25 +68,19 @@
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
-    <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 
     <string name="menu_top_ads_add_promo_shop">Tambah Promo Toko</string>
-    <string name="menu_top_ads_add_promo_group">Tambah Promo Group</string>
-    <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
     <string name="top_ads_delete_product_alert">Apakah anda yakin untuk menghapus produk ini?</string>
     <string name="top_ads_delete_group_alert">Apakah anda yakin untuk menghapus grup ini?</string>
 
-    <string name="title_action_on">On</string>
-    <string name="title_action_off">Off</string>
     <string name="action_filter_date">Filter Tanggal</string>
     <string name="label_manage_group">Atur Grup</string>
     <string name="label_edit">Ubah</string>
     <string name="label_delete">Hapus</string>
-    <string name="title_group_list">Grup</string>
     <string name="title_product_ad_detail">Detil Promo Produk</string>
     <string name="title_shop_ad_detail">Detil Promo Toko</string>
     <string name="title_group_ad_detail">Detil Promo Grup</string>
@@ -199,23 +177,11 @@
     <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 
-    <string name="positive_button_dialog">Ya</string>
-    <string name="negative_button_dialog">Tidak</string>
     <string name="title_shop_score">Performa Toko</string>
     <string name="description_shop_score_percent"> / 100</string>
     <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
     <string name="subtitle_second_shop_score_detail_summary">dengan nilai rata-rata</string>
     <string name="title_shop_score_detail_gold_badge_info">Gold Badge</string>
-
-    <string name="desc_shop_score_gold_merchant_qualified_badge_before_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_gold_merchant_not_qualified_badge_before_rule">Tingkatkan nilai performa Toko Anda.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_not_gold_merchant_qualified_badge_before_rule">Nilai performa toko Anda baik. Upgrade toko Anda ke Gold Merchant untuk mendapatkan Gold Badge dan terus meningkatkan performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_not_gold_merchant_not_qualified_badge_before_rule">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-
-    <string name="desc_shop_score_gold_merchant_qualified_badge_after_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_gold_merchant_not_qualified_badge_after_rule">Tingkatkan nilai performa toko Anda untuk mendapatkan Gold Badge. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_not_gold_merchant_qualified_badge_after_rule">Nilai performa toko Anda sudah cukup untuk mendapatkan Gold Badge. Upgrade toko Anda ke Gold Merchant sekarang dan dapatkan Gold Badge untuk toko Anda.  Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
-    <string name="desc_shop_score_not_gold_merchant_not_qualified_badge_after_rule">Upgrade toko Anda ke Gold Merchant untuk membantu meningkatkan nilai performa toko Anda. Mulai tanggal 27 Maret 2017, Gold Badge hanya akan diberikan untuk toko Gold Merchant dengan skor minimal 75.</string>
 
     <string name="button_go_to_seller_tokopedia_web"><![CDATA[Tips & Trick meningkatkan Performa Toko]]></string>
     <string name="button_go_to_gm_subscribe">Berlangganan Gold Merchant</string>
@@ -258,11 +224,6 @@
     <string name="title_activity_category_picker">Pilih Kategori</string>
     <string name="title_activity_catalog_picker">Pilih Katalog</string>
 
-    <string name="delete">Delete</string>
-    <string name="insert">Insert</string>
-    <string name="move_to">Move to:</string>
-    <string name="move">Move</string>
-    <string name="scroll">Scroll</string>
     <string name="search_product">Cari Produk</string>
     <string name="filter_top_ads">Filter Top Ads</string>
 
@@ -320,7 +281,6 @@
     <string name="title_activity_etalase_picker">Pilih Etalase</string>
     <string name="upload_product_image">Upload Gambar Produk</string>
 
-    <string name="etalase_picker_add_new_etalase">+ Tambah Etalase</string>
     <string name="etalase_picker_add_etalase_title_dialog">Tambah Etalase</string>
     <string name="etalase_picker_add_etalase_add_button_dialog">Tambah</string>
     <string name="etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
@@ -430,7 +390,6 @@
     <string name="invalid_video_url">URL video tidak benar</string>
     <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>
     <string name="video_same_warn">Anda sudah menambahkan video ini</string>
-    <string name="insert_a_url_video">Masukkan URL Video</string>
     <string name="add_url_video">Tambah URL Video</string>
     <string name="url_video">URL Video</string>
     <string name="error_no_video_url_name">Url Video harus diisi</string>
