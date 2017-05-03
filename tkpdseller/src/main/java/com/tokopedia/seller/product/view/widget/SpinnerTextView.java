@@ -185,6 +185,7 @@ public class SpinnerTextView extends FrameLayout {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
             textAutoComplete.setText(entries[selectionIndex]);
+            updateOnItemChanged(selectionIndex);
         }
     }
 }

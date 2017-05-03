@@ -198,6 +198,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 }
             }
         });
+        wholesaleExpandableOptionSwitch.setEnabled(false);
 
         freeReturnsSpinnerTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -205,6 +206,18 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 listener.onFreeReturnChecked(false);
             }
         });
+        stockStatusSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value))) {
+                    stockTotalExpandableOptionSwitch.setExpand(false);
+                    stockTotalExpandableOptionSwitch.setEnabled(false);
+                } else {
+                    stockTotalExpandableOptionSwitch.setEnabled(true);
+                }
+            }
+        });
+        stockTotalExpandableOptionSwitch.setEnabled(false);
         stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
