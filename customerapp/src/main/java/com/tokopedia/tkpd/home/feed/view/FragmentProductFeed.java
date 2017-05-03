@@ -436,7 +436,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 feedPresenter.loadMoreDataFeed();
             }
         });
-//        contentRecyclerView.addOnScrollListener(onRecyclerViewListener());
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter.setOnRetryListenerRV(onAdapterRetryListener());
         setFabListener();

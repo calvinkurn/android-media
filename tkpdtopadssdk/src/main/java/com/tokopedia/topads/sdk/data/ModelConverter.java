@@ -44,13 +44,17 @@ public class ModelConverter {
         for (int i = 0; i < list.size(); i++) {
             Item visitable = list.get(i);
             if (displayMode == DisplayMode.GRID && visitable instanceof ProductListViewModel) {
-                list.set(i, ModelConverter.convertToProductGridViewModel(((ProductListViewModel) list.get(i)).getData()));
+                list.set(i, ModelConverter.convertToProductGridViewModel(((ProductListViewModel)
+                        list.get(i)).getData()));
             } else if (displayMode == DisplayMode.GRID && visitable instanceof ShopListViewModel) {
-                list.set(i, ModelConverter.convertToShopGridViewModel(((ShopListViewModel) list.get(i)).getData()));
+                list.set(i, ModelConverter.convertToShopGridViewModel(((ShopListViewModel)
+                        list.get(i)).getData()));
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ProductGridViewModel) {
-                list.set(i, ModelConverter.convertToProductListViewModel(((ProductGridViewModel) list.get(i)).getData()));
+                list.set(i, ModelConverter.convertToProductListViewModel(((ProductGridViewModel)
+                        list.get(i)).getData()));
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel) {
-                list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel) list.get(i)).getData()));
+                list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel)
+                        list.get(i)).getData()));
             }
         }
     }
