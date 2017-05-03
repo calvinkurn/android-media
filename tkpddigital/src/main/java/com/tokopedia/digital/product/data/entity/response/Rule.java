@@ -22,4 +22,19 @@ public class Rule {
     @Expose
     private boolean enableVoucher;
 
+    public String getProductText() {
+        return productText;
+    }
+
+    public int getProductViewStyle() {
+        return productViewStyle;
+    }
+
+    public boolean isShowPrice() {
+        return showPrice;
+    }
+
+    public boolean isEnableVoucher() {
+        return enableVoucher;
+    }
 }

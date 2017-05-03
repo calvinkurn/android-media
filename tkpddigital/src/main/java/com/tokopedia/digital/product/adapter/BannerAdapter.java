@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.adapter;
 
+import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.fragment.DigitalProductFragment;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.BannerTitle;
 
@@ -29,21 +31,23 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             R.layout.view_holder_banner_title_digital_module;
 
     private List<Object> dataList = new ArrayList<>();
+    private Fragment hostFragment;
     private ActionListener actionListener;
 
-    public BannerAdapter(ActionListener actionListener) {
-        this.actionListener = actionListener;
+    public BannerAdapter(DigitalProductFragment digitalProductFragment) {
+        this.actionListener = digitalProductFragment;
+        this.hostFragment = digitalProductFragment;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_HOLDER_TITLE) {
             return new BannerTitleHolder(LayoutInflater.from(
-                    parent.getContext()).inflate(viewType, parent, false
+                    hostFragment.getActivity()).inflate(viewType, parent, false
             ));
         } else if (viewType == TYPE_HOLDER_BANNER_ITEM) {
             return new BannerItemHolder(LayoutInflater.from(
-                    parent.getContext()).inflate(viewType, parent, false
+                    hostFragment.getActivity()).inflate(viewType, parent, false
             ));
         } else {
             return null;
@@ -52,18 +56,25 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof BannerItemHolder) {
-            BannerData bannerData = (BannerData) dataList.get(position);
+        final int type = getItemViewType(position);
+        if (type == TYPE_HOLDER_BANNER_ITEM) {
+            final BannerData bannerData = (BannerData) dataList.get(position);
             BannerItemHolder bannerItemHolder = (BannerItemHolder) holder;
-            bannerItemHolder.tvDescBanner.setText(MethodChecker.fromHtml(bannerData.getSubtitle()));
-            bannerItemHolder.tvVoucherCode.setText("Belom ada param");
+            bannerItemHolder.tvDescBanner.setText(MethodChecker.fromHtml(bannerData.getTitle()));
+            bannerItemHolder.tvVoucherCode.setText(bannerData.getPromocode());
             bannerItemHolder.btnCopy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    actionListener.onButtonCopyClicked("hahahaha");
+                    actionListener.onButtonCopyBannerVoucherCodeClicked(bannerData.getPromocode());
                 }
             });
-        } else if (holder instanceof BannerTitleHolder) {
+            bannerItemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    actionListener.onBannerItemClicked(bannerData);
+                }
+            });
+        } else if (type == TYPE_HOLDER_TITLE) {
             BannerTitle bannerTitle = (BannerTitle) dataList.get(position);
             BannerTitleHolder bannerTitleHolder = (BannerTitleHolder) holder;
             bannerTitleHolder.tvTitle.setText(bannerTitle.getTitle());
@@ -83,15 +94,12 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void addBannerDataListAndTitle(List<BannerData> bannerDataList, String title) {
-        dataList.clear();
-        notifyDataSetChanged();
         dataList.add(new BannerTitle(title));
-        notifyItemInserted(0);
         for (int i = 0; i < bannerDataList.size(); i++) {
             BannerData bannerData = bannerDataList.get(i);
             dataList.add(bannerData);
-            notifyItemInserted(i + 1);
         }
+        notifyDataSetChanged();
     }
 
     static class BannerItemHolder extends RecyclerView.ViewHolder {
@@ -103,7 +111,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R2.id.btn_copy)
         TextView btnCopy;
 
-        public BannerItemHolder(View itemView) {
+        BannerItemHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
@@ -113,13 +121,15 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R2.id.tv_title)
         TextView tvTitle;
 
-        public BannerTitleHolder(View itemView) {
+        BannerTitleHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
     }
 
     public interface ActionListener {
-        void onButtonCopyClicked(String voucherCode);
+        void onButtonCopyBannerVoucherCodeClicked(String voucherCode);
+
+        void onBannerItemClicked(BannerData bannerData);
     }
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.digital.product.interactor;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.model.BannerData;
@@ -40,19 +42,25 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
                         categoryRepository.getBanner(paramQueryBanner)
                                 .onErrorResumeNext(Observable.<List<BannerData>>empty()),
-                        new Func2<CategoryData, List<BannerData>, ProductDigitalData>() {
-                            @Override
-                            public ProductDigitalData call(CategoryData categoryData, List<BannerData> bannerDatas) {
-                                return new ProductDigitalData.Builder()
-                                        .categoryData(categoryData)
-                                        .bannerDataList(bannerDatas)
-                                        .build();
-                            }
-                        })
+                        getZipProductDigitalDataFunction()
+                )
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)
         );
+    }
+
+    @NonNull
+    private Func2<CategoryData, List<BannerData>, ProductDigitalData> getZipProductDigitalDataFunction() {
+        return new Func2<CategoryData, List<BannerData>, ProductDigitalData>() {
+            @Override
+            public ProductDigitalData call(CategoryData categoryData, List<BannerData> bannerDatas) {
+                return new ProductDigitalData.Builder()
+                        .categoryData(categoryData)
+                        .bannerDataList(bannerDatas)
+                        .build();
+            }
+        };
     }
 }

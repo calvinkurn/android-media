@@ -6,7 +6,14 @@ import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetail
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.Field;
+import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.product.model.Promo;
+import com.tokopedia.digital.product.model.Rule;
+import com.tokopedia.digital.product.model.Teaser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +47,123 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
     ) throws MapperDataException {
-        return null;
+        CategoryData categoryData = new CategoryData();
+        categoryData.setCategoryId(responseCategoryDetailData.getId());
+        categoryData.setCategoryType(responseCategoryDetailData.getType());
+        categoryData.setDefaultOperatorId(responseCategoryDetailData.getAttributes().getDefaultOperatorId());
+        categoryData.setIcon(responseCategoryDetailData.getAttributes().getIcon());
+        categoryData.setIconUrl(responseCategoryDetailData.getAttributes().getIconUrl());
+        categoryData.setName(responseCategoryDetailData.getAttributes().getName());
+        categoryData.setInstantCheckout(responseCategoryDetailData.getAttributes().isInstantCheckout());
+        categoryData.setNew(responseCategoryDetailData.getAttributes().isNew());
+        categoryData.setSlug(responseCategoryDetailData.getAttributes().getSlug());
+        categoryData.setOperatorStyle(responseCategoryDetailData.getAttributes().getOperatorStyle());
+
+        List<Field> fieldCategoryList = new ArrayList<>();
+        for (com.tokopedia.digital.product.data.entity.response.Field field
+                : responseCategoryDetailData.getAttributes().getFields()) {
+            Field fieldCategory = new Field();
+            fieldCategory.setName(field.getName());
+            fieldCategory.set_default(field.get_default());
+            fieldCategory.setType(field.getType());
+            fieldCategory.setHelp(field.getHelp());
+            fieldCategory.setPlaceholder(field.getPlaceholder());
+            fieldCategory.setText(field.getText());
+            List<com.tokopedia.digital.product.model.Validation> validationCategoryList
+                    = new ArrayList<>();
+            for (com.tokopedia.digital.product.data.entity.response.Validation validation
+                    : field.getValidation()) {
+                com.tokopedia.digital.product.model.Validation validationCategory =
+                        new com.tokopedia.digital.product.model.Validation();
+                validationCategory.setError(validation.getError());
+                validationCategory.setRegex(validation.getRegex());
+                validationCategoryList.add(validationCategory);
+            }
+            fieldCategory.setValidation(validationCategoryList);
+            fieldCategoryList.add(fieldCategory);
+        }
+        categoryData.setFieldList(fieldCategoryList);
+
+        List<Operator> operatorCategoryList = new ArrayList<>();
+        for (ResponseCategoryDetailIncluded categoryDetailIncluded : responseCategoryDetailIncludedList) {
+            if (categoryDetailIncluded.getType().equalsIgnoreCase("operator")) {
+                Operator operatorCategory = new Operator();
+                operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
+                operatorCategory.setDefaultProductId(categoryDetailIncluded.getAttributes().getDefaultProductId());
+                operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
+                operatorCategory.setLastorderUrl(categoryDetailIncluded.getAttributes().getLastorderUrl());
+                operatorCategory.setOperatorId(categoryDetailIncluded.getId());
+                operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
+                operatorCategory.setOperatorType(categoryDetailIncluded.getType());
+                List<Product> productOperatorList = new ArrayList<>();
+                for (com.tokopedia.digital.product.data.entity.response.Product product
+                        : categoryDetailIncluded.getAttributes().getProduct()) {
+                    Product productOperator = new Product();
+                    productOperator.setDesc(product.getAttributes().getDesc());
+                    productOperator.setDetail(product.getAttributes().getDetail());
+                    productOperator.setInfo(product.getAttributes().getInfo());
+                    productOperator.setPrice(product.getAttributes().getPrice());
+                    productOperator.setPricePlain(product.getAttributes().getPricePlain());
+                    productOperator.setProductType(product.getType());
+                    productOperator.setProductId(product.getId());
+                    if (product.getAttributes().getPromo() != null) {
+                        Promo productPromo = new Promo();
+                        productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
+                        productPromo.setId(product.getAttributes().getPromo().getId());
+                        productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
+                        productPromo.setNewPricePlain(product.getAttributes().getPromo().getNewPricePlain());
+                        productPromo.setTag(product.getAttributes().getPromo().getTag());
+                        productPromo.setTerms(product.getAttributes().getPromo().getTerms());
+                        productPromo.setValueText(product.getAttributes().getPromo().getValueText());
+                        productOperator.setPromo(productPromo);
+                    }
+                    productOperatorList.add(productOperator);
+
+                }
+                List<Field> operatorFieldList = new ArrayList<>();
+                for (com.tokopedia.digital.product.data.entity.response.Field field
+                        : categoryDetailIncluded.getAttributes().getFields()) {
+                    Field fieldOperator = new Field();
+                    fieldOperator.setName(field.getName());
+                    fieldOperator.set_default(field.get_default());
+                    fieldOperator.setType(field.getType());
+                    fieldOperator.setHelp(field.getHelp());
+                    fieldOperator.setPlaceholder(field.getPlaceholder());
+                    fieldOperator.setText(field.getText());
+                    List<com.tokopedia.digital.product.model.Validation> validationCategoryList
+                            = new ArrayList<>();
+                    for (com.tokopedia.digital.product.data.entity.response.Validation validation
+                            : field.getValidation()) {
+                        com.tokopedia.digital.product.model.Validation validationCategory =
+                                new com.tokopedia.digital.product.model.Validation();
+                        validationCategory.setError(validation.getError());
+                        validationCategory.setRegex(validation.getRegex());
+                        validationCategoryList.add(validationCategory);
+                    }
+                    fieldOperator.setValidation(validationCategoryList);
+                    operatorFieldList.add(fieldOperator);
+                }
+                operatorCategory.setProductList(productOperatorList);
+                operatorCategory.setFieldList(operatorFieldList);
+
+                Rule operatorRule = new Rule();
+                operatorRule.setEnableVoucher(categoryDetailIncluded.getAttributes().getRule().isEnableVoucher());
+                operatorRule.setShowPrice(categoryDetailIncluded.getAttributes().getRule().isShowPrice());
+                operatorRule.setProductText(categoryDetailIncluded.getAttributes().getRule().getProductText());
+                operatorRule.setProductViewStyle(categoryDetailIncluded.getAttributes().getRule().getProductViewStyle());
+                operatorCategory.setRule(operatorRule);
+
+                operatorCategoryList.add(operatorCategory);
+            }
+        }
+        categoryData.setOperatorList(operatorCategoryList);
+
+        if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
+            Teaser categoryTeaser = new Teaser();
+            categoryTeaser.setContent(responseCategoryDetailData.getAttributes().getTeaser().getContent());
+            categoryTeaser.setTitle(responseCategoryDetailData.getAttributes().getTeaser().getTitle());
+            categoryData.setTeaser(categoryTeaser);
+        }
+        return categoryData;
     }
 }

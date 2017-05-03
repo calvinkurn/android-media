@@ -1,5 +1,7 @@
 package com.tokopedia.digital.product.domain;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -37,17 +39,7 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     ) {
         return digitalEndpointService.getApi()
                 .getCategory(categoryId, param)
-                .map(new Func1<Response<TkpdDigitalResponse>, CategoryData>() {
-                    @Override
-                    public CategoryData call(
-                            Response<TkpdDigitalResponse> response
-                    ) {
-                        return productDigitalMapper.transformCategoryData(
-                                response.body().convertDataObj(ResponseCategoryDetailData.class),
-                                response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
-                        );
-                    }
-                });
+                .map(getFuncTransformCategoryData());
     }
 
     @Override
@@ -56,20 +48,40 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     ) {
         return digitalEndpointService.getApi()
                 .getBanner(param)
-                .map(new Func1<Response<TkpdDigitalResponse>, List<BannerData>>() {
-                    @Override
-                    public List<BannerData> call(
-                            Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-                    ) {
-                        List<BannerData> bannerDataList = new ArrayList<>();
-                        List<ResponseBanner> responseBannerList =
-                                tkpdDigitalResponseResponse.body()
-                                        .convertDataList(ResponseBanner[].class);
-                        for (ResponseBanner data : responseBannerList) {
-                            bannerDataList.add(productDigitalMapper.transformBannerData(data));
-                        }
-                        return bannerDataList;
-                    }
-                });
+                .map(getFuncTransformBannerListData());
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, CategoryData> getFuncTransformCategoryData() {
+        return new Func1<Response<TkpdDigitalResponse>, CategoryData>() {
+            @Override
+            public CategoryData call(
+                    Response<TkpdDigitalResponse> response
+            ) {
+                return productDigitalMapper.transformCategoryData(
+                        response.body().convertDataObj(ResponseCategoryDetailData.class),
+                        response.body().convertIncludedList(ResponseCategoryDetailIncluded[].class)
+                );
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, List<BannerData>> getFuncTransformBannerListData() {
+        return new Func1<Response<TkpdDigitalResponse>, List<BannerData>>() {
+            @Override
+            public List<BannerData> call(
+                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
+            ) {
+                List<BannerData> bannerDataList = new ArrayList<>();
+                List<ResponseBanner> responseBannerList =
+                        tkpdDigitalResponseResponse.body()
+                                .convertDataList(ResponseBanner[].class);
+                for (ResponseBanner data : responseBannerList) {
+                    bannerDataList.add(productDigitalMapper.transformBannerData(data));
+                }
+                return bannerDataList;
+            }
+        };
     }
 }

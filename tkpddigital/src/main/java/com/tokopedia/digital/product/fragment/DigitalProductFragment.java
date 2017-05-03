@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -16,9 +17,14 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
+import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
@@ -42,12 +48,16 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
-        implements IProductDigitalView, BannerAdapter.ActionListener {
+        implements IProductDigitalView, BannerAdapter.ActionListener,
+        BaseDigitalProductView.ActionListener {
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
+
     private String categoryId;
 
     @BindView(R2.id.rv_banner)
     RecyclerView rvBanner;
+    @BindView(R2.id.holder_product_detail)
+    LinearLayout holderProductDetail;
 
     private BannerAdapter bannerAdapter;
 
@@ -88,6 +98,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initialPresenter() {
+        bannerAdapter = new BannerAdapter(this);
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
@@ -125,7 +136,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void initialVar() {
-        bannerAdapter = new BannerAdapter(this);
+
     }
 
     @Override
@@ -139,18 +150,63 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderProductDigitalData(CategoryData categoryData, List<BannerData> bannerDataList) {
-        bannerAdapter.addBannerDataListAndTitle(bannerDataList, "Judul banner List");
+    public void renderBannerListData(String categoryName, List<BannerData> bannerDataList) {
+        bannerAdapter.addBannerDataListAndTitle(bannerDataList, categoryName);
+    }
+
+    @Override
+    public void renderCategoryProductDataStyle1(CategoryData categoryData) {
+        holderProductDetail.removeAllViews();
+    }
+
+    @Override
+    public void renderCategoryProductDataStyle2(CategoryData categoryData) {
+        holderProductDetail.removeAllViews();
+    }
+
+    @Override
+    public void renderCategoryProductDataStyle3(CategoryData categoryData) {
+        holderProductDetail.removeAllViews();
+    }
+
+    @Override
+    public void renderCategoryProductDataStyle4(CategoryData categoryData) {
+        holderProductDetail.removeAllViews();
+    }
+
+    @Override
+    public void renderErrorStyleNotSupportedProductDigitalData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorProductDigitalData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorHttpProductDigitalData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorNoConnectionProductDigitalData(String message) {
+
+    }
+
+    @Override
+    public void renderErrorTimeoutConnectionProductDigitalData(String message) {
+
     }
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        startActivity(intent);
     }
 
     @Override
@@ -187,12 +243,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showDialog(Dialog dialog) {
-
+        if (!dialog.isShowing()) dialog.show();
     }
 
     @Override
     public void dismissDialog(Dialog dialog) {
-
+        if (dialog.isShowing()) dialog.dismiss();
     }
 
     @Override
@@ -202,7 +258,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public String getStringFromResource(@StringRes int resId) {
-        return null;
+        return getString(resId);
     }
 
     @Override
@@ -224,7 +280,45 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onButtonCopyClicked(String voucherCode) {
+    public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+        String clientNumber = preCheckoutProduct.getClientNumber();
+        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
+                .action("init_data")
+                .categoryId(String.valueOf(preCheckoutProduct.getCategoryId()))
+                .clientNumber(clientNumber)
+                .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
+                .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
+                .operatorId(String.valueOf(preCheckoutProduct.getOperatorId()))
+                .productId(String.valueOf(preCheckoutProduct.getProductId()))
+                .utmCampaign((preCheckoutProduct.getCategoryName()))
+                .utmContent(VersionInfo.getVersionInfo(getActivity()))
+                .idemPotencyKey(generateATokenRechargeCheckout())
+                .utmSource("android")
+                .utmMedium("widget")
+                .build();
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+            startActivityForResult(
+                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
+        }
+    }
+
+    private String generateATokenRechargeCheckout() {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = AuthUtil.md5(timeMillis);
+        return SessionHandler.getLoginID(getActivity()) + "_"
+                + (token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
+
+    }
+
+    @Override
+    public void onBannerItemClicked(BannerData bannerData) {
 
     }
 }
