@@ -37,6 +37,7 @@ public class PeopleFavoritedShopFramentImpl implements PeopleFavoritedShopFragme
                 public void onStart() {
                     if (viewListener.getAdapter().getListSize() == 0) {
                         viewListener.getAdapter().showLoadingFull(true);
+                        viewListener.getAdapter().showEmpty(false);
                     } else if (pagingHandler.getPage() == 1) {
                         viewListener.setRefreshing(true);
                     }
@@ -117,7 +118,7 @@ public class PeopleFavoritedShopFramentImpl implements PeopleFavoritedShopFragme
     @Override
     public void renderErrorMessage(String message) {
         if (viewListener.getAdapter().getListSize() == 0) {
-            showEmptyState(message);
+            viewListener.getAdapter().showEmptyFull(true);
         } else {
             showSnackBar(message);
         }

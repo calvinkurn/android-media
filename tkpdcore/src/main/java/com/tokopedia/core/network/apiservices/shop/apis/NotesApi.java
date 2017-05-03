@@ -28,21 +28,4 @@ public interface NotesApi {
     @POST(TkpdBaseURL.Shop.PATH_GET_NOTES_DETAIL)
     Observable<NoteDetailModel> getNotesDetail2(@FieldMap Map<String, String> params);
 
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.URL_NOTES + TkpdBaseURL.Shop.PATH_GET_NOTES_DETAIL)
-    Observable<NoteDetailModel> getNotesDetailBasic(
-            @Header("Content-MD5") String contentMD5,// 1
-            @Header("Date") String date,// 2
-            @Header("Authorization") String authorization, // 3
-            @Header("X-Method") String xMethod,// 4
-            @Field("user_id") String userId,// 5
-            @Field("device_id") String deviceId, // 6
-            @Field("hash") String hash,// 7
-            @Field("device_time") String deviceTime,// 8
-            @Field("shop_domain") String shopDomain,// 9
-            @Field("shop_id") String shopId,// 9
-            @Field("note_id") String noteId,// 9
-            @Field("terms") String terms
-    );
 }

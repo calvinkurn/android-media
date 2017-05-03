@@ -3,7 +3,7 @@ package com.tokopedia.core.home.model;
 import android.os.Parcelable;
 import android.text.Html;
 
-import com.tokopedia.core.network.entity.home.recentView.RecentView;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HorizontalRecentViewList extends RecyclerViewItem implements Parcelable {
-    List<RecentView> mRecentViewList;
+    List<ProductItem> mRecentViewList;
 
     public HorizontalRecentViewList() {
         setType(TkpdState.RecyclerViewItem.TYPE_LIST);
@@ -21,9 +21,9 @@ public class HorizontalRecentViewList extends RecyclerViewItem implements Parcel
         mRecentViewList = new ArrayList<>();
         if (product != null) {
             for (int i = 0; i < product.size(); i++) {
-                if (product.get(i) instanceof RecentView) {
-                    RecentView productItem = (RecentView) product.get(i);
-                    productItem.setShopName(Html.fromHtml(productItem.getShopName()).toString());
+                if (product.get(i) instanceof ProductItem) {
+                    ProductItem productItem = (ProductItem) product.get(i);
+                    productItem.setShop(Html.fromHtml(productItem.getShop()).toString());
                     mRecentViewList.add(productItem);
                 }
             }
@@ -31,15 +31,15 @@ public class HorizontalRecentViewList extends RecyclerViewItem implements Parcel
         setType(TkpdState.RecyclerViewItem.TYPE_LIST);
     }
 
-    public List<RecentView> getRecentViewList() {
+    public List<ProductItem> getRecentViewList() {
         return mRecentViewList;
     }
 
-    public void setRecentViewList(List<RecentView> recentViewList) {
+    public void setRecentViewList(List<ProductItem> recentViewList) {
         this.mRecentViewList = recentViewList;
     }
 
-    public void addAll(List<RecentView> items) {
+    public void addAll(List<ProductItem> items) {
         this.mRecentViewList.addAll(items);
     }
 
@@ -85,7 +85,7 @@ public class HorizontalRecentViewList extends RecyclerViewItem implements Parcel
 
     protected HorizontalRecentViewList(android.os.Parcel in) {
         super(in);
-        this.mRecentViewList = in.createTypedArrayList(RecentView.CREATOR);
+        this.mRecentViewList = in.createTypedArrayList(ProductItem.CREATOR);
     }
 
     public static final Creator<HorizontalRecentViewList> CREATOR

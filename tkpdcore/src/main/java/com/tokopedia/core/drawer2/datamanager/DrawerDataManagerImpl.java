@@ -1,12 +1,14 @@
 package com.tokopedia.core.drawer2.datamanager;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.drawer2.interactor.DepositNetworkInteractor;
 import com.tokopedia.core.drawer2.interactor.DepositNetworkInteractorImpl;
 import com.tokopedia.core.drawer2.interactor.NotificationNetworkInteractor;
@@ -29,15 +31,12 @@ import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.drawer2.viewmodel.DrawerData;
-import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -54,12 +53,14 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final TokoCashNetworkInteractor tokoCashNetworkInteractor;
 
 
-    public DrawerDataManagerImpl() {
+    public DrawerDataManagerImpl(Context context) {
+        SessionHandler sessionHandler = new SessionHandler(context);
         profileNetworkInteractor = new ProfileNetworkInteractorImpl(new PeopleService());
         notificationNetworkInteractor = new NotificationNetworkInteractorImpl(new NotificationService());
         depositNetworkInteractor = new DepositNetworkInteractorImpl(new DepositService());
         topPointsNetworkInteractor = new TopPointsNetworkInteractorImpl(new CloverService());
-        tokoCashNetworkInteractor = new TokoCashNetworkInteractorImpl(new TokoCashService());
+        tokoCashNetworkInteractor = new TokoCashNetworkInteractorImpl(
+                new TokoCashService(sessionHandler.getAccessToken(context)));
     }
 
     @Override
@@ -121,15 +122,26 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     }
 
     @Override
-    public Observable<DrawerNotification> getNotification(Context context) {
+    public Observable<DrawerNotification> getNotification(final Context context) {
         return notificationNetworkInteractor.getNotification(context, new TKPDMapParam<String, String>())
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerNotification>>() {
                     @Override
                     public Observable<DrawerNotification> call(Response<TkpdResponse> response) {
                         NotificationData notificationData = response.body().convertDataObj(NotificationData.class);
+                        setDataToCache(context, notificationData);
                         return Observable.just(convertToDrawerNotification(notificationData));
                     }
                 });
+    }
+
+    private void setDataToCache(Context context, NotificationData notificationData) {
+        LocalCacheHandler drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+        drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
+        drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
+        drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
+        drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
+        drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
+        drawerCache.applyEditor();
     }
 
     private DrawerNotification convertToDrawerNotification(NotificationData notificationData) {
@@ -148,6 +160,9 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         drawerNotification.setSellingNewOrder(notificationData.getSales().getSalesNewOrder());
         drawerNotification.setSellingShippingConfirmation(notificationData.getSales().getSalesShippingConfirm());
         drawerNotification.setSellingShippingStatus(notificationData.getSales().getSalesShippingStatus());
+        drawerNotification.setTotalNotif(notificationData.getTotalNotif());
+        drawerNotification.setIncrNotif(notificationData.getIncrNotif());
+        drawerNotification.setTotalCart(notificationData.getTotalCart());
         return drawerNotification;
     }
 

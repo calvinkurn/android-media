@@ -31,17 +31,19 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
 import com.tokopedia.core.session.model.SecurityQuestionViewModel;
-import com.tokopedia.core.session.presenter.SecurityQuestion;
-import com.tokopedia.core.session.presenter.SecurityQuestionImpl;
+import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
+import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -59,8 +61,6 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static android.R.attr.permission;
-
 /**
  * modify by m.normansyah 9-11-2015,
  * complete MVP
@@ -70,7 +70,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     private static final String CAN_REQUEST_OTP_IMMEDIATELY = "auto_request_otp";
     private TkpdProgressDialog Progress;
-    SecurityQuestion securityQuestion;
+    SecurityQuestionPresenter presenter;
     private static final String FORMAT = "%02d:%02d";
 
     @BindView(R2.id.input_text)
@@ -105,26 +105,39 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     ProgressBar vProgress;
     @BindView(R2.id.title_change_number)
     TextView changeNumber;
+    @BindView(R2.id.verify_button)
+    TextView verifyTrueCaller;
 
     CountDownTimer countDownTimer;
     private Unbinder unbinder;
     IncomingSmsReceiver smsReceiver;
+    boolean isRunningTimer;
 
     public interface SecurityQuestionListener {
-        public void onSuccess();
+        void onSuccess();
 
-        public void onFailed();
+        void onFailed();
+    }
+
+    public void onFailedProfileShared(String error) {
+        SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
+    }
+
+    public void onSuccessProfileShared(String phoneNumber) {
+        SnackbarManager.make(getActivity(), getString(R.string.success_fetch_truecaller), Snackbar.LENGTH_LONG).show();
+        presenter.verifyTruecaller(getActivity(), phoneNumber);
     }
 
     private SecurityQuestionListener Listener;
 
 
-    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, SecurityQuestionListener listener) {
+    public static FragmentSecurityQuestion newInstance(int Security1, int Security2, String UserID, String email, SecurityQuestionListener listener) {
         FragmentSecurityQuestion fragment = new FragmentSecurityQuestion();
         Bundle args = new Bundle();
         args.putInt(SECURITY_1_KEY, Security1);
         args.putInt(SECURITY_2_KEY, Security2);
         args.putString(USER_ID_KEY, UserID);
+        args.putString(EMAIL, email);
         fragment.setArguments(args);
         fragment.Listener = listener;
         return fragment;
@@ -138,24 +151,24 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        securityQuestion = new SecurityQuestionImpl(this);
-        securityQuestion.getDataAfterRotate(savedInstanceState);
-        securityQuestion.initInstances(getActivity());
-        securityQuestion.getDataFromArgument(getArguments());
+        presenter = new SecurityQuestionPresenterImpl(this);
+        presenter.getDataAfterRotate(savedInstanceState);
+        presenter.initInstances(getActivity());
+        presenter.getDataFromArgument(getArguments());
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // save last input by user
-        if (securityQuestion.isSecurityQuestion() && securityQuestion.isValidForm(vAnswer.getText().toString())) {
-            securityQuestion.saveAnswer(vAnswer.getText().toString());// this is for rotation
+        if (presenter.isSecurityQuestion() && presenter.isValidForm(vAnswer.getText().toString())) {
+            presenter.saveAnswer(vAnswer.getText().toString());// this is for rotation
         }
-        if (securityQuestion.isOtp() && securityQuestion.isValidForm(vInputOtp.getText().toString())) {
-            securityQuestion.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
+        if (presenter.isOtp() && presenter.isValidForm(vInputOtp.getText().toString())) {
+            presenter.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
         }
         // save remaining data from user
-        securityQuestion.saveDataBeforeRotate(outState);
+        presenter.saveDataBeforeRotate(outState);
     }
 
     @Override
@@ -167,17 +180,18 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         Progress = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         initListener();
         showViewOtp();
-        if (!securityQuestion.isAfterRotate()) // if not rotate get question
-            securityQuestion.getQuestionForm();
+        if (!presenter.isAfterRotate()) // if not rotate get question
+            presenter.getQuestionForm();
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (securityQuestion.isAfterRotate())
-            securityQuestion.initDataAfterRotate();
+        if (presenter.isAfterRotate())
+            presenter.initDataAfterRotate();
         smsReceiver.registerSmsReceiver(getActivity());
+        presenter.doSendAnalytics();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             showCheckSMSPermission();
@@ -211,7 +225,6 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
         }
-        securityQuestion.doSendAnalytics();
     }
 
     @Override
@@ -224,6 +237,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        presenter.unSubscribe();
     }
 
     @Override
@@ -239,34 +253,37 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void startTimer() {
+        if(!isRunningTimer){
+            countDownTimer = new CountDownTimer(90000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    try {
+                        isRunningTimer = true;
+                        MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
+                        vSendOtp.setEnabled(false);
+                        vSendOtp.setText(String.format(FORMAT,
+                                TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
+                                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
+                                TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
+                                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
 
-        countDownTimer = new CountDownTimer(90000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                try {
-                    MethodChecker.setBackground(vSendOtp, getResources().getDrawable(R.drawable.btn_transparent_disable));
-                    vSendOtp.setEnabled(false);
-                    vSendOtp.setText("" + String.format(FORMAT,
-                            TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)),
-                            TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))));
+                        vSendOtpCall.setVisibility(View.GONE);
 
-                    vSendOtpCall.setVisibility(View.GONE);
-
-                } catch (Exception e) {
-                    cancel();
+                    } catch (Exception e) {
+                        cancel();
+                    }
                 }
-            }
 
-            public void onFinish() {
-                try {
-                    enableOtpButton();
-                } catch (Exception e) {
+                public void onFinish() {
+                    try {
+                        isRunningTimer = false;
+                        enableOtpButton();
+                    } catch (Exception e) {
 
+                    }
                 }
-            }
 
-        }.start();
+            }.start();
+        }
         vInputOtp.requestFocus();
     }
 
@@ -296,7 +313,14 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     }
 
     @Override
+    public void showTrueCaller(boolean b) {
+//        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+        verifyTrueCaller.setVisibility(View.GONE);
+    }
+
+    @Override
     public void initListener() {
+        isRunningTimer = false;
         vSaveBut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -304,17 +328,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
                 if (otpIsValid()) {
                     KeyboardHandler.DropKeyboard(getActivity(), view);
-                    securityQuestion.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
-                    securityQuestion.doAnswerQuestion(vInputOtp.getText().toString());
+                    presenter.saveOTPAnswer(vInputOtp.getText().toString());// this is for rotation
+                    presenter.doAnswerQuestion(vInputOtp.getText().toString());
                 }
-            }
-        });
-        vSendOtp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                securityQuestion.doRequestOtp();
-
             }
         });
 
@@ -322,19 +338,26 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             @Override
             public void onClick(View v) {
 
-                securityQuestion.doRequestOtpWithCall();
+                presenter.doRequestOtpWithCall();
 
             }
         });
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
-                intent.putExtra("PARAM_URL", TkpdBaseURL.ContactUs.URL_CHANGE_NUMBER);
+                Intent intent = SessionRouter.getChangePhoneNumberRequestActivity(getActivity());
                 startActivity(intent);
             }
         });
+
+        verifyTrueCaller.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.getPhoneTrueCaller();
+            }
+        });
     }
+
 
     private boolean otpIsValid() {
         boolean isValid = true;
@@ -352,7 +375,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         vOtp.setVisibility(View.VISIBLE);
         vSecurity.setVisibility(View.GONE);
         if (TrackingUtils.getGtmString(CAN_REQUEST_OTP_IMMEDIATELY).equals("true"))
-            securityQuestion.doRequestOtp();
+            presenter.doRequestOtp();
         titleOTP.setText("Halo, " + SessionHandler.getTempLoginName(getActivity()));
 
 
@@ -370,7 +393,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                                   ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.action_send_otp_with_call).indexOf("kirim OTP melalui telepon")
+                , getString(R.string.action_send_otp_with_call).indexOf("kirim")
                 , getString(R.string.action_send_otp_with_call).length()
                 , 0);
 
@@ -401,9 +424,9 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void setModel(QuestionFormModel data) {
         Progress.dismiss();
 
-        switch (securityQuestion.determineQuestionType(data.getQuestion(), data.getTitle())) {
+        switch (presenter.determineQuestionType(data.getQuestion(), data.getTitle())) {
             case QuestionFormModel.OTP_No_HP_TYPE:
-                vSendOtp.setText(securityQuestion.getOtpSendString());
+                vSendOtp.setText(presenter.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 String phone = SessionHandler.getTempPhoneNumber(getActivity());
                 phone = phone.substring(phone.length() - 4);
@@ -411,16 +434,30 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
                 titleSecurity.setText(MethodChecker.fromHtml(contentSecurity));
                 changeNumber.setVisibility(View.VISIBLE);
                 vSendOtpCall.setVisibility(View.VISIBLE);
+                presenter.showTrueCaller(getActivity());
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtp();
+                    }
+                });
                 break;
             case QuestionFormModel.OTP_Email_TYPE:
-                vSendOtp.setText(securityQuestion.getOtpSendString());
+                vSendOtp.setText(presenter.getOtpSendString());
                 vInputOtp.setEnabled(true);
                 titleSecurity.setText(getResources().getString(R.string.content_security_question_email));
                 changeNumber.setVisibility(View.GONE);
                 vSendOtpCall.setVisibility(View.GONE);
+                verifyTrueCaller.setVisibility(View.GONE);
+                vSendOtp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        presenter.doRequestOtpToEmail();
+                    }
+                });
+                presenter.doRequestOtpToEmail();
                 break;
         }
-        ;
         vQuestion.setText(data.getTitle());
     }
 
@@ -449,7 +486,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void displayProgress(boolean isShow) {
         //[START] save progress for rotation
-        securityQuestion.updateViewModel(SecurityQuestionViewModel.IS_SECURITY_LOADING_TYPE, isShow);
+        presenter.updateViewModel(SecurityQuestionViewModel.IS_SECURITY_LOADING_TYPE, isShow);
         //[END] save progress for rotation
         if (isShow) {
             Progress.showDialog();
@@ -484,8 +521,18 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void setData(int type, Bundle data) {
-        if (securityQuestion != null)
-            securityQuestion.setData(type, data);
+        switch (type) {
+            case DownloadService.MAKE_LOGIN:
+                if (getActivity() != null && getActivity() instanceof SessionView) {
+                    ((SessionView) getActivity()).destroy();
+                }
+                break;
+
+            default:
+                if (presenter != null)
+                    presenter.setData(type, data);
+                break;
+        }
     }
 
     public void showError(String message) {
@@ -518,6 +565,8 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     public void processOtp(String otpCode) {
         if (vInputOtp != null)
             vInputOtp.setText(otpCode);
+        presenter.saveOTPAnswer(otpCode);
+        presenter.doAnswerQuestion(otpCode);
     }
 
     @Override

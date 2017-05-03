@@ -90,7 +90,6 @@ public class ShopEditorPresenterImpl extends ShopEditorPresenter implements Down
     public void initDataInstance(Context context) {
         this.context = context;
         view.initViewInstance();
-        view.initUploadImage();
         mReceiver = new DownloadResultReceiver(new Handler());
     }
 

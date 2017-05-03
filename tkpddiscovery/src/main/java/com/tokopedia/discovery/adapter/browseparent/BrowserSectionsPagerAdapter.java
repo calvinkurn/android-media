@@ -5,9 +5,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.util.ArrayMap;
 
-import com.tokopedia.discovery.fragment.browseparent.CatalogFragment;
-import com.tokopedia.discovery.fragment.browseparent.ProductFragment;
-import com.tokopedia.discovery.fragment.browseparent.ShopFragment;
+import com.tokopedia.discovery.fragment.CatalogFragment;
+import com.tokopedia.discovery.fragment.ProductFragment;
+import com.tokopedia.discovery.fragment.ShopFragment;
 import com.tokopedia.discovery.view.BrowseProductParentView;
 
 /**

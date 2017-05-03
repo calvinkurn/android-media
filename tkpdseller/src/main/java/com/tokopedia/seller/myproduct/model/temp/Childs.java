@@ -1,0 +1,41 @@
+package com.tokopedia.seller.myproduct.model.temp;
+
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by m.normansyah on 12/9/15.
+ */
+public class Childs {
+    @SerializedName("parent")
+    private String parent;
+
+    @SerializedName("childs")
+    private String[] childs;
+
+    public String getParent ()
+    {
+        return parent;
+    }
+
+    public void setParent (String parent)
+    {
+        this.parent = parent;
+    }
+
+    public String[] getChilds ()
+    {
+        return childs;
+    }
+
+    public void setChilds (String[] childs)
+    {
+        this.childs = childs;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "ClassPojo [parent = "+parent+", childs = "+childs+"]";
+    }
+
+}

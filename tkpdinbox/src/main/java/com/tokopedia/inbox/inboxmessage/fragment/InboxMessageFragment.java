@@ -425,7 +425,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
 
     @Override
     public void removeError() {
-        adapter.showEmpty(false);
+        adapter.showEmptyFull(false);
         adapter.showRetry(false);
         adapter.showRetryFull(false);
         isRetryShowing = false;
@@ -532,7 +532,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             }
             getAdapter().removeAllChecked();
             if (getAdapter().getList().size() == 0) {
-                getAdapter().showEmpty(true);
+                getAdapter().showEmptyFull(true);
                 pass.setListMove(listMoveOnUndo);
                 getAdapter().notifyDataSetChanged();
             }
@@ -541,7 +541,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 public void onClick(View v) {
                     pass.clearListMove();
                     presenter.undoArchiveMessage(pass.getListMove());
-                    getAdapter().showEmpty(false);
+                    getAdapter().showEmptyFull(false);
                     getAdapter().clearSelection();
                 }
             });
@@ -576,7 +576,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             }
             getAdapter().removeAllChecked();
             if (getAdapter().getList().size() == 0) {
-                getAdapter().showEmpty(true);
+                getAdapter().showEmptyFull(true);
                 pass.setListMove(listMoveOnUndo);
                 getAdapter().notifyDataSetChanged();
             }
@@ -585,7 +585,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 public void onClick(View v) {
                     pass.clearListMove();
                     presenter.undoMoveToInbox(pass.getListMove());
-                    getAdapter().showEmpty(false);
+                    getAdapter().showEmptyFull(false);
                     getAdapter().clearSelection();
                 }
             });
@@ -621,7 +621,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             }
             getAdapter().removeAllChecked();
             if (getAdapter().getList().size() == 0) {
-                getAdapter().showEmpty(true);
+                getAdapter().showEmptyFull(true);
                 pass.setListMove(listMoveOnUndo);
                 getAdapter().notifyDataSetChanged();
             }
@@ -630,7 +630,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
                 public void onClick(View v) {
                     pass.clearListMove();
                     presenter.undoDeleteMessage(pass.getListMove());
-                    getAdapter().showEmpty(false);
+                    getAdapter().showEmptyFull(false);
                     getAdapter().clearSelection();
                 }
             });

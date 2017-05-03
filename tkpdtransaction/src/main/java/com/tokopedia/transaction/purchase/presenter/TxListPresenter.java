@@ -23,8 +23,6 @@ public interface TxListPresenter {
 
     void processRejectOrder(Context context, OrderData data);
 
-    void processUploadTx(Context context, OrderData data);
-
     void processConfirmDeliver(Context context, OrderData data, int typeInstance);
 
     void processOpenDispute(Context activity, OrderData data, int state);

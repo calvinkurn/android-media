@@ -16,13 +16,13 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.tkpd.R;
-
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.database.model.category.Category;
 import com.tokopedia.core.database.model.category.CategoryData;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
@@ -36,11 +36,11 @@ import butterknife.ButterKnife;
 
 /**
  * A placeholder fragment containing a recharge category
+ *
  * @author kulomady on Sep-22-2016
  */
 public class RechargeCategoryFragment extends
         Fragment implements RechargeCategoryView {
-    public static final String EXTRA_ALLOW_ERROR = "extra_allow_error";
 
     @BindView(R.id.tablayout_recharge)
     TabLayout tabLayoutRecharge;
@@ -54,7 +54,8 @@ public class RechargeCategoryFragment extends
 
     public RechargeCategoryFragment() {
     }
-    public static RechargeCategoryFragment newInstance(Bundle bundle){
+
+    public static RechargeCategoryFragment newInstance(Bundle bundle) {
         RechargeCategoryFragment fragment = new RechargeCategoryFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -63,10 +64,12 @@ public class RechargeCategoryFragment extends
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LocalCacheHandler.clearCache(getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
         if (getArguments() != null) {
             setupArguments(getArguments());
         }
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -118,16 +121,26 @@ public class RechargeCategoryFragment extends
         final RechargeViewPagerAdapter rechargeViewPagerAdapter = new RechargeViewPagerAdapter(
                 getChildFragmentManager(), rechargeCategory.getData(), extraData
         );
+        tabLayoutRecharge.setupWithViewPager(viewpagerRecharge);
         viewpagerRecharge.setAdapter(rechargeViewPagerAdapter);
         viewpagerRecharge.getAdapter().notifyDataSetChanged();
-        LocalCacheHandler handler = new LocalCacheHandler(getActivity(), "tabSelection");
-        if (handler.getInt("rechargeSelectedPosition") != null && handler.getInt("rechargeSelectedPosition") == 2) {
-            viewpagerRecharge.setCurrentItem(1);
-            LocalCacheHandler.clearCache(getActivity(), "tabSelection");
+        LocalCacheHandler handler = new LocalCacheHandler(
+                getActivity(), TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION
+        );
+        addTablayoutListener(rechargeViewPagerAdapter);
+        final int positionTab = handler.getInt(TkpdCache.Key.WIDGET_RECHARGE_TAB_LAST_SELECTED);
+        if (positionTab != -1 && positionTab < rechargeCategory.getData().size()) {
+            viewpagerRecharge.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    viewpagerRecharge.setCurrentItem(positionTab);
+                }
+            }, 300);
+            tabLayoutRecharge.getTabAt(positionTab).select();
         } else {
             viewpagerRecharge.setCurrentItem(0);
         }
-        addTablayoutListener(rechargeViewPagerAdapter);
+
 
     }
 
@@ -143,6 +156,11 @@ public class RechargeCategoryFragment extends
 
     }
 
+    @Override
+    public void hideRechargeWidget() {
+        ((LinearLayout) tabLayoutRecharge.getParent()).setVisibility(View.GONE);
+    }
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
@@ -152,6 +170,7 @@ public class RechargeCategoryFragment extends
             }
         };
     }
+
     public void setupArguments(Bundle bundle) {
         this.extraData = bundle;
     }

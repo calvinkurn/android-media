@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.inbox.rescenter.create.customview.BaseView;
 import com.tokopedia.inbox.rescenter.detail.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.detail.listener.DetailResCenterView;
@@ -36,7 +36,7 @@ public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, Detail
     @BindView(R2.id.new_comment)
     EditText boxComment;
 
-    private List<AttachmentResCenterDB> attachmentData;
+    private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter adapter;
     private LocalCacheManager.MessageConversation cache;
 
@@ -113,7 +113,7 @@ public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, Detail
         setVisibility(canConversation == 1 ? VISIBLE : GONE);
     }
 
-    public List<AttachmentResCenterDB> getAttachmentList() {
+    public List<AttachmentResCenterVersion2DB> getAttachmentList() {
         return adapter.getItemList();
     }
 
@@ -121,7 +121,7 @@ public class ReplyEditorView extends BaseView<DetailResCenterData.Detail, Detail
         boxComment.setError(param);
     }
 
-    public void renderAttachmentData(List<AttachmentResCenterDB> data) {
+    public void renderAttachmentData(List<AttachmentResCenterVersion2DB> data) {
         if (data != null) {
             adapter.setDataSet(data);
         }

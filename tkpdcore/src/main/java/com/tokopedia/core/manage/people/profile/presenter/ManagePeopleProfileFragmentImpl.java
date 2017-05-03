@@ -135,6 +135,17 @@ public class ManagePeopleProfileFragmentImpl implements ManagePeopleProfileFragm
             validation = false;
         }
 
+        if (view.getBirthDay().isEmpty()) {
+            view.setBirthDayError(context.getString(R.string.error_field_required));
+            validation = false;
+        }
+
+        String[] concatBirthDay = view.getBirthDay().split("/");
+        if (concatBirthDay.length < 3) {
+            view.setBirthDayError(context.getString(R.string.error_invalid_date));
+            validation = false;
+        }
+
         return validation;
     }
 

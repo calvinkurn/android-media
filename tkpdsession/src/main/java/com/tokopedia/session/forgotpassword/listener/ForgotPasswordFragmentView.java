@@ -2,6 +2,7 @@ package com.tokopedia.session.forgotpassword.listener;
 
 import android.app.Activity;
 import android.content.Context;
+import android.widget.EditText;
 
 /**
  * Created by Alifa on 10/17/2016.
@@ -10,21 +11,21 @@ import android.content.Context;
 public interface ForgotPasswordFragmentView {
     Context getContext();
 
-    void finishLoading();
-
-    void setLoading();
-
-    void showErrorMessage();
-
-    void removeError();
-
-    void setActionsEnabled(Boolean isEnabled);
-
     Activity getActivity();
 
     String getString(int resId);
 
-    void resetPassword();
-
     void refresh();
+
+    void resetError();
+
+    EditText getEmail();
+
+    void setEmailError(String errorMessage);
+
+    void showLoadingProgress();
+
+    void onErrorResetPassword(String errorMessage);
+
+    void onSuccessResetPassword();
 }

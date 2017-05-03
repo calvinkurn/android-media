@@ -227,7 +227,7 @@ public class FragmentShopStatistic extends V2BaseFragment {
     }
 
     private String getShipmentPackages(List<ShipmentPackage> pack) {
-        if(pack.isEmpty())
+        if(pack==null || pack.isEmpty())
             return "";
         String packages = pack.get(0).productName;
         int total = pack.size();

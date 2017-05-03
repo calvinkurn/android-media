@@ -10,11 +10,11 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.DashboardStatisticTitle"
+        style="@style/TextView.TopAds.Caption1"
         tools:text="@string/app_name"/>
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.DashboardStatisticContent"/>
+        style="@style/TextView.TopAds.Headline"/>
 </LinearLayout>
 

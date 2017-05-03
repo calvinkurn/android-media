@@ -9,7 +9,8 @@ import android.view.inputmethod.InputMethodManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.gcm.FCMMessagingService;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
@@ -30,7 +31,7 @@ import butterknife.BindView;
  * @author by anggaprasetiyo on 8/26/16.
  */
 public class PurchaseActivity extends DrawerPresenterActivity implements
-        TxSummaryFragment.OnCenterMenuClickListener, FCMMessagingService.NotificationListener,
+        TxSummaryFragment.OnCenterMenuClickListener, NotificationReceivedListener,
         PurchaseTabAdapter.Listener, TxListFragment.StateFilterListener {
 
     @BindView(R2.id.pager)
@@ -42,6 +43,12 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     private int drawerPosition;
     private String stateTxFilterID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+    }
 
     @Override
     protected int setDrawerPosition() {
@@ -151,42 +158,42 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
     protected void initView() {
         super.initView();
         if (getIntent().getExtras() != null && getIntent().getExtras()
-                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false))
-            drawer.updateBalance();
+                .getBoolean(TransactionPurchaseRouter.EXTRA_UPDATE_BALANCE, false));
+//            drawer.updateBalance();
     }
 
     private void setDrawerSidePosition(int position) {
-        switch (position) {
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
-                break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
-                break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
-                break;
-            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
-                switch (stateTxFilterID) {
-                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
-                        );
-                        break;
-                    default:
-                        drawer.setDrawerPosition(
-                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
-                        );
-                        break;
-                }
-                break;
-            default:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
-                break;
-        }
+//        switch (position) {
+//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+//                break;
+//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS);
+//                break;
+//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS);
+//                break;
+//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING);
+//                break;
+//            case TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER:
+//                switch (stateTxFilterID) {
+//                    case TransactionPurchaseRouter.TRANSACTION_CANCELED_FILTER_ID:
+//                        drawer.setDrawerPosition(
+//                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED
+//                        );
+//                        break;
+//                    default:
+//                        drawer.setDrawerPosition(
+//                                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST
+//                        );
+//                        break;
+//                }
+//                break;
+//            default:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.PEOPLE_TRANSACTION);
+//                break;
+//        }
     }
 
     private class OnTabPageChangeListener extends TabLayout.TabLayoutOnPageChangeListener {

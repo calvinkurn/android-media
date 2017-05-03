@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.ViewHolder> {
 
     private final AttachmentAdapterListener listener;
-    private List<AttachmentResCenterDB> dataSet;
+    private List<AttachmentResCenterVersion2DB> dataSet;
 
     public interface AttachmentAdapterListener {
         void onClickAddAttachment(View view);
@@ -27,7 +27,7 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.Vi
         void onClickRemoveAttachment(View view, int position);
     }
 
-    public AttachmentAdapter(AttachmentAdapterListener listener, List<AttachmentResCenterDB> list) {
+    public AttachmentAdapter(AttachmentAdapterListener listener, List<AttachmentResCenterVersion2DB> list) {
         this.listener = listener;
         this.dataSet = list;
     }

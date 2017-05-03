@@ -2,26 +2,32 @@ package com.tokopedia.core.app;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.drawer2.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.datamanager.DrawerDataManagerImpl;
-import com.tokopedia.core.drawer2.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.viewmodel.DrawerTopPoints;
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -33,33 +39,57 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Nisie on 31/08/15.
  */
-public abstract class TkpdActivity extends TActivity implements NotificationListener,
+public abstract class TkpdActivity extends TActivity implements NotificationReceivedListener,
         CartBadgeNotificationReceiver.ActionListener {
 
-    private Boolean isLogin;
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
-    private DrawerHelper drawerHelper;
+    protected DrawerHelper drawerHelper;
+    protected SessionHandler sessionHandler;
     private CompositeSubscription compositeSubscription;
+
 
     @Override
     public void onStart() {
         super.onStart();
-        isLogin = SessionHandler.isV4Login(this);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        toolbar.createToolbarWithDrawer();
-//        drawer.setEnabled(true);
-
         compositeSubscription = new CompositeSubscription();
+        sessionHandler = new SessionHandler(this);
+        setupToolbar();
         setupDrawer();
 
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         cartBadgeNotificationReceiver = new CartBadgeNotificationReceiver(this);
         IntentFilter intentFilter = new IntentFilter(CartBadgeNotificationReceiver.ACTION);
         registerReceiver(cartBadgeNotificationReceiver, intentFilter);
+    }
+
+    protected void setupToolbar() {
+        toolbar.removeAllViews();
+        View notif = getLayoutInflater().inflate(
+                R.layout.custom_actionbar_drawer_notification, null);
+        final ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        drawerToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerHelper.isOpened()) {
+                    drawerHelper.closeDrawer();
+                } else {
+                    drawerHelper.openDrawer();
+                }
+            }
+        });
+        TextView notifRed = (TextView) notif.findViewById(R.id.toggle_count_notif);
+        toolbar.addView(notif);
+
+        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
+        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
+        titleTextView.setText(getTitle());
+        toolbar.addView(title);
+        setSupportActionBar(toolbar);
+
     }
 
     protected void setupDrawer() {
@@ -67,10 +97,10 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
 //            drawerHelper = new DrawerVariable(this);
 
         } else {
-            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this);
+            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler);
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
-            DrawerDataManager drawerDataManager = new DrawerDataManagerImpl();
+            DrawerDataManager drawerDataManager = new DrawerDataManagerImpl(this);
             getDrawerProfile(drawerDataManager);
             getDrawerDeposit(drawerDataManager);
             getDrawerTopPoints(drawerDataManager);
@@ -83,7 +113,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     private void getDrawerNotification(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getNotification(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerNotification>() {
@@ -100,6 +130,23 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
                             @Override
                             public void onNext(DrawerNotification notification) {
 
+                                int notificationCount = notification.getTotalNotif();
+
+                                TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
+                                if (notifRed != null) {
+                                    if (notificationCount <= 0) {
+                                        notifRed.setVisibility(View.GONE);
+                                    } else {
+                                        notifRed.setVisibility(View.VISIBLE);
+                                        String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                                        notifRed.setText(totalNotif);
+                                    }
+                                }
+                                if (notification.isUnread()) {
+                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
+                                } else {
+                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
+                                }
                                 drawerHelper.setNotification(notification);
                                 drawerHelper.getAdapter().notifyDataSetChanged();
 
@@ -112,10 +159,9 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
 
 
     private void getDrawerTokoCash(DrawerDataManager drawerDataManager) {
-        SessionHandler sessionHandler = new SessionHandler(this);
         compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerTokoCash>() {
@@ -145,7 +191,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     private void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getTopPoints(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerTopPoints>() {
@@ -175,7 +221,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     private void getDrawerDeposit(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDeposit(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerDeposit>() {
@@ -205,7 +251,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     private void getDrawerProfile(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDrawerProfile(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerProfile>() {
@@ -254,12 +300,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     }
 
     @Override
-    protected void onResume() {
-        Log.d(TkpdActivity.class.getSimpleName(), "on resume");
-        super.onResume();
-    }
-
-    @Override
     public void onRefreshCart(int status) {
         LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
         Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
@@ -286,7 +326,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        drawer.unsubscribe();
+        compositeSubscription.unsubscribe();
         unregisterReceiver(cartBadgeNotificationReceiver);
     }
 

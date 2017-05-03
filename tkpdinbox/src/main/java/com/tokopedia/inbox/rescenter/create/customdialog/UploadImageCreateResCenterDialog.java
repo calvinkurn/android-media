@@ -10,7 +10,7 @@ import android.view.Window;
 
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
 
 /**
@@ -44,7 +44,7 @@ public class UploadImageCreateResCenterDialog extends BaseUploadImageDialog {
     @Override
     protected void processImageDataFromGallery(Intent intent, BaseUploadImageDialog.UploadImageDialogListener listener) {
         boolean valid = true;
-        for (AttachmentResCenterDB data : cache.getCache()) {
+        for (AttachmentResCenterVersion2DB data : cache.getCache()) {
             if (data.imagePath.equals(intent.getStringExtra(ImageGallery.EXTRA_URL))) {
                 valid = false;
             }

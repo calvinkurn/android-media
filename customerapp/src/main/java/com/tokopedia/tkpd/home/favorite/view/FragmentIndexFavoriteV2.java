@@ -253,6 +253,13 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        favorite.unSubscribe();
+        favorite.onDestroy();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         favorite.onSaveDataBeforeRotate(outState);
@@ -263,7 +270,6 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
         super.onResume();
         Log.d(TAG, " screen Rotation " + (isLandscape() ? "LANDSCAPE" : "PORTRAIT"));
         favorite.subscribe();
-
     }
 
     @Override
@@ -337,6 +343,8 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void displayMainContent(boolean isDisplay) {
         Log.d(TAG, " main content ingin " + (isDisplay ? "dihidupkan" : "dimatikan"));
+        if (mainContent == null)
+            return;
         if (isDisplay)
             mainContent.setVisibility(View.VISIBLE);
         else

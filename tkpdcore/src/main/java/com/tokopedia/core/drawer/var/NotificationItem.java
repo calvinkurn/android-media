@@ -98,7 +98,6 @@ public class NotificationItem {
             return CacheNotif.getInt("total_notif");
         else
             return CacheNotif.getInt("total_notif") - getNotifPurchase();
-
     }
 
     public boolean isUnread() {

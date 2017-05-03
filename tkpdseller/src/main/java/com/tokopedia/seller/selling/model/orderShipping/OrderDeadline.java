@@ -13,6 +13,12 @@ public class OrderDeadline {
     @SerializedName("deadline_finish_day_left")
     @Expose
     String deadlineFinishDayLeft;
+    @SerializedName("deadline_proccess_hour_left")
+    @Expose
+    String deadlineProcessHourLeft;
+    @SerializedName("deadline_process")
+    @Expose
+    String deadLineProcess;
     @SerializedName("deadline_process_day_left")
     @Expose
     String deadlineProcessDayLeft;
@@ -25,6 +31,18 @@ public class OrderDeadline {
     @SerializedName("deadline_shipping_day_left")
     @Expose
     String deadlineShippingDayLeft;
+    @SerializedName("deadline_shipping_hour_left")
+    @Expose
+    String deadlineShippingHourLeft;
+    @SerializedName("deadline_shipping")
+    @Expose
+    String deadlineShipping;
+    @SerializedName("deadline_finish_hour_left")
+    @Expose
+    String deadlineFinishHourLeft;
+    @SerializedName("deadline_color")
+    @Expose
+    String deadlineColor;
 
     /**
      * 
@@ -116,4 +134,51 @@ public class OrderDeadline {
         this.deadlineShippingDayLeft = deadlineShippingDayLeft;
     }
 
+    public String getDeadlineShippingHourLeft() {
+        return deadlineShippingHourLeft;
+    }
+
+    public void setDeadlineShippingHourLeft(String deadlineShippingHourLeft) {
+        this.deadlineShippingHourLeft = deadlineShippingHourLeft;
+    }
+
+    public String getDeadlineShipping() {
+        return deadlineShipping;
+    }
+
+    public void setDeadlineShipping(String deadlineShipping) {
+        this.deadlineShipping = deadlineShipping;
+    }
+
+    public String getDeadlineFinishHourLeft() {
+        return deadlineFinishHourLeft;
+    }
+
+    public void setDeadlineFinishHourLeft(String deadlineFinishHourLeft) {
+        this.deadlineFinishHourLeft = deadlineFinishHourLeft;
+    }
+
+    public String getDeadlineColor() {
+        return deadlineColor;
+    }
+
+    public void setDeadlineColor(String deadlineColor) {
+        this.deadlineColor = deadlineColor;
+    }
+
+    public String getDeadlineProcessHourLeft() {
+        return deadlineProcessHourLeft;
+    }
+
+    public void setDeadlineProcessHourLeft(String deadlineProcessHourLeft) {
+        this.deadlineProcessHourLeft = deadlineProcessHourLeft;
+    }
+
+    public String getDeadLineProcess() {
+        return deadLineProcess;
+    }
+
+    public void setDeadLineProcess(String deadLineProcess) {
+        this.deadLineProcess = deadLineProcess;
+    }
 }

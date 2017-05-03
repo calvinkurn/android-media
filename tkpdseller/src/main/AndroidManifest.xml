@@ -26,10 +26,10 @@
             android:name=".ShippingConfirmationDetail"
             android:label="@string/title_activity_shipping_confirmation_detail"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".ShippingConfirmationProdConf"
-            android:label="@string/title_activity_shipping_confirmation_prod_conf"
-            android:screenOrientation="portrait" />
+
+        <activity android:name="com.tokopedia.seller.instoped.InstopedActivity"
+            android:screenOrientation="portrait"/>
+
         <activity
             android:name=".topads.view.activity.TopAdsDashboardActivity"
             android:label="@string/title_top_ads_dashboard"
@@ -43,6 +43,18 @@
             android:label="@string/title_top_ads_promo_group"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsFilterGroupActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsFilterProductActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
+            android:label="@string/title_top_ads_filter"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
@@ -51,12 +63,16 @@
             android:label="@string/title_top_ads_add_credit"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsNewPromoActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:name=".topads.view.activity.TopAdsGroupNewPromoActivity"
+            android:label="@string/title_top_ads_new_promo_product"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.view.activity.TopAdsEditPromoActivity"
-            android:label="@string/title_top_ads_new_promo"
+            android:name=".topads.view.activity.TopAdsGroupEditPromoActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsGroupManagePromoActivity"
+            android:label="@string/title_top_ads_manage_promo_product"
             android:screenOrientation="portrait" />
         <activity
             android:name=".topads.view.activity.TopAdsAddProductActivity"
@@ -75,31 +91,121 @@
             android:label="@string/title_group_ad_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".topads.lib.datepicker.SetDateActivity"
+            android:name=".topads.view.activity.TopAdsDetailNewShopActivity"
+            android:label="@string/title_top_ads_new_promo_shop"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailNewProductActivity"
+            android:label="@string/title_top_ads_add_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailNewGroupActivity"
+            android:label="@string/title_top_ads_add_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditShopActivity"
+            android:label="@string/title_edit_shop_ad"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditProductActivity"
+            android:label="@string/title_top_ads_edit_promo_product"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsDetailEditGroupActivity"
+            android:label="@string/title_group_ad_edit"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
+
         <activity
+            android:name=".myproduct.ManageProduct"
+            android:label="@string/title_activity_manage_product"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity" />
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
+            android:name=".myproduct.ProductActivity"
+            android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_statistic"
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"/>
+            android:theme="@style/Theme.Tokopedia3">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tkpdevel.com"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".myproduct.ProductSocMedActivity"
+            android:label="Add Product Social Media"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
 
         <service
-            android:name=".selling.SellingService"
+            android:name=".myproduct.service.ProductService"
             android:exported="false" />
+
+        <activity
+            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".shopscore.view.activity.ShopScoreDetailActivity"
+            android:label="@string/title_shop_score"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3"/>
+
+        <activity
+            android:name=".reputation.view.activity.SellerReputationActivity"
+            android:label="@string/title_activity_reputation"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".reputation.view.activity.SellerReputationInfoActivity"
+            android:label="@string/reputation_point_calculation"
+            android:theme="@style/AppTheme" />
+
         <service
-            android:name=".selling.SellingService"
-            android:exported="false" />
-        <service
-            android:name=".shop.ShopEditService"
-            android:exported="false" />
+            android:name="com.tokopedia.seller.selling.SellingService"
+            android:exported="false"/>
+
+        <service android:name=".shop.ShopEditService"
+            android:exported="false"/>
     </application>
 
 </manifest>

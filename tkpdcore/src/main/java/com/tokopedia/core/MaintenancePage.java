@@ -10,16 +10,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.network.NetworkHandler;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.var.TkpdCache;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,10 +27,10 @@ import rx.schedulers.Schedulers;
 
 public class MaintenancePage extends Activity {
 
-    private class ViewHolder {
-        TextView notif;
-        ProgressBar progress;
-    }
+    private static String IS_NETWORK = "is_network";
+    private static String UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
+    private ViewHolder holder;
+    private String maintenanceMessage;
 
     public static Intent createIntentFromNetwork(Context context, String msg) {
         Intent intent = new Intent(context, MaintenancePage.class);
@@ -68,12 +64,6 @@ public class MaintenancePage extends Activity {
         LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.MAINTENANCE);
         return cache.getBoolean(TkpdCache.Key.STATUS2, false);
     }
-
-    private static String IS_NETWORK = "is_network";
-    private static String UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
-
-    private ViewHolder holder;
-    private String maintenanceMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,30 +124,6 @@ public class MaintenancePage extends Activity {
 
     }
 
-    private NetworkHandler.NetworkHandlerListener onCheckListener() {
-        return new NetworkHandler.NetworkHandlerListener() {
-            @Override
-            public void onSuccess(Boolean status) {
-
-            }
-
-            @Override
-            public void getResponse(JSONObject Result) {
-                if (Result.optString("status", "OK").equals(UNDER_MAINTENANCE))
-                    hideProgressBar();
-                else {
-                    setMaintenanceDone();
-                    goToIndexHome();
-                }
-            }
-
-            @Override
-            public void getMessageError(ArrayList<String> MessageError) {
-
-            }
-        };
-    }
-
     private void setMaintenanceDone() {
         LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.MAINTENANCE);
         cache.putBoolean(TkpdCache.Key.STATUS2, false);
@@ -165,7 +131,7 @@ public class MaintenancePage extends Activity {
     }
 
     private void goToIndexHome() {
-        startActivity(new Intent(this, HomeRouter.getHomeActivityClass()));
+        startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
         finish();
     }
 
@@ -190,6 +156,11 @@ public class MaintenancePage extends Activity {
             showProgressBar();
             checkServerMaintenanceStatus();
         }
+    }
+
+    private class ViewHolder {
+        TextView notif;
+        ProgressBar progress;
     }
 
 }

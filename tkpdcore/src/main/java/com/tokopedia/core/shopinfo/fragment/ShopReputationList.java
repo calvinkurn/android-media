@@ -13,10 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.shopinfo.ReputationViewShop;
 import com.tokopedia.core.app.V2BaseFragment;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.reputationproduct.adapter.ListViewReputationAdapter;
+import com.tokopedia.core.shopinfo.ReputationViewShop;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopReputationAdapterR;
 import com.tokopedia.core.shopinfo.facades.ActionReputationLikeRetrofit;
@@ -318,8 +317,8 @@ public class ShopReputationList extends V2BaseFragment {
         startActivityForResult(intent, 0);
     }
 
-    private ListViewReputationAdapter.Model convertShopReviewModelToReviewModel(ReputationModel model) {
-        ListViewReputationAdapter.Model repModel = new ListViewReputationAdapter.Model();
+    private ReputationViewShop.Model convertShopReviewModelToReviewModel(ReputationModel model) {
+        ReputationViewShop.Model repModel = new ReputationViewShop.Model();
         repModel.avatarUrl = model.avatarUrl;
         repModel.avatarUrlResponder = model.avatarUrlResponder;
         repModel.comment = model.comment;

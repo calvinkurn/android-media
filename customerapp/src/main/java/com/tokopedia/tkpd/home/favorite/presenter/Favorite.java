@@ -194,4 +194,6 @@ public interface Favorite  {
     void subscribe();
 
     void unSubscribe();
+
+    void onDestroy();
 }

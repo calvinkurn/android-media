@@ -33,6 +33,7 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
 
     private static final String TAG = InboxMessageRetrofitInteractorImpl.class.getSimpleName();
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private KunyitService kunyitService;
@@ -82,6 +83,8 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxMessage.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -162,6 +165,8 @@ public class InboxMessageRetrofitInteractorImpl implements InboxMessageRetrofitI
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxMessageDetail.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));

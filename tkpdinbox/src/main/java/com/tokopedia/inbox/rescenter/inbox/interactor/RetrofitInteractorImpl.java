@@ -87,8 +87,12 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                             listener.onNullData();
                         }
                     } else {
-                        if (response.body().isNullData()) listener.onNullData();
-                        else listener.onError(response.body().getErrorMessages().get(0));
+                        if (response.body().getErrorMessages() == null
+                                && response.body().getErrorMessages().isEmpty()) {
+                            listener.onNullData();
+                        } else {
+                            listener.onError(response.body().getErrorMessages().get(0));
+                        }
                     }
                 } else {
                     new ErrorHandler(new ErrorListener() {

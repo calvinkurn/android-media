@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.network.BaseNetworkController;
+import com.tkpd.library.utils.network.CommonListener;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.home.model.orderShipping.OrderShippingData;
 
 import java.util.HashMap;
@@ -17,19 +20,35 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.sellerapp.home.utils.ShopNetworkController.onResponseError;
-
 /**
  * Created by normansyahputa on 9/1/16.
  */
 
 public class ShopTransactionController extends BaseNetworkController {
 
+    public static final String DEADLINE = "deadline";
+    public static final String STATUS = "status";
+    public static final String PAGE = "page";
+    public static final String PER_PAGE = "per_page";
     private MyShopOrderService myShopOrderService;
 
     public ShopTransactionController(MyShopOrderService myShopOrderService, Context context, Gson gson) {
         super(context, gson);
         this.myShopOrderService = myShopOrderService;
+    }
+
+    public static HashMap<String, String> getNewOrderParam(GetNewOrderModel getNewOrderModel) {
+        return getNewOrderParam(getNewOrderModel.page, getNewOrderModel.deadline, getNewOrderModel.filter);
+    }
+
+    public static HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
+        HashMap<String, String> params = new NonNullStringMap();
+        if (deadline > 0)
+            params.put(DEADLINE, Integer.toString(deadline));
+        params.put(STATUS, filter);
+        params.put(PAGE, Integer.toString(page));
+        params.put(PER_PAGE, "10");
+        return params;
     }
 
     public void getNewOrder(String userId, String deviceId, GetNewOrderModel getNewOrderModel, final GetNewOrder getNewOrder){
@@ -70,7 +89,7 @@ public class ShopTransactionController extends BaseNetworkController {
         return myShopOrderService.getApi().getOrderNew(AuthUtil.generateParams(userId, deviceId, getNewOrderParam(getNewOrderModel)));
     }
 
-    public interface GetNewOrder extends ShopNetworkController.CommonListener{
+    public interface GetNewOrder extends CommonListener {
         void onSuccess(OrderShippingData orderShippingData);
     }
 
@@ -78,19 +97,5 @@ public class ShopTransactionController extends BaseNetworkController {
         public int page;
         public int deadline;
         public String filter;
-    }
-
-    public static HashMap<String, String> getNewOrderParam(GetNewOrderModel getNewOrderModel){
-        return getNewOrderParam(getNewOrderModel.page, getNewOrderModel.deadline, getNewOrderModel.filter);
-    }
-
-    public static HashMap<String, String> getNewOrderParam(int page, int deadline, String filter) {
-        HashMap<String, String> params = new NonNullStringMap();
-        if (deadline > 0)
-            params.put("deadline", Integer.toString(deadline));
-        params.put("status", filter);
-        params.put("page", Integer.toString(page));
-        params.put("per_page", "10");
-        return params;
     }
 }

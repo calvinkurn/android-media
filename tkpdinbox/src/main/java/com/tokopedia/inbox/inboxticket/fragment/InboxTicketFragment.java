@@ -247,7 +247,7 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
         setActionEnabled(true);
         refreshHandler.finishRefresh();
         adapter.showLoading(false);
-        adapter.showEmpty(false);
+        adapter.showEmptyFull(false);
     }
 
     @Override

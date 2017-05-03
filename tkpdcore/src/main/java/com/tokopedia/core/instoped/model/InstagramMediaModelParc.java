@@ -4,6 +4,7 @@ import android.os.Parcelable;
 
 /**
  * Created by noiz354 on 6/22/16.
+ * TODO : MOVE IT TO THE SELLER MODULE AFTER MYPRODUCT MOVED TO SELLER MODULE
  */
 public class InstagramMediaModelParc implements Parcelable {
     public String filter;

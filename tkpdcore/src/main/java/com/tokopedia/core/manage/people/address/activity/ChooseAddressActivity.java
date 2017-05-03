@@ -11,6 +11,7 @@ import android.os.PersistableBundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.fragment.ChooseAddressFragment;
 import com.tokopedia.core.manage.people.address.model.Destination;
 
@@ -82,6 +83,32 @@ public class ChooseAddressActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = getIntent();
+        if (intent.getExtras() != null &&
+                getFragmentManager().findFragmentById(R.id.container) instanceof OnChooseAddressViewListener) {
+
+            ArrayList<Destination> mDestinations =
+                    ((OnChooseAddressViewListener) getFragmentManager().findFragmentById(R.id.container))
+                            .onActivityBackPressed();
+
+            String addressId = intent.getExtras().getString(ChooseAddressActivity.REQUEST_CODE_PARAM_ADDRESS);
+            for (Destination destination : mDestinations) {
+                if (destination.getAddressId().equalsIgnoreCase(addressId)) {
+                    intent.putExtra(ManageAddressConstant.EXTRA_ADDRESS, destination);
+                    setResult(RESULT_NOT_SELECTED_DESTINATION, intent);
+                    break;
+                }
+            }
+        }
+        finish();
+    }
+
+    public interface OnChooseAddressViewListener {
+        ArrayList<Destination> onActivityBackPressed();
     }
 
 }

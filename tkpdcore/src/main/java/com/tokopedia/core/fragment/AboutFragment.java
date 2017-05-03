@@ -17,6 +17,7 @@ import com.tokopedia.core.app.TkpdBasePreferenceFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.RouterUtils;
 
 /**
@@ -132,7 +133,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
             }
         });
 
-        if (BuildConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             prefDevOpt.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {

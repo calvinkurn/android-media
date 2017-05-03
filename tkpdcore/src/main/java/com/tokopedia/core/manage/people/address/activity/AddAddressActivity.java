@@ -47,22 +47,12 @@ public class AddAddressActivity extends BasePresenterActivity implements ManageA
 
     @Override
     protected void initView() {
-        Bundle bundle;
-        if (getIntent().getExtras() == null) {
-            bundle = new Bundle();
-        } else {
+        Bundle bundle = new Bundle();
+        if (getSupportActionBar() != null
+                && getIntent().getExtras() != null
+                && getIntent().getExtras().getBoolean(IS_EDIT)) {
             bundle = getIntent().getExtras();
-
-            if (getIntent().getExtras().getBoolean(IS_EDIT)) {
-                Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar);
-                if (toolbar != null) {
-                    toolbar.removeAllViews();
-                    setSupportActionBar(toolbar);
-                    getSupportActionBar().setTitle(getString(R.string.title_update_address));
-                    getSupportActionBar().setHomeButtonEnabled(true);
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                }
-            }
+            getSupportActionBar().setTitle(getString(R.string.title_update_address));
         }
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             AddAddressFragment fragment = AddAddressFragment.createInstance(bundle);

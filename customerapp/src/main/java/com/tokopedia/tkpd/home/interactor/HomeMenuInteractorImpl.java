@@ -1,10 +1,14 @@
 package com.tokopedia.tkpd.home.interactor;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
+import com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.home.database.HomeCategoryMenuDbManager;
 
@@ -66,7 +70,7 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
 
     @Override
     public void fetchTopPicksNetworkNetwork(Map<String, String> params, Subscriber<Response<String>> networksubscriber) {
-        subscription.add(aceSearchService.getApi().getTopPicks( params, GlobalConfig.VERSION_NAME,"android")
+        subscription.add(aceSearchService.getApi().getTopPicks(params, GlobalConfig.VERSION_NAME, "android")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -75,4 +79,13 @@ public class HomeMenuInteractorImpl implements HomeMenuInteractor {
                 ));
     }
 
+    @Override
+    public void fetchBrands(String param, Subscriber<Response<Brands>> brandsSubscriber) {
+        subscription.add(mojitoService.getApi().getBrands(param)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(brandsSubscriber)
+                );
+    }
 }

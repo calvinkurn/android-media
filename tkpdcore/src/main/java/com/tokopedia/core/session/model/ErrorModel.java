@@ -17,7 +17,7 @@ public class ErrorModel implements Parcelable{
 
     @SerializedName("error_description")
     @Expose
-    private String error_description;
+    private String errorDescription;
 
     @SerializedName("state")
     @Expose
@@ -39,12 +39,12 @@ public class ErrorModel implements Parcelable{
         this.error = error;
     }
 
-    public String getError_description() {
-        return error_description;
+    public String getErrorDescription() {
+        return errorDescription;
     }
 
-    public void setError_description(String error_description) {
-        this.error_description = error_description;
+    public void setErrorDescription(String errorDescription) {
+        this.errorDescription = errorDescription;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ErrorModel implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.error);
-        dest.writeString(this.error_description);
+        dest.writeString(this.errorDescription);
         dest.writeString(this.state);
     }
 
@@ -64,7 +64,7 @@ public class ErrorModel implements Parcelable{
 
     protected ErrorModel(Parcel in) {
         this.error = in.readString();
-        this.error_description = in.readString();
+        this.errorDescription = in.readString();
         this.state = in.readString();
     }
 

@@ -80,10 +80,8 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
         if (!TextUtils.isEmpty(emptyContentText)) {
             emptyViewHolder.emptyContentTextView.setText(emptyContentText);
         }
-        if (!TextUtils.isEmpty(emptyContentText)) {
-            emptyViewHolder.emptyContentTextView.setText(emptyContentText);
-        }
         if (!TextUtils.isEmpty(emptyContentItemText)) {
+            emptyViewHolder.emptyContentItemTextView.setVisibility(View.VISIBLE);
             emptyViewHolder.emptyContentItemTextView.setText(emptyContentItemText);
             emptyViewHolder.emptyContentItemTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,6 +91,8 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
                     }
                 }
             });
+        } else {
+            emptyViewHolder.emptyContentItemTextView.setVisibility(View.GONE);
         }
     }
 }

@@ -28,7 +28,7 @@ public interface MyShopInfoApi {
     Observable<MyShopInfoModel> getInfo2(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.URL_MY_SHOP_INFO + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
+    @POST()
     Observable<MyShopInfoModel> getInfoBasic(
             @Header("Content-MD5") String contentMD5,// 1
             @Header("Date") String date,// 2

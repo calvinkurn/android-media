@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +72,7 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
                               @Override
                               public void updateDrawState(TextPaint ds) {
                                   ds.setUnderlineText(true);
-                                  ds.setColor(getResources().getColor(R2.color.tkpd_main_green));
+                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
                               }
                           }
                 , sourceString.indexOf("Pembeli")
@@ -79,6 +80,7 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
                 ,0);
 
         buyerButton.setText(spannable, TextView.BufferType.SPANNABLE);
+        buyerButton.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override

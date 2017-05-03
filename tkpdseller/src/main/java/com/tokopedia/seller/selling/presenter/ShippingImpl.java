@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
 import com.tokopedia.seller.facade.FacadeShopTransaction;
@@ -178,7 +179,7 @@ public class ShippingImpl extends Shipping {
         if (remark.length() == 0) {
             remark.setError(context.getString(R.string.error_field_required));
         } else if (remark.length() < 5 && remark.length() > 0) {
-            remark.setError(context.getString(R2.string.char_should_min_5));
+            remark.setError(context.getString(R.string.char_should_min_5));
         } else if (remark.length() >= 5) {
             actionCancelShipping(pos, remark.getText().toString(), context);
             dialog.dismiss();

@@ -57,7 +57,7 @@ public class Profile implements Parcelable {
      *     The success
      */
     public Boolean isSuccess() {
-        return isSuccess.equals("1");
+        return getIsSuccess() != null && getIsSuccess().equals("1");
     }
 
 

@@ -6,13 +6,6 @@
     android:animateLayoutChanges="true"
     android:background="@color/tkpd_bg_color_grery">
 
-    <ProgressBar
-        android:id="@+id/include_loading"
-        layout="@layout/loader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center" />
-
     <ScrollView
         android:id="@+id/main_view"
         android:layout_width="match_parent"

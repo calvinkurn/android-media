@@ -1,10 +1,32 @@
 package com.tokopedia.core.drawer2.viewmodel;
 
+import com.tokopedia.core.util.GlobalConfig;
+
 /**
  * Created by nisie on 1/23/17.
  */
 
 public class DrawerNotification {
+
+    public static final String CACHE_INBOX_MESSAGE = "CACHE_INBOX_MESSAGE";
+    public static final String CACHE_INBOX_TALK = "CACHE_INBOX_TALK";
+    public static final String CACHE_INBOX_REVIEW = "CACHE_INBOX_REVIEW";
+    public static final String CACHE_INBOX_RESOLUTION_CENTER = "CACHE_INBOX_RESOLUTION_CENTER";
+    public static final String CACHE_INBOX_TICKET = "CACHE_INBOX_TICKET";
+
+    public static final String CACHE_PURCHASE_ORDER_STATUS = "CACHE_PURCHASE_ORDER_STATUS";
+    public static final String CACHE_PURCHASE_PAYMENT_CONFIRM = "CACHE_PURCHASE_PAYMENT_CONFIRM";
+    public static final String CACHE_PURCHASE_DELIVERY_CONFIRM = "CACHE_PURCHASE_DELIVERY_CONFIRM";
+    public static final String CACHE_PURCHASE_REORDER = "CACHE_PURCHASE_REORDER";
+
+    public static final String CACHE_SELLING_NEW_ORDER = "CACHE_SELLING_NEW_ORDER";
+    public static final String CACHE_SELLING_SHIPPING_CONFIRMATION = "CACHE_SELLING_SHIPPING_CONFIRMATION";
+    public static final String CACHE_SELLING_SHIPPING_STATUS = "CACHE_SELLING_SHIPPING_STATUS";
+
+    public static final String CACHE_TOTAL_NOTIF = "CACHE_TOTAL_NOTIF";
+    public static final String CACHE_INCR_NOTIF = "CACHE_INCR_NOTIF";
+    public static final String CACHE_TOTAL_CART = "CACHE_INCR_NOTIF";
+
 
     private int inboxMessage;
     private int inboxTalk;
@@ -20,6 +42,9 @@ public class DrawerNotification {
     private int sellingNewOrder;
     private int sellingShippingConfirmation;
     private int sellingShippingStatus;
+    private int totalNotif;
+    private int incrNotif;
+    private int totalCart;
 
     public DrawerNotification() {
         this.inboxMessage = 0;
@@ -132,5 +157,41 @@ public class DrawerNotification {
 
     public void setSellingShippingStatus(int sellingShippingStatus) {
         this.sellingShippingStatus = sellingShippingStatus;
+    }
+
+    public int getTotalNotif() {
+        if (GlobalConfig.isSellerApp())
+            return totalNotif - (getNotifPurchase() + inboxReview + inboxResCenter + inboxTicket);
+        else
+            return totalNotif;
+    }
+
+    private int getNotifPurchase() {
+        return getPurchasePaymentConfirm() + getPurchaseDeliveryConfirm() +
+                getPurchaseOrderStatus() + getPurchaseReorder();
+    }
+
+    public void setTotalNotif(int totalNotif) {
+        this.totalNotif = totalNotif;
+    }
+
+    public boolean isUnread() {
+        return incrNotif > 0;
+    }
+
+    public void setIncrNotif(int incrNotif) {
+        this.incrNotif = incrNotif;
+    }
+
+    public int getIncrNotif() {
+        return incrNotif;
+    }
+
+    public void setTotalCart(int totalCart) {
+        this.totalCart = totalCart;
+    }
+
+    public int getTotalCart() {
+        return totalCart;
     }
 }

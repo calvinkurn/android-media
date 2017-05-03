@@ -344,12 +344,6 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
         showDialog(getRequestCancelOrderAlertDialog());
     }
 
-    @OnClick(R2.id.upload_proof)
-    void actionUploadProof() {
-        presenter.processUploadProof(this, orderData);
-    }
-
-
     @OnClick(R2.id.see_all)
     void actionSeeAllHistories() {
         presenter.processSeeAllHistories(this, orderData);

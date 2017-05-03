@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.model.data.TotalAd;
-import com.tokopedia.seller.topads.presenter.TopAdsDashboardProductPresenterImpl;
+import com.tokopedia.seller.topads.data.model.data.TotalAd;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
@@ -16,6 +16,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
+    public static final int REQUEST_CODE_AD_STATUS = 2;
     TopAdsLabelView groupSummaryLabelView;
     TopAdsLabelView itemSummaryLabelView;
 
@@ -77,6 +78,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
+        groupSummaryLabelView.setVisibleArrow(true);
+        itemSummaryLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
         onLoadDataSuccess();
     }
@@ -92,12 +95,31 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         if (totalProductAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
         }
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
     void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+    }
+
+    boolean adStatusChanged = false;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQUEST_CODE_AD_STATUS && intent != null) {
+            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adStatusChanged) {
+            loadData();
+            adStatusChanged = false;
+        }
     }
 
     @Override

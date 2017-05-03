@@ -1,5 +1,6 @@
 package com.tokopedia.core.network;
 
+import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
@@ -50,5 +51,9 @@ public class SnackbarRetry {
 
     public void addOnAttachStateChangeListener(View.OnAttachStateChangeListener onAttachStateChangeListener) {
         snackBar.getView().addOnAttachStateChangeListener(onAttachStateChangeListener);
+    }
+
+    public void setColorActionRetry(@ColorInt int colorActionRetry){
+        snackBar.setActionTextColor(colorActionRetry);
     }
 }

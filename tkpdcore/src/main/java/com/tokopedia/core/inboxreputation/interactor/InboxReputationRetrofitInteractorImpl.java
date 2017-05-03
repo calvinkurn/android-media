@@ -36,6 +36,7 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
 
     private static final String TAG = InboxReputationRetrofitInteractorImpl.class.getSimpleName();
     private static final String DEFAULT_MSG_ERROR = "Terjadi Kesalahan, Mohon ulangi beberapa saat lagi";
+    private static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
 
     private final CompositeSubscription compositeSubscription;
     private final InboxReputationService reputationService;
@@ -84,6 +85,8 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
                     if (!response.body().isError()) {
 
                         listener.onSuccess(response.body().convertDataObj(InboxReputation.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -164,6 +167,8 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(InboxReputationDetail.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -241,6 +246,8 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(SingleReview.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));
@@ -316,6 +323,8 @@ public class InboxReputationRetrofitInteractorImpl implements InboxReputationRet
                 if (response.isSuccessful()) {
                     if (!response.body().isError()) {
                         listener.onSuccess(response.body().convertDataObj(LikeDislike.class));
+                    } else if (response.body().getStatus().equals(TOO_MANY_REQUEST)) {
+                        listener.onError(response.body().getErrorMessageJoined());
                     } else {
                         if (response.body().isNullData()) listener.onNullData();
                         else listener.onError(response.body().getErrorMessages().get(0));

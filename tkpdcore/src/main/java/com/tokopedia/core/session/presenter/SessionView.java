@@ -34,21 +34,15 @@ public interface SessionView {
 
     boolean isFragmentCreated(String tag);
 
-    void moveToFragmentSecurityQuestion(int security1, int security2, int userId);
+    void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email);
 
     String getGenderFromGoogle(Person user);
 
     String getBirthdayFromGoogle(Person user);
 
-    void moveToNewRegisterNext(String name, String email, String password, boolean isAutoVerify);
-
     void moveToRegisterPassPhone(CreatePasswordModel model, List<String> createPasswordList, Bundle data);
 
-    void moveToActivationResend(String email, Bundle bundle);
-
     void moveToRegister();
-
-    void moveToForgotPassword();
 
     void updateUI(boolean isSignedIn);
 
@@ -69,4 +63,6 @@ public interface SessionView {
     void moveToRegisterInitial();
 
     void moveToLogin();
+
+    void verifyTruecaller();
 }

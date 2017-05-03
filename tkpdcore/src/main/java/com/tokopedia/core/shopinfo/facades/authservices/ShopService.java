@@ -1,6 +1,7 @@
 package com.tokopedia.core.shopinfo.facades.authservices;
 
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 
 import retrofit2.Retrofit;
@@ -11,8 +12,6 @@ import retrofit2.Retrofit;
  * migrate retrofit 2 by Angga.Prasetiyo
  */
 public class ShopService extends AuthService<ShopApi> {
-
-    private static final String URL_SHOP = "https://ws.tokopedia.com/v4/shop/";
 
     public ShopService() {
         super();
@@ -25,7 +24,7 @@ public class ShopService extends AuthService<ShopApi> {
 
     @Override
     protected String getBaseUrl() {
-        return URL_SHOP;
+        return TkpdBaseURL.Shop.URL_SHOP;
     }
 
     @Override

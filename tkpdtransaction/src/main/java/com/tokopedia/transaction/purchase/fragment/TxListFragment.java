@@ -469,11 +469,6 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     }
 
     @Override
-    public void actionUploadTx(OrderData data) {
-        presenter.processUploadTx(getActivity(), data);
-    }
-
-    @Override
     public void actionConfirmDeliver(OrderData data) {
         presenter.processConfirmDeliver(getActivity(), data, typeInstance);
     }

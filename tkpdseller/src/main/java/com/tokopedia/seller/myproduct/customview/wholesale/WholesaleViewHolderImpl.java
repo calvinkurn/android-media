@@ -1,0 +1,194 @@
+package com.tokopedia.seller.myproduct.customview.wholesale;
+
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.EditText;
+
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
+import com.tokopedia.seller.myproduct.utils.PriceUtils;
+
+
+/**
+ * Created by sebastianuskh on 12/2/16.
+ */
+public class WholesaleViewHolderImpl extends RecyclerView.ViewHolder implements WholesaleViewHolder {
+
+    private static final String TAG = "Wholesale View Holder";
+    EditText qtyOne;
+    EditText qtyTwo;
+    EditText qtyPrice;
+    private int position;
+    private WholesaleAdapter listener;
+    TextWatcher qtyOneTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_ONE, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyOneError("Masukan format angka dengan benar");
+            }
+        }
+    };
+    TextWatcher qtyTwoTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_TWO, position, String.valueOf(s), true);
+            } catch (NumberFormatException e) {
+                onQtyTwoError("Masukan format angka dengan benar");
+            }
+        }
+    };
+    private int currency;
+    private boolean onPriceEdit = false;
+    TextWatcher qtyPriceTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            try {
+                if (onPriceEdit)
+                    return;
+                onPriceEdit = true;
+                String rawString = setPriceCurrency(s.toString());
+                listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, true);
+                onPriceEdit = false;
+            } catch (NumberFormatException e) {
+                onQtyPriceError("Masukan format angka dengan benar");
+            }
+        }
+    };
+
+    public WholesaleViewHolderImpl(View itemView) {
+        super(itemView);
+        qtyOne = (EditText) itemView.findViewById(R.id.wholesale_item_qty_one);
+        qtyTwo = (EditText) itemView.findViewById(R.id.wholesale_item_qty_two);
+        qtyPrice = (EditText) itemView.findViewById(R.id.wholesale_item_qty_price);
+        itemView.findViewById(R.id.button_delete_wholesale).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteWholesale();
+            }
+        });
+    }
+
+    void deleteWholesale() {
+        listener.removeWholesaleItem(position);
+    }
+
+    @Override
+    public void bindView(WholesaleAdapter listener, int position, WholesaleModel wholesaleModel, int currency) {
+        this.listener = listener;
+        this.position = position;
+        this.currency = currency;
+        if(wholesaleModel != null) {
+            this.qtyOne.setText(String.format("%d", wholesaleModel.getQtyOne()));
+            this.qtyTwo.setText(String.format("%d", wholesaleModel.getQtyTwo()));
+            this.qtyPrice.setText(String.format("%.00f", wholesaleModel.getQtyPrice()));
+
+            String rawString = setPriceCurrency(String.format("%.00f", wholesaleModel.getQtyPrice()));
+            listener.onUpdateData(WholesaleAdapterImpl.QTY_PRICE, position, rawString, false);
+
+            /** add listener after first time we add the initial value so it will not checked at the first time */
+            this.qtyOne.addTextChangedListener(qtyOneTextWatcher);
+            this.qtyTwo.addTextChangedListener(qtyTwoTextWatcher);
+            this.qtyPrice.addTextChangedListener(qtyPriceTextWatcher);
+        }
+    }
+
+    @Override
+    public void removeQtyOneTextWatcher() {
+        this.qtyOne.removeTextChangedListener(qtyOneTextWatcher);
+        this.qtyOne.setError(null);
+    }
+
+    @Override
+    public void removeQtyTwoTextWatcher() {
+        this.qtyTwo.removeTextChangedListener(qtyTwoTextWatcher);
+        this.qtyTwo.setError(null);
+    }
+
+    @Override
+    public void removeQtyPriceTextWatcher() {
+        this.qtyPrice.removeTextChangedListener(qtyPriceTextWatcher);
+        this.qtyPrice.setError(null);
+    }
+
+    @Override
+    public void onQtyOneError(String error) {
+        qtyOne.setError(error);
+    }
+
+    @Override
+    public void onQtyTwoError(String error) {
+        qtyTwo.setError(error);
+    }
+
+    @Override
+    public void onQtyPriceError(String error) {
+        qtyPrice.setError(error);
+    }
+
+    @Override
+    public CharSequence getQtyOneError() {
+        return qtyOne.getError();
+    }
+
+    @Override
+    public CharSequence getQtyTwoError() {
+        return qtyTwo.getError();
+    }
+
+    @Override
+    public CharSequence getQtyPriceError() {
+        return qtyPrice.getError();
+    }
+
+    private String setPriceCurrency(String s) {
+        String rawString = "";
+        switch (currency) {
+            case PriceUtils.CURRENCY_RUPIAH:
+                CurrencyFormatHelper.SetToRupiah(qtyPrice);
+                rawString = CurrencyFormatter.getRawString(s);
+                break;
+            case PriceUtils.CURRENCY_DOLLAR:
+                CurrencyFormatHelper.SetToDollar(qtyPrice);
+                rawString = CurrencyFormatter.getRawString(s);
+                break;
+        }
+        return rawString;
+    }
+
+}

@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.create.interactor.RetrofitInteractor;
@@ -150,7 +150,7 @@ public class ChooseSolutionImpl implements ChooseSolutionPresenter {
     }
 
     private void clearAttachment() {
-        for (AttachmentResCenterDB data : listener.getAttachmentData()) {
+        for (AttachmentResCenterVersion2DB data : listener.getAttachmentData()) {
             data.delete();
         }
     }

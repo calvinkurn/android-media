@@ -59,6 +59,10 @@ public class RechargeOperatorModel extends BaseModel {
     @Expose
     public Integer weight;
 
+    @Column
+    @Expose
+    public Integer defaultProductId;
+
     @Override
     public String toString() {
         return name;

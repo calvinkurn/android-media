@@ -46,4 +46,8 @@ public class VideoLayout extends LinearLayout{
     public void destroyVideoLayoutProcess() {
         productVideoHorizontalScroll.destroyAllOnGoingYoutubeProcess();
     }
+
+    public void refreshVideo() {
+        productVideoHorizontalScroll.clearYoutubeVideo();
+    }
 }

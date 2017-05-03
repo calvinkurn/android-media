@@ -90,6 +90,11 @@ public class ProductFeedAdapter {
         return new ViewHolderProductFeed(itemLayoutView);
     }
 
+    public static RecyclerView.ViewHolder createEmtpyFeed(ViewGroup parent) {
+        View viewLayout = LayoutInflater
+                .from(parent.getContext()).inflate(R.layout.empty_product_feed, parent, false);
+        return new ViewHolderEmptyFeed(viewLayout);
+    }
     public static ViewHolderHistoryProduct
                 createViewHistoryProduct(ViewGroup parent,
                                          HistoryProductListItem historyProductListItem) {

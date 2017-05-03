@@ -12,7 +12,7 @@ import rx.Observable;
  * @author Toped18 on 7/1/2016.
  */
 public interface SearchSuggestionApi {
-    @GET("universe/v1?device=android&source=searchbar")
+    @GET("universe/v3?device=android&source=searchbar")
     Observable<Response<SearchDataModel>> searchSuggestion(
             @Query("q") String querySearch,
             @Query("unique_id") String unique_id,

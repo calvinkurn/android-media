@@ -82,4 +82,14 @@ public interface WishList {
     void deleteWishlist(Context context, String productId);
 
     void addToCart(Context context, String productId);
+
+    boolean isLoadedFirstPage();
+
+    void searchWishlist(String query);
+
+    void searchWishlistLoadMore();
+
+    void fetchDataAfterClearSearch(Context context);
+
+    void refreshDataOnSearch(CharSequence query);
 }

@@ -25,19 +25,19 @@
 
             <FrameLayout
                 android:id="@+id/layout_shop_ad"
-                style="@style/LabelLayout"
+                style="@style/LabelLayoutWithBorder"
                 android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
                 android:visibility="gone">
 
                 <include
-                    layout="@layout/include_top_ads_shop_ad"
+                    layout="@layout/include_top_ads_ad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/layout_empty_shop_ad"
-                style="@style/LabelLayout"
+                style="@style/LabelLayoutWithBorder"
                 android:layout_marginBottom="@dimen/top_ads_dashboard_margin_bottom_space"
                 android:visibility="gone">
 

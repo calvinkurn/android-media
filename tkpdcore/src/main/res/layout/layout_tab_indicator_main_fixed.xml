@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.TabLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.TabLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/indicator"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:tabSelectedTextColor="@color/white"
-    app:tabTextColor="@android:color/white"
     android:background="@color/tkpd_main_green"
-    app:tabIndicatorColor="@color/white"
-    app:tabIndicatorHeight="3dp"
-    app:elevation="10dp"
     app:tabGravity="fill"
-    app:tabMode="fixed" />
+    app:tabIndicatorColor="@color/white"
+    app:tabIndicatorHeight="4dp"
+    app:tabMode="fixed"
+    app:tabSelectedTextColor="@color/white"
+    app:tabTextAppearance="@style/CustomTitlePageIndicator"/>

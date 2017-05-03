@@ -9,7 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.tokopedia.core.gcm.FCMMessagingService.NotificationListener;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -30,7 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 @SuppressLint("ValidFragment")
-public class ManageGeneral extends TkpdActivity implements NotificationListener{
+public class ManageGeneral extends TkpdActivity implements NotificationReceivedListener {
 
     @BindView(R2.id.pager)
     ViewPager mViewPager;
@@ -46,7 +46,6 @@ public class ManageGeneral extends TkpdActivity implements NotificationListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_manage_general);
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SETTINGS);
 
         ButterKnife.bind(this);
         String[] content;

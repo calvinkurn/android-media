@@ -448,7 +448,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     public void enableView() {
         mainView.setVisibility(View.VISIBLE);
         codeOTP.setEnabled(true);
-        totalBalance.setEnabled(true);
         totalWithdrawal.setEnabled(true);
         bankListView.setEnabled(true);
         password.setEnabled(true);
@@ -462,7 +461,6 @@ public class WithdrawFragment extends BasePresenterFragment<WithdrawFragmentPres
     @Override
     public void disableView() {
         codeOTP.setEnabled(false);
-        totalBalance.setEnabled(false);
         totalWithdrawal.setEnabled(false);
         bankListView.setEnabled(false);
         password.setEnabled(false);

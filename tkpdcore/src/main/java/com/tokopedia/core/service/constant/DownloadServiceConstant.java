@@ -51,6 +51,8 @@ public interface DownloadServiceConstant {
     String ANSWER_QUESTION_MODEL = "ANSWER_QUESTION_MODEL";
     String ANSWER_SECURITY_QUESTION_FALSE_MODEL = "ANSWER_SECURITY_QUESTION_FALSE_MODEL";
     String SECURITY_QUESTION_LOADING = "SECURITY_QUESTION_LOADING";
+    String PHONE_TRUECALLER = "PHONE_TRUECALLER";
+    String ALLOW_LOGIN = "ALLOW_LOGIN";
 
     // Register
     String REGISTER_MODEL_KEY = "REGISTER_MODEL_KEY";
@@ -114,6 +116,7 @@ public interface DownloadServiceConstant {
     int REGISTER_WEBVIEW = 26;
 
     int REQUEST_OTP_PHONE = 27;
+    int VERIFY_PHONE = 28;
 
     String FACEBOOK = "facebook";
     String GOOGLE = "gplus";

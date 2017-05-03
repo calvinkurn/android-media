@@ -97,6 +97,16 @@ public class TransactionPurchaseRouter {
         return RouterUtils.getActivityComponentName(context, TRANSACTION_PURCHASE_ACTIVITY);
     }
 
+    public static Class<?> getPurchaseActivityClass() {
+        Class<?> parentIndexHomeClass = null;
+        try {
+            parentIndexHomeClass = RouterUtils.getActivityClass(TRANSACTION_PURCHASE_ACTIVITY);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return parentIndexHomeClass;
+    }
+
     public static Fragment instanceTxListFromNotification(Context context, String txFilterID) {
         Fragment fragment = Fragment.instantiate(context, TRANSACTION_TX_LIST_FRAGMENT);
         Bundle bundle = new Bundle();

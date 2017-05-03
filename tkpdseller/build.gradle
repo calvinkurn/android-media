@@ -115,14 +115,11 @@ dependencies {
     compile rootProject.ext.dbDependencies.dbFlowCore
     compile rootProject.ext.dbDependencies.dbFlow
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
-    compile rootProject.ext.miscDependencies.parcelerApi
-    apt rootProject.ext.miscDependencies.parceler
-
-    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    compile rootProject.ext.miscDependencies.rxJavaComputation
+    compile rootProject.ext.miscDependencies.gson
+    compile 'com.shootr:KMNumbers:1.0.0'
+    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
+    compile rootProject.ext.miscDependencies.chips
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

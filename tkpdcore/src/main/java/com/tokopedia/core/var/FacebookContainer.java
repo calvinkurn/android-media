@@ -9,4 +9,5 @@ import java.util.List;
 
 public class FacebookContainer {
     public static final List<String> readPermissions = Arrays.asList("public_profile", "email", "user_birthday");
+    public static final List<String> writePermissions = Arrays.asList("publish_actions");
 }

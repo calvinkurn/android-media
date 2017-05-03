@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -59,7 +60,7 @@ public class BrowseShopAdapter extends ProductAdapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case SHOP_MODEL_TYPE:
-                ((ShopViewHolder)holder).bindData(getData().get(position), position);
+                ((ShopViewHolder)holder).bindData(context, getData().get(position), position);
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -99,14 +100,13 @@ public class BrowseShopAdapter extends ProductAdapter {
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindData(RecyclerViewItem recyclerViewItem, int position){
+        public void bindData(Context context, RecyclerViewItem recyclerViewItem, int position){
             if(recyclerViewItem != null && recyclerViewItem instanceof ShopModel){
-                bindData((ShopModel) recyclerViewItem, position);
+                bindData(context, (ShopModel) recyclerViewItem, position);
             }
         }
 
-        public void bindData(final ShopModel shopModel, int position){
-            final Context context = itemView.getContext();
+        public void bindData(final Context context, final ShopModel shopModel, int position){
             ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
             itemShopBought.setText(shopModel.getTotalTransaction() + " " + context.getString(R.string.title_total_tx));
             itemShopCountFav.setText(shopModel.getNumberOfFavorite() + " " + context.getString(R.string.title_favorite));
@@ -131,6 +131,7 @@ public class BrowseShopAdapter extends ProductAdapter {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShopInfoActivity.class);
                     intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
             });

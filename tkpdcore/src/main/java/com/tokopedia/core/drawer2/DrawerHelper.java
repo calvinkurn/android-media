@@ -9,7 +9,9 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -25,11 +27,16 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
+import static android.R.id.toggle;
+
 /**
  * Created by nisie on 1/11/17.
  */
 
 public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemListener {
+
+    public static final String DRAWER_CACHE = "DRAWER_CACHE";
+    protected LocalCacheHandler drawerCache;
 
     public DrawerAdapter adapter;
 
@@ -40,6 +47,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     protected Activity context;
 
     public DrawerHelper(Activity activity) {
+        drawerCache = new LocalCacheHandler(activity, DRAWER_CACHE);
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout_nav);
         recyclerView = (RecyclerView) activity.findViewById(R.id.left_drawer);
         toolbar = (Toolbar) activity.findViewById(R.id.app_bar);
@@ -48,10 +56,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
 
     public void setActionToolbar(Activity activity) {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                activity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        ImageView drawerToggle = (ImageView) toolbar.getRootView().findViewById(R.id.toggle_but_ab);
+        if (drawerToggle == null) {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    activity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawerLayout.addDrawerListener(toggle);
+            toggle.syncState();
+        }
     }
 
     protected ArrayList<DrawerItem> createDrawerData() {

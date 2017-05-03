@@ -85,11 +85,11 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
         setSelectedBackground(item, holder);
         holder.icon.setImageResource(item.getIconId());
 
-        if (item.getIconId() != 0) {
-            holder.label.setTypeface(null, Typeface.BOLD);
-        } else {
-            holder.label.setTypeface(null, Typeface.NORMAL);
-        }
+//        if (item.getIconId() != 0) {
+//            holder.label.setTypeface(null, Typeface.BOLD);
+//        } else {
+//            holder.label.setTypeface(null, Typeface.NORMAL);
+//        }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override

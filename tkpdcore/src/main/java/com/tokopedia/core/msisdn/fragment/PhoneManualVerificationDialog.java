@@ -14,10 +14,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.facade.FacadePhoneVerification;
 import com.tokopedia.core.fragment.VerificationDialog;
 import com.tokopedia.core.interfaces.PhoneVerificationInterfaces;
 
@@ -57,7 +55,6 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     TextView manualVerifyCodeButton;
     @BindView(R2.id.close_button) View closeButton;
 
-    FacadePhoneVerification facadePhoneVerification;
     private Unbinder unbinder;
 
     public static Fragment newInstance(int type, String phoneNumber){
@@ -116,13 +113,6 @@ public class PhoneManualVerificationDialog extends DialogFragment{
     @OnClick(R2.id.close_button)
     public void onDismissDialog(){
         dismiss();
-    }
-
-    @OnClick(R2.id.verify_sms_text)
-    public void requestVerificationSMSListener(View v) {
-        if(PhoneNumberValidation(ChooseNumber())){
-            facadePhoneVerification.requestVerificationCode(ChooseNumber(), requestListener());
-        }
     }
 
     private PhoneVerificationInterfaces.requestCodeListener requestListener(){

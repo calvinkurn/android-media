@@ -68,10 +68,7 @@ public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageSho
 
     @Override
     protected void onFirstTimeLaunched() {
-        if (getArguments().getBoolean(ManageShopNotesActivity.PARAM_IS_EDIT)) {
-            setNoteFromBundle((ShopNote) getArguments().getParcelable(ManageShopNotesActivity.PARAM_SHOP_NOTE));
-            presenter.getShopNoteDetail();
-        }
+
     }
 
     private void setNoteName() {
@@ -177,6 +174,10 @@ public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageSho
     protected void initView(View view) {
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         setNoteName();
+        if (getArguments().getBoolean(ManageShopNotesActivity.PARAM_IS_EDIT)) {
+            setNoteFromBundle((ShopNote) getArguments().getParcelable(ManageShopNotesActivity.PARAM_SHOP_NOTE));
+            presenter.getShopNoteDetail();
+        }
     }
 
     @Override

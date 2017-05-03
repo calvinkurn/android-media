@@ -96,7 +96,7 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
                 actionMessage.setVisibility(GONE);
                 actionManage.setVisibility(VISIBLE);
             } else {
-                actionMessage.setVisibility(VISIBLE);
+                actionMessage.setVisibility(GONE);
                 actionManage.setVisibility(GONE);
             }
         } else {

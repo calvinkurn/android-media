@@ -65,4 +65,6 @@ public interface InboxReputationDetailFragmentPresenter {
     ActReviewPass getSkipParam(InboxReputationItem inboxReputation, InboxReputationDetailItem inboxReputationDetail);
 
     ActReviewPass getReportParam(InboxReputationDetailItem inboxReputationDetail, String message);
+
+    void showShareProvider(InboxReputationDetailItem inboxReputationDetailItem);
 }

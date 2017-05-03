@@ -23,18 +23,22 @@ public class DynamicFilterFactory {
     private static final String TAG = DynamicFilterFactory.class.getSimpleName();
 
     public static DynamicFilter createDynamicFilter() {
-        DynamicFilter dynamicFilter = RetrofitUtils.createRetrofit(DynamicFilter.DYNAMIC_FILTER_URL).create(DynamicFilter.class);
-        return dynamicFilter;
+        return RetrofitUtils
+                .createRetrofit(DynamicFilter.DYNAMIC_FILTER_URL)
+                .create(DynamicFilter.class);
     }
 
-    public static Observable<Response<DynamicFilterModel>> createDynamicFilterObservable(Context context, String source, String device, String sc) {
+    public static Observable<Response<DynamicFilterModel>> createDynamicFilterObservable(
+            Context context, String source, String device, String sc) {
+
         Log.d(TAG, "Source " + source + " Device " + device + " SC " + sc);
 
         Map<String, String> params = new HashMap<>();
         params.put(DynamicFilter.SC, sc);
         params.put(DynamicFilter.DEVICE, device);
         params.put(DynamicFilter.SOURCE, source);
-        Observable<Response<DynamicFilterModel>> responseObservable = createDynamicFilter().browseCatalogs(AuthUtil.generateParams(context, params));
+        Observable<Response<DynamicFilterModel>> responseObservable
+                = createDynamicFilter().browseCatalogs(AuthUtil.generateParams(context, params));
 
         return responseObservable;
     }

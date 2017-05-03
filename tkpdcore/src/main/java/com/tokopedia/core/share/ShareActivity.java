@@ -39,7 +39,6 @@ public class ShareActivity extends TActivity implements ShareView {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, ProductShareFragment.newInstance(data),
                 ProductShareFragment.class.getSimpleName());
-        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
     @Override

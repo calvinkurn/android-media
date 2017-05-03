@@ -40,7 +40,6 @@ public interface DbManager {
     List<CategoryDB> getDepartmentParent();
     List<CategoryDB> getDepartmentChild(int level, int depId);
     void removeAllEtalase();
-    void checkStockStatusDB();
     void saveCatalog(CatalogDataModel catalogDataModel, String productDepId, String productName);
     ArrayList<CatalogDataModel.Catalog> getCatalogList(String productDepId, String productName);
     void removePictureWithId(long imageDbId);

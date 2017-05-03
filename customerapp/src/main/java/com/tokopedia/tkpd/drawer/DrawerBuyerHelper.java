@@ -13,14 +13,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.DeveloperOptions;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.DrawerAdapter;
 import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.drawer2.databinder.DrawerHeaderDataBinder;
@@ -28,30 +26,21 @@ import com.tokopedia.core.drawer2.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.model.DrawerGroup;
 import com.tokopedia.core.drawer2.model.DrawerItem;
 import com.tokopedia.core.drawer2.model.DrawerSeparator;
-import com.tokopedia.core.drawer2.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
-import com.tokopedia.core.myproduct.ManageProduct;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static android.R.attr.data;
-
 
 /**
  * Created by nisie on 1/11/17.
@@ -67,8 +56,11 @@ public class DrawerBuyerHelper extends DrawerHelper
     protected View shopLayout;
     protected View footerShadow;
 
-    public DrawerBuyerHelper(Activity activity) {
+    private SessionHandler sessionHandler;
+
+    public DrawerBuyerHelper(Activity activity, SessionHandler sessionHandler) {
         super(activity);
+        this.sessionHandler = sessionHandler;
         shopName = (TextView) activity.findViewById(R.id.label);
         shopLabel = (TextView) activity.findViewById(R.id.sublabel);
         shopIcon = (ImageView) activity.findViewById(R.id.icon);
@@ -76,14 +68,37 @@ public class DrawerBuyerHelper extends DrawerHelper
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
     }
 
-    public static DrawerBuyerHelper createInstance(Activity activity) {
-        return new DrawerBuyerHelper(activity);
+    public static DrawerBuyerHelper createInstance(Activity activity, SessionHandler sessionHandler) {
+        return new DrawerBuyerHelper(activity, sessionHandler);
     }
 
     @Override
     protected ArrayList<DrawerItem> createDrawerData() {
         ArrayList<DrawerItem> data = new ArrayList<>();
 
+        if (sessionHandler.isV4Login()) {
+            createDataLogin(data);
+            shopLayout.setVisibility(View.VISIBLE);
+            footerShadow.setVisibility(View.VISIBLE);
+        } else {
+            createDataGuest(data);
+            shopLayout.setVisibility(View.GONE);
+            footerShadow.setVisibility(View.GONE);
+        }
+        return data;
+    }
+
+    private void createDataGuest(ArrayList<DrawerItem> data) {
+        data.add(new DrawerItem("Beranda", 0, TkpdState.DrawerPosition.INDEX_HOME, true));
+        data.add(new DrawerItem("Masuk", 0, TkpdState.DrawerPosition.LOGIN, true));
+        data.add(new DrawerItem("Daftar", 0, TkpdState.DrawerPosition.REGISTER, true));
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            data.add(new DrawerItem("Developer Options", android.R.drawable.stat_sys_warning, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
+        }
+
+    }
+
+    private void createDataLogin(ArrayList<DrawerItem> data) {
         data.add(new DrawerItem("Beranda", R.drawable.icon_home, TkpdState.DrawerPosition.INDEX_HOME, true));
         data.add(new DrawerItem("Wishlist", R.drawable.icon_wishlist, TkpdState.DrawerPosition.WISHLIST, true));
         data.add(getInboxMenu());
@@ -96,10 +111,9 @@ public class DrawerBuyerHelper extends DrawerHelper
             data.add(new DrawerItem("Hubungi Kami", R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, true));
         }
         data.add(new DrawerItem("Keluar", R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT, true));
-        if (BuildConfig.DEBUG & MainApplication.isDebug()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             data.add(new DrawerItem("Developer Options", android.R.drawable.stat_sys_warning, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
-        return data;
     }
 
     private DrawerGroup getSellerMenu() {
@@ -127,11 +141,28 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private DrawerGroup getInboxMenu() {
         DrawerGroup inboxMenu = new DrawerGroup("Kotak Masuk", R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX);
-        inboxMenu.add(new DrawerItem("Pesan", 0, TkpdState.DrawerPosition.INBOX_MESSAGE, false));
-        inboxMenu.add(new DrawerItem("Diskusi Produk", 0, TkpdState.DrawerPosition.INBOX_TALK, false));
-        inboxMenu.add(new DrawerItem("Ulasan", 0, TkpdState.DrawerPosition.INBOX_REVIEW, false));
-        inboxMenu.add(new DrawerItem("Layanan Pengguna", 0, TkpdState.DrawerPosition.INBOX_TICKET, false));
-        inboxMenu.add(new DrawerItem("Pusat Resolusi", 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false));
+        inboxMenu.add(new DrawerItem("Pesan",
+                0,
+                TkpdState.DrawerPosition.INBOX_MESSAGE,
+                false,
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE)));
+        inboxMenu.add(new DrawerItem("Diskusi Produk",
+                0,
+                TkpdState.DrawerPosition.INBOX_TALK,
+                false,
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK)));
+        inboxMenu.add(new DrawerItem("Ulasan",
+                0,
+                TkpdState.DrawerPosition.INBOX_REVIEW,
+                false,
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW)));
+        inboxMenu.add(new DrawerItem("Layanan Pengguna",
+                0,
+                TkpdState.DrawerPosition.INBOX_TICKET,
+                false,
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
+        inboxMenu.add(new DrawerItem("Pusat Resolusi", 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false,
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
         return inboxMenu;
     }
 
@@ -316,8 +347,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SALES_LIST);
                 break;
             case TkpdState.DrawerPosition.MANAGE_PRODUCT:
-                startIntent(context, ManageProduct.class);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_LIST);
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
+                }
                 break;
             case TkpdState.DrawerPosition.MANAGE_ETALASE:
                 startIntent(context, EtalaseShopEditor.class);

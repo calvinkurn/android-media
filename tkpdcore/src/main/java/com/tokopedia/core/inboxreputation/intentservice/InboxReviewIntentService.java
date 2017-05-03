@@ -114,8 +114,8 @@ public class InboxReviewIntentService extends IntentService
 
                         @Override
                         public void onError(String error) {
+                            resultData.putString(EXTRA_ERROR, error);
                             receiver.send(STATUS_ERROR, resultData);
-
                         }
 
                         @Override

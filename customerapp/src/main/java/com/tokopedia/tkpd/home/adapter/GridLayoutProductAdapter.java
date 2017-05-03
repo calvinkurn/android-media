@@ -158,8 +158,6 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
             setBadges(viewHolder, product);
             setLabels(viewHolder, product);
             viewHolder.mainContent.setOnClickListener(onProductItemClicked(position));
-            setBadges(viewHolder, product);
-            setLabels(viewHolder, product);
         } else if (data.get(position) instanceof RecentView) {
             RecentView product = (RecentView) data.get(position);
             viewHolder.productName.setText(Html.fromHtml(product.getProductName()));
@@ -216,12 +214,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
         if(product.badges == null){
             product.badges = new ArrayList<>();
-            if(product.isGold.equals("1")){
+            if(product.isGold!=null && product.isGold.equals("1")){
                 Badge badge = new Badge();
                 badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
                 product.badges.add(badge);
             }
-            if(!product.luckyShop.isEmpty()){
+            if(product.luckyShop!=null && !product.luckyShop.isEmpty()){
                 Badge badge = new Badge();
                 badge.setImageUrl(product.luckyShop);
                 product.badges.add(badge);
@@ -286,6 +284,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void setBadgesRecentView(ViewHolder holder, RecentView data) {
+        holder.badgeContainer.removeAllViews();
         if (data.getBadges() != null && holder.badgeContainer.getChildCount() == 0) {
             for (com.tokopedia.core.network.entity.home.recentView.Badge badges : data.getBadges()) {
                 LuckyShopImage.loadImage(context, badges.getImageUrl(), holder.badgeContainer);

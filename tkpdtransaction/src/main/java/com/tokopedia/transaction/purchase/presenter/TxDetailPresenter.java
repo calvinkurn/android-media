@@ -25,8 +25,6 @@ public interface TxDetailPresenter {
 
     void processTrackOrder(Context context, OrderData orderData);
 
-    void processUploadProof(Context context, OrderData orderData);
-
     void processSeeAllHistories(Context context, OrderData orderData);
 
     void processAskSeller(Context context, OrderData orderData);

@@ -251,7 +251,7 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
 
     @Override
     public void showNoResult() {
-        adapter.showEmpty(true);
+        adapter.showEmptyFull(true);
     }
 
     @Override
@@ -313,7 +313,7 @@ public class InboxReputationFragment extends BasePresenterFragment<InboxReputati
     @Override
     public void removeError() {
         adapter.showRetry(false);
-        adapter.showEmpty(false);
+        adapter.showEmptyFull(false);
     }
 
     @Override

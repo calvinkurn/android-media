@@ -339,6 +339,8 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
+            NetworkErrorHelper.removeEmptyState(getView());
+            presenter.setAllowConnection(true);
             presenter.setActionOnRefreshing(getActivity());
         }else if(resultCode == ManageAddressConstant.RESULT_ERROR){
             showErrorMessageSnackBar(data.getExtras().getString("message"));

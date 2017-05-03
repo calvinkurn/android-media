@@ -23,7 +23,6 @@ import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.UploadImageHandler;
 import com.tokopedia.transaction.purchase.activity.TxDetailActivity;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractorImpl;
@@ -291,25 +290,6 @@ public class TxListPresenterImpl implements TxListPresenter {
         Dialog alertDialog = alertDialogBuilder.create();
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         viewListener.showDialog(alertDialog);
-    }
-
-    @Override
-    public void processUploadTx(Context context, OrderData data) {
-        UploadImageHandler imageUpload = new UploadImageHandler((Activity) context,
-                "image-upload-tcpdn.pl", "image");
-        imageUpload.AddEntity("upload_proof", "1");
-        imageUpload.Commit(new UploadImageHandler.UploadImageInterface() {
-
-            @Override
-            public void onUploadStart() {
-                viewListener.showProgressLoading();
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        });
     }
 
     @Override

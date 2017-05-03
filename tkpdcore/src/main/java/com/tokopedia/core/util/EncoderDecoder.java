@@ -8,7 +8,7 @@ import android.util.Base64;
 
 public class EncoderDecoder {
 	
-	public String Encrypt(String text, String initialVector) {
+	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");   
     	//String initialVector = "abcdefgh";

@@ -9,7 +9,6 @@ import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.payment.model.responsecartstep2.Transaction;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 
 import org.json.JSONArray;
@@ -48,18 +47,17 @@ public class PaymentTracking extends TrackingUtils {
         }
     }
 
-    public static void eventTransactionAF(Transaction cartData, ArrayList<String> productIDList, int qty, Map[] productList) {
-        JSONArray afJSON = new JSONArray(productIDList);
-        eventTransactionAF(cartData, afJSON, qty, productList);
-    }
-
-    public static void eventTransactionAF(Transaction cartData, JSONArray afJSON, int qty, Map[] productList) {
+    /* new from TopPayActivity revamped*/
+    public static void eventTransactionAF(
+            String paymentId, String grandTotalBeforeFee, JSONArray afJSON, int qty,
+            Map[] productList
+    ) {
         Map<String, Object> afValue = new HashMap<>();
-        afValue.put(AFInAppEventParameterName.REVENUE, cartData.getGrandTotalBeforeFee());
+        afValue.put(AFInAppEventParameterName.REVENUE, grandTotalBeforeFee);
         afValue.put(AFInAppEventParameterName.CONTENT_ID, afJSON.toString());
         afValue.put(AFInAppEventParameterName.QUANTITY, qty);
-        afValue.put(AFInAppEventParameterName.RECEIPT_ID, cartData.getPaymentId());
-        afValue.put(AFInAppEventType.ORDER_ID, cartData.getPaymentId());
+        afValue.put(AFInAppEventParameterName.RECEIPT_ID, paymentId);
+        afValue.put(AFInAppEventType.ORDER_ID, paymentId);
         afValue.put(AFInAppEventParameterName.CURRENCY, "IDR");
         afValue.put("product", productList);
 

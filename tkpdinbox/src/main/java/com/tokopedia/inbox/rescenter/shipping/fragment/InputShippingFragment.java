@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.R;
@@ -72,7 +72,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
-    private ArrayList<AttachmentResCenterDB> attachmentData;
+    private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
 
     public static Fragment newInstance(InputShippingParamsGetModel model) {
         InputShippingFragment fragment = new InputShippingFragment();
@@ -103,12 +103,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @Override
-    public ArrayList<AttachmentResCenterDB> getAttachmentData() {
+    public ArrayList<AttachmentResCenterVersion2DB> getAttachmentData() {
         return attachmentData;
     }
 
     @Override
-    public void setAttachmentData(ArrayList<AttachmentResCenterDB> attachmentData) {
+    public void setAttachmentData(ArrayList<AttachmentResCenterVersion2DB> attachmentData) {
         this.attachmentData = attachmentData;
     }
 
@@ -287,7 +287,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         presenter.onActivityResult(requestCode, resultCode, data);
         uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
             @Override
-            public void onSuccess(List<AttachmentResCenterDB> data) {
+            public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
                 attachmentData.clear();
                 attachmentData.addAll(data);
                 attachmentAdapter.notifyDataSetChanged();

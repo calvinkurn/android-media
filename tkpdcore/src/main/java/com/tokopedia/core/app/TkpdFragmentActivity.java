@@ -12,8 +12,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.network.NetworkConfig;
-import com.tokopedia.core.util.RequestManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -79,8 +77,6 @@ public class TkpdFragmentActivity extends FragmentActivity{
 		MainApplication.setActivityState(TkpdState.Application.FRAGMENT_ACTIVITY);
 		MainApplication.setActivityname(this.getClass().getSimpleName());
 		//RequestManager.retryRequestList(this.getClass().getSimpleName());
-		NetworkConfig networkconfig = new NetworkConfig(this);
-		networkconfig.getLatestConfig();
 		LocalCacheHandler cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
 		if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
 			Intent intent = new Intent(this, ForceUpdate.class);
@@ -97,8 +93,6 @@ public class TkpdFragmentActivity extends FragmentActivity{
 	protected void onDestroy() {
 		super.onDestroy();
 		isPause = true;
-		RequestManager.clearRequestList(this.getClass().getSimpleName());
-        RequestManager.cancelAllRequest();
 	}
 	
 	public Boolean isPausing() {

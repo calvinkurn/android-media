@@ -255,8 +255,12 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 .map(new Func1<GeneratedHost, ContactUsPass>() {
                     @Override
                     public ContactUsPass call(GeneratedHost generatedHost) {
-                        contactUsPass.setGeneratedHost(generatedHost);
-                        return contactUsPass;
+                        if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
+                            contactUsPass.setGeneratedHost(generatedHost);
+                            return contactUsPass;
+                        } else {
+                            throw new RuntimeException(generatedHost.getMessageError().get(0));
+                        }
                     }
                 });
     }

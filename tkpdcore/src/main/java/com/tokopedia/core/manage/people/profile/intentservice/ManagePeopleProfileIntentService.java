@@ -112,12 +112,12 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                 @Override
                                 public PeopleProfilePass call(PeopleProfilePass peopleProfilePass, GeneratedHost generatedHost) {
                                     Log.d(TAG + "-step1", String.valueOf(generatedHost));
-                                    if (generatedHost != null) {
+                                    if (generatedHost.getMessageError() == null || generatedHost.getMessageError().isEmpty()) {
                                         peopleProfilePass.setServerID(String.valueOf(generatedHost.getServerId()));
                                         peopleProfilePass.setUploadHost(generatedHost.getUploadHost());
                                         return peopleProfilePass;
                                     } else {
-                                        throw new RuntimeException("");
+                                        throw new RuntimeException(generatedHost.getMessageError().get(0));
                                     }
                                 }
                             });
@@ -175,7 +175,7 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                             peopleProfilePass.setSuccess(true);
                                             return peopleProfilePass;
                                         } else {
-                                            throw new RuntimeException(response.body().getErrorMessages().toString());
+                                            throw new RuntimeException(response.body().getErrorMessages().get(0));
                                         }
                                     } else {
                                         throw new RuntimeException(String.valueOf(response.code()));
@@ -201,7 +201,7 @@ public class ManagePeopleProfileIntentService extends IntentService {
                                     if (temp.isSuccess()) {
                                         peopleProfilePass.setSuccess(true);
                                     } else {
-                                        throw new RuntimeException(response.body().getErrorMessages().toString());
+                                        throw new RuntimeException(response.body().getErrorMessages().get(0));
                                     }
                                 } else {
                                     throw new RuntimeException(String.valueOf(response.code()));

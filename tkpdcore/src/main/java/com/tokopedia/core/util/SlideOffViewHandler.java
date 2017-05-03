@@ -126,33 +126,35 @@ public class SlideOffViewHandler {
 	}
 	
 	public void ToggleSlideOffScreen(View v, boolean isAtTop, boolean setVisible){
-		boolean valid = true;
-		if(setVisible){
-			if(v.getVisibility() == View.VISIBLE)
-				valid = false;
-		}
-		else{
-			if(v.getVisibility() == View.GONE)
-				valid = false;
-		}
-		
-		if(valid){
-			Animation slideoff;
-			int Direction;
-			if(isAtTop)
-				Direction = -1;
-			else
-				Direction = 1;
-			if(!setVisible)
-				slideoff = new TranslateAnimation(0, 0, 0, Direction * v.getHeight());
-			else
-				slideoff = new TranslateAnimation(0, 0, Direction * v.getHeight(), 0);
-			slideoff.setDuration(250);
-			v.startAnimation(slideoff);
-			if(!setVisible)
-				v.setVisibility(View.GONE);
-			else
-				v.setVisibility(View.VISIBLE);
+		if(v!=null){
+			boolean valid = true;
+			if(setVisible){
+				if(v.getVisibility() == View.VISIBLE)
+					valid = false;
+			}
+			else{
+				if(v.getVisibility() == View.GONE)
+					valid = false;
+			}
+
+			if(valid){
+				Animation slideoff;
+				int Direction;
+				if(isAtTop)
+					Direction = -1;
+				else
+					Direction = 1;
+				if(!setVisible)
+					slideoff = new TranslateAnimation(0, 0, 0, Direction * v.getHeight());
+				else
+					slideoff = new TranslateAnimation(0, 0, Direction * v.getHeight(), 0);
+				slideoff.setDuration(250);
+				v.startAnimation(slideoff);
+				if(!setVisible)
+					v.setVisibility(View.GONE);
+				else
+					v.setVisibility(View.VISIBLE);
+			}
 		}
 	}
 }

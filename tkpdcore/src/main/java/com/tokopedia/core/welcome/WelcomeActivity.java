@@ -20,7 +20,6 @@ public class WelcomeActivity extends AppCompatActivity {
             Fragment fragment = WelcomeFragment.createInstance(getIntent().getExtras());
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.container, fragment, WelcomeActivity.class.getSimpleName());
-            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         }
 

@@ -9,7 +9,7 @@ import android.view.View;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -53,7 +53,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     @Override
     public void onRestoreState(Bundle savedState) {
         viewListener.setParamsModel((InputShippingParamsGetModel) savedState.getParcelable(EXTRA_PARAM_MODEL));
-        viewListener.setAttachmentData(savedState.<AttachmentResCenterDB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
+        viewListener.setAttachmentData(savedState.<AttachmentResCenterVersion2DB>getParcelableArrayList(EXTRA_PARAM_ATTACHMENT));
     }
 
     @Override
@@ -320,8 +320,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         }
 
         if (isInstanceForEdit()
-                && isShippingRefNumEditted(params.getShippingNumber())
-                && isShippingEditted(params.getShippingID())) {
+                && isShippingRefNumSame(params.getShippingNumber())
+                        && isShippingsSame(params.getShippingID())) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_update_receipt_number));
             return false;
         }
@@ -334,12 +334,12 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
                 && !viewListener.getParamsModel().getConversationID().isEmpty();
     }
 
-    private boolean isShippingRefNumEditted(String shippingRefNum) {
+    private boolean isShippingRefNumSame(String shippingRefNum) {
         return shippingRefNum.equals(viewListener.getParamsModel().getShippingRefNum());
     }
 
-    private boolean isShippingEditted(String shippingID) {
-        return !shippingID.equals(viewListener.getParamsModel().getShippingID());
+    private boolean isShippingsSame(String shippingID) {
+        return shippingID.equals(viewListener.getParamsModel().getShippingID());
     }
 
     private ResCenterKurir.Kurir getSelectedKurir() throws Exception {

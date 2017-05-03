@@ -4,18 +4,18 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Tkpd_Eka on 11/9/2015.
+ * @author by Tkpd_Eka on 11/9/2015.
  */
-public class GetShopProductParam implements Parcelable{
-    public int page = 1;
-    public String keyword = "";
-    public String etalaseId = "etalase";
-    public String orderBy = "";
-    public int selectedEtalase = 0;
-    public int listState = 3;
-    public int per_page = 8;
+public class GetShopProductParam implements Parcelable {
+    private int page = 1;
+    private String keyword = "";
+    private String etalaseId = "etalase";
+    private String orderBy = "";
+    private int selectedEtalase = 0;
+    private int listState = 3;
+    private int perPage = 8;
 
-    public GetShopProductParam(){
+    public GetShopProductParam() {
 
     }
 
@@ -26,7 +26,7 @@ public class GetShopProductParam implements Parcelable{
         orderBy = in.readString();
         selectedEtalase = in.readInt();
         listState = in.readInt();
-        per_page = in.readInt();
+        perPage = in.readInt();
     }
 
     public static final Creator<GetShopProductParam> CREATOR = new Creator<GetShopProductParam>() {
@@ -54,6 +54,62 @@ public class GetShopProductParam implements Parcelable{
         parcel.writeString(orderBy);
         parcel.writeInt(selectedEtalase);
         parcel.writeInt(listState);
-        parcel.writeInt(per_page);
+        parcel.writeInt(perPage);
+    }
+
+    public int getPage() {
+        return page;
+    }
+
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getEtalaseId() {
+        return etalaseId;
+    }
+
+    public void setEtalaseId(String etalaseId) {
+        this.etalaseId = etalaseId;
+    }
+
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
+    }
+
+    public int getSelectedEtalase() {
+        return selectedEtalase;
+    }
+
+    public void setSelectedEtalase(int selectedEtalase) {
+        this.selectedEtalase = selectedEtalase;
+    }
+
+    public int getListState() {
+        return listState;
+    }
+
+    public void setListState(int listState) {
+        this.listState = listState;
+    }
+
+    public int getPerPage() {
+        return perPage;
+    }
+
+    public void setPerPage(int perPage) {
+        this.perPage = perPage;
     }
 }

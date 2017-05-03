@@ -44,7 +44,7 @@ public class TopAdsListRecyclerViewAdapter extends RecyclerView.Adapter<Recycler
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == TYPE_ITEM) {
             //inflate your layout and pass it to view holder
-            return new ProductAdapter.ViewHolderProductitem(LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
+            return new ProductAdapter.ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false));
         } else if (viewType == TYPE_HEADER) {
             //inflate your layout and pass it to view holder
             return new VHHeader(LayoutInflater.from(context).inflate(R.layout.child_main_top_ads_header, parent, false));

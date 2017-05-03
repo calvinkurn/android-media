@@ -13,9 +13,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.model.data.DataCredit;
-import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsAddCreditPresenterImpl;
+import com.tokopedia.seller.topads.data.model.data.DataCredit;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAddCreditPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsPaymentCreditActivity;
 import com.tokopedia.seller.topads.view.adapter.TopAdsCreditAdapter;
 import com.tokopedia.seller.topads.view.listener.TopAdsAddCreditFragmentListener;
@@ -85,9 +85,6 @@ public class TopAdsAddCreditFragment extends BasePresenterFragment<TopAdsAddCred
     protected void initView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         submitButton = (Button) view.findViewById(R.id.button_submit);
-        if(submitButton != null){
-            submitButton.setTransformationMethod(null);
-        }
         adapter = new TopAdsCreditAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);

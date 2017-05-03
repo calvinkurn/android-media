@@ -32,4 +32,8 @@ public interface MyShopOrderActApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_PROCEED_SHIPPING)
     Observable<ResponseConfirmShipping> proceedShippingMulti(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Shop.PATH_RETRY_PICKUP)
+    Observable<Response<TkpdResponse>> retryPickUp(@FieldMap Map<String, String> params);
 }

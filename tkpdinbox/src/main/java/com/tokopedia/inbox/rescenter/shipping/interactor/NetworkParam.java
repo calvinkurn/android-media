@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.shipping.interactor;
 
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 
@@ -44,7 +44,7 @@ public class NetworkParam {
         return params;
     }
 
-    private static String getPhotos(List<AttachmentResCenterDB> attachmentList) {
+    private static String getPhotos(List<AttachmentResCenterVersion2DB> attachmentList) {
         if (attachmentList == null || attachmentList.isEmpty()) {
             return "";
         }
@@ -61,11 +61,11 @@ public class NetworkParam {
         return allPhoto;
     }
 
-    private static String getPhotosObj(List<AttachmentResCenterDB> attachmentList) {
+    private static String getPhotosObj(List<AttachmentResCenterVersion2DB> attachmentList) {
 
         JSONObject reviewPhotos = new JSONObject();
         try {
-            for (AttachmentResCenterDB image : attachmentList) {
+            for (AttachmentResCenterVersion2DB image : attachmentList) {
                 reviewPhotos.put(image.imageUUID, generateObject(image));
             }
             return reviewPhotos.toString();
@@ -74,7 +74,7 @@ public class NetworkParam {
         }
     }
 
-    private static JSONObject generateObject(AttachmentResCenterDB image) throws JSONException {
+    private static JSONObject generateObject(AttachmentResCenterVersion2DB image) throws JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("image_id", image.imageUUID);
         jsonObject.put("file_x", "80");
@@ -94,7 +94,7 @@ public class NetworkParam {
     private static String getFileUploaded(ShippingParamsPostModel passData) {
         try {
             JSONObject jsonObject = new JSONObject();
-            for (AttachmentResCenterDB attachment: passData.getAttachmentList()) {
+            for (AttachmentResCenterVersion2DB attachment: passData.getAttachmentList()) {
                 jsonObject.put(attachment.imageUUID, attachment.picObj);
             }
             return jsonObject.toString();

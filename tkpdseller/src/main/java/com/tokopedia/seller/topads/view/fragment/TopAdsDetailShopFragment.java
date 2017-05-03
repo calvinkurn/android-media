@@ -1,23 +1,28 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.datasource.TopAdsCacheDataSourceImpl;
-import com.tokopedia.seller.topads.datasource.TopAdsDbDataSourceImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsProductAdInteractorImpl;
-import com.tokopedia.seller.topads.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.seller.topads.model.data.Ad;
-import com.tokopedia.seller.topads.model.data.ShopAd;
-import com.tokopedia.seller.topads.network.apiservice.TopAdsManagementService;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailProductPresenter;
-import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
+import com.tokopedia.seller.topads.data.source.cloud.apiservice.TopAdsManagementService;
+import com.tokopedia.seller.topads.data.source.local.TopAdsCacheDataSourceImpl;
+import com.tokopedia.seller.topads.data.source.local.TopAdsDbDataSourceImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductAdInteractorImpl;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsShopAdInteractorImpl;
+import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.ShopAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditShopActivity;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDetailShopPresenterImpl;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -25,12 +30,15 @@ import com.tokopedia.seller.topads.presenter.TopAdsDetailShopPresenterImpl;
 
 public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    public static final String SHOP_AD_PARCELABLE = "SHOP_AD_PARCELABLE";
+    private MenuItem deleteMenuItem;
     private ShopAd ad;
 
-    public static Fragment createInstance(ShopAd shopAd) {
+    public static Fragment createInstance(ShopAd shopAd, String adId) {
         Fragment fragment = new TopAdsDetailShopFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, shopAd);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -39,7 +47,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailShopPresenterImpl(getActivity(), this,
-                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
+                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)), new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }
 
@@ -47,7 +55,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     protected void initView(View view) {
         super.initView(view);
         name.setTitle(getString(R.string.title_top_ads_store));
-        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.green_200));
+        name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         favorite.setTitle(getString(R.string.label_top_ads_favorit));
         name.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,18 +73,32 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
     @Override
     protected void turnOnAd() {
         super.turnOnAd();
-        presenter.turnOnAds(ad, SessionHandler.getShopID(getActivity()));
+        presenter.turnOnAds(ad.getId());
     }
 
     @Override
     protected void turnOffAd() {
         super.turnOffAd();
-        presenter.turnOffAds(ad, SessionHandler.getShopID(getActivity()));
+        presenter.turnOffAds(ad.getId());
     }
 
     @Override
     protected void refreshAd() {
-        presenter.refreshAd(startDate, endDate, ad.getId());
+        if (ad != null) {
+            presenter.refreshAd(startDate, endDate, ad.getId());
+        } else {
+            presenter.refreshAd(startDate, endDate, adId);
+        }
+    }
+
+    @Override
+    protected void editAd() {
+        if (ad != null) {
+            Intent intent = new Intent(getActivity(), TopAdsDetailEditShopActivity.class);
+            intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, ad.getName());
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, String.valueOf(ad.getId()));
+            startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+        }
     }
 
     @Override
@@ -87,5 +109,25 @@ public class TopAdsDetailShopFragment extends TopAdsDetailFragment<TopAdsDetailP
 
     void onNameClicked() {
         DeepLinkChecker.openShop(ad.getShopUri(), getActivity());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        deleteMenuItem = menu.findItem(R.id.menu_delete);
+        deleteMenuItem.setVisible(false);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        super.onSaveState(state);
+        state.putParcelable(SHOP_AD_PARCELABLE, ad);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        ad = savedState.getParcelable(SHOP_AD_PARCELABLE);
+        onAdLoaded(ad);
     }
 }

@@ -26,10 +26,10 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.R;
+import com.tokopedia.core.Router;
 import com.tokopedia.core.database.manager.DbManager;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.EtalaseDB;
-import com.tokopedia.core.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -355,7 +355,7 @@ public class ListViewEtalaseEditor extends BaseAdapter {
                                         ((EtalaseShopEditor) context).OnEmpty();
 
                                     LocalCacheHandler.clearCache(context, TkpdCache.ETALASE_ADD_PROD);
-                                    LocalCacheHandler.clearCache(context, AddProductPresenterImpl.FETCH_ETALASE);
+                                    Router.clearEtalase(context);
                                 } else {
                                     Toast.makeText(context, deleteShopNote.getMessageError().get(0), Toast.LENGTH_LONG).show();
                                 }

@@ -2,7 +2,6 @@ package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
 
-import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
@@ -23,7 +22,11 @@ public interface NetworkInteractor {
 
     void getTokoCash(Context context, TopCashListener listener);
 
+    void updateTokoCash(Context context, TopCashListener listener);
+
     void resetNotification(Context context, ResetNotificationListener listener);
+
+    void clearWalletCache();
 
     interface ProfileInfoListener {
 

@@ -27,6 +27,8 @@ import java.util.Map;
 public class ScreenTracking extends TrackingUtils {
 
     private static final String TAG = ScreenTracking.class.getSimpleName();
+    private static final String AF_UNAVAILABLE_VALUE = "none";
+
     public interface IOpenScreenAnalytics {
         String getScreenName();
     }
@@ -52,9 +54,10 @@ public class ScreenTracking extends TrackingUtils {
             this.mActivity = activity;
             authEvent = new Authenticated();
             authEvent.setUserFullName(SessionHandler.getLoginName(activity));
-            authEvent.setUserID(SessionHandler.getLoginID(activity));
+            authEvent.setUserID(SessionHandler.getGTMLoginID(activity));
             authEvent.setShopID(SessionHandler.getShopID(activity));
             authEvent.setUserSeller(SessionHandler.getShopID(activity).equals("0") ? 0 : 1);
+            authEvent.setAfUniqueId(getAfUniqueId() != null? getAfUniqueId() : AF_UNAVAILABLE_VALUE);
         }
 
         public void execute() {

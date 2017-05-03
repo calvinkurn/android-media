@@ -16,6 +16,8 @@ public class GlobalConfig {
     public static int VERSION_CODE = 1;
     public static int APPLICATION_TYPE = CONSUMER_APPLICATION;
     public static String PACKAGE_APPLICATION = PACKAGE_CONSUMER_APP;
+    public static Boolean DEBUG = false;
+    public static boolean ENABLE_DISTRIBUTION = false;
 
     public static boolean isSellerApp(){
         return APPLICATION_TYPE == SELLER_APPLICATION;
@@ -23,5 +25,9 @@ public class GlobalConfig {
 
     public static String getPackageApplicationName() {
         return PACKAGE_APPLICATION;
+    }
+
+    public static Boolean isAllowDebuggingTools() {
+        return DEBUG || ENABLE_DISTRIBUTION;
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.core.app.IAnalyticsFragment;
 import com.tokopedia.core.presenter.BaseView;
 
@@ -76,6 +77,8 @@ public abstract class BaseFragment<T extends Base> extends Fragment implements B
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        Glide.get(getContext()).clearMemory();
+        Runtime.getRuntime().gc();
     }
 
     @Override

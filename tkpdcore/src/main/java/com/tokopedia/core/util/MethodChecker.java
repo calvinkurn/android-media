@@ -1,11 +1,13 @@
 package com.tokopedia.core.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -15,10 +17,12 @@ import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 
 import java.io.File;
 
@@ -54,7 +58,7 @@ public class MethodChecker {
     }
 
 
-    public static void removeAllCookies() {
+    public static void removeAllCookies(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
@@ -62,13 +66,20 @@ public class MethodChecker {
                     CommonUtils.dumper("Success Clear Cookie");
                 }
             });
-        } else
-            CookieManager.getInstance().removeAllCookie();
+        } else {
+            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
+            cookieSyncMngr.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncMngr.stopSync();
+        }
     }
 
     public static Uri getUri(Context context, File outputMediaFile) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
+            return FileProvider.getUriForFile(context,
+                    context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
         } else {
             return Uri.fromFile(outputMediaFile);
         }
@@ -96,7 +107,32 @@ public class MethodChecker {
     }
 
     public static void setAllowMixedContent(WebSettings webSettings) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+    }
+
+    public static Drawable getDrawable(Context context, int resId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
+            return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
+        else
+            return context.getResources().getDrawable(resId);
+    }
+
+    public static boolean isTimezoneNotAutomatic() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+           return android.provider.Settings.Global.getInt(
+                    MainApplication.getAppContext().getContentResolver(),
+                    android.provider.Settings.Global.AUTO_TIME, 0) == 0 &&
+                    android.provider.Settings.Global.getInt(
+                            MainApplication.getAppContext().getContentResolver(),
+                            Settings.Global.AUTO_TIME_ZONE, 0) == 0;
+        } else {
+            return android.provider.Settings.System.getInt(
+                    MainApplication.getAppContext().getContentResolver(),
+                    android.provider.Settings.System.AUTO_TIME, 0) == 0 &&
+                    android.provider.Settings.System.getInt(
+                            MainApplication.getAppContext().getContentResolver(),
+                            Settings.System.AUTO_TIME_ZONE, 0) == 0;
+        }
     }
 }

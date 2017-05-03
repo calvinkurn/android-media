@@ -64,7 +64,7 @@ public class URLGenerator {
                 + "&url=" + url;
     }
 
-    private static String getBaseUrl() {
+    public static String getBaseUrl() {
         String baseUrl = TkpdBaseURL.JS_DOMAIN;
         if (BuildConfig.DEBUG) {
             SharedPreferences pref = MainApplication.getAppContext()

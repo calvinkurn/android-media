@@ -55,10 +55,6 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
     View submitButton;
     @BindView(R2.id.action_abort)
     View actionAbort;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.include_loading)
-    View loading;
 
     private ActionParameterPassData passData;
     private CreateResCenterListener listener;
@@ -82,7 +78,7 @@ public class ChooseProductTroubleFragment extends BasePresenterFragment<ChoooseP
 
     @Override
     protected void onFirstTimeLaunched() {
-        loading.setVisibility(View.GONE);
+
     }
 
     @Override

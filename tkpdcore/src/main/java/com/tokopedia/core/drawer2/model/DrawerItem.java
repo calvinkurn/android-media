@@ -17,6 +17,15 @@ public class DrawerItem {
         this.label = label;
         this.iconId = iconId;
         this.isExpanded = isExpanded;
+        this.notif = 0;
+    }
+
+    public DrawerItem(String label, int iconId, int position, boolean isExpanded, int notif) {
+        this.position = position;
+        this.label = label;
+        this.iconId = iconId;
+        this.isExpanded = isExpanded;
+        this.notif = notif;
     }
 
     public String getLabel() {

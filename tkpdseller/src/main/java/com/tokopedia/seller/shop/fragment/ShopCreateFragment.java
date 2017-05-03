@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -25,18 +24,16 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
 import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
-import com.tokopedia.core.util.PhoneVerificationUtil;
-import com.tokopedia.core.util.UploadImageReVamp;
-
 
 import java.io.File;
 
@@ -54,6 +51,8 @@ import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
  */
 public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implements ShopCreateView {
 
+    public static final int REQUEST_CAMERA = 111;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER = 900;
     private TkpdProgressDialog progressDialog;
 
     // SUBMIT BUTTON
@@ -97,13 +96,14 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     EditText shopDesc;
 
     @OnClick(R2.id.verify_button)
-    public void showVerificationDialog(){
-        ((TActivity)getActivity()).phoneVerificationUtil.showVerificationDialog();
+    public void showVerificationDialog() {
+        startActivityForResult(SessionRouter.getPhoneVerificationActivationActivityIntent(getActivity()),
+                REQUEST_VERIFY_PHONE_NUMBER);
     }
 
     @Override
     public void setShopAvatar(String imagePath) {
-        if(imagePath != ""){
+        if (imagePath != "") {
             imageText.setVisibility(View.GONE);
             ImageHandler.loadImageFit2(getActivity()
                     , shopAvatar
@@ -113,12 +113,12 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @OnClick(R2.id.shop_avatar)
-    public void startUploadDialog(){
-        ImageGalleryEntry.moveToImageGallery((AppCompatActivity)getActivity(), 0, 1);
+    public void startUploadDialog() {
+        ImageGalleryEntry.moveToImageGallery((AppCompatActivity) getActivity(), 0, 1);
     }
 
     @OnClick(R2.id.submit_button)
-    public void SubmitDialog(){
+    public void SubmitDialog() {
         showProgress(true);
         presenter.saveDescTag();
         presenter.finalCheckDomainName(
@@ -130,14 +130,14 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void setShopDomain(String shopDomain) {
-        if (this.shopDomain != null){
+        if (this.shopDomain != null) {
             this.shopDomain.setText(shopDomain);
         }
     }
 
     @OnTextChanged(R2.id.domain)
     void domainChanged() {
-        if(shopDomain.getText().toString().length() != 0) {
+        if (shopDomain.getText().toString().length() != 0) {
             domainInput.setHint(getString(R.string.title_hint_domain) + " : "
                     + getString(R.string.domain) + shopDomain.getText().toString());
             presenter.checkShopDomain(shopDomain.getText().toString());
@@ -148,7 +148,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void setShopDomainResult(String message, boolean available) {
-        if(domainInput != null){
+        if (domainInput != null) {
             if (!available) {
                 domainInput.setErrorEnabled(true);
                 domainInput.setError(message);
@@ -161,7 +161,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkDomainError() {
-        if(shopDomain.getText().toString().isEmpty()){
+        if (shopDomain.getText().toString().isEmpty()) {
             domainInput.setError(getString(R.string.error_domain_unfilled));
         }
         return domainInput.isErrorEnabled();
@@ -175,15 +175,15 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @OnTextChanged(R2.id.shop_name)
-    void nameChanged(){
-        if(shopName.getText().toString().length() != 0) {
+    void nameChanged() {
+        if (shopName.getText().toString().length() != 0) {
             presenter.checkShopName(shopName.getText().toString());
         }
     }
 
     @Override
     public void setShopNameResult(String message, boolean available) {
-        if(nameInput != null){
+        if (nameInput != null) {
             if (!available) {
                 nameInput.setErrorEnabled(true);
                 nameInput.setError(message);
@@ -198,20 +198,20 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkNameError() {
-        if(shopName.getText().toString().isEmpty()){
+        if (shopName.getText().toString().isEmpty()) {
             nameInput.setError(getString(R.string.error_name_unfilled));
         }
         return nameInput.isErrorEnabled();
     }
 
     @OnTextChanged(R2.id.shop_tag)
-    void tagChanged(){
+    void tagChanged() {
         checkTagError();
     }
 
     @Override
     public void setShopTag(String shopTag) {
-        if(this.shopTag != null){
+        if (this.shopTag != null) {
             this.shopTag.setText(shopTag);
         }
 
@@ -224,7 +224,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkTagError() {
-        if(shopTag.getText().toString().isEmpty()){
+        if (shopTag.getText().toString().isEmpty()) {
             tagInput.setError(getString(R.string.error_tag_unfilled));
         } else if (shopTag.getText().toString().length() > 48) {
             tagInput.setError(getString(R.string.error_tag_too_long));
@@ -235,13 +235,13 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     }
 
     @OnTextChanged(R2.id.shop_desc)
-    void descChanged(){
+    void descChanged() {
         checkDescError();
     }
 
     @Override
     public void setShopDesc(String shopDesc) {
-        if(this.shopDesc != null){
+        if (this.shopDesc != null) {
             this.shopDesc.setText(shopDesc);
         }
     }
@@ -253,9 +253,9 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public boolean checkDescError() {
-        if(shopDesc.getText().toString().isEmpty()){
+        if (shopDesc.getText().toString().isEmpty()) {
             descInput.setError(getString(R.string.error_desc_unfilled));
-        } else if(shopDesc.getText().toString().length() > 140) {
+        } else if (shopDesc.getText().toString().length() > 140) {
             descInput.setError(getString(R.string.error_desc_too_long));
         } else {
             descInput.setErrorEnabled(false);
@@ -263,7 +263,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         return descInput.isErrorEnabled();
     }
 
-    public static Fragment newInstance(){
+    public static Fragment newInstance() {
         ShopCreateFragment fragment = new ShopCreateFragment();
         return fragment;
     }
@@ -290,17 +290,17 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void onMessageError(int type, Object... data) {
-        switch(type){
-            case DOMAIN_ERROR :
+        switch (type) {
+            case DOMAIN_ERROR:
                 CommonUtils.UniversalToast(getContext(), domainInput.getError().toString());
                 break;
-            case NAME_ERROR :
+            case NAME_ERROR:
                 CommonUtils.UniversalToast(getContext(), nameInput.getError().toString());
                 break;
-            case TAG_ERROR :
+            case TAG_ERROR:
                 CommonUtils.UniversalToast(getContext(), tagInput.getError().toString());
                 break;
-            case DESC_ERROR :
+            case DESC_ERROR:
                 CommonUtils.UniversalToast(getContext(), descInput.getError().toString());
                 break;
             default:
@@ -325,7 +325,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public View onCreateView(View parentView, Bundle savedInstanceState) {
         Point size = new Point();
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-        Display display	 = wm.getDefaultDisplay();
+        Display display = wm.getDefaultDisplay();
         display.getSize(size);
         int imageWidth = (int) (size.x - 4) / 3;
         shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
@@ -336,7 +336,7 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         String imageLocation = null;
-        if(requestCode == UploadImageReVamp.REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
+        if (requestCode == REQUEST_CAMERA || requestCode == ImageGallery.TOKOPEDIA_GALLERY) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
                     imageLocation = data.getStringExtra(ImageGallery.EXTRA_URL);
@@ -346,13 +346,16 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
                 default:
                     break;
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER
+                && resultCode == Activity.RESULT_OK
+                && SessionHandler.isMsisdnVerified()) {
+            showPhoneVerification(false);
         }
         if (imageLocation != null) {
             ImageHandler.LoadImage(shopAvatar, imageLocation);
             imageText.setVisibility(View.GONE);
         }
     }
-
 
 
     @Override
@@ -375,53 +378,9 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
 
     @Override
     public void showPhoneVerification(boolean needVerify) {
-        if(needVerify){
-            if(((TActivity)getActivity()).phoneVerificationUtil != null)
-                ((TActivity)getActivity()).phoneVerificationUtil.setMSISDNListener(new PhoneVerificationUtil.MSISDNListener() {
-                    @Override
-                    public void onMSISDNVerified() {
-                        showPhoneVerification(false);
-                    }
-
-                    @Override
-                    public void onMSISDNNotVerified() {
-
-                    }
-
-                    @Override
-                    public void onNoConnection() {
-
-                    }
-
-                    @Override
-                    public void onTimeout() {
-
-                    }
-
-                    @Override
-                    public void onFailAuth() {
-
-                    }
-
-                    @Override
-                    public void onNullData() {
-
-                    }
-
-                    @Override
-                    public void onThrowable(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onError(String error) {
-
-                    }
-                });
-        }
-        submitButton.setVisibility((needVerify)? View.GONE : View.VISIBLE);
-        verifyButton.setVisibility((needVerify)? View.VISIBLE : View.GONE);
-        verifyInstruction.setVisibility((needVerify)? View.VISIBLE : View.GONE);
+        submitButton.setVisibility((needVerify) ? View.GONE : View.VISIBLE);
+        verifyButton.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
+        verifyInstruction.setVisibility((needVerify) ? View.VISIBLE : View.GONE);
     }
 
     @Override

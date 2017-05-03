@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.interactor;
 
 
+import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 
 import java.util.List;
@@ -29,6 +30,8 @@ public interface HomeMenuInteractor {
     }
 
     void fetchTopPicksNetworkNetwork(Map<String, String> params, Subscriber<Response<String>> networksubscriber);
+
+    void fetchBrands(String params, Subscriber<Response<Brands>> brandsSubscriber);
 
 
 }

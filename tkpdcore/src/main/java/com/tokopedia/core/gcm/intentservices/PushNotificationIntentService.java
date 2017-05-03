@@ -5,8 +5,8 @@ import android.content.Intent;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.interactor.PushNotificationDataInteractor;
-import com.tokopedia.core.gcm.interactor.entity.FCMTokenUpdateEntity;
+import com.tokopedia.core.gcm.data.PushNotificationDataInteractor;
+import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;

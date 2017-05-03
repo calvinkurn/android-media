@@ -9,7 +9,7 @@
         android:id="@+id/head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_security_question"
+        android:text="@string/hello_blank_name"
         android:textSize="@dimen/fontxl"
         android:textStyle="bold"
         android:textColor="@color/body_text_5_inverse"

@@ -14,7 +14,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.inbox.rescenter.detail.dialog.UploadImageDialog;
@@ -113,7 +113,7 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
         uploadImageDialog.onResult(requestCode, resultCode, data,
                 new UploadImageDialog.UploadImageDialogListener() {
                     @Override
-                    public void onSuccess(List<AttachmentResCenterDB> data) {
+                    public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
                         view.showAttachment(data);
                         view.setAttachmentArea(true);
                     }
@@ -213,12 +213,13 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
                     @Override
                     public void onTimeOut(String message, NetworkErrorHelper.RetryClickedListener listener) {
+                        view.showLoadingDialog(false);
                         view.showTimeOutMessage();
                     }
 
                     @Override
                     public void onFailAuth() {
-
+                        view.showLoadingDialog(false);
                     }
 
                     @Override
@@ -235,7 +236,8 @@ public class DetailResCenterImpl implements DetailResCenterPresenter {
 
                     @Override
                     public void onNullData() {
-
+                        view.showLoadingDialog(false);
+                        view.showTimeOutMessage();
                     }
                 });
 

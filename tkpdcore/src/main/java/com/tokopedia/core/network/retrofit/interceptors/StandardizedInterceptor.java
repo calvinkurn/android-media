@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.exception.SessionExpiredException;
+import com.tokopedia.core.util.GlobalConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,22 +22,23 @@ import rx.Observable;
  * Created by kris on 1/11/17. Tokopedia
  */
 
-public class StandardizedInterceptor implements Interceptor{
+public class StandardizedInterceptor extends TkpdBaseInterceptor {
 
     private static final String TAG = StandardizedInterceptor.class.getSimpleName();
 
+    private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
+    private String authorizationString;
+
+    public StandardizedInterceptor(String authorizationString) {
+        this.authorizationString = authorizationString;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request.Builder newRequest = chain.request().newBuilder();
+        Request.Builder newRequest = getBearerHeaderBuilder(chain.request(), authorizationString);
 
         final Request finalRequest = newRequest.build();
-        Response response = chain.proceed(finalRequest);
-        int count = 0;
-        while (!response.isSuccessful() && count < 3) {
-            Log.d(TAG, "Request is not successful - " + count + " Error code : " + response.code());
-            count++;
-            response = chain.proceed(chain.request());
-        }
+        Response response = getResponse(chain, finalRequest);
 
         String bodyResponse = response.body().string();
         try {
@@ -83,6 +85,15 @@ public class StandardizedInterceptor implements Interceptor{
                 .networkResponse(oldResponse.networkResponse());
 
         return builder.build();
+    }
+
+    private Request.Builder getBearerHeaderBuilder(Request request, String oAuth) {
+        return request.newBuilder()
+                .header("Authorization", oAuth)
+                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
+                .method(request.method(), request.body());
     }
 
 }

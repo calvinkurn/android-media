@@ -41,6 +41,8 @@ public class Attributes {
     @SerializedName("rule")
     @Expose
     private Rule rule;
+    @SerializedName("default_product_id")
+    private Integer defaultProductId;
 
     /**
      *
@@ -210,5 +212,13 @@ public class Attributes {
 
     public void setRule(Rule rule) {
         this.rule = rule;
+    }
+
+    public Integer getDefaultProductId() {
+        return defaultProductId;
+    }
+
+    public void setDefaultProductId(Integer defaultProductId) {
+        this.defaultProductId = defaultProductId;
     }
 }

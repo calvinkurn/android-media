@@ -22,7 +22,7 @@ import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.create.customadapter.AttachmentAdapter;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
@@ -73,7 +73,7 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
     View loading;
 
     private ActionParameterPassData passData;
-    private List<AttachmentResCenterDB> attachmentData;
+    private List<AttachmentResCenterVersion2DB> attachmentData;
     private AttachmentAdapter attachmentAdapter;
     private UploadImageCreateResCenterDialog uploadImageDialog;
 
@@ -338,7 +338,7 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
         if (resultCode == ImageGallery.RESULT_CODE || resultCode == Activity.RESULT_OK) {
             uploadImageDialog.onResult(requestCode, resultCode, data, new BaseUploadImageDialog.UploadImageDialogListener() {
                 @Override
-                public void onSuccess(List<AttachmentResCenterDB> data) {
+                public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
                     attachmentData.clear();
                     attachmentData.addAll(data);
                     attachmentAdapter.notifyDataSetChanged();
@@ -415,7 +415,7 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
     }
 
     @Override
-    public List<AttachmentResCenterDB> getAttachmentData() {
+    public List<AttachmentResCenterVersion2DB> getAttachmentData() {
         return attachmentData;
     }
 

@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.sellerapp.BuildConfig;
-import com.tokopedia.sellerapp.gmstat.utils.GMStatConstant;
+import com.tokopedia.seller.gmstat.utils.GMStatConstant;
 import com.tokopedia.sellerapp.utils.Constants;
 
 import java.util.concurrent.TimeUnit;
@@ -21,7 +21,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.tokopedia.sellerapp.gmstat.utils.GMStatConstant.GMSTAT_TAG;
+import static com.tokopedia.seller.gmstat.utils.GMStatConstant.GMSTAT_TAG;
 
 /**
  * Created by normansyahputa on 8/28/16.

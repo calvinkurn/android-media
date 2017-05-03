@@ -24,9 +24,7 @@ import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.discovery.fragment.browseparent.BrowseParentFragment;
-
-import org.parceler.Parcels;
+import com.tokopedia.discovery.fragment.BrowseParentFragment;
 
 import java.util.ArrayList;
 import java.util.List;

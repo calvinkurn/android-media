@@ -1,35 +1,38 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.core.customwidget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tokopedia.seller.topads.view.fragment.TopAdsDetailFragment">
 
-    <LinearLayout
-        android:id="@+id/container_detail_topads"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include
-            layout="@layout/include_topads_header_detail"
+        <LinearLayout
+            android:id="@+id/container_detail_topads"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
-            android:id="@+id/items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/topads_detail_padding_item"
-            app:title="@string/title_top_ads_product"/>
+            <include
+                layout="@layout/include_topads_header_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-        <include
-            layout="@layout/include_topads_content_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/topads_detail_padding_item"/>
+            <com.tokopedia.seller.topads.view.widget.TopAdsLabelView
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/topads_detail_padding_item"
+                app:title="@string/title_top_ads_product" />
 
-    </LinearLayout>
+            <include
+                layout="@layout/include_topads_content_detail" />
 
-</ScrollView>
+        </LinearLayout>
+
+    </ScrollView>
+
+</com.tokopedia.core.customwidget.SwipeToRefresh>

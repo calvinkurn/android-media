@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -37,7 +38,7 @@ public class ResCenterImpl implements ResCenterPresenter {
 
     @Override
     public void clearNotif(@NonNull Context context, @NonNull Intent intent) {
-        if (intent.getBooleanExtra("from_notif", false)) {
+        if (intent.getBooleanExtra(Constants.EXTRA_FROM_PUSH, false)) {
             new NotificationModHandler(context).cancelNotif();
         }
     }

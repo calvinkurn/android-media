@@ -194,8 +194,10 @@ public class DeepLinkChecker {
 
     public static void openProduct(String url, Context context) {
         Bundle bundle = new Bundle();
-        bundle.putString("shop_domain", getLinkSegment(url).get(0));
-        bundle.putString("product_key", getLinkSegment(url).get(1));
+        if (getLinkSegment(url).size()>1) {
+            bundle.putString("shop_domain", getLinkSegment(url).get(0));
+            bundle.putString("product_key", getLinkSegment(url).get(1));
+        }
         bundle.putString("url", url);
         Intent intent = new Intent(context, ProductInfoActivity.class);
         intent.putExtras(bundle);

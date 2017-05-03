@@ -3,7 +3,7 @@ package com.tokopedia.core.home.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.network.entity.home.recentView.RecentView;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
@@ -14,18 +14,18 @@ import java.util.List;
  */
 public class HistoryProductListItem extends RecyclerViewItem implements Parcelable {
     public static final int HISTORY_PRODUCT_LIST_ITEM = 129_212;
-    List<RecentView> productItems = new ArrayList<>();
+    List<ProductItem> productItems = new ArrayList<>();
 
     public HistoryProductListItem() {
         setType(HISTORY_PRODUCT_LIST_ITEM);
     }
 
-    public HistoryProductListItem(List<RecentView> productItems) {
+    public HistoryProductListItem(List<ProductItem> productItems) {
         this();
         this.productItems = productItems;
     }
 
-    public List<RecentView> getProductItems() {
+    public List<ProductItem> getProductItems() {
         return productItems;
     }
 
@@ -43,7 +43,7 @@ public class HistoryProductListItem extends RecyclerViewItem implements Parcelab
 
     protected HistoryProductListItem(Parcel in) {
         super(in);
-        this.productItems = in.createTypedArrayList(RecentView.CREATOR);
+        this.productItems = in.createTypedArrayList(ProductItem.CREATOR);
     }
 
     public static final Creator<HistoryProductListItem> CREATOR = new Creator<HistoryProductListItem>() {

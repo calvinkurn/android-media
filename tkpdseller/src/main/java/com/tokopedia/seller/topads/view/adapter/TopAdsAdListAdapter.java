@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.model.data.Ad;
+import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsViewHolder;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class TopAdsAdListAdapter<T extends Ad> extends BaseLinearRecyclerViewAda
         }
         final Ad ad = data.get(position);
         topAdsViewHolder.bindObject(ad);
-        topAdsViewHolder.mainView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (callback != null) {

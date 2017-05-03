@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.contactus.activity;
 
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +12,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.welcome.WelcomeActivity;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment;
 import com.tokopedia.inbox.contactus.fragment.ContactUsFaqFragment.ContactUsFaqListener;
@@ -108,9 +109,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
             ContactUsFaqFragment fragment = ContactUsFaqFragment.createInstance(bundle);
             listener = fragment.getBackButtonListener();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fragmentTransaction.add(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-            fragmentTransaction.addToBackStack(ContactUsFaqFragment.class.getSimpleName());
+            fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
             fragmentTransaction.commit();
         }
     }
@@ -156,15 +156,20 @@ public class ContactUsActivity extends BasePresenterActivity implements
         } else if (listener != null && listener.canGoBack()) {
             listener.onBackPressed();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 
     @Override
     public void onFinishCreateTicket() {
         CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
-        if (GlobalConfig.isSellerApp()) {
+        if (GlobalConfig.isSellerApp() && SessionHandler.isV4Login(this)) {
             Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+        } else if (GlobalConfig.isSellerApp()) {
+            Intent intent = new Intent(this, WelcomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

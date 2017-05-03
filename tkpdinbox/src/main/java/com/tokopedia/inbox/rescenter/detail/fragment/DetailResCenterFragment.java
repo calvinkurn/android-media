@@ -18,13 +18,16 @@ import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.AttachmentResCenterDB;
+import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.rescenter.detail.customview.DetailView;
 import com.tokopedia.inbox.rescenter.detail.customview.ReplyEditorView;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
@@ -37,9 +40,7 @@ import com.tokopedia.inbox.rescenter.detail.model.passdata.ActivityParamenterPas
 import com.tokopedia.inbox.rescenter.detail.presenter.DetailResCenterImpl;
 import com.tokopedia.inbox.rescenter.detail.presenter.DetailResCenterPresenter;
 import com.tokopedia.inbox.rescenter.edit.activity.EditResCenterActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.inbox.rescenter.player.VideoPlayerActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,7 +233,7 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
     }
 
     @Override
-    public void showAttachment(List<AttachmentResCenterDB> data) {
+    public void showAttachment(List<AttachmentResCenterVersion2DB> data) {
         replyEditorView.renderAttachmentData(data);
     }
 
@@ -580,4 +581,15 @@ public class DetailResCenterFragment extends BasePresenterFragment<DetailResCent
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
     }
+
+    @Override
+    public void openVideoPlayer(String url) {
+        String urlVideo = Uri.parse(url).getQueryParameter("url_video");
+        Intent intent = new Intent(getActivity(), VideoPlayerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(VideoPlayerActivity.PARAMS_URL_VIDEO, urlVideo);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
 }

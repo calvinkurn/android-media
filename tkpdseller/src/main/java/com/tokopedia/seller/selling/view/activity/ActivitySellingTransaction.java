@@ -234,22 +234,22 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     }
 
     private void setDrawerPosition(int position) {
-        switch (position) {
-            case 1:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
-                break;
-            case 2:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
-                break;
-            case 3:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
-                break;
-            case 4:
-                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
-                break;
-            default:
-                break;
-        }
+//        switch (position) {
+//            case 1:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+//                break;
+//            case 2:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+//                break;
+//            case 3:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+//                break;
+//            case 4:
+//                drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+//                break;
+//            default:
+//                break;
+//        }
     }
 
     /**

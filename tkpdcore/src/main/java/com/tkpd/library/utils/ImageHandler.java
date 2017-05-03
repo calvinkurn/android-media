@@ -2,6 +2,7 @@ package com.tkpd.library.utils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -24,15 +25,17 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.gcm.FCMMessagingService;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
 import java.io.IOException;
@@ -111,10 +114,6 @@ public class ImageHandler {
         }
     }
 
-//    public static void LoadImageBitmapwithUIL(final ImageView imageview, final String url, ImageLoadingListener listener) {
-//        ImageLoader.getInstance().displayImage(url, imageview, initOptions(), listener);
-//    }
-
     public static int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -156,40 +155,25 @@ public class ImageHandler {
         return output;
     }
 
-//    public static DisplayImageOptions initOptions() {
-//        DisplayImageOptions options = new DisplayImageOptions.Builder()
-//                .showStubImage(R.drawable.loading_page) // resource or drawable
-//                .showImageForEmptyUri(R.drawable.error_drawable) // resource or drawable
-//                .showImageOnFail(R.drawable.error_drawable)
-//                .bitmapConfig(Config.RGB_565)// resource or drawable
-//                .cacheOnDisc(true)
-//                .cacheInMemory(true)
-//                .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
-//                .build();
-//
-//        return options;
-//    }
-
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
         Glide.with(context)
                 .load(url)
+                .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
-                .thumbnail(0.5f)
-                .crossFade()
+                .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(imageview);
     }
-
 
     /**
      * this class is not good for performances. please use LoadImageCustom
@@ -198,35 +182,13 @@ public class ImageHandler {
      * @param url
      */
     public static void LoadImage(ImageView imageview, String url) {
-        if (url != null) {
-            if (!url.isEmpty())
-                Glide.with(imageview.getContext())
-                        .load(url)
-                        .fitCenter()
-                        .dontAnimate()
-                        .placeholder(R.drawable.loading_page)
-                        .error(R.drawable.error_drawable)
-                        .into(imageview);
-//                PicassoHelper.getPicasso()
-//                        .load(url)
-//                        .placeholder(R.drawable.loading_page)
-//                        .error(R.drawable.error_drawable)
-//                        .into(imageview);
-        } else if (url == null) {
-            //[BUGFIX] if no url dont do anything
-//            PicassoHelper.getPicasso()
-//                    .load(url)
-//                    .placeholder(R.drawable.product_no_photo)
-//                    .error(R.drawable.product_no_photo)
-//                    .into(imageview);
-//            Glide.with(imageview.getContext())
-//                    .load(url)
-//                    .fitCenter()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.product_no_photo)
-//                    .error(R.drawable.product_no_photo)
-//                    .into(imageview);
-        }
+        Glide.with(imageview.getContext())
+                .load(url)
+                .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(imageview);
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {
@@ -260,12 +222,13 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
                 .into(target);
-
     }
 
-    public static void loadImageBitmapNotification(Context context, String url, FCMMessagingService.OnGetFileListener listener) {
+    public static void loadImageBitmapNotification(Context context, String url, BuildAndShowNotification.
+            OnGetFileListener listener) {
         FutureTarget<File> futureTarget = Glide.with(context)
                 .load(url)
                 .downloadOnly(210, 100);
@@ -409,8 +372,20 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
+                .centerCrop()
+                .into(imageView);
+    }
+
+    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
+        BitmapTransformation transformation){
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
+                .transform(transformation)
                 .into(imageView);
     }
 
@@ -505,5 +480,4 @@ public class ImageHandler {
                 .fitCenter()
                 .into(imageView);
     }
-
 }
