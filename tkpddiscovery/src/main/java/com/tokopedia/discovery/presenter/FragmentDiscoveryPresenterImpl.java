@@ -407,7 +407,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void processBrowseProductLoadMore(final List<ProductItem> productItems,
                                              final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
-        if (TextUtils.isEmpty(view.getUserId())) {
+        if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
             view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
             return;
         }
