@@ -192,12 +192,6 @@
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".gmsubscribe.view.activity.GmDynamicPaymentActivity"
-            android:label="Pembayaran"
-            android:screenOrientation="portrait"/>
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
             android:screenOrientation="portrait" />

@@ -14,6 +14,8 @@ import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -115,6 +117,18 @@ public class SellerRouterApplication extends MainApplication
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
+    }
+
+    @Override
+    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(url);
+        paymentPassData.setQueryString(parameter);
+        paymentPassData.setCallbackSuccessUrl(callbackUrl);
+        paymentPassData.setPaymentId(String.valueOf(paymentId));
+        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
+        context.startActivity(intent);
+
     }
 
     private void goToDefaultRoute(Context context) {

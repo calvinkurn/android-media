@@ -13,6 +13,8 @@ import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -43,6 +45,17 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void goToProductDetail(Context context, String productUrl) {
         throw new RuntimeException("right now, it implement at Seller Application !!");
+    }
+
+    @Override
+    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(url);
+        paymentPassData.setQueryString(parameter);
+        paymentPassData.setCallbackSuccessUrl(callbackUrl);
+        paymentPassData.setPaymentId(String.valueOf(paymentId));
+        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
+        context.startActivity(intent);
     }
 
     @Override

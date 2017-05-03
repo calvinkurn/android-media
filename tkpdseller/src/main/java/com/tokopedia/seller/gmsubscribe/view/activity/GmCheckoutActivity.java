@@ -14,6 +14,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragment;
 import com.tokopedia.seller.gmsubscribe.view.fragment.GmCheckoutFragmentCallback;
 
@@ -105,8 +106,7 @@ public class GmCheckoutActivity extends BasePresenterActivity implements GmCheck
 
     @Override
     public void goToDynamicPayment(String url, String parameter, String callbackUrl, Integer paymentId) {
-        Intent intent = GmDynamicPaymentActivity.startPaymentWebview(this, url, parameter, paymentId, callbackUrl);
-        startActivity(intent);
+        ((SellerModuleRouter)getApplication()).goToTkpdPayment(this, url, parameter, callbackUrl, paymentId);
         finish();
     }
 
