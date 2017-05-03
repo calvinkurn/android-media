@@ -31,8 +31,6 @@ import com.tokopedia.seller.product.view.listener.EtalasePickerView;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 /**
@@ -110,7 +108,8 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
 
     private void setupRecyclerView(View view) {
         RecyclerView etalaseRecyclerView = (RecyclerView) view.findViewById(R.id.etalase_picker_recycler_view);
-        etalaseRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager layout = new LinearLayoutManager(getActivity());
+        etalaseRecyclerView.setLayoutManager(layout);
         adapter = new EtalasePickerAdapter(this);
         adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
@@ -119,6 +118,17 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
             }
         });
         etalaseRecyclerView.setAdapter(adapter);
+        etalaseRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int lastItemPosition = layout.findLastVisibleItemPosition();
+                int visibleItem = layout.getItemCount() - 1;
+                if (lastItemPosition == visibleItem  && adapter.isHasNextPage()) {
+                    adapter.showLoading(true);
+                }
+            }
+        });
     }
 
     @Override
@@ -158,7 +168,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
-    public void renderEtalaseList(List<MyEtalaseViewModel> etalases) {
+    public void renderEtalaseList(MyEtalaseViewModel etalases) {
         adapter.renderData(etalases);
     }
 

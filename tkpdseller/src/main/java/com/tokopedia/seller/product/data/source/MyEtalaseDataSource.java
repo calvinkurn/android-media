@@ -3,7 +3,8 @@ package com.tokopedia.seller.product.data.source;
 import com.tokopedia.seller.product.data.mapper.AddEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.mapper.MyEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.source.cloud.MyEtalaseCloud;
-import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
 
 import java.util.List;
 
@@ -23,10 +24,9 @@ public class MyEtalaseDataSource {
         this.myEtalaseCloud = myEtalaseCloud;
     }
 
-    public Observable<List<MyEtalaseDomainModel>> fetchMyEtalase() {
+    public Observable<MyEtalaseListServiceModel> fetchMyEtalase() {
         return myEtalaseCloud
-                .fetchMyEtalaseList()
-                .map(new MyEtalaseServiceToDomainMapper());
+                .fetchMyEtalaseList();
     }
 
     public Observable<Boolean> addNewEtalase(String newEtalaseName) {
