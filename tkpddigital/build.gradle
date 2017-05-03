@@ -25,7 +25,7 @@ def getTkpdCore() {
 
 def getTkpdPayment() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdpayment');
+            rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
 }
 
 publishing {

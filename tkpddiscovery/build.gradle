@@ -14,7 +14,7 @@ def getTkpdCore() {
 
 def getTopAdsSdk() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdtopadssdk');
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
 }
 
 publishing {
