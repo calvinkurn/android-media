@@ -24,7 +24,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -412,6 +411,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
         });
         recyclerProduct.setLayoutManager(adapter.getLayoutManager(getActivity()));
         recyclerProduct.setAdapter(adapter);
+        recyclerProduct.setNestedScrollingEnabled(false);
         presenter.onRefresh();
     }
 

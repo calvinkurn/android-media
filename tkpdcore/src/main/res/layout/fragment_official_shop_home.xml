@@ -13,8 +13,9 @@
             android:orientation="vertical">
             <com.tokopedia.core.widgets.NestedWebView
                 android:id="@+id/webview"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content" />
             <LinearLayout
                 android:id="@+id/linear_product_list"
                 android:layout_width="match_parent"
