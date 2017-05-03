@@ -65,6 +65,15 @@ public class AddWholeSaleDialog extends DialogFragment {
         return addWholeSaleDialog;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (previousValue != null)
+            outState.putParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE, previousValue);
+        outState.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, baseValue);
+        outState.putInt(KEY_CURRENCY_TYPE, currencyType);
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -107,20 +116,9 @@ public class AddWholeSaleDialog extends DialogFragment {
                 });
 
         if (savedInstanceState == null && getArguments() != null) {
-            baseValue = getArguments().getParcelable(KEY_WHOLE_SALE_BASE_VALUE);
-
-            // parse to certain currency
-            switch (getArguments().getInt(KEY_CURRENCY_TYPE)) {
-                case CurrencyTypeDef.TYPE_USD:
-                    currencyType = CurrencyTypeDef.TYPE_USD;
-                    break;
-                default:
-                case CurrencyTypeDef.TYPE_IDR:
-                    currencyType = CurrencyTypeDef.TYPE_IDR;
-                    break;
-            }
-
-            previousValue = getArguments().getParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE);
+            extractBundle(getArguments());
+        } else {
+            extractBundle(savedInstanceState);
         }
 
         // set min based on previous data
@@ -132,7 +130,9 @@ public class AddWholeSaleDialog extends DialogFragment {
             minQuantityRaw = previousValue.getQtyTwo() + 1;
             minQuantity = Integer.toString(minQuantityRaw);
         }
-        minWholeSale.getEditText().setText(minQuantity);
+        minWholeSale.setText(minQuantity);
+        minWholeSale.invalidate();
+        minWholeSale.requestLayout();
 
 
         maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText(), minQuantity) {
@@ -152,7 +152,9 @@ public class AddWholeSaleDialog extends DialogFragment {
                 maxWholeSale.setError(null);
             }
         });
-        maxWholeSale.getEditText().setText(Integer.toString(minQuantityRaw + 1));
+        maxWholeSale.setText(Integer.toString(minQuantityRaw + 1));
+        maxWholeSale.invalidate();
+        maxWholeSale.requestLayout();
 
         double idrBaseMinimumValue = 0;
         if (previousValue == null) {
@@ -183,20 +185,41 @@ public class AddWholeSaleDialog extends DialogFragment {
             }
         };
 
+        String result = null;
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
                 wholesalePrice.addTextChangedListener(usdTextWatcher);
-                wholesalePrice.getEditText().setText(Double.toString(usdBaseMinimumValue));
+                wholesalePrice.setText(result = Double.toString(usdBaseMinimumValue));
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
                 wholesalePrice.addTextChangedListener(idrTextWatcher);
-                wholesalePrice.getEditText().setText(Double.toString(idrBaseMinimumValue));
+                wholesalePrice.setText(result = Double.toString(idrBaseMinimumValue));
                 break;
 
         }
+        wholesalePrice.invalidate();
+        wholesalePrice.requestLayout();
 
         return view;
+    }
+
+    protected void extractBundle(Bundle data) {
+        data.setClassLoader(WholesaleModel.class.getClassLoader());
+        baseValue = data.getParcelable(KEY_WHOLE_SALE_BASE_VALUE);
+
+        // parse to certain currency
+        switch (data.getInt(KEY_CURRENCY_TYPE)) {
+            case CurrencyTypeDef.TYPE_USD:
+                currencyType = CurrencyTypeDef.TYPE_USD;
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                currencyType = CurrencyTypeDef.TYPE_IDR;
+                break;
+        }
+
+        previousValue = data.getParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE);
     }
 
     protected void validatePrice(float currencyValue) {
