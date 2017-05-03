@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.model.DrawerItem;
-import com.tokopedia.core.drawer2.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
@@ -26,8 +25,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
-
-import static android.R.id.toggle;
 
 /**
  * Created by nisie on 1/11/17.
@@ -45,6 +42,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     protected Toolbar toolbar;
 
     protected Activity context;
+    protected int selectedPosition = -1;
 
     public DrawerHelper(Activity activity) {
         drawerCache = new LocalCacheHandler(activity, DRAWER_CACHE);
@@ -87,7 +85,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
-        switch (item.getPosition()) {
+        switch (item.getId()) {
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 intent = InboxRouter.getInboxMessageActivityIntent(context);
                 context.startActivity(intent);
@@ -141,4 +139,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     }
 
     public abstract void setFooterData(DrawerProfile profile);
+
+    public abstract void setSelectedPosition(int id);
 }

@@ -506,7 +506,7 @@ public class ProductActivity extends BaseProductActivity implements
             case AddProductFragment.FRAGMENT_TAG:
                 if (supportFragmentManager.findFragmentByTag(AddProductFragment.FRAGMENT_TAG) == null) {
                     if (imagePathFromImport != null && position != -1) {
-                        Log.d(TAG, messageTAG + " tambahkan dari gallery [" + imagePathFromImport + "] position [" + position + "]");
+                        Log.d(TAG, messageTAG + " tambahkan dari gallery [" + imagePathFromImport + "] id [" + position + "]");
                         productActifityFragment = AddProductFragment.newInstance(AddProductType.ADD_FROM_GALLERY.getType(), imagePathFromImport, position);
                     } else if (multiImagePathFromImport != null) {
                         Log.d(TAG, messageTAG + " tambahkan multiple dari gallery [" + multiImagePathFromImport + "]");

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -144,24 +143,25 @@ public class DrawerBuyerHelper extends DrawerHelper
         inboxMenu.add(new DrawerItem("Pesan",
                 0,
                 TkpdState.DrawerPosition.INBOX_MESSAGE,
-                false,
+                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE)));
         inboxMenu.add(new DrawerItem("Diskusi Produk",
                 0,
                 TkpdState.DrawerPosition.INBOX_TALK,
-                false,
+                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK)));
         inboxMenu.add(new DrawerItem("Ulasan",
                 0,
                 TkpdState.DrawerPosition.INBOX_REVIEW,
-                false,
+                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW)));
         inboxMenu.add(new DrawerItem("Layanan Pengguna",
                 0,
                 TkpdState.DrawerPosition.INBOX_TICKET,
-                false,
+                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem("Pusat Resolusi", 0, TkpdState.DrawerPosition.RESOLUTION_CENTER, false,
+        inboxMenu.add(new DrawerItem("Pusat Resolusi", 0, TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
         return inboxMenu;
     }
@@ -178,7 +178,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void setNotification(DrawerNotification drawerNotification) {
         for (DrawerItem item : adapter.getData()) {
-            switch (item.getPosition()) {
+            switch (item.getId()) {
                 case TkpdState.DrawerPosition.INBOX_MESSAGE:
                     item.setNotif(drawerNotification.getInboxMessage());
                     break;
@@ -248,30 +248,51 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
+    public void setSelectedPosition(int id) {
+        adapter.setSelectedItem(id);
+    }
+
+    @Override
     public void initDrawer(Activity activity) {
-        this.adapter = DrawerAdapter.createAdapter(activity, this);
+        this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
         this.adapter.setData(createDrawerData());
         this.adapter.setHeader(new DrawerHeaderDataBinder(adapter, activity, this));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         setActionToolbar(activity);
+        setExpand();
         closeDrawer();
     }
 
-//    @Override
-//    public ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick() {
-//        return new ToolbarBuyerHandler.OnDrawerToggleClickListener() {
-//            @Override
-//            public void onDrawerToggleClick() {
-//                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-//                    closeDrawer();
-//                } else {
-//                    openDrawer();
-//                }
-//            }
-//        };
-//    }
+    private void setExpand() {
+        if (drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false)) {
+            DrawerGroup group = findGroup(TkpdState.DrawerPosition.INBOX);
+            if (group != null)
+                adapter.onGroupClicked(group, group.getPosition());
+        }
+        if (drawerCache.getBoolean(DrawerAdapter.IS_PEOPLE_OPENED, false)) {
+            DrawerGroup group = findGroup(TkpdState.DrawerPosition.PEOPLE);
+            if (group != null)
+                adapter.onGroupClicked(group, group.getPosition());
+        }
+        if (drawerCache.getBoolean(DrawerAdapter.IS_SHOP_OPENED, false)) {
+            DrawerGroup group = findGroup(TkpdState.DrawerPosition.SHOP);
+            if (group != null)
+                adapter.onGroupClicked(group, group.getPosition());
+        }
+    }
+
+    private DrawerGroup findGroup(int id) {
+        for (int i = 0; i < adapter.getData().size(); i++) {
+            if (adapter.getData().get(i) instanceof DrawerGroup
+                    && adapter.getData().get(i).getId() == id) {
+                adapter.getData().get(i).setPosition(i);
+                return (DrawerGroup) adapter.getData().get(i);
+            }
+        }
+        return null;
+    }
 
     @Override
     public void setEnabled(boolean isEnabled) {
@@ -285,7 +306,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onItemClicked(DrawerItem item) {
         Boolean isFinish = true;
-        switch (item.getPosition()) {
+        switch (item.getId()) {
             case TkpdState.DrawerPosition.INDEX_HOME:
                 Intent intent = HomeRouter.getHomeActivity(context);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -294,7 +315,7 @@ public class DrawerBuyerHelper extends DrawerHelper
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getPosition());
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getId());
                 intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
                 context.startActivity(intent);
 //                context.finish();
@@ -383,7 +404,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 super.onItemClicked(item);
         }
 
-        if (isFinish && item.getPosition() != TkpdState.DrawerPosition.INDEX_HOME) {
+        if (isFinish && item.getId() != TkpdState.DrawerPosition.INDEX_HOME) {
             context.finish();
         }
         closeDrawer();

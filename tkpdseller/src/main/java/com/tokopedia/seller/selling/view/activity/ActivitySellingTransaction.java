@@ -55,7 +55,9 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySellingTransaction extends TkpdActivity implements FragmentSellingTxCenter.OnCenterMenuClickListener, DownloadResultReceiver.Receiver {
+public class ActivitySellingTransaction extends TkpdActivity
+        implements FragmentSellingTxCenter.OnCenterMenuClickListener,
+        DownloadResultReceiver.Receiver {
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
@@ -89,6 +91,11 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         fragmentManager = getFragmentManager();
     }
 
+    @Override
+    public int getDrawerPosition() {
+        return 0;
+    }
+
     private void initView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
@@ -100,7 +107,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
     private void initSellerTicker() {
         GTMContainer gtmContainer = GTMContainer.newInstance(this);
 
-        if(gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")){
+        if (gtmContainer.getString("is_show_ticker_sales").equalsIgnoreCase("true")) {
             String message = gtmContainer.getString("ticker_text_sales_rich");
             showTickerGTM(message);
         } else {
@@ -115,15 +122,14 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         initSellerTicker();
     }
 
-    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span)
-    {
+    protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
         int start = strBuilder.getSpanStart(span);
         int end = strBuilder.getSpanEnd(span);
         int flags = strBuilder.getSpanFlags(span);
         ClickableSpan clickable = new ClickableSpan() {
             public void onClick(View view) {
                 Log.d("Seller Page", "URL Clicked" + span);
-                if(span.getURL().equals("com.tokopedia.sellerapp")){
+                if (span.getURL().equals("com.tokopedia.sellerapp")) {
                     startNewActivity(span.getURL());
                 } else {
                     openLink(span.getURL());
@@ -140,7 +146,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             startActivity(myIntent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No application can handle this request."
-                    + " Please install a webbrowser",  Toast.LENGTH_LONG).show();
+                    + " Please install a webbrowser", Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
@@ -165,7 +171,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
             CharSequence sequence = MethodChecker.fromHtml(message);
             SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
             URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
-            for(URLSpan span : urls) {
+            for (URLSpan span : urls) {
                 makeLinkClickable(strBuilder, span);
             }
             sellerTickerView.setText(strBuilder);
@@ -357,7 +363,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart);
             }
             return true;
-        }else {
+        } else {
             return super.onCreateOptionsMenu(menu);
         }
     }

@@ -387,4 +387,9 @@ public class NotificationCenter extends MultiPaneActivity implements Notificatio
         super.onBackPressed();
 
     }
+
+    @Override
+    public int getDrawerPosition() {
+        return 0;
+    }
 }

@@ -100,6 +100,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
             drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler);
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
+            drawerHelper.setSelectedPosition(getDrawerPosition());
             DrawerDataManager drawerDataManager = new DrawerDataManagerImpl(this);
             getDrawerProfile(drawerDataManager);
             getDrawerDeposit(drawerDataManager);
@@ -338,4 +339,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
     public void setDrawerEnabled(boolean isEnabled) {
         this.drawerHelper.setEnabled(isEnabled);
     }
+
+    public abstract int getDrawerPosition();
 }

@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
@@ -130,6 +131,11 @@ public class ShopEditorActivity extends TkpdActivity implements
             session.Logout(this);
             UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
         }
+    }
+
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.CREATE_SHOP;
     }
 
     public static void startOpenShopEditShippingActivity(AppCompatActivity context) {

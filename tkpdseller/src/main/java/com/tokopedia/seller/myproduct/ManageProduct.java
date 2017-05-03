@@ -617,6 +617,11 @@ public class ManageProduct extends TkpdActivity implements
         if (addProductReceiver.isOrderedBroadcast()) unregisterReceiver(addProductReceiver);
     }
 
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
+    }
+
     private OnConnectionTimeout onTimeout() {
         return
                 new OnConnectionTimeout() {

@@ -3,7 +3,6 @@ package com.tokopedia.core.drawer2.datamanager;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;

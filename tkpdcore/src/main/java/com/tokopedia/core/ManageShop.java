@@ -14,6 +14,7 @@ import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
@@ -96,7 +97,12 @@ public class ManageShop extends TkpdActivity {
 		
 	}
 
-    @Override
+	@Override
+	public int getDrawerPosition() {
+		return TkpdState.DrawerPosition.MANAGE_SHOP;
+	}
+
+	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         if (resultCode == RESULT_OK)

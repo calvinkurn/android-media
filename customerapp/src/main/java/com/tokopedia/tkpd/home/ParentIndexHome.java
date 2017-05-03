@@ -359,6 +359,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onDestroy();
     }
 
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.INDEX_HOME;
+    }
+
     protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
         public PagerAdapter(android.support.v4.app.FragmentManager fm) {
             super(fm);

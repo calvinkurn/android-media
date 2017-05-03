@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2;
 
 import android.content.Context;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.databinder.DrawerGroupDataBinder;
 import com.tokopedia.core.drawer2.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.databinder.DrawerItemDataBinder;
@@ -11,6 +12,7 @@ import com.tokopedia.core.drawer2.model.DrawerItem;
 import com.tokopedia.core.drawer2.model.DrawerSeparator;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
+import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
@@ -24,19 +26,24 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     private static final int VIEW_GROUP = 101;
     private static final int VIEW_ITEM = 102;
     private static final int VIEW_SEPARATOR = 103;
+    public static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
+    public static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
+    public static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
 
     private DrawerHeaderDataBinder drawerHeaderDataBinder;
     private DrawerItemDataBinder drawerItemDataBinder;
     private DrawerGroupDataBinder drawerGroupDataBinder;
     private DrawerSeparatorDataBinder drawerSeparatorDataBinder;
-
+    private LocalCacheHandler drawerCache;
 
     private ArrayList<DrawerItem> data;
+    private int selectedItem;
 
     public DrawerAdapter(Context context,
-                         DrawerItemDataBinder.DrawerItemListener itemListener) {
+                         DrawerItemDataBinder.DrawerItemListener itemListener, LocalCacheHandler drawerCache) {
         super();
         this.data = new ArrayList<>();
+        this.drawerCache = drawerCache;
         drawerGroupDataBinder = new DrawerGroupDataBinder(this, this, this.data);
         drawerItemDataBinder = new DrawerItemDataBinder(this, context, itemListener, this.data);
         drawerSeparatorDataBinder = new DrawerSeparatorDataBinder(this);
@@ -44,9 +51,9 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
 
 
     public static DrawerAdapter createAdapter(Context context,
-                                              DrawerItemDataBinder.DrawerItemListener itemListener
-    ) {
-        return new DrawerAdapter(context, itemListener);
+                                              DrawerItemDataBinder.DrawerItemListener itemListener,
+                                              LocalCacheHandler drawerCache) {
+        return new DrawerAdapter(context, itemListener, drawerCache);
     }
 
     @Override
@@ -113,8 +120,26 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
         }
         group.setExpanded(!group.isExpanded());
 
+        setExpandCache(group, group.isExpanded);
 
         notifyDataSetChanged();
+    }
+
+    private void setExpandCache(DrawerGroup group, boolean isExpand) {
+        switch (group.getId()) {
+            case TkpdState.DrawerPosition.INBOX:
+                drawerCache.putBoolean(IS_INBOX_OPENED, isExpand);
+                break;
+            case TkpdState.DrawerPosition.PEOPLE:
+                drawerCache.putBoolean(IS_PEOPLE_OPENED, isExpand);
+                break;
+            case TkpdState.DrawerPosition.SHOP:
+                drawerCache.putBoolean(IS_SHOP_OPENED, isExpand);
+                break;
+            default:
+                break;
+        }
+        drawerCache.applyEditor();
     }
 
     public ArrayList<DrawerItem> getData() {
@@ -135,4 +160,13 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
         return drawerHeaderDataBinder;
     }
 
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
+        drawerItemDataBinder.setSelectedItem(selectedItem);
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItem() {
+        return selectedItem;
+    }
 }

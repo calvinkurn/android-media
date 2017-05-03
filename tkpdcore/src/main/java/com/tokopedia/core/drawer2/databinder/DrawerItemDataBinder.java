@@ -29,6 +29,7 @@ import butterknife.ButterKnife;
 public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHolder> {
 
     private static final String MAX_PLACEHOLDER = "999+";
+    private int selectedItem;
 
     public interface DrawerItemListener {
         void onItemClicked(DrawerItem item);
@@ -85,11 +86,17 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
         setSelectedBackground(item, holder);
         holder.icon.setImageResource(item.getIconId());
 
-//        if (item.getIconId() != 0) {
-//            holder.label.setTypeface(null, Typeface.BOLD);
-//        } else {
-//            holder.label.setTypeface(null, Typeface.NORMAL);
-//        }
+        if (item.getIconId() != 0) {
+            holder.label.setTypeface(null, Typeface.BOLD);
+        } else {
+            holder.label.setTypeface(null, Typeface.NORMAL);
+        }
+
+        if (item.getId() == selectedItem) {
+            holder.label.setTextColor(context.getResources().getColor(R.color.green_500));
+        } else {
+            holder.label.setTextColor(context.getResources().getColor(R.color.black));
+        }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,7 +108,7 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
     }
 
     private void setSelectedBackground(DrawerItem item, ViewHolder holder) {
-        if (item.getPosition() == drawerPosition) {
+        if (item.getId() == drawerPosition) {
             holder.label.setTextColor(context.getResources().getColor(R.color.green_500));
         } else if (item.getIconId() != 0) {
             holder.label.setTextColor(context.getResources().getColor(R.color.black));
@@ -127,5 +134,12 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
         return 1;
     }
 
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
+        notifyDataSetChanged();
+    }
 
+    public int getSelectedItem() {
+        return selectedItem;
+    }
 }

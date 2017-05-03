@@ -131,6 +131,11 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
         sendNotifLocalyticsCallback();
     }
 
+    @Override
+    public int getDrawerPosition() {
+        return TkpdState.DrawerPosition.SETTINGS;
+    }
+
     private void sendNotifLocalyticsCallback() {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {

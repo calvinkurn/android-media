@@ -10,18 +10,19 @@ public class DrawerItem {
     public int iconId;
     public int notif = 0;
     public boolean isExpanded = false;
-    public int position;
+    public int id;
+    private int position;
 
-    public DrawerItem(String label, int iconId, int position, boolean isExpanded) {
-        this.position = position;
+    public DrawerItem(String label, int iconId, int id, boolean isExpanded) {
+        this.id = id;
         this.label = label;
         this.iconId = iconId;
         this.isExpanded = isExpanded;
         this.notif = 0;
     }
 
-    public DrawerItem(String label, int iconId, int position, boolean isExpanded, int notif) {
-        this.position = position;
+    public DrawerItem(String label, int iconId, int id, boolean isExpanded, int notif) {
+        this.id = id;
         this.label = label;
         this.iconId = iconId;
         this.isExpanded = isExpanded;
@@ -60,11 +61,19 @@ public class DrawerItem {
         isExpanded = expanded;
     }
 
-    public int getPosition() {
-        return position;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 }
