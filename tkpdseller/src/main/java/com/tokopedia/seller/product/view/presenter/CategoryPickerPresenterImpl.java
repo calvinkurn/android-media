@@ -31,6 +31,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     @Override
     public void fetchCategoryLevelOne() {
         checkViewAttached();
+        getView().hideRetryEmpty();
         getView().showLoadingDialog();
         RequestParams requestParam = FetchCategoryWithParentChildUseCase.generateLevelOne();
         fetchCategoryChildUseCase.execute(requestParam, new FetchCategoryParentSubscriber());
@@ -46,6 +47,7 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
     @Override
     public void fetchCategoryFromSelected(long initSelected) {
         checkViewAttached();
+        getView().hideRetryEmpty();
         RequestParams requestParam = FetchCategoryFromSelectedUseCase.generateParam(initSelected);
         fetchCategoryFromSelectedUseCase.execute(requestParam, new FetchCategoryFromSelectedSubscriber());
     }
@@ -117,7 +119,6 @@ public class CategoryPickerPresenterImpl extends CategoryPickerPresenter {
         @Override
         public void onNext(List<CategoryDomainModel> domainModels) {
             getView().dismissLoadingDialog();
-            getView().hideRetryEmpty();
             List<CategoryViewModel> map = CategoryViewMapper.mapList(domainModels);
             getView().renderCategory(map, FetchCategoryWithParentChildUseCase.UNSELECTED);
         }
