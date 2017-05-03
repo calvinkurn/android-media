@@ -110,10 +110,8 @@ public class DecimalInputView extends FrameLayout {
                 editText.removeTextChangedListener(currentTextWatcher);
             }
             currentTextWatcher = textWatcher;
-            editText.addTextChangedListener(textWatcher);
-        } else {
-            editText.addTextChangedListener(textWatcher);
         }
+        editText.addTextChangedListener(textWatcher);
     }
 
     public void removeTextChangedListener(TextWatcher watcher) {

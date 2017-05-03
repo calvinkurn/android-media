@@ -78,7 +78,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
         preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText(), preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
-            public void onNumberChanged(float currencyValue) {
+            public void onNumberChanged(float number) {
                 if (isPreOrderValid()) {
                     preOrderSpinnerCounterInputView.setCounterError(null);
                 }

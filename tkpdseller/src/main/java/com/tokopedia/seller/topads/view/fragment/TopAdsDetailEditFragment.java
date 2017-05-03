@@ -140,9 +140,9 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onNumberChanged(float currencyValue) {
-                super.onNumberChanged(currencyValue);
-                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), currencyValue);
+            public void onNumberChanged(float number) {
+                super.onNumberChanged(number);
+                String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     maxPriceInputLayout.setError(errorMessage);
                 } else {
@@ -153,14 +153,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onNumberChanged(float currencyValue) {
-                super.onNumberChanged(currencyValue);
+            public void onNumberChanged(float number) {
+                super.onNumberChanged(number);
                 String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
                 float clickBudget = 0;
                 if (!TextUtils.isEmpty(clickBudgetString)) {
                     clickBudget = Float.parseFloat(clickBudgetString);
                 }
-                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, currencyValue);
+                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, number);
                 if (!TextUtils.isEmpty(errorMessage)) {
                     budgetPerDayInputLayout.setError(errorMessage);
                 } else {
