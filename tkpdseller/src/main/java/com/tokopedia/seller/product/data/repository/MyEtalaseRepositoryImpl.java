@@ -4,9 +4,6 @@ import com.tokopedia.seller.product.data.mapper.MyEtalaseServiceToDomainMapper;
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -22,8 +19,8 @@ public class MyEtalaseRepositoryImpl implements MyEtalaseRepository {
     }
 
     @Override
-    public Observable<MyEtalaseDomainModel> fetchMyEtalase() {
-        return myEtalaseDataSource.fetchMyEtalase()
+    public Observable<MyEtalaseDomainModel> fetchMyEtalase(int page) {
+        return myEtalaseDataSource.fetchMyEtalase(page)
                 .map(new MyEtalaseServiceToDomainMapper());
     }
 

@@ -9,7 +9,7 @@ import rx.Observable;
  */
 
 public interface MyEtalaseRepository {
-    Observable<MyEtalaseDomainModel> fetchMyEtalase();
+    Observable<MyEtalaseDomainModel> fetchMyEtalase(int page);
 
     Observable<Boolean> addNewEtalase(String newEtalaseName);
 }

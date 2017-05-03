@@ -18,7 +18,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerEtalasePickerViewComponent;
 import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
@@ -125,6 +124,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
                 int lastItemPosition = layout.findLastVisibleItemPosition();
                 int visibleItem = layout.getItemCount() - 1;
                 if (lastItemPosition == visibleItem  && adapter.isHasNextPage()) {
+                    presenter.fetchNextPageEtalaseData(adapter.getPage());
                     adapter.showLoading(true);
                 }
             }
@@ -133,8 +133,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
 
     @Override
     public void refreshEtalaseData() {
-        String shopId = new SessionHandler(getActivity()).getShopID();
-        presenter.fetchEtalaseData(shopId);
+        presenter.fetchFirstPageEtalaseData();
     }
 
     @Override

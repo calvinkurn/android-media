@@ -27,7 +27,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     private long selectedEtalase;
     private String query = "";
     private boolean hasNextPage;
-    private int page = 0;
+    private int page = 1;
 
     public EtalasePickerAdapter(EtalasePickerAdapterListener listener) {
         this.listener = listener;
@@ -105,6 +105,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public void clearEtalaseList() {
+        page = 1;
         data.clear();
         notifyDataSetChanged();
     }

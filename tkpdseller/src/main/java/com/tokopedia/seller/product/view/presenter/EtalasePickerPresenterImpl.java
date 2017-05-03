@@ -5,10 +5,7 @@ import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
 import com.tokopedia.seller.product.view.mapper.MyEtalaseDomainToView;
-
-import java.util.List;
 
 import rx.Subscriber;
 
@@ -27,7 +24,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         this.addNewEtalaseUseCase = addNewEtalaseUseCase;
     }
 
-    public void fetchEtalaseData(String shopId) {
+    public void fetchFirstPageEtalaseData() {
         checkViewAttached();
         getView().clearEtalaseList();
         getView().dismissListRetry();
@@ -41,6 +38,12 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         getView().showLoadingDialog();
         RequestParams requestParam = AddNewEtalaseUseCase.generateRequestParam(newEtalaseName);
         addNewEtalaseUseCase.execute(requestParam, new AddNewEtalaseSubscribe(newEtalaseName));
+    }
+
+    @Override
+    public void fetchNextPageEtalaseData(int page) {
+        RequestParams requestParam = FetchMyEtalaseUseCase.generateRequestParam(page);
+        fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseDataSubscriber());
     }
 
     private class FetchEtalaseDataSubscriber extends Subscriber<MyEtalaseDomainModel> {

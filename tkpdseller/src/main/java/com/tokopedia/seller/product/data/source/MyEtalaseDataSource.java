@@ -24,9 +24,9 @@ public class MyEtalaseDataSource {
         this.myEtalaseCloud = myEtalaseCloud;
     }
 
-    public Observable<MyEtalaseListServiceModel> fetchMyEtalase() {
+    public Observable<MyEtalaseListServiceModel> fetchMyEtalase(int page) {
         return myEtalaseCloud
-                .fetchMyEtalaseList();
+                .fetchMyEtalaseList(page);
     }
 
     public Observable<Boolean> addNewEtalase(String newEtalaseName) {
