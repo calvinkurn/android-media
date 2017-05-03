@@ -31,7 +31,7 @@ import java.util.List;
  * Created by nathan on 4/11/17.
  */
 
-public class ProductInfoViewHolder extends ProductViewHolder {
+public class ProductInfoViewHolder extends ProductViewHolder implements RadioGroup.OnCheckedChangeListener{
 
     public interface Listener {
         void onCategoryPickerClicked(long categoryId);
@@ -41,6 +41,8 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         void onProductNameChanged(String productName);
 
         void onCategoryChanged(long categoryId);
+
+        void fetchCategory(long categoryId);
     }
 
     private static final int DEFAULT_CATEGORY_ID = -1;
@@ -108,31 +110,31 @@ public class ProductInfoViewHolder extends ProductViewHolder {
                 }
             }
         });
-        radioGroupCategoryRecomm.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
-                if (checkedId != categoryId) {
-                    categoryId = checkedId;
-                    if (categoryId <= 0) {
-                        hideAndClearCatalog();
-                    }
-                    if (listener != null) {
-                        listener.onCategoryChanged(categoryId);
-                    }
-                }
-                View radioButton = group.findViewById(checkedId);
-                if (radioButton == null) {
-                    categoryLabelView.resetContentText();
-                    return;
-                }
-                ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
-                if (productCategoryPrediction == null) {
-                    categoryLabelView.resetContentText();
-                    return;
-                }
-                processCategory(productCategoryPrediction.getCategoryName());
+        radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        if (checkedId != categoryId) {
+            categoryId = checkedId;
+            if (categoryId <= 0) {
+                hideAndClearCatalog();
             }
-        });
+            if (listener != null) {
+                listener.onCategoryChanged(categoryId);
+            }
+        }
+        View radioButton = group.findViewById(checkedId);
+        if (radioButton == null) {
+            categoryLabelView.resetContentText();
+            return;
+        }
+        ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
+        if (productCategoryPrediction == null) {
+            categoryLabelView.resetContentText();
+            return;
+        }
+        processCategory(productCategoryPrediction.getCategoryName());
     }
 
     public String getName() {
@@ -183,17 +185,8 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     }
 
     private void processCategory(Intent data) {
-        List<CategoryViewModel> listCategory = Parcels.unwrap(data.getParcelableExtra(CategoryPickerActivity.CATEGORY_RESULT_LEVEL));
-        String category = "";
         long previousCategoryId = categoryId;
-        for (int i = 0; i < listCategory.size(); i++) {
-            CategoryViewModel viewModel = listCategory.get(i);
-            categoryId = viewModel.getId();
-            category += viewModel.getName();
-            if (i < listCategory.size() - 1) {
-                category += "\n";
-            }
-        }
+        categoryId = data.getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, 0);
         if (previousCategoryId != categoryId) {
             if (categoryId <= 0) {
                 hideAndClearCatalog();
@@ -201,8 +194,18 @@ public class ProductInfoViewHolder extends ProductViewHolder {
             if (listener != null) {
                 listener.onCategoryChanged(categoryId);
             }
+            // reselect the id if exist on the radio button
+            // unselect if the id not exist
+            radioGroupCategoryRecomm.setOnCheckedChangeListener(null);
+            RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById((int) categoryId);
+            if (radioButton == null) {
+                radioGroupCategoryRecomm.clearCheck();
+            } else if (!radioButton.isChecked()) {
+                radioButton.setChecked(true);
+            }
+            radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
         }
-        categoryLabelView.setContent(category);
+        listener.fetchCategory(categoryId);
     }
 
     public void processCategory(String[] categoryNameArr) {
@@ -288,7 +291,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
         return true;
     }
 
-    public void setNameAvailable(boolean isAvailable){
+    public void setNameAvailable(boolean isAvailable) {
         nameEditText.setEnabled(isAvailable);
     }
 }

@@ -23,6 +23,7 @@ import com.tokopedia.seller.product.view.listener.CategoryPickerView;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;
 import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 
 import java.util.List;
 
@@ -99,12 +100,14 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         RecyclerView categoryRecyclerView = (RecyclerView) view.findViewById(R.id.category_recycler_view);
         categoryRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoryPickerLevelAdapter(this);
-        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
                 initVar();
             }
         });
+        adapter.setRetryView(topAdsRetryDataBinder);
         categoryRecyclerView.setAdapter(adapter);
     }
 
@@ -139,6 +142,11 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
     @Override
     public void showRetryEmpty() {
         adapter.showRetryFull(true);
+    }
+
+    @Override
+    public void hideRetryEmpty() {
+        adapter.showRetryFull(false);
     }
 
     @Override

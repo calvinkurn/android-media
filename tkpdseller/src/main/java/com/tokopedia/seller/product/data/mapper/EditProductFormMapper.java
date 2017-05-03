@@ -60,6 +60,8 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
             uploadTo = UploadToTypeDef.TYPE_NOT_ACTIVE;
         }
         domainModel.setProductUploadTo(uploadTo);
+        domainModel.setProductInvenageSwitch(Integer.parseInt(product.getProductInvenageSwitch()));
+        domainModel.setProductInvenageValue(Integer.parseInt(product.getProductInvenageValue()));
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
 

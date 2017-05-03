@@ -27,6 +27,12 @@ public class ProductEditForm {
     @SerializedName("product_status")
     @Expose
     private String productUploadTo;
+    @SerializedName("product_switch_invenage")
+    @Expose
+    private String productInvenageSwitch;
+    @SerializedName("product_invenage_value")
+    @Expose
+    private String productInvenageValue;
     @SerializedName("product_id")
     @Expose
     private String productId;
@@ -121,6 +127,22 @@ public class ProductEditForm {
 
     public void setProductUploadTo(String productUploadTo) {
         this.productUploadTo = productUploadTo;
+    }
+
+    public String getProductInvenageSwitch() {
+        return productInvenageSwitch;
+    }
+
+    public void setProductInvenageSwitch(String productInvenageSwitch) {
+        this.productInvenageSwitch = productInvenageSwitch;
+    }
+
+    public String getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public void setProductInvenageValue(String productInvenageValue) {
+        this.productInvenageValue = productInvenageValue;
     }
 
     public String getProductId() {

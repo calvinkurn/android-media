@@ -20,4 +20,6 @@ public interface CategoryPickerView extends CustomerView {
     void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels);
 
     void showRetryEmpty();
+
+    void hideRetryEmpty();
 }

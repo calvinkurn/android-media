@@ -32,18 +32,4 @@ public class ProductDraftModule extends ProductAddModule {
         return new FetchDraftProductUseCase(threadExecutor, postExecutionThread, productDraftRepository);
     }
 
-    @ProductAddScope
-    @Provides
-    CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
-                                                 CategoryDataSource categoryDataSource,
-                                                 FetchCategoryDataSource fetchCategoryDataSource){
-        return new CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource);
-    }
-
-    @ProductAddScope
-    @Provides
-    HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
-        return retrofit.create(HadesCategoryApi.class);
-    }
-
 }
