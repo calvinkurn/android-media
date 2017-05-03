@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 
 public class TopAdsDetailProductActivity extends TActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
+    public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
+
     private ShowCaseDialog showCaseDialog;
 
     @Override
@@ -36,8 +39,13 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        if(fragment == null){
+            fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
+        }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailProductFragment.createInstance(ad, adId), TopAdsDetailProductFragment.class.getSimpleName())
+                .replace(R.id.container, fragment,
+                        TAG)
                 .commit();
     }
 

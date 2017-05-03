@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ public class TopAdsDetailGroupActivity extends TActivity
 
     private ShowCaseDialog showCaseDialog;
 
+    public static final String TAG = TopAdsDetailGroupFragment.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +39,13 @@ public class TopAdsDetailGroupActivity extends TActivity
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
+
+        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        if(fragment == null){
+            fragment = TopAdsDetailGroupFragment.createInstance(ad, adId);
+        }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailGroupFragment.createInstance(ad, adId), TopAdsDetailGroupFragment.class.getSimpleName())
+                .replace(R.id.container, fragment, TAG)
                 .commit();
     }
 

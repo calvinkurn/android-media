@@ -27,6 +27,7 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetailGroupPresenter> {
 
+    public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
     private TopAdsLabelView items;
 
     private GroupAd ad;
@@ -108,7 +109,13 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        this.ad = (GroupAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.ad = (GroupAd) super.ad;
+        } else {
+            this.ad = (GroupAd) ad;
+        }
+        if (this.ad == null) return;
         items.setContent(String.valueOf(this.ad.getTotalItem()));
         if(this.ad.getTotalItem() > 0){
             items.setVisibleArrow(true);
@@ -158,6 +165,19 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        super.onSaveState(state);
+        state.putParcelable(GROUP_AD_PARCELABLE, ad);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        ad = savedState.getParcelable(GROUP_AD_PARCELABLE);
+        onAdLoaded(ad);
     }
 
     // for show case

@@ -1,64 +1,49 @@
 package com.tokopedia.core.network.apiservices.digital;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthInterceptor;
-import com.tokopedia.core.network.retrofit.services.EndpointService;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.core.network.retrofit.services.BaseService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import okhttp3.OkHttpClient;
-import retrofit2.CallAdapter;
-import retrofit2.Converter;
 import retrofit2.Retrofit;
 
 /**
  * @author anggaprasetiyo on 2/23/17.
  */
 
-public class DigitalEndpointService extends EndpointService<DigitalApi> {
+public class DigitalEndpointService extends BaseService<DigitalApi> {
+
     public DigitalEndpointService() {
         super();
     }
 
     @Override
-    protected List<CallAdapter.Factory> getAdditionalCallAdapterFactoryList(
-            ArrayList<CallAdapter.Factory> adapterFactoryList
-    ) {
-        return adapterFactoryList;
+    protected void initApiService(Retrofit retrofit) {
+        api = retrofit.create(DigitalApi.class);
     }
 
     @Override
-    protected List<Converter.Factory> getAdditionalConverterFactoryList(
-            ArrayList<Converter.Factory> converterFactoryList
-    ) {
-        converterFactoryList.add(DigitalResponseConverter.create());
-        return converterFactoryList;
-    }
-
-    @Override
-    protected void setupAdditionalInterceptor(OkHttpClient.Builder client) {
-        client.addInterceptor(new DigitalHmacAuthInterceptor(TkpdBaseURL.DigitalApi.HMAC_KEY));
-    }
-
-    @Override
-    protected DigitalApi initApiService(Retrofit retrofit) {
-        return retrofit.create(DigitalApi.class);
-    }
-
-    @Override
-    protected String getEndpointUrl() {
-        return TkpdBaseURL.DIGITAL_API_DOMAIN;
-    }
-
-    @Override
-    protected String getEndpointVersion() {
-        return TkpdBaseURL.DigitalApi.VERSION;
+    protected String getBaseUrl() {
+        return TkpdBaseURL.DIGITAL_API_DOMAIN + TkpdBaseURL.DigitalApi.VERSION;
     }
 
     @Override
     public DigitalApi getApi() {
         return api;
+    }
+
+    @Override
+    protected Retrofit createRetrofitInstance(String processedBaseUrl) {
+        return RetrofitFactory.createRetrofitDigitalConfig(processedBaseUrl)
+                .client(OkHttpFactory.create()
+                        .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                        .buildClientDigitalAuth(TkpdBaseURL.DigitalApi.HMAC_KEY))
+                .build();
+    }
+
+    @Override
+    protected OkHttpRetryPolicy getOkHttpRetryPolicy() {
+        return OkHttpRetryPolicy.createdOkHttpNoAutoRetryPolicy();
     }
 }

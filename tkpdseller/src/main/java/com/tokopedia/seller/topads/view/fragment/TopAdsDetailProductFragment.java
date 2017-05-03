@@ -30,11 +30,15 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
+import org.parceler.Parcels;
+
 /**
  * Created by zulfikarrahman on 12/29/16.
  */
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
+
+    public static final String PRODUCT_AD_PARCELABLE = "PRODUCT_AD_PARCELABLE";
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
@@ -149,7 +153,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        productAd = (ProductAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.productAd = (ProductAd) super.ad;
+        } else {
+            this.productAd = (ProductAd) ad;
+        }
+        if (this.productAd == null) return;
         String groupName = productAd.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));
@@ -221,6 +231,19 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         Intent intent = TopAdsGroupManagePromoActivity.createIntent(getActivity(), String.valueOf(productAd.getId()),
                 TopAdsGroupManagePromoFragment.NOT_IN_GROUP, productAd.getGroupName(), String.valueOf(productAd.getGroupId()));
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        state.putParcelable(PRODUCT_AD_PARCELABLE, Parcels.wrap(productAd));
+        super.onSaveState(state);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
+        onAdLoaded(productAd);
     }
 
     // for show case

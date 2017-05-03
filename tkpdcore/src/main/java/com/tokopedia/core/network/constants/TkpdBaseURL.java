@@ -120,6 +120,8 @@ public class TkpdBaseURL {
         public static final String URL_TICKET_ACTION = BASE_DOMAIN + "v4/action/ticket/";
         public static final String URL_REGISTER_NEW = BASE_DOMAIN + "/v4/action/register/";
 
+        public static final String URL_POST_FAVORITE_SHOP = "v4/action/favorite-shop/fav_shop.pl";
+
 
         public static final String REGISTER_NEW = "register.pl";
         public static final String PATH_FAVE_SHOP = "fav_shop.pl";
@@ -347,7 +349,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_DEPARTMENT_CHILD = "get_department_child.pl";
         public static final String PATH_GET_DEPARTMENT_PARENT = "get_department_parent.pl";
 
-        public static final String PATH_GET_FAVORITE_SHOP = "get_favorite_shop.pl";
+        public static final String PATH_GET_FAVORITE_SHOP = "v4/home/get_favorite_shop.pl";
         public static final String PATH_GET_PRODUCT_FEED = "get_product_feed.pl";
         public static final String PATH_GET_RECENT_VIEW_PRODUCT = "get_recent_view_product.pl";
         public static final String PATH_GET_WISHLIST = "get_wishlist.pl";

@@ -59,7 +59,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    private Ad ad;
+    protected Ad ad;
     protected String adId;
 
     protected abstract void refreshAd();
@@ -223,6 +223,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOnAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
@@ -244,6 +245,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public void onTurnOffAdSuccess() {
+        ad = null;
         loadData();
         setResultAdDetailChanged();
         snackbarRetry.hideRetrySnackbar();
