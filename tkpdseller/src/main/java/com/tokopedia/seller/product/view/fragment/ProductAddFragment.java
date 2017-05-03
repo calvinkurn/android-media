@@ -19,10 +19,8 @@ import android.view.ViewGroup;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
@@ -89,6 +87,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
      */
     private ArrayList<String> imageUrlList;
     private Listener listener;
+
     public static ProductAddFragment createInstance(ArrayList<String> tkpdImageUrls) {
         ProductAddFragment fragment = new ProductAddFragment();
         if (tkpdImageUrls != null && tkpdImageUrls.size() > 0) {
@@ -171,23 +170,17 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                     presenter.saveDraft(viewModel);
                 }
             }
-
-            private boolean isDataValid() {
-                if (!productInfoViewHolder.isDataValid()) {
-                    return false;
+        });
+        view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isDataValid()) {
+                    UploadProductInputViewModel viewModel = collectDataFromView();
+                    presenter.saveDraftAndAdd(viewModel);
                 }
-                if (!productDetailViewHolder.isDataValid()) {
-                    return false;
-                }
-                if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
-                    return false;
-                }
-                if (!productAdditionalInfoViewHolder.isDataValid()) {
-                    return false;
-                }
-                return true;
             }
         });
+
         view.requestFocus();
         return view;
     }
@@ -345,6 +338,22 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     }
 
+    private boolean isDataValid() {
+        if (!productInfoViewHolder.isDataValid()) {
+            return false;
+        }
+        if (!productDetailViewHolder.isDataValid()) {
+            return false;
+        }
+        if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
+            return false;
+        }
+        if (!productAdditionalInfoViewHolder.isDataValid()) {
+            return false;
+        }
+        return true;
+    }
+
     // Clicked Part
     @Override
     public void onDetailProductScoringClicked() {
@@ -458,6 +467,15 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onSuccessStoreProductAndAddToDraft(Long productId) {
+        if (productAdditionalInfoViewHolder.isShare()) {
+            listener.startUploadProductAndAddWithShare(productId);
+        } else {
+            listener.startUploadProductAndAdd(productId);
+        }
+    }
+
+    @Override
     public void populateCategory(List<String> strings) {
         String[] stringArray = new String[strings.size()];
         stringArray = strings.toArray(stringArray);
@@ -515,5 +533,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                      @CurrencyTypeDef int currencyType,
                                      WholesaleModel previousWholesalePrice);
+
+        void startUploadProductAndAddWithShare(Long productId);
+
+        void startUploadProductAndAdd(Long productId);
     }
 }
