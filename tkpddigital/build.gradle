@@ -23,6 +23,11 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdPayment() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpdpayment');
+}
+
 publishing {
     publications {
         aar(MavenPublication) {
@@ -98,8 +103,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
-
-    compile project(':tkpdpayment')
+    compile getTkpdPayment()
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
