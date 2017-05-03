@@ -45,6 +45,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private static final int START_PAGE = 1;
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
+    protected static final int REQUEST_CODE_AD_ADD = 4;
 
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -56,6 +57,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     protected int totalItem;
     private boolean searchMode;
+
+    boolean adsStatusChanged;
 
     protected TopAdsAdListAdapter adapter;
     private LinearLayoutManager layoutManager;
@@ -200,6 +203,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
                 setResultAdListChanged();
             }
+        } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null){
+            adsStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adsStatusChanged) {
+            searchAd(START_PAGE);
+            setResultAdListChanged();
+            adsStatusChanged = false;
         }
     }
 
@@ -226,7 +241,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (adapter.getDataSize() < 1) {
             adapter.showEmptyFull(true);
         }
-        if (fabFilter.getVisibility() == View.GONE) {
+        if (adapter.getDataSize() < 1) {
+            fabFilter.setVisibility(View.GONE);
+        } else {
             fabFilter.setVisibility(View.VISIBLE);
         }
     }

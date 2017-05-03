@@ -141,7 +141,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        productAd = (ProductAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.productAd = (ProductAd) super.ad;
+        } else {
+            this.productAd = (ProductAd) ad;
+        }
+        if (this.productAd == null) return;
         String groupName = productAd.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));

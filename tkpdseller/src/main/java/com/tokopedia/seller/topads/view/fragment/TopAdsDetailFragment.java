@@ -59,7 +59,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    private Ad ad;
+    protected Ad ad;
     protected String adId;
 
     protected abstract void refreshAd();

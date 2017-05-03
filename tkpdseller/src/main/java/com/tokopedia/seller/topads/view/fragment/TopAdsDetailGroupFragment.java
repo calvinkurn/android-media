@@ -102,7 +102,13 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        this.ad = (GroupAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.ad = (GroupAd) super.ad;
+        } else {
+            this.ad = (GroupAd) ad;
+        }
+        if (this.ad == null) return;
         items.setContent(String.valueOf(this.ad.getTotalItem()));
         if(this.ad.getTotalItem() > 0){
             items.setVisibleArrow(true);
