@@ -281,18 +281,11 @@ public class ManageProduct extends TkpdActivity implements
                 lvadapter.clearCheckdData();
                 lvListProd.clearChoices();
                 lvListProd.setItemChecked(-1, false);
-                if (id == R.id.action_instagram) {
-                    if(getApplication() instanceof TkpdCoreRouter)
-                        ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
-
-                    // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventClickInstoped();
-                } else if (id == R.id.action_gallery) {
+                if (id == R.id.action_gallery) {
                     ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
 
                 } else if (id == R.id.action_camera) {
                     ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
-
                 }
                 return false;
             }

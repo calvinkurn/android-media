@@ -180,7 +180,11 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public void setCatalog(long catalogId, String name) {
         this.catalogId = catalogId;
-        catalogLabelView.setContent(name);
+        if (catalogId <= 0){
+            catalogLabelView.setContent(catalogLabelView.getContext().getString(R.string.product_label_choose));
+        } else {
+            catalogLabelView.setContent(name);
+        }
         catalogLabelView.setVisibility(View.VISIBLE);
     }
 
