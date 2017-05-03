@@ -466,7 +466,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             return false;
         }
         if (!isWeightValid()) {
-            priceSpinnerCounterInputView.requestFocus();
+            weightSpinnerCounterInputView.requestFocus();
             return false;
         }
         if (getMinimumOrder() <= 0) {
