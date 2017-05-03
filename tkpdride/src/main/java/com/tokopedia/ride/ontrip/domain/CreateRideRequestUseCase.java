@@ -30,6 +30,12 @@ public class CreateRideRequestUseCase extends UseCase<RideRequest> {
     public static final String PARAM_END_ADDRESS = "end_address";
     public static final String PARAM_SURGE_CONFIRMATION_ID = "surge_confirmation_id";
 
+    public static final String PARAM_PROMO_CODE = "promocode";
+    public static final String PARAM_PRODUCT_NAME = "product_name";
+    public static final String PARAM_START_PLACE_ID = "start_place_id";
+    public static final String PARAM_END_PLACE_ID = "end_place_id";
+    public static final String PARAM_DEVICE_TYPE = "device_type";
+
     private BookingRideRepository bookingRideRepository;
 
     public CreateRideRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,

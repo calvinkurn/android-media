@@ -26,6 +26,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
@@ -229,6 +230,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_HASH, hash);
         requestParams.putString(CreateRideRequestUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
+            requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
+            requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
+            requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, confirmBookingViewModel.getDeviceType());
+        }
         return requestParams;
     }
 
