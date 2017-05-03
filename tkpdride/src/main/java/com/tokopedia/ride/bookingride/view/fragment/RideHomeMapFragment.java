@@ -2,6 +2,7 @@ package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -93,6 +94,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     ImageView mMarkerImageView;
     @BindView(R2.id.iv_android_center_marker_cross)
     ImageView mMarkerCenterCrossImage;
+    @BindView(R2.id.crux_cabs_source_container)
+    RelativeLayout mSourceLayout;
+    @BindView(R2.id.layout_destination)
+    RelativeLayout mDestinationLayout;
 
     private PlacePassViewModel mSource, mDestination;
 
@@ -457,7 +462,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
-        startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
+        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, mDestinationLayout);
+        //startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
     }
 
     @OnClick(R2.id.crux_cabs_destination)
@@ -466,7 +472,19 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
-        startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+        startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, mDestinationLayout);
+        //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+    }
+
+    private void startActivityForResultWithClipReveal(Intent intent, int requestCode, View view) {
+        ActivityOptions options = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            options = ActivityOptions.makeClipRevealAnimation(view, 0, 0,
+                    view.getWidth(), view.getHeight());
+            startActivityForResult(intent, requestCode, options.toBundle());
+        } else {
+            startActivityForResult(intent, requestCode);
+        }
     }
 
     @Override

@@ -45,6 +45,7 @@ public class RideRequestEntityMapper {
             location.setEta(entity.getEta());
             location.setLongitude(entity.getLongitude());
             location.setLatitude(entity.getLatitude());
+            location.setAddress(entity.getAddress());
         }
         return location;
     }

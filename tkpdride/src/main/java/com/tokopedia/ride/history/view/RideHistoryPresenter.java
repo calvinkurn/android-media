@@ -6,6 +6,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
+import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.history.domain.GetRideHistoriesUseCase;
 import com.tokopedia.ride.history.domain.model.RideHistory;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
@@ -72,17 +73,25 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                                 rideHistory.getPayment().getValue())
                         );
                         viewModel.setRequestTime(rideHistory.getRequestTime());
-                        viewModel.setStartLatitude(rideHistory.getPickup().getLatitude());
-                        viewModel.setStartLongitude(rideHistory.getPickup().getLongitude());
-                        viewModel.setEndLatitude(rideHistory.getDestination().getLatitude());
-                        viewModel.setEndLongitude(rideHistory.getDestination().getLongitude());
                         viewModel.setRequestId(rideHistory.getRequestId());
                         viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
                         viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
 
-                        double endLatitude = rideHistory.getDestination() == null ? 0 : rideHistory.getDestination().getLatitude();
-                        double endLogitude = rideHistory.getDestination() == null ? 0 : rideHistory.getDestination().getLongitude();
-                        viewModel.setMapImage(getMapImageUrl(rideHistory.getPickup().getLatitude(), rideHistory.getPickup().getLongitude(), endLatitude, endLogitude, mapSize));
+                        LocationLatLng pickupObject = rideHistory.getPickup();
+                        if (pickupObject != null) {
+                            viewModel.setStartLatitude(pickupObject.getLatitude());
+                            viewModel.setStartLongitude(pickupObject.getLongitude());
+                            viewModel.setStartAddress(pickupObject.getAddress());
+                        }
+
+                        LocationLatLng destObject = rideHistory.getDestination();
+                        if (destObject != null) {
+                            viewModel.setEndLatitude(destObject.getLatitude());
+                            viewModel.setEndLongitude(destObject.getLongitude());
+                            viewModel.setEndAddress(destObject.getAddress());
+                        }
+
+                        viewModel.setMapImage(getMapImageUrl(viewModel.getStartLatitude(), viewModel.getStartLongitude(), viewModel.getEndLatitude(), viewModel.getEndLongitude(), mapSize));
                         histories.add(viewModel);
                     }
                     getView().enableRefreshLayout();

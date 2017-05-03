@@ -17,6 +17,9 @@ public class LocationLatLngEntity {
     @SerializedName("eta")
     @Expose
     float eta;
+    @SerializedName("address")
+    @Expose
+    String address;
 
     public LocationLatLngEntity() {
     }
@@ -35,5 +38,13 @@ public class LocationLatLngEntity {
 
     public void setEta(float eta) {
         this.eta = eta;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
