@@ -368,7 +368,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                      final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
-        if (TextUtils.isEmpty(view.getUserId())) {
+        if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
             view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
             return;
         }
