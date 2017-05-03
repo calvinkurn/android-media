@@ -454,9 +454,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.action_instagram:
-                        onAddInstagram();
-                        break;
                     case R.id.action_gallery:
                         GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
