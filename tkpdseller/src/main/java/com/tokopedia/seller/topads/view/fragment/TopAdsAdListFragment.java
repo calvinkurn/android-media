@@ -58,9 +58,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected int page;
 
     protected int totalItem;
-    private boolean searchMode;
 
     boolean adsStatusChanged;
+    boolean updateEmptyDefault;
 
     protected TopAdsAdListAdapter adapter;
     protected LinearLayoutManager layoutManager;
@@ -145,7 +145,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initialVar();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
-        searchMode = false;
         new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -210,6 +209,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
                 setResultAdListChanged();
             }
+            if (adDeleted && status <= 0 && TextUtils.isEmpty(keyword)) {
+                updateEmptyDefault = true;
+            }
         } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null){
             adsStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
         }
@@ -219,9 +221,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onResume() {
         super.onResume();
         if (adsStatusChanged) {
+            page = START_PAGE;
+            adapter.clearData();
+            adapter.showLoadingFull(true);
             searchAd(START_PAGE);
             setResultAdListChanged();
             adsStatusChanged = false;
+        }
+        if (updateEmptyDefault) {
+            updateEmptyViewDefault();
+            updateEmptyDefault = false;
         }
     }
 
@@ -236,7 +245,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         recyclerView.removeOnScrollListener(onScrollListener);
         recyclerView.addOnScrollListener(onScrollListener);
         this.totalItem = totalItem;
-        if (totalItem > 0 && !searchMode) {
+        if (totalItem > 0) {
             updateEmptyViewNoResult();
         }
         if (page == START_PAGE) {

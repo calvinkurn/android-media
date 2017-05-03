@@ -49,20 +49,6 @@ public class TopAdsGroupAdListFragment extends TopAdsAdListFragment<TopAdsGroupA
     }
 
     @Override
-    protected void initialVar() {
-        super.initialVar();
-        int totalProductAd = getActivity().getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, Integer.MIN_VALUE);
-        if (totalProductAd > 0) {
-            TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
-            emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_group_title_promo_text));
-            emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_group_promo_content_not_empty_text));
-            emptyGroupAdsDataBinder.setEmptyContentItemText(getString(R.string.top_ads_empty_group_promo_content_item_no_text, String.valueOf(totalProductAd)));
-            emptyGroupAdsDataBinder.setCallback(this);
-            adapter.setEmptyView(emptyGroupAdsDataBinder);
-        }
-    }
-
-    @Override
     public void onClicked(Ad ad) {
         if (ad instanceof GroupAd) {
             Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
