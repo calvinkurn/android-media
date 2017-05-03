@@ -166,7 +166,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public View onCreateView(View parentView, Bundle savedInstanceState) {
         loading = new ProgressDialog(getActivity());
         loading.setCancelable(false);
-        loading.setMessage("Loading");
+        loading.setMessage(getResources().getString(R.string.title_loading));
 
         return parentView;
     }

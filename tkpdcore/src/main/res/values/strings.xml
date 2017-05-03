@@ -1913,4 +1913,6 @@ di Tokopedia Sekarang!</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
+    <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
+
 </resources>

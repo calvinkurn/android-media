@@ -31,6 +31,7 @@ import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
@@ -207,7 +208,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 }
                 wishlistButtonCounter++;
             } else {
-                view.showToastMessage("Tunggu beberapa saat lagi");
+                view.showToastMessage(context.getString(R.string.wishlist_too_much_attempt_error_message));
             }
         } else {
             cacheInteractor.deleteProductDetail(productId);
