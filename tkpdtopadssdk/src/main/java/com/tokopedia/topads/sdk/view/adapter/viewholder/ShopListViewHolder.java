@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,8 @@ import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
+import org.w3c.dom.Text;
+
 /**
  * @author by errysuprayogi on 3/30/17.
  */
@@ -41,8 +44,10 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
     private ImageView shopImage;
     private TextView shopTitle;
     private TextView shopSubtitle;
+    private TextView favTxt;
     private RecyclerView shopListImage;
     private LinearLayout favBtn;
+    private LinearLayout root;
     private Data data;
     private Context context;
     private SnapHelper snapHelper;
@@ -58,7 +63,9 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
         shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
-        itemView.setOnClickListener(this);
+        favTxt = (TextView) itemView.findViewById(R.id.fav_text);
+        root = (LinearLayout) itemView.findViewById(R.id.root);
+        root.setOnClickListener(this);
         favBtn.setOnClickListener(this);
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(shopListImage);
@@ -70,7 +77,9 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
         if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(getAdapterPosition(), data);
-            } else {
+                data.setFavorit(true);
+                setFavorite(data.isFavorit());
+            } else if (id == R.id.root){
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }
         }
@@ -106,7 +115,23 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
             } else {
                 shopTitle.setText(title);
             }
+            setFavorite(data.isFavorit());
+        }
+    }
 
+    private void setFavorite(boolean isFavorite){
+        if (isFavorite) {
+            favBtn.setSelected(true);
+            favBtn.setClickable(false);
+            favTxt.setText(context.getString(R.string.favorite));
+            favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_favorite, 0, 0, 0);
+            favTxt.setTextColor(ContextCompat.getColor(context, R.color.label_color));
+        } else {
+            favBtn.setSelected(false);
+            favBtn.setClickable(true);
+            favTxt.setText(context.getString(R.string.favoritkan));
+            favTxt.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
+            favTxt.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
     }
 

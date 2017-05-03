@@ -61,7 +61,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     public void bind(ProductListViewModel element) {
         data = element.getData();
         Product product = data.getProduct();
-        imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
+        imageLoader.loadImage(product.getImage().getXs_ecs(), product.getImage().getXs_url(),
                 productImage);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
