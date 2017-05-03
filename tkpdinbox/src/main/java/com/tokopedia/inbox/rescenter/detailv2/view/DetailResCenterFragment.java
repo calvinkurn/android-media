@@ -153,6 +153,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void onRestoreState(Bundle savedState) {
+        showLoading(false);
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setViewData((DetailViewModel) savedState.getParcelable(EXTRA_PARAM_VIEW_DATA));
         renderData();
