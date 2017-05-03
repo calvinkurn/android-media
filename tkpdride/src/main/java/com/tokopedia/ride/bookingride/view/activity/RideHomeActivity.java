@@ -292,6 +292,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void actionProductListHeaderClick() {
+        mBottomContainer.animate().setInterpolator(new AccelerateDecelerateInterpolator()).translationY(mBottomContainer.getHeight()).setDuration(300);
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
         //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);

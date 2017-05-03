@@ -201,8 +201,12 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.apply_promo_card_layout)
     public void actionApplyPromoLayoutClicked() {
-        startActivityForResult(ApplyPromoActivity.getCallingActivity(getActivity()), APPLY_PROMO_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(
+                ApplyPromoActivity.getCallingActivity(getActivity(), confirmBookingViewModel),
+                APPLY_PROMO_ACTIVITY_REQUEST_CODE
+        );
     }
+
 
     @OnClick(R2.id.cab_confirmation)
     public void actionConfirmButtonClicked() {
@@ -230,7 +234,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         priceTextView.setText(display);
 
         if (surgeMultiplier > 0) {
-            surgeRateTextView.setText(surgeMultiplier + "x");
+            surgeRateTextView.setText(String.format("%sx", surgeMultiplier));
             surgeRateTextView.setVisibility(View.VISIBLE);
         } else {
             surgeRateTextView.setVisibility(View.GONE);
@@ -350,6 +354,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         if (requestCode == WALLET_WEB_VIEW_REQUEST_CODE) {
             //presenter.clearTokoCashCache();
             //presenter.actionCheckBalance();
+        } else if (requestCode == APPLY_PROMO_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
+            }
         }
     }
 

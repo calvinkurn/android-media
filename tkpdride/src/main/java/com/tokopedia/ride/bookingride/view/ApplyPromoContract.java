@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
+import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 /**
  * Created by alvarisi on 4/25/17.
@@ -17,7 +18,7 @@ public interface ApplyPromoContract {
 
         void hideApplyPromoLoading();
 
-        void onSuccessApplyPromo(ApplyPromo applyPromo);
+        void onSuccessApplyPromo(FareEstimate applyPromo);
 
         void onFailedApplyPromo(ApplyPromo applyPromo);
 
@@ -30,6 +31,10 @@ public interface ApplyPromoContract {
         void hideApplyPromoLayout();
 
         RequestParams getParams();
+
+        void setEmptyPromoError();
+
+        void clearEmptyPromoError();
     }
 
     interface Presenter extends CustomerPresenter<View>{

@@ -22,6 +22,39 @@ public class FareEstimateEntity {
     @SerializedName("pickup_estimate")
     @Expose
     private String pickupEstimate;
+    @SerializedName("success")
+    @Expose
+    private boolean success;
+    @SerializedName("code")
+    @Expose
+    private String code;
+    @SerializedName("discount_amount")
+    @Expose
+    private int discountAmount;
+    @SerializedName("cashback_amount")
+    @Expose
+    private int cashbackAmount;
+    @SerializedName("cashback_top_cash_amount")
+    @Expose
+    private int cashbackTopCashAmount;
+    @SerializedName("cashback_voucher_amount")
+    @Expose
+    private int cashbackVoucherAmount;
+    @SerializedName("extra_amount")
+    @Expose
+    private int extraAmount;
+    @SerializedName("message_success")
+    @Expose
+    private String messageSuccess;
+    @SerializedName("type")
+    @Expose
+    private String type;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    @SerializedName("attributes")
+    @Expose
+    private FareAttributeEntity attributes;
 
     public FareEstimateEntity() {
     }
@@ -56,5 +89,49 @@ public class FareEstimateEntity {
 
     public void setPickupEstimate(String pickupEstimate) {
         this.pickupEstimate = pickupEstimate;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public int getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public int getCashbackAmount() {
+        return cashbackAmount;
+    }
+
+    public int getCashbackTopCashAmount() {
+        return cashbackTopCashAmount;
+    }
+
+    public int getCashbackVoucherAmount() {
+        return cashbackVoucherAmount;
+    }
+
+    public int getExtraAmount() {
+        return extraAmount;
+    }
+
+    public String getMessageSuccess() {
+        return messageSuccess;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public FareAttributeEntity getAttributes() {
+        return attributes;
     }
 }

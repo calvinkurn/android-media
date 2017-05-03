@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
@@ -22,7 +24,12 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     public void actionApplyPromo() {
         getView().showApplyPromoLoading();
         getView().hideApplyPromoLayout();
-
+        if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
+            getView().setEmptyPromoError();
+            return;
+        } else {
+            getView().clearEmptyPromoError();
+        }
 
         getFareEstimateUseCase.execute(getView().getParams(), new Subscriber<FareEstimate>() {
             @Override
@@ -32,6 +39,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
 
             @Override
             public void onError(Throwable e) {
+                if (!isViewAttached()) return;
                 getView().showApplyPromoLayout();
                 getView().hideApplyPromoLoading();
                 getView().onFailedApplyPromo(e.getMessage());
@@ -41,13 +49,12 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
             public void onNext(FareEstimate fareEstimate) {
                 if (isViewAttached()) {
                     getView().showApplyPromoLayout();
-                    // TODO : change with response
-                    if (true) {
+                    if (fareEstimate.isSuccess() && fareEstimate.getType().equalsIgnoreCase("")) {
                         getView().hideApplyPromoLoading();
-                        //getView().onSuccessApplyPromo(fareEstimate);
+                        getView().onSuccessApplyPromo(fareEstimate);
                     } else {
                         getView().hideApplyPromoLoading();
-                        //getView().onFailedApplyPromo(fareEstimate);
+                        getView().onFailedApplyPromo(fareEstimate.getAttributes().getDetail());
                     }
                 }
             }

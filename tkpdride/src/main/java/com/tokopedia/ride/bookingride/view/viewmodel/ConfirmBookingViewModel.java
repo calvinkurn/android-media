@@ -8,10 +8,13 @@ import android.os.Parcelable;
  */
 
 public class ConfirmBookingViewModel implements Parcelable {
+    public static final String EXTRA_CONFIRM_PARAM = "EXTRA_CONFIRM_PARAM";
     private String fareId;
     private String productId;
     private String productDisplayName;
-
+    private String promoCode;
+    private String promoDescription;
+    private String deviceType;
     private PlacePassViewModel source;
     private PlacePassViewModel destination;
     private int seatCount;
@@ -27,11 +30,13 @@ public class ConfirmBookingViewModel implements Parcelable {
     public ConfirmBookingViewModel() {
     }
 
-
     protected ConfirmBookingViewModel(Parcel in) {
         fareId = in.readString();
         productId = in.readString();
         productDisplayName = in.readString();
+        promoCode = in.readString();
+        promoDescription = in.readString();
+        deviceType = in.readString();
         source = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         destination = in.readParcelable(PlacePassViewModel.class.getClassLoader());
         seatCount = in.readInt();
@@ -43,6 +48,32 @@ public class ConfirmBookingViewModel implements Parcelable {
         maxCapacity = in.readInt();
         surgeMultiplier = in.readFloat();
         surgeConfirmationHref = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(fareId);
+        dest.writeString(productId);
+        dest.writeString(productDisplayName);
+        dest.writeString(promoCode);
+        dest.writeString(promoDescription);
+        dest.writeString(deviceType);
+        dest.writeParcelable(source, flags);
+        dest.writeParcelable(destination, flags);
+        dest.writeInt(seatCount);
+        dest.writeString(paymentMethod);
+        dest.writeString(productImage);
+        dest.writeString(priceFmt);
+        dest.writeFloat(price);
+        dest.writeString(headerTitle);
+        dest.writeInt(maxCapacity);
+        dest.writeFloat(surgeMultiplier);
+        dest.writeString(surgeConfirmationHref);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ConfirmBookingViewModel> CREATOR = new Creator<ConfirmBookingViewModel>() {
@@ -176,26 +207,27 @@ public class ConfirmBookingViewModel implements Parcelable {
         this.surgeConfirmationHref = surgeConfirmationHref;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getPromoCode() {
+        return promoCode;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(fareId);
-        parcel.writeString(productId);
-        parcel.writeString(productDisplayName);
-        parcel.writeParcelable(source, i);
-        parcel.writeParcelable(destination, i);
-        parcel.writeInt(seatCount);
-        parcel.writeString(paymentMethod);
-        parcel.writeString(productImage);
-        parcel.writeString(priceFmt);
-        parcel.writeFloat(price);
-        parcel.writeString(headerTitle);
-        parcel.writeInt(maxCapacity);
-        parcel.writeFloat(surgeMultiplier);
-        parcel.writeString(surgeConfirmationHref);
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
+
+    public String getPromoDescription() {
+        return promoDescription;
+    }
+
+    public void setPromoDescription(String promoDescription) {
+        this.promoDescription = promoDescription;
     }
 }

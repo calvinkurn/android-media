@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -78,6 +79,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void showEnterDestError();
 
         void showEnterSourceLocationActiity();
+
+        void actionProductListHeaderClick();
     }
 
     public static UberProductFragment newInstance() {
@@ -302,5 +305,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void onDestroyView() {
         super.onDestroyView();
         mPresenter.detachView();
+    }
+
+    @OnClick(R2.id.layout_cab_booking_header)
+    public void actionProductListHeaderClicked(){
+        mInteractionListener.actionProductListHeaderClick();
     }
 }

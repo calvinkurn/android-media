@@ -59,4 +59,6 @@
     <string name="title_trip_accepted">Ride Accepted</string>
     <string name="title_trip_arriving">Driver Arriving</string>
     <string name="message_trip_in_arriving">Driver is arriving now</string>
+    <string name="auto_complete_saved_addresses">Saved Addresses</string>
+    <string name="apply_promo_empty_promo_error">Field must not empty</string>
 </resources>

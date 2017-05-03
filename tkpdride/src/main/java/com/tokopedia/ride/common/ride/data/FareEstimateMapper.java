@@ -1,11 +1,13 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.ride.common.ride.data.entity.EstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.FareAttributeEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.TripEntity;
 import com.tokopedia.ride.common.ride.domain.model.Estimate;
 import com.tokopedia.ride.common.ride.domain.model.Fare;
+import com.tokopedia.ride.common.ride.domain.model.FareAttribute;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Trip;
 
@@ -21,12 +23,38 @@ public class FareEstimateMapper {
         FareEstimate fareEstimate = null;
         if (estimateEntity != null) {
             fareEstimate = new FareEstimate();
+            fareEstimate.setId(estimateEntity.getId());
+            fareEstimate.setSuccess(estimateEntity.isSuccess());
+            fareEstimate.setType(estimateEntity.getType());
+            fareEstimate.setMessageSuccess(estimateEntity.getMessageSuccess());
+            fareEstimate.setExtraAmount(estimateEntity.getExtraAmount());
+            fareEstimate.setCode(estimateEntity.getCode());
+            fareEstimate.setCashbackAmount(estimateEntity.getCashbackAmount());
+            fareEstimate.setCashbackTopCashAmount(estimateEntity.getCashbackTopCashAmount());
+            fareEstimate.setCashbackVoucherAmount(estimateEntity.getCashbackVoucherAmount());
+            fareEstimate.setDiscountAmount(estimateEntity.getDiscountAmount());
+            fareEstimate.setAttributes(transformFareAttrEntity(estimateEntity.getAttributes()));
             fareEstimate.setFare(transformFareEntity(estimateEntity.getFare()));
             fareEstimate.setTrip(transformTripEntity(estimateEntity.getTrip()));
             fareEstimate.setEstimate(transformEstimateEntity(estimateEntity.getEstimate()));
             fareEstimate.setPickupEstimate(estimateEntity.getPickupEstimate());
         }
         return fareEstimate;
+    }
+
+    private FareAttribute transformFareAttrEntity(FareAttributeEntity entity) {
+        FareAttribute fareAttribute = null;
+        if (entity != null) {
+            fareAttribute = new FareAttribute();
+            fareAttribute.setCode(entity.getCode());
+            fareAttribute.setDetail(entity.getDetail());
+            fareAttribute.setDetailEn(entity.getDetailEn());
+            fareAttribute.setDetailId(entity.getDetailId());
+            fareAttribute.setMessage(entity.getMessage());
+            fareAttribute.setStatus(entity.getStatus());
+            fareAttribute.setTitle(entity.getTitle());
+        }
+        return fareAttribute;
     }
 
     private Trip transformTripEntity(TripEntity entity) {

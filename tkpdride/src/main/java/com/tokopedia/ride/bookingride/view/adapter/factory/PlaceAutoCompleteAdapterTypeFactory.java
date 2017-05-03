@@ -5,7 +5,9 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.ride.bookingride.view.adapter.ItemClickListener;
+import com.tokopedia.ride.bookingride.view.adapter.viewholder.LabelViewHolder;
 import com.tokopedia.ride.bookingride.view.adapter.viewholder.PlaceAutoCompleteViewHolder;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.LabelViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.PlaceAutoCompeleteViewModel;
 
 /**
@@ -29,9 +31,16 @@ public class PlaceAutoCompleteAdapterTypeFactory extends BaseAdapterTypeFactory 
         AbstractViewHolder viewHolder;
         if (type == PlaceAutoCompleteViewHolder.LAYOUT) {
             viewHolder = new PlaceAutoCompleteViewHolder(parent, mItemClickListener);
+        } else if (type == LabelViewHolder.LAYOUT) {
+            viewHolder = new LabelViewHolder(parent);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }
         return viewHolder;
+    }
+
+    @Override
+    public int type(LabelViewModel labelViewHolder) {
+        return LabelViewHolder.LAYOUT;
     }
 }
