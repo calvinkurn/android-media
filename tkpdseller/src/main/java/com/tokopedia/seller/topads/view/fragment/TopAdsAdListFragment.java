@@ -1,8 +1,10 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -47,7 +49,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
     private FloatingActionButton fabFilter;
 
@@ -61,7 +63,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     boolean adsStatusChanged;
 
     protected TopAdsAdListAdapter adapter;
-    private LinearLayoutManager layoutManager;
+    protected LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
@@ -69,6 +71,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
     protected abstract void goToFilter();
+
+    OnAdListFragmentListener listener;
+    public interface OnAdListFragmentListener{
+        void startShowCase();
+    }
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -246,6 +253,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         } else {
             fabFilter.setVisibility(View.VISIBLE);
         }
+        if (listener!=null && adapter.getDataSize() > 0) {
+            listener.startShowCase();
+        }
     }
 
     @Override
@@ -334,5 +344,42 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnAdListFragmentListener) {
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnAdListFragmentListener) {
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    // for show case purpose
+    public FloatingActionButton getFab(){
+        return fabFilter;
+    }
+    // for show case
+    public View getItemRecyclerView(){
+        int position = layoutManager.findFirstCompletelyVisibleItemPosition();
+        return layoutManager.findViewByPosition(position);
+    }
+
+    public RecyclerView getRecyclerView(){
+        return recyclerView;
     }
 }

@@ -1,7 +1,9 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -40,6 +42,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
+        void startShowCase();
     }
 
     private TopAdsLabelView promoGroupLabelView;
@@ -61,6 +64,15 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onAttach(activity);
         if (activity instanceof TopAdsDetailProductFragmentListener) {
             listener = (TopAdsDetailProductFragmentListener) activity;
+        }
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopAdsDetailProductFragmentListener) {
+            listener = (TopAdsDetailProductFragmentListener) context;
         }
     }
 
@@ -158,6 +170,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
+        if (listener!= null) {
+            listener.startShowCase();
+        }
     }
 
     /**
@@ -229,5 +244,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onRestoreState(savedState);
         productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
         onAdLoaded(productAd);
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
     }
 }

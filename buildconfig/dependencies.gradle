@@ -144,4 +144,8 @@ ext {
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}"
     ]
 
+    tkpdLibDependencies = [
+            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.9"
+    ]
+
 }
