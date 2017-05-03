@@ -35,4 +35,6 @@ public interface ProductAddView extends CustomerView {
     void onErrorLoadShopInfo(String errorMessage);
 
     void populateCategory(List<String> categorys);
+
+    void onSuccessStoreProductAndAddToDraft(Long productId);
 }

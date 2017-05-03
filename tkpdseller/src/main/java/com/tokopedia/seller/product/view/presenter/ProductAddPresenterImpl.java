@@ -87,6 +87,17 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
+    public void saveDraftAndAdd(UploadProductInputViewModel viewModel) {
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
+        saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
+    }
+
+    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel) {
+        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
+        return SaveDraftProductUseCase.generateUploadProductParam(domainModel);
+    }
+
+    @Override
     public void getShopInfo() {
         addProductShopInfoUseCase.execute(
                 null,
@@ -252,8 +263,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
     @Override
     public void saveDraft(UploadProductInputViewModel viewModel) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        RequestParams requestParam = SaveDraftProductUseCase.generateUploadProductParam(domainModel);
+        RequestParams requestParam = generateRequestParamAddDraft(viewModel);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber());
     }
 
@@ -358,4 +368,24 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         }
     }
 
+
+    private class SaveDraftAndAddSubscriber extends Subscriber<Long> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+            checkViewAttached();
+            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+        }
+
+        @Override
+        public void onNext(Long productId) {
+            checkViewAttached();
+            getView().onSuccessStoreProductAndAddToDraft(productId);
+        }
+    }
 }
