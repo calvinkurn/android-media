@@ -1914,4 +1914,8 @@ di Tokopedia Sekarang!</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
     <string name="title_official_store">Official Store</string>
+    <string name="notification_dialog_content_main_app">Kami mendeteksi aplikasi Seller Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_positive_button">Pengaturan</string>
+    <string name="notification_dialog_negative_button">Batal</string>
 </resources>
