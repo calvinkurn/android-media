@@ -99,11 +99,15 @@ public class DecimalInputView extends FrameLayout {
     }
 
     public void addTextChangedListener(TextWatcher watcher) {
-        if (watcher != null) {
-            if (currentTextWatcher!= null) {
-                editText.removeTextChangedListener(currentTextWatcher);
+        if (watcher instanceof NumberTextWatcher) {
+            if (watcher != null) {
+                if (currentTextWatcher!= null) {
+                    editText.removeTextChangedListener(currentTextWatcher);
+                }
+                currentTextWatcher = watcher;
+                editText.addTextChangedListener(watcher);
             }
-            currentTextWatcher = watcher;
+        } else {
             editText.addTextChangedListener(watcher);
         }
     }
@@ -127,6 +131,9 @@ public class DecimalInputView extends FrameLayout {
     public float getFloatValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
         valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
+        if (TextUtils.isEmpty(valueString)) {
+            return 0;
+        }
         return Float.parseFloat(valueString);
     }
 
