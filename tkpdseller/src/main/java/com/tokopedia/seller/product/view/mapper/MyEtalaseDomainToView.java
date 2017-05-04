@@ -1,6 +1,8 @@
 package com.tokopedia.seller.product.view.mapper;
 
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
+import com.tokopedia.seller.product.view.model.etalase.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 
 import java.util.ArrayList;
@@ -11,10 +13,17 @@ import java.util.List;
  */
 
 public class MyEtalaseDomainToView {
-    public static List<MyEtalaseViewModel> map(List<MyEtalaseDomainModel> etalases) {
-        List<MyEtalaseViewModel> viewModels = new ArrayList<>();
-        for (MyEtalaseDomainModel domainModel : etalases){
-            MyEtalaseViewModel viewModel = new MyEtalaseViewModel();
+    public static MyEtalaseViewModel map(MyEtalaseDomainModel etalases) {
+        MyEtalaseViewModel viewModel = new MyEtalaseViewModel();
+        viewModel.setHasNextPage(etalases.isHasNext());
+        viewModel.setEtalaseList(mapList(etalases.getEtalaseItems()));
+        return viewModel;
+    }
+
+    public static List<MyEtalaseItemViewModel> mapList(List<MyEtalaseItemDomainModel> etalases) {
+        List<MyEtalaseItemViewModel> viewModels = new ArrayList<>();
+        for (MyEtalaseItemDomainModel domainModel : etalases){
+            MyEtalaseItemViewModel viewModel = new MyEtalaseItemViewModel();
             viewModel.setEtalaseId(domainModel.getEtalaseId());
             viewModel.setEtalaseName(domainModel.getEtalaseName());
             viewModels.add(viewModel);

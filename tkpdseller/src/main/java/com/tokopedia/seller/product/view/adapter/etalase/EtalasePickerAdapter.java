@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.product.view.model.etalase.EtalaseViewModel;
+import com.tokopedia.seller.product.view.model.etalase.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     private final EtalasePickerAdapterListener listener;
     private long selectedEtalase;
     private String query = "";
+    private boolean hasNextPage;
+    private int page = 1;
 
     public EtalasePickerAdapter(EtalasePickerAdapterListener listener) {
         this.listener = listener;
@@ -32,7 +35,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == MyEtalaseViewModel.LAYOUT) {
+        if (viewType == MyEtalaseItemViewModel.LAYOUT) {
             return setMyEtalaseItemViewHolder(parent, viewType);
         } else {
             return super.onCreateViewHolder(parent, viewType);
@@ -50,10 +53,10 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        if (viewType == MyEtalaseViewModel.LAYOUT) {
+        if (viewType == MyEtalaseItemViewModel.LAYOUT) {
             ((MyEtalaseViewHolder) holder).renderView(
-                    (MyEtalaseViewModel) dataRendered.get(position),
-                    ((MyEtalaseViewModel) dataRendered.get(position)).getEtalaseId() == selectedEtalase
+                    (MyEtalaseItemViewModel) dataRendered.get(position),
+                    ((MyEtalaseItemViewModel) dataRendered.get(position)).getEtalaseId() == selectedEtalase
             );
         } else {
             super.onBindViewHolder(holder, viewType);
@@ -62,11 +65,15 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (dataRendered.isEmpty() || isLoading() || isRetry()) {
+        if (isLastItemPosition(position) && (dataRendered.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
             return dataRendered.get(position).getType();
         }
+    }
+
+    private boolean isLastItemPosition(int position) {
+        return position == dataRendered.size();
     }
 
     @Override
@@ -82,8 +89,8 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
             int dataCount = 0;
             dataRendered = new ArrayList<>();
             for (EtalaseViewModel viewModel : data) {
-                if (viewModel instanceof MyEtalaseViewModel &&
-                        ((MyEtalaseViewModel) viewModel).getEtalaseName()
+                if (viewModel instanceof MyEtalaseItemViewModel &&
+                        ((MyEtalaseItemViewModel) viewModel).getEtalaseName()
                                 .toLowerCase()
                                 .contains(query.toLowerCase())) {
                     dataRendered.add(viewModel);
@@ -94,12 +101,15 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
         }
     }
 
-    public void renderData(List<MyEtalaseViewModel> etalases) {
-        data.addAll(etalases);
+    public void renderData(MyEtalaseViewModel etalases) {
+        page++;
+        hasNextPage = etalases.isHasNextPage();
+        data.addAll(etalases.getEtalaseList());
         notifyDataSetChanged();
     }
 
     public void clearEtalaseList() {
+        page = 1;
         data.clear();
         notifyDataSetChanged();
     }
@@ -116,5 +126,13 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     public void clearQuery() {
         this.query = "";
         notifyDataSetChanged();
+    }
+
+    public boolean isHasNextPage() {
+        return hasNextPage;
+    }
+
+    public int getPage() {
+        return page;
     }
 }
