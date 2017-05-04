@@ -113,11 +113,12 @@
 
             <ImageView
                 android:id="@+id/img_call_driver"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/cab_call"
+                android:padding="3dp"
+                android:src="@drawable/contact"
                 android:textColor="@color/black" />
 
             <TextView
@@ -147,8 +148,8 @@
 
             <ImageView
                 android:id="@+id/img_help"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/cab_help"
                 android:textColor="@color/black"
@@ -181,10 +182,11 @@
 
             <ImageView
                 android:id="@+id/img_cancel_ride"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/cab_cancel_cross"
+                android:padding="3dp"
+                android:src="@drawable/cancel"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
