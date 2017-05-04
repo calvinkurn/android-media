@@ -78,28 +78,11 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public synchronized int addItem(WholesaleModel wholesaleModel) {
-        int lastIndex = wholesaleModels.size() - 1;
-        WholesaleModel prev = getItem(lastIndex);
-
-        if (prev != null) {
-            wholesaleModel.setPrevWholesaleModel(wholesaleModels.get(lastIndex));
-        }
         wholesaleModels.add(wholesaleModel);
-
         return wholesaleModels.size() - 1;
     }
 
     public synchronized void removeItem(int position) {
-
-        int prevPosition = position - 1;
-        WholesaleModel prevPositionModel = getItem(prevPosition);
-
-        int nextPosition = position + 1;
-        WholesaleModel nextPositionModel = getItem(nextPosition);
-
-        if (nextPositionModel != null) {
-            nextPositionModel.setPrevWholesaleModel(prevPositionModel);
-        }
 
         if (isWithinDataset(position)) {
             wholesaleModels.remove(position);
@@ -139,17 +122,12 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
 
     public void addAllWholeSalePrice(List<ProductWholesaleViewModel> wholesalePrice) {
         for (int i = 0; i < wholesalePrice.size(); i++) {
-            int prev = i - 1;
 
             WholesaleModel wholesaleModel = new WholesaleModel(
                     wholesalePrice.get(i).getQtyMin(),
                     wholesalePrice.get(i).getQtyMax(),
                     wholesalePrice.get(i).getPrice()
             );
-
-            if (isWithinDataset(prev)) {
-                wholesaleModel.setPrevWholesaleModel(wholesaleModels.get(prev));
-            }
 
             wholesaleModels.add(wholesaleModel);
         }

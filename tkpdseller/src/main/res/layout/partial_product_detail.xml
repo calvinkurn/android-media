@@ -69,6 +69,7 @@
         style="@style/LabelLayoutWithoutBorder"
         app:spinner_entries="@array/product_stock_status_entries"
         app:spinner_hint="@string/product_label_status"
+        app:spinner_selection_index="1"
         app:spinner_values="@array/product_stock_status_values" />
 
     <com.tokopedia.expandable.ExpandableOptionSwitch

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.image.ImageHandler;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.customadapter.LoadingDataBinder;
 import com.tokopedia.seller.R;
@@ -172,8 +172,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
             case VIEW_TYPE_ITEM:
                 Catalog catalogViewModel = catalogViewModelList.get(position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-                new ImageHandler(itemViewHolder.imageCatalog.getContext())
-                        .loadImage(itemViewHolder.imageCatalog, catalogViewModel.getCatalogImage());
+                ImageHandler.LoadImage(itemViewHolder.imageCatalog, catalogViewModel.getCatalogImage());
                 itemViewHolder.textCatalogName.setText(catalogViewModel.getCatalogName());
                 // no need break
                 // continue below

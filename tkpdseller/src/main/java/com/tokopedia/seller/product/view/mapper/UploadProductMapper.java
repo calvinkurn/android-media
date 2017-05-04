@@ -36,6 +36,8 @@ public class UploadProductMapper {
         domainModel.setProductPriceCurrency(viewModel.getProductPriceCurrency());
         domainModel.setProductReturnable(viewModel.getProductReturnable());
         domainModel.setProductUploadTo(viewModel.getProductUploadTo());
+        domainModel.setProductInvenageSwitch(viewModel.getProductInvenageSwitch());
+        domainModel.setProductInvenageValue(viewModel.getProductInvenageValue());
         domainModel.setProductWeight(viewModel.getProductWeight());
         domainModel.setProductWeightUnit(viewModel.getProductWeightUnit());
         domainModel.setPoProcessType(viewModel.getPoProcessType());
@@ -98,6 +100,8 @@ public class UploadProductMapper {
         viewModel.setProductPriceCurrency(domainModel.getProductPriceCurrency());
         viewModel.setProductReturnable(domainModel.getProductReturnable());
         viewModel.setProductUploadTo(domainModel.getProductUploadTo());
+        viewModel.setProductInvenageSwitch(domainModel.getProductInvenageSwitch());
+        viewModel.setProductInvenageValue(domainModel.getProductInvenageValue());
         viewModel.setProductWeight(domainModel.getProductWeight());
         viewModel.setProductWeightUnit(domainModel.getProductWeightUnit());
         viewModel.setPoProcessType(domainModel.getPoProcessType());

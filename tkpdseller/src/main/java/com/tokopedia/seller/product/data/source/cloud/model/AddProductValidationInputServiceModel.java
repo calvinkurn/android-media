@@ -23,6 +23,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     public static final String PRODUCT_PRICE_CURRENCY = "product_price_currency";
     public static final String PRODUCT_RETURNABLE = "product_returnable";
     public static final String PRODUCT_UPLOAD_TO = "product_upload_to";
+    public static final String PRODUCT_INVENAGE_SWITCH = "product_switch_invenage";
+    public static final String PRODUCT_INVENAGE_VALUE = "product_invenage_value";
     public static final String PRODUCT_WEIGHT = "product_weight";
     public static final String PRODUCT_WEIGHT_UNIT = "product_weight_unit";
     public static final String PO_PROCESS_TYPE = "po_process_type";
@@ -47,6 +49,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
+    private int productInvenageSwitch;
+    private int productInvenageValue;
     private int productWeight;
     private int productWeightUnit;
     private int poProcessType;
@@ -70,6 +74,8 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
         params.put(PRODUCT_PRICE_CURRENCY, String.valueOf(getProductPriceCurrency()));
         params.put(PRODUCT_RETURNABLE, String.valueOf(getProductReturnable()));
         params.put(PRODUCT_UPLOAD_TO, String.valueOf(getProductUploadTo()));
+        params.put(PRODUCT_INVENAGE_SWITCH, String.valueOf(getProductInvenageSwitch()));
+        params.put(PRODUCT_INVENAGE_VALUE, String.valueOf(getProductInvenageValue()));
         params.put(PRODUCT_WEIGHT, String.valueOf(getProductWeight()));
         params.put(PRODUCT_WEIGHT_UNIT, String.valueOf(getProductWeightUnit()));
         params.put(PO_PROCESS_TYPE, String.valueOf(getPoProcessType()));
@@ -201,6 +207,22 @@ public class AddProductValidationInputServiceModel extends AddProductPictureInpu
 
     public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
+    }
+
+    public int getProductInvenageSwitch() {
+        return productInvenageSwitch;
+    }
+
+    public void setProductInvenageSwitch(int productInvenageSwitch) {
+        this.productInvenageSwitch = productInvenageSwitch;
+    }
+
+    public int getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public void setProductInvenageValue(int productInvenageValue) {
+        this.productInvenageValue = productInvenageValue;
     }
 
     public int getProductWeight() {

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
@@ -31,6 +32,9 @@ public class UploadProductInputViewModel {
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
+    @SwitchTypeDef
+    private int productInvenageSwitch;
+    private int productInvenageValue;
     private int productWeight;
     private int productWeightUnit;
     private int poProcessType;
@@ -192,6 +196,23 @@ public class UploadProductInputViewModel {
 
     public void setProductUploadTo(int productUploadTo) {
         this.productUploadTo = productUploadTo;
+    }
+
+    @SwitchTypeDef
+    public int getProductInvenageSwitch() {
+        return productInvenageSwitch;
+    }
+
+    public void setProductInvenageSwitch(int productInvenageSwitch) {
+        this.productInvenageSwitch = productInvenageSwitch;
+    }
+
+    public int getProductInvenageValue() {
+        return productInvenageValue;
+    }
+
+    public void setProductInvenageValue(int productInvenageValue) {
+        this.productInvenageValue = productInvenageValue;
     }
 
     public int getProductWeight() {

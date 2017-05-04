@@ -95,7 +95,7 @@ public class CounterInputView extends FrameLayout {
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                decimalInputView.setText(String.valueOf(decimalInputView.getFloatValue() + 1));
+                decimalInputView.setText(String.valueOf((long) decimalInputView.getFloatValue() + 1));
             }
         });
 
@@ -106,8 +106,8 @@ public class CounterInputView extends FrameLayout {
             decimalInputView.setText(valueText);
         }
         updateCounterButtonView(showCounterButton);
-        updateButtonState();
         setEnabled(enabled);
+        updateButtonState();
         invalidate();
         requestLayout();
     }
@@ -129,11 +129,13 @@ public class CounterInputView extends FrameLayout {
     public void setEnabled(boolean enable) {
         decimalInputView.setEnabled(enable);
         minusImageButton.setEnabled(enable);
-        minusImageButton.setClickable(enable);
+        plusImageButton.setEnabled(enable);
     }
 
     private void updateButtonState() {
-        minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
+        if (enabled) {
+            minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
+        }
     }
 
     public void setHint(String hintText) {

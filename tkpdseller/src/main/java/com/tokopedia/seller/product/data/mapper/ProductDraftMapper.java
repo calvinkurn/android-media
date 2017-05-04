@@ -58,6 +58,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
         domainModel.setProductReturnable(draftModel.getProductReturnable());
         domainModel.setProductUploadTo(draftModel.getProductUploadTo());
+        domainModel.setProductInvenageSwitch(draftModel.getProductInvenageSwitch());
+        domainModel.setProductInvenageValue(draftModel.getProductInvenageValue());
         domainModel.setProductWeight(draftModel.getProductWeight());
         domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
         domainModel.setPoProcessType(draftModel.getPoProcessType());
@@ -126,6 +128,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setProductPriceCurrency(domainModel.getProductPriceCurrency());
         draftModel.setProductReturnable(domainModel.getProductReturnable());
         draftModel.setProductUploadTo(domainModel.getProductUploadTo());
+        draftModel.setProductInvenageSwitch(domainModel.getProductInvenageSwitch());
+        draftModel.setProductInvenageValue(domainModel.getProductInvenageValue());
         draftModel.setProductWeight(domainModel.getProductWeight());
         draftModel.setProductWeightUnit(domainModel.getProductWeightUnit());
         draftModel.setPoProcessType(domainModel.getPoProcessType());

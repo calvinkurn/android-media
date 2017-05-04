@@ -23,6 +23,7 @@ import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
@@ -495,6 +496,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
         viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
+        viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? SwitchTypeDef.TYPE_ACTIVE : SwitchTypeDef.TYPE_NOT_ACTIVE);
+        viewModel.setProductInvenageValue(productDetailViewHolder.getTotalStock());
         viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
         viewModel.setProductEtalaseName(productDetailViewHolder.getEtalaseName());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());

@@ -4,7 +4,6 @@
     <!-- GMStat -->
     <color name="arrow_down">#ff5722</color>
     <color name="arrow_up">#42b549</color>
-    <color name="color_separator">#9A9A9A</color>
     <color name="empty_background">#f9f9f9</color>
     <color name="breakline_background">#CD000000</color>
 
@@ -23,9 +22,7 @@
 
     <color name="tkpd_grey">#E0E0E0</color>
     <color name="tkpd_grey_text">#60000000</color>
-    <color name="greyEditText">#e0e0e0</color>
     <color name="white_fifty_percent">#F8F8F8</color>
-    <color name="another_grey">#f1f1f1</color>
 
     <!-- product score -->
     <color name="progress_score">#f6b323</color>

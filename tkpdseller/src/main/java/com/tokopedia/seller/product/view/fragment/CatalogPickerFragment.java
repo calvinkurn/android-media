@@ -93,7 +93,7 @@ public class CatalogPickerFragment extends BaseDaggerFragment implements Catalog
         setupRecyclerView(view);
         presenter.attachView(this);
 
-        adapter.showLoading(true);
+        adapter.showLoadingFull(true);
         presenter.fetchCatalogData(keyword, departmentId, 0, ROWS);
 
         return view;
