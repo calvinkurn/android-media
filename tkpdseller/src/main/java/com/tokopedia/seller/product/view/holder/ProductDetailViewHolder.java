@@ -89,14 +89,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
         });
         idrTextWatcher = new CurrencyIdrTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onNumberChanged(float currencyValue) {
+            public void onNumberChanged(float number) {
                 isPriceValid();
                 clearWholesaleItems();
             }
         };
         usdTextWatcher = new CurrencyUsdTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onNumberChanged(float currencyValue) {
+            public void onNumberChanged(float number) {
                 isPriceValid();
                 clearWholesaleItems();
             }
@@ -162,7 +162,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
-            public void onNumberChanged(float currencyValue) {
+            public void onNumberChanged(float number) {
                 if (isWeightValid()) {
                     weightSpinnerCounterInputView.setCounterError(null);
                 }
@@ -198,6 +198,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 }
             }
         });
+        wholesaleExpandableOptionSwitch.setEnabled(false);
 
         freeReturnsSpinnerTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -205,10 +206,31 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 listener.onFreeReturnChecked(false);
             }
         });
+        stockStatusSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
+            @Override
+            public void onItemChanged(int position, String entry, String value) {
+                if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value))) {
+                    stockTotalExpandableOptionSwitch.setExpand(false);
+                    stockTotalExpandableOptionSwitch.setEnabled(false);
+                } else {
+                    stockTotalExpandableOptionSwitch.setEnabled(true);
+                }
+            }
+        });
+        stockTotalExpandableOptionSwitch.setEnabled(false);
         stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
                 listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getFloatValue() : 0);
+            }
+        });
+        stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText()) {
+            @Override
+            public void onNumberChanged(float number) {
+                if (isTotalStockValid()) {
+                    stockTotalCounterInputView.setError(null);
+                }
+                listener.onTotalStockUpdated((int) number);
             }
         });
         recyclerViewWholesale = (RecyclerView) view.findViewById(R.id.recycler_view_wholesale);
@@ -216,16 +238,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         wholesaleAdapter = new WholesaleAdapter();
         wholesaleAdapter.setListener(this);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
-
-        stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText(), stockTotalCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
-            @Override
-            public void onNumberChanged(float currencyValue) {
-                listener.onTotalStockUpdated((int) currencyValue);
-                if (currencyValue > 0) {
-                    stockTotalCounterInputView.setError(null);
-                }
-            }
-        });
     }
 
     private void showEditPriceDialog() {
@@ -459,6 +471,21 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return true;
     }
 
+    private boolean isTotalStockValid() {
+        if (!stockTotalExpandableOptionSwitch.isExpanded()) {
+            return true;
+        }
+        String minStockString = CurrencyFormatHelper.removeCurrencyPrefix(stockTotalCounterInputView.getContext().getString(R.string.product_minimum_total_stock));
+        String maxStockString = CurrencyFormatHelper.removeCurrencyPrefix(stockTotalCounterInputView.getContext().getString(R.string.product_maximum_total_stock));
+        float minStock = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minStockString));
+        float maxStock = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxStockString));
+        if (minStock > getTotalStock() || getTotalStock() > maxStock) {
+            stockTotalCounterInputView.setError(stockTotalCounterInputView.getContext().getString(R.string.product_error_total_stock_not_valid, minStockString, maxStockString));
+            return false;
+        }
+        return true;
+    }
+
     @Override
     public boolean isDataValid() {
         if (!isPriceValid()) {
@@ -466,14 +493,20 @@ public class ProductDetailViewHolder extends ProductViewHolder
             return false;
         }
         if (!isWeightValid()) {
-            priceSpinnerCounterInputView.requestFocus();
+            weightSpinnerCounterInputView.requestFocus();
             return false;
         }
         if (getMinimumOrder() <= 0) {
             minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().getString(R.string.product_error_product_minimum_order_not_valid));
+            minimumOrderCounterInputView.requestFocus();
+            return false;
+        }
+        if (!isTotalStockValid()) {
+            stockTotalCounterInputView.requestFocus();
             return false;
         }
         if (getEtalaseId() < 0) {
+            etalaseLabelView.requestFocus();
             Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
                     .show();

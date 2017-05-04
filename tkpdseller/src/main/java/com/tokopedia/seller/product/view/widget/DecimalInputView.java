@@ -14,12 +14,15 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by nathan on 04/05/17.
  */
 
 public class DecimalInputView extends FrameLayout {
 
+    private static final String DECIMAL_FORMAT = "#";
     private static final String DEFAULT_VALUE = "0";
 
     private TextInputLayout textInputLayout;
@@ -107,10 +110,8 @@ public class DecimalInputView extends FrameLayout {
                 editText.removeTextChangedListener(currentTextWatcher);
             }
             currentTextWatcher = textWatcher;
-            editText.addTextChangedListener(textWatcher);
-        } else {
-            editText.addTextChangedListener(textWatcher);
         }
+        editText.addTextChangedListener(textWatcher);
     }
 
     public void removeTextChangedListener(TextWatcher watcher) {
@@ -139,7 +140,9 @@ public class DecimalInputView extends FrameLayout {
     }
 
     public void setValue(float value) {
-        editText.setText(String.valueOf(value));
+        DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
+        df.setMaximumFractionDigits(0);
+        editText.setText(df.format(value));
     }
 
     public EditText getEditText() {

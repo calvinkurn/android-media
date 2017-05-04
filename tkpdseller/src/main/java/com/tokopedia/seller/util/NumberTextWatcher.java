@@ -57,7 +57,7 @@ public class NumberTextWatcher implements TextWatcher {
         onNumberChanged(value);
     }
 
-    public void onNumberChanged(float currencyValue) {
+    public void onNumberChanged(float number) {
 
     }
 }

@@ -29,6 +29,7 @@ import com.tokopedia.seller.product.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.view.listener.EtalasePickerView;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 import com.tokopedia.seller.product.view.presenter.EtalasePickerPresenter;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 
 import javax.inject.Inject;
 
@@ -110,12 +111,14 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
         final LinearLayoutManager layout = new LinearLayoutManager(getActivity());
         etalaseRecyclerView.setLayoutManager(layout);
         adapter = new EtalasePickerAdapter(this);
-        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+        TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
+        topAdsRetryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
             @Override
             public void onRetryCliked() {
                 refreshEtalaseData();
             }
         });
+        adapter.setRetryView(topAdsRetryDataBinder);
         etalaseRecyclerView.setAdapter(adapter);
         etalaseRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

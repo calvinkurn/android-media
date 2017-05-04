@@ -166,8 +166,8 @@ public class AddWholeSaleDialog extends DialogFragment {
         idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText(),
                 Double.toString(idrBaseMinimumValue)) {
             @Override
-            public void onNumberChanged(float currencyValue) {
-                validatePrice(currencyValue);
+            public void onNumberChanged(float number) {
+                validatePrice(number);
             }
         };
 
@@ -180,8 +180,8 @@ public class AddWholeSaleDialog extends DialogFragment {
         usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText(),
                 Double.toString(usdBaseMinimumValue)) {
             @Override
-            public void onNumberChanged(float currencyValue) {
-                validatePrice(currencyValue);
+            public void onNumberChanged(float number) {
+                validatePrice(number);
             }
         };
 
