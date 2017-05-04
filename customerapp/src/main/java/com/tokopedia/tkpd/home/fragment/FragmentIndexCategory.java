@@ -42,6 +42,7 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
@@ -131,6 +132,8 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private boolean isNetworkErrorState = false;
+    private SnackbarRetry messageSnackbar;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -617,14 +620,25 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void showGetHomeMenuNetworkError() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                homeCatMenuPresenter.fetchHomeCategoryMenu(true);
-                topPicksPresenter.fetchTopPicks();
-                brandsPresenter.fetchBrands();
-            }
-        }).showRetrySnackbar();
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    isNetworkErrorState = false;
+                    getAnnouncement();
+                    getPromo();
+                    homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                    topPicksPresenter.fetchTopPicks();
+                    brandsPresenter.fetchBrands();
+                }
+            });
+        }
+
+        if (!messageSnackbar.isShown()) {
+            messageSnackbar.showRetrySnackbar();
+        }
+
+        isNetworkErrorState = true;
     }
 
     @Override
@@ -662,10 +676,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
+            if (isNetworkErrorState) {
+                showGetHomeMenuNetworkError();
+            }
             ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
+            if (messageSnackbar != null && messageSnackbar.isShown()) {
+                messageSnackbar.hideRetrySnackbar();
+            }
             hideKeyboard();
         }
 
