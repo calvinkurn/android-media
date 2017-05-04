@@ -3,9 +3,13 @@ package com.tokopedia.seller.product.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
+import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.fragment.ProductDraftAddFragment;
 
 /**
@@ -29,9 +33,14 @@ public class ProductDraftAddActivity extends ProductAddActivity {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, ProductDraftAddFragment.createInstance(productId), ProductDraftAddFragment.class.getSimpleName())
-                .commit();
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductDraftAddFragment.TAG);
+        if (fragment == null) {
+            fragment = ProductDraftAddFragment.createInstance(productId);
+        }
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, ProductDraftAddFragment.TAG);
+        fragmentTransaction.commit();
     }
 
     @Override
