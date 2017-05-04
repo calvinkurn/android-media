@@ -129,6 +129,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
@@ -186,9 +187,13 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         });
 
         view.requestFocus();
-        fetchInputData(savedInstanceState);
-
         return view;
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        fetchInputData(savedInstanceState);
     }
 
     protected void fetchInputData(Bundle savedInstanceState) {
@@ -563,6 +568,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
         viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductCatalogName(productInfoViewHolder.getCatalogName());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());

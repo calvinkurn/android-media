@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.view.fragment.ProductEditFragment;
 public class ProductEditActivity extends ProductDraftEditActivity {
 
     public static final String PRODUCT_ID = "PRODUCT_ID";
+    public static final String TAG = ProductEditFragment.class.getSimpleName();
 
     public static Intent createInstance(Context context, String productId){
         Intent intent = new Intent(context, ProductEditActivity.class);
@@ -31,13 +32,16 @@ public class ProductEditActivity extends ProductDraftEditActivity {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
+        inflateFragment(productId);
+    }
 
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductEditFragment.TAG);
+    private void inflateFragment(String productId) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment == null) {
             fragment = ProductEditFragment.createInstance(productId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, ProductEditFragment.TAG);
+        fragmentTransaction.replace(R.id.container, fragment, TAG);
         fragmentTransaction.commit();
     }
 

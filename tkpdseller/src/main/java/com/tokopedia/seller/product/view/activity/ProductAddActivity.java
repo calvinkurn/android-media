@@ -56,6 +56,7 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     public static final String IMAGE = "image/";
     public static final String CONTENT_GMAIL_LS = "content://gmail-ls/";
     public static final int MAX_IMAGES = 5;
+    public static final String TAG = ProductAddFragment.class.getSimpleName();
     TkpdProgressDialog tkpdProgressDialog;
     // url got from gallery or camera
     private ArrayList<String> imageUrls;
@@ -79,18 +80,18 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
 
     protected void setupFragment() {
         inflateView(R.layout.activity_product_add);
-        if (getSupportFragmentManager().findFragmentByTag(ProductAddFragment.class.getSimpleName()) == null) {
+        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
             checkIntentImageUrls();
         }
     }
 
     private void createProductAddFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment == null) {
             fragment = ProductAddFragment.createInstance(imageUrls);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, ProductAddFragment.TAG);
+        fragmentTransaction.replace(R.id.container, fragment, TAG);
         fragmentTransaction.commit();
     }
 
