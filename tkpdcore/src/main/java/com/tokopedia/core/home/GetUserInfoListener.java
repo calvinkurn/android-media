@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.home;
+package com.tokopedia.core.home;
 
 /**
  * Created by Herdi_WORK on 04.05.17.
