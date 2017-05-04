@@ -42,32 +42,7 @@ public class YoutubeAddUrlDialog extends TextPickerDialog {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (CommonUtils.checkNotNull(youtubeLinkUtils)) {
-                    try {
-                        youtubeLinkUtils.setYoutubeUrl(s.toString());
-                    } catch (IllegalArgumentException iae) {
-                        textInputLayout.setErrorEnabled(true);
-                        textInputLayout.setError(iae.getMessage());
-
-                        isErrorReturn = true;
-                        return;
-                    }
-
-                    try {
-                        String videoID = youtubeLinkUtils.saveVideoID();
-                        CommonUtils.dumper(TAG + " : " + videoID);
-                    } catch (IllegalArgumentException iae) {
-                        textInputLayout.setErrorEnabled(true);
-                        textInputLayout.setError(iae.getMessage());
-
-                        isErrorReturn = true;
-                        return;
-                    }
-
-                    textInputLayout.setErrorEnabled(false);
-                    textInputLayout.setError(null);
-                    isErrorReturn = false;
-                }
+                validateUrl(s);
             }
 
             @Override
@@ -78,12 +53,51 @@ public class YoutubeAddUrlDialog extends TextPickerDialog {
         return view;
     }
 
+    protected void validateUrl(CharSequence s) {
+        if (CommonUtils.checkNotNull(youtubeLinkUtils)) {
+            try {
+                youtubeLinkUtils.setYoutubeUrl(s.toString());
+            } catch (IllegalArgumentException iae) {
+                textInputLayout.setErrorEnabled(true);
+                textInputLayout.setError(iae.getMessage());
+
+                isErrorReturn = true;
+                return;
+            }
+
+            try {
+                String videoID = youtubeLinkUtils.saveVideoID();
+                CommonUtils.dumper(TAG + " : " + videoID);
+            } catch (IllegalArgumentException iae) {
+                textInputLayout.setErrorEnabled(true);
+                textInputLayout.setError(iae.getMessage());
+
+                isErrorReturn = true;
+                return;
+            }
+
+            textInputLayout.setErrorEnabled(false);
+            textInputLayout.setError(null);
+            isErrorReturn = false;
+        }
+    }
+
     @Override
     protected void onTextSubmited(String text) {
+        validateFirstTime();
+
         if (isErrorReturn) {
             return;
-        } else {
-            super.onTextSubmited(text);
         }
+
+        super.onTextSubmited(text);
+    }
+
+    /**
+     * there is cases when validation not working
+     * when user tap add button for the first time.
+     */
+    private void validateFirstTime() {
+        validateUrl(textInput.getText().toString());
     }
 }
