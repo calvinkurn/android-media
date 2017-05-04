@@ -196,7 +196,6 @@ public class CustomerWrapper extends BaseAnalyticsModel {
                 ", shopId='" + shopId + '\'' +
                 ", shopName='" + shopName + '\'' +
                 ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", mAttr=" + mAttr.toString() +
                 '}';
     }
 
@@ -219,16 +218,18 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         public Builder() {
         }
 
-        public void setShopId(String shopId) {
+        public CustomerWrapper.Builder setShopId(String shopId) {
             this.shopId = shopId;
+            return this;
         }
 
         public String getShopId() {
             return shopId;
         }
 
-        public void setShopName(String shopName) {
+        public CustomerWrapper.Builder setShopName(String shopName) {
             this.shopName = shopName;
+            return this;
         }
 
         public String getShopName() {
@@ -239,28 +240,32 @@ public class CustomerWrapper extends BaseAnalyticsModel {
             return dateOfBirth;
         }
 
-        public void setDateOfBirth(String dateOfBirth) {
+        public CustomerWrapper.Builder setDateOfBirth(String dateOfBirth) {
             this.dateOfBirth = dateOfBirth;
+            return this;
         }
 
         public boolean isGoldMerchant() {
             return isGoldMerchant;
         }
 
-        public void setGoldMerchant(boolean goldMerchant) {
+        public CustomerWrapper.Builder setGoldMerchant(boolean goldMerchant) {
             isGoldMerchant = goldMerchant;
+            return this;
         }
 
         public boolean isSeller() {
             return isSeller;
         }
 
-        public void setSeller(boolean seller) {
+        public CustomerWrapper.Builder setSeller(boolean seller) {
             isSeller = seller;
+            return this;
         }
 
-        public void setPhoneNumber(String phoneNumber) {
+        public CustomerWrapper.Builder setPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
+            return this;
         }
 
         public String getPhoneNumber() {
