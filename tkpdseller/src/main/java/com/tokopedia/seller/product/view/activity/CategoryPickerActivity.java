@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
@@ -28,13 +29,12 @@ import java.util.List;
 
 public class CategoryPickerActivity
         extends TActivity
-        implements CategoryPickerFragmentListener, HasComponent<CategoryPickerComponent>{
+        implements CategoryPickerFragmentListener, HasComponent<AppComponent>{
 
     public static final String CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED";
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     public static final String CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID";
     private FragmentManager fragmentManager;
-    private CategoryPickerComponent component;
 
     public static void start(Activity activity, int requestCode, long depId){
         Intent intent = createIntent(activity, depId);
@@ -64,18 +64,8 @@ public class CategoryPickerActivity
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
-        initInjection();
         long currentSelected = getIntent().getLongExtra(CATEGORY_ID_INIT_SELECTED, CategoryPickerFragment.INIT_UNSELECTED);
         inflateCategoryFragment(currentSelected);
-
-    }
-
-    private void initInjection() {
-        component = DaggerCategoryPickerComponent
-                .builder()
-                .appComponent(getApplicationComponent())
-                .categoryPickerModule(new CategoryPickerModule())
-                .build();
 
     }
 
@@ -90,8 +80,8 @@ public class CategoryPickerActivity
     }
 
     @Override
-    public CategoryPickerComponent getComponent() {
-        return component;
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override
