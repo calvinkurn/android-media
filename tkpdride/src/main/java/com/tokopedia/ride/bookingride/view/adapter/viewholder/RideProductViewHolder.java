@@ -40,9 +40,9 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
     @BindView(R2.id.cab_price_estimate_layout)
     FrameLayout priceEstimateContainerFrameLayout;
 
-    RideProductItemClickListener mItemClickListener;
-    RideProductViewModel mRideProductViewModel;
-    Context mContext;
+    private RideProductItemClickListener mItemClickListener;
+    private RideProductViewModel mRideProductViewModel;
+    private Context mContext;
 
     public RideProductViewHolder(View parent, RideProductItemClickListener itemClickListener) {
         super(parent);
@@ -55,13 +55,10 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         mRideProductViewModel = element;
         productNameTextView.setText(element.getProductName());
         timeEstimateTextView.setText(String.valueOf(element.getTimeEstimate()));
-        if (element.isSurgePrice()) {
-            surgePriceImageView.setVisibility(View.VISIBLE);
-        } else {
-            surgePriceImageView.setVisibility(View.GONE);
-        }
+        surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
         productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
+        baseFareTextView.setVisibility(element.getProductPriceFmt() == null ? View.VISIBLE : View.GONE);
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
         Glide.with(mContext).load(element.getProductImage())
                 .asBitmap()
