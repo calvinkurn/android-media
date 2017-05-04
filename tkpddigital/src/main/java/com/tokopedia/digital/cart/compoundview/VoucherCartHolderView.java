@@ -95,6 +95,7 @@ public class VoucherCartHolderView extends RelativeLayout {
                     if (actionListener != null) {
                         hideHolderVoucher();
                         editTextVoucher.setText("");
+                        errorVoucher.setVisibility(GONE);
                         actionListener.forceHideSoftKeyboardVoucherInput();
                         actionListener.disableVoucherDiscount();
                     }
@@ -127,6 +128,8 @@ public class VoucherCartHolderView extends RelativeLayout {
     }
 
     public String getVoucherCode() {
+        if (TextUtils.isEmpty(voucherCode) && checkBoxVoucher.isChecked())
+            checkBoxVoucher.setChecked(false);
         return voucherCode;
     }
 
@@ -141,6 +144,7 @@ public class VoucherCartHolderView extends RelativeLayout {
         hideHolderVoucher();
         errorVoucher.setVisibility(VISIBLE);
         errorVoucher.setText(errorMessage);
+        actionListener.disableVoucherDiscount();
     }
 
     private boolean isEditTextVoucherEmpty() {
@@ -154,7 +158,7 @@ public class VoucherCartHolderView extends RelativeLayout {
             public void onClick(View v) {
                 hideHolderVoucher();
                 editTextVoucher.setText("");
-
+                checkBoxVoucher.setChecked(false);
             }
         };
     }

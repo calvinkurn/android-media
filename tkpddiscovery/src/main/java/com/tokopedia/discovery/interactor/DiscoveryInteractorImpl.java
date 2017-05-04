@@ -3,8 +3,10 @@ package com.tokopedia.discovery.interactor;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -16,7 +18,7 @@ import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoriesHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -26,6 +28,7 @@ import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
@@ -53,6 +56,8 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     HadesService hadesService;
     SearchSuggestionService searchSuggestionService;
     CompositeSubscription compositeSubscription;
+    Gson gson = new GsonBuilder().create();
+    GlobalCacheManager cacheManager;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -68,6 +73,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         topAdsService = new TopAdsService();
         hadesService = new HadesService();
         searchSuggestionService = new SearchSuggestionService();
+        cacheManager = new GlobalCacheManager();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -119,13 +125,13 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     }
 
     @Override
-    public void getCategoryHeader(String categoryId) {
+    public void getCategoryHeader(String categoryId, final int level) {
         getCompositeSubscription().add(hadesService.getApi().getCategories(categoryId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(
-                        new Subscriber<Response<CategoriesHadesModel>>() {
+                        new Subscriber<Response<CategoryHadesModel>>() {
                             @Override
                             public void onCompleted() {
 
@@ -141,18 +147,32 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                             }
 
                             @Override
-                            public void onNext(Response<CategoriesHadesModel> categoriesHadesModel) {
-                                Pair<String, CategoriesHadesModel.CategoriesHadesContainer> pair =
+                            public void onNext(Response<CategoryHadesModel> categoriesHadesModel) {
+                                Pair<String, CategoryHadesModel.CategoriesHadesContainer> pair =
                                         new Pair<>(
                                                 DiscoveryListener.CATEGORYHEADER,
-                                                new CategoriesHadesModel.CategoriesHadesContainer(
+                                                new CategoryHadesModel.CategoriesHadesContainer(
                                                         categoriesHadesModel.body()
                                                 )
                                         );
                                 discoveryListener.onSuccess(DiscoveryListener.CATEGORY_HEADER, pair);
+                                storeCacheCategoryHeader(level, categoriesHadesModel.body());
                             }
                         }
                 ));
+    }
+
+    @Override
+    public void storeCacheCategoryHeader(int level, CategoryHadesModel categoriesHadesModel) {
+        new GlobalCacheManager()
+                .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level)
+                .setValue(gson.toJson(categoriesHadesModel))
+                .store();
+    }
+
+    @Override
+    public CategoryHadesModel getCategoryHeaderCache(int level) {
+        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level, CategoryHadesModel.class);
     }
 
     @Override

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="progress_bar" type="id" />
+    <item name="list" type="id" />
+    <item name="container" type="id" />
+    <item name="info_topads" type="id" />
+    <item name="title_promote" type="id" />
+    <item name="ads_header" type="id" />
+</resources>
