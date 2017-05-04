@@ -28,7 +28,11 @@ public class AddProductPictureInputServiceModel {
         if (!getProductPhoto().getPhotosServiceModelList().isEmpty()) {
             String productPhotosString = "";
             String productPhotosDescriptionString = "";
+            String defaultPhoto = "";
             for (int i = 0; i < getProductPhoto().getPhotosServiceModelList().size(); i++) {
+                if (i == getProductPhoto().getProductDefaultPhoto()){
+                    defaultPhoto = getProductPhoto().getPhotosServiceModelList().get(i).getPicureId();
+                }
                 ProductPhotoServiceModel productPhoto = getProductPhoto().getPhotosServiceModelList().get(i);
                 productPhotosString += getPhotoParam(productPhoto);
                 productPhotosDescriptionString += productPhoto.getDescription();
@@ -38,7 +42,7 @@ public class AddProductPictureInputServiceModel {
                 }
             }
             params.put(PRODUCT_PHOTO, productPhotosString);
-            params.put(PRODUCT_PHOTO_DEFAULT, String.valueOf(getProductPhoto().getProductDefaultPhoto()));
+            params.put(PRODUCT_PHOTO_DEFAULT, defaultPhoto);
             params.put(PRODUCT_PHOTO_DESC, productPhotosDescriptionString);
         }
         return params;

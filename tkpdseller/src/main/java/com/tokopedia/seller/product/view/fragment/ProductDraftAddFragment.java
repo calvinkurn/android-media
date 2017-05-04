@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
@@ -58,7 +59,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     protected void showLoading() {
         if (tkpdProgressDialog==null) {
-            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getString(R.string.edit_product));
         }
         tkpdProgressDialog.showDialog();
     }
