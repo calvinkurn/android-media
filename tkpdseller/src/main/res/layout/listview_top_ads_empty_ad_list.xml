@@ -34,7 +34,7 @@
         style="@style/TextView.TopAds.Body.Gray"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:maxLines="3"
+        android:maxLines="4"
         tools:text="@string/top_ads_empty_group_promo_content_text"/>
 
     <TextView
