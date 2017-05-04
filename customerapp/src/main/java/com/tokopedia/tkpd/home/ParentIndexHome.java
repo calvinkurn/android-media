@@ -151,7 +151,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onCreate(Bundle arg0) {
-        CommonUtils.dumper("moengage called oncreate");
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
@@ -236,7 +235,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if(TextUtils.isEmpty(SessionHandler.isUserDataCached(this))){
             if(SessionHandler.isV4Login(this))
                 drawer.getUserInfo();
-            CommonUtils.dumper("moengage user inside");
         }else {
             setMoengageUserAttributes();
         }
@@ -469,7 +467,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onResume() {
-        CommonUtils.dumper("moengage called onresume");
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
@@ -613,12 +610,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public void onStart() {
         super.onStart();
-        CommonUtils.dumper("moengage called onstart");
     }
 
     @Override
     public void onGetUserInfo() {
-        CommonUtils.dumper("moengage called cache getUserInfo");
         setMoengageUserAttributes();
     }
 }

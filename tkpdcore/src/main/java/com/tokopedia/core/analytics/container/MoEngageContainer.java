@@ -86,7 +86,6 @@ public class MoEngageContainer implements IMoengageContainer {
         executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
             @Override
             public void onSuccess(CustomerWrapper value) {
-                CommonUtils.dumper("MoEngage check is existing user "+value.getFullName()+" "+value.getEmailAddress()+" "+value.getCustomerId());
                 MoEHelper helper = MoEHelper.getInstance(context);
                 helper.setFullName(value.getFullName());
                 helper.setUniqueId(value.getCustomerId());

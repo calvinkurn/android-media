@@ -599,7 +599,6 @@ public class SessionHandler {
     }
 
     public static ProfileData getUserData(Context context){
-        CommonUtils.dumper("moengage get user data");
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Gson gson = new Gson();
         Type dataObject = new TypeToken<ProfileData>(){}.getType();
@@ -612,7 +611,6 @@ public class SessionHandler {
     }
 
     public void setUserData(String userData){
-        CommonUtils.dumper("moengage save user data");
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, USER_DATA, userData);

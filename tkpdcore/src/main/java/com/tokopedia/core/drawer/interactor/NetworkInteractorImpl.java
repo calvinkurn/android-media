@@ -79,7 +79,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    CommonUtils.dumper("moengage user data first time "+response.toString()+" "+response.body().getStringData());
                     saveUserData(context, response.body().convertDataObj(ProfileData.class));
                     listener.onSuccess(parseToDrawerHeader(response.body()
                             .convertDataObj(ProfileData.class)));
