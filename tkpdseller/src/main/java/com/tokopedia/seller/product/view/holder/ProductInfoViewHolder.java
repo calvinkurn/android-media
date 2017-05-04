@@ -316,7 +316,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         if (savedInstanceState == null) {
             return;
         }
-        categoryId = savedInstanceState.getInt(BUNDLE_CATEGORY_ID, DEFAULT_CATEGORY_ID);
+        categoryId = savedInstanceState.getLong(BUNDLE_CATEGORY_ID, DEFAULT_CATEGORY_ID);
         if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_CATEGORY_NAME))) {
             categoryLabelView.setContent(savedInstanceState.getString(BUNDLE_CATEGORY_NAME));
         }

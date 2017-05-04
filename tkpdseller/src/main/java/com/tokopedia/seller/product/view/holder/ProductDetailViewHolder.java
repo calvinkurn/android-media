@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -43,7 +44,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
+
+    private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
+    private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
     private static final int MAX_WHOLESALE = 5;
+    private static final int DEFAULT_ETALASE_ID = -1;
 
     private RecyclerView recyclerViewWholesale;
     private WholesaleAdapter wholesaleAdapter;
@@ -69,7 +74,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private int currencyType = CurrencyTypeDef.TYPE_IDR;
 
     public ProductDetailViewHolder(View view) {
-        etalaseId = -1;
+        etalaseId = DEFAULT_ETALASE_ID;
         editPriceImageButton = (ImageButton) view.findViewById(R.id.image_button_edit_price);
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         wholesaleExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_wholesale);
@@ -527,12 +532,19 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
+        savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
+        savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-
+        if (savedInstanceState == null) {
+            return;
+        }
+        etalaseId = savedInstanceState.getLong(BUNDLE_ETALASE_ID, DEFAULT_ETALASE_ID);
+        if (!TextUtils.isEmpty(savedInstanceState.getString(BUNDLE_ETALASE_NAME))) {
+            etalaseLabelView.setContent(savedInstanceState.getString(BUNDLE_ETALASE_NAME));
+        }
     }
 
     public interface Listener {
