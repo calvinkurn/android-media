@@ -50,6 +50,7 @@ public class ProductEditFragment extends ProductDraftEditFragment implements Pro
     @Override
     protected void fetchInputData() {
         presenter.attachView(this);
+        showLoading();
         String productId = getArguments().getString(EDIT_PRODUCT_ID);
         presenter.fetchEditProductData(productId);
     }
