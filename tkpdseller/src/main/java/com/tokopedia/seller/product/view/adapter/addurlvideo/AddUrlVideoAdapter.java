@@ -123,10 +123,6 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     public void add(AddUrlVideoModel addUrlVideoModel) {
-        // prevent addition if size will exceed the limit.
-        if (addUrlVideoModels.size() == maxRows)
-            return;
-
         // check if model is already contain, then
         if (addUrlVideoModels.contains(addUrlVideoModel))
             throw new IllegalArgumentException(videoSameWarn);
@@ -138,9 +134,13 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
                 listener.notifyEmpty();
             }
         } else {
-            if (listener != null) {
-                listener.notifyNonEmpty();
-            }
+            // prevent addition if size will exceed the limit.
+            if (listener != null)
+                if (addUrlVideoModels.size() == maxRows) {
+                    listener.notifyFull();
+                } else {
+                    listener.notifyNonEmpty();
+                }
             notifyItemInserted(addUrlVideoModels.size() - 1);
         }
     }
@@ -149,6 +149,8 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         void notifyEmpty();
 
         void notifyNonEmpty();
+
+        void notifyFull();
 
         void remove(int index);
     }
