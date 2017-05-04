@@ -42,10 +42,14 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    protected void fetchInputData() {
-        presenter.attachView(this);
-        String productId = getArguments().getString(EDIT_PRODUCT_ID);
-        presenter.fetchEditProductData(productId);
+    protected void fetchInputData(Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            super.fetchInputData(savedInstanceState);
+        } else {
+            presenter.attachView(this);
+            String productId = getArguments().getString(EDIT_PRODUCT_ID);
+            presenter.fetchEditProductData(productId);
+        }
     }
 
 }
