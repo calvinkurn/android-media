@@ -2,9 +2,11 @@ package com.tokopedia.digital.product.adapter;
 
 import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.util.MethodChecker;
@@ -61,6 +63,9 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final BannerData bannerData = (BannerData) dataList.get(position);
             BannerItemHolder bannerItemHolder = (BannerItemHolder) holder;
             bannerItemHolder.tvDescBanner.setText(MethodChecker.fromHtml(bannerData.getTitle()));
+            bannerItemHolder.holderVoucherCode.setVisibility(
+                    TextUtils.isEmpty(bannerData.getPromocode()) ? View.GONE : View.VISIBLE
+            );
             bannerItemHolder.tvVoucherCode.setText(bannerData.getPromocode());
             bannerItemHolder.btnCopy.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,6 +115,8 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView tvVoucherCode;
         @BindView(R2.id.btn_copy)
         TextView btnCopy;
+        @BindView(R2.id.holder_voucher)
+        LinearLayout holderVoucherCode;
 
         BannerItemHolder(View itemView) {
             super(itemView);

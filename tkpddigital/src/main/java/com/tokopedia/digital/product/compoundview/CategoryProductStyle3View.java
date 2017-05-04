@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.compoundview;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.CategoryData;
 
 /**
@@ -23,7 +24,7 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
 
     @Override
     protected int getHolderLayoutId() {
-        return 0;
+        return R.layout.view_holder_category_product_style_3;
     }
 
     @Override

@@ -25,6 +25,10 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
+import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
+import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
+import com.tokopedia.digital.product.compoundview.CategoryProductStyle4View;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
@@ -62,6 +66,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private BannerAdapter bannerAdapter;
 
     private CompositeSubscription compositeSubscription;
+    private BaseDigitalProductView<CategoryData> digitalProductView;
 
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
@@ -157,21 +162,41 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void renderCategoryProductDataStyle1(CategoryData categoryData) {
         holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle1View(getActivity());
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData);
+        holderProductDetail.addView(digitalProductView);
     }
 
     @Override
     public void renderCategoryProductDataStyle2(CategoryData categoryData) {
         holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle2View(getActivity());
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData);
+        holderProductDetail.addView(digitalProductView);
     }
 
     @Override
     public void renderCategoryProductDataStyle3(CategoryData categoryData) {
         holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle3View(getActivity());
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData);
+        holderProductDetail.addView(digitalProductView);
     }
 
     @Override
     public void renderCategoryProductDataStyle4(CategoryData categoryData) {
         holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle4View(getActivity());
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData);
+        holderProductDetail.addView(digitalProductView);
     }
 
     @Override
