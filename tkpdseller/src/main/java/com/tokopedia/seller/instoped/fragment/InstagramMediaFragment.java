@@ -177,7 +177,7 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
 
     @Override
     public void updateTitleView(int itemCount, int maxItemCount){
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Produk", itemCount, maxItemCount));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Gambar", itemCount, maxItemCount));
     }
 
     @Override
