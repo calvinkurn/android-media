@@ -73,6 +73,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+    public static final String SAVED_STATE_VIEW_DATA = "SAVED_STATE_VIEW_DATA";
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -184,8 +185,17 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         });
 
         view.requestFocus();
+        fetchInputData(savedInstanceState);
+
         return view;
     }
+
+    protected void fetchInputData(Bundle savedInstanceState) {
+        if (savedInstanceState != null){
+            onSuccessLoadProduct((UploadProductInputViewModel) savedInstanceState.getParcelable(SAVED_STATE_VIEW_DATA));
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -320,6 +330,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList) {
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_STATE_VIEW_DATA, collectDataFromView());
     }
 
     @Override
@@ -474,6 +490,48 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             listener.startUploadProductAndAddWithShare(productId);
         } else {
             listener.startUploadProductAndAdd(productId);
+        }
+    }
+
+    @Override
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        productInfoViewHolder.setName(model.getProductName());
+        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+        fetchCategory(model.getProductDepartmentId());
+        if (model.getProductCatalogId() > 0) {
+            productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
+        }
+        productImageViewHolder.setProductPhotos(model.getProductPhotos());
+
+        productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
+        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
+        if (model.getProductWholesaleList().size() > 0) {
+            productDetailViewHolder.expandWholesale(true);
+            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+        }
+        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
+        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+        productDetailViewHolder.setStockStatus(model.getProductUploadTo());
+
+        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
+        productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
+        if (model.getProductEtalaseId() > 0) {
+            productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
+            productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
+        }
+        productDetailViewHolder.setCondition(model.getProductCondition());
+        productDetailViewHolder.setInsurance(model.getProductMustInsurance());
+        productDetailViewHolder.setFreeReturn(model.getProductReturnable());
+
+        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        if (model.getProductVideos() != null) {
+            productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
+        }
+        if (model.getPoProcessValue() > 0) {
+            productAdditionalInfoViewHolder.expandPreOrder(true);
+            productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
+            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
         }
     }
 

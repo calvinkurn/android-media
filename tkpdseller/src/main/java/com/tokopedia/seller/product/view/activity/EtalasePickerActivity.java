@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerEtalasePickerComponent;
@@ -26,7 +27,7 @@ import com.tokopedia.seller.product.view.listener.EtalasePickerView;
 
 public class EtalasePickerActivity
         extends TActivity
-        implements HasComponent<EtalasePickerComponent>,
+        implements HasComponent<AppComponent>,
         EtalasePickerFragmentListener,
         TextPickerDialogListener {
 
@@ -35,7 +36,6 @@ public class EtalasePickerActivity
     public static final int UNSELECTED_ETALASE_ID = -1;
     public static final String SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID";
     private FragmentManager fragmentManager;
-    private EtalasePickerComponent component;
 
     public static Intent createInstance(Context context, long etalaseId) {
         Intent intent = new Intent(context, EtalasePickerActivity.class);
@@ -48,8 +48,6 @@ public class EtalasePickerActivity
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
-
-        initInjection();
         inflateEtalasePickerFragment();
 
     }
@@ -65,17 +63,9 @@ public class EtalasePickerActivity
         fragmentTransaction.commit();
     }
 
-    private void initInjection() {
-        component = DaggerEtalasePickerComponent
-                .builder()
-                .appComponent(getApplicationComponent())
-                .etalasePickerModule(new EtalasePickerModule())
-                .build();
-    }
-
     @Override
-    public EtalasePickerComponent getComponent() {
-        return component;
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 
     @Override

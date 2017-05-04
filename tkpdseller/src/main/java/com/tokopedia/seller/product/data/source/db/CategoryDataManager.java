@@ -6,6 +6,7 @@ import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.tokopedia.core.database.DbFlowDatabase;
+import com.tokopedia.seller.database.TkpdSellerDatabase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase_Table;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
@@ -44,7 +45,7 @@ public class CategoryDataManager {
 
     public void storeData(List<CategoryDataBase> categoryDataBases) {
 
-        DatabaseWrapper database = FlowManager.getDatabase(DbFlowDatabase.NAME).getWritableDatabase();
+        DatabaseWrapper database = FlowManager.getDatabase(TkpdSellerDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         try{
             for(CategoryDataBase categoryDataBase : categoryDataBases){
