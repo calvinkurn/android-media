@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.gson.JsonSyntaxException;
 import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
@@ -45,7 +46,7 @@ import rx.schedulers.Schedulers;
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
 
-    public static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 3000;
+    private static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 3000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
@@ -53,9 +54,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GetRideRequestDetailUseCase getRideRequestUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
+    private RideRequest activeRideRequest;
 
     private Handler handler = new Handler();
-    private String mRequestId;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -78,9 +79,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         getView().hideRideRequestStatus();
         getView().hideCancelRequestButton();
 
-        if (getView().isWaitingResponse()) {
+        if (getView().isAlreadyRequested()) {
             getView().startPeriodicService(getView().getRequestId());
         } else {
+            getView().setViewListener();
             if (getView().isSurge()) {
                 getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
             } else {
@@ -158,6 +160,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(RideRequest rideRequest) {
                 if (isViewAttached()) {
+                    activeRideRequest = rideRequest;
+                    getView().setRequestId(rideRequest.getRequestId());
                     getView().onSuccessCreateRideRequest(rideRequest);
                     getView().startPeriodicService(rideRequest.getRequestId());
                     proccessGetCurrentRideRequest(rideRequest);
@@ -190,45 +194,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     }
 
-//    @Override
-//    public void actionRetryRideRequest(RequestParams requestParams) {
-//        createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                if (!isViewAttached()) return;
-//                if (e instanceof InterruptConfirmationHttpException) {
-//                    if (!(e.getCause() instanceof JsonSyntaxException)) {
-//                        getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
-//                    } else {
-//                        getView().failedToRequestRide();
-//                    }
-//                    getView().hideLoadingWaitingResponse();
-//                    getView().hideRideRequestStatus();
-//                } else {
-//                    getView().showFailedRideRequestMessage(e.getMessage());
-//                    getView().failedToRequestRide();
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(RideRequest rideRequest) {
-//                if (isViewAttached()) {
-//                    proccessGetCurrentRideRequest(rideRequest);
-//                    getView().onSuccessCreateRideRequest(rideRequest);
-//                }
-//            }
-//        });
-//    }
-
     @Override
-    public void
-    proccessGetCurrentRideRequest(RideRequest result) {
+    public void proccessGetCurrentRideRequest(RideRequest result) {
+        getView().setRequestId(result.getRequestId());
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
@@ -293,18 +261,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     @Override
-    public void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng) {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("origin", String.format("%s,%s",
-                startLat,
-                startLng
-        ));
-        requestParams.putString("destination", String.format("%s,%s",
-                destLat,
-                destLng
-        ));
-        requestParams.putString("sensor", "false");
-        getOverviewPolylineUseCase.execute(requestParams, new Subscriber<List<String>>() {
+    public void getOverViewPolyLine() {
+        getOverviewPolylineUseCase.execute(getView().getPolyLineParam(), new Subscriber<List<String>>() {
             @Override
             public void onCompleted() {
 
@@ -323,6 +281,18 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         routes.add(PolyUtil.decode(route));
                     }
                     getView().renderTripRoute(routes);
+                    if (activeRideRequest != null) {
+                        getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(),
+                                activeRideRequest.getDestination().getLongitude());
+                        getView().renderDestinationMarker(activeRideRequest.getPickup().getLatitude(),
+                                activeRideRequest.getDestination().getLongitude());
+                        getView().zoomMapFitWithSourceAndDestination(
+                                activeRideRequest.getPickup().getLatitude(),
+                                activeRideRequest.getDestination().getLongitude(),
+                                activeRideRequest.getPickup().getLatitude(),
+                                activeRideRequest.getDestination().getLongitude()
+                        );
+                    }
                 }
             }
         });
@@ -372,37 +342,38 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
 
             //request the current ride details
-            getRideRequestUseCase.execute(getView().getCurrentRequestParams(mRequestId), new Subscriber<RideRequest>() {
-                @Override
-                public void onCompleted() {
-                    CommonUtils.dumper("GetCurrentRideRequestService timedTask complete");
-                }
+            getRideRequestUseCase.execute(getView().getCurrentRequestParams(getView().getRequestId()),
+                    new Subscriber<RideRequest>() {
+                        @Override
+                        public void onCompleted() {
+                            CommonUtils.dumper("GetCurrentRideRequestService timedTask complete");
+                        }
 
-                @Override
-                public void onError(Throwable e) {
-                    e.printStackTrace();
-                    CommonUtils.dumper("GetCurrentRideRequestService timedTask error = " + e.toString());
-                }
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            CommonUtils.dumper("GetCurrentRideRequestService timedTask error = " + e.toString());
+                        }
 
-                @Override
-                public void onNext(RideRequest s) {
-                    CommonUtils.dumper("GetCurrentRideRequestService timedTask onNext");
+                        @Override
+                        public void onNext(RideRequest rideRequest) {
+                            CommonUtils.dumper("GetCurrentRideRequestService timedTask onNext");
 
-                    //return of fragment finished on not present
-                    if (getView() == null) {
-                        return;
-                    }
+                            //return of fragment finished on not present
+                            if (getView() == null) {
+                                return;
+                            }
+                            activeRideRequest = rideRequest;
 
-                    proccessGetCurrentRideRequest(s);
-                    handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
-                }
-            });
+                            proccessGetCurrentRideRequest(rideRequest);
+                            handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                        }
+                    });
         }
     };
 
     @Override
     public void startGetRequestDetailsPeriodicService(String requestId) {
-        this.mRequestId = requestId;
         handler.postDelayed(timedTask, 2000);
     }
 
@@ -415,6 +386,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     @Override
                     public void call(RideRequest rideRequest) {
                         if (isViewAttached()) {
+                            activeRideRequest = rideRequest;
                             proccessGetCurrentRideRequest(rideRequest);
                         }
                     }
@@ -472,5 +444,23 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         getOverviewPolylineUseCase.unsubscribe();
         getRideRequestMapUseCase.unsubscribe();
         super.detachView();
+    }
+
+    @Override
+    public void onMapReady() {
+        getView().setMapViewListener();
+        if (!getView().isAlreadyRequested()) {
+            getOverViewPolyLine();
+        }
+    }
+
+    @Override
+    public void actionCallDriver() {
+        getView().openCallIntent(activeRideRequest.getDriver().getPhoneNumber());
+    }
+
+    @Override
+    public void actionMessageDriver() {
+        getView().openSmsIntent(activeRideRequest.getDriver().getSmsNumber());
     }
 }

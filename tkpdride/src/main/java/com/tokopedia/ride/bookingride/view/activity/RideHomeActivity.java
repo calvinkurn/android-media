@@ -37,10 +37,12 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.di.RideHomeDependencyInjection;
@@ -56,8 +58,10 @@ import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
+import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -65,6 +69,8 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 @RuntimePermissions
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
@@ -171,7 +177,16 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public RequestParams getCurrentRideRequestParam() {
-        return null;
+        String deviceId = GCMHandler.getRegistrationId(this);
+        String userId = SessionHandler.getLoginID(this);
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
     }
 
     @Override

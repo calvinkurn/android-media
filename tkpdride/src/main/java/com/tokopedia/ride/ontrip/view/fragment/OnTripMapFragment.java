@@ -91,6 +91,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
+    private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
@@ -100,7 +101,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
-    RideConfiguration rideConfiguration;
+    private String requestId;
+//    RideConfiguration rideConfiguration;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -145,11 +147,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mGoogleMap = googleMap;
-        setMapViewListener();
+        presenter.onMapReady();
     }
 
-    public static OnTripMapFragment newInstance() {
-        return new OnTripMapFragment();
+    public static OnTripMapFragment newInstance(String requestId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_RIDE_REQUEST_ID, requestId);
+        OnTripMapFragment fragment = new OnTripMapFragment();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public interface OnFragmentInteractionListener {
@@ -170,13 +176,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
+            requestId = getArguments().getString(EXTRA_RIDE_REQUEST_ID);
         }
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rideConfiguration = new RideConfiguration();
 
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
@@ -187,7 +193,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         presenter = OnTripDependencyInjection.createOnTripMapPresenter(getActivity());
         presenter.attachView(this);
         presenter.initialize();
-        setViewListener();
     }
 
     @Override
@@ -200,13 +205,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onStop();
     }
 
-    private void setViewListener() {
+    @Override
+    public void setViewListener() {
         if (confirmBookingViewModel != null) {
             tvSource.setText(confirmBookingViewModel.getSource().getTitle());
             tvDestination.setText(confirmBookingViewModel.getDestination().getTitle());
-        } else {
-            tvSource.setText(rideConfiguration.getActiveSource().getTitle());
-            tvDestination.setText(rideConfiguration.getActiveDestination().getTitle());
         }
     }
 
@@ -255,8 +258,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public boolean isWaitingResponse() {
-        return rideConfiguration.isWaitingDriverState();
+    public boolean isAlreadyRequested() {
+        return confirmBookingViewModel == null;
     }
 
     @Override
@@ -288,7 +291,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.animateCamera(cameraUpdate);
     }
 
-    private void setMapViewListener() {
+    @Override
+    public void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
@@ -301,22 +305,37 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
 
-        if (confirmBookingViewModel != null) {
-            presenter.getOverViewPolyLine(
-                    confirmBookingViewModel.getSource().getLatitude(),
-                    confirmBookingViewModel.getSource().getLongitude(),
-                    confirmBookingViewModel.getDestination().getLatitude(),
-                    confirmBookingViewModel.getDestination().getLongitude()
-            );
-        } else {
-            presenter.getOverViewPolyLine(
-                    rideConfiguration.getActiveSource().getLatitude(),
-                    rideConfiguration.getActiveSource().getLongitude(),
-                    rideConfiguration.getActiveDestination().getLatitude(),
-                    rideConfiguration.getActiveDestination().getLongitude()
-            );
-        }
+//        if (confirmBookingViewModel != null) {
+//            presenter.getOverViewPolyLine(
+//                    confirmBookingViewModel.getSource().getLatitude(),
+//                    confirmBookingViewModel.getSource().getLongitude(),
+//                    confirmBookingViewModel.getDestination().getLatitude(),
+//                    confirmBookingViewModel.getDestination().getLongitude()
+//            );
+//        } else {
+//            presenter.getOverViewPolyLine(
+//                    rideConfiguration.getActiveSource().getLatitude(),
+//                    rideConfiguration.getActiveSource().getLongitude(),
+//                    rideConfiguration.getActiveDestination().getLatitude(),
+//                    rideConfiguration.getActiveDestination().getLongitude()
+//            );
+//        }
 
+    }
+
+    @Override
+    public RequestParams getPolyLineParam() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString("origin", String.format("%s,%s",
+                confirmBookingViewModel.getSource().getLatitude(),
+                confirmBookingViewModel.getSource().getLongitude()
+        ));
+        requestParams.putString("destination", String.format("%s,%s",
+                confirmBookingViewModel.getDestination().getLatitude(),
+                confirmBookingViewModel.getDestination().getLongitude()
+        ));
+        requestParams.putString("sensor", "false");
+        return requestParams;
     }
 
     @OnClick(R2.id.cabs_processing_cancel_button)
@@ -327,7 +346,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public RequestParams getCancelParams() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(CancelRideRequestUseCase.PARAM_REQUEST_ID, rideConfiguration.getActiveRequest());
+        requestParams.putString(CancelRideRequestUseCase.PARAM_REQUEST_ID, requestId);
         return requestParams;
     }
 
@@ -400,7 +419,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public String getRequestId() {
-        return rideConfiguration.getActiveRequest();
+        return requestId;
+    }
+
+    @Override
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
     }
 
     @Override
@@ -410,8 +434,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void onSuccessCreateRideRequest(RideRequest rideRequest) {
-        rideConfiguration.setActiveSource(confirmBookingViewModel.getSource());
-        rideConfiguration.setActiveDestination(confirmBookingViewModel.getDestination());
+        requestId = rideRequest.getRequestId();
     }
 
     @Override
@@ -492,8 +515,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderCompletedRequest(RideRequest result) {
         DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
-        driverAndVehicle.setDriver(rideConfiguration.getActiveRequestObj().getDriver());
-        driverAndVehicle.setVehicle(rideConfiguration.getActiveRequestObj().getVehicle());
+        driverAndVehicle.setDriver(result.getDriver());
+        driverAndVehicle.setVehicle(result.getVehicle());
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
@@ -501,7 +524,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void clearRideConfiguration() {
-        rideConfiguration.clearActiveRequest();
+//        rideConfiguration.clearActiveRequest();
     }
 
     @Override
@@ -519,14 +542,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (confirmBookingViewModel != null) {
             source = confirmBookingViewModel.getSource();
             destination = confirmBookingViewModel.getDestination();
-        } else {
-            if (rideConfiguration.isWaitingDriverState()) {
-                source = rideConfiguration.getActiveSource();
-                destination = rideConfiguration.getActiveDestination();
-            }
         }
-
-        rideConfiguration.clearActiveRequest();
 
         Intent intent = getActivity().getIntent();
         if (source != null && destination != null) {
@@ -565,37 +581,32 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             if (route.size() > 1) {
                 RouteMapAnimator.getInstance().animateRoute(mGoogleMap, route);
             }
-            /*mGoogleMap.addPolyline(new PolylineOptions()
-                    .addAll(route)
-                    .width(10)
-                    .color(Color.BLACK)
-                    .geodesic(true));*/
         }
+    }
 
-        //add markers on source and destination
-        PlacePassViewModel source, destination;
-        if (confirmBookingViewModel != null) {
-            source = confirmBookingViewModel.getSource();
-            destination = confirmBookingViewModel.getDestination();
-        } else {
-            source = rideConfiguration.getActiveSource();
-            destination = rideConfiguration.getActiveDestination();
-        }
+    @Override
+    public void renderSourceMarker(double latitude, double longitude) {
         mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(source.getLatitude(), source.getLongitude()))
+                .position(new LatLng(latitude, longitude))
                 .icon(getMarkerIcon(R.drawable.marker_green))
-                .title(source.getAddress()));
+        );
+    }
 
+    @Override
+    public void renderDestinationMarker(double latitude, double longitude) {
         mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
-                .icon(getMarkerIcon(R.drawable.marker_red))
-                .title(destination.getAddress()));
+                .position(new LatLng(latitude, longitude))
+                .icon(getMarkerIcon(R.drawable.marker_red)));
+    }
 
-        //zoom map to fit both source and dest
+    @Override
+    public void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
-        builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
+        builder.include(new LatLng(startLat, startLng));
+        builder.include(new LatLng(endLat, endLng));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),
+                getResources().getDimensionPixelSize(R.dimen.map_polyline_padding))
+        );
     }
 
     public BitmapDescriptor getMarkerIcon(int resourceId) {
@@ -731,7 +742,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public RequestParams getShareEtaParam() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(GetRideRequestMapUseCase.PARAM_REQUEST_ID, rideConfiguration.getActiveRequest());
+        requestParams.putString(GetRideRequestMapUseCase.PARAM_REQUEST_ID, getRequestId());
         return requestParams;
     }
 
@@ -914,12 +925,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @OnClick(R2.id.btn_call)
     public void actionCallBtnClicked() {
-        openCallIntent();
+        presenter.actionCallDriver();
     }
 
     @OnClick(R2.id.btn_message)
     public void actionMessageBtnClicked() {
-        openSendMessage();
+        presenter.actionMessageDriver();
     }
 
     @OnClick(R2.id.btn_cancel_contact)
@@ -945,15 +956,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         //hideCancelPanel();
     }
 
-    private void openCallIntent() {
+    @Override
+    public void openCallIntent(String phoneNumber) {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
+        callIntent.setData(Uri.parse("tel:" + phoneNumber));
         startActivity(callIntent);
     }
 
-    private void openSendMessage() {
+    @Override
+    public void openSmsIntent(String smsNumber) {
         startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.fromParts("sms", rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber(), null))
+                Uri.fromParts("sms", smsNumber, null))
         );
     }
 

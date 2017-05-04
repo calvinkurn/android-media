@@ -25,7 +25,7 @@ public interface OnTripMapContract {
 
         RequestParams getFareEstimateParam();
 
-        boolean isWaitingResponse();
+//        boolean isWaitingResponse();
 
         void hideRideRequestStatus();
 
@@ -113,6 +113,25 @@ public interface OnTripMapContract {
 
         String getSurgeConfirmationHref();
 
+        boolean isAlreadyRequested();
+
+        void setViewListener();
+
+        void setRequestId(String requestId);
+
+        void setMapViewListener();
+
+        RequestParams getPolyLineParam();
+
+        void renderSourceMarker(double latitude, double longitude);
+
+        void renderDestinationMarker(double latitude, double longitude);
+
+        void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng);
+
+        void openCallIntent(String phoneNumber);
+
+        void openSmsIntent(String smsNumber);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -130,7 +149,7 @@ public interface OnTripMapContract {
 
         void proccessGetCurrentRideRequest(RideRequest result);
 
-        void getOverViewPolyLine(double startLat, double startLng, double destLat, double destLng);
+        void getOverViewPolyLine();
 
         void getDriverBitmap(RemoteViews remoteView, String imgUrl);
 
@@ -139,5 +158,11 @@ public interface OnTripMapContract {
         void startGetRequestDetailsPeriodicService(String requestId);
 
         void actionOnReceivePushNotification(Observable<RideRequest> rideRequest);
+
+        void onMapReady();
+
+        void actionCallDriver();
+
+        void actionMessageDriver();
     }
 }

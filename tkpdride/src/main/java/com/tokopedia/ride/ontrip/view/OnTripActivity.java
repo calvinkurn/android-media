@@ -129,7 +129,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         } else {
-            OnTripMapFragment fragment = OnTripMapFragment.newInstance();
+            RideRequest rideRequest = getIntent().getExtras().getParcelable(EXTRA_RIDE_REQUEST);
+
+            OnTripMapFragment fragment = OnTripMapFragment.newInstance(rideRequest.getRequestId());
             backButtonListener = fragment.getBackButtonListener();
             onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
