@@ -496,6 +496,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
         viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
         viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
+        viewModel.setProductEtalaseName(productDetailViewHolder.getEtalaseName());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
         viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());

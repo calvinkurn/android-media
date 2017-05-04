@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
@@ -142,7 +143,7 @@ public class ProductInfoViewHolder extends ProductViewHolder {
     }
 
     public void setName(String name) {
-        nameEditText.setText(name);
+        nameEditText.setText(MethodChecker.fromHtml(name));
     }
 
     public long getCategoryId() {

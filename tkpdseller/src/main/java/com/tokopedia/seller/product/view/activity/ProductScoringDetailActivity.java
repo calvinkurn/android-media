@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -12,6 +14,7 @@ import com.tokopedia.seller.product.constant.ProductExtraConstant;
 import com.tokopedia.seller.product.di.component.DaggerProductScoringComponent;
 import com.tokopedia.seller.product.di.component.ProductScoringComponent;
 import com.tokopedia.seller.product.di.module.ProductScoringModule;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.fragment.ProductScoringDetailFragment;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -22,6 +25,8 @@ import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScor
 
 public class ProductScoringDetailActivity extends TActivity implements HasComponent<AppComponent> {
 
+    public static final String TAG = ProductScoringDetailFragment.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,12 +34,23 @@ public class ProductScoringDetailActivity extends TActivity implements HasCompon
 
         ValueIndicatorScoreModel valueIndicatorScoreModel = getIntent().getParcelableExtra(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA);
 
+        inflateCategoryFragment(valueIndicatorScoreModel);
+
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, ProductScoringDetailFragment.createInstance(valueIndicatorScoreModel),
-                        ProductScoringDetailFragment.class.getSimpleName())
+                        TAG)
                 .commit();
     }
 
+    private void inflateCategoryFragment(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment == null) {
+            fragment = ProductScoringDetailFragment.createInstance(valueIndicatorScoreModel);
+        }
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, TAG);
+        fragmentTransaction.commit();
+    }
 
 
     public static Intent createIntent(Context context, ValueIndicatorScoreModel valueIndicatorScoreModel) {
