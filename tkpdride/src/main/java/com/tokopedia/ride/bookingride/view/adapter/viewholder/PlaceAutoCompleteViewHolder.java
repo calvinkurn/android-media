@@ -42,9 +42,9 @@ public class PlaceAutoCompleteViewHolder extends AbstractViewHolder<PlaceAutoCom
         mPlaceTitleTextView.setText(element.getTitle());
         mPlaceAddressTextView.setText(element.getAddress());
         if (element.getType() == PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE) {
-            mIndicator.setImageResource(R.drawable.ic_history_black_24dp);
+            mIndicator.setImageResource(R.drawable.location);
         } else {
-            mIndicator.setImageResource(R.drawable.ic_place_black_24dp);
+            mIndicator.setImageResource(R.drawable.location);
         }
         mItem = element;
     }

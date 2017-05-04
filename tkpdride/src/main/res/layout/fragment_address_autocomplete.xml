@@ -96,14 +96,16 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="0dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
                 android:background="@android:color/white"
                 android:foreground="?attr/selectableItemBackground"
                 android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/auto_detect_icon"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginBottom="10dp"
