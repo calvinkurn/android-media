@@ -1,5 +1,6 @@
 package com.tokopedia.core.shopinfo.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -199,6 +200,18 @@ public class ProductList extends V2BaseFragment {
         super.onAttach(context);
         if(context instanceof ProductListCallback) {
             this.callback = (ProductListCallback) context;
+        }
+    }
+
+    /**
+     * We need to implement this to support backward compatibility
+     * @param activity
+     */
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof ProductListCallback) {
+            this.callback = (ProductListCallback) activity;
         }
     }
 
