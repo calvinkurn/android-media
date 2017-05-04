@@ -253,7 +253,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
             seatsTextView.setText(String.valueOf(confirmBookingViewModel.getMaxCapacity()));
             seatsLabelTextView.setText(R.string.confirm_booking_capacity);
             seatArrowDownImageView.setVisibility(View.GONE);
-            selectSeatContainer.setVisibility(View.GONE);
+            selectSeatContainer.setEnabled(false);
         }
     }
 

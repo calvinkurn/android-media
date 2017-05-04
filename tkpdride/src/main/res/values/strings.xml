@@ -61,4 +61,6 @@
     <string name="message_trip_in_arriving">Driver is arriving now</string>
     <string name="auto_complete_saved_addresses">Saved Addresses</string>
     <string name="apply_promo_empty_promo_error">Field must not empty</string>
+    <string name="contact_driver">Contact Driver</string>
+    <string name="uber_moto_display_name">uberMotor</string>
 </resources>

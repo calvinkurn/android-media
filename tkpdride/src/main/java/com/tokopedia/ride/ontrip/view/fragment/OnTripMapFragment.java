@@ -80,6 +80,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
 import rx.Observable;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -609,9 +610,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mDriverMarker.remove();
         }
 
+        int markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(getCarMapIcon(R.drawable.car_map_icon))
+                .icon(getCarMapIcon(markerId))
                 .rotation(result.getLocation().getBearing())
                 .title("Driver");
 
@@ -945,8 +948,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         //hideCancelPanel();
     }
 
+    @NeedsPermission({Manifest.permission.CALL_PHONE})
     private void openCallIntent() {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
         startActivity(callIntent);
     }
