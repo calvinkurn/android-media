@@ -214,13 +214,13 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void hideMenuButton() {
-        menu.findItem(com.tokopedia.core.R.id.action_talk_add).setEnabled(false);
-        menu.findItem(com.tokopedia.core.R.id.action_talk_add).setVisible(false);
+        menu.findItem(R.id.action_add_video).setEnabled(false);
+        menu.findItem(R.id.action_add_video).setVisible(false);
     }
 
     public void showMenuButton() {
-        menu.findItem(com.tokopedia.core.R.id.action_talk_add).setEnabled(true);
-        menu.findItem(com.tokopedia.core.R.id.action_talk_add).setVisible(true);
+        menu.findItem(R.id.action_add_video).setEnabled(true);
+        menu.findItem(R.id.action_add_video).setVisible(true);
     }
 
     public void addVideoId(String videoId) {
@@ -249,7 +249,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(com.tokopedia.core.R.menu.talk_product, menu);
+        inflater.inflate(com.tokopedia.core.R.menu.menu_youtube, menu);
 
         this.menu = menu;
 
@@ -262,7 +262,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == com.tokopedia.core.R.id.action_talk_add) {
+        } else if (item.getItemId() == R.id.action_add_video) {
             youtubeAddVideoActView.openAddYoutubeDialog();
             return true;
         }
