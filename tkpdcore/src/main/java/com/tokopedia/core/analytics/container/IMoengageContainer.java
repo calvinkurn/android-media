@@ -21,4 +21,6 @@ public interface IMoengageContainer
     void sendRegistrationStartEvent(String medium);
 
     void sendRegisterEvent(String fullName, String mobileNo, String dateOfBirth);
+
+    void setUserData(CustomerWrapper customerWrapper);
 }

@@ -142,6 +142,40 @@ public class MoEngageContainer implements IMoengageContainer {
         );
     }
 
+    @Override
+    public void setUserData(CustomerWrapper customerWrapper) {
+        Single<CustomerWrapper> isExistingUser = Single.just(customerWrapper);
+
+        executor(isExistingUser, new SingleSubscriber<CustomerWrapper>() {
+            @Override
+            public void onSuccess(CustomerWrapper value) {
+                CommonUtils.dumper("MoEngage check user "+value.toString());
+                MoEHelper helper = MoEHelper.getInstance(context);
+                helper.setFullName(value.getFullName());
+                helper.setFirstName(value.getFirstName());
+                helper.setUniqueId(value.getCustomerId());
+                helper.setEmail(value.getEmailAddress());
+                helper.setNumber(value.getPhoneNumber());
+                helper.setBirthDate(value.getDateOfBirth());
+
+                sendEvent(
+                        new PayloadBuilder()
+                                .putAttrString(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()))
+                                .putAttrString(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()))
+                                .putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId())
+                                .putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName())
+                                .build()
+                        , AppEventTracking.MOENGAGE.EVENT_USER_ATTR
+                );
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                error.printStackTrace();
+            }
+        });
+    }
+
     private void executor(Single single, SingleSubscriber subscriber) {
         subscription.add(single.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber));
     }
