@@ -17,6 +17,7 @@ import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.DrawerAdapter;
 import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.drawer2.databinder.DrawerHeaderDataBinder;
@@ -26,12 +27,15 @@ import com.tokopedia.core.drawer2.model.DrawerItem;
 import com.tokopedia.core.drawer2.model.DrawerSeparator;
 import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
+import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
+import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -442,35 +446,55 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToDeposit() {
-        Log.d("NISNIS", "GO TO DEPOSIT");
-
+        Intent intent = new Intent(context, DepositActivity.class);
+        context.startActivity(intent);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
     }
 
     @Override
     public void onGoToProfile() {
-        Log.d("NISNIS", "GO TO PROFILE");
+        context.startActivity(
+                PeopleInfoDrawerActivity.createInstance(context, sessionHandler.getLoginID(context))
+        );
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.PROFILE);
 
     }
 
     @Override
     public void onGoToTopPoints(String topPointsUrl) {
-        Log.d("NISNIS", "GO TO TOPPOINTS " + topPointsUrl);
-
+        Bundle bundle = new Bundle();
+        bundle.putString("url", topPointsUrl);
+        Intent intent = new Intent(context, LoyaltyDetail.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
     }
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
-        Log.d("NISNIS", "GO TO TOPCASH " + topCashUrl);
+        Bundle bundle = new Bundle();
+        bundle.putString("url", topCashUrl);
+        if (context.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplication())
+                    .goToWallet(context, bundle);
+        }
 
     }
 
     private void onGoToCreateShop() {
-        Log.d("NISNIS", "GO TO CREATE SHOP ");
+        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
+        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        context.startActivity(intent);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
+
 
     }
 
     private void onGoToShop() {
-        Log.d("NISNIS", "GO TO SHOP ");
-
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
+        context.startActivity(intent);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
 }

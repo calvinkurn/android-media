@@ -2,10 +2,15 @@ package com.tokopedia.core.app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.DrawerHelper;
 import com.tokopedia.core.drawer2.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.datamanager.DrawerDataManagerImpl;
@@ -16,6 +21,7 @@ import com.tokopedia.core.drawer2.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.viewmodel.DrawerTopPoints;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -44,11 +50,38 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
         setupDrawer();
-        setupToolbar();
     }
 
+    @Override
     protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+        toolbar.removeAllViews();
+        View notif = getLayoutInflater().inflate(
+                R.layout.custom_actionbar_drawer_notification, null);
+        final ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        drawerToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (drawerHelper.isOpened()) {
+                    drawerHelper.closeDrawer();
+                } else {
+                    drawerHelper.openDrawer();
+                }
+            }
+        });
+        TextView notifRed = (TextView) notif.findViewById(R.id.toggle_count_notif);
+        toolbar.addView(notif);
 
+        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
+        TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
+        titleTextView.setText(getTitle());
+        toolbar.addView(title);
+        toolbar.setNavigationIcon(null);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
     }
 
     protected void setupDrawer() {
@@ -59,6 +92,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler);
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
+            drawerHelper.setSelectedPosition(setDrawerPosition());
             DrawerDataManager drawerDataManager = new DrawerDataManagerImpl(this);
             getDrawerProfile(drawerDataManager);
             getDrawerDeposit(drawerDataManager);
@@ -137,7 +171,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private void getDrawerNotification(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getNotification(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerNotification>() {
@@ -154,6 +188,23 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                             @Override
                             public void onNext(DrawerNotification notification) {
 
+                                int notificationCount = notification.getTotalNotif();
+
+                                TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
+                                if (notifRed != null) {
+                                    if (notificationCount <= 0) {
+                                        notifRed.setVisibility(View.GONE);
+                                    } else {
+                                        notifRed.setVisibility(View.VISIBLE);
+                                        String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                                        notifRed.setText(totalNotif);
+                                    }
+                                }
+                                if (notification.isUnread()) {
+                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
+                                } else {
+                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
+                                }
                                 drawerHelper.getAdapter().notifyDataSetChanged();
 
                             }
@@ -167,7 +218,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private void getDrawerTokoCash(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerTokoCash>() {
@@ -197,7 +248,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getTopPoints(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerTopPoints>() {
@@ -227,7 +278,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private void getDrawerDeposit(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDeposit(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerDeposit>() {
@@ -257,7 +308,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private void getDrawerProfile(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDrawerProfile(this)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(),true)
+                .observeOn(AndroidSchedulers.mainThread(), true)
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(
                         new Subscriber<DrawerProfile>() {
@@ -283,4 +334,5 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                         }
                 ));
     }
+
 }

@@ -88,11 +88,10 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
         toolbar.addView(title);
         toolbar.setNavigationIcon(null);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
     }
 
 
@@ -115,7 +114,9 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
         }
     }
 
-    private void getDrawerNotification(DrawerDataManager drawerDataManager) {
+    protected void getDrawerNotification(DrawerDataManager drawerDataManager) {
+        CommonUtils.dumper("NISNIS get_deposit");
+
         compositeSubscription.add(drawerDataManager.getNotification(this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread(), true)
@@ -152,7 +153,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                                 } else {
                                     MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
                                 }
-//                                drawerHelper.setNotification(notification);
                                 drawerHelper.getAdapter().notifyDataSetChanged();
 
                             }
@@ -163,7 +163,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
     }
 
 
-    private void getDrawerTokoCash(DrawerDataManager drawerDataManager) {
+    protected void getDrawerTokoCash(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread(), true)
@@ -193,7 +193,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                 ));
     }
 
-    private void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
+    protected void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getTopPoints(this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread(), true)
@@ -223,7 +223,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                 ));
     }
 
-    private void getDrawerDeposit(DrawerDataManager drawerDataManager) {
+    protected void getDrawerDeposit(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDeposit(this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread(), true)
@@ -253,7 +253,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                 ));
     }
 
-    private void getDrawerProfile(DrawerDataManager drawerDataManager) {
+    protected void getDrawerProfile(DrawerDataManager drawerDataManager) {
         compositeSubscription.add(drawerDataManager.getDrawerProfile(this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread(), true)
@@ -295,7 +295,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
     }
 
     protected void RefreshDrawer() {
-//        drawer.updateData();
     }
 
     @Override
