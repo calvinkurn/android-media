@@ -185,13 +185,17 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         });
 
         view.requestFocus();
-        fetchInputData(savedInstanceState);
-
         return view;
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        fetchInputData(savedInstanceState);
+    }
+
     protected void fetchInputData(Bundle savedInstanceState) {
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             onSuccessLoadProduct((UploadProductInputViewModel) savedInstanceState.getParcelable(SAVED_STATE_VIEW_DATA));
         }
     }
@@ -547,6 +551,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
         viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductCatalogName(productInfoViewHolder.getCatalogName());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
