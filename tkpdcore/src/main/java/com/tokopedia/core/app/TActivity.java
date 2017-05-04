@@ -41,8 +41,16 @@ public abstract class TActivity extends BaseActivity {
         setContentView(R.layout.drawer_activity);
 
         parentView = (FrameLayout) findViewById(R.id.parent_view);
+        setupToolbar();
+    }
+
+    protected void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.setTitle(getTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
     }
 
     @Override

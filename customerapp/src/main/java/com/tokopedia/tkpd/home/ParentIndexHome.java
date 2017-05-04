@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -229,6 +230,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.removeAllViews();
         View view = getLayoutInflater().inflate(R.layout.custom_action_bar_searchview, null);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

@@ -314,7 +314,6 @@ public class DrawerBuyerHelper extends DrawerHelper
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
-        setActionToolbar(activity);
         setExpand();
         closeDrawer();
     }

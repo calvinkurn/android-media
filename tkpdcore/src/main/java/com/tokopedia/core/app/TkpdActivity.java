@@ -2,11 +2,8 @@ package com.tokopedia.core.app;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -58,7 +55,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
         super.onCreate(savedInstanceState);
         compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
-        setupToolbar();
         setupDrawer();
 
         cartBadgeNotificationReceiver = new CartBadgeNotificationReceiver(this);
@@ -66,7 +62,9 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
         registerReceiver(cartBadgeNotificationReceiver, intentFilter);
     }
 
+    @Override
     protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         toolbar.removeAllViews();
         View notif = getLayoutInflater().inflate(
                 R.layout.custom_actionbar_drawer_notification, null);
@@ -88,9 +86,15 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
         TextView titleTextView = (TextView) title.findViewById(R.id.actionbar_title);
         titleTextView.setText(getTitle());
         toolbar.addView(title);
+        toolbar.setNavigationIcon(null);
         setSupportActionBar(toolbar);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
     }
+
 
     protected void setupDrawer() {
         if (GlobalConfig.isSellerApp()) {
