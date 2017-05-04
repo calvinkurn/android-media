@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -12,6 +13,7 @@ import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
@@ -53,6 +55,22 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEngageUser(CustomerWrapper customerWrapper){
         getMoEngine().setUserProfile(customerWrapper);
+    }
+
+    public static void setMoEUserAttributes(ProfileData profileData){
+
+        CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
+                .setFullName(profileData.getUserInfo().getUserName())
+                .setEmailAddress(profileData.getUserInfo().getUserEmail())
+                .setPhoneNumber(profileData.getUserInfo().getUserPhone())
+                .setCustomerId(profileData.getUserInfo().getUserId())
+                .setShopId(profileData.getShopInfo().getShopId())
+                .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
+                .setShopName(profileData.getShopInfo().getShopName())
+                .setDateOfBirth(profileData.getUserInfo().getUserBirth())
+                .build();
+
+        getMoEngine().setUserData(customerWrapper);
     }
 
     public static void sendMoEngageLoginEvent(CustomerWrapper customerWrapper){
