@@ -35,11 +35,6 @@ public class ProductScoringDetailActivity extends TActivity implements HasCompon
         ValueIndicatorScoreModel valueIndicatorScoreModel = getIntent().getParcelableExtra(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA);
 
         inflateCategoryFragment(valueIndicatorScoreModel);
-
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, ProductScoringDetailFragment.createInstance(valueIndicatorScoreModel),
-                        TAG)
-                .commit();
     }
 
     private void inflateCategoryFragment(ValueIndicatorScoreModel valueIndicatorScoreModel) {
