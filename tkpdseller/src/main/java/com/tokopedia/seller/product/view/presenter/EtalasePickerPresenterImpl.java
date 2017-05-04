@@ -42,6 +42,8 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
 
     @Override
     public void fetchNextPageEtalaseData(int page) {
+        checkViewAttached();
+        getView().showNextListLoading();
         RequestParams requestParam = FetchMyEtalaseUseCase.generateRequestParam(page);
         fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseDataSubscriber());
     }

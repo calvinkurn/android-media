@@ -125,7 +125,6 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
                 int visibleItem = layout.getItemCount() - 1;
                 if (lastItemPosition == visibleItem  && adapter.isHasNextPage()) {
                     presenter.fetchNextPageEtalaseData(adapter.getPage());
-                    adapter.showLoading(true);
                 }
             }
         });
@@ -149,6 +148,7 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     @Override
     public void dismissListLoading() {
         adapter.showLoadingFull(false);
+        adapter.showLoading(false);
     }
 
     @Override
@@ -200,6 +200,11 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
                     }
                 })
                 .showRetrySnackbar();
+    }
+
+    @Override
+    public void showNextListLoading() {
+        adapter.showLoading(true);
     }
 
     @Override

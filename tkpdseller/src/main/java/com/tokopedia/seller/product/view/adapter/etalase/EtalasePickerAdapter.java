@@ -65,11 +65,15 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if (dataRendered.isEmpty() || isLoading() || isRetry()) {
+        if (isLastItemPosition(position) && (dataRendered.isEmpty() || isLoading() || isRetry())) {
             return super.getItemViewType(position);
         } else {
             return dataRendered.get(position).getType();
         }
+    }
+
+    private boolean isLastItemPosition(int position) {
+        return position == dataRendered.size();
     }
 
     @Override
