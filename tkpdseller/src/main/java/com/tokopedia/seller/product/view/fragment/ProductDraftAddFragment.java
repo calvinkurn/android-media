@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
@@ -28,6 +30,8 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
+    private String draftId;
+
     public static Fragment createInstance(String productDraftId) {
         ProductDraftAddFragment fragment = new ProductDraftAddFragment();
         Bundle args = new Bundle();
@@ -38,10 +42,11 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     @Override
     protected void fetchInputData(Bundle savedInstanceState) {
+        showLoading();
         if (savedInstanceState != null){
             super.fetchInputData(savedInstanceState);
         } else {
-            String draftId = getArguments().getString(DRAFT_PRODUCT_ID);
+            draftId = getArguments().getString(DRAFT_PRODUCT_ID);
             presenter.fetchDraftData(draftId);
         }
     }
@@ -58,6 +63,14 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     @Override
     public void onErrorLoadProduct(String errorMessage) {
-
+        hideLoading();
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showLoading();
+                presenter.fetchDraftData(draftId);
+            }
+        });
     }
+
 }

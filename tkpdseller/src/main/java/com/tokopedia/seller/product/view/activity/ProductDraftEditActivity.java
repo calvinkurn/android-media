@@ -2,9 +2,12 @@ package com.tokopedia.seller.product.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.view.fragment.ProductDraftAddFragment;
 import com.tokopedia.seller.product.view.fragment.ProductDraftEditFragment;
 
 /**
@@ -26,9 +29,14 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, ProductDraftEditFragment.createInstance(productId), ProductDraftEditFragment.class.getSimpleName())
-                .commit();
+
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductDraftEditFragment.TAG);
+        if (fragment == null) {
+            fragment = ProductDraftEditFragment.createInstance(productId);
+        }
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, ProductDraftEditFragment.TAG);
+        fragmentTransaction.commit();
     }
 
     @Override

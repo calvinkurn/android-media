@@ -43,6 +43,7 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
 
     @Override
     protected void fetchInputData(Bundle savedInstanceState) {
+        showLoading();
         if (savedInstanceState != null){
             super.fetchInputData(savedInstanceState);
         } else {

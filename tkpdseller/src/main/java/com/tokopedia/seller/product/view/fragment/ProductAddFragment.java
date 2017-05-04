@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -83,6 +84,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
+    TkpdProgressDialog tkpdProgressDialog;
 
     /**
      * Url got from gallery or camera or other paths
@@ -190,8 +192,22 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     protected void fetchInputData(Bundle savedInstanceState) {
+        showLoading();
         if (savedInstanceState != null){
             onSuccessLoadProduct((UploadProductInputViewModel) savedInstanceState.getParcelable(SAVED_STATE_VIEW_DATA));
+        }
+    }
+
+    protected void showLoading() {
+        if (tkpdProgressDialog==null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    protected void hideLoading() {
+        if (tkpdProgressDialog!= null) {
+            tkpdProgressDialog.dismiss();
         }
     }
 
@@ -494,6 +510,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        hideLoading();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         fetchCategory(model.getProductDepartmentId());
