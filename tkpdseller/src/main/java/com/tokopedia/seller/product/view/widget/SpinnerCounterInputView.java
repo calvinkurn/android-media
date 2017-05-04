@@ -9,9 +9,11 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ConverterUtils;
@@ -31,6 +33,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     private int selectionIndex;
     private boolean showCounterButton;
     private boolean enabled;
+    private int spinnerWidth;
 
     public SpinnerCounterInputView(Context context) {
         super(context);
@@ -57,6 +60,7 @@ public class SpinnerCounterInputView extends FrameLayout {
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
+            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.spinner_decimal_spinner_width));
         } finally {
             styledAttributes.recycle();
         }
@@ -76,8 +80,17 @@ public class SpinnerCounterInputView extends FrameLayout {
         }
         counterInputView.showCounterButton(showCounterButton);
         setEnabled(enabled);
+
+        updateSpinnerWidth();
+
         invalidate();
         requestLayout();
+    }
+
+    private void updateSpinnerWidth() {
+        ViewGroup.LayoutParams params = spinnerTextView.getLayoutParams();
+        params.width = spinnerWidth;
+        spinnerTextView.setLayoutParams(params);
     }
 
     private void init() {

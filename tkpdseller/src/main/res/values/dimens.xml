@@ -53,4 +53,6 @@
     <dimen name="topads_dashboard_size_image_plus">30dp</dimen>
 
     <dimen name="item_space">10dp</dimen>
+
+    <dimen name="spinner_decimal_spinner_width">80dp</dimen>
 </resources>
