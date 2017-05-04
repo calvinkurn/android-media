@@ -126,6 +126,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {

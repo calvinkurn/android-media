@@ -11,11 +11,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.ProductExtraConstant;
-import com.tokopedia.seller.product.di.component.DaggerProductScoringComponent;
-import com.tokopedia.seller.product.di.component.ProductScoringComponent;
-import com.tokopedia.seller.product.di.module.ProductScoringModule;
-import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
-import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.fragment.ProductScoringDetailFragment;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 
@@ -34,10 +29,10 @@ public class ProductScoringDetailActivity extends TActivity implements HasCompon
 
         ValueIndicatorScoreModel valueIndicatorScoreModel = getIntent().getParcelableExtra(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA);
 
-        inflateCategoryFragment(valueIndicatorScoreModel);
+        inflateFragment(valueIndicatorScoreModel);
     }
 
-    private void inflateCategoryFragment(ValueIndicatorScoreModel valueIndicatorScoreModel) {
+    private void inflateFragment(ValueIndicatorScoreModel valueIndicatorScoreModel) {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment == null) {
             fragment = ProductScoringDetailFragment.createInstance(valueIndicatorScoreModel);
