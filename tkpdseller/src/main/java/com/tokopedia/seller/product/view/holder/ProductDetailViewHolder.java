@@ -3,6 +3,7 @@ package com.tokopedia.seller.product.view.holder;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -491,6 +492,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
+    public void notifySizeChanged(int currentSize) {
+        updateWholesaleButton();
+    }
+
+    @Override
     public boolean isDataValid() {
         if (!isPriceValid()) {
             priceSpinnerCounterInputView.requestFocus();
@@ -520,10 +526,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
-    public void notifySizeChanged(int currentSize) {
-        updateWholesaleButton();
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
     }
 
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
+    }
 
     public interface Listener {
 

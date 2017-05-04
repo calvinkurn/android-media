@@ -18,7 +18,7 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadScoringProduct(String errorMessage);
 
-    void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows);
+    void onSuccessLoadCatalog(List<Catalog> catalogViewModelList);
 
     void onErrorLoadCatalog(String errorMessage);
 

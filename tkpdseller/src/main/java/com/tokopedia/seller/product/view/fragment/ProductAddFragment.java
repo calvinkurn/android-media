@@ -307,8 +307,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList, int maxRows) {
-        productInfoViewHolder.successFetchCatalogData(catalogViewModelList, maxRows);
+    public void onSuccessLoadCatalog(List<Catalog> catalogViewModelList) {
+        productInfoViewHolder.successFetchCatalogData(catalogViewModelList);
     }
 
     @Override
@@ -511,6 +511,25 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         }
         viewModel.setProductStatus(getStatusUpload());
         return viewModel;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        productInfoViewHolder.onSaveInstanceState(outState);
+        productImageViewHolder.onSaveInstanceState(outState);
+        productDetailViewHolder.onSaveInstanceState(outState);
+        productAdditionalInfoViewHolder.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        productInfoViewHolder.onRestoreInstanceState(savedInstanceState);
+        productImageViewHolder.onRestoreInstanceState(savedInstanceState);
+        productDetailViewHolder.onRestoreInstanceState(savedInstanceState);
+        productAdditionalInfoViewHolder.onRestoreInstanceState(savedInstanceState);
+
     }
 
     @Override
