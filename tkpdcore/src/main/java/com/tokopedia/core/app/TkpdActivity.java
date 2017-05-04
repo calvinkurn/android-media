@@ -148,7 +148,7 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                                 } else {
                                     MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
                                 }
-                                drawerHelper.setNotification(notification);
+//                                drawerHelper.setNotification(notification);
                                 drawerHelper.getAdapter().notifyDataSetChanged();
 
                             }

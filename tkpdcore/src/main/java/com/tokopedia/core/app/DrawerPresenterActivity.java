@@ -154,7 +154,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
                             @Override
                             public void onNext(DrawerNotification notification) {
 
-                                drawerHelper.setNotification(notification);
                                 drawerHelper.getAdapter().notifyDataSetChanged();
 
                             }

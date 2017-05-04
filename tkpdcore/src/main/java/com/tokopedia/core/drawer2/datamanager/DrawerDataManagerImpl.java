@@ -50,10 +50,11 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final DepositNetworkInteractor depositNetworkInteractor;
     private final TopPointsNetworkInteractor topPointsNetworkInteractor;
     private final TokoCashNetworkInteractor tokoCashNetworkInteractor;
-
+    private LocalCacheHandler drawerCache;
 
     public DrawerDataManagerImpl(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
+        drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
         profileNetworkInteractor = new ProfileNetworkInteractorImpl(new PeopleService());
         notificationNetworkInteractor = new NotificationNetworkInteractorImpl(new NotificationService());
         depositNetworkInteractor = new DepositNetworkInteractorImpl(new DepositService());
@@ -127,19 +128,32 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                     @Override
                     public Observable<DrawerNotification> call(Response<TkpdResponse> response) {
                         NotificationData notificationData = response.body().convertDataObj(NotificationData.class);
-                        setDataToCache(context, notificationData);
+                        setDataToCache(notificationData);
                         return Observable.just(convertToDrawerNotification(notificationData));
                     }
                 });
     }
 
-    private void setDataToCache(Context context, NotificationData notificationData) {
-        LocalCacheHandler drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+    private void setDataToCache(NotificationData notificationData) {
         drawerCache.putInt(DrawerNotification.CACHE_INBOX_MESSAGE, notificationData.getInbox().getInboxMessage());
         drawerCache.putInt(DrawerNotification.CACHE_INBOX_TALK, notificationData.getInbox().getInboxTalk());
         drawerCache.putInt(DrawerNotification.CACHE_INBOX_REVIEW, notificationData.getInbox().getInboxReputation());
         drawerCache.putInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, notificationData.getResolution());
         drawerCache.putInt(DrawerNotification.CACHE_INBOX_TICKET, notificationData.getInbox().getInboxTicket());
+
+        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, notificationData.getPurchase().getPurchaseDeliveryConfirm());
+        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, notificationData.getPurchase().getPurchaseOrderStatus());
+        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, notificationData.getPurchase().getPurchasePaymentConfirm());
+        drawerCache.putInt(DrawerNotification.CACHE_PURCHASE_REORDER, notificationData.getPurchase().getPurchaseReorder());
+
+        drawerCache.putInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, notificationData.getSales().getSalesNewOrder());
+        drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, notificationData.getSales().getSalesShippingConfirm());
+        drawerCache.putInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, notificationData.getSales().getSalesShippingStatus());
+
+        drawerCache.putInt(DrawerNotification.CACHE_TOTAL_CART, notificationData.getTotalCart());
+        drawerCache.putInt(DrawerNotification.CACHE_TOTAL_NOTIF, notificationData.getTotalNotif());
+        drawerCache.putInt(DrawerNotification.CACHE_INCR_NOTIF, notificationData.getIncrNotif());
+
         drawerCache.applyEditor();
     }
 

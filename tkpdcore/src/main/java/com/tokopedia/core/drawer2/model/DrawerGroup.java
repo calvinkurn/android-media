@@ -16,6 +16,10 @@ public class DrawerGroup extends DrawerItem {
         super(label, iconId, id, false);
     }
 
+    public DrawerGroup(String label, int iconId, int id, Boolean isExpanded, int notif) {
+        super(label, iconId, id, isExpanded, notif);
+    }
+
     public List<DrawerItem> getList() {
         return list;
     }

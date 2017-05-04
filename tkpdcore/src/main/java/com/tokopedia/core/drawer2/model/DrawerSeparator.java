@@ -10,7 +10,7 @@ public class DrawerSeparator extends DrawerItem {
         super("",0,0,false);
     }
 
-    public DrawerSeparator(String label, int iconId, int position, boolean isExpanded) {
-        super(label, iconId, position, isExpanded);
+    public DrawerSeparator(boolean isExpanded) {
+        super("", 0, 0, isExpanded);
     }
 }

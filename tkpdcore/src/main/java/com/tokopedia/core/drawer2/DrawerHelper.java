@@ -13,8 +13,10 @@ import android.widget.ImageView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.model.DrawerItem;
@@ -22,6 +24,10 @@ import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
@@ -86,6 +92,19 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
+            case TkpdState.DrawerPosition.INDEX_HOME:
+                intent = HomeRouter.getHomeActivity(context);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.LOGIN:
+            case TkpdState.DrawerPosition.REGISTER:
+                intent = SessionRouter.getLoginActivityIntent(context);
+                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, item.getId());
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
+                context.startActivity(intent);
+//                context.finish();
+                break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
                 intent = InboxRouter.getInboxMessageActivityIntent(context);
                 context.startActivity(intent);
@@ -113,6 +132,22 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);
                 break;
+            case TkpdState.DrawerPosition.SETTINGS:
+                context.startActivity(new Intent(context, ManageGeneral.class));
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
+                break;
+            case TkpdState.DrawerPosition.CONTACT_US:
+                intent = InboxRouter.getContactUsActivityIntent(context);
+                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
+                    intent.putExtra("link", "https://tokopedia.com/contact-us-android");
+                }
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.LOGOUT:
+                SessionHandler session = new SessionHandler(context);
+                session.Logout(context);
+                sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
+                break;
             default:
                 Log.d("NISNIS", item.getLabel());
         }
@@ -127,8 +162,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     }
 
     public abstract boolean isOpened();
-
-    public abstract void setNotification(DrawerNotification drawerNotification);
 
     public DrawerAdapter getAdapter() {
         return adapter;
