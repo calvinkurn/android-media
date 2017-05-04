@@ -50,7 +50,7 @@ public class NumberTextWatcher implements TextWatcher {
         valueString = CurrencyFormatHelper.RemoveNonNumeric (valueString);
         if (TextUtils.isEmpty(valueString)) {
             editText.setText(defaultValue);
-            editText.setSelection(defaultValue.length());
+            editText.setSelection(editText.getText().length());
             return;
         }
         float value = Float.parseFloat(valueString);
