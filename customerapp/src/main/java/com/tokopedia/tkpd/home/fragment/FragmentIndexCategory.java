@@ -260,6 +260,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void OnError() {
                 if (holder.MainView.getParent() != null && holder.bannerContainer != null)
                     ((ViewGroup) holder.MainView.getParent()).removeView(holder.bannerContainer);
+                showGetHomeMenuNetworkError();
             }
         };
     }
