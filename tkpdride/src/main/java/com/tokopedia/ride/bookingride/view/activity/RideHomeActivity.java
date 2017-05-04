@@ -27,6 +27,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -34,7 +35,9 @@ import com.sothree.slidinguppanel.ScrollableViewHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -50,6 +53,7 @@ import com.tokopedia.ride.bookingride.view.fragment.UberProductFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
@@ -81,6 +85,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     FrameLayout blockTranslucentFrameLayout;
     @BindView(R2.id.seat_pannel)
     RelativeLayout seatPanelLayout;
+    @BindView(R2.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R2.id.main_layout)
+    RelativeLayout mainLayout;
 
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
@@ -123,25 +131,73 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mPresenter = RideHomeDependencyInjection.createPresenter(this);
         mPresenter.attachView(this);
 
-        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+        mPresenter.actionCheckPendingRequestIfAny();
 
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
         configuration = new RideConfiguration();
 
-        /**
-         * if user open push notif with status accepted/arriving, this must be true if user pressed back button on ontripscreep
-         *  @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
-         */
-        if (configuration.isWaitingDriverState() &&
-                getIntent().getExtras() != null &&
-                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
-            finish();
-        } else if (configuration.isWaitingDriverState()) {
-            Intent intent = OnTripActivity.getCallingIntent(this);
-            startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
-        }
+//        /**
+//         * if user open push notif with status accepted/arriving, this must be true if user pressed back button on ontripscreep
+//         *  @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
+//         */
+//        if (configuration.isWaitingDriverState() &&
+//                getIntent().getExtras() != null &&
+//                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
+//            finish();
+//        } else if (configuration.isWaitingDriverState()) {
+//            Intent intent = OnTripActivity.getCallingIntent(this);
+//            startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
+//        }
+    }
+
+    @Override
+    public void closeScreen() {
+        finish();
+    }
+
+    @Override
+    public boolean isHavePendingRequestAndOpenedFromPushNotif() {
+        return getIntent().getExtras() != null &&
+                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH) &&
+                getIntent().getStringExtra(RideStatus.KEY).equalsIgnoreCase(RideStatus.ACCEPTED);
+    }
+
+    @Override
+    public void showCheckPendingRequestLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public RequestParams getCurrentRideRequestParam() {
+        return null;
+    }
+
+    @Override
+    public void hideCheckPendingRequestLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showRetryCheckPendingRequestLayout() {
+        NetworkErrorHelper.showEmptyState(this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                mPresenter.actionCheckPendingRequestIfAny();
+            }
+        });
+    }
+
+    @Override
+    public void actionNavigateToOnTripScreen(RideRequest rideRequest) {
+        Intent intent = OnTripActivity.getCallingIntent(this, rideRequest);
+        startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
+    }
+
+    @Override
+    public void inflateInitialFragment() {
+        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})

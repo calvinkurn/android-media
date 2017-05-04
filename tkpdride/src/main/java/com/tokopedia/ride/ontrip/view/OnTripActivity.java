@@ -58,6 +58,12 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         return intent;
     }
 
+    public static Intent getCallingIntent(Activity activity, RideRequest rideRequest) {
+        Intent intent = new Intent(activity, OnTripActivity.class);
+        intent.putExtra(EXTRA_RIDE_REQUEST, rideRequest);
+        return intent;
+    }
+
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, OnTripActivity.class);
     }
