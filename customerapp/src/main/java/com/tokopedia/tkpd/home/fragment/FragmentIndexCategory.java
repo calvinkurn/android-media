@@ -625,6 +625,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
+                    messageSnackbar.hideRetrySnackbar();
                     isNetworkErrorState = false;
                     getAnnouncement();
                     getPromo();
