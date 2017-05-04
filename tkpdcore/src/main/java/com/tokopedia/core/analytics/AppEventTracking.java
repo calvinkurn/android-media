@@ -426,6 +426,10 @@ public interface AppEventTracking {
         String PRODUCT = "product";
         String PURCHASE_DATE = "purchaseDate";
         String PRICE = "price";
+        String IS_GOLD_MERCHANT = "is_gold_merchant";
+        String IS_SELLER        = "is_seller";
+        String SHOP_ID          = "shop_id";
+        String SHOP_NAME        = "shop_name";
         String MOBILE_NUM = "Mobile Number";
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
@@ -462,6 +466,8 @@ public interface AppEventTracking {
         String EVENT_REG_START = "Registration_Start";
         String EVENT_REG_COMPL = "Registration_Completed";
         String EVENT_ADDR_ADD = "Address_Added";
+        String EVENT_USER_ATTR = "User_Attribute_Name";
+
     }
 
 
