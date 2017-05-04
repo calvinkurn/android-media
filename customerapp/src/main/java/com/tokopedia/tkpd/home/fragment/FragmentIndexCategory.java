@@ -634,11 +634,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 }
             });
         }
-
-        if (!messageSnackbar.isShown()) {
-            messageSnackbar.showRetrySnackbar();
-        }
-
+        messageSnackbar.showRetrySnackbar();
         isNetworkErrorState = true;
     }
 
