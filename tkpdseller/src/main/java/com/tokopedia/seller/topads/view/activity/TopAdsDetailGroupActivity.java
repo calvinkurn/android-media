@@ -57,9 +57,9 @@ public class TopAdsDetailGroupActivity extends TActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailGroupActivity.class.getName();
-//        if (ShowCasePreference.hasShown(this, showCaseTag)) {
-//            return;
-//        }
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
+            return;
+        }
         if (showCaseDialog!= null) {
             return;
         }
