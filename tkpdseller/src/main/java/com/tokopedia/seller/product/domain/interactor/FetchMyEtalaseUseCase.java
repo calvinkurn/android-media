@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
 
 import java.util.List;
 
@@ -16,7 +17,8 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 4/5/17.
  */
-public class FetchMyEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
+public class FetchMyEtalaseUseCase extends UseCase<MyEtalaseDomainModel>{
+    public static final String ETALASE_PAGING = "ETALASE_PAGING";
     private final MyEtalaseRepository myEtalaseRepository;
 
     @Inject
@@ -26,7 +28,14 @@ public class FetchMyEtalaseUseCase extends UseCase<List<MyEtalaseDomainModel>>{
     }
 
     @Override
-    public Observable<List<MyEtalaseDomainModel>> createObservable(RequestParams requestParams) {
-        return myEtalaseRepository.fetchMyEtalase();
+    public Observable<MyEtalaseDomainModel> createObservable(RequestParams requestParams) {
+        int page = requestParams.getInt(ETALASE_PAGING, 1);
+        return myEtalaseRepository.fetchMyEtalase(page);
+    }
+
+    public static RequestParams generateRequestParam(int page) {
+        RequestParams requestParam = RequestParams.create();
+        requestParam.putInt(ETALASE_PAGING, page);
+        return requestParam;
     }
 }

@@ -499,6 +499,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? SwitchTypeDef.TYPE_ACTIVE : SwitchTypeDef.TYPE_NOT_ACTIVE);
         viewModel.setProductInvenageValue(productDetailViewHolder.getTotalStock());
         viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
+        viewModel.setProductEtalaseName(productDetailViewHolder.getEtalaseName());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
         viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
         viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());

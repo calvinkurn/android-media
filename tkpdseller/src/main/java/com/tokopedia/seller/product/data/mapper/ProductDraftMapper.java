@@ -51,6 +51,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         domainModel.setProductDepartmentId(draftModel.getProductDepartmentId());
         domainModel.setProductCondition(draftModel.getProductCondition());
         domainModel.setProductEtalaseId(draftModel.getProductEtalaseId());
+        domainModel.setProductEtalaseName(draftModel.getProductEtalaseName());
         domainModel.setProductMinOrder(draftModel.getProductMinOrder());
         domainModel.setProductMustInsurance(draftModel.getProductMustInsurance());
         domainModel.setProductPrice(draftModel.getProductPrice());
@@ -120,6 +121,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         draftModel.setProductDepartmentId(domainModel.getProductDepartmentId());
         draftModel.setProductCondition(domainModel.getProductCondition());
         draftModel.setProductEtalaseId(domainModel.getProductEtalaseId());
+        draftModel.setProductEtalaseName(domainModel.getProductEtalaseName());
         draftModel.setProductMinOrder(domainModel.getProductMinOrder());
         draftModel.setProductMustInsurance(domainModel.getProductMustInsurance());
         draftModel.setProductPrice(domainModel.getProductPrice());

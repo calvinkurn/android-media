@@ -382,6 +382,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return etalaseId;
     }
 
+    public String getEtalaseName() {
+        return etalaseLabelView.getValue();
+    }
+
     public void setEtalaseId(long etalaseId) {
         this.etalaseId = etalaseId;
     }
@@ -519,6 +523,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     public void notifySizeChanged(int currentSize) {
         updateWholesaleButton();
     }
+
 
     public interface Listener {
 

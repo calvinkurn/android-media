@@ -20,6 +20,7 @@ import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
@@ -67,7 +68,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return new Intent(context, ProductAddActivity.class);
+        return ProductEditActivity.createInstance(context, productId);
     }
 
     @Override
