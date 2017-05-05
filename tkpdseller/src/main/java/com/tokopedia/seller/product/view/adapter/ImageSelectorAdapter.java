@@ -33,7 +33,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         void onItemClick(int position, ImageSelectModel imageSelectModel);
     }
 
-    private List<ImageSelectModel> imageSelectModelList;
+    private ArrayList<ImageSelectModel> imageSelectModelList;
     private int limit;
     private Drawable addPictureDrawable;
     private OnImageSelectionListener onImageSelectionListener;
@@ -50,7 +50,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         this.onImageSelectionListener = onImageSelectionListener;
     }
 
-    public ImageSelectorAdapter(@NonNull List<ImageSelectModel> imageSelectModelList,
+    public ImageSelectorAdapter(@NonNull ArrayList<ImageSelectModel> imageSelectModelList,
                                 int limit,
                                 Drawable addPictureDrawable,
                                 OnImageSelectionListener onImageSelectionListener,
@@ -99,7 +99,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         notifyDataSetChanged();
     }
 
-    public void setImage(@NonNull List<ImageSelectModel> imageSelectModelList) {
+    public void setImage(@NonNull ArrayList<ImageSelectModel> imageSelectModelList) {
         this.imageSelectModelList = imageSelectModelList;
         currentPrimaryImageIndex = -1;
         switchPrimaryImageIfNeeded(0, imageSelectModelList);
@@ -193,7 +193,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         return imageSelectModelList.size() + ((imageSelectModelList.size() < limit) ? 1 : 0);
     }
 
-    public List<ImageSelectModel> getImageSelectModelList() {
+    public ArrayList<ImageSelectModel> getImageSelectModelList() {
         return imageSelectModelList;
     }
 
