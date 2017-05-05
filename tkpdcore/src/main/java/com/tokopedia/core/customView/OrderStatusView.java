@@ -24,8 +24,8 @@ public class OrderStatusView {
         OrderStatusView view = null;
             String actor = status.getHistoryActionBy();
             String date = status.getHistoryStatusDate();
-            String state = status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
-            String comment = status.getHistoryComments().replaceAll("<br/>\\p{Space}+", "\n");
+            String state = status.getHistorySellerStatus();
+            String comment = status.getHistoryComments();
             view = new OrderStatusView(context, actor, date, state, comment);
 
         return view;
