@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.ride.R;
 
@@ -30,6 +32,8 @@ import com.tokopedia.ride.R;
  */
 
 public class InterruptConfirmationDialogFragment extends DialogFragment {
+    private static final String TAG = "IntprConfirmationDialog";
+
     public static final String EXTRA_URL = "EXTRA_URL";
     public static final String EXTRA_ID = "EXTRA_ID";
     public static final String EXTRA_KEY = "EXTRA_KEY";
@@ -40,7 +44,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
     public static InterruptConfirmationDialogFragment newInstance(String url) {
         InterruptConfirmationDialogFragment fragment = new InterruptConfirmationDialogFragment();
         Bundle bundle = new Bundle();
-        System.out.println("Vishal InterruptConfirmationDialogFragment newInstance = " + url);
+        Log.d(TAG, "InterruptConfirmationDialogFragment newInstance = " + url);
         bundle.putString(EXTRA_URL, url);
         fragment.setArguments(bundle);
         return fragment;
@@ -69,9 +73,26 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
     }
 
     private class InterruptConfirmationWebClient extends WebViewClient {
+
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+
+            //finish activity when thanks_wallet page comes
+            Uri uri = Uri.parse(url);
+            if (uri.getPath().contains("thanks_wallet")) {
+                Intent intent = getActivity().getIntent();
+                intent.putExtra(EXTRA_ID, "");
+                intent.putExtra(EXTRA_KEY, "");
+                getTargetFragment().onActivityResult(
+                        getTargetRequestCode(),
+                        Activity.RESULT_OK,
+                        intent
+                );
+                dismiss();
+            }
+
+
             try {
                 if (getActivity() != null) {
                     getActivity().setProgressBarIndeterminateVisibility(true);
@@ -84,7 +105,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String urlString) {
-            System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading: " + urlString);
+            Log.d(TAG, "shouldOverrideUrlLoading: " + urlString);
 
             Uri uri = Uri.parse(urlString);
             if (uri.getScheme().equals("toko")) {
@@ -98,8 +119,8 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                     id = uri.getQueryParameter("surge_confirmation_id");
                 }
 
-                System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading key: " + key);
-                System.out.println("Vishal InterruptConfirmationDialogFragment shouldOverrideUrlLoading id: " + id);
+                Log.d(TAG, "shouldOverrideUrlLoading key: " + key);
+                Log.d(TAG, "shouldOverrideUrlLoading id: " + id);
 
                 Intent intent = getActivity().getIntent();
                 intent.putExtra(EXTRA_ID, id);
@@ -131,6 +152,19 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
         progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
 
         String url = getArguments().getString(EXTRA_URL);
+
+        Log.d(TAG, "InterruptDialog before seamless = " + url);
+
+        //we need to check if the url is for tokopedia topup or activation, we need to make it seamless
+        if (url != null && url.contains("tokopedia")) {
+            url = URLGenerator.generateURLSessionLogin(
+                    (Uri.encode(url)),
+                    getActivity()
+            );
+        }
+
+        Log.d(TAG, "InterruptDialog after seamless = " + url);
+
         progressBar.setIndeterminate(true);
         clearCache(webview);
         webview.loadAuthUrlWithFlags(url);
