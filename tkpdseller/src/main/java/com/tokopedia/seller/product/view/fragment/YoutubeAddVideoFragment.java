@@ -55,6 +55,11 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     private RecyclerView recyclerViewAddUrlVideo;
     private AddUrlVideoAdapter addUrlVideoAdapter;
 
+    /**
+     * this is for hide and show menu
+     */
+    private Menu menu;
+
     public static Fragment createInstance() {
         return new YoutubeAddVideoFragment();
     }
@@ -112,6 +117,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             @Override
             public void notifyNonEmpty() {
                 addUrlVideoAdapter.showEmptyFull(false);
+                showMenuButton();
+            }
+
+            @Override
+            public void notifyFull() {
+                hideMenuButton();
             }
 
             @Override
@@ -177,6 +188,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             addUrlVideoAdapter.add(addUrlVideoModel);
             setVideoSubtitle();
         } catch (IllegalArgumentException iae) {
+            youtubeAddVideoActView.removeVideoIds(youtubeAddVideoActView.videoIds().size() - 1);
             NetworkErrorHelper.showSnackbar(getActivity(), iae.getMessage());
         }
     }
@@ -193,7 +205,22 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void addYoutubeUrl(String youtubeUrl) {
-        presenter.fetchYoutubeDescription(youtubeUrl);
+        if (addUrlVideoAdapter.getVideoIds().size() + 1 <= MAX_ROWS) {
+            showMenuButton();
+            presenter.fetchYoutubeDescription(youtubeUrl);
+        } else {
+            hideMenuButton();
+        }
+    }
+
+    public void hideMenuButton() {
+        menu.findItem(R.id.action_add_video).setEnabled(false);
+        menu.findItem(R.id.action_add_video).setVisible(false);
+    }
+
+    public void showMenuButton() {
+        menu.findItem(R.id.action_add_video).setEnabled(true);
+        menu.findItem(R.id.action_add_video).setVisible(true);
     }
 
     public void addVideoId(String videoId) {
@@ -218,12 +245,15 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         for (AddUrlVideoModel addUrlVideoModel : convert) {
             addAddUrlVideModel(addUrlVideoModel);
         }
-
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(com.tokopedia.core.R.menu.talk_product, menu);
+        inflater.inflate(R.menu.menu_youtube, menu);
+
+        this.menu = menu;
+
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -232,7 +262,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
         if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == com.tokopedia.core.R.id.action_talk_add) {
+        } else if (item.getItemId() == R.id.action_add_video) {
             youtubeAddVideoActView.openAddYoutubeDialog();
             return true;
         }
