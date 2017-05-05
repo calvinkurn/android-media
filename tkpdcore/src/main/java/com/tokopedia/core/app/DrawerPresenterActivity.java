@@ -177,33 +177,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     private void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getTopPoints(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerTopPoints>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerTopPoints topPoints) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-
-                            }
-
-
-                        }
-                ));
+       drawerDataManager.getTopPoints();
     }
 
     private void getDrawerDeposit(DrawerDataManager drawerDataManager) {
@@ -284,6 +258,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     public void onGetTokoCash(DrawerTokoCash tokoCash) {
         drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetTopPoints(DrawerTopPoints topPoints) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 }

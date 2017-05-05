@@ -34,7 +34,7 @@ import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.DrawerItem;
 import com.tokopedia.core.drawer.model.DrawerItemList;
 import com.tokopedia.core.drawer.model.DrawerSeparator;
-import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
+import com.tokopedia.core.drawer2.data.pojo.toppoints.LoyaltyItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;

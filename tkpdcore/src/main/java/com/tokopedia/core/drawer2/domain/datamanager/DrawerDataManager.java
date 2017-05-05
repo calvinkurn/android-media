@@ -19,7 +19,7 @@ public interface DrawerDataManager {
 
     void getDeposit();
 
-    Observable<DrawerTopPoints> getTopPoints(Context context);
+    void getTopPoints();
 
     void getTokoCash();
 

@@ -6,7 +6,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
-import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
+import com.tokopedia.core.drawer2.data.pojo.toppoints.LoyaltyItem;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;

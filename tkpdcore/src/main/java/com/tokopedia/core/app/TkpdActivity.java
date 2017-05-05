@@ -13,18 +13,17 @@ import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
-import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
-import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
+import com.tokopedia.core.drawer2.view.DrawerDataListener;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
-import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -124,7 +123,7 @@ public abstract class TkpdActivity extends TActivity implements
         if (sessionHandler.isV4Login()) {
             getDrawerProfile(drawerDataManager);
             getDrawerDeposit();
-            getDrawerTopPoints(drawerDataManager);
+            getDrawerTopPoints();
             getDrawerTokoCash();
             getDrawerNotification();
         }
@@ -140,65 +139,11 @@ public abstract class TkpdActivity extends TActivity implements
 
 
     protected void getDrawerTokoCash() {
-
         drawerDataManager.getTokoCash();
-//        compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread(), true)
-//                .unsubscribeOn(Schedulers.newThread())
-//                .subscribe(
-//                        new Subscriber<DrawerTokoCash>() {
-//                            @Override
-//                            public void onCompleted() {
-//
-//                            }
-//
-//                            @Override
-//                            public void onError(Throwable e) {
-//                                CommonUtils.dumper("NISNIS " + e.toString());
-//                            }
-//
-//                            @Override
-//                            public void onNext(DrawerTokoCash tokoCash) {
-//
-//                                drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
-//                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-//
-//                            }
-//
-//
-//                        }
-//                ));
     }
 
-    protected void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getTopPoints(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerTopPoints>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerTopPoints topPoints) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-
-                            }
-
-
-                        }
-                ));
+    protected void getDrawerTopPoints() {
+        drawerDataManager.getTopPoints();
     }
 
     protected void getDrawerProfile(DrawerDataManager drawerDataManager) {
@@ -338,4 +283,11 @@ public abstract class TkpdActivity extends TActivity implements
         drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
+
+    @Override
+    public void onGetTopPoints(DrawerTopPoints topPoints) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
 }

@@ -42,6 +42,10 @@ import com.tokopedia.tkpd.R;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_INBOX_OPENED;
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_PEOPLE_OPENED;
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
+
 /**
  * Created by nisie on 1/11/17.
  */
@@ -151,7 +155,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerGroup sellerMenu = new DrawerGroup("Penjualan",
                 R.drawable.icon_penjualan,
                 TkpdState.DrawerPosition.SHOP,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false),
+                drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 getTotalSellerNotif());
         sellerMenu.add(new DrawerItem("Order Baru",
                 0,
@@ -189,7 +193,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerGroup buyerMenu = new DrawerGroup("Pembelian",
                 R.drawable.icon_pembelian,
                 TkpdState.DrawerPosition.PEOPLE,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false),
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 getTotalBuyerNotif());
         buyerMenu.add(new DrawerItem("Status Pembayaran",
                 0,
@@ -222,7 +226,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerGroup inboxMenu = new DrawerGroup("Kotak Masuk",
                 R.drawable.icon_inbox,
                 TkpdState.DrawerPosition.INBOX,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 getTotalInboxNotif());
         inboxMenu.add(new DrawerItem("Pesan",
                 0,
@@ -326,7 +330,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void setExpand() {
-        if (drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false)) {
+        if (drawerCache.getBoolean(IS_INBOX_OPENED, false)) {
             DrawerGroup group = findGroup(TkpdState.DrawerPosition.INBOX);
             if (group != null)
                 adapter.onGroupClicked(group, group.getPosition());

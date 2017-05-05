@@ -3,7 +3,7 @@ package com.tokopedia.core.drawer.interactor;
 import android.content.Context;
 
 import com.tokopedia.core.drawer.model.DrawerHeader;
-import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
+import com.tokopedia.core.drawer2.data.pojo.toppoints.LoyaltyItem;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 

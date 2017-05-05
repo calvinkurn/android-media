@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.drawer.model.LoyaltyItem;
+package com.tokopedia.core.drawer2.data.pojo.toppoints;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
