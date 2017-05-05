@@ -39,6 +39,4 @@ public interface ProductAddView extends CustomerView {
 
     void onSuccessStoreProductAndAddToDraft(Long productId);
 
-    void onSuccessLoadProduct(UploadProductInputViewModel model);
-
 }

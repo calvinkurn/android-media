@@ -9,6 +9,8 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 
 public interface ProductDraftView extends ProductAddView {
 
+    void onSuccessLoadProduct(UploadProductInputViewModel model);
+
     void onErrorLoadProduct(String errorMessage);
 
 }

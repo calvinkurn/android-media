@@ -15,7 +15,7 @@ import java.util.List;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class UploadProductInputViewModel implements Parcelable {
+public class UploadProductInputViewModel {
     private ProductPhotoListViewModel productPhotos;
     private List<ProductWholesaleViewModel> productWholesaleList;
     private List<String> productVideos;
@@ -283,84 +283,4 @@ public class UploadProductInputViewModel implements Parcelable {
         return productNameEditable;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.productPhotos, flags);
-        dest.writeList(this.productWholesaleList);
-        dest.writeStringList(this.productVideos);
-        dest.writeString(this.productName);
-        dest.writeString(this.productDescription);
-        dest.writeDouble(this.productPrice);
-        dest.writeInt(this.productChangePhoto);
-        dest.writeLong(this.productCatalogId);
-        dest.writeString(this.productCatalogName);
-        dest.writeLong(this.productDepartmentId);
-        dest.writeInt(this.productCondition);
-        dest.writeLong(this.productEtalaseId);
-        dest.writeString(this.productEtalaseName);
-        dest.writeInt(this.productMinOrder);
-        dest.writeInt(this.productMustInsurance);
-        dest.writeInt(this.productPriceCurrency);
-        dest.writeInt(this.productReturnable);
-        dest.writeInt(this.productUploadTo);
-        dest.writeInt(this.productInvenageSwitch);
-        dest.writeInt(this.productInvenageValue);
-        dest.writeInt(this.productWeight);
-        dest.writeInt(this.productWeightUnit);
-        dest.writeInt(this.poProcessType);
-        dest.writeInt(this.poProcessValue);
-        dest.writeInt(this.serverId);
-        dest.writeInt(this.productStatus);
-        dest.writeString(this.productId);
-        dest.writeInt(this.productNameEditable);
-    }
-
-    protected UploadProductInputViewModel(Parcel in) {
-        this.productPhotos = in.readParcelable(ProductPhotoListViewModel.class.getClassLoader());
-        this.productWholesaleList = new ArrayList<ProductWholesaleViewModel>();
-        in.readList(this.productWholesaleList, ProductWholesaleViewModel.class.getClassLoader());
-        this.productVideos = in.createStringArrayList();
-        this.productName = in.readString();
-        this.productDescription = in.readString();
-        this.productPrice = in.readDouble();
-        this.productChangePhoto = in.readInt();
-        this.productCatalogId = in.readLong();
-        this.productCatalogName = in.readString();
-        this.productDepartmentId = in.readLong();
-        this.productCondition = in.readInt();
-        this.productEtalaseId = in.readLong();
-        this.productEtalaseName = in.readString();
-        this.productMinOrder = in.readInt();
-        this.productMustInsurance = in.readInt();
-        this.productPriceCurrency = in.readInt();
-        this.productReturnable = in.readInt();
-        this.productUploadTo = in.readInt();
-        this.productInvenageSwitch = in.readInt();
-        this.productInvenageValue = in.readInt();
-        this.productWeight = in.readInt();
-        this.productWeightUnit = in.readInt();
-        this.poProcessType = in.readInt();
-        this.poProcessValue = in.readInt();
-        this.serverId = in.readInt();
-        this.productStatus = in.readInt();
-        this.productId = in.readString();
-        this.productNameEditable = in.readInt();
-    }
-
-    public static final Parcelable.Creator<UploadProductInputViewModel> CREATOR = new Parcelable.Creator<UploadProductInputViewModel>() {
-        @Override
-        public UploadProductInputViewModel createFromParcel(Parcel source) {
-            return new UploadProductInputViewModel(source);
-        }
-
-        @Override
-        public UploadProductInputViewModel[] newArray(int size) {
-            return new UploadProductInputViewModel[size];
-        }
-    };
 }

@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author sebastianuskh on 4/13/17.
  */
 
-public class ProductWholesaleViewModel implements Parcelable {
+public class ProductWholesaleViewModel {
     private int qtyMin;
     private int qtyMax;
     private double price;
@@ -35,37 +35,4 @@ public class ProductWholesaleViewModel implements Parcelable {
     public void setPrice(double price) {
         this.price = price;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.qtyMin);
-        dest.writeInt(this.qtyMax);
-        dest.writeDouble(this.price);
-    }
-
-    public ProductWholesaleViewModel() {
-    }
-
-    protected ProductWholesaleViewModel(Parcel in) {
-        this.qtyMin = in.readInt();
-        this.qtyMax = in.readInt();
-        this.price = in.readDouble();
-    }
-
-    public static final Parcelable.Creator<ProductWholesaleViewModel> CREATOR = new Parcelable.Creator<ProductWholesaleViewModel>() {
-        @Override
-        public ProductWholesaleViewModel createFromParcel(Parcel source) {
-            return new ProductWholesaleViewModel(source);
-        }
-
-        @Override
-        public ProductWholesaleViewModel[] newArray(int size) {
-            return new ProductWholesaleViewModel[size];
-        }
-    };
 }
