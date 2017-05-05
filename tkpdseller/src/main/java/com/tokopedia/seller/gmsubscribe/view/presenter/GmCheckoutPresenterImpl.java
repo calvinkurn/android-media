@@ -208,7 +208,12 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
             getView().dismissProgressDialog();
             if (e instanceof GmVoucherCheckException) {
                 getView().renderVoucherView(GmVoucherViewModel.generateClassWithError(e.getMessage()));
+            } else if (e instanceof ResponseV4ErrorException){
+                String string = ((ResponseV4ErrorException)e).getErrorList().get(0);
+                getView().showMessageError(string);
+                getView().dismissProgressDialog();
             } else {
+                getView().dismissProgressDialog();
                 getView().failedCheckout();
             }
         }

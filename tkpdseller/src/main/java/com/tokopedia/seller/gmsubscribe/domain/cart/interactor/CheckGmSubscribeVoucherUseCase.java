@@ -11,6 +11,7 @@ import com.tokopedia.seller.gmsubscribe.domain.cart.model.GmVoucherCheckDomainMo
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 2/3/17.
@@ -39,12 +40,48 @@ public class CheckGmSubscribeVoucherUseCase extends UseCase<GmVoucherCheckDomain
     public Observable<GmVoucherCheckDomainModel> createObservable(RequestParams requestParams) {
         int selectedProduct = requestParams.getInt(SELECTED_PRODUCT, UNDEFINED_SELECTED);
         String voucherCode = requestParams.getString(VOUCHER_CODE, EMPTY_VOUCHER);
-        if (selectedProduct == UNDEFINED_SELECTED || voucherCode.equals(EMPTY_VOUCHER)) {
-            throw new GmVoucherCheckException("Invalid Voucher Input");
+        return Observable.just(true)
+                .map(new CheckInput(selectedProduct, voucherCode))
+                .flatMap(new CheckVoucher(gmSubscribeCartRepository, selectedProduct, voucherCode));
+    }
+
+    private static class CheckInput implements Func1<Boolean, Boolean> {
+        private final int selectedProduct;
+        private final String voucherCode;
+
+        public CheckInput(int selectedProduct, String voucherCode) {
+            this.selectedProduct = selectedProduct;
+            this.voucherCode = voucherCode;
         }
-        return gmSubscribeCartRepository.checkVoucher(
-                selectedProduct,
-                voucherCode
-        );
+
+        @Override
+        public Boolean call(Boolean aBoolean) {
+            if (selectedProduct == UNDEFINED_SELECTED){
+                throw new GmVoucherCheckException("Produk tidak boleh kosong");
+            } else if (voucherCode.equals(EMPTY_VOUCHER)){
+                throw new GmVoucherCheckException("Kode voucher harus diisi");
+            }
+            return true;
+        }
+    }
+
+    private static class CheckVoucher implements Func1<Boolean, Observable<GmVoucherCheckDomainModel>> {
+        private final GmSubscribeCartRepository gmSubscribeCartRepository;
+        private final int selectedProduct;
+        private final String voucherCode;
+
+        public CheckVoucher(GmSubscribeCartRepository gmSubscribeCartRepository, int selectedProduct1, String voucherCode1) {
+            this.gmSubscribeCartRepository = gmSubscribeCartRepository;
+            selectedProduct = selectedProduct1;
+            voucherCode = voucherCode1;
+        }
+
+        @Override
+        public Observable<GmVoucherCheckDomainModel> call(Boolean aBoolean) {
+            return gmSubscribeCartRepository.checkVoucher(
+                    selectedProduct,
+                    voucherCode
+            );
+        }
     }
 }
