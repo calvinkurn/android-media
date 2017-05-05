@@ -1,27 +1,18 @@
 package com.tokopedia.seller.product.view.model;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
-
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by m.normansyah on 03/12/2015.
  */
 
-public class ImageSelectModel {
+public class ImageSelectModel implements Parcelable {
     // this is for url / path from sdcard
     private String uri;
     private String description;
@@ -117,4 +108,40 @@ public class ImageSelectModel {
             this.height = options.outHeight;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.uri);
+        dest.writeString(this.description);
+        dest.writeByte(this.isPrimary ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.width);
+        dest.writeInt(this.height);
+        dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
+    }
+
+    protected ImageSelectModel(Parcel in) {
+        this.uri = in.readString();
+        this.description = in.readString();
+        this.isPrimary = in.readByte() != 0;
+        this.width = in.readInt();
+        this.height = in.readInt();
+        this.isValidURL = in.readByte() != 0;
+    }
+
+    public static final Parcelable.Creator<ImageSelectModel> CREATOR = new Parcelable.Creator<ImageSelectModel>() {
+        @Override
+        public ImageSelectModel createFromParcel(Parcel source) {
+            return new ImageSelectModel(source);
+        }
+
+        @Override
+        public ImageSelectModel[] newArray(int size) {
+            return new ImageSelectModel[size];
+        }
+    };
 }

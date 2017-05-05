@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -24,6 +26,11 @@ import java.util.List;
  */
 
 public class ImagesSelectView extends FrameLayout {
+
+    private static final String SAVED_IMAGES = "saved_images";
+    public static final String SAVED = "ss";
+
+    ArrayList <ImageSelectModel> imageSelectModelList;
 
     public interface OnImageChanged {
 
@@ -117,6 +124,7 @@ public class ImagesSelectView extends FrameLayout {
         // add margin between Items
         recyclerView.addItemDecoration(new HorizontalItemDecoration(getContext().getResources().getDimensionPixelOffset(R.dimen.margin_vs)));
 
+        restoreAdapterData();
         recyclerView.setAdapter(imageSelectorAdapter);
     }
 
@@ -182,7 +190,7 @@ public class ImagesSelectView extends FrameLayout {
         }
     }
 
-    public void setImage(List<ImageSelectModel> imageSelectModelList) {
+    public void setImage(ArrayList<ImageSelectModel> imageSelectModelList) {
 //        handleResolutionFromList(imageSelectModelList);
 
         if (imageSelectModelList.size() > 0) {
@@ -250,7 +258,7 @@ public class ImagesSelectView extends FrameLayout {
         return getImageList().get(position);
     }
 
-    public List<ImageSelectModel> getImageList() {
+    public ArrayList<ImageSelectModel> getImageList() {
         return imageSelectorAdapter.getImageSelectModelList();
     }
 
@@ -275,6 +283,38 @@ public class ImagesSelectView extends FrameLayout {
     private void updateTotalImageListener() {
         if (onImageChanged != null) {
             onImageChanged.onTotalImageUpdated(imageSelectorAdapter.getImageSelectModelList().size());
+        }
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState()
+    {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SAVED, super.onSaveInstanceState());
+        ArrayList<ImageSelectModel> imageSelectModelList = getImageList();
+
+        bundle.putParcelableArrayList(SAVED_IMAGES, imageSelectModelList);
+        return bundle;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state)
+    {
+        if (state instanceof Bundle) // implicit null check
+        {
+            Bundle bundle = (Bundle) state;
+            imageSelectModelList = bundle.getParcelableArrayList(SAVED_IMAGES);
+            restoreAdapterData();
+            state = bundle.getParcelable(SAVED);
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    private void restoreAdapterData(){
+        if (imageSelectorAdapter!= null &&
+                imageSelectModelList!= null &&
+                imageSelectModelList.size() > 0) {
+            imageSelectorAdapter.setImage(imageSelectModelList);
         }
     }
 }
