@@ -21,7 +21,15 @@ public interface DrawerDataListener {
 
     void onGetTokoCash(DrawerTokoCash drawerTokoCash);
 
+    void onErrorGetTokoCash(String errorMessage);
+
     void onGetTopPoints(DrawerTopPoints drawerTopPoints);
 
+    void onErrorGetTopPoints(String errorMessage);
+
     void onGetProfile(DrawerProfile drawerProfile);
+
+    void onErrorGetProfile(String errorMessage);
+
+    String getString(int resId);
 }

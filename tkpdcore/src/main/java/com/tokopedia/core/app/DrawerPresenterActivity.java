@@ -229,9 +229,19 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     @Override
+    public void onErrorGetTokoCash(String errorMessage) {
+
+    }
+
+    @Override
     public void onGetTopPoints(DrawerTopPoints topPoints) {
         drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorGetTopPoints(String errorMessage) {
+
     }
 
     @Override
@@ -239,5 +249,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
         drawerHelper.setFooterData(profile);
+    }
+
+    @Override
+    public void onErrorGetProfile(String errorMessage) {
+
     }
 }
