@@ -21,22 +21,24 @@ import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
         RideDeeplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
+    public static DeepLinkDelegate getDeeplinkDelegateInstance() {
+        return new DeepLinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new RideDeeplinkModuleLoader()
         );
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DeepLinkDelegate deepLinkDelegate = getDeeplinkDelegateInstance();
         if (getIntent() != null) {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             deepLinkDelegate.dispatchFrom(this, intent);
-            if (getIntent().getExtras() != null)
-            {
+            if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
                 UnifyTracking.eventPersonalizedClicked(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));
 //                NotificationModHandler.clearCacheIfFromNotification(bundle.getString(Constants.EXTRA_APPLINK_CATEGORY));

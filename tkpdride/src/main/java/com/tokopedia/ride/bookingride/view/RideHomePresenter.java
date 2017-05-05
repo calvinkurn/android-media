@@ -13,4 +13,17 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
     public RideHomePresenter(GetCurrentRideRequestUseCase getCurrentRideRequestUseCase) {
         this.mGetCurrentRideRequestUseCase = getCurrentRideRequestUseCase;
     }
+
+    @Override
+    public void initialize() {
+        if (getView().isUserLoggedIn()) {
+            if (getView().isUserPhoneNumberVerified()) {
+                getView().inflateMapAndProductFragment();
+            } else {
+                getView().showVerificationPhoneNumberPage();
+            }
+        } else {
+            getView().navigateToLoginPage();
+        }
+    }
 }

@@ -8,11 +8,19 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface RideHomeContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
+        boolean isUserLoggedIn();
 
+        void navigateToLoginPage();
+
+        void showVerificationPhoneNumberPage();
+
+        boolean isUserPhoneNumberVerified();
+
+        void inflateMapAndProductFragment();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
-
+    interface Presenter extends CustomerPresenter<View> {
+        void initialize();
     }
 }

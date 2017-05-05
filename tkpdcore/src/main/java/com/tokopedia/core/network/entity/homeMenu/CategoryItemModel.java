@@ -18,6 +18,7 @@ public class CategoryItemModel {
     private String description;
     private String redirectValue; // DepId or redirect url if category type is Digital
     private TYPE type;
+    private String applinks;
 
     public CategoryItemModel() {
 
@@ -70,9 +71,16 @@ public class CategoryItemModel {
         this.redirectValue = redirectValue;
     }
 
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
+    }
+
     public enum TYPE {
         CATEGORY,
-        GIMMIC,
-        APPLINK
+        GIMMIC
     }
 }

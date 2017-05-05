@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home.adapter;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -56,9 +61,10 @@ public class SectionListCategoryAdapter extends RecyclerView.Adapter<SectionList
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
                 if (singleItem.getType().equals(CategoryItemModel.TYPE.CATEGORY)) {
                     categoryClickedListener.onCategoryClicked(singleItem, holder.getAdapterPosition());
-                } else if (singleItem.getType().equals(CategoryItemModel.TYPE.APPLINK)) {
+                } else if (!TextUtils.isEmpty(singleItem.getApplinks()) && deepLinkDelegate.supportsUri(singleItem.getApplinks())) {
                     applinkClickedListener.onApplinkClicked(singleItem);
                 } else {
                     gimmicClickedListener.onGimmicClicked(singleItem);

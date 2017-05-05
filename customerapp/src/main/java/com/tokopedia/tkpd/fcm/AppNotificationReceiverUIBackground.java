@@ -20,6 +20,7 @@ import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
@@ -215,12 +216,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
-                new ConsumerDeeplinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new RideDeeplinkModuleLoader()
-        );
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
         return deepLinkDelegate.supportsUri(applink);
     }
 
