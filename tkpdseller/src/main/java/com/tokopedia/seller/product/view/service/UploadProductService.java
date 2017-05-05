@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -169,6 +170,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         return new NotificationCompat.Builder(this)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.qc_launcher2)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.qc_launcher2))
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.group_notification));
     }

@@ -3,4 +3,5 @@
     <integer name="product_max_character_name">70</integer>
     <integer name="product_max_character_description">2000</integer>
     <integer name="product_max_counter_length">20</integer>
+    <integer name="product_default_counter_minimum_order_text">1</integer>
 </resources>

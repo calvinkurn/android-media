@@ -511,11 +511,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             weightSpinnerCounterInputView.requestFocus();
             return false;
         }
-        if (getMinimumOrder() <= 0) {
-            minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().getString(R.string.product_error_product_minimum_order_not_valid));
-            minimumOrderCounterInputView.requestFocus();
-            return false;
-        }
+
         if (!isTotalStockValid()) {
             stockTotalCounterInputView.requestFocus();
             return false;
