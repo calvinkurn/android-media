@@ -43,6 +43,7 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
 
     @Override
     protected void fetchInputData() {
+        showLoading();
         presenter.attachView(this);
         String productId = getArguments().getString(EDIT_PRODUCT_ID);
         presenter.fetchEditProductData(productId);

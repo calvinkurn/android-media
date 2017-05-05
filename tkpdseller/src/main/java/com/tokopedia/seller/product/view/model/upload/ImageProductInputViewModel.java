@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author sebastianuskh on 4/13/17.
  */
@@ -51,4 +54,5 @@ public class ImageProductInputViewModel {
     public int getImageResolution() {
         return imageResolution;
     }
+
 }

@@ -104,6 +104,7 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
             super(itemView);
             this.radioButton = (RadioButton) itemView.findViewById(R.id.radio_button);
             itemView.setOnClickListener(this);
+            radioButton.setOnClickListener(this);
         }
 
         @Override

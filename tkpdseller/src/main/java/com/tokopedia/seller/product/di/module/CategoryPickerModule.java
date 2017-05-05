@@ -8,6 +8,10 @@ import com.tokopedia.seller.product.data.source.FetchCategoryDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryFromSelectedUseCase;
+import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryWithParentChildUseCase;
+import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenter;
+import com.tokopedia.seller.product.view.presenter.CategoryPickerPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,6 +36,16 @@ public class CategoryPickerModule {
     @Provides
     HadesCategoryApi provideHadesCategoryApi(@HadesQualifier Retrofit retrofit){
         return retrofit.create(HadesCategoryApi.class);
+    }
+
+
+    @CategoryPickerScope
+    @Provides
+    CategoryPickerPresenter provideCategoryPickerPresenter(
+            FetchCategoryWithParentChildUseCase fetchCategoryChildUseCase,
+            FetchCategoryFromSelectedUseCase fetchCategoryFromSelectedUseCase
+    ){
+        return new CategoryPickerPresenterImpl(fetchCategoryChildUseCase, fetchCategoryFromSelectedUseCase);
     }
 
 }

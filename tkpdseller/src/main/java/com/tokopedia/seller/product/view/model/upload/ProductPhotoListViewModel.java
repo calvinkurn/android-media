@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 

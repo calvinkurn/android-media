@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 
 import dagger.Component;
 
@@ -15,10 +16,5 @@ import dagger.Component;
 @CategoryPickerScope
 @Component (modules = CategoryPickerModule.class, dependencies = AppComponent.class)
 public interface CategoryPickerComponent {
-
-    CategoryRepository categoryRepository();
-
-    ThreadExecutor threadExecutor();
-
-    PostExecutionThread postExecutionThread();
+    void inject(CategoryPickerFragment categoryPickerFragment);
 }
