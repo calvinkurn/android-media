@@ -7,7 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
@@ -28,6 +30,9 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
+    TkpdProgressDialog tkpdProgressDialog;
+    private String draftId;
+
     public static Fragment createInstance(String productDraftId) {
         ProductDraftAddFragment fragment = new ProductDraftAddFragment();
         Bundle args = new Bundle();
@@ -46,8 +51,22 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     protected void fetchInputData() {
-        String draftId = getArguments().getString(DRAFT_PRODUCT_ID);
+        showLoading();
+        draftId = getArguments().getString(DRAFT_PRODUCT_ID);
         presenter.fetchDraftData(draftId);
+    }
+
+    protected void showLoading() {
+        if (tkpdProgressDialog==null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    protected void hideLoading() {
+        if (tkpdProgressDialog!= null) {
+            tkpdProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -62,6 +81,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     @Override
     public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        hideLoading();
         productInfoViewHolder.setName(model.getProductName());
         productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
         fetchCategory(model.getProductDepartmentId());
@@ -104,6 +124,14 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     @Override
     public void onErrorLoadProduct(String errorMessage) {
-
+        hideLoading();
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                showLoading();
+                presenter.fetchDraftData(draftId);
+            }
+        });
     }
+
 }

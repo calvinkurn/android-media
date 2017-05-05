@@ -81,6 +81,9 @@ public class ProductDraftModel {
     @SerializedName("server_id")
     private int serverId;
 
+    @SerializedName("product_etalase_name")
+    private String productEtalaseName;
+
     @ProductStatus
     @SerializedName("product_status")
     private int productStatus;
@@ -285,5 +288,13 @@ public class ProductDraftModel {
 
     public String getProductId() {
         return productId;
+    }
+
+    public void setProductEtalaseName(String productEtalaseName) {
+        this.productEtalaseName = productEtalaseName;
+    }
+
+    public String getProductEtalaseName() {
+        return productEtalaseName;
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -177,5 +178,15 @@ public class ProductImageViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
     }
 }

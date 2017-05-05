@@ -249,7 +249,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(com.tokopedia.core.R.menu.menu_youtube, menu);
+        inflater.inflate(R.menu.menu_youtube, menu);
 
         this.menu = menu;
 

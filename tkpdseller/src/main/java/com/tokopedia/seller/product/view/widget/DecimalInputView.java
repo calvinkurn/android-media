@@ -2,10 +2,13 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -21,6 +24,11 @@ import java.text.DecimalFormat;
  */
 
 public class DecimalInputView extends FrameLayout {
+
+    public static final String BUNDLE_SUPER_STATE = "BUNDLE_SUPER_STATE";
+    public static final String BUNDLE_HINT_TEXT = "BUNDLE_HINT_TEXT";
+    public static final String BUNDLE_VALUE_TEXT = "BUNDLE_VALUE_TEXT";
+    public static final String BUNDLE_ENABLED = "BUNDLE_ENABLED";
 
     private static final String DECIMAL_FORMAT = "#";
     private static final String DEFAULT_VALUE = "0";
@@ -106,7 +114,7 @@ public class DecimalInputView extends FrameLayout {
             return;
         }
         if (textWatcher instanceof NumberTextWatcher) {
-            if (currentTextWatcher!= null) {
+            if (currentTextWatcher != null) {
                 editText.removeTextChangedListener(currentTextWatcher);
             }
             currentTextWatcher = textWatcher;
@@ -147,5 +155,35 @@ public class DecimalInputView extends FrameLayout {
 
     public EditText getEditText() {
         return editText;
+    }
+
+    @Override
+    protected void dispatchSaveInstanceState(SparseArray<Parcelable> container) {
+        dispatchFreezeSelfOnly(container);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        dispatchThawSelfOnly(container);
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.initChildrenStates();
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).saveHierarchyState(ss.getChildrenStates());
+        }
+        return ss;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        for (int i = 0; i < getChildCount(); i++) {
+            getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
+        }
     }
 }

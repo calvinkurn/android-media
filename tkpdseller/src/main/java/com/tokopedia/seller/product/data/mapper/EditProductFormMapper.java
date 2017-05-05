@@ -55,13 +55,17 @@ public class EditProductFormMapper implements Func1<EditProductFormServiceModel,
         domainModel.setNameEditable(Integer.parseInt(product.getProductNameEditable()));
         domainModel.setProductWeight(Integer.parseInt(product.getProductWeight()));
         domainModel.setProductName(product.getProductName());
-        int uploadTo = Integer.parseInt(product.getProductUploadTo());
+        @UploadToTypeDef int uploadTo = Integer.parseInt(product.getProductUploadTo());
         if (uploadTo == UploadToTypeDef.TYPE_WAREHOUSE) {
             uploadTo = UploadToTypeDef.TYPE_NOT_ACTIVE;
         }
         domainModel.setProductUploadTo(uploadTo);
-        domainModel.setProductInvenageSwitch(Integer.parseInt(product.getProductInvenageSwitch()));
-        domainModel.setProductInvenageValue(Integer.parseInt(product.getProductInvenageValue()));
+        if (product.getProductInvenageSwitch() != null) {
+            domainModel.setProductInvenageSwitch(Integer.parseInt(product.getProductInvenageSwitch()));
+        }
+        if (product.getProductInvenageValue() != null) {
+            domainModel.setProductInvenageValue(Integer.parseInt(product.getProductInvenageValue()));
+        }
         domainModel.setProductWholesaleList(mapWholesale(data.getWholesalePriceList()));
         domainModel.setProductPhotos(mapPhotos(data.getProductImageList()));
 

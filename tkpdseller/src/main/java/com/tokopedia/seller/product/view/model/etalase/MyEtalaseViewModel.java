@@ -1,35 +1,28 @@
 package com.tokopedia.seller.product.view.model.etalase;
 
-
-import com.tokopedia.seller.R;
+import java.util.List;
 
 /**
- * @author sebastianuskh on 4/5/17.
+ * @author sebastianuskh on 5/3/17.
  */
 
-public class MyEtalaseViewModel implements EtalaseViewModel {
-    public static final int LAYOUT = R.layout.etalase_picker_item_layout;
-    private Integer etalaseId;
-    private String etalaseName;
+public class MyEtalaseViewModel {
+    private List<MyEtalaseItemViewModel> etalaseList;
+    private boolean hasNextPage;
 
-    public void setEtalaseId(Integer etalaseId) {
-        this.etalaseId = etalaseId;
+    public List<MyEtalaseItemViewModel> getEtalaseList() {
+        return etalaseList;
     }
 
-    public void setEtalaseName(String etalaseName) {
-        this.etalaseName = etalaseName;
+    public void setEtalaseList(List<MyEtalaseItemViewModel> etalaseList) {
+        this.etalaseList = etalaseList;
     }
 
-    public Integer getEtalaseId() {
-        return etalaseId;
+    public boolean isHasNextPage() {
+        return hasNextPage;
     }
 
-    public String getEtalaseName() {
-        return etalaseName;
-    }
-
-    @Override
-    public int getType() {
-        return LAYOUT;
+    public void setHasNextPage(boolean hasNextPage) {
+        this.hasNextPage = hasNextPage;
     }
 }

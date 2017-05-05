@@ -8,24 +8,24 @@ public class Paging {
 
     @SerializedName("uri_next")
     @Expose
-    private Integer uriNext;
+    private String uriNext;
     @SerializedName("uri_previous")
     @Expose
-    private Integer uriPrevious;
+    private String uriPrevious;
 
-    public Integer getUriNext() {
+    public String getUriNext() {
         return uriNext;
     }
 
-    public void setUriNext(Integer uriNext) {
+    public void setUriNext(String uriNext) {
         this.uriNext = uriNext;
     }
 
-    public Integer getUriPrevious() {
+    public String getUriPrevious() {
         return uriPrevious;
     }
 
-    public void setUriPrevious(Integer uriPrevious) {
+    public void setUriPrevious(String uriPrevious) {
         this.uriPrevious = uriPrevious;
     }
 

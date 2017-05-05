@@ -1,26 +1,28 @@
 package com.tokopedia.seller.product.domain.model;
 
+import java.util.List;
+
 /**
- * @author sebastianuskh on 4/5/17.
+ * @author sebastianuskh on 5/3/17.
  */
 
 public class MyEtalaseDomainModel {
-    private Integer etalaseId;
-    private String etalaseName;
+    private List<MyEtalaseItemDomainModel> etalaseItems;
+    private boolean hasNext;
 
-    public void setEtalaseId(Integer etalaseId) {
-        this.etalaseId = etalaseId;
+    public List<MyEtalaseItemDomainModel> getEtalaseItems() {
+        return etalaseItems;
     }
 
-    public void setEtalaseName(String etalaseName) {
-        this.etalaseName = etalaseName;
+    public void setEtalaseItems(List<MyEtalaseItemDomainModel> etalaseItems) {
+        this.etalaseItems = etalaseItems;
     }
 
-    public Integer getEtalaseId() {
-        return etalaseId;
+    public boolean isHasNext() {
+        return hasNext;
     }
 
-    public String getEtalaseName() {
-        return etalaseName;
+    public void setHasNext(boolean hasNext) {
+        this.hasNext = hasNext;
     }
 }
