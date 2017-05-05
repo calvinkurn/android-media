@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -220,11 +219,16 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-
+        savedInstanceState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, new ArrayList<String>(videoIdList));
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+        ArrayList<String> stringArrayList = savedInstanceState.getStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK);
+        if (stringArrayList != null) setVideoIdList(stringArrayList);
 
     }
 
