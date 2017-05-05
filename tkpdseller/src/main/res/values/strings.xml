@@ -413,5 +413,7 @@
     <string name="from_to_video">%1$d dari %2$d Video</string>
     <string name="add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
     <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
+    <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
+    <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
 
 </resources>
