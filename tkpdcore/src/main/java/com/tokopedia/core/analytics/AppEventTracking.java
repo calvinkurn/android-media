@@ -13,6 +13,7 @@ public interface AppEventTracking {
     String NOT_AVAILABLE = "NOT AVAILABLE";
     String DEFAULT_CHANNEL = "Email";
     String DEFAULT_EVENT = "Event";
+    String ACCOUNTS_KEY = "accounts";
 
     interface GTMKey{
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
