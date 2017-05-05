@@ -388,12 +388,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return etalaseId;
     }
 
-    public String getEtalaseName() {
-        return etalaseLabelView.getValue();
-    }
-
     public void setEtalaseId(long etalaseId) {
         this.etalaseId = etalaseId;
+    }
+
+    public String getEtalaseName() {
+        return etalaseLabelView.getValue();
     }
 
     public void setEtalaseName(String name) {
@@ -499,6 +499,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     @Override
     public void notifySizeChanged(int currentSize) {
         updateWholesaleButton();
+    }
+
+    @Override
+    public int getCurrencyType() {
+        return currencyType;
     }
 
     @Override

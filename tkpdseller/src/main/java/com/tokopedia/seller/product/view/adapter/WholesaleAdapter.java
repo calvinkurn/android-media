@@ -1,19 +1,24 @@
 package com.tokopedia.seller.product.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -162,6 +167,9 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
          *                    parent adapter size.
          */
         void notifySizeChanged(int currentSize);
+
+        @CurrencyTypeDef
+        int getCurrencyType();
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
@@ -169,9 +177,26 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         private final TextView textRangeWholesale;
         private final ImageView imageWholesale;
         private final TextView textWholeSalePrice;
+        private final Locale dollarLocale = Locale.US;
+        private final Locale idrLocale = new Locale("in", "ID");
+        private NumberFormat formatter;
 
         public ViewHolder(View itemView) {
             super(itemView);
+
+            if (listener == null) {
+                throw new IllegalArgumentException("listener must be implemented !!");
+            }
+
+            switch (listener.getCurrencyType()) {
+                case CurrencyTypeDef.TYPE_USD:
+                    formatter = NumberFormat.getNumberInstance(dollarLocale);
+                    break;
+                default:
+                case CurrencyTypeDef.TYPE_IDR:
+                    formatter = NumberFormat.getNumberInstance(idrLocale);
+                    break;
+            }
 
             textRangeWholesale = (TextView) itemView.findViewById(R.id.text_range_whole_sale);
             imageWholesale = (ImageView) itemView.findViewById(R.id.image_whole_sale);
@@ -186,8 +211,22 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         }
 
         public void bindData(WholesaleModel wholesaleModel) {
-            textRangeWholesale.setText(itemView.getContext().getString(R.string.wholesale_range_format, wholesaleModel.getQtyOne() + "", wholesaleModel.getQtyTwo() + ""));
-            textWholeSalePrice.setText(wholesaleModel.getQtyPrice() + "");
+            String qtyOne = wholesaleModel.getQtyOne() + "";
+            String qtyTwo = wholesaleModel.getQtyTwo() + "";
+            textRangeWholesale.setText(itemView.getContext().getString(R.string.wholesale_range_format,
+                    formatValue(qtyOne), formatValue(qtyTwo)));
+            String qtyPrice = wholesaleModel.getQtyPrice() + "";
+            textWholeSalePrice.setText(formatValue(qtyPrice));
+        }
+
+        private String formatValue(String s) {
+            String valueString = CurrencyFormatHelper.removeCurrencyPrefix(s);
+            valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
+            if (TextUtils.isEmpty(valueString)) {
+                return null;
+            }
+            float value = Float.parseFloat(valueString);
+            return formatter.format(value);
         }
     }
 }
