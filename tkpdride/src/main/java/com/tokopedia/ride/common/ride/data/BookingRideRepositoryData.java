@@ -146,13 +146,13 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<Promo> getPromo(TKPDMapParam<String, Object> parameters) {
+    public Observable<List<Promo>> getPromo(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getPromo(parameters)
-                .map(new Func1<PromoEntity, Promo>() {
+                .map(new Func1<List<PromoEntity>, List<Promo>>() {
                     @Override
-                    public Promo call(PromoEntity promoEntity) {
-                        return promoEntityMapper.transform(promoEntity);
+                    public List<Promo> call(List<PromoEntity> promoEntities) {
+                        return promoEntityMapper.transform(promoEntities);
                     }
                 });
     }

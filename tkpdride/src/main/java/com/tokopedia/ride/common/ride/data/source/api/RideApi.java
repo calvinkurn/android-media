@@ -1,6 +1,7 @@
 package com.tokopedia.ride.common.ride.data.source.api;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -52,7 +53,7 @@ public interface RideApi {
     Observable<ReceiptEntity> getReceipt(@QueryMap TKPDMapParam<String, Object> param);
 
     @GET(RideUrl.PROMO)
-    Observable<PromoEntity> getPromo(TKPDMapParam<String, Object> param);
+    Observable<List<PromoEntity>> getPromo(@QueryMap TKPDMapParam<String, Object> param);
 
     @GET(RideUrl.REQUEST_MAP)
     Observable<RideRequestMapEntity> getRideMap(@Path("request_id") String requestId, @QueryMap TKPDMapParam<String, Object> parameters);

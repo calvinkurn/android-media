@@ -51,7 +51,7 @@
     <string name="apply">Apply</string>
     <string name="btn_apply">Apply Promo Code</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
-    <string name="apply_promo_toolbar_title">Apply Promo</string>
+    <string name="apply_promo_toolbar_title">Insert Promo Code</string>
     <string name="title_requesting_ride">Requesting Ride</string>
     <string name="trip_detail_toolbar_title">Trip Detail</string>
     <string name="error_invalid_fare_id">Not able to request a ride, please try again</string>
@@ -63,4 +63,7 @@
     <string name="apply_promo_empty_promo_error">Field must not empty</string>
     <string name="contact_driver">Contact Driver</string>
     <string name="uber_moto_display_name">uberMotor</string>
+    <string name="apply_promo_promo_code">Promo Code :</string>
+    <string name="apply_promo_read_promo_details">Read promo details</string>
+    <string name="apply_promo_code_here">here</string>
 </resources>

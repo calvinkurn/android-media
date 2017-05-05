@@ -4,7 +4,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -15,9 +19,11 @@ import rx.Subscriber;
 public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.View>
         implements ApplyPromoContract.Presenter {
     private GetFareEstimateUseCase getFareEstimateUseCase;
+    private GetPromoUseCase promoUseCase;
 
-    public ApplyPromoPresenter(GetFareEstimateUseCase applyPromoUseCase) {
+    public ApplyPromoPresenter(GetFareEstimateUseCase applyPromoUseCase, GetPromoUseCase promoUseCase) {
         this.getFareEstimateUseCase = applyPromoUseCase;
+        this.promoUseCase = promoUseCase;
     }
 
     @Override
@@ -55,6 +61,41 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                     } else {
                         getView().hideApplyPromoLoading();
                         getView().onFailedApplyPromo(fareEstimate.getAttributes().getDetail());
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getOnGoingPromo() {
+        getView().showPromoLoading();
+        getView().hideApplyPromoLayout();
+        promoUseCase.execute(getView().getPromoParams(), new Subscriber<List<Promo>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+
+                if (isViewAttached()) {
+                    getView().hidePromoLoading();
+                    getView().showApplyPromoLayout();
+                }
+            }
+
+            @Override
+            public void onNext(List<Promo> promos) {
+                if (isViewAttached()) {
+                    getView().hidePromoLoading();
+                    getView().showApplyPromoLayout();
+                    if (promos.size() > 0) {
+                        getView().renderPromoList(promos);
+                    }else {
+                        getView().renderEmptyOnGoingPromo();
                     }
                 }
             }
