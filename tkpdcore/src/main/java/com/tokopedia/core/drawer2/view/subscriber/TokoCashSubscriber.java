@@ -1,8 +1,10 @@
 package com.tokopedia.core.drawer2.view.subscriber;
 
+import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCashAction;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 
 import rx.Subscriber;
@@ -40,7 +42,15 @@ public class TokoCashSubscriber extends Subscriber<TokoCashModel> {
         drawerTokoCash.setLink(tokoCashData.getLink());
         drawerTokoCash.setRedirectUrl(tokoCashData.getRedirectUrl());
         drawerTokoCash.setText(tokoCashData.getText());
+        drawerTokoCash.setDrawerTokoCashAction(convertToActionViewModel(tokoCashData.getAction()));
         return drawerTokoCash;
+    }
+
+    private DrawerTokoCashAction convertToActionViewModel(Action action) {
+        DrawerTokoCashAction drawerTokoCashAction = new DrawerTokoCashAction();
+        drawerTokoCashAction.setText(action.getText());
+        drawerTokoCashAction.setRedirectUrl(action.getRedirectUrl());
+        return drawerTokoCashAction;
     }
 }
 

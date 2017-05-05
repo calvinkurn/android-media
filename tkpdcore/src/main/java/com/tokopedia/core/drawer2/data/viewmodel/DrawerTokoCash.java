@@ -6,6 +6,8 @@ package com.tokopedia.core.drawer2.data.viewmodel;
 
 public class DrawerTokoCash {
 
+    private DrawerTokoCashAction drawerTokoCashAction;
+
     private String balance;
 
     private String redirectUrl;
@@ -47,5 +49,13 @@ public class DrawerTokoCash {
 
     public void setLink(int link) {
         this.link = link;
+    }
+
+    public DrawerTokoCashAction getDrawerTokoCashAction() {
+        return drawerTokoCashAction;
+    }
+
+    public void setDrawerTokoCashAction(DrawerTokoCashAction drawerTokoCashAction) {
+        this.drawerTokoCashAction = drawerTokoCashAction;
     }
 }

@@ -22,8 +22,12 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
 import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.manager.ProductDetailCacheManager;
 import com.tokopedia.core.database.manager.ProductOtherCacheManager;
+import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.inboxreputation.interactor.CacheInboxReputationInteractorImpl;
 import com.tokopedia.core.inboxreputation.interactor.InboxReputationCacheManager;
@@ -141,7 +145,7 @@ public class SessionHandler {
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
-
+        LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
         clearFeedCache();
 
     }

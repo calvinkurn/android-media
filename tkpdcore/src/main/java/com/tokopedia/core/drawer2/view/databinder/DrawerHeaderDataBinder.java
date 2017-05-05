@@ -17,7 +17,6 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.people.customview.PeopleInfoDetailView;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
@@ -195,10 +194,11 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isUnregistered(data.getDrawerTokoCash()))
-                listener.onGoToTopCash(data.getDrawerTokoCash().getRedirectUrl());
-                else
+                if (isRegistered(data.getDrawerTokoCash()))
                     listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
+                else
+                    listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
+
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {
@@ -219,14 +219,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         if (isTokoCashDisabled(data.getDrawerTokoCash())) {
             holder.tokoCashLayout.setVisibility(View.GONE);
         } else {
-            if (isUnregistered(data.getDrawerTokoCash())) {
-                showTokoCashActivateView(holder);
-                holder.tokoCashActivationButton.setText(data.getDrawerTokoCash().getText());
-            }else{
+            if (isRegistered(data.getDrawerTokoCash())) {
                 showTokoCashBalanceView(holder);
                 holder.tokoCash.setText(data.getDrawerTokoCash().getBalance());
                 holder.tokoCashLabel.setText(data.getDrawerTokoCash().getText());
-
+            } else {
+                showTokoCashActivateView(holder);
+                holder.tokoCashActivationButton.setText(data.getDrawerTokoCash()
+                        .getDrawerTokoCashAction().getText());
             }
             holder.loadingTokoCash.setVisibility(View.GONE);
         }
@@ -246,8 +246,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.tokoCash.setVisibility(View.GONE);
     }
 
-    private boolean isUnregistered(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getLink() != 1;
+    private boolean isRegistered(DrawerTokoCash drawerTokoCash) {
+        return drawerTokoCash.getLink() == 1;
     }
 
     private boolean isTokoCashDisabled(DrawerTokoCash drawerTokoCash) {

@@ -109,11 +109,13 @@ public abstract class TkpdActivity extends TActivity implements
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(getDrawerPosition());
             drawerDataManager = new DrawerDataManagerImpl(this, this);
-            getDrawerProfile(drawerDataManager);
-            getDrawerDeposit();
-            getDrawerTopPoints(drawerDataManager);
-            getDrawerTokoCash();
-            getDrawerNotification();
+            if (sessionHandler.isV4Login()) {
+                getDrawerProfile(drawerDataManager);
+                getDrawerDeposit();
+                getDrawerTopPoints(drawerDataManager);
+                getDrawerTokoCash();
+                getDrawerNotification();
+            }
 
         }
     }
