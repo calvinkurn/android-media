@@ -188,15 +188,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
                 throw new IllegalArgumentException("listener must be implemented !!");
             }
 
-            switch (listener.getCurrencyType()) {
-                case CurrencyTypeDef.TYPE_USD:
-                    formatter = NumberFormat.getNumberInstance(dollarLocale);
-                    break;
-                default:
-                case CurrencyTypeDef.TYPE_IDR:
-                    formatter = NumberFormat.getNumberInstance(idrLocale);
-                    break;
-            }
+            formatter();
 
             textRangeWholesale = (TextView) itemView.findViewById(R.id.text_range_whole_sale);
             imageWholesale = (ImageView) itemView.findViewById(R.id.image_whole_sale);
@@ -210,7 +202,21 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             });
         }
 
+        protected void formatter() {
+            switch (listener.getCurrencyType()) {
+                case CurrencyTypeDef.TYPE_USD:
+                    formatter = NumberFormat.getNumberInstance(dollarLocale);
+                    break;
+                default:
+                case CurrencyTypeDef.TYPE_IDR:
+                    formatter = NumberFormat.getNumberInstance(idrLocale);
+                    break;
+            }
+        }
+
         public void bindData(WholesaleModel wholesaleModel) {
+            formatter();
+
             String qtyOne = wholesaleModel.getQtyOne() + "";
             String qtyTwo = wholesaleModel.getQtyTwo() + "";
             textRangeWholesale.setText(itemView.getContext().getString(R.string.wholesale_range_format,
