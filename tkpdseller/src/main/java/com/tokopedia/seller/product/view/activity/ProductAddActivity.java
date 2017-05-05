@@ -293,6 +293,7 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
 
     public void startUploadProduct(long productId) {
         startService(UploadProductService.getIntent(this, productId));
+        setResult(RESULT_OK);
         finish();
     }
 

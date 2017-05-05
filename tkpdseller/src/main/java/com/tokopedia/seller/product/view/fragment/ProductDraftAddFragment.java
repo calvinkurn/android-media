@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
@@ -30,6 +31,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
 
     public static final String DRAFT_PRODUCT_ID = "DRAFT_PRODUCT_ID";
 
+    TkpdProgressDialog tkpdProgressDialog;
     private String draftId;
 
     public static Fragment createInstance(String productDraftId) {
@@ -40,14 +42,31 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         return fragment;
     }
 
+    @Nullable
     @Override
-    protected void fetchInputData(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        presenter.attachView(this);
+        fetchInputData();
+        return view;
+    }
+
+    protected void fetchInputData() {
         showLoading();
-        if (savedInstanceState != null){
-            super.fetchInputData(savedInstanceState);
-        } else {
-            draftId = getArguments().getString(DRAFT_PRODUCT_ID);
-            presenter.fetchDraftData(draftId);
+        draftId = getArguments().getString(DRAFT_PRODUCT_ID);
+        presenter.fetchDraftData(draftId);
+    }
+
+    protected void showLoading() {
+        if (tkpdProgressDialog==null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS, getString(R.string.edit_product));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    protected void hideLoading() {
+        if (tkpdProgressDialog!= null) {
+            tkpdProgressDialog.dismiss();
         }
     }
 
@@ -59,6 +78,49 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
                 .productDraftModule(new ProductDraftModule())
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        hideLoading();
+        productInfoViewHolder.setName(model.getProductName());
+        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+        fetchCategory(model.getProductDepartmentId());
+        if (model.getProductCatalogId() > 0) {
+            productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
+        }
+        productImageViewHolder.setProductPhotos(model.getProductPhotos());
+
+        productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
+        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
+        if (model.getProductWholesaleList().size() > 0) {
+            productDetailViewHolder.expandWholesale(true);
+            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+        }
+        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
+        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+        productDetailViewHolder.setStockStatus(model.getProductUploadTo());
+
+        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
+        productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
+        if (model.getProductEtalaseId() > 0) {
+            productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
+            productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
+        }
+        productDetailViewHolder.setCondition(model.getProductCondition());
+        productDetailViewHolder.setInsurance(model.getProductMustInsurance());
+        productDetailViewHolder.setFreeReturn(model.getProductReturnable());
+
+        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        if (model.getProductVideos() != null) {
+            productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
+        }
+        if (model.getPoProcessValue() > 0) {
+            productAdditionalInfoViewHolder.expandPreOrder(true);
+            productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
+            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
+        }
     }
 
     @Override

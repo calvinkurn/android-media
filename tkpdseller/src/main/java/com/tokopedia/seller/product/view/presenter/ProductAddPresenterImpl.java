@@ -357,6 +357,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         fetchCatalogDataUseCase.unsubscribe();
         getCategoryRecommUseCase.unsubscribe();
         addProductShopInfoUseCase.unsubscribe();
+        fetchCategoryDisplayUseCase.unsubscribe();
+        productScoringUseCase.unsubscribe();
 
         if (subscriptionDebounceCategoryRecomm != null) {
             subscriptionDebounceCategoryRecomm.unsubscribe();

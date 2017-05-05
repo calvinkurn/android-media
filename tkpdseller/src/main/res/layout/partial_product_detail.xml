@@ -62,7 +62,8 @@
         style="@style/LabelLayoutWithoutBorder"
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy"
-        app:counter_text="@string/product_default_counter_minimum_order_text" />
+        app:counter_text="@string/product_default_counter_minimum_order_text"
+        app:counter_min="@integer/product_default_counter_minimum_order_text"/>
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_stock_status"
