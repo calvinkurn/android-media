@@ -186,7 +186,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
                 getView().dismissProgressDialog();
             } else {
                 getView().dismissProgressDialog();
-                getView().failedCheckout();
+                getView().showGenericError();
             }
         }
 
@@ -214,7 +214,7 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
                 getView().dismissProgressDialog();
             } else {
                 getView().dismissProgressDialog();
-                getView().failedCheckout();
+                getView().showGenericError();
             }
         }
 

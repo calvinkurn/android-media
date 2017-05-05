@@ -28,8 +28,6 @@ public interface GmCheckoutView extends CustomerView {
 
     void failedGetAutoSubscribeProduct();
 
-    void failedCheckout();
-
     void showProgressDialog();
 
     void dismissProgressDialog();

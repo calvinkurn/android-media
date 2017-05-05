@@ -217,17 +217,6 @@ public class GmCheckoutFragment
     }
 
     @Override
-    public void failedCheckout() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                goToCheckout();
-            }
-        })
-                .showRetrySnackbar();
-    }
-
-    @Override
     public void selectAutoSubscribePackageFirstTime() {
         callback.selectAutoSubscribePackageFirstTime();
     }
