@@ -2,6 +2,7 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -187,7 +188,7 @@ public class GetShopNote {
         model.title = note.getString("notes_title");
         model.status = note.getString("notes_status");
         String notesUpdateTime = note.getString("notes_update_time");
-        if(notesUpdateTime.isEmpty()) {
+        if(TextUtils.isEmpty(notesUpdateTime)) {
             model.update = note.getString("notes_create_time");
         }else{
             model.update = notesUpdateTime;
