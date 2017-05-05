@@ -626,6 +626,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 @Override
                 public void onRetryClicked() {
                     isNetworkErrorState = false;
+                    rechargeCategoryPresenter.fecthDataRechargeCategory();
                     getAnnouncement();
                     getPromo();
                     homeCatMenuPresenter.fetchHomeCategoryMenu(true);
