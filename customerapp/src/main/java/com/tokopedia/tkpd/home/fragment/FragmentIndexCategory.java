@@ -132,7 +132,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
-    private boolean isNetworkErrorState = false;
     private SnackbarRetry messageSnackbar;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
@@ -625,7 +624,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
-                    isNetworkErrorState = false;
                     rechargeCategoryPresenter.fecthDataRechargeCategory();
                     getAnnouncement();
                     getPromo();
@@ -636,7 +634,6 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             });
         }
         messageSnackbar.showRetrySnackbar();
-        isNetworkErrorState = true;
     }
 
     @Override
@@ -674,15 +671,15 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
-            if (isNetworkErrorState) {
-                showGetHomeMenuNetworkError();
+            if (messageSnackbar != null) {
+                messageSnackbar.resumeRetrySnackbar();
             }
             ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
-            if (messageSnackbar != null && messageSnackbar.isShown()) {
-                messageSnackbar.hideRetrySnackbar();
+            if (messageSnackbar != null) {
+                messageSnackbar.pauseRetrySnackbar();
             }
             hideKeyboard();
         }
