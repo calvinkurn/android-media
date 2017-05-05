@@ -31,7 +31,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -134,7 +133,8 @@ public class DrawerVariable {
 
     public DrawerVariable(AppCompatActivity context) {
         this.context = context;
-        getUserInfoListener = (GetUserInfoListener)context;
+        if(context instanceof GetUserInfoListener)
+            getUserInfoListener = (GetUserInfoListener)context;
     }
 
     public void createDrawer(boolean withSearchBox) {
@@ -786,7 +786,8 @@ public class DrawerVariable {
                 SessionHandler.setUserAvatarUri(context, profile.userIcon);
                 model.header.setDataToCache(context);
                 adapter.notifyDataSetChanged();
-                getUserInfoListener.onGetUserInfo();
+                if(getUserInfoListener!=null)
+                    getUserInfoListener.onGetUserInfo();
                 setShop();
             }
 
