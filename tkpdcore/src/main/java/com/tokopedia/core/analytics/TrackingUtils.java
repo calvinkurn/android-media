@@ -70,7 +70,7 @@ public class TrackingUtils extends TrackingConfig {
                 .setShopId(profileData.getShopInfo().getShopId())
                 .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
                 .setShopName(profileData.getShopInfo().getShopName())
-                .setDateOfBirth(profileData.getUserInfo().getUserBirth())
+                .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MMMM_YYYY,DateFormatUtils.FORMAT_DD_MM_YYYY,profileData.getUserInfo().getUserBirth()))
                 .setFirstName(extractFirstName(profileData.getUserInfo().getUserName()))
                 .build();
 
@@ -101,7 +101,6 @@ public class TrackingUtils extends TrackingConfig {
                 .setShopName(accountsParameter.getAccountsModel().getShopName())
                 .setShopId(String.valueOf(accountsParameter.getAccountsModel().getShopId()))
                 .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel().getShopName()))
-                .setDateOfBirth(accountsParameter.getInfoModel().getBday())
                 .setFirstName(extractFirstName(accountsParameter.getAccountsModel().getFullName()))
                 .setMethod(label)
                 .build();
