@@ -28,9 +28,9 @@ public class TokoCashUseCase extends UseCase<TokoCashModel> {
     @Override
     public Observable<TokoCashModel> createObservable(final RequestParams requestParams) {
         return tokoCashRepository.getTokoCashFromLocal()
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends TokoCashModel>>() {
+                .onErrorResumeNext(new Func1<Throwable, Observable<TokoCashModel>>() {
                     @Override
-                    public Observable<? extends TokoCashModel> call(Throwable throwable) {
+                    public Observable<TokoCashModel> call(Throwable throwable) {
                         return tokoCashRepository.getTokoCashFromNetwork(requestParams.getParameters());
                     }
                 });

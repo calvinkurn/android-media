@@ -36,7 +36,7 @@ public class CloudTopPointsSource {
         this.topPointsMapper = topPointsMapper;
     }
 
-    public Observable<TopPointsModel> getTokoCash(TKPDMapParam<String, Object> params) {
+    public Observable<TopPointsModel> getTopPoints(TKPDMapParam<String, Object> params) {
         return cloverService.getApi()
                 .getTopPoints2(AuthUtil.generateParamsNetwork2(context, params))
                 .map(topPointsMapper)
@@ -52,7 +52,7 @@ public class CloudTopPointsSource {
                     topPointsCache.setValue(CacheUtil.convertModelToString(topPointsModel,
                             new TypeToken<TopPointsModel>() {
                             }.getType()));
-                    topPointsCache.setCacheDuration(60);
+                    topPointsCache.setCacheDuration(9000);
                     topPointsCache.store();
                 }
             }

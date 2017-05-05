@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -26,9 +25,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -97,10 +93,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(setDrawerPosition());
-            drawerDataManager = new DrawerDataManagerImpl(this, this, drawerCache);
-            getDrawerProfile(drawerDataManager);
+            drawerDataManager = new DrawerDataManagerImpl(this, this);
+            getDrawerProfile();
             getDrawerDeposit();
-            getDrawerTopPoints(drawerDataManager);
+            getDrawerTopPoints();
             getDrawerTokoCash();
             getDrawerNotification();
 
@@ -109,6 +105,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     protected void getDrawerDeposit() {
         drawerDataManager.getDeposit();
+    }
+
+    protected void getDrawerTopPoints() {
+        drawerDataManager.getTopPoints();
+    }
+
+    protected void getDrawerProfile() {
+        drawerDataManager.getProfile();
     }
 
     @Override
@@ -176,44 +180,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         drawerDataManager.getTokoCash();
     }
 
-    private void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
-       drawerDataManager.getTopPoints();
-    }
-
-    private void getDrawerDeposit(DrawerDataManager drawerDataManager) {
-        drawerDataManager.getDeposit();
-    }
-
-    private void getDrawerProfile(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getDrawerProfile(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerProfile>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerProfile profile) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-                                drawerHelper.setFooterData(profile);
-                            }
-
-
-                        }
-                ));
-    }
-
     @Override
     public void onGetDeposit(DrawerDeposit drawerDeposit) {
         drawerHelper.getAdapter().getHeader().getData().setDrawerDeposit(drawerDeposit);
@@ -245,8 +211,9 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         } else {
             MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
         }
-        drawerHelper.getAdapter().getHeader().getData().setDrawerNotification(notification);
-        drawerHelper.getAdapter().notifyDataSetChanged();
+        drawerHelper.getAdapter().getData().clear();
+        drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
+        drawerHelper.setExpand();
 
     }
 
@@ -265,5 +232,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     public void onGetTopPoints(DrawerTopPoints topPoints) {
         drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onGetProfile(DrawerProfile profile) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+        drawerHelper.setFooterData(profile);
     }
 }

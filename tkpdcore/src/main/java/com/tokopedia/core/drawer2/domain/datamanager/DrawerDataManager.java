@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface DrawerDataManager {
 
-    Observable<DrawerProfile> getDrawerProfile(Context context);
+   void getProfile();
 
     void getDeposit();
 

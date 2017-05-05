@@ -20,7 +20,12 @@ public class TopPointsRepositoryImpl implements TopPointsRepository {
     }
 
     @Override
-    public Observable<TopPointsModel> getTopPoints(TKPDMapParam<String, Object> params) {
-        return topPointsSourceFactory.createCloudTopPointsSource().getTokoCash(params);
+    public Observable<TopPointsModel> getTopPointsFromNetwork(TKPDMapParam<String, Object> params) {
+        return topPointsSourceFactory.createCloudTopPointsSource().getTopPoints(params);
+    }
+
+    @Override
+    public Observable<TopPointsModel> getTopPointsFromLocal() {
+        return topPointsSourceFactory.createLocalTopPointsSource().getTopPoints();
     }
 }

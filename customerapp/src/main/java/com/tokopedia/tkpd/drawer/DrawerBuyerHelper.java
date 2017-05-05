@@ -160,31 +160,31 @@ public class DrawerBuyerHelper extends DrawerHelper
         sellerMenu.add(new DrawerItem("Order Baru",
                 0,
                 TkpdState.DrawerPosition.SHOP_NEW_ORDER,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false),
+                drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER)));
         sellerMenu.add(new DrawerItem("Konfirmasi Pengiriman",
                 0,
                 TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false),
+                drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION)));
         sellerMenu.add(new DrawerItem("Status Pengiriman",
                 0,
                 TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false),
+                drawerCache.getBoolean(IS_SHOP_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS)));
         sellerMenu.add(new DrawerItem("Daftar Penjualan",
                 0,
                 TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false)));
-        sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean("Penjualan" + "isExpanded", false)));
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
+        sellerMenu.add(new DrawerSeparator(drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerItem("Daftar Produk",
                 0,
                 TkpdState.DrawerPosition.MANAGE_PRODUCT,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false)));
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         sellerMenu.add(new DrawerItem("Etalase Toko",
                 0,
                 TkpdState.DrawerPosition.MANAGE_ETALASE,
-                drawerCache.getBoolean("Penjualan" + "isExpanded", false)));
+                drawerCache.getBoolean(IS_SHOP_OPENED, false)));
 
         return sellerMenu;
     }
@@ -198,27 +198,27 @@ public class DrawerBuyerHelper extends DrawerHelper
         buyerMenu.add(new DrawerItem("Status Pembayaran",
                 0,
                 TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false),
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM)));
         buyerMenu.add(new DrawerItem("Status Pemesanan",
                 0,
                 TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false),
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS)));
         buyerMenu.add(new DrawerItem("Konfirmasi Penerimaan",
                 0,
                 TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false),
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM)));
         buyerMenu.add(new DrawerItem("Transaksi Dibatalkan",
                 0,
                 TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false),
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_REORDER)));
         buyerMenu.add(new DrawerItem("Daftar Pembelian",
                 0,
                 TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST,
-                drawerCache.getBoolean("Pembelian" + "isExpanded", false)));
+                drawerCache.getBoolean(IS_PEOPLE_OPENED, false)));
         return buyerMenu;
     }
 
@@ -231,27 +231,27 @@ public class DrawerBuyerHelper extends DrawerHelper
         inboxMenu.add(new DrawerItem("Pesan",
                 0,
                 TkpdState.DrawerPosition.INBOX_MESSAGE,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE)));
         inboxMenu.add(new DrawerItem("Diskusi Produk",
                 0,
                 TkpdState.DrawerPosition.INBOX_TALK,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK)));
         inboxMenu.add(new DrawerItem("Ulasan",
                 0,
                 TkpdState.DrawerPosition.INBOX_REVIEW,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW)));
         inboxMenu.add(new DrawerItem("Layanan Pengguna",
                 0,
                 TkpdState.DrawerPosition.INBOX_TICKET,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
         inboxMenu.add(new DrawerItem("Pusat Resolusi",
                 0,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean("Kotak Masuk" + "isExpanded", false),
+                drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
         return inboxMenu;
     }
@@ -329,22 +329,24 @@ public class DrawerBuyerHelper extends DrawerHelper
         closeDrawer();
     }
 
-    private void setExpand() {
+    public void setExpand() {
         if (drawerCache.getBoolean(IS_INBOX_OPENED, false)) {
             DrawerGroup group = findGroup(TkpdState.DrawerPosition.INBOX);
             if (group != null)
-                adapter.onGroupClicked(group, group.getPosition());
+                adapter.getData().addAll(group.getPosition() + 1, group.getList());
         }
+
         if (drawerCache.getBoolean(DrawerAdapter.IS_PEOPLE_OPENED, false)) {
             DrawerGroup group = findGroup(TkpdState.DrawerPosition.PEOPLE);
             if (group != null)
-                adapter.onGroupClicked(group, group.getPosition());
+                adapter.getData().addAll(group.getPosition() + 1, group.getList());
         }
         if (drawerCache.getBoolean(DrawerAdapter.IS_SHOP_OPENED, false)) {
             DrawerGroup group = findGroup(TkpdState.DrawerPosition.SHOP);
             if (group != null)
-                adapter.onGroupClicked(group, group.getPosition());
+                adapter.getData().addAll(group.getPosition() + 1, group.getList());
         }
+        adapter.notifyDataSetChanged();
     }
 
     private DrawerGroup findGroup(int id) {

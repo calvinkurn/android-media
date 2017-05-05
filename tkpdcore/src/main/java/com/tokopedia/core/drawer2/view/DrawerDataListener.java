@@ -2,6 +2,7 @@ package com.tokopedia.core.drawer2.view;
 
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
 
@@ -21,4 +22,6 @@ public interface DrawerDataListener {
     void onGetTokoCash(DrawerTokoCash drawerTokoCash);
 
     void onGetTopPoints(DrawerTopPoints drawerTopPoints);
+
+    void onGetProfile(DrawerProfile drawerProfile);
 }

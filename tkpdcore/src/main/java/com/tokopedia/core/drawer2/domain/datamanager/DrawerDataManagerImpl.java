@@ -8,34 +8,36 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer2.data.factory.DepositSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.NotificationSourceFactory;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.TokoCashSourceFactory;
 import com.tokopedia.core.drawer2.data.factory.TopPointsSourceFactory;
 import com.tokopedia.core.drawer2.data.mapper.DepositMapper;
 import com.tokopedia.core.drawer2.data.mapper.NotificationMapper;
+import com.tokopedia.core.drawer2.data.mapper.ProfileMapper;
 import com.tokopedia.core.drawer2.data.mapper.TokoCashMapper;
 import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
 import com.tokopedia.core.drawer2.data.repository.DepositRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.NotificationRepositoryImpl;
+import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.TokoCashRepositoryImpl;
 import com.tokopedia.core.drawer2.data.repository.TopPointsRepositoryImpl;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.domain.DepositRepository;
 import com.tokopedia.core.drawer2.domain.NotificationRepository;
+import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.drawer2.domain.TopPointsRepository;
 import com.tokopedia.core.drawer2.domain.interactor.DepositUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.NotificationUseCase;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileNetworkInteractor;
-import com.tokopedia.core.drawer2.domain.interactor.ProfileNetworkInteractorImpl;
+import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.drawer2.domain.interactor.TopPointsUseCase;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.GetDepositSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.NotificationSubscriber;
+import com.tokopedia.core.drawer2.view.subscriber.ProfileSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TokoCashSubscriber;
 import com.tokopedia.core.drawer2.view.subscriber.TopPointsSubscriber;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
@@ -43,13 +45,7 @@ import com.tokopedia.core.network.apiservices.clover.CloverService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-
-import retrofit2.Response;
-import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by nisie on 1/23/17.
@@ -58,22 +54,34 @@ import rx.functions.Func1;
 public class DrawerDataManagerImpl implements DrawerDataManager {
 
     private static final String TAG = DrawerDataManagerImpl.class.getSimpleName();
-    private final ProfileNetworkInteractor profileNetworkInteractor;
+    private final ProfileUseCase profileUseCase;
     private final DepositUseCase depositUseCase;
     private final NotificationUseCase notificationUseCase;
     private final TokoCashUseCase tokoCashUseCase;
-    private final DrawerDataListener viewListener;
-    private final SessionHandler sessionHandler;
-    private final LocalCacheHandler drawerCache;
-    private final GlobalCacheManager cacheManager;
     private final TopPointsUseCase topPointsUseCase;
 
-    public DrawerDataManagerImpl(Context context, DrawerDataListener viewListener, LocalCacheHandler drawerCache) {
+    private final DrawerDataListener viewListener;
+
+    public DrawerDataManagerImpl(Context context, DrawerDataListener viewListener) {
         this.viewListener = viewListener;
-        sessionHandler = new SessionHandler(context);
-        cacheManager = new GlobalCacheManager();
-        this.drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
-        profileNetworkInteractor = new ProfileNetworkInteractorImpl(new PeopleService());
+        SessionHandler sessionHandler = new SessionHandler(context);
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        LocalCacheHandler drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+
+        ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
+                context,
+                new PeopleService(),
+                new ProfileMapper(),
+                cacheManager
+        );
+
+        ProfileRepository profileRepository = new ProfileRepositoryImpl(profileSourceFactory);
+
+        profileUseCase = new ProfileUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                profileRepository
+        );
 
         TopPointsSourceFactory topPointsSourceFactory = new TopPointsSourceFactory(
                 context,
@@ -112,7 +120,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 context,
                 new NotificationService(),
                 new NotificationMapper(),
-                this.drawerCache
+                drawerCache
         );
         NotificationRepository notificationRepository = new NotificationRepositoryImpl(notificationSourceFactory);
         notificationUseCase = new NotificationUseCase(
@@ -125,7 +133,8 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 context,
                 new DepositService(),
                 new DepositMapper(),
-                this.drawerCache);
+                drawerCache);
+
         DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
         depositUseCase = new DepositUseCase(
                 new JobExecutor(),
@@ -134,15 +143,12 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     }
 
     @Override
-    public Observable<DrawerProfile> getDrawerProfile(Context context) {
-        return profileNetworkInteractor.getProfileInfo(context, new TKPDMapParam<String, String>())
-                .flatMap(new Func1<Response<TkpdResponse>, Observable<DrawerProfile>>() {
-                    @Override
-                    public Observable<DrawerProfile> call(Response<TkpdResponse> response) {
-                        DrawerProfile drawerProfile = convertToDrawerProfile(response);
-                        return Observable.just(drawerProfile);
-                    }
-                });
+    public void getProfile() {
+        profileUseCase.execute(getProfileParam(), new ProfileSubscriber(viewListener));
+    }
+
+    private RequestParams getProfileParam() {
+        return RequestParams.EMPTY;
     }
 
     @Override
@@ -181,20 +187,14 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
         return RequestParams.EMPTY;
     }
 
-    private DrawerProfile convertToDrawerProfile(Response<TkpdResponse> response) {
-        ProfileData profileData = response.body()
-                .convertDataObj(ProfileData.class);
-        DrawerProfile profile = new DrawerProfile();
-        profile.setUserName(profileData.getUserInfo().getUserName());
-        profile.setUserAvatar(profileData.getUserInfo().getUserImage());
-        profile.setShopName(profileData.getShopInfo().getShopName());
-        profile.setShopCover(profileData.getShopInfo().getShopCover());
-        profile.setShopAvatar(profileData.getShopInfo().getShopAvatar());
-        return profile;
-    }
-
     @Override
     public void unsubscribe() {
-
+        profileUseCase.unsubscribe();
+        topPointsUseCase.unsubscribe();
+        notificationUseCase.unsubscribe();
+        tokoCashUseCase.unsubscribe();
+        depositUseCase.unsubscribe();
     }
+
+
 }

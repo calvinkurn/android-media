@@ -160,4 +160,5 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void setSelectedPosition(int id);
 
+    public abstract void setExpand();
 }

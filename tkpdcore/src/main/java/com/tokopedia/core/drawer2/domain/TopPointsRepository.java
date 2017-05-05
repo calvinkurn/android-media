@@ -11,6 +11,9 @@ import rx.Observable;
 
 public interface TopPointsRepository {
 
-    Observable<TopPointsModel> getTopPoints(TKPDMapParam<String, Object> params);
+    Observable<TopPointsModel> getTopPointsFromNetwork(TKPDMapParam<String, Object> params);
+
+    Observable<TopPointsModel> getTopPointsFromLocal();
+
 
 }

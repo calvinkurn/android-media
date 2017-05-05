@@ -1,10 +1,10 @@
 
-package com.tokopedia.core.drawer.model.profileinfo;
+package com.tokopedia.core.drawer2.data.pojo.profile;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ShopLastOneMonth {
+public class ShopLastTwelveMonths {
 
     @SerializedName("count_score_good")
     @Expose

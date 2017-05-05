@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.mapper.TopPointsMapper;
 import com.tokopedia.core.drawer2.data.source.CloudTopPointsSource;
+import com.tokopedia.core.drawer2.data.source.LocalTopPointsSource;
 import com.tokopedia.core.network.apiservices.clover.CloverService;
 
 /**
@@ -35,4 +36,7 @@ public class TopPointsSourceFactory {
                 topPointsMapper, topPointsCache);
     }
 
+    public LocalTopPointsSource createLocalTopPointsSource() {
+        return new LocalTopPointsSource(topPointsCache);
+    }
 }

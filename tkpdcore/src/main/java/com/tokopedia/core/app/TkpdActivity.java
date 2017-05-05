@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.localytics.android.Localytics;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
@@ -29,11 +28,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * Created by Nisie on 31/08/15.
  */
@@ -45,7 +39,6 @@ public abstract class TkpdActivity extends TActivity implements
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
     protected DrawerHelper drawerHelper;
     protected SessionHandler sessionHandler;
-    private CompositeSubscription compositeSubscription;
     private DrawerDataManager drawerDataManager;
     private LocalCacheHandler drawerCache;
 
@@ -57,7 +50,6 @@ public abstract class TkpdActivity extends TActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
@@ -109,7 +101,7 @@ public abstract class TkpdActivity extends TActivity implements
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(getDrawerPosition());
-            drawerDataManager = new DrawerDataManagerImpl(this, this, drawerCache);
+            drawerDataManager = new DrawerDataManagerImpl(this, this);
         }
     }
 
@@ -147,33 +139,7 @@ public abstract class TkpdActivity extends TActivity implements
     }
 
     protected void getDrawerProfile(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getDrawerProfile(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerProfile>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerProfile profile) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-                                drawerHelper.setFooterData(profile);
-                            }
-
-
-                        }
-                ));
+       drawerDataManager.getProfile();
     }
 
 
@@ -223,7 +189,7 @@ public abstract class TkpdActivity extends TActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        compositeSubscription.unsubscribe();
+        drawerDataManager.unsubscribe();
         unregisterReceiver(cartBadgeNotificationReceiver);
     }
 
@@ -270,7 +236,7 @@ public abstract class TkpdActivity extends TActivity implements
         }
         drawerHelper.getAdapter().getData().clear();
         drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
-        drawerHelper.getAdapter().notifyDataSetChanged();
+        drawerHelper.setExpand();
 
     }
 
@@ -290,4 +256,10 @@ public abstract class TkpdActivity extends TActivity implements
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
+    @Override
+    public void onGetProfile(DrawerProfile profile) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+        drawerHelper.setFooterData(profile);
+    }
 }
