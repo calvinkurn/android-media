@@ -29,7 +29,8 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     @Override
     public void actionApplyPromo() {
         getView().showApplyPromoLoading();
-        getView().hideApplyPromoLayout();
+        //getView().hideApplyPromoLayout();
+
         if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
             getView().setEmptyPromoError();
             return;
@@ -70,7 +71,6 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     @Override
     public void getOnGoingPromo() {
         getView().showPromoLoading();
-        getView().hideApplyPromoLayout();
         promoUseCase.execute(getView().getPromoParams(), new Subscriber<List<Promo>>() {
             @Override
             public void onCompleted() {
@@ -94,7 +94,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                     getView().showApplyPromoLayout();
                     if (promos.size() > 0) {
                         getView().renderPromoList(promos);
-                    }else {
+                    } else {
                         getView().renderEmptyOnGoingPromo();
                     }
                 }

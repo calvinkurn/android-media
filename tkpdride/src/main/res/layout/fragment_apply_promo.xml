@@ -1,85 +1,101 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginTop="4dp"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ll_promo_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="20dp">
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/et_promo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:background="@drawable/et_normal_bg"
+            android:drawableTint="@color/grey_700"
+            android:hint="@string/hint_enter_promo_code"
+            android:inputType="textCapCharacters"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_promo_layout"
+            android:paddingTop="8dp"
+            android:text="dsada"
+            android:textColor="@color/red_500"
             android:visibility="gone" />
 
-        <LinearLayout
-            android:id="@+id/ll_promo_layout"
+        <TextView
+            android:id="@+id/tv_submit_promo"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_filled_theme_bttn"
+            android:gravity="center"
+            android:text="@string/btn_apply"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progress_bar_promo_list"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_below="@+id/ll_promo_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/on_going_promo_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_promo_layout"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e3e3e3" />
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/et_promo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/shape_bg_rounded_white_rectangle"
-                android:drawableTint="@color/grey_700"
-                android:hint="@string/hint_enter_promo_code"
-                android:inputType="textCapCharacters"
-                android:padding="8dp"
-                android:textColor="@color/black" />
-
-
-            <TextView
-                android:id="@+id/tv_description"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/ll_promo_layout"
-                android:padding="5dp" />
-
-            <TextView
-                android:id="@+id/tv_submit_promo"
-                android:layout_width="match_parent"
-                android:layout_height="42dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_filled_theme_bttn"
-                android:gravity="center"
-                android:text="@string/btn_apply"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/on_going_promo_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/ll_promo_layout"
+            android:layout_marginBottom="20dp"
             android:layout_marginTop="20dp"
-            android:orientation="vertical">
+            android:text="Available Promo"
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#e3e3e3" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:text="ONGOING PROMO"
-                android:textStyle="bold" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_promo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
-    </RelativeLayout>
-</ScrollView>
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</RelativeLayout>

@@ -80,7 +80,8 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
 
             //finish activity when thanks_wallet page comes
             Uri uri = Uri.parse(url);
-            if (uri.getPath().contains("thanks_wallet")) {
+            Log.d(TAG, "onPageStarted: " + uri.getPath());
+            if (uri.getPath().contains("thanks_wallet") || uri.getPath().contains("tokopedia.com/thanks")) {
                 Intent intent = getActivity().getIntent();
                 intent.putExtra(EXTRA_ID, "");
                 intent.putExtra(EXTRA_KEY, "");

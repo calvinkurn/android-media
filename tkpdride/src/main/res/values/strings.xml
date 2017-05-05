@@ -49,7 +49,7 @@
     <string name="btn_request">Request</string>
     <string name="apply_promocode">Do you have a promocode?</string>
     <string name="apply">Apply</string>
-    <string name="btn_apply">Apply Promo Code</string>
+    <string name="btn_apply">APPLY</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
     <string name="apply_promo_toolbar_title">Insert Promo Code</string>
     <string name="title_requesting_ride">Requesting Ride</string>
