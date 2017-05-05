@@ -4,7 +4,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
-import com.tokopedia.seller.product.di.scope.CategoryPickerViewScope;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 
@@ -17,7 +16,6 @@ import rx.Observable;
 /**
  * @author sebastianuskh on 4/3/17.
  */
-@CategoryPickerViewScope
 public class FetchCategoryWithParentChildUseCase extends BaseCategoryUseCase<List<CategoryDomainModel>> {
 
     public static final int UNSELECTED = -2;

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -73,6 +74,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         ProductDetailViewHolder.Listener {
 
     public static final String TAG = ProductAddFragment.class.getSimpleName();
+    public static final String SAVED_STATE_VIEW_DATA = "SAVED_STATE_VIEW_DATA";
     @Inject
     public ProductAddPresenter presenter;
     protected ProductScoreViewHolder productScoreViewHolder;
@@ -82,6 +84,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     protected ProductAdditionalInfoViewHolder productAdditionalInfoViewHolder;
     protected ProductInfoViewHolder productInfoViewHolder;
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
+    TkpdProgressDialog tkpdProgressDialog;
 
     /**
      * Url got from gallery or camera or other paths
@@ -126,6 +129,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
@@ -185,6 +189,33 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         view.requestFocus();
         return view;
     }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        fetchInputData(savedInstanceState);
+    }
+
+    protected void fetchInputData(Bundle savedInstanceState) {
+        showLoading();
+        if (savedInstanceState != null){
+            onSuccessLoadProduct((UploadProductInputViewModel) savedInstanceState.getParcelable(SAVED_STATE_VIEW_DATA));
+        }
+    }
+
+    protected void showLoading() {
+        if (tkpdProgressDialog==null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
+    protected void hideLoading() {
+        if (tkpdProgressDialog!= null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -319,6 +350,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList) {
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SAVED_STATE_VIEW_DATA, collectDataFromView());
     }
 
     @Override
@@ -477,6 +514,49 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        hideLoading();
+        productInfoViewHolder.setName(model.getProductName());
+        productInfoViewHolder.setCategoryId(model.getProductDepartmentId());
+        fetchCategory(model.getProductDepartmentId());
+        if (model.getProductCatalogId() > 0) {
+            productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
+        }
+        productImageViewHolder.setProductPhotos(model.getProductPhotos());
+
+        productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
+        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
+        if (model.getProductWholesaleList().size() > 0) {
+            productDetailViewHolder.expandWholesale(true);
+            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+        }
+        productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
+        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
+        productDetailViewHolder.setStockStatus(model.getProductUploadTo());
+
+        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
+        productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
+        if (model.getProductEtalaseId() > 0) {
+            productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());
+            productDetailViewHolder.setEtalaseName(model.getProductEtalaseName());
+        }
+        productDetailViewHolder.setCondition(model.getProductCondition());
+        productDetailViewHolder.setInsurance(model.getProductMustInsurance());
+        productDetailViewHolder.setFreeReturn(model.getProductReturnable());
+
+        productAdditionalInfoViewHolder.setDescription(model.getProductDescription());
+        if (model.getProductVideos() != null) {
+            productAdditionalInfoViewHolder.setVideoIdList(model.getProductVideos());
+        }
+        if (model.getPoProcessValue() > 0) {
+            productAdditionalInfoViewHolder.expandPreOrder(true);
+            productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
+            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
+        }
+    }
+
+    @Override
     public void populateCategory(List<String> strings) {
         String[] stringArray = new String[strings.size()];
         stringArray = strings.toArray(stringArray);
@@ -488,6 +568,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
         viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductCatalogName(productInfoViewHolder.getCatalogName());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());

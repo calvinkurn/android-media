@@ -122,6 +122,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        if(checkedId < 0){
+            return;
+        }
+
         if (checkedId != categoryId) {
             categoryId = checkedId;
             if (categoryId <= 0) {
@@ -150,6 +154,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public void setName(String name) {
         nameEditText.setText(MethodChecker.fromHtml(name));
+    }
+
+    public String getCatalogName() {
+        return catalogLabelView.getValue();
     }
 
     public long getCategoryId() {

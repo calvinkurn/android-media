@@ -9,13 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
-import com.tokopedia.seller.product.di.component.CategoryPickerViewComponent;
-import com.tokopedia.seller.product.di.component.DaggerCategoryPickerViewComponent;
-import com.tokopedia.seller.product.di.module.CategoryPickerViewModule;
+import com.tokopedia.seller.product.di.component.DaggerCategoryPickerComponent;
+import com.tokopedia.seller.product.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapter;
 import com.tokopedia.seller.product.view.adapter.category.CategoryPickerLevelAdapterListener;
 import com.tokopedia.seller.product.view.listener.CategoryPickerFragmentListener;
@@ -55,12 +54,12 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
 
     @Override
     protected void initInjector() {
-        CategoryPickerViewComponent component = DaggerCategoryPickerViewComponent
+        DaggerCategoryPickerComponent
                 .builder()
-                .categoryPickerComponent(getComponent(CategoryPickerComponent.class))
-                .categoryPickerViewModule(new CategoryPickerViewModule())
-                .build();
-        component.inject(this);
+                .appComponent(getComponent(AppComponent.class))
+                .categoryPickerModule(new CategoryPickerModule())
+                .build()
+                .inject(this);
     }
 
     @Override

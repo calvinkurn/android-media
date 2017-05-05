@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.fragment.ProductDraftAddFragment;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.fragment.ProductDraftEditFragment;
 
 /**
@@ -15,6 +16,8 @@ import com.tokopedia.seller.product.view.fragment.ProductDraftEditFragment;
  */
 
 public class ProductDraftEditActivity extends ProductDraftAddActivity  {
+
+    public static final String TAG = ProductDraftEditFragment.class.getSimpleName();
 
     public static Intent createInstance(Context context, String productId){
         Intent intent = new Intent(context, ProductDraftEditActivity.class);
@@ -29,13 +32,16 @@ public class ProductDraftEditActivity extends ProductDraftAddActivity  {
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
         }
+        inflateFragment(productId);
+    }
 
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductDraftEditFragment.TAG);
+    private void inflateFragment(String productId) {
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if (fragment == null) {
             fragment = ProductDraftEditFragment.createInstance(productId);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, ProductDraftEditFragment.TAG);
+        fragmentTransaction.replace(R.id.container, fragment, TAG);
         fragmentTransaction.commit();
     }
 
