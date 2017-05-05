@@ -304,6 +304,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
+        if (voucherDigitalState != null) {
+            voucherCartHolderView.setUsedVoucher(
+                    voucherDigitalState.getAttributeVoucher().getVoucherCode(),
+                    voucherDigitalState.getAttributeVoucher().getMessage()
+            );
+            checkoutHolderView.enableVoucherDiscount(
+                    voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
+            );
+        }
         if (passData.getInstantCheckout().equals("1")) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
