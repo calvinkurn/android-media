@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -23,6 +24,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
+import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.UploadProductService;
@@ -83,9 +85,13 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     }
 
     private void createProductAddFragment() {
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .add(R.id.container, ProductAddFragment.createInstance(imageUrls), ProductAddFragment.class.getSimpleName())
-                .commit();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(ProductAddFragment.TAG);
+        if (fragment == null) {
+            fragment = ProductAddFragment.createInstance(imageUrls);
+        }
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.container, fragment, ProductAddFragment.TAG);
+        fragmentTransaction.commit();
     }
 
     private void checkIntentImageUrls() {

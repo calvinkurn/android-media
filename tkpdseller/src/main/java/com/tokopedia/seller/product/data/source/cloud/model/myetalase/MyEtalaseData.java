@@ -6,11 +6,14 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class Data {
+public class MyEtalaseData {
 
     @SerializedName("is_allow")
     @Expose
     private Integer isAllow;
+    @SerializedName("paging")
+    @Expose
+    private Paging paging;
     @SerializedName("list")
     @Expose
     private List<EtalaseItem> list = null;
@@ -21,6 +24,14 @@ public class Data {
 
     public void setIsAllow(Integer isAllow) {
         this.isAllow = isAllow;
+    }
+
+    public Paging getPaging() {
+        return paging;
+    }
+
+    public void setPaging(Paging paging) {
+        this.paging = paging;
     }
 
     public List<EtalaseItem> getList() {

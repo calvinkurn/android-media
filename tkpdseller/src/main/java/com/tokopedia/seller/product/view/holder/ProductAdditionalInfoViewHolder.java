@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Html;
@@ -215,6 +216,16 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
     }
 
     /**

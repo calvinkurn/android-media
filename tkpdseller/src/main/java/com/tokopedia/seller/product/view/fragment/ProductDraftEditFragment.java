@@ -55,7 +55,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
         if (model.getProductNameEditable() == 0){
-            productInfoViewHolder.setNameAvailable(false);
+            productInfoViewHolder.setNameEnabled(false);
         }
         super.onSuccessLoadProduct(model);
     }

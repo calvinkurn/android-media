@@ -185,16 +185,15 @@ public class AddWholeSaleDialog extends DialogFragment {
             }
         };
 
-        String result = null;
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
                 wholesalePrice.addTextChangedListener(usdTextWatcher);
-                wholesalePrice.setText(result = Double.toString(usdBaseMinimumValue));
+                wholesalePrice.setValue((float) usdBaseMinimumValue);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
                 wholesalePrice.addTextChangedListener(idrTextWatcher);
-                wholesalePrice.setText(result = Double.toString(idrBaseMinimumValue));
+                wholesalePrice.setValue((float) idrBaseMinimumValue);
                 break;
 
         }

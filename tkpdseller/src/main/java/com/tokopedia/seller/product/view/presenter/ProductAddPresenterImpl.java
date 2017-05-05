@@ -229,9 +229,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onNext(CatalogDataModel catalogDataModel) {
-                        getView().onSuccessLoadCatalog(
-                                catalogDataModel.getResult().getCatalogs(),
-                                catalogDataModel.getResult().getTotalRecord());
+                        getView().onSuccessLoadCatalog(catalogDataModel.getResult().getCatalogs());
                     }
                 });
     }

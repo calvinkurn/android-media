@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.product.view.model.etalase.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.view.model.etalase.MyEtalaseViewModel;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface EtalasePickerView extends CustomerView {
 
     void dismissListRetry();
 
-    void renderEtalaseList(List<MyEtalaseViewModel> etalases);
+    void renderEtalaseList(MyEtalaseViewModel etalases);
 
     void addNewEtalase(String newEtalaseName);
 
@@ -33,4 +34,6 @@ public interface EtalasePickerView extends CustomerView {
     void showError(String localizedMessage);
 
     void showRetryAddNewEtalase(String newEtalaseName);
+
+    void showNextListLoading();
 }

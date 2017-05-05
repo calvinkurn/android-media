@@ -7,8 +7,6 @@ import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
 import com.tokopedia.seller.product.view.mapper.MyEtalaseDomainToView;
 
-import java.util.List;
-
 import rx.Subscriber;
 
 /**
@@ -26,7 +24,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         this.addNewEtalaseUseCase = addNewEtalaseUseCase;
     }
 
-    public void fetchEtalaseData(String shopId) {
+    public void fetchFirstPageEtalaseData() {
         checkViewAttached();
         getView().clearEtalaseList();
         getView().dismissListRetry();
@@ -42,7 +40,15 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         addNewEtalaseUseCase.execute(requestParam, new AddNewEtalaseSubscribe(newEtalaseName));
     }
 
-    private class FetchEtalaseDataSubscriber extends Subscriber<List<MyEtalaseDomainModel>> {
+    @Override
+    public void fetchNextPageEtalaseData(int page) {
+        checkViewAttached();
+        getView().showNextListLoading();
+        RequestParams requestParam = FetchMyEtalaseUseCase.generateRequestParam(page);
+        fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseDataSubscriber());
+    }
+
+    private class FetchEtalaseDataSubscriber extends Subscriber<MyEtalaseDomainModel> {
         @Override
         public void onCompleted() {
 
@@ -57,7 +63,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         }
 
         @Override
-        public void onNext(List<MyEtalaseDomainModel> etalases) {
+        public void onNext(MyEtalaseDomainModel etalases) {
             checkViewAttached();
             getView().dismissListLoading();
             getView().renderEtalaseList(MyEtalaseDomainToView.map(etalases));

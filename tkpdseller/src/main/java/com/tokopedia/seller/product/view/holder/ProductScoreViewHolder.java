@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.holder;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,5 +53,15 @@ public class ProductScoreViewHolder extends ProductViewHolder {
     @Override
     public boolean isDataValid() {
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+
     }
 }

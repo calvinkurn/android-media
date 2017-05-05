@@ -22,6 +22,7 @@ import rx.Observable;
 public class MyEtalaseCloud {
     public static final String SHOP_ID = "shop_id";
     public static final String ETALASE_NAME = "etalase_name";
+    public static final String PAGE = "page";
     private final MyEtalaseApi api;
     private final Context context;
 
@@ -31,15 +32,16 @@ public class MyEtalaseCloud {
         this.context = context;
     }
 
-    public Observable<MyEtalaseListServiceModel> fetchMyEtalaseList() {
-        TKPDMapParam<String, String> params = generateFetchMyEtalaseParam();
+    public Observable<MyEtalaseListServiceModel> fetchMyEtalaseList(int page) {
+        TKPDMapParam<String, String> params = generateFetchMyEtalaseParam(page);
         return api.fetchMyEtalase(AuthUtil.generateParamsNetwork(context, params))
                 .map(new GetData<MyEtalaseListServiceModel>());
     }
 
-    private TKPDMapParam<String, String> generateFetchMyEtalaseParam() {
+    private TKPDMapParam<String, String> generateFetchMyEtalaseParam(int page) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(SHOP_ID, new SessionHandler(context).getShopID());
+        param.put(PAGE, String.valueOf(page));
         return param;
     }
 
