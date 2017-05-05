@@ -3,6 +3,7 @@ package com.tokopedia.session.session.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.localytics.android.Customer;
@@ -13,6 +14,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -214,25 +216,7 @@ public class SessionImpl implements Session {
     }
 
     private void sendMoEngageLoginEvent(Bundle bundle, String label){
-        CommonUtils.dumper("MoEngage called login events");
-        CustomerWrapper wrapper = new CustomerWrapper.Builder()
-                .setCustomerId(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setFullName(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.FULLNAME_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setEmailAddress(
-                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
-                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
-                )
-                .setMethod(label)
-                .build();
-
-        TrackingUtils.sendMoEngageLoginEvent(wrapper);
-        TrackingUtils.setMoEngageUser(wrapper);
+        TrackingUtils.setMoEUserAttributes(bundle,label);
     }
 
     private void sendLocalyticsLoginEvent(Bundle bundle, String label){
@@ -258,7 +242,7 @@ public class SessionImpl implements Session {
 
     private void sendLocalyticsRegisterEvent(Bundle bundle, String label){
 
-        Map<String, String> attributesLogin = new HashMap<String, String>();
+        Map<String, String> attributesLogin = new HashMap<>();
         Jordan.init(context).getLocalyticsContainer().sendEventRegister(
                 new Customer.Builder()
                         .setCustomerId(
