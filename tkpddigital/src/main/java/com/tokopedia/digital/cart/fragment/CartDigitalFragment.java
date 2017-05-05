@@ -631,6 +631,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void disableVoucherDiscount() {
+        this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
     }
 
