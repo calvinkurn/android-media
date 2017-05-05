@@ -377,7 +377,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                         requestParams.putString(key, id);
                     }
                     presenter.actionRideRequest(requestParams);
-                } else if (resultCode == Activity.RESULT_CANCELED) {
+                } else {
                     //TODO: we may need to update the fare status again
                     getActivity().finish();
                 }

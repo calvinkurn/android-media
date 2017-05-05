@@ -1,10 +1,8 @@
 package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -67,6 +65,8 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     LinearLayout onGoingPromoLayout;
     @BindView(R2.id.rv_promo)
     RecyclerView promoRecyclerView;
+    @BindView((R2.id.progress_bar_promo_list))
+    ProgressBar mPromoListProgressBar;
 
     ApplyPromoContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
@@ -116,15 +116,15 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (TextUtils.isEmpty(charSequence)) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        promoEditText.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                        promoEditText.setBackground(getResources().getDrawable(R.drawable.et_normal_bg));
                     } else {
-                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_normal_bg));
                     }
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        promoEditText.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                        promoEditText.setBackground(getResources().getDrawable(R.drawable.et_selected_bg));
                     } else {
-                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_selected_bg));
                     }
                 }
             }
@@ -174,12 +174,18 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onSuccessApplyPromo(FareEstimate fareEstimate) {
-        descriptionTextView.setVisibility(View.VISIBLE);
-        descriptionTextView.setTextColor(getResources().getColor(R.color.body_text_4_inverse));
-        descriptionTextView.setText(fareEstimate.getMessageSuccess());
+        //descriptionTextView.setVisibility(View.VISIBLE);
+        //descriptionTextView.setTextColor(getResources().getColor(R.color.body_text_4_inverse));
+        //descriptionTextView.setText(fareEstimate.getMessageSuccess());
         confirmBookingViewModel.setPromoCode(getPromo());
         confirmBookingViewModel.setPromoDescription(fareEstimate.getMessageSuccess());
         confirmBookingViewModel.setDeviceType(getDeviceName());
+
+        //set result back
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM, confirmBookingViewModel);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -266,7 +272,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void showPromoLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        mPromoListProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -286,7 +292,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void hidePromoLoading() {
-        progressBar.setVisibility(View.GONE);
+        mPromoListProgressBar.setVisibility(View.GONE);
     }
 
     public ApplyPromoActivity.BackButtonListener getBackButtonListener() {

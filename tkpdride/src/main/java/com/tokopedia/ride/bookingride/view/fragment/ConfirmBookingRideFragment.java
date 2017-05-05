@@ -76,6 +76,12 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView tokoCashActivationButton;
     @BindView(R2.id.tv_error)
     TextView errortextView;
+    @BindView(R2.id.promo_result_layout)
+    LinearLayout mPromoResultLayout;
+    @BindView(R2.id.tv_promo_desc)
+    TextView mPromoResultTextView;
+    @BindView(R2.id.promo_info_layout)
+    LinearLayout mApplyPromoLayout;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -199,7 +205,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         return requestParams;
     }
 
-    @OnClick(R2.id.apply_promo_card_layout)
+    @OnClick(R2.id.promo_info_layout)
     public void actionApplyPromoLayoutClicked() {
         startActivityForResult(
                 ApplyPromoActivity.getCallingActivity(getActivity(), confirmBookingViewModel),
@@ -302,6 +308,14 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     }
 
+    @OnClick(R2.id.iv_promo_desc_close)
+    public void actionRemoveAppliedPromo() {
+        confirmBookingViewModel.setPromoCode("");
+        confirmBookingViewModel.setPromoDescription("");
+        mPromoResultLayout.setVisibility(View.GONE);
+        mApplyPromoLayout.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void setBalanceText(String balance) {
         tokoCashLabelTextView.setText(String.format("%s%s",
@@ -357,6 +371,9 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         } else if (requestCode == APPLY_PROMO_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
+                mPromoResultLayout.setVisibility(View.VISIBLE);
+                mApplyPromoLayout.setVisibility(View.GONE);
+                mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
             }
         }
     }

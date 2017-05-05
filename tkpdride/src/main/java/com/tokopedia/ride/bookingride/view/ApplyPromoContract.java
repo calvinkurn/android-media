@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public interface ApplyPromoContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
         String getPromo();
 
         RequestParams getApplyPromoParams();
@@ -50,7 +50,7 @@ public interface ApplyPromoContract {
         void renderEmptyOnGoingPromo();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
         void actionApplyPromo();
 
         void getOnGoingPromo();
