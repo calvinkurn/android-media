@@ -18,6 +18,7 @@ import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -59,6 +60,8 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEUserAttributes(ProfileData profileData){
 
+        CommonUtils.dumper("MoEngage called app launch events "+profileData.getUserInfo().getUserBirth());
+
         CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                 .setFullName(profileData.getUserInfo().getUserName())
                 .setEmailAddress(profileData.getUserInfo().getUserEmail())
@@ -68,9 +71,57 @@ public class TrackingUtils extends TrackingConfig {
                 .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
                 .setShopName(profileData.getShopInfo().getShopName())
                 .setDateOfBirth(profileData.getUserInfo().getUserBirth())
+                .setFirstName(extractFirstName(profileData.getUserInfo().getUserName()))
                 .build();
 
         getMoEngine().setUserData(customerWrapper);
+    }
+
+    public static void setMoEUserAttributes(Bundle bundle, String label){
+
+        AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
+
+        CommonUtils.dumper("MoEngage called login events "+bundle+" data "+accountsParameter.getInfoModel().getBday());
+
+        CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                .setCustomerId(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .setFullName(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.FULLNAME_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .setEmailAddress(
+                        bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
+                                com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
+                )
+                .setPhoneNumber(accountsParameter.getInfoModel().getPhone())
+                .setGoldMerchant(accountsParameter.getAccountsModel().getShopIsGold() == 1)
+                .setShopName(accountsParameter.getAccountsModel().getShopName())
+                .setShopId(String.valueOf(accountsParameter.getAccountsModel().getShopId()))
+                .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel().getShopName()))
+                .setDateOfBirth(accountsParameter.getInfoModel().getBday())
+                .setFirstName(extractFirstName(accountsParameter.getAccountsModel().getFullName()))
+                .setMethod(label)
+                .build();
+
+        getMoEngine().setUserData(wrapper);
+        sendMoEngageLoginEvent(wrapper);
+    }
+
+    private static String extractFirstName(String name){
+        String firstName = "";
+        if(!TextUtils.isEmpty(name)){
+            String token[] = name.split(" ");
+            if(token.length>1){
+                firstName = token[0];
+            }else{
+                firstName = name;
+            }
+        }
+
+        return firstName;
     }
 
     public static void sendMoEngageLoginEvent(CustomerWrapper customerWrapper){
