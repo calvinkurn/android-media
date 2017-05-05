@@ -24,6 +24,7 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
@@ -103,6 +104,8 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
             if (isBaseHost(host) && isShop(linkSegment)) {
                 String shopDomain = linkSegment.get(0);
                 getShopInfo(url, shopDomain);
+            } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
+                DeepLinkChecker.openCategory(url, getActivity());
             } else {
                 openWebViewURL(url);
             }

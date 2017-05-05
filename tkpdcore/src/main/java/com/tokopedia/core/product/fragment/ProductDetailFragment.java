@@ -235,7 +235,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductDepartmentClicked(@NonNull Bundle bundle) {
-        presenter.processToBrowseProduct(context, bundle);
+        presenter.processToIntermediary(context, bundle);
     }
 
     @Override
