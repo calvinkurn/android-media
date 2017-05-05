@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.DrawerHelper;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.util.DeepLinkChecker;

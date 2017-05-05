@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.DrawerHelper;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;

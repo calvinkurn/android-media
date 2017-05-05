@@ -643,6 +643,10 @@ public class TkpdBaseURL {
         public class Ktp {
             public static final String CHECK_STATUS = "/api/ktp/check-status";
         }
+
+        public class Wallet {
+            public static final String GET_BALANCE = "api/v1/wallet/balance";
+        }
     }
 
     public static class Home {

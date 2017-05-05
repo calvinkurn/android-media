@@ -1,24 +1,32 @@
+package com.tokopedia.core.drawer2.data.pojo.topcash;
 
-package com.tokopedia.core.drawer.model.topcastItem;
-
-
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 
-public class Data {
+/**
+ * Created by nisie on 5/5/17.
+ */
+
+public class TokoCashData {
 
     @SerializedName("action")
+    @Expose
     private Action mAction;
     @SerializedName("balance")
+    @Expose
     private String mBalance;
     @SerializedName("redirect_url")
+    @Expose
     private String mRedirectUrl;
     @SerializedName("text")
+    @Expose
     private String mText;
     @SerializedName("wallet_id")
+    @Expose
     private Long mWalletId;
     @SerializedName("link")
-    private Integer link;
+    @Expose
+    private int link;
 
 
     public Action getAction() {
@@ -61,11 +69,11 @@ public class Data {
         mWalletId = wallet_id;
     }
 
-    public Integer getLink() {
+    public int getLink() {
         return link;
     }
 
-    public void setLink(Integer link) {
+    public void setLink(int link) {
         this.link = link;
     }
 }

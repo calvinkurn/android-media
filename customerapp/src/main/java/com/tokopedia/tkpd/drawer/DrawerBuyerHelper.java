@@ -3,10 +3,10 @@ package com.tokopedia.tkpd.drawer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,23 +18,21 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
-import com.tokopedia.core.drawer2.DrawerAdapter;
-import com.tokopedia.core.drawer2.DrawerHelper;
-import com.tokopedia.core.drawer2.databinder.DrawerHeaderDataBinder;
-import com.tokopedia.core.drawer2.databinder.DrawerItemDataBinder;
-import com.tokopedia.core.drawer2.model.DrawerGroup;
-import com.tokopedia.core.drawer2.model.DrawerItem;
-import com.tokopedia.core.drawer2.model.DrawerSeparator;
-import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.view.DrawerAdapter;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
+import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
+import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
+import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -314,7 +312,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     public void initDrawer(Activity activity) {
         this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
         this.adapter.setData(createDrawerData());
-        this.adapter.setHeader(new DrawerHeaderDataBinder(adapter, activity, this));
+        this.adapter.setHeader(new DrawerHeaderDataBinder(adapter, activity, this, drawerCache));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
@@ -472,13 +470,25 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public void onGoToTopCash(String topCashUrl) {
+        String seamlessURL;
+        seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
+        Bundle bundle = new Bundle();
+        bundle.putString("url", seamlessURL);
+        if (context.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplication())
+                    .goToWallet(context, bundle);
+        }
+
+    }
+
+    @Override
+    public void onGoToTopCashWithOtp(String topCashUrl) {
         Bundle bundle = new Bundle();
         bundle.putString("url", topCashUrl);
         if (context.getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) context.getApplication())
                     .goToWallet(context, bundle);
         }
-
     }
 
     private void onGoToCreateShop() {

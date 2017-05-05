@@ -3,12 +3,11 @@ package com.tokopedia.core.drawer.interactor;
 import android.content.Context;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
-import com.tokopedia.core.drawer.model.notification.NotificationData;
+import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;

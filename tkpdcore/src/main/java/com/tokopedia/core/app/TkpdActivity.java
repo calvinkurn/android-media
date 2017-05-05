@@ -13,16 +13,18 @@ import com.localytics.android.Localytics;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.drawer2.DrawerHelper;
-import com.tokopedia.core.drawer2.datamanager.DrawerDataManager;
-import com.tokopedia.core.drawer2.datamanager.DrawerDataManagerImpl;
-import com.tokopedia.core.drawer2.viewmodel.DrawerDeposit;
-import com.tokopedia.core.drawer2.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.viewmodel.DrawerProfile;
-import com.tokopedia.core.drawer2.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
+import com.tokopedia.core.drawer2.view.DrawerDataListener;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -36,14 +38,16 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Nisie on 31/08/15.
  */
-public abstract class TkpdActivity extends TActivity implements NotificationReceivedListener,
-        CartBadgeNotificationReceiver.ActionListener {
+public abstract class TkpdActivity extends TActivity implements
+        NotificationReceivedListener,
+        CartBadgeNotificationReceiver.ActionListener,
+        DrawerDataListener {
 
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
     protected DrawerHelper drawerHelper;
     protected SessionHandler sessionHandler;
     private CompositeSubscription compositeSubscription;
-
+    private DrawerDataManager drawerDataManager;
 
     @Override
     public void onStart() {
@@ -104,93 +108,55 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(getDrawerPosition());
-            DrawerDataManager drawerDataManager = new DrawerDataManagerImpl(this);
+            drawerDataManager = new DrawerDataManagerImpl(this, this);
             getDrawerProfile(drawerDataManager);
-            getDrawerDeposit(drawerDataManager);
+            getDrawerDeposit();
             getDrawerTopPoints(drawerDataManager);
-            getDrawerTokoCash(drawerDataManager);
-            getDrawerNotification(drawerDataManager);
+            getDrawerTokoCash();
+            getDrawerNotification();
 
         }
     }
 
-    protected void getDrawerNotification(DrawerDataManager drawerDataManager) {
-        CommonUtils.dumper("NISNIS get_deposit");
+    protected void getDrawerDeposit() {
+        drawerDataManager.getDeposit();
+    }
 
-        compositeSubscription.add(drawerDataManager.getNotification(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerNotification>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerNotification notification) {
-
-                                int notificationCount = notification.getTotalNotif();
-
-                                TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
-                                if (notifRed != null) {
-                                    if (notificationCount <= 0) {
-                                        notifRed.setVisibility(View.GONE);
-                                    } else {
-                                        notifRed.setVisibility(View.VISIBLE);
-                                        String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
-                                        notifRed.setText(totalNotif);
-                                    }
-                                }
-                                if (notification.isUnread()) {
-                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
-                                } else {
-                                    MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
-                                }
-                                drawerHelper.getAdapter().notifyDataSetChanged();
-
-                            }
-
-
-                        }
-                ));
+    protected void getDrawerNotification() {
+        drawerDataManager.getNotification();
     }
 
 
-    protected void getDrawerTokoCash(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerTokoCash>() {
-                            @Override
-                            public void onCompleted() {
+    protected void getDrawerTokoCash() {
 
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerTokoCash tokoCash) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-
-                            }
-
-
-                        }
-                ));
+        drawerDataManager.getTokoCash();
+//        compositeSubscription.add(drawerDataManager.getTokoCash(sessionHandler.getAccessToken(this))
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread(), true)
+//                .unsubscribeOn(Schedulers.newThread())
+//                .subscribe(
+//                        new Subscriber<DrawerTokoCash>() {
+//                            @Override
+//                            public void onCompleted() {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                CommonUtils.dumper("NISNIS " + e.toString());
+//                            }
+//
+//                            @Override
+//                            public void onNext(DrawerTokoCash tokoCash) {
+//
+//                                drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
+//                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+//
+//                            }
+//
+//
+//                        }
+//                ));
     }
 
     protected void getDrawerTopPoints(DrawerDataManager drawerDataManager) {
@@ -214,36 +180,6 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
                             public void onNext(DrawerTopPoints topPoints) {
 
                                 drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
-                                drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
-
-                            }
-
-
-                        }
-                ));
-    }
-
-    protected void getDrawerDeposit(DrawerDataManager drawerDataManager) {
-        compositeSubscription.add(drawerDataManager.getDeposit(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread(), true)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribe(
-                        new Subscriber<DrawerDeposit>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                CommonUtils.dumper("NISNIS " + e.toString());
-                            }
-
-                            @Override
-                            public void onNext(DrawerDeposit deposit) {
-
-                                drawerHelper.getAdapter().getHeader().getData().setDrawerDeposit(deposit);
                                 drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
 
                             }
@@ -344,4 +280,48 @@ public abstract class TkpdActivity extends TActivity implements NotificationRece
     }
 
     public abstract int getDrawerPosition();
+
+    @Override
+    public void onGetDeposit(DrawerDeposit drawerDeposit) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerDeposit(drawerDeposit);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorGetDeposit(String errorMessage) {
+
+    }
+
+    @Override
+    public void onGetNotificationDrawer(DrawerNotification notification) {
+        int notificationCount = notification.getTotalNotif();
+
+        TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
+        if (notifRed != null) {
+            if (notificationCount <= 0) {
+                notifRed.setVisibility(View.GONE);
+            } else {
+                notifRed.setVisibility(View.VISIBLE);
+                String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                notifRed.setText(totalNotif);
+            }
+        }
+        if (notification.isUnread()) {
+            MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
+        } else {
+            MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
+        }
+        drawerHelper.getAdapter().notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onErrorGetNotificationDrawer(String errorMessage) {
+    }
+
+    @Override
+    public void onGetTokoCash(DrawerTokoCash tokoCash) {
+        drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
 }
