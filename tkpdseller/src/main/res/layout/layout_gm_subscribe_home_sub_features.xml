@@ -7,6 +7,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:lineSpacingExtra="@dimen/gmsubscribe_line_height_textview"
+        android:gravity="center_horizontal"
         android:text="@string/gmsubscribe_subfeature_title"
         android:textAlignment="center"
         android:textSize="16sp" />

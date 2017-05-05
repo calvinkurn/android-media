@@ -76,6 +76,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="17dp"
         android:layout_marginTop="17dp"
+        android:gravity="center_horizontal"
         android:text="@string/gmsubscribe_button_change"
         android:textAlignment="center"
         android:textColor="@color/tkpd_main_green"
