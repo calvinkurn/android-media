@@ -45,12 +45,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     private DrawerHelper drawerHelper;
     private SessionHandler sessionHandler;
     private DrawerDataManager drawerDataManager;
+    private LocalCacheHandler drawerCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
     }
 
@@ -91,11 +93,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 //            drawerHelper = new DrawerVariable(this);
 
         } else {
-            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler);
+            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(setDrawerPosition());
-            drawerDataManager = new DrawerDataManagerImpl(this, this);
+            drawerDataManager = new DrawerDataManagerImpl(this, this, drawerCache);
             getDrawerProfile(drawerDataManager);
             getDrawerDeposit();
             getDrawerTopPoints(drawerDataManager);
@@ -269,6 +271,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         } else {
             MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
         }
+        drawerHelper.getAdapter().getHeader().getData().setDrawerNotification(notification);
         drawerHelper.getAdapter().notifyDataSetChanged();
 
     }

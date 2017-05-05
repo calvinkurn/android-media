@@ -69,11 +69,11 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
     private final LocalCacheHandler drawerCache;
     private final GlobalCacheManager cacheManager;
 
-    public DrawerDataManagerImpl(Context context, DrawerDataListener viewListener) {
+    public DrawerDataManagerImpl(Context context, DrawerDataListener viewListener, LocalCacheHandler drawerCache) {
         this.viewListener = viewListener;
         sessionHandler = new SessionHandler(context);
         cacheManager = new GlobalCacheManager();
-        drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
+        this.drawerCache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
         profileNetworkInteractor = new ProfileNetworkInteractorImpl(new PeopleService());
         topPointsNetworkInteractor = new TopPointsNetworkInteractorImpl(new CloverService());
 
@@ -100,7 +100,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 context,
                 new NotificationService(),
                 new NotificationMapper(),
-                drawerCache
+                this.drawerCache
         );
         NotificationRepository notificationRepository = new NotificationRepositoryImpl(notificationSourceFactory);
         notificationUseCase = new NotificationUseCase(
@@ -113,7 +113,7 @@ public class DrawerDataManagerImpl implements DrawerDataManager {
                 context,
                 new DepositService(),
                 new DepositMapper(),
-                drawerCache);
+                this.drawerCache);
         DepositRepository depositRepository = new DepositRepositoryImpl(depositSourceFactory);
         depositUseCase = new DepositUseCase(
                 new JobExecutor(),

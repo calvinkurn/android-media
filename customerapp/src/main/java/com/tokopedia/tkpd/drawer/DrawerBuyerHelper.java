@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -58,9 +59,12 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-    public DrawerBuyerHelper(Activity activity, SessionHandler sessionHandler) {
+    public DrawerBuyerHelper(Activity activity,
+                             SessionHandler sessionHandler,
+                             LocalCacheHandler drawerCache) {
         super(activity);
         this.sessionHandler = sessionHandler;
+        this.drawerCache = drawerCache;
         shopName = (TextView) activity.findViewById(R.id.label);
         shopLabel = (TextView) activity.findViewById(R.id.sublabel);
         shopIcon = (ImageView) activity.findViewById(R.id.icon);
@@ -69,12 +73,13 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     public static DrawerBuyerHelper createInstance(Activity activity,
-                                                   SessionHandler sessionHandler) {
-        return new DrawerBuyerHelper(activity, sessionHandler);
+                                                   SessionHandler sessionHandler,
+                                                   LocalCacheHandler drawerCache) {
+        return new DrawerBuyerHelper(activity, sessionHandler, drawerCache);
     }
 
     @Override
-    protected ArrayList<DrawerItem> createDrawerData() {
+    public ArrayList<DrawerItem> createDrawerData() {
         ArrayList<DrawerItem> data = new ArrayList<>();
 
         if (sessionHandler.isV4Login()) {

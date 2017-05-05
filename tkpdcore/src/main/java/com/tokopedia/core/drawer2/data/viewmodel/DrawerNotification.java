@@ -161,12 +161,12 @@ public class DrawerNotification {
 
     public int getTotalNotif() {
         if (GlobalConfig.isSellerApp())
-            return totalNotif - (getNotifPurchase() + inboxReview + inboxResCenter + inboxTicket);
+            return totalNotif - (getTotalPurchaseNotif() + inboxReview + inboxResCenter + inboxTicket);
         else
             return totalNotif;
     }
 
-    private int getNotifPurchase() {
+    public int getTotalPurchaseNotif() {
         return getPurchasePaymentConfirm() + getPurchaseDeliveryConfirm() +
                 getPurchaseOrderStatus() + getPurchaseReorder();
     }
@@ -193,5 +193,13 @@ public class DrawerNotification {
 
     public int getTotalCart() {
         return totalCart;
+    }
+
+    public int getTotalInboxNotif() {
+        return getInboxMessage() + getInboxTalk() + getInboxReview() + getInboxResCenter() + getInboxTicket();
+    }
+
+    public int getTotalSellingNotif() {
+        return getSellingNewOrder() + getSellingShippingConfirmation() + getSellingShippingStatus();
     }
 }

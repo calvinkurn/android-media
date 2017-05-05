@@ -18,6 +18,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
@@ -50,28 +51,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     protected int selectedPosition = -1;
 
     public DrawerHelper(Activity activity) {
-        drawerCache = new LocalCacheHandler(activity, DRAWER_CACHE);
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout_nav);
         recyclerView = (RecyclerView) activity.findViewById(R.id.left_drawer);
         toolbar = (Toolbar) activity.findViewById(R.id.app_bar);
         this.context = activity;
     }
 
-
-    public void setActionToolbar(Activity activity) {
-        ImageView drawerToggle = (ImageView) toolbar.getRootView().findViewById(R.id.toggle_but_ab);
-        if (drawerToggle == null) {
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    activity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawerLayout.addDrawerListener(toggle);
-            toggle.syncState();
-        }
-    }
-
-    protected ArrayList<DrawerItem> createDrawerData() {
-        ArrayList data = new ArrayList();
-        return data;
-    }
+    public abstract ArrayList<DrawerItem> createDrawerData();
 
     public void closeDrawer() {
         drawerLayout.closeDrawer(GravityCompat.START);
@@ -173,4 +159,5 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     public abstract void setFooterData(DrawerProfile profile);
 
     public abstract void setSelectedPosition(int id);
+
 }

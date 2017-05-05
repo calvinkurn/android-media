@@ -48,6 +48,7 @@ public abstract class TkpdActivity extends TActivity implements
     protected SessionHandler sessionHandler;
     private CompositeSubscription compositeSubscription;
     private DrawerDataManager drawerDataManager;
+    private LocalCacheHandler drawerCache;
 
     @Override
     public void onStart() {
@@ -59,6 +60,7 @@ public abstract class TkpdActivity extends TActivity implements
         super.onCreate(savedInstanceState);
         compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
 
         cartBadgeNotificationReceiver = new CartBadgeNotificationReceiver(this);
@@ -104,19 +106,27 @@ public abstract class TkpdActivity extends TActivity implements
 //            drawerHelper = new DrawerVariable(this);
 
         } else {
-            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler);
+            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
             drawerHelper.initDrawer(this);
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(getDrawerPosition());
-            drawerDataManager = new DrawerDataManagerImpl(this, this);
-            if (sessionHandler.isV4Login()) {
-                getDrawerProfile(drawerDataManager);
-                getDrawerDeposit();
-                getDrawerTopPoints(drawerDataManager);
-                getDrawerTokoCash();
-                getDrawerNotification();
-            }
+            drawerDataManager = new DrawerDataManagerImpl(this, this, drawerCache);
+        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateDrawerData();
+    }
+
+    protected void updateDrawerData() {
+        if (sessionHandler.isV4Login()) {
+            getDrawerProfile(drawerDataManager);
+            getDrawerDeposit();
+            getDrawerTopPoints(drawerDataManager);
+            getDrawerTokoCash();
+            getDrawerNotification();
         }
     }
 
@@ -313,6 +323,8 @@ public abstract class TkpdActivity extends TActivity implements
         } else {
             MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
         }
+        drawerHelper.getAdapter().getData().clear();
+        drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
         drawerHelper.getAdapter().notifyDataSetChanged();
 
     }

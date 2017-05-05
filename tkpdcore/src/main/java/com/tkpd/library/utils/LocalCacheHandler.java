@@ -110,6 +110,11 @@ public class LocalCacheHandler {
         editor.apply();
     }
 
+    public void commitEditor() {
+        editor.commit();
+    }
+
+
     public String getString(String key) {
         return sharedPrefs.getString(key, null);
     }

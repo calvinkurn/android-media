@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -63,9 +64,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public DrawerHelper getDrawer(AppCompatActivity activity, SessionHandler sessionHandler) {
+    public DrawerHelper getDrawer(AppCompatActivity activity,
+                                  SessionHandler sessionHandler,
+                                  LocalCacheHandler drawerCache) {
         CommonUtils.dumper("NISNIS " + activity.getClass().getSimpleName());
-        return DrawerBuyerHelper.createInstance(activity, sessionHandler);
+        return DrawerBuyerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
     @Override

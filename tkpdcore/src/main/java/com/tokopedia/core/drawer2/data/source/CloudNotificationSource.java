@@ -13,6 +13,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 
 /**
  * Created by nisie on 5/5/17.

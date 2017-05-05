@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -38,6 +39,8 @@ public interface TkpdCoreRouter {
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
-    DrawerHelper getDrawer(AppCompatActivity activity, SessionHandler sessionHandler);
+    DrawerHelper getDrawer(AppCompatActivity activity,
+                           SessionHandler sessionHandler,
+                           LocalCacheHandler drawerCache);
 
 }
