@@ -8,7 +8,7 @@ import com.tokopedia.core.shopinfo.listener.OsHomeFragmentView;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
 /**
- * Created by nakama on 26/04/17.
+ * Created by brilliant.oka on 26/04/17.
  */
 
 public class OsHomePresenterImpl implements OsHomePresenter {
@@ -22,7 +22,7 @@ public class OsHomePresenterImpl implements OsHomePresenter {
 
     @Override
     public void onRefresh() {
-        cacheInteractor.getShopProductCache(new ShopProductCacheInteractor.GetShopProductCacheListener() {
+        cacheInteractor.getLimitedShopProductCache(10, new ShopProductCacheInteractor.GetShopProductCacheListener() {
             @Override
             public void onSuccess(ProductModel model) {
                 viewListener.onGetProduct(model);
@@ -47,6 +47,5 @@ public class OsHomePresenterImpl implements OsHomePresenter {
 
     @Override
     public void onDestroyView() {
-//        cacheInteractor.deleteShopProductCache();
     }
 }

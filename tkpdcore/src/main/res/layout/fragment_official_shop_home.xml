@@ -10,7 +10,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small">
             <com.tokopedia.core.widgets.NestedWebView
                 android:id="@+id/webview"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -46,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_small"
                     android:padding="@dimen/new_margin_med"
-                    android:background="@drawable/border_3dp_green"
+                    android:background="@drawable/btn_green_3dp"
                     android:textColor="@color/white"
                     android:text="@string/os_view_all_product" />
             </LinearLayout>

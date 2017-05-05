@@ -5,7 +5,10 @@ import android.util.Log;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.shopinfo.models.productmodel.List;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
+
+import java.util.ArrayList;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -14,7 +17,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by nakama on 26/04/17.
+ * Created by brilliant.oka on 26/04/17.
  */
 
 public class ShopProductCacheInteractorImpl implements ShopProductCacheInteractor {
@@ -23,7 +26,7 @@ public class ShopProductCacheInteractorImpl implements ShopProductCacheInteracto
     private final String CACHE_SHOP_PRODUCT = "CACHE_SHOP_PRODUCT";
 
     @Override
-    public void getShopProductCache(final GetShopProductCacheListener listener) {
+    public void getAllShopProductCache(final GetShopProductCacheListener listener) {
         Observable.just(CACHE_SHOP_PRODUCT)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
@@ -32,6 +35,50 @@ public class ShopProductCacheInteractorImpl implements ShopProductCacheInteracto
                     public ProductModel call(String s) {
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
                         return cacheManager.getConvertObjData(s, ProductModel.class);
+                    }
+                })
+                .subscribe(new Subscriber<ProductModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        listener.onError(e);
+                    }
+
+                    @Override
+                    public void onNext(ProductModel result) {
+                        try {
+                            listener.onSuccess(result);
+                        } catch (Exception e) {
+                            listener.onError(e);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void getLimitedShopProductCache(final int limit, final GetShopProductCacheListener listener) {
+        Observable.just(CACHE_SHOP_PRODUCT)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, ProductModel>() {
+                    @Override
+                    public ProductModel call(String s) {
+                        GlobalCacheManager cacheManager = new GlobalCacheManager();
+
+                        ProductModel model = cacheManager.getConvertObjData(s, ProductModel.class);
+                        java.util.List<List> list = new ArrayList<>();
+                        for(int i = 0; i < model.list.size(); i++) {
+                            if (i>=limit) break;
+                            list.add(model.list.get(i));
+                        }
+                        model.list.clear();
+                        model.list.addAll(list);
+
+                        return model;
                     }
                 })
                 .subscribe(new Subscriber<ProductModel>() {
