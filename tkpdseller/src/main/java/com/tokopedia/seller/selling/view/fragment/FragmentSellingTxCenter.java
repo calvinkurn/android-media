@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
@@ -84,7 +85,7 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     @Override
     public void initHandlerAndAdapter() {
         ListViewPeopleTransactionSummaryAdapter = new ListViewPeopleTransactionSummary(getActivity(), MenuName, MenuCount, MenuDesc);
-        cache = new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA);
+        cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
     }
 
     @Override

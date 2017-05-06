@@ -32,6 +32,8 @@ import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -421,8 +423,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public boolean onCreateOptionsMenu(Menu menu) {
         if (SessionHandler.isV4Login(this)) {
             getMenuInflater().inflate(R.menu.main, menu);
-            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), TkpdCache.NOTIFICATION_DATA);
-            int CartCache = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+            LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
+            int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
             if (CartCache > 0) {
                 menu.findItem(R.id.action_cart).setIcon(R.drawable.ic_new_action_cart_active);
             } else {
@@ -576,8 +578,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
+        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);

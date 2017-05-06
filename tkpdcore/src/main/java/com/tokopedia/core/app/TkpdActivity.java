@@ -113,7 +113,7 @@ public abstract class TkpdActivity extends TActivity implements
 
     protected void updateDrawerData() {
         if (sessionHandler.isV4Login()) {
-            getDrawerProfile(drawerDataManager);
+            getDrawerProfile();
             getDrawerDeposit();
             getDrawerTopPoints();
             getDrawerTokoCash();
@@ -138,7 +138,7 @@ public abstract class TkpdActivity extends TActivity implements
         drawerDataManager.getTopPoints();
     }
 
-    protected void getDrawerProfile(DrawerDataManager drawerDataManager) {
+    protected void getDrawerProfile() {
        drawerDataManager.getProfile();
     }
 
@@ -164,8 +164,8 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
+        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);

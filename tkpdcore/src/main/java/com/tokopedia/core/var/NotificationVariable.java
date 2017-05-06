@@ -37,6 +37,8 @@ import com.tokopedia.core.customadapter.ListViewNotification3;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
@@ -114,7 +116,7 @@ public class NotificationVariable {
 
     public NotificationVariable(Activity context) {
         this.context = context;
-        Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+        Cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 
     public void SetOnNotifRefresh(OnNotifRefreshListener listener) {
@@ -126,7 +128,7 @@ public class NotificationVariable {
 
     public void setContext(Activity context) {
         this.context = context;
-        Cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+        Cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 
     public void CreateNotification() {
@@ -214,7 +216,7 @@ public class NotificationVariable {
                 TotalAvail.clear();
                 TotalAvail = Cache.getArrayListInteger(TkpdCache.Key.TOTAL_AVAIL);
                 IncNotif = Cache.getInt(TkpdCache.Key.INC_NOTIF, 0);
-                IsHasCart = Cache.getInt(TkpdCache.Key.IS_HAS_CART);
+                IsHasCart = Cache.getInt(DrawerNotification.IS_HAS_CART);
                 CommonUtils.dumper("inc notifnya: " + MessageCount);
                 if (IncNotif >= 1) {
                     NotifCount.setBackgroundResource(R.drawable.notif_red);
@@ -370,7 +372,7 @@ public class NotificationVariable {
         Cache.putArrayListInteger(TkpdCache.Key.TOTAL_AVAIL, TotalAvail);
         Cache.putLong(TkpdCache.Key.EXPIRY, System.currentTimeMillis() / 1000);
         Cache.putInt(TkpdCache.Key.INC_NOTIF, IncNotif);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, IsHasCart);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, IsHasCart);
         Cache.putInt(TkpdCache.Key.TOTAL_NOTIF, TotalNotif);
         Cache.applyEditor();
         TkpdWidgetReceiver.UpdateWidget(context);
@@ -472,7 +474,7 @@ public class NotificationVariable {
                 Cache.putArrayListInteger(TkpdCache.Key.TOTAL_AVAIL, TotalAvail);
                 Cache.putLong(TkpdCache.Key.EXPIRY, System.currentTimeMillis() / 1000);
                 Cache.putInt(TkpdCache.Key.INC_NOTIF, IncNotif);
-                Cache.putInt(TkpdCache.Key.IS_HAS_CART, IsHasCart);
+                Cache.putInt(DrawerNotification.IS_HAS_CART, IsHasCart);
                 Cache.putInt(TkpdCache.Key.TOTAL_NOTIF, TotalNotif);
                 Cache.applyEditor();
                 TkpdWidgetReceiver.UpdateWidget(context);

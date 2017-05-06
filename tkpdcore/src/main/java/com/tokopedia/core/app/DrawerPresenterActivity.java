@@ -94,12 +94,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
             drawerHelper.setEnabled(true);
             drawerHelper.setSelectedPosition(setDrawerPosition());
             drawerDataManager = new DrawerDataManagerImpl(this, this);
-            getDrawerProfile();
-            getDrawerDeposit();
-            getDrawerTopPoints();
-            getDrawerTokoCash();
-            getDrawerNotification();
-
         }
     }
 
@@ -143,14 +137,24 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "on resume");
         super.onResume();
+        updateDrawerData();
+    }
+
+    protected void updateDrawerData() {
+        if (sessionHandler.isV4Login()) {
+            getDrawerProfile();
+            getDrawerDeposit();
+            getDrawerTopPoints();
+            getDrawerTokoCash();
+            getDrawerNotification();
+        }
     }
 
     @Override
     public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
-        Cache.putInt(TkpdCache.Key.IS_HAS_CART, status);
+        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);

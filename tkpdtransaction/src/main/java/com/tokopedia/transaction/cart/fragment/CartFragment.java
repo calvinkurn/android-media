@@ -40,6 +40,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -554,7 +555,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public LocalCacheHandler getLocalCacheHandlerNotificationData() {
-        return new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+        return new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
     }
 
     @Override

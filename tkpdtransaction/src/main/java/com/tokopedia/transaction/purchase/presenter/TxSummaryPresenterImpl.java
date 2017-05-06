@@ -7,6 +7,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.drawer.interactor.NetworkInteractor;
 import com.tokopedia.core.drawer.interactor.NetworkInteractorImpl;
 import com.tokopedia.core.drawer.var.NotificationItem;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.purchase.listener.TxSummaryViewListener;
@@ -28,7 +29,7 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
 
     @Override
     public void getNotificationPurcase(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.NOTIFICATION_DATA);
+        LocalCacheHandler cache = new LocalCacheHandler(context, DrawerHelper.DRAWER_CACHE);
         List<Integer> countList = cache.getArrayListInteger(TkpdCache.Key.PURCHASE_COUNT);
         List<TxSummaryItem> summaryItemList = new ArrayList<>();
 

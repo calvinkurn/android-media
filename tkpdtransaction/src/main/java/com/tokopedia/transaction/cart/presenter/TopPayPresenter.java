@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
@@ -106,7 +107,7 @@ public class TopPayPresenter implements ITopPayPresenter {
     @Override
     public void clearNotificationCart() {
         LocalCacheHandler cache = view.getLocalCacheHandlerNotification();
-        cache.putInt(TkpdCache.Key.IS_HAS_CART, 0);
+        cache.putInt(DrawerNotification.IS_HAS_CART, 0);
         cache.applyEditor();
     }
 
