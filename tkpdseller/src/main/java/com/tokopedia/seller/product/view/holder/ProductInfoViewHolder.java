@@ -20,7 +20,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
+import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 
@@ -136,7 +136,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             categoryLabelView.resetContentText();
             return;
         }
-        ProductCategoryPrediction productCategoryPrediction = (ProductCategoryPrediction) radioButton.getTag();
+        ProductCategoryPredictionDomainModel productCategoryPrediction = (ProductCategoryPredictionDomainModel) radioButton.getTag();
         if (productCategoryPrediction == null) {
             categoryLabelView.resetContentText();
             return;
@@ -168,7 +168,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         nameEditText.setEnabled(enabled);
     }
 
-    public void successGetCategoryRecommData(List<ProductCategoryPrediction> categoryPredictionList) {
+    public void successGetCategoryRecommData(List<ProductCategoryPredictionDomainModel> categoryPredictionList) {
         if (categoryPredictionList == null || categoryPredictionList.size() == 0) {
             hideAndClearCategoryRecomm();
             return;
