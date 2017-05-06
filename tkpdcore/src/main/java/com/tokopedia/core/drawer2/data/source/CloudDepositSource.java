@@ -18,6 +18,8 @@ import rx.functions.Action1;
  */
 
 public class CloudDepositSource {
+    public static final String DRAWER_CACHE_DEPOSIT = "DRAWER_CACHE_DEPOSIT";
+
     private final Context context;
     private final DepositService depositService;
     private final DepositMapper depositMapper;
@@ -44,7 +46,7 @@ public class CloudDepositSource {
         return new Action1<DepositModel>() {
             @Override
             public void call(DepositModel drawerDeposit) {
-                drawerCache.putString(DrawerHeaderDataBinder.DRAWER_CACHE_DEPOSIT, drawerDeposit.getDepositData().getDepositTotal());
+                drawerCache.putString(DRAWER_CACHE_DEPOSIT, drawerDeposit.getDepositData().getDepositTotal());
                 drawerCache.applyEditor();
             }
         };

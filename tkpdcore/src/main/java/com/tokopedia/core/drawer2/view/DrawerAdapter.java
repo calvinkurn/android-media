@@ -30,7 +30,9 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     public static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     public static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
 
-    private DrawerHeaderDataBinder drawerHeaderDataBinder;
+    public static final String IS_GM_OPENED = "IS_GM_OPENED";
+
+    private DataBinder drawerHeaderDataBinder;
     private DrawerItemDataBinder drawerItemDataBinder;
     private DrawerGroupDataBinder drawerGroupDataBinder;
     private DrawerSeparatorDataBinder drawerSeparatorDataBinder;
@@ -152,11 +154,11 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
         notifyDataSetChanged();
     }
 
-    public void setHeader(DrawerHeaderDataBinder header) {
+    public void setHeader(DataBinder header) {
         this.drawerHeaderDataBinder = header;
     }
 
-    public DrawerHeaderDataBinder getHeader() {
+    public DataBinder getHeader() {
         return drawerHeaderDataBinder;
     }
 

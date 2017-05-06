@@ -3,7 +3,6 @@ package com.tokopedia.core.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,11 +18,11 @@ import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
 import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
 import com.tokopedia.core.drawer2.view.DrawerDataListener;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
+import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -85,16 +84,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     protected void setupDrawer() {
-        if (GlobalConfig.isSellerApp()) {
-//            drawerHelper = new DrawerVariable(this);
+        drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(setDrawerPosition());
+        drawerDataManager = new DrawerDataManagerImpl(this, this);
 
-        } else {
-            drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
-            drawerHelper.initDrawer(this);
-            drawerHelper.setEnabled(true);
-            drawerHelper.setSelectedPosition(setDrawerPosition());
-            drawerDataManager = new DrawerDataManagerImpl(this, this);
-        }
     }
 
     protected void getDrawerDeposit() {
@@ -186,7 +181,10 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetDeposit(DrawerDeposit drawerDeposit) {
-        drawerHelper.getAdapter().getHeader().getData().setDrawerDeposit(drawerDeposit);
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -228,7 +226,13 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetTokoCash(DrawerTokoCash tokoCash) {
-        drawerHelper.getAdapter().getHeader().getData().setDrawerTokoCash(tokoCash);
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerTokoCash(tokoCash);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerTokoCash(tokoCash);
+
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -239,7 +243,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetTopPoints(DrawerTopPoints topPoints) {
-        drawerHelper.getAdapter().getHeader().getData().setDrawerTopPoints(topPoints);
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerTopPoints(topPoints);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerTopPoints(topPoints);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
     }
 
@@ -250,7 +259,12 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onGetProfile(DrawerProfile profile) {
-        drawerHelper.getAdapter().getHeader().getData().setDrawerProfile(profile);
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerHeaderDataBinder)
+            ((DrawerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerProfile(profile);
+        else if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerProfile(profile);
         drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
         drawerHelper.setFooterData(profile);
     }

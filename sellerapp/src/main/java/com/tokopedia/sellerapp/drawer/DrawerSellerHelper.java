@@ -1,12 +1,9 @@
-package com.tokopedia.tkpd.drawer;
-
+package com.tokopedia.sellerapp.drawer;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,56 +14,55 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.EtalaseShopEditor;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
+import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
-import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.tkpd.R;
+import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.gmstat.activities.GMStatActivity;
+import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 import java.util.ArrayList;
 
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_GM_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_INBOX_OPENED;
-import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_PEOPLE_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
 
 /**
- * Created by nisie on 1/11/17.
+ * Created by nisie on 5/6/17.
  */
 
-public class DrawerBuyerHelper extends DrawerHelper
+public class DrawerSellerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
-        DrawerHeaderDataBinder.DrawerHeaderListener {
+        DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
     private TextView shopName;
     private TextView shopLabel;
-
     private ImageView shopIcon;
     private View shopLayout;
     private View footerShadow;
 
     private SessionHandler sessionHandler;
 
-    public DrawerBuyerHelper(Activity activity,
-                             SessionHandler sessionHandler,
-                             LocalCacheHandler drawerCache) {
+
+    public DrawerSellerHelper(Activity activity,
+                              SessionHandler sessionHandler,
+                              LocalCacheHandler drawerCache) {
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
@@ -77,59 +73,33 @@ public class DrawerBuyerHelper extends DrawerHelper
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
     }
 
-    public static DrawerBuyerHelper createInstance(Activity activity,
-                                                   SessionHandler sessionHandler,
-                                                   LocalCacheHandler drawerCache) {
-        return new DrawerBuyerHelper(activity, sessionHandler, drawerCache);
+    public static DrawerSellerHelper createInstance(Activity activity,
+                                                    SessionHandler sessionHandler,
+                                                    LocalCacheHandler drawerCache) {
+        return new DrawerSellerHelper(activity, sessionHandler, drawerCache);
     }
 
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
         ArrayList<DrawerItem> data = new ArrayList<>();
 
-        if (sessionHandler.isV4Login()) {
-            createDataLogin(data);
-            shopLayout.setVisibility(View.VISIBLE);
-            footerShadow.setVisibility(View.VISIBLE);
-        } else {
-            createDataGuest(data);
-            shopLayout.setVisibility(View.GONE);
-            footerShadow.setVisibility(View.GONE);
-        }
-        return data;
-    }
-
-    private void createDataGuest(ArrayList<DrawerItem> data) {
-        data.add(new DrawerItem("Beranda", 0, TkpdState.DrawerPosition.INDEX_HOME, true));
-        data.add(new DrawerItem("Masuk", 0, TkpdState.DrawerPosition.LOGIN, true));
-        data.add(new DrawerItem("Daftar", 0, TkpdState.DrawerPosition.REGISTER, true));
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            data.add(new DrawerItem("Developer Options",
-                    android.R.drawable.stat_sys_warning,
-                    TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
-        }
-
-    }
-
-    private void createDataLogin(ArrayList<DrawerItem> data) {
         data.add(new DrawerItem("Beranda",
                 R.drawable.icon_home,
-                TkpdState.DrawerPosition.INDEX_HOME,
+                TkpdState.DrawerPosition.SELLER_INDEX_HOME,
                 true));
-        data.add(new DrawerItem("Wishlist",
-                R.drawable.icon_wishlist,
-                TkpdState.DrawerPosition.WISHLIST,
+        data.add(getGoldMerchantMenu());
+        data.add(new DrawerItem("Statistik",
+                R.drawable.statistik_icon,
+                TkpdState.DrawerPosition.SELLER_GM_STAT,
                 true));
+        data.add(new DrawerItem(context.getString(R.string.title_top_ads),
+                R.drawable.ic_top_ads,
+                TkpdState.DrawerPosition.SELLER_TOP_ADS,
+                true));
+
         data.add(getInboxMenu());
-        data.add(getBuyerMenu());
-        if (!sessionHandler.getShopID(context).equals("0")
-                && !sessionHandler.getShopID(context).equals("")) {
-            data.add(getSellerMenu());
-            data.add(new DrawerItem("Gold Merchant",
-                    R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,
-                    false));
-        }
+        data.add(getSellerMenu());
+
         data.add(new DrawerItem("Pengaturan",
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
@@ -150,9 +120,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                     TkpdState.DrawerPosition.DEVELOPER_OPTIONS,
                     true));
         }
+
+        shopLayout.setVisibility(View.VISIBLE);
+        footerShadow.setVisibility(View.VISIBLE);
+        return data;
     }
 
-    private DrawerGroup getSellerMenu() {
+    private DrawerItem getSellerMenu() {
         DrawerGroup sellerMenu = new DrawerGroup("Penjualan",
                 R.drawable.icon_penjualan,
                 TkpdState.DrawerPosition.SHOP,
@@ -190,40 +164,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         return sellerMenu;
     }
 
-    private DrawerGroup getBuyerMenu() {
-        DrawerGroup buyerMenu = new DrawerGroup("Pembelian",
-                R.drawable.icon_pembelian,
-                TkpdState.DrawerPosition.PEOPLE,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                getTotalBuyerNotif());
-        buyerMenu.add(new DrawerItem("Status Pembayaran",
-                0,
-                TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM)));
-        buyerMenu.add(new DrawerItem("Status Pemesanan",
-                0,
-                TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS)));
-        buyerMenu.add(new DrawerItem("Konfirmasi Penerimaan",
-                0,
-                TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM)));
-        buyerMenu.add(new DrawerItem("Transaksi Dibatalkan",
-                0,
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_REORDER)));
-        buyerMenu.add(new DrawerItem("Daftar Pembelian",
-                0,
-                TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST,
-                drawerCache.getBoolean(IS_PEOPLE_OPENED, false)));
-        return buyerMenu;
-    }
-
-    private DrawerGroup getInboxMenu() {
+    private DrawerItem getInboxMenu() {
         DrawerGroup inboxMenu = new DrawerGroup("Kotak Masuk",
                 R.drawable.icon_inbox,
                 TkpdState.DrawerPosition.INBOX,
@@ -265,17 +206,45 @@ public class DrawerBuyerHelper extends DrawerHelper
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
     }
 
-    private int getTotalBuyerNotif() {
-        return drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_DELIVERY_CONFIRM, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_REORDER, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_ORDER_STATUS, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_PURCHASE_PAYMENT_CONFIRM, 0);
-    }
-
     private int getTotalSellerNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
+    }
+
+    private DrawerItem getGoldMerchantMenu() {
+        DrawerGroup gmMenu = new DrawerGroup("Gold Merchant",
+                R.drawable.ic_goldmerchant_drawer,
+                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
+                drawerCache.getBoolean(IS_GM_OPENED, false),
+                0);
+        String gmString = sessionHandler.isGoldMerchant(context) ?
+                context.getString(R.string.extend_gold_merchant) :
+                context.getString(R.string.upgrade_gold_merchant);
+
+        gmMenu.add(new DrawerItem(gmString,
+                0,
+                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
+                drawerCache.getBoolean(IS_GM_OPENED, false),
+                0));
+        return gmMenu;
+    }
+
+    @Override
+    public void initDrawer(Activity activity) {
+        this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
+        this.adapter.setData(createDrawerData());
+        this.adapter.setHeader(new DrawerSellerHeaderDataBinder(adapter, activity, this, drawerCache));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity,
+                LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(adapter);
+        setExpand();
+        closeDrawer();
+    }
+
+    @Override
+    public void setEnabled(boolean isEnabled) {
+
     }
 
     @Override
@@ -283,13 +252,8 @@ public class DrawerBuyerHelper extends DrawerHelper
         return drawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
-    private boolean hasShop(DrawerProfile drawerProfile) {
-        return !drawerProfile.getShopName().equals("");
-    }
-
     @Override
     public void setFooterData(DrawerProfile profile) {
-        if (hasShop(profile)) {
             shopName.setText(profile.getShopName());
             shopIcon.setVisibility(View.VISIBLE);
             shopLabel.setVisibility(View.VISIBLE);
@@ -300,36 +264,15 @@ public class DrawerBuyerHelper extends DrawerHelper
                     onGoToShop();
                 }
             });
-        } else {
-            shopName.setText(com.tokopedia.core.R.string.title_create_shop);
-            shopIcon.setVisibility(View.GONE);
-            shopLabel.setVisibility(View.GONE);
-            shopLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onGoToCreateShop();
-                }
-            });
-        }
     }
 
     @Override
     public void setSelectedPosition(int id) {
         adapter.setSelectedItem(id);
+
     }
 
     @Override
-    public void initDrawer(Activity activity) {
-        this.adapter = DrawerAdapter.createAdapter(activity, this, drawerCache);
-        this.adapter.setData(createDrawerData());
-        this.adapter.setHeader(new DrawerHeaderDataBinder(adapter, activity, this, drawerCache));
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity,
-                LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(adapter);
-        setExpand();
-        closeDrawer();
-    }
-
     public void setExpand() {
         if (drawerCache.getBoolean(IS_INBOX_OPENED, false)) {
             DrawerGroup group = findGroup(TkpdState.DrawerPosition.INBOX);
@@ -362,49 +305,11 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void setEnabled(boolean isEnabled) {
-        if (isEnabled) {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        } else {
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }
-    }
-
-    @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.INDEX_HOME:
-                intent = HomeRouter.getHomeActivity(context);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-                break;
-            case TkpdState.DrawerPosition.WISHLIST:
-                Intent wishList = SimpleHomeRouter
-                        .getSimpleHomeActivityIntent(context, SimpleHomeRouter.WISHLIST_FRAGMENT);
-
-                context.startActivity(wishList);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
-                context.startActivity(TransactionPurchaseRouter.createIntentConfirmPayment(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PAYMENT_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_ORDER_STATUS:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxStatus(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.ORDER_STATUS);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_CONFIRM_SHIPPING:
-                context.startActivity(TransactionPurchaseRouter.createIntentConfirmShipping(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.RECEIVE_CONFIRMATION);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_CANCELED:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxCanceled(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.CANCELLED_ORDER);
-                break;
-            case TkpdState.DrawerPosition.PEOPLE_TRANSACTION_LIST:
-                context.startActivity(TransactionPurchaseRouter.createIntentTxAll(context));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.PURCHASE_LIST);
+                context.startActivity(new Intent(context, SellerHomeActivity.class));
                 break;
             case TkpdState.DrawerPosition.SHOP_NEW_ORDER:
                 intent = SellerRouter.getActivitySellingTransaction(context);
@@ -442,19 +347,20 @@ public class DrawerBuyerHelper extends DrawerHelper
                 startIntent(context, EtalaseShopEditor.class);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
-            case TkpdState.DrawerPosition.GOLD_MERCHANT:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication())
-                            .goToMerchantRedirect(context);
-                }
+            case TkpdState.DrawerPosition.SELLER_GM_STAT:
+                intent = new Intent(context, GMStatActivity.class);
+                intent.putExtra(GMStatActivity.SHOP_ID, SessionHandler.getShopID(context));
+                intent.putExtra(GMStatActivity.IS_GOLD_MERCHANT, SessionHandler.isGoldMerchant(context));
+                context.startActivity(intent);
+                UnifyTracking.eventClickGMStat();
+                break;
+            case TkpdState.DrawerPosition.SELLER_TOP_ADS:
+                intent = new Intent(context, TopAdsDashboardActivity.class);
+                context.startActivity(intent);
                 break;
             default:
                 super.onItemClicked(item);
         }
-
-//        if (item.getId() != TkpdState.DrawerPosition.INDEX_HOME) {
-//            context.finish();
-//        }
         closeDrawer();
 
     }
@@ -475,53 +381,12 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     }
 
-    @Override
-    public void onGoToTopPoints(String topPointsUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", topPointsUrl);
-        Intent intent = new Intent(context, LoyaltyDetail.class);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.TOPPOINTS);
-    }
-
-    @Override
-    public void onGoToTopCash(String topCashUrl) {
-        String seamlessURL;
-        seamlessURL = URLGenerator.generateURLSessionLogin((Uri.encode(topCashUrl)), context);
-        Bundle bundle = new Bundle();
-        bundle.putString("url", seamlessURL);
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, bundle);
-        }
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-        Bundle bundle = new Bundle();
-        bundle.putString("url", topCashUrl);
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, bundle);
-        }
-    }
-
-    private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
-
-
-    }
-
     private void onGoToShop() {
         Intent intent = new Intent(context, ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(sessionHandler.getShopID(), ""));
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }
+
+
 }

@@ -77,11 +77,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
-            case TkpdState.DrawerPosition.INDEX_HOME:
-                intent = HomeRouter.getHomeActivity(context);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                context.startActivity(intent);
-                break;
             case TkpdState.DrawerPosition.LOGIN:
             case TkpdState.DrawerPosition.REGISTER:
                 intent = SessionRouter.getLoginActivityIntent(context);

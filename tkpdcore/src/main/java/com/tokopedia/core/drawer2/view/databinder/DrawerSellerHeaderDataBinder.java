@@ -16,10 +16,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
-import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,21 +25,15 @@ import butterknife.ButterKnife;
 import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_CACHE_DEPOSIT;
 
 /**
- * Created by nisie on 1/11/17.
+ * Created by nisie on 5/6/17.
  */
 
-public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.ViewHolder> {
+public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderDataBinder.ViewHolder> {
 
     public interface DrawerHeaderListener {
         void onGoToDeposit();
 
         void onGoToProfile();
-
-        void onGoToTopPoints(String topPointsUrl);
-
-        void onGoToTopCash(String topCashUrl);
-
-        void onGoToTopCashWithOtp(String topCashUrl);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -55,12 +47,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.deposit_text)
         TextView deposit;
 
-        @BindView(R2.id.toppoints_text)
-        TextView topPoint;
-
-        @BindView(R2.id.top_cash_value)
-        TextView tokoCash;
-
         @BindView(R2.id.cover_img)
         ImageView coverImg;
 
@@ -73,29 +59,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.drawer_saldo)
         RelativeLayout saldoLayout;
 
-        @BindView(R2.id.drawer_top_points)
-        RelativeLayout topPointsLayout;
-
-        @BindView(R2.id.drawer_top_cash)
-        RelativeLayout tokoCashLayout;
-
         @BindView(R2.id.loading_saldo)
         View loadingSaldo;
-
-        @BindView(R2.id.loading_loyalty)
-        View loadingLoyalty;
-
-        @BindView(R2.id.loading_top_cash)
-        View loadingTokoCash;
-
-        @BindView(R2.id.toko_cash_label)
-        TextView tokoCashLabel;
-
-        @BindView(R2.id.toko_cash_redirect_arrow)
-        View tokoCashRedirectArrow;
-
-        @BindView(R2.id.toko_cash_activation_button)
-        TextView tokoCashActivationButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -107,7 +72,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private DrawerData data;
     private DrawerHeaderListener listener;
 
-    public DrawerHeaderDataBinder(DataBindAdapter dataBindAdapter,
+    public DrawerSellerHeaderDataBinder(DataBindAdapter dataBindAdapter,
                                   Context context,
                                   DrawerHeaderListener listener,
                                   LocalCacheHandler drawerCache) {
@@ -135,30 +100,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     }
 
     @Override
-    public DrawerHeaderDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
-        return new DrawerHeaderDataBinder.ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.drawer_header, parent, false));
+    public DrawerSellerHeaderDataBinder.ViewHolder newViewHolder(ViewGroup parent) {
+        return new DrawerSellerHeaderDataBinder.ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.drawer_header_seller, parent, false));
     }
+
 
     @Override
-    public void bindViewHolder(DrawerHeaderDataBinder.ViewHolder holder, int position) {
-
-        if (SessionHandler.isV4Login(context))
-            bindDrawerHeader(holder);
-        else
-            bindDrawerHeaderGuest(holder);
-
-    }
-
-    protected void bindDrawerHeaderGuest(ViewHolder holder) {
-        holder.name.setVisibility(View.GONE);
-        holder.avatar.setVisibility(View.GONE);
-        ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
-        holder.gradientBlack.setBackgroundResource(0);
-        holder.drawerPointsLayout.setVisibility(View.GONE);
-    }
-
-    protected void bindDrawerHeader(ViewHolder holder) {
+    public void bindViewHolder(DrawerSellerHeaderDataBinder.ViewHolder holder, int position) {
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.name.setVisibility(View.VISIBLE);
         holder.avatar.setVisibility(View.VISIBLE);
@@ -171,34 +120,14 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.name.setText(data.getDrawerProfile().getUserName());
 
         setDeposit(holder);
-        setTopPoints(holder);
-        setTopCash(holder);
-
         setListener(holder);
     }
-
 
     private void setListener(ViewHolder holder) {
         holder.saldoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
-            }
-        });
-        holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onGoToTopPoints(data.getDrawerTopPoints().getTopPointsUrl());
-            }
-        });
-        holder.tokoCashLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isRegistered(data.getDrawerTokoCash()))
-                    listener.onGoToTopCashWithOtp(data.getDrawerTokoCash().getRedirectUrl());
-                else
-                    listener.onGoToTopCash(data.getDrawerTokoCash().getDrawerTokoCashAction().getRedirectUrl());
-
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {
@@ -213,57 +142,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 listener.onGoToProfile();
             }
         });
-    }
-
-    private void setTopCash(ViewHolder holder) {
-        if (isTokoCashDisabled(data.getDrawerTokoCash())) {
-            holder.tokoCashLayout.setVisibility(View.GONE);
-        } else {
-            if (isRegistered(data.getDrawerTokoCash())) {
-                showTokoCashBalanceView(holder);
-                holder.tokoCash.setText(data.getDrawerTokoCash().getBalance());
-                holder.tokoCashLabel.setText(data.getDrawerTokoCash().getText());
-            } else {
-                showTokoCashActivateView(holder);
-                holder.tokoCashActivationButton.setText(data.getDrawerTokoCash()
-                        .getDrawerTokoCashAction().getText());
-            }
-            holder.loadingTokoCash.setVisibility(View.GONE);
-        }
-    }
-
-    private void showTokoCashBalanceView(ViewHolder holder) {
-        holder.tokoCashLayout.setVisibility(View.VISIBLE);
-        holder.tokoCashActivationButton.setVisibility(View.GONE);
-        holder.tokoCash.setVisibility(View.VISIBLE);
-        holder.tokoCashRedirectArrow.setVisibility(View.VISIBLE);
-    }
-
-    private void showTokoCashActivateView(ViewHolder holder) {
-        holder.tokoCashLayout.setVisibility(View.VISIBLE);
-        holder.tokoCashRedirectArrow.setVisibility(View.GONE);
-        holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
-        holder.tokoCash.setVisibility(View.GONE);
-    }
-
-    private boolean isRegistered(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getLink() == 1;
-    }
-
-    private boolean isTokoCashDisabled(DrawerTokoCash drawerTokoCash) {
-        return drawerTokoCash.getText() == null
-                || drawerTokoCash.getText().equals("");
-    }
-
-    private void setTopPoints(ViewHolder holder) {
-        if (data.getDrawerTopPoints().getTopPoints().equals("")) {
-            holder.loadingLoyalty.setVisibility(View.VISIBLE);
-            holder.topPoint.setVisibility(View.GONE);
-        } else {
-            holder.loadingLoyalty.setVisibility(View.GONE);
-            holder.topPoint.setVisibility(View.VISIBLE);
-            holder.topPoint.setText(data.getDrawerTopPoints().getTopPoints());
-        }
     }
 
     private void setDeposit(ViewHolder holder) {
@@ -294,6 +172,4 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     public int getItemCount() {
         return 1;
     }
-
-
 }
