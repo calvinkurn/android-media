@@ -3,6 +3,8 @@ package com.tokopedia.digital.product.compoundview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import butterknife.ButterKnife;
@@ -36,11 +38,58 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         ButterKnife.bind(this);
+        initialViewListener();
     }
+
+    protected abstract void initialViewListener();
 
     protected abstract int getHolderLayoutId();
 
     public abstract void renderData(T data);
+
+    public void setClientNumberInputViewCallback(ClientNumberInputView clientNumberInputView) {
+        if (clientNumberInputView != null) {
+            clientNumberInputView.getAutoCompleteTextView().setOnFocusChangeListener(getFocusChangeListener());
+        }
+    }
+
+    private OnFocusChangeListener getFocusChangeListener() {
+        return new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    //need more investigate to scroll page bottom banner and use customer activity
+                    //setParentToScroolToTop();
+                }
+            }
+        };
+    }
+
+    public void setClientNumberInputViewTouchCallback(ClientNumberInputView clientNumberInputView) {
+        if (clientNumberInputView != null) {
+            clientNumberInputView.getAutoCompleteTextView().setOnTouchListener(getTouchListener(clientNumberInputView));
+        }
+    }
+
+    private View.OnTouchListener getTouchListener(final ClientNumberInputView clientNumberInputView) {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        clientNumberInputView.getAutoCompleteTextView().setFocusable(true);
+                        clientNumberInputView.getAutoCompleteTextView().requestFocus();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //setParentToScroolToTop();
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        };
+    }
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);

@@ -90,13 +90,16 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 if (productDigitalData.getCategoryData().isSupportedStyle()) {
                     switch (productDigitalData.getCategoryData().getOperatorStyle()) {
                         case CategoryData.STYLE_PRODUCT_CATEGORY_1:
+                        case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                             view.renderCategoryProductDataStyle1(productDigitalData.getCategoryData());
                             break;
                         case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                            view.renderCategoryProductDataStyle2(productDigitalData.getCategoryData());
                             break;
                         case CategoryData.STYLE_PRODUCT_CATEGORY_3:
-                            break;
                         case CategoryData.STYLE_PRODUCT_CATEGORY_4:
+                        case CategoryData.STYLE_PRODUCT_CATEGORY_5:
+                            view.renderCategoryProductDataStyle3(productDigitalData.getCategoryData());
                             break;
                     }
                     view.renderBannerListData(

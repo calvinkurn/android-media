@@ -15,10 +15,13 @@ public class CategoryData {
     public static final String STYLE_PRODUCT_CATEGORY_2 = "style_2";
     public static final String STYLE_PRODUCT_CATEGORY_3 = "style_3";
     public static final String STYLE_PRODUCT_CATEGORY_4 = "style_4";
+    public static final String STYLE_PRODUCT_CATEGORY_5 = "style_5";
+    public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
 
     public static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,
-            STYLE_PRODUCT_CATEGORY_3, STYLE_PRODUCT_CATEGORY_4
+            STYLE_PRODUCT_CATEGORY_3, STYLE_PRODUCT_CATEGORY_4, STYLE_PRODUCT_CATEGORY_5,
+            STYLE_PRODUCT_CATEGORY_99
     };
 
     private String categoryId;
