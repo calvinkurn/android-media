@@ -66,6 +66,8 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private static final String ARGS_CAN_LOAD_MORE = "ARGS_CAN_LOAD_MORE";
     private static final String ARGS_REPLY = "ARGS_REPLY";
     private static final String PARAM_FLAG_ALLOW_REPLY = "PARAM_FLAG_ALLOW_REPLY";
+    private static final String PARAM_IS_ERROR = "PARAM_IS_ERROR";
+    private static final String PARAM_STRING_ERROR = "PARAM_STRING_ERROR";
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
@@ -79,6 +81,8 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private Bundle savedInstance;
     private boolean flagAllowReply;
+    private boolean isError;
+    private String errorMessage;
 
     @Inject
     ResCenterDiscussionPresenterImpl presenter;
@@ -171,9 +175,13 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         if (savedInstance != null) {
             if (savedInstance.getParcelableArrayList(ARGS_DATA) != null) {
                 List<DiscussionItemViewModel> list = savedInstance.getParcelableArrayList(ARGS_DATA);
-                if (list == null || list.size() == 0)
-                    adapter.showEmptyFull(true);
-                else {
+                if (list == null || list.size() == 0) {
+                    if (savedInstance.getBoolean(PARAM_IS_ERROR, false)) {
+                        onErrorGetDiscussion(savedInstance.getString(PARAM_STRING_ERROR));
+                    } else {
+                        adapter.showEmptyFull(true);
+                    }
+                } else {
                     adapter.setList(list);
                     adapter.setCanLoadMore(savedInstance.getBoolean(ARGS_CAN_LOAD_MORE, false));
                 }
@@ -396,15 +404,19 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     @Override
     public void onErrorGetDiscussion(String errorMessage) {
         finishLoading();
-        if (adapter.getData().size() == 0)
+        if (adapter.getData().size() == 0) {
+            isError = true;
+            this.errorMessage = errorMessage;
             NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
+                    isError = false;
                     presenter.initData();
                 }
             });
-        else
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
@@ -537,6 +549,8 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                 new ArrayList<AttachmentViewModel>(attachmentAdapter.getList()));
         outState.putString(ARGS_REPLY, replyEditText.getText().toString());
         outState.putBoolean(ARGS_CAN_LOAD_MORE, adapter.canLoadMore());
+        outState.putBoolean(PARAM_IS_ERROR, isError);
+        outState.putString(PARAM_STRING_ERROR, errorMessage);
         super.onSaveInstanceState(outState);
     }
 }
