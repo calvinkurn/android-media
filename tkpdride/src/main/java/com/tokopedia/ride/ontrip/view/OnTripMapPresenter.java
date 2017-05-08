@@ -266,6 +266,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
+                getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
                 getView().showRequestRideStatus(String.format("On Trip", String.valueOf(result.getDestination().getEta())));
                 break;
