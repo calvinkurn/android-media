@@ -207,9 +207,9 @@ public class OrderHistoryView extends TActivity {
                 DateList.add(Status.getHistoryStatusDate());
                 String state;
                 if (State == STATE_BUYER) {
-                    state = Status.getHistoryBuyerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistoryBuyerStatus();
                 } else {
-                    state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistorySellerStatus();
                 }
                 state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
@@ -230,7 +230,7 @@ public class OrderHistoryView extends TActivity {
                 DateList.add(Status.getHistoryStatusDateFull());
                 String state;
                 if (State == STATE_BUYER) {
-                    state = Status.getHistoryBuyerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistoryBuyerStatus();
                     try {
                         String strPreorder = getIntent().getExtras().getString("preorder_info");
                         if (strPreorder != null) preOrder = new JSONObject(strPreorder);
@@ -238,7 +238,7 @@ public class OrderHistoryView extends TActivity {
                         jse.printStackTrace();
                     }
                 } else {
-                    state = Status.getHistorySellerStatus().replace("<br>", "\n").replace("<br/>", "\n");
+                    state = Status.getHistorySellerStatus();
                 }
                 state = MethodChecker.fromHtml(state).toString();
                 StateList.add(state);
