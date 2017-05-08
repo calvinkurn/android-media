@@ -234,6 +234,7 @@ public interface AppEventTracking {
         String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
+        String VIEW_CHECKOUT_PAGE = "View Checkout Page";
     }
 
     interface EventLabel {
