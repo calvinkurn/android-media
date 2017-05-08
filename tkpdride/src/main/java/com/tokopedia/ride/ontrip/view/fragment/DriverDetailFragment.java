@@ -150,7 +150,7 @@ public class DriverDetailFragment extends BaseFragment {
         if (status != null && (status.equalsIgnoreCase("accepted") || status.equalsIgnoreCase("arriving"))) {
             cancelRideLayout.setVisibility(View.VISIBLE);
             driverEtaTextView.setVisibility(View.VISIBLE);
-            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(R.string.minute) + " away");
+            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(eta > 1 ? R.string.minutes : R.string.minute) + " away");
         } else if (status != null && status.equalsIgnoreCase("in_progress")) {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.VISIBLE);
