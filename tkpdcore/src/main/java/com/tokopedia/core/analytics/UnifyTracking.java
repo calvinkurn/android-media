@@ -1554,4 +1554,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickLanjutCheckoutPage(String ec, String el){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.RECHARGE_TRACKING,
+                AppEventTracking.Category.RECHARGE+ec,
+                AppEventTracking.Action.CLICK_LANJUT_CHECKOUT,
+                el
+        ).getEvent());
+    }
 }
