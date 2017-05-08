@@ -48,6 +48,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private final UploadProductRepository uploadProductRepository;
 
     private AddProductNotificationListener listener;
+    private NotificationManager notificationManager;
 
     @Inject
     public UploadProductUseCase(
@@ -103,10 +104,10 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
 
         @Override
         public Observable<AddProductDomainModel> call(final UploadProductInputDomainModel domainModel) {
-            createNotification(String.valueOf(productId), domainModel.getProductName());
+            notificationManager = new NotificationManager(listener, productId, domainModel.getProductName());
             return Observable.just(domainModel)
                     .flatMap(new GetGeneratedHost())
-                    .doOnNext(new UpdateNotification(String.valueOf(productId)))
+                    .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareUploadImage(domainModel))
                     .flatMap(new ProceedUploadProduct(String.valueOf(productId)))
                     .onErrorResumeNext(new AddProductStatusToError(domainModel.getProductStatus()));
@@ -124,27 +125,6 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
             public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
                 throw new UploadProductException(String.valueOf(productId), productStatus, throwable);
             }
-        }
-    }
-
-    private class UpdateNotification implements Action1<Object> {
-        private String productId;
-
-        public UpdateNotification(String productId) {
-            this.productId = productId;
-        }
-
-        @Override
-        public void call(Object o) {
-            if (listener != null) {
-                listener.notificationUpdate(productId);
-            }
-        }
-    }
-
-    private void createNotification(String productDraftId, String productName) {
-        if (listener != null) {
-            listener.createNotification(productDraftId, productName);
         }
     }
 
@@ -183,16 +163,16 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
             if (domainModel.getProductStatus() == ProductStatus.ADD){
                 return Observable.just(domainModel)
                         .flatMap(new AddProductImage())
-                        .doOnNext(new UpdateNotification(productId))
+                        .doOnNext(notificationManager.getUpdateNotification())
                         .map(new PrepareAddProductValidation(domainModel))
                         .flatMap(new AddProductValidation())
-                        .doOnNext(new UpdateNotification(productId))
+                        .doOnNext(notificationManager.getUpdateNotification())
                         .flatMap(new ProcessAddProductValidation(domainModel))
-                        .doOnNext(new UpdateNotification(productId));
+                        .doOnNext(notificationManager.getUpdateNotification());
             } else if (domainModel.getProductStatus() == ProductStatus.EDIT){
                 return Observable.just(domainModel)
                         .flatMap(new EditProductImage())
-                        .doOnNext(new UpdateNotification(productId))
+                        .doOnNext(notificationManager.getUpdateNotification())
                         .map(new PrepareEditProduct(domainModel))
                         .flatMap(new EditProduct())
                         .map(new ToUploadProductModel(domainModel));
