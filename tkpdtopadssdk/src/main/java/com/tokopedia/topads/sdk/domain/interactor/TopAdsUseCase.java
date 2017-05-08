@@ -60,11 +60,6 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
         task = new AsyncTask<TopAdsParams, Void, TopAdsModel>() {
 
             @Override
-            protected void onPreExecute() {
-                view.initLoading();
-            }
-
-            @Override
             protected TopAdsModel doInBackground(TopAdsParams... params) {
                 return dataSource.getTopAds(params[0].getParam());
             }
@@ -96,14 +91,12 @@ public class TopAdsUseCase extends UseCase<TopAdsParams, AdsView> {
                     view.notifyAdsErrorLoaded(topAdsModel.getStatus().getErrorCode(),
                             topAdsModel.getStatus().getMessage());
                 }
-                view.finishLoading();
                 execute = false;
             }
 
             @Override
             protected void onCancelled() {
                 super.onCancelled();
-                view.finishLoading();
             }
         };
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

@@ -58,11 +58,6 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
             task = new AsyncTask<TopAdsParams, Void, PreferedCategory>() {
 
                 @Override
-                protected void onPreExecute() {
-                    view.initLoading();
-                }
-
-                @Override
                 protected PreferedCategory doInBackground(TopAdsParams... params) {
                     return dataSource.getPreferenceCategory();
                 }
@@ -77,14 +72,12 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
                         view.notifyAdsErrorLoaded(Config.ERROR_CODE_INVALID_RESPONSE,
                                 preferedCategory.getErrorMessage());
                     }
-                    view.finishLoading();
                     execute = false;
                 }
 
                 @Override
                 protected void onCancelled() {
                     super.onCancelled();
-                    view.finishLoading();
                 }
             };
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

@@ -17,7 +17,6 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.presenter.StreamPlacer;
 import com.tokopedia.topads.sdk.utils.EndlessScrollRecycleListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
@@ -32,7 +31,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
  */
 
 public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements StreamPlacer.DataObserver {
+        implements TopAdsPlacer.DataObserver {
 
     private static final String TAG = TopAdsRecyclerAdapter.class.getSimpleName();
 
@@ -49,7 +48,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private boolean loadMore = false;
     private GridLayoutManager.SpanSizeLookup spanSizeLookup;
     private LoadingViewModel loadingViewModel = new LoadingViewModel();
-    private StreamPlacer placer;
+    private TopAdsPlacer placer;
 
     public TopAdsRecyclerAdapter(
             @NonNull Context context, @NonNull final RecyclerView.Adapter originalAdapter) {
@@ -57,7 +56,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         mOriginalAdapter = originalAdapter;
         mContext = context;
         typeFactory = new TopAdsAdapterTypeFactory(context);
-        placer = new StreamPlacer(context, typeFactory, this);
+        placer = new TopAdsPlacer(context, typeFactory, this);
         mAdapterDataObserver = new RecyclerView.AdapterDataObserver() {
 
             @Override

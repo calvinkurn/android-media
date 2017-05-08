@@ -31,10 +31,4 @@ public interface AdsView {
 
     void notifyShopClickListener(Shop shop);
 
-    void initLoading();
-
-    void finishLoading();
-
-    void showLoading(boolean showLoading);
-
 }

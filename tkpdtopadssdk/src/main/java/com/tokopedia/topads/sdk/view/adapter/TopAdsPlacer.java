@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.presenter;
+package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
 import android.util.Log;
@@ -13,6 +13,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
@@ -26,9 +27,9 @@ import java.util.List;
  * @author by errysuprayogi on 4/18/17.
  */
 
-public class StreamPlacer implements AdsView, LocalAdsClickListener {
+public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
-    private static final String TAG = StreamPlacer.class.getSimpleName();
+    private static final String TAG = TopAdsPlacer.class.getSimpleName();
     private TopAdsPresenter presenter;
     private int ajustedPositionStart = 0;
     private int ajustedItemCount = 0;
@@ -42,7 +43,7 @@ public class StreamPlacer implements AdsView, LocalAdsClickListener {
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
 
-    public StreamPlacer(
+    public TopAdsPlacer(
             Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
         adsParams = new TopAdsParams();
@@ -207,21 +208,6 @@ public class StreamPlacer implements AdsView, LocalAdsClickListener {
 
     public void setAdsItemClickListener(TopAdsItemClickListener adsItemClickListener) {
         this.adsItemClickListener = adsItemClickListener;
-    }
-
-    @Override
-    public void initLoading() {
-
-    }
-
-    @Override
-    public void finishLoading() {
-
-    }
-
-    @Override
-    public void showLoading(boolean showLoading) {
-
     }
 
     public void setConfig(Config config) {

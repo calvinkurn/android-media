@@ -48,8 +48,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private DividerItemDecoration itemDecoration;
     private RelativeLayout contentLayout;
     private static final int DEFAULT_SPAN_COUNT = 2;
-    private boolean isLoading = false;
-    private boolean showLoading = false;
     private TopAdsListener adsListener;
 
     public TopAdsView(Context context) {
@@ -72,7 +70,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     private void inflateView(Context context, AttributeSet attrs, int defStyle) {
         styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.TopAdsView, defStyle, 0);
-        showLoading = styledAttributes.getBoolean(R.styleable.TopAdsView_show_loading, false);
         inflate(getContext(), R.layout.layout_ads, this);
         adsHeader = (LinearLayout) findViewById(R.id.ads_header);
         adapter = new AdsItemAdapter(getContext());
@@ -146,6 +143,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void loadTopAds() {
+        adsHeader.setVisibility(GONE);
         presenter.loadTopAds();
     }
 
@@ -213,28 +211,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
         if (adsListener != null) {
             adsListener.onTopAdsFailToLoad(errorCode, message);
         }
-    }
-
-    @Override
-    public void initLoading() {
-        adsHeader.setVisibility(GONE);
-        if (!isLoading && showLoading) {
-            LayoutInflater.from(getContext()).inflate(R.layout.layout_progress, contentLayout);
-            isLoading = true;
-        }
-    }
-
-    @Override
-    public void finishLoading() {
-        if (isLoading && showLoading) {
-            contentLayout.removeView(contentLayout.findViewById(R.id.progress_bar));
-            isLoading = false;
-        }
-    }
-
-    @Override
-    public void showLoading(boolean showLoading) {
-        this.showLoading = showLoading;
     }
 
 }
