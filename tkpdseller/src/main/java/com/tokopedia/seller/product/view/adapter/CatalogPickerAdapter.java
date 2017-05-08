@@ -146,16 +146,11 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_NO_USE_CATALOG: {
-                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-                View view = inflater.inflate(R.layout.item_no_use_catalog, parent, false);
-                return new CatalogViewHolder(view);
-            }
-            case VIEW_TYPE_ITEM: {
+            case VIEW_TYPE_NO_USE_CATALOG:
+            case VIEW_TYPE_ITEM:
                 LayoutInflater inflater = LayoutInflater.from(parent.getContext());
                 View view = inflater.inflate(R.layout.item_simple_catalog, parent, false);
                 return new ItemViewHolder(view);
-            }
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -170,17 +165,23 @@ public class CatalogPickerAdapter extends BaseLinearRecyclerViewAdapter {
         int viewType = getItemViewType(position);
 
         switch (viewType) {
-            case VIEW_TYPE_ITEM:
+            case VIEW_TYPE_ITEM: {
                 Catalog catalogViewModel = catalogViewModelList.get(position);
                 ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
                 ImageHandler.LoadImage(itemViewHolder.imageCatalog, catalogViewModel.getCatalogImage());
                 itemViewHolder.textCatalogName.setText(catalogViewModel.getCatalogName());
-                // no need break
-                // continue below
-            case VIEW_TYPE_NO_USE_CATALOG:
                 boolean isSelected = (selectedPosition == position);
                 ((CatalogViewHolder) holder).radioButton.setChecked(isSelected);
-                break;
+            }
+            break;
+            case VIEW_TYPE_NO_USE_CATALOG: {
+                boolean isSelected = (selectedPosition == position);
+                ((CatalogViewHolder) holder).radioButton.setChecked(isSelected);
+                ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
+                itemViewHolder.imageCatalog.setImageResource(R.drawable.ic_no_catalog);
+                itemViewHolder.textCatalogName.setText(itemViewHolder.imageCatalog.getContext().getString(R.string.no_use_catalog));
+            }
+            break;
             default:
                 super.onBindViewHolder(holder, position);
         }

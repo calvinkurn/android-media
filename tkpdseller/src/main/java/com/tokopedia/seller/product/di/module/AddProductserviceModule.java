@@ -19,7 +19,7 @@ import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
-import com.tokopedia.seller.product.domain.interactor.UploadProductUseCase;
+import com.tokopedia.seller.product.domain.interactor.uploadproduct.UploadProductUseCase;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenter;
 import com.tokopedia.seller.product.view.presenter.AddProductServicePresenterImpl;
 
