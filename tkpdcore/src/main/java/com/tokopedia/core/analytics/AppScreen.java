@@ -256,4 +256,6 @@ public final class AppScreen {
     public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_LIST = "Resolution Center - Product List";
     public static final String SCREEN_RESOLUTION_CENTER_PRODUCT_DETAIL = "Resolution Center - Product Detail";
     public static final String SCREEN_RESOLUTION_CENTER_DISCUSSION = "Resolution Center - Discussion";
+
+    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY_ID = "Browse Category - ";
 }
