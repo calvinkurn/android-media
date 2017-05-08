@@ -21,13 +21,23 @@
             android:focusableInTouchMode="true"
             tools:ignore="UselessLeaf" />
 
+        <TextView
+            android:id="@+id/tv_label_client_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@null"
+            android:paddingLeft="@dimen/padding_vvs"
+            android:paddingRight="@null"
+            android:paddingStart="@dimen/padding_vvs"
+            android:text="@string/prompt_phone" />
+
         <AutoCompleteTextView
             android:id="@+id/ac_client_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_label_client_number"
             android:focusableInTouchMode="true"
             android:inputType="numberDecimal"
-            android:maxLength="14"
             android:maxLines="1"
             android:nextFocusLeft="@id/pulsa_autocompleteview"
             android:nextFocusUp="@id/pulsa_autocompleteview"
@@ -55,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_gravity="end|center"
             android:layout_marginBottom="@dimen/margin_vs"
             android:gravity="center"

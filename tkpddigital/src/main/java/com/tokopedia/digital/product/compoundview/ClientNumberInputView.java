@@ -10,7 +10,7 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,8 +23,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.model.ClientNumber;
+import com.tokopedia.digital.product.model.Validation;
 
-import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +36,8 @@ import butterknife.ButterKnife;
  */
 public class ClientNumberInputView extends LinearLayout {
 
+    @BindView(R2.id.tv_label_client_number)
+    TextView tvLabel;
     @BindView(R2.id.ac_client_number)
     AutoCompleteTextView autoCompleteTextView;
     @BindView(R2.id.btn_clear_client_number)
@@ -48,6 +52,7 @@ public class ClientNumberInputView extends LinearLayout {
     TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
+    private TextWatcher textWatcher;
 
     public ClientNumberInputView(Context context) {
         super(context);
@@ -64,11 +69,6 @@ public class ClientNumberInputView extends LinearLayout {
         init(context);
     }
 
-
-    public RelativeLayout getPulsaFramelayout() {
-        return pulsaFramelayout;
-    }
-
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
@@ -76,8 +76,6 @@ public class ClientNumberInputView extends LinearLayout {
         initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
         setBtnClearInvisible();
-
-        actionView();
     }
 
     private void initBackgroundContactButtonAndClearButton() {
@@ -104,13 +102,6 @@ public class ClientNumberInputView extends LinearLayout {
         );
     }
 
-    private void actionView() {
-        this.autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
-        this.autoCompleteTextView.addTextChangedListener(getTextChangedListener());
-        this.btnClear.setOnClickListener(getClickClearButtonListener());
-        this.btnContactPicker.setOnClickListener(getClickPhonebookListener());
-    }
-
     private OnFocusChangeListener getFocusChangeListener() {
         return new OnFocusChangeListener() {
             @Override
@@ -121,54 +112,6 @@ public class ClientNumberInputView extends LinearLayout {
                     } else {
                         setBtnClearInvisible();
                     }
-                }
-            }
-        };
-    }
-
-    private TextWatcher getTextChangedListener() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (actionListener != null && s.length() > 0) {
-                    actionListener.onClientNumberTextChanged(s, start, before, count);
-                }
-                if (s.length() > 0) {
-                    setBtnClearVisible();
-                } else {
-                    setBtnClearInvisible();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
-
-    private OnClickListener getClickClearButtonListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                autoCompleteTextView.setText("");
-                setImgOperatorInvisible();
-                actionListener.onClientNumberClear();
-            }
-        };
-    }
-
-    private OnClickListener getClickPhonebookListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (actionListener != null) {
-                    actionListener.onButtonContactPickerClicked();
                 }
             }
         };
@@ -186,16 +129,8 @@ public class ClientNumberInputView extends LinearLayout {
         this.autoCompleteTextView.setText(text);
     }
 
-    public void setEmptyString() {
-        this.autoCompleteTextView.setText("");
-    }
-
     public void setHint(String hint) {
         this.autoCompleteTextView.setHint(hint);
-    }
-
-    public void setImgOperatorVisible() {
-        this.imgOperator.setVisibility(VISIBLE);
     }
 
     public void setImgOperatorInvisible() {
@@ -218,16 +153,6 @@ public class ClientNumberInputView extends LinearLayout {
         this.autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
     }
 
-    public void setDropdownAutoComplete(List<String> displayList) {
-        String[] wannaDisplay = new String[displayList.size()];
-        wannaDisplay = displayList.toArray(wannaDisplay);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(), com.tokopedia.core.R.layout.simple_spinner_tv_res, wannaDisplay
-        );
-        autoCompleteTextView.setAdapter(adapter);
-        autoCompleteTextView.setThreshold(1);
-    }
-
     public void setImgOperator(String imgUrl) {
         Glide.with(getContext()).load(imgUrl).dontAnimate().into(this.imgOperator);
     }
@@ -236,25 +161,78 @@ public class ClientNumberInputView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void enableErrorClientNumber(String errorMessage) {
-        tvErrorClientNumber.setText(errorMessage);
-        tvErrorClientNumber.setVisibility(VISIBLE);
-    }
+    public void renderData(final ClientNumber clientNumber) {
+        tvLabel.setText(clientNumber.getText());
+        autoCompleteTextView.setHint(clientNumber.getPlaceholder());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (clientNumber.getType().equalsIgnoreCase("tel")) {
+            btnContactPicker.setVisibility(View.VISIBLE);
+            layoutParams.weight = 0.92f;
+        } else {
+            btnContactPicker.setVisibility(View.GONE);
+            layoutParams.weight = 1;
+        }
+        pulsaFramelayout.setLayoutParams(layoutParams);
+        if (clientNumber.getType().equalsIgnoreCase("tel") || clientNumber.getType().equalsIgnoreCase("numeric")) {
+            setInputTypeNumber();
+        } else {
+            setInputTypeText();
+        }
+        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
+        textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-    public void disableErrorClientNumber() {
-        tvErrorClientNumber.setText("");
-        tvErrorClientNumber.setVisibility(VISIBLE);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                String tempInput = charSequence.toString();
+                btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
+                for (Validation validation : clientNumber.getValidation()) {
+                    if (!Pattern.matches(validation.getRegex(), tempInput)) {
+                        actionListener.onClientNumberInputInvalid();
+                        tvErrorClientNumber.setText(validation.getError());
+                        tvErrorClientNumber.setVisibility(VISIBLE);
+                        return;
+                    } else {
+                        tvErrorClientNumber.setText("");
+                        tvErrorClientNumber.setVisibility(GONE);
+                        actionListener.onClientNumberInputValid(tempInput);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        autoCompleteTextView.removeTextChangedListener(textWatcher);
+        autoCompleteTextView.addTextChangedListener(textWatcher);
+
+
+        this.btnClear.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoCompleteTextView.setText("");
+            }
+        });
+        this.btnContactPicker.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onButtonContactPickerClicked();
+            }
+        });
     }
 
     public interface ActionListener {
         void onButtonContactPickerClicked();
 
-        void onClientNumberTextChanged(final CharSequence charSequence,
-                                       final int start,
-                                       final int before,
-                                       final int count);
+        void onClientNumberInputValid(String tempClientNumber);
 
-        void onClientNumberClear();
+        void onClientNumberInputInvalid();
     }
 
     public AutoCompleteTextView getAutoCompleteTextView() {
