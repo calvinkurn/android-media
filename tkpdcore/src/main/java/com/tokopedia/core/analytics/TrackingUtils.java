@@ -65,12 +65,12 @@ public class TrackingUtils extends TrackingConfig {
         CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                 .setFullName(profileData.getUserInfo().getUserName())
                 .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                .setPhoneNumber(profileData.getUserInfo().getUserPhone())
+                .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
                 .setCustomerId(profileData.getUserInfo().getUserId())
                 .setShopId(profileData.getShopInfo().getShopId())
                 .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
                 .setShopName(profileData.getShopInfo().getShopName())
-                .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_DD_MMMM_YYYY,DateFormatUtils.FORMAT_DD_MM_YYYY,profileData.getUserInfo().getUserBirth()))
+                .setDateOfBirth(profileData.getUserInfo().getUserBirth())
                 .setFirstName(extractFirstName(profileData.getUserInfo().getUserName()))
                 .build();
 
@@ -96,7 +96,7 @@ public class TrackingUtils extends TrackingConfig {
                         bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                 )
-                .setPhoneNumber(accountsParameter.getInfoModel().getPhone())
+                .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel().getPhone()))
                 .setGoldMerchant(accountsParameter.getAccountsModel().getShopIsGold() == 1)
                 .setShopName(accountsParameter.getAccountsModel().getShopName())
                 .setShopId(String.valueOf(accountsParameter.getAccountsModel().getShopId()))
@@ -125,6 +125,10 @@ public class TrackingUtils extends TrackingConfig {
         }
 
         return firstName;
+    }
+
+    private static String normalizePhoneNumber(String phoneNum){
+        return phoneNum.replaceFirst("^0(?!$)", "62");
     }
 
     public static void sendMoEngageLoginEvent(CustomerWrapper customerWrapper){
