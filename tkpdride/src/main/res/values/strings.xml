@@ -3,7 +3,6 @@
 
     <string name="title_activity_uber_home">Book Uber</string>
     <string name="title_activity_cab_on_trip">Book Uber</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="crux_cabs_please_pay_in_cash">TokoCash</string>
     <string name="navigation_drawer_open">Open</string>

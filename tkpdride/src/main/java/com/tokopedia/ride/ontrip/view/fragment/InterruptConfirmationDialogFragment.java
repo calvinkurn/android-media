@@ -41,6 +41,8 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
     private ProgressBar progressBar;
     private TkpdWebView webview;
 
+    private boolean isProgramaticallyDismissed = false;
+
     public static InterruptConfirmationDialogFragment newInstance(String url) {
         InterruptConfirmationDialogFragment fragment = new InterruptConfirmationDialogFragment();
         Bundle bundle = new Bundle();
@@ -90,6 +92,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                         Activity.RESULT_OK,
                         intent
                 );
+                isProgramaticallyDismissed = true;
                 dismiss();
             }
 
@@ -131,6 +134,7 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                         Activity.RESULT_OK,
                         intent
                 );
+                isProgramaticallyDismissed = true;
                 dismiss();
             }
 
@@ -199,5 +203,19 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();
+    }
+
+    @Override
+    public void dismiss() {
+        if (isProgramaticallyDismissed) {
+            super.dismiss();
+        } else {
+            getTargetFragment().onActivityResult(
+                    getTargetRequestCode(),
+                    Activity.RESULT_CANCELED,
+                    null);
+
+            super.dismiss();
+        }
     }
 }
