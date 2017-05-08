@@ -27,7 +27,7 @@ public class YoutubeVideoLinkCloud {
         this.youtubeVideoLinkUtils = youtubeVideoLinkUtils;
     }
 
-    public Observable<Response<YoutubeResponse>> fetchDataFromNetwork(String videoId, String keyId) {
+    public Observable<Response<YoutubeResponse>> fetchDataFromNetwork(final String videoId, String keyId) {
         return youtubeVideoLinkApi
                 .getVideoDetail(generateParam(videoId, keyId))
                 .doOnNext(new Action1<Response<YoutubeResponse>>() {
@@ -37,7 +37,7 @@ public class YoutubeVideoLinkCloud {
                             if (youtubeResponseResponse.errorBody() != null) {
                                 throw new RuntimeException(youtubeResponseResponse.errorBody().toString());
                             } else {
-                                youtubeVideoLinkUtils.checkIfVideoExists(youtubeResponseResponse.body());
+                                youtubeVideoLinkUtils.checkIfVideoExists(youtubeResponseResponse.body(), videoId);
 
                                 youtubeVideoLinkUtils.checkIfVideoNotAgeRestricted(youtubeResponseResponse.body());
                             }

@@ -4,6 +4,8 @@ import com.tokopedia.seller.product.data.source.cloud.model.youtube.Item;
 import com.tokopedia.seller.product.data.source.cloud.model.youtube.YoutubeResponse;
 import com.tokopedia.seller.product.domain.model.YoutubeVideoModel;
 
+import java.util.List;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -14,7 +16,16 @@ public class YoutubeVidToDomainMapper implements Func1<Response<YoutubeResponse>
 
     public static YoutubeVideoModel convert(YoutubeResponse youtubeResponse) {
         YoutubeVideoModel youtubeVideoModel = new YoutubeVideoModel();
-        Item item = youtubeResponse.getItems().get(0);
+
+        // return invalid youtubeModel
+
+        List<Item> items = youtubeResponse.getItems();
+
+        if (items == null || items.size() <= 0) {
+            return YoutubeVideoModel.invalidYoutubeModel();
+        }
+
+        Item item = items.get(0);
         youtubeVideoModel.setSnippetTitle(item.getSnippet().getTitle());
         youtubeVideoModel.setSnippetDescription(item.getSnippet().getDescription());
 

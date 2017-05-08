@@ -103,6 +103,11 @@ public class YoutubeAddVideoActivity extends TActivity
     }
 
     @Override
+    public void removeVideoId(String videoId) {
+        videoIDs.remove(videoId);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList(YoutubeAddVideoView.KEY_VIDEOS_LINK, videoIDs);

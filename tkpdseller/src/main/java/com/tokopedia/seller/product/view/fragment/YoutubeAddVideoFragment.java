@@ -242,6 +242,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     @Override
+    public void showMessageErrorRaw(String message) {
+        NetworkErrorHelper
+                .showSnackbar(getActivity(), message);
+    }
+
+    @Override
     public void addAddUrlVideModels(List<AddUrlVideoModel> convert) {
         for (AddUrlVideoModel addUrlVideoModel : convert) {
             addAddUrlVideModel(addUrlVideoModel);
