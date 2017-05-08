@@ -122,33 +122,27 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     }
 
     private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 1
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
+        return linkSegment.size() == 1
+                && !isReservedLink(linkSegment.get(0));
     }
 
     private boolean isProduct(List<String> linkSegment) {
-        return (linkSegment.size() == 2
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
+        return linkSegment.size() == 2
+                && !isReservedLink(linkSegment.get(0));
+    }
+
+    private boolean isReservedLink(String link) {
+        return link.equals("pulsa")
+                || link.equals("iklan")
+                || link.equals("newemail.pl")
+                || link.equals("search")
+                || link.equals("hot")
+                || link.equals("about")
+                || link.equals("reset.pl")
+                || link.equals("activation.pl")
+                || link.equals("privacy.pl")
+                || link.equals("terms.pl")
+                || link.startsWith("invoice.pl");
     }
 
     public void getShopInfo(final String url, final String shopDomain) {
