@@ -6,7 +6,7 @@ import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetail
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.product.model.Field;
+import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.Promo;
@@ -59,30 +59,32 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setSlug(responseCategoryDetailData.getAttributes().getSlug());
         categoryData.setOperatorStyle(responseCategoryDetailData.getAttributes().getOperatorStyle());
 
-        List<Field> fieldCategoryList = new ArrayList<>();
+        List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
                 : responseCategoryDetailData.getAttributes().getFields()) {
-            Field fieldCategory = new Field();
-            fieldCategory.setName(field.getName());
-            fieldCategory.set_default(field.get_default());
-            fieldCategory.setType(field.getType());
-            fieldCategory.setHelp(field.getHelp());
-            fieldCategory.setPlaceholder(field.getPlaceholder());
-            fieldCategory.setText(field.getText());
-            List<com.tokopedia.digital.product.model.Validation> validationCategoryList
-                    = new ArrayList<>();
-            for (com.tokopedia.digital.product.data.entity.response.Validation validation
-                    : field.getValidation()) {
-                com.tokopedia.digital.product.model.Validation validationCategory =
-                        new com.tokopedia.digital.product.model.Validation();
-                validationCategory.setError(validation.getError());
-                validationCategory.setRegex(validation.getRegex());
-                validationCategoryList.add(validationCategory);
+            if (field.getName().equalsIgnoreCase("client_number")) {
+                ClientNumber clientNumberCategory = new ClientNumber();
+                clientNumberCategory.setName(field.getName());
+                clientNumberCategory.set_default(field.get_default());
+                clientNumberCategory.setType(field.getType());
+                clientNumberCategory.setHelp(field.getHelp());
+                clientNumberCategory.setPlaceholder(field.getPlaceholder());
+                clientNumberCategory.setText(field.getText());
+                List<com.tokopedia.digital.product.model.Validation> validationCategoryList
+                        = new ArrayList<>();
+                for (com.tokopedia.digital.product.data.entity.response.Validation validation
+                        : field.getValidation()) {
+                    com.tokopedia.digital.product.model.Validation validationCategory =
+                            new com.tokopedia.digital.product.model.Validation();
+                    validationCategory.setError(validation.getError());
+                    validationCategory.setRegex(validation.getRegex());
+                    validationCategoryList.add(validationCategory);
+                }
+                clientNumberCategory.setValidation(validationCategoryList);
+                clientNumberCategoryList.add(clientNumberCategory);
             }
-            fieldCategory.setValidation(validationCategoryList);
-            fieldCategoryList.add(fieldCategory);
         }
-        categoryData.setFieldList(fieldCategoryList);
+        categoryData.setClientNumberList(clientNumberCategoryList);
 
         List<Operator> operatorCategoryList = new ArrayList<>();
         for (ResponseCategoryDetailIncluded categoryDetailIncluded : responseCategoryDetailIncludedList) {
@@ -120,16 +122,16 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     productOperatorList.add(productOperator);
 
                 }
-                List<Field> operatorFieldList = new ArrayList<>();
+                List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
                 for (com.tokopedia.digital.product.data.entity.response.Field field
                         : categoryDetailIncluded.getAttributes().getFields()) {
-                    Field fieldOperator = new Field();
-                    fieldOperator.setName(field.getName());
-                    fieldOperator.set_default(field.get_default());
-                    fieldOperator.setType(field.getType());
-                    fieldOperator.setHelp(field.getHelp());
-                    fieldOperator.setPlaceholder(field.getPlaceholder());
-                    fieldOperator.setText(field.getText());
+                    ClientNumber clientNumberOperator = new ClientNumber();
+                    clientNumberOperator.setName(field.getName());
+                    clientNumberOperator.set_default(field.get_default());
+                    clientNumberOperator.setType(field.getType());
+                    clientNumberOperator.setHelp(field.getHelp());
+                    clientNumberOperator.setPlaceholder(field.getPlaceholder());
+                    clientNumberOperator.setText(field.getText());
                     List<com.tokopedia.digital.product.model.Validation> validationCategoryList
                             = new ArrayList<>();
                     for (com.tokopedia.digital.product.data.entity.response.Validation validation
@@ -140,11 +142,11 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         validationCategory.setRegex(validation.getRegex());
                         validationCategoryList.add(validationCategory);
                     }
-                    fieldOperator.setValidation(validationCategoryList);
-                    operatorFieldList.add(fieldOperator);
+                    clientNumberOperator.setValidation(validationCategoryList);
+                    clientNumberOperatorList.add(clientNumberOperator);
                 }
                 operatorCategory.setProductList(productOperatorList);
-                operatorCategory.setFieldList(operatorFieldList);
+                operatorCategory.setClientNumberList(clientNumberOperatorList);
 
                 Rule operatorRule = new Rule();
                 operatorRule.setEnableVoucher(categoryDetailIncluded.getAttributes().getRule().isEnableVoucher());
