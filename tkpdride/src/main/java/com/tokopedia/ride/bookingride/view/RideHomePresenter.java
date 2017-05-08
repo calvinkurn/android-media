@@ -3,6 +3,8 @@ package com.tokopedia.ride.bookingride.view;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
+import com.tokopedia.ride.common.exception.UnProcessableHttpException;
+import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
 import rx.Subscriber;
@@ -20,11 +22,22 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
 
     @Override
     public void initialize() {
-        if (getView().isHavePendingRequestAndOpenedFromPushNotif()) {
-            getView().closeScreen();
+        if (getView().isUserLoggedIn()) {
+            if (getView().isUserPhoneNumberVerified()) {
+                if (getView().isHavePendingRequestAndOpenedFromPushNotif()) {
+                    getView().closeScreen();
+                } else {
+                    getView().actionInflateInitialToolbar();
+                    actionCheckPendingRequestIfAny();
+                }
+            } else {
+                getView().showVerificationPhoneNumberPage();
+            }
         } else {
-            actionCheckPendingRequestIfAny();
+            getView().navigateToLoginPage();
         }
+
+
     }
 
     @Override
@@ -41,8 +54,18 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 e.printStackTrace();
                 if (isViewAttached()) {
                     getView().hideCheckPendingRequestLoading();
-                    getView().showRetryCheckPendingRequestLayout();
+                    if (e instanceof UnprocessableEntityHttpException) {
+                        getView().hideCheckPendingRequestLoading();
+                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
+                    } else if (e instanceof UnProcessableHttpException) {
+                        getView().hideCheckPendingRequestLoading();
+                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
+                    } else {
+                        getView().hideCheckPendingRequestLoading();
+                        getView().showRetryCheckPendingRequestLayout();
+                    }
                 }
+
             }
 
             @Override
@@ -50,7 +73,7 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 if (isViewAttached()) {
                     if (rideRequest != null) {
                         getView().hideCheckPendingRequestLoading();
-                        switch (rideRequest.getStatus()){
+                        switch (rideRequest.getStatus()) {
                             case RideStatus.ACCEPTED:
                             case RideStatus.ARRIVING:
                             case RideStatus.IN_PROGRESS:
@@ -58,28 +81,17 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 getView().actionNavigateToOnTripScreen(rideRequest);
                                 break;
                             default:
-                                getView().inflateInitialFragment();
+                                getView().inflateMapAndProductFragment();
                         }
 
                     } else {
                         getView().hideCheckPendingRequestLoading();
-                        getView().inflateInitialFragment();
+                        getView().inflateMapAndProductFragment();
                     }
                 }
             }
         });
     }
 
-    @Override
-    public void initialize() {
-        if (getView().isUserLoggedIn()) {
-            if (getView().isUserPhoneNumberVerified()) {
-                getView().inflateMapAndProductFragment();
-            } else {
-                getView().showVerificationPhoneNumberPage();
-            }
-        } else {
-            getView().navigateToLoginPage();
-        }
-    }
+
 }

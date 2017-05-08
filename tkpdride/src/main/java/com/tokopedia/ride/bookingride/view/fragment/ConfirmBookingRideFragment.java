@@ -216,14 +216,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.cab_confirmation)
     public void actionConfirmButtonClicked() {
-        clearConfiguration();
         hideErrorMessage();
         mListener.actionRequestRide(confirmBookingViewModel);
-    }
-
-    private void clearConfiguration() {
-        RideConfiguration rideConfiguration = new RideConfiguration();
-        rideConfiguration.clearActiveRequest();
     }
 
     @Override

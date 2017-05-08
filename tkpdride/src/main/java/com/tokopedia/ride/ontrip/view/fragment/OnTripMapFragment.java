@@ -62,7 +62,6 @@ import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
@@ -81,6 +80,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -88,6 +88,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.ACCEPTED_UBER_NOTIFICATION_ID;
 import static com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow.FINDING_UBER_NOTIFICATION_ID;
 
+@RuntimePermissions
 public class OnTripMapFragment extends BaseFragment implements OnTripMapContract.View, OnMapReadyCallback,
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
@@ -271,14 +272,20 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showLoadingWaitingResponse() {
+        blockTranslucentView.setVisibility(View.VISIBLE);
         processingLayout.setVisibility(View.VISIBLE);
         loaderLayout.setVisibility(View.VISIBLE);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override
     public void hideLoadingWaitingResponse() {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
         processingLayout.setVisibility(View.GONE);
         loaderLayout.setVisibility(View.GONE);
+        blockTranslucentView.setVisibility(View.GONE);
     }
 
     @Override
@@ -965,15 +972,32 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         //hideCancelPanel();
     }
 
+    //
+//    @NeedsPermission({Manifest.permission.CALL_PHONE})
+//    private void openCallIntent() {
+//        Intent callIntent = new Intent(Intent.ACTION_CALL);
+//        callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
     @NeedsPermission({Manifest.permission.CALL_PHONE})
-    private void openCallIntent() {
-        Intent callIntent = new Intent(Intent.ACTION_CALL);
-        callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
-    @Override
     public void openCallIntent(String phoneNumber) {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + phoneNumber));
         startActivity(callIntent);
+    }
+
+    @Override
+    public void checkAndExecuteCallPermission(String phoneNumber) {
+        OnTripMapFragmentPermissionsDispatcher.openCallIntentWithCheck(this, phoneNumber);
+    }
+
+    @Override
+    public void showRequestLoadingLayout() {
+
+    }
+
+    @Override
+    public void hideRequestLoadingLayout() {
+
     }
 
     @Override

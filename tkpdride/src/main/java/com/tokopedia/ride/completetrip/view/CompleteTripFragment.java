@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -58,6 +59,10 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     TextView totalChargedTextView;
     @BindView(R2.id.tv_sign_up_uber)
     TextView signUpUberTextView;
+    @BindView(R2.id.tv_source)
+    AppCompatTextView sourceTextView;
+    @BindView(R2.id.tv_destination)
+    AppCompatTextView destinationTextView;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;

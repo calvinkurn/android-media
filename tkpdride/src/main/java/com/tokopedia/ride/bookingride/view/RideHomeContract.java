@@ -19,7 +19,6 @@ public interface RideHomeContract {
 
         boolean isUserPhoneNumberVerified();
 
-        void inflateMapAndProductFragment();
         void showCheckPendingRequestLoading();
 
         RequestParams getCurrentRideRequestParam();
@@ -30,19 +29,21 @@ public interface RideHomeContract {
 
         void actionNavigateToOnTripScreen(RideRequest rideRequest);
 
-        void inflateInitialFragment();
+        void inflateMapAndProductFragment();
 
         boolean isHavePendingRequestAndOpenedFromPushNotif();
 
         void closeScreen();
+
+        void showRetryCheckPendingRequestLayout(String message);
+
+        void actionInflateInitialToolbar();
     }
 
-    interface Presenter extends CustomerPresenter<View>{
+    interface Presenter extends CustomerPresenter<View> {
 
         void initialize();
 
         void actionCheckPendingRequestIfAny();
-    interface Presenter extends CustomerPresenter<View> {
-        void initialize();
     }
 }

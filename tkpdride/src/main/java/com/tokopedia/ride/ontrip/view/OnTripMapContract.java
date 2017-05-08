@@ -129,11 +129,15 @@ public interface OnTripMapContract {
 
         void zoomMapFitWithSourceAndDestination(double startLat, double startLng, double endLat, double endLng);
 
-        void openCallIntent(String phoneNumber);
-
         void openSmsIntent(String smsNumber);
 
         void setAddressPickerText(String startAddressName, String endAddressName);
+
+        void checkAndExecuteCallPermission(String phoneNumber);
+
+        void showRequestLoadingLayout();
+
+        void hideRequestLoadingLayout();
     }
 
     interface Presenter extends CustomerPresenter<View> {

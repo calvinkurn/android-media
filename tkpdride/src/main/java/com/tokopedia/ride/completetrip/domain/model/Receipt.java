@@ -8,16 +8,16 @@ import android.os.Parcelable;
  */
 
 public class Receipt implements Parcelable {
-    String requestId;
-    String currency;
-    String distance;
-    String distanceUnit;
-    String duration;
-    String subtotal;
-    String totalCharged;
-    String totalFare;
-    String totalOwe;
-    int duratuinInMinute;
+    private String requestId;
+    private String currency;
+    private String distance;
+    private String distanceUnit;
+    private String duration;
+    private String subtotal;
+    private String totalCharged;
+    private String totalFare;
+    private String totalOwe;
+    private int duratuinInMinute;
 
     public Receipt() {
     }

@@ -67,4 +67,6 @@
     <string name="apply_promo_code_here">here</string>
     <string name="minute">" minute"</string>
     <string name="minutes">" minutes"</string>
+    <string name="ride_home_toolbar">Tokopedia</string>
+    <string name="complete_trip_your_fare">Your Fare</string>
 </resources>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/on_trip_complete_layout"
@@ -13,14 +13,23 @@
         android:visibility="visible">
 
         <TextView
+            android:id="@+id/tv_total_fare_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/complete_trip_your_fare"
+            android:textAllCaps="true" />
+
+        <TextView
             android:id="@+id/tv_total_fare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_total_fare_label"
             android:layout_centerHorizontal="true"
             android:paddingTop="12dp"
             android:text="---"
             android:textColor="@color/black"
-            android:textSize="24sp"/>
+            android:textSize="24sp" />
 
         <LinearLayout
             android:id="@+id/layout_driver_details"
@@ -41,7 +50,7 @@
                     android:id="@+id/iv_driver_pict"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/default_user_pic_light"/>
+                    android:src="@drawable/default_user_pic_light" />
 
                 <TextView
                     android:id="@+id/tv_driver_rating"
@@ -56,7 +65,7 @@
                     android:padding="4dp"
                     android:text="4.6"
                     android:textColor="@color/black_400"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/tv_driver_name"
@@ -65,7 +74,7 @@
                     android:paddingTop="12dp"
                     android:text="Jhon Doe"
                     android:textColor="@color/black_400"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -82,7 +91,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/crux_cabs_uber_ic"/>
+                    android:src="@drawable/crux_cabs_uber_ic" />
 
                 <TextView
                     android:id="@+id/tv_vehicle_license_number"
@@ -94,7 +103,7 @@
                     android:padding="4dp"
                     android:text="B 123 XYZ"
                     android:textColor="@color/black_400"
-                    android:textSize="10sp"/>
+                    android:textSize="10sp" />
 
                 <TextView
                     android:id="@+id/tv_vehicle_desc"
@@ -103,33 +112,119 @@
                     android:paddingTop="12dp"
                     android:text="Honda Brio"
                     android:textColor="@color/black_400"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/source_destination_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_driver_details"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/crux_cabs_src_dest_line"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="20.5dp"
+                android:src="@drawable/crux_cabs_src_dest_line" />
+
+            <RelativeLayout
+                android:id="@+id/crux_cabs_source_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/crux_cabs_source_icon"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/crux_cabs_source_ic" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/crux_cabs_source_icon"
+                    android:ellipsize="marquee"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="18dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="12dp"
+                    android:singleLine="true"
+                    android:text="Loading..."
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/pdp_rating_color_new"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_destination"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/crux_cabs_source_container">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="47dp"
+                    android:background="@color/grey" />
+
+                <ImageView
+                    android:id="@+id/crux_cabs_destination_icon"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"
+                    android:src="@drawable/crux_cabs_dest_ic" />
+
+                <TextView
+                    android:id="@+id/tv_destination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/crux_cabs_destination_icon"
+                    android:ellipsize="marquee"
+                    android:paddingBottom="12dp"
+                    android:paddingLeft="18dp"
+                    android:paddingTop="12dp"
+                    android:singleLine="true"
+                    android:text="Loading..."
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/pdp_rating_color_new"
+                    android:textSize="14sp" />
+            </RelativeLayout>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/label_total_charged"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/layout_driver_details"
+            android:layout_below="@id/source_destination_container"
             android:layout_marginTop="40dp"
             android:drawableLeft="@drawable/ic_tokocash_icon"
             android:drawablePadding="10dp"
             android:gravity="center"
             android:text="Toko Cash Charged"
             android:textColor="@color/black_full"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_total_charged"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/layout_driver_details"
+            android:layout_below="@id/source_destination_container"
             android:paddingTop="40dp"
             android:text="----"
             android:textColor="@color/black_full"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -143,7 +238,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey_400"/>
+                android:background="@color/grey_400" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -157,13 +252,13 @@
                     android:layout_height="wrap_content"
                     android:text="SIGN UP "
                     android:textColor="@color/colorPrimary"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FOR UBER NOW TO GET SOME PROMO!"
-                    android:textSize="14sp"/>
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -189,7 +284,7 @@
             android:layout_height="24dp"
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="12dp"
-            android:visibility="visible"/>
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/cabs_ontrip_progress_text"
@@ -199,7 +294,7 @@
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/materialLoader"
-            android:text="Loading..."/>
+            android:text="Loading..." />
     </LinearLayout>
 
 

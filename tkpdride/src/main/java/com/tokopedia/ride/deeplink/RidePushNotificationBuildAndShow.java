@@ -319,8 +319,6 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showDriverCancelledRide(Context context) {
-        RideConfiguration rideConfiguration = new RideConfiguration();
-        rideConfiguration.clearActiveRequest();
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -381,8 +379,6 @@ public class RidePushNotificationBuildAndShow {
     }
 
     private static void showNoDriverFoundNotification(Context context) {
-        RideConfiguration rideConfiguration = new RideConfiguration();
-        rideConfiguration.clearActiveRequest();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)

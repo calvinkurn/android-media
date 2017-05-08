@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.gson.JsonSyntaxException;
 import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
@@ -98,6 +97,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
      */
     @Override
     public void actionRideRequest(final RequestParams requestParam) {
+        getView().showRequestLoadingLayout();
         getFareEstimateUseCase.execute(getView().getFareEstimateParam(), new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
@@ -107,6 +107,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                getView().hideRequestLoadingLayout();
                 getView().showFailedRideRequestMessage(e.getMessage());
                 getView().failedToRequestRide(e.getMessage());
             }
@@ -137,7 +138,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 e.printStackTrace();
 
                 if (!isViewAttached()) return;
-
+                getView().hideRequestLoadingLayout();
                 if (e instanceof InterruptConfirmationHttpException) {
                     if (!(e.getCause() instanceof JsonSyntaxException)) {
                         getView().openInterruptConfirmationWebView(((InterruptConfirmationHttpException) e).getTosUrl());
@@ -160,6 +161,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(RideRequest rideRequest) {
                 if (isViewAttached()) {
+                    getView().hideRequestLoadingLayout();
                     activeRideRequest = rideRequest;
                     getView().setRequestId(rideRequest.getRequestId());
                     getView().onSuccessCreateRideRequest(rideRequest);
@@ -459,7 +461,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionCallDriver() {
-        getView().openCallIntent(activeRideRequest.getDriver().getPhoneNumber());
+        getView().checkAndExecuteCallPermission(activeRideRequest.getDriver().getPhoneNumber());
     }
 
     @Override

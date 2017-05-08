@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -143,8 +144,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mPresenter.attachView(this);
         mPresenter.initialize();
 
-        mPresenter.actionCheckPendingRequestIfAny();
-
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
@@ -173,6 +172,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public boolean isHavePendingRequestAndOpenedFromPushNotif() {
         return getIntent().getExtras() != null &&
                 getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH) &&
+                getIntent().hasExtra(RideStatus.KEY) &&
                 getIntent().getStringExtra(RideStatus.KEY).equalsIgnoreCase(RideStatus.ACCEPTED);
     }
 
@@ -202,12 +202,34 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void showRetryCheckPendingRequestLayout() {
-        NetworkErrorHelper.showEmptyState(this, getWindow().getDecorView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(this, mainLayout, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 mPresenter.actionCheckPendingRequestIfAny();
             }
         });
+    }
+
+    @Override
+    public void showRetryCheckPendingRequestLayout(String message) {
+        NetworkErrorHelper.showEmptyState(this, mainLayout, message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                mPresenter.actionCheckPendingRequestIfAny();
+            }
+        });
+    }
+
+    @Override
+    public void actionInflateInitialToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mToolbar.setTitle(R.string.toolbar_title_booking);
+            setSupportActionBar(mToolbar);
+            if (getSupportActionBar() != null)
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            invalidateOptionsMenu();
+        }
     }
 
     @Override
@@ -217,12 +239,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
-    public void inflateInitialFragment() {
-        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
-    }
-
-    @Override
     public void inflateMapAndProductFragment() {
+        RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams) mainLayout.getLayoutParams();
+        relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
+        mainLayout.setLayoutParams(relativeParams);
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
