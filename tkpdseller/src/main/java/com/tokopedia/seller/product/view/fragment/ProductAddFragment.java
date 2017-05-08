@@ -26,9 +26,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
 import com.tokopedia.seller.product.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.di.module.ProductAddModule;
+import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
@@ -319,7 +319,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList) {
+    public void onSuccessLoadRecommendationCategory(List<ProductCategoryPredictionDomainModel> categoryPredictionList) {
         productInfoViewHolder.successGetCategoryRecommData(categoryPredictionList);
     }
 
