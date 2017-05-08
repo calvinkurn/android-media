@@ -69,4 +69,5 @@
     <string name="minutes">" minutes"</string>
     <string name="ride_home_toolbar">Tokopedia</string>
     <string name="complete_trip_your_fare">Your Fare</string>
+    <string name="on_trip_failed_share">Failed to share eta</string>
 </resources>

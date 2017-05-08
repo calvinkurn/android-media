@@ -161,7 +161,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(RideRequest rideRequest) {
                 if (isViewAttached()) {
-                    getView().hideRequestLoadingLayout();
                     activeRideRequest = rideRequest;
                     getView().setRequestId(rideRequest.getRequestId());
                     getView().onSuccessCreateRideRequest(rideRequest);
@@ -205,9 +204,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
-                getView().showLoadingWaitingResponse();
-                getView().clearRideConfiguration();
+                getView().hideLoadingWaitingResponse();
                 getView().showNoDriverAvailableDialog();
                 break;
             case RideStatus.PROCESSING:
@@ -216,49 +215,50 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showCancelRequestButton();
                 break;
             case RideStatus.ACCEPTED:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showAcceptedNotification(result);
-                getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
                 break;
             case RideStatus.ARRIVING:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
-                getView().showRequestRideStatus(String.format("Driver will pick in %s minutes", String.valueOf(result.getPickup().getEta())));
                 getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
+
                 break;
             case RideStatus.IN_PROGRESS:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().hideCancelRequestButton();
                 getView().hideLoadingWaitingResponse();
                 getView().showBottomSection();
                 getView().renderInProgressRequest(result);
-                getView().showRequestRideStatus(String.format("On Trip", String.valueOf(result.getDestination().getEta())));
                 break;
             case RideStatus.DRIVER_CANCELED:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
-                getView().clearRideConfiguration();
                 break;
             case RideStatus.RIDER_CANCELED:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
-                getView().clearRideConfiguration();
                 break;
             case RideStatus.COMPLETED:
+                getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderCompletedRequest(result);
-                getView().clearRideConfiguration();
                 break;
             default:
 

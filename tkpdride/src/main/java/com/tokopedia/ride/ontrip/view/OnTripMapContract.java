@@ -69,7 +69,7 @@ public interface OnTripMapContract {
 
         void renderCompletedRequest(RideRequest result);
 
-        void clearRideConfiguration();
+//        void clearRideConfiguration();
 
         void renderArrivingDriverEvent(RideRequest result);
 

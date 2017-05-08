@@ -102,6 +102,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     ProgressBar progressBar;
     @BindView(R2.id.main_layout)
     RelativeLayout mainLayout;
+    Toolbar mToolbar;
 
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
@@ -222,7 +223,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionInflateInitialToolbar() {
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mToolbar.setTitle(R.string.toolbar_title_booking);
             setSupportActionBar(mToolbar);
@@ -248,11 +249,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
+        mToolbar.setVisibility(View.GONE);
         addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
+        mToolbar.setVisibility(View.GONE);
         replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
         replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }

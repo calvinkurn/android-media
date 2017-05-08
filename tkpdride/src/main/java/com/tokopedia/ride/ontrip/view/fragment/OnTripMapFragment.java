@@ -272,20 +272,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showLoadingWaitingResponse() {
-        blockTranslucentView.setVisibility(View.VISIBLE);
         processingLayout.setVisibility(View.VISIBLE);
         loaderLayout.setVisibility(View.VISIBLE);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override
     public void hideLoadingWaitingResponse() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
         processingLayout.setVisibility(View.GONE);
         loaderLayout.setVisibility(View.GONE);
-        blockTranslucentView.setVisibility(View.GONE);
     }
 
     @Override
@@ -371,7 +365,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showCancelRequestButton() {
-        cancelButton.setVisibility(View.VISIBLE);
+        if (isScreenBlocked) {
+            cancelButton.setVisibility(View.GONE);
+        } else {
+            cancelButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -534,11 +532,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
-    }
-
-    @Override
-    public void clearRideConfiguration() {
-//        rideConfiguration.clearActiveRequest();
     }
 
     @Override
@@ -769,7 +762,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showFailedShare() {
-
+        Snackbar.make(getView(), R.string.on_trip_failed_share, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -852,11 +845,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             @Override
             public void run() {
                 blockTranslucentView.setVisibility(View.GONE);
+                cancelButton.setVisibility(View.VISIBLE);
             }
         }, 500);
     }
 
     public void showCancelPanel() {
+        cancelButton.setVisibility(View.GONE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -865,6 +860,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                         R.anim.bottom_up);
 
                 cancelPanelLayout.startAnimation(bottomUp);
+                cancelButton.setVisibility(View.GONE);
                 cancelPanelLayout.setVisibility(View.VISIBLE);
             }
         }, 500);
@@ -992,12 +988,39 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showRequestLoadingLayout() {
+        blockTranslucentView.setVisibility(View.VISIBLE);
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0x00000000,
+                0xBB000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
 
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override
     public void hideRequestLoadingLayout() {
+        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                "backgroundColor",
+                new ArgbEvaluator(),
+                0xBB000000,
+                0x00000000);
+        backgroundColorAnimator.setDuration(500);
+        backgroundColorAnimator.start();
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                blockTranslucentView.setVisibility(View.GONE);
+            }
+        }, 500);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override

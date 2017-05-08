@@ -98,17 +98,6 @@ public class DriverDetailFragment extends BaseFragment {
         return R.layout.fragment_driver_detail;
     }
 
-//    private void setInitialVariable() {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-//            Fragment getParentFragment = getParentFragment();
-//            if (getParentFragment() instanceof OnFragmentInteractionListener) {
-//                onFragmentInteractionListener = (OnFragmentInteractionListener) getParentFragment();
-//            } else {
-//                throw new RuntimeException("must implement OnFragmentInteractionListener");
-//            }
-//        }
-//    }
-
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
@@ -124,7 +113,6 @@ public class DriverDetailFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         String tag = getArguments().getString(EXTRA_PARENT_TAG);
-        Fragment fragment = activity.getFragmentManager().findFragmentByTag(tag);
         if (activity.getFragmentManager().findFragmentByTag(tag) instanceof OnFragmentInteractionListener) {
             onFragmentInteractionListener = (OnFragmentInteractionListener) activity.getFragmentManager().findFragmentByTag(tag);
         } else {
@@ -187,18 +175,7 @@ public class DriverDetailFragment extends BaseFragment {
 
     @OnClick(R2.id.call_driver_layout)
     public void actionCallDriver() {
-//        openCallIntent();
         onFragmentInteractionListener.actionContactDriver(driver.getPhoneNumber());
-    }
-
-    private void openCallIntent() {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + driver.getPhoneNumber()));
-        startActivity(callIntent);
-    }
-
-    private void openSmsIntent() {
-
     }
 
     /**
