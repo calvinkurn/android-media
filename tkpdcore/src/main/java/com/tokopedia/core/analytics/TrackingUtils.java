@@ -70,7 +70,6 @@ public class TrackingUtils extends TrackingConfig {
                 .setShopId(profileData.getShopInfo().getShopId())
                 .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
                 .setShopName(profileData.getShopInfo().getShopName())
-                //.setDateOfBirth(profileData.getUserInfo().getUserBirth())
                 .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName()," "))
                 .build();
 
