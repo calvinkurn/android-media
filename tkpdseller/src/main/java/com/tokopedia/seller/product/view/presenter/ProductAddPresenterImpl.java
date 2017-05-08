@@ -378,7 +378,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         public void onError(Throwable e) {
 
             checkViewAttached();
-            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+            getView().onErrorStoreProductAndAddToDraft(ViewUtils.getErrorMessage(e));
         }
 
         @Override

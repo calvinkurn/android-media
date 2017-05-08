@@ -18,8 +18,11 @@ import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
@@ -168,24 +171,32 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         view.findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isDataValid()) {
-                    UploadProductInputViewModel viewModel = collectDataFromView();
-                    presenter.saveDraft(viewModel);
-                }
+                saveDraft();
             }
         });
         view.findViewById(R.id.button_save_and_add).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isDataValid()) {
-                    UploadProductInputViewModel viewModel = collectDataFromView();
-                    presenter.saveDraftAndAdd(viewModel);
-                }
+                saveAndAddDraft();
             }
         });
 
         view.requestFocus();
         return view;
+    }
+
+    private void saveAndAddDraft() {
+        if (isDataValid()) {
+            UploadProductInputViewModel viewModel = collectDataFromView();
+            presenter.saveDraftAndAdd(viewModel);
+        }
+    }
+
+    private void saveDraft() {
+        if (isDataValid()) {
+            UploadProductInputViewModel viewModel = collectDataFromView();
+            presenter.saveDraft(viewModel);
+        }
     }
 
     @Override
@@ -305,7 +316,22 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onErrorStoreProductToDraft(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                saveDraft();
+            }
+        }).showRetrySnackbar();
+    }
 
+    @Override
+    public void onErrorStoreProductAndAddToDraft(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), getString(R.string.try_again), new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                saveAndAddDraft();
+            }
+        }).showRetrySnackbar();
     }
 
     @Override
