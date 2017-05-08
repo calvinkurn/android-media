@@ -18,4 +18,6 @@ public interface YoutubeAddVideoActView {
     void addVideoIds(String videoId);
 
     void removeVideoIds(int index);
+
+    void removeVideoId(String videoIds);
 }

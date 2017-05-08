@@ -73,6 +73,13 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         youtubeVideoUseCase.unsubscribe();
     }
 
+    protected void showYoutubeException(YoutubeVideoLinkUtils.YoutubeException e) {
+        getView().showMessageErrorRaw(e.getMessageWithoutVideoId());
+        if (youtubeActView != null) {
+            youtubeActView.removeVideoId(e.getVideoId());
+        }
+    }
+
     private class DefaultListSubscriber extends Subscriber<List<YoutubeVideoModel>> {
 
         private List<String> videoIds;
@@ -90,9 +97,16 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         public void onError(Throwable e) {
             Log.i(TAG, "error here : " + e);
             if (isViewAttached()) {
+                if (e instanceof YoutubeVideoLinkUtils.YoutubeException) {
+                    showYoutubeException((YoutubeVideoLinkUtils.YoutubeException) e);
+                    return;
+                }
+
                 if (videoIds.size() > 0) {
                     getView().showMessageError(videoIds.get(0));
                 }
+
+
             }
         }
 
@@ -108,6 +122,13 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
             List<AddUrlVideoModel> addUrlVideoModels = new ArrayList<>();
             int i = 0;
             for (YoutubeVideoModel youtubeVideoModel : youtubeVideoModels) {
+
+                if (youtubeVideoModel.equals(YoutubeVideoModel.invalidYoutubeModel())) {
+                    if (youtubeActView != null) {
+                        youtubeActView.removeVideoIds(i);
+                    }
+                    continue;
+                }
 
                 String videoId = videoIds.get(i);
 
@@ -143,8 +164,12 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
 
         @Override
         public void onError(Throwable e) {
-            Log.i(TAG, "error here : " + e);
             if (isViewAttached()) {
+                if (e instanceof YoutubeVideoLinkUtils.YoutubeException) {
+                    showYoutubeException((YoutubeVideoLinkUtils.YoutubeException) e);
+                    return;
+                }
+
                 getView().showMessageError(videoId);
             }
         }
@@ -153,11 +178,21 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         public void onNext(YoutubeVideoModel youtubeVideoModel) {
             Log.i(TAG, "result here : " + youtubeVideoModel);
             if (isViewAttached()) {
-                getView().addAddUrlVideModel(convert(youtubeVideoModel));
+                AddUrlVideoModel convert = convert(youtubeVideoModel);
+                if (convert != null)
+                    getView().addAddUrlVideModel(convert);
             }
         }
 
         private AddUrlVideoModel convert(YoutubeVideoModel youtubeVideoModel) {
+
+            if (youtubeVideoModel.equals(YoutubeVideoModel.invalidYoutubeModel())) {
+                if (youtubeActView != null) {
+                    youtubeActView.removeVideoId(videoId);
+                }
+                return null;
+            }
+
             AddUrlVideoModel addUrlVideoModel = new AddUrlVideoModel();
             addUrlVideoModel.setHeight(youtubeVideoModel.getHeight());
             addUrlVideoModel.setWidth(youtubeVideoModel.getWidth());
