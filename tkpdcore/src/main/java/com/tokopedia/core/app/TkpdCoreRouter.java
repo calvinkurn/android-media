@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
 
 /**
@@ -38,5 +39,5 @@ public interface TkpdCoreRouter {
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
-    void clearSellerModuleCache(Context context);
+    void onLogout(AppComponent appComponent);
 }

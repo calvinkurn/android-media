@@ -41,7 +41,8 @@ public class ProductDraftDataManager {
         return Observable.just(productDraftDatabase.getData());
     }
 
-    public void clearAllDraft(){
+    public Observable<Boolean> clearAllDraft(){
         new Delete().from(ProductDraftDataBase.class).execute();
+        return Observable.just(true);
     }
 }

@@ -21,4 +21,6 @@ public interface CategoryRepository {
     Observable<List<CategoryLevelDomainModel>> fetchCategoryFromSelected(long categoryId);
 
     Observable<List<String>> fetchCategoryDisplay(long categoryId);
+
+    Observable<Boolean> clearCache();
 }

@@ -11,4 +11,6 @@ import rx.Observable;
 public interface ProductDraftRepository {
     Observable<Long> saveDraft(UploadProductInputDomainModel domainModel);
     Observable<UploadProductInputDomainModel> getDraft(long productId);
+
+    Observable<Boolean> clearAllDraft();
 }

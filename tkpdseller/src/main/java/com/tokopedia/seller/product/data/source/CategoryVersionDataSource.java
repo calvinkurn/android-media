@@ -40,6 +40,7 @@ public class CategoryVersionDataSource {
     }
 
     private class IsVersionNeedCheck implements Func1<Boolean, Boolean> {
+
         @Override
         public Boolean call(Boolean aBoolean) {
             if (categoryVersionCache.isNeedCategoryVersionCheck()) {
@@ -49,16 +50,16 @@ public class CategoryVersionDataSource {
             }
         }
     }
-
     private class UpdateNextVersionCheck implements Func1<CategoryVersionServiceModel, CategoryVersionServiceModel> {
+
         @Override
         public CategoryVersionServiceModel call(CategoryVersionServiceModel serviceModel) {
             categoryVersionCache.storeNeedCategoryVersionCheck(serviceModel.getInterval());
             return serviceModel;
         }
     }
-
     private class CompareVersionWithCache implements Func1<CategoryVersionServiceModel, Boolean> {
+
         @Override
         public Boolean call(CategoryVersionServiceModel categoryVersionServiceModel) {
             Long apiVersion = categoryVersionServiceModel.getVersion();
@@ -74,6 +75,12 @@ public class CategoryVersionDataSource {
 
             return isNeedUpdate;
         }
+    }
+
+    public Observable<Boolean> clearCache() {
+        categoryDataManager.clearDatabase();
+        categoryVersionCache.clearCategoryTimer();
+        return Observable.just(true);
     }
 
 
