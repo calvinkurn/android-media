@@ -1,12 +1,15 @@
 package com.tokopedia.digital.product.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class Operator {
+public class Operator implements Parcelable {
 
     private String operatorId;
     private String operatorType;
@@ -17,7 +20,7 @@ public class Operator {
     private int defaultProductId;
     private Rule rule;
     private List<String> prefixList = new ArrayList<>();
-    private List<Field> fieldList = new ArrayList<>();
+    private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Product> productList = new ArrayList<>();
 
     public String getName() {
@@ -60,12 +63,12 @@ public class Operator {
         this.prefixList = prefixList;
     }
 
-    public List<Field> getFieldList() {
-        return fieldList;
+    public List<ClientNumber> getClientNumberList() {
+        return clientNumberList;
     }
 
-    public void setFieldList(List<Field> fieldList) {
-        this.fieldList = fieldList;
+    public void setClientNumberList(List<ClientNumber> clientNumberList) {
+        this.clientNumberList = clientNumberList;
     }
 
     public List<Product> getProductList() {
@@ -99,4 +102,54 @@ public class Operator {
     public void setRule(Rule rule) {
         this.rule = rule;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.operatorId);
+        dest.writeString(this.operatorType);
+        dest.writeString(this.name);
+        dest.writeString(this.image);
+        dest.writeString(this.lastorderUrl);
+        dest.writeInt(this.defaultProductId);
+        dest.writeParcelable(this.rule, flags);
+        dest.writeStringList(this.prefixList);
+        dest.writeList(this.clientNumberList);
+        dest.writeList(this.productList);
+    }
+
+    public Operator() {
+    }
+
+    protected Operator(Parcel in) {
+        this.operatorId = in.readString();
+        this.operatorType = in.readString();
+        this.name = in.readString();
+        this.image = in.readString();
+        this.lastorderUrl = in.readString();
+        this.defaultProductId = in.readInt();
+        this.rule = in.readParcelable(Rule.class.getClassLoader());
+        this.prefixList = in.createStringArrayList();
+        this.clientNumberList = new ArrayList<ClientNumber>();
+        in.readList(this.clientNumberList, ClientNumber.class.getClassLoader());
+        this.productList = new ArrayList<Product>();
+        in.readList(this.productList, Product.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Operator> CREATOR = new Parcelable.Creator<Operator>() {
+        @Override
+        public Operator createFromParcel(Parcel source) {
+            return new Operator(source);
+        }
+
+        @Override
+        public Operator[] newArray(int size) {
+            return new Operator[size];
+        }
+    };
 }

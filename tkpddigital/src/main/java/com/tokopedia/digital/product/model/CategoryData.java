@@ -1,6 +1,9 @@
 package com.tokopedia.digital.product.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,7 +12,7 @@ import java.util.List;
  * @author anggaprasetiyo on 4/25/17.
  */
 
-public class CategoryData {
+public class CategoryData implements Parcelable {
 
     public static final String STYLE_PRODUCT_CATEGORY_1 = "style_1";
     public static final String STYLE_PRODUCT_CATEGORY_2 = "style_2";
@@ -18,7 +21,7 @@ public class CategoryData {
     public static final String STYLE_PRODUCT_CATEGORY_5 = "style_5";
     public static final String STYLE_PRODUCT_CATEGORY_99 = "style_99";
 
-    public static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
+    private static final String[] STYLE_COLLECTION_SUPPORTED = new String[]{
             STYLE_PRODUCT_CATEGORY_1, STYLE_PRODUCT_CATEGORY_2, STYLE_PRODUCT_CATEGORY_2,
             STYLE_PRODUCT_CATEGORY_3, STYLE_PRODUCT_CATEGORY_4, STYLE_PRODUCT_CATEGORY_5,
             STYLE_PRODUCT_CATEGORY_99
@@ -36,7 +39,7 @@ public class CategoryData {
     private String slug;
     private String defaultOperatorId;
     private String operatorStyle;
-    private List<Field> fieldList = new ArrayList<>();
+    private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Operator> operatorList = new ArrayList<>();
 
     public String getName() {
@@ -111,12 +114,12 @@ public class CategoryData {
         this.operatorStyle = operatorStyle;
     }
 
-    public List<Field> getFieldList() {
-        return fieldList;
+    public List<ClientNumber> getClientNumberList() {
+        return clientNumberList;
     }
 
-    public void setFieldList(List<Field> fieldList) {
-        this.fieldList = fieldList;
+    public void setClientNumberList(List<ClientNumber> clientNumberList) {
+        this.clientNumberList = clientNumberList;
     }
 
     public String getCategoryId() {
@@ -146,4 +149,59 @@ public class CategoryData {
     public boolean isSupportedStyle() {
         return (Arrays.asList(STYLE_COLLECTION_SUPPORTED).contains(operatorStyle));
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.categoryId);
+        dest.writeString(this.categoryType);
+        dest.writeString(this.name);
+        dest.writeString(this.icon);
+        dest.writeString(this.iconUrl);
+        dest.writeParcelable(this.teaser, flags);
+        dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
+        dest.writeString(this.slug);
+        dest.writeString(this.defaultOperatorId);
+        dest.writeString(this.operatorStyle);
+        dest.writeList(this.clientNumberList);
+        dest.writeTypedList(this.operatorList);
+    }
+
+    public CategoryData() {
+    }
+
+    protected CategoryData(Parcel in) {
+        this.categoryId = in.readString();
+        this.categoryType = in.readString();
+        this.name = in.readString();
+        this.icon = in.readString();
+        this.iconUrl = in.readString();
+        this.teaser = in.readParcelable(Teaser.class.getClassLoader());
+        this.isNew = in.readByte() != 0;
+        this.instantCheckout = in.readByte() != 0;
+        this.slug = in.readString();
+        this.defaultOperatorId = in.readString();
+        this.operatorStyle = in.readString();
+        this.clientNumberList = new ArrayList<ClientNumber>();
+        in.readList(this.clientNumberList, ClientNumber.class.getClassLoader());
+        this.operatorList = in.createTypedArrayList(Operator.CREATOR);
+    }
+
+    public static final Parcelable.Creator<CategoryData> CREATOR = new Parcelable.Creator<CategoryData>() {
+        @Override
+        public CategoryData createFromParcel(Parcel source) {
+            return new CategoryData(source);
+        }
+
+        @Override
+        public CategoryData[] newArray(int size) {
+            return new CategoryData[size];
+        }
+    };
 }

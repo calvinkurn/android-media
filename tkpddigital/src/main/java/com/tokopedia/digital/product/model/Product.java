@@ -1,9 +1,12 @@
 package com.tokopedia.digital.product.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class Product {
+public class Product implements Parcelable {
 
     private String productId;
     private String productType;
@@ -87,4 +90,50 @@ public class Product {
     public void setProductType(String productType) {
         this.productType = productType;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.productId);
+        dest.writeString(this.productType);
+        dest.writeString(this.desc);
+        dest.writeString(this.detail);
+        dest.writeString(this.info);
+        dest.writeString(this.price);
+        dest.writeInt(this.pricePlain);
+        dest.writeParcelable(this.promo, flags);
+        dest.writeInt(this.status);
+    }
+
+    public Product() {
+    }
+
+    protected Product(Parcel in) {
+        this.productId = in.readString();
+        this.productType = in.readString();
+        this.desc = in.readString();
+        this.detail = in.readString();
+        this.info = in.readString();
+        this.price = in.readString();
+        this.pricePlain = in.readInt();
+        this.promo = in.readParcelable(Promo.class.getClassLoader());
+        this.status = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel source) {
+            return new Product(source);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
 }

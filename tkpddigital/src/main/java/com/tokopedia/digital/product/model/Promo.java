@@ -1,9 +1,12 @@
 package com.tokopedia.digital.product.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class Promo {
+public class Promo implements Parcelable {
 
 
     private String bonusText;
@@ -69,4 +72,46 @@ public class Promo {
     public void setValueText(String valueText) {
         this.valueText = valueText;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.bonusText);
+        dest.writeString(this.id);
+        dest.writeString(this.newPrice);
+        dest.writeInt(this.newPricePlain);
+        dest.writeString(this.tag);
+        dest.writeString(this.terms);
+        dest.writeString(this.valueText);
+    }
+
+    public Promo() {
+    }
+
+    protected Promo(Parcel in) {
+        this.bonusText = in.readString();
+        this.id = in.readString();
+        this.newPrice = in.readString();
+        this.newPricePlain = in.readInt();
+        this.tag = in.readString();
+        this.terms = in.readString();
+        this.valueText = in.readString();
+    }
+
+    public static final Parcelable.Creator<Promo> CREATOR = new Parcelable.Creator<Promo>() {
+        @Override
+        public Promo createFromParcel(Parcel source) {
+            return new Promo(source);
+        }
+
+        @Override
+        public Promo[] newArray(int size) {
+            return new Promo[size];
+        }
+    };
 }
