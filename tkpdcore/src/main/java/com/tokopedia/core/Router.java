@@ -13,4 +13,10 @@ public class Router {
             ((TkpdCoreRouter)activity.getApplication()).clearEtalaseCache();
         }
     }
+
+    public static void clearSellerModuleCache(Activity activity) {
+        if (activity.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) activity.getApplication()).clearSellerModuleCache(activity);
+        }
+    }
 }

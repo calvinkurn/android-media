@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.source.db;
 
+import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
@@ -38,5 +39,9 @@ public class ProductDraftDataManager {
             throw new RuntimeException("Product draft not found in database");
         }
         return Observable.just(productDraftDatabase.getData());
+    }
+
+    public void clearAllDraft(){
+        new Delete().from(ProductDraftDataBase.class).execute();
     }
 }

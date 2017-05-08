@@ -37,4 +37,6 @@ public interface TkpdCoreRouter {
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
+
+    void clearSellerModuleCache(Context context);
 }
