@@ -31,7 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.sothree.slidinguppanel.ScrollableViewHelper;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
@@ -139,11 +138,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
          * if user open push notif with status accepted/arriving, this must be true if user pressed back button on ontripscreep
          *  @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
          */
-        if (configuration.isWaitingDriverState() &&
-                getIntent().getExtras() != null &&
-                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
-            finish();
-        } else if (configuration.isWaitingDriverState()) {
+//        if (configuration.isWaitingDriverState() &&
+//                getIntent().getExtras() != null &&
+//                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
+//            //finish();
+//        } else
+
+        if (configuration.isWaitingDriverState()) {
             Intent intent = OnTripActivity.getCallingIntent(this);
             startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
         }
