@@ -107,9 +107,11 @@ public interface AppEventTracking {
         String CLICK_INSTOPED = "clickInstoped";
         String CLICK_MANAGE_PRODUCT = "clickManageProduct";
         String CATEGORY_PAGE = "clickKategori";
+        String INTERMEDIARY_PAGE = "clickIntermediary";
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
+        String CLICK_VIEW_ALL_OS = "clickOS";
     }
 
     interface Category {
@@ -166,6 +168,7 @@ public interface AppEventTracking {
         String GM_STATISTIC_PRODUCT_INSIGHT = "GM Statistic - Product Insight";
         String MANAGE_PRODUCT = "Manage Product";
         String CATEGORY_PAGE = "Category Page";
+        String INTERMEDIAR_PAGE = "IntermediaryPage";
         String CATEGORY_PRODUCT = "Kategori";
         String GM_SWITCHER = "GM Switcher";
         String PUSH_NOTIFICATION = "Push Notification";
@@ -213,6 +216,8 @@ public interface AppEventTracking {
 
         String PRODUCT_CATEGORY = "Click Product";
         String CATEGORY_LEVEL = "Category";
+        String CURATED = "Curated";
+        String HOTLIST = "Hotlist";
         String CATEGORY_MORE = "Category Breakdown";
         String CATEGORY_SORT = "Bottom Navigation - Sort";
         String CATEGORY_FILTER = "Bottom Navigation - Filter";
@@ -367,6 +372,9 @@ public interface AppEventTracking {
         String DELETE_PRODUCT_GEAR = "Hapus - Gear Menu";
         String DELETE_PRODUCT_TOPMENU = "Hapus - Top Menu";
         String CATEGORY_SHOW_MORE = "Lihat Lainnya";
+
+        String OS_MICROSITE_NON_LOGIN = "Official Store Visit Microsite - Non Login";
+        String OS_MICROSITE_LOGIN = "Official Store Visit Microsite - Login";
         String TOPADS_LOW_CREDIT = "Top Ads Below 20k";
         String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
         String SAVE_PASSWORD = "Save Password";

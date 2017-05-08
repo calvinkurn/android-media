@@ -452,6 +452,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    hideFormAndImageOperator();
                     rechargeEditText.setEmptyString();
                     selectedOperator = operatorList.get(i);
                     setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
