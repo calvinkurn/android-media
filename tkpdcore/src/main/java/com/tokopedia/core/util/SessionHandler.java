@@ -149,6 +149,8 @@ public class SessionHandler {
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
 
+        TrackingUtils.eventMoEngageLogoutUser();
+
         clearFeedCache();
 
     }

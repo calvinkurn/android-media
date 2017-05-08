@@ -169,6 +169,12 @@ public class MoEngageContainer implements IMoengageContainer {
         });
     }
 
+
+    @Override
+    public void logoutEvent() {
+        MoEHelper.getInstance(context).logoutUser();
+    }
+
     private void executor(Single single, SingleSubscriber subscriber) {
         subscription.add(single.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(subscriber));
     }

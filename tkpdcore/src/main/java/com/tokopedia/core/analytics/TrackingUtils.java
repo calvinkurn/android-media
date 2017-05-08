@@ -109,6 +109,10 @@ public class TrackingUtils extends TrackingConfig {
         sendMoEngageLoginEvent(wrapper);
     }
 
+    public static void eventMoEngageLogoutUser(){
+        getMoEngine().logoutEvent();
+    }
+
     private static String extractFirstName(String name){
         String firstName = "";
         if(!TextUtils.isEmpty(name)){
