@@ -63,6 +63,10 @@ public class RechargeOperatorModel extends BaseModel {
     @Expose
     public Integer defaultProductId;
 
+    @Column
+    @Expose
+    public Boolean allowAlphanumeric;
+
     @Override
     public String toString() {
         return name;

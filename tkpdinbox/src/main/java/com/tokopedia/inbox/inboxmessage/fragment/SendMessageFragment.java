@@ -131,7 +131,6 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
 
     @Override
     protected void initView(View view) {
-        mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         sendTo.setText(getArguments().getString(PARAM_OWNER_FULLNAME));
         sendSubject.setText(getArguments().getString(PARAM_CUSTOM_SUBJECT, ""));
         sendContent.setText(getArguments().getString(PARAM_CUSTOM_MESSAGE, ""));
@@ -199,12 +198,18 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
 
     @Override
     public void finishLoading() {
-        mProgressDialog.dismiss();
+        if (mProgressDialog != null)
+            mProgressDialog.dismiss();
     }
 
     @Override
     public void showLoading() {
-        mProgressDialog.showDialog();
+
+        if (mProgressDialog == null && getActivity() != null)
+            mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (mProgressDialog != null && getActivity() != null)
+            mProgressDialog.showDialog();
     }
 
     @Override
@@ -217,18 +222,20 @@ public class SendMessageFragment extends BasePresenterFragment<SendMessagePresen
     @Override
     public void showError(String error) {
         finishLoading();
-        if(error.equals("")){
+        if (error.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        }else{
-            NetworkErrorHelper.showSnackbar(getActivity(),error);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), error);
         }
 
     }
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
+        finishLoading();
         presenter.onDestroyView();
+        super.onDestroyView();
+
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
