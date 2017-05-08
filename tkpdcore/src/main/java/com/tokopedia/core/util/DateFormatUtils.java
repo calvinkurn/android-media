@@ -15,6 +15,7 @@ public class DateFormatUtils {
     private static final String TAG = DateFormatUtils.class.getSimpleName();
     public static final String FORMAT_DD_MM_YYYY = "dd/MM/yyyy";
     public static final String FORMAT_DD_MMMM_YYYY = "dd MMMM yyyy";
+    public static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
 
     @SuppressLint("SimpleDateFormat")
     public static String getStringDateAfter(int count) {
