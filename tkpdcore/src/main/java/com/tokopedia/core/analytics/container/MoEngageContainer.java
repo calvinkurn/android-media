@@ -156,16 +156,10 @@ public class MoEngageContainer implements IMoengageContainer {
                 helper.setEmail(value.getEmailAddress());
                 helper.setNumber(value.getPhoneNumber());
                 helper.setBirthDate(value.getDateOfBirth());
-
-                sendEvent(
-                        new PayloadBuilder()
-                                .putAttrString(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()))
-                                .putAttrString(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()))
-                                .putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId())
-                                .putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName())
-                                .build()
-                        , AppEventTracking.MOENGAGE.EVENT_USER_ATTR
-                );
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
+                helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_NAME, value.getShopName());
             }
 
             @Override
