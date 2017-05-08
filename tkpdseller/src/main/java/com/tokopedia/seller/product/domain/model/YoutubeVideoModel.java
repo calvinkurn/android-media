@@ -64,12 +64,18 @@ public class YoutubeVideoModel {
 
         YoutubeVideoModel that = (YoutubeVideoModel) o;
 
-        if (width != that.width) return false;
-        if (height != that.height) return false;
-        if (snippetTitle != null ? !snippetTitle.equals(that.snippetTitle) : that.snippetTitle != null)
+        if (width != that.width) {
             return false;
-        if (snippetDescription != null ? !snippetDescription.equals(that.snippetDescription) : that.snippetDescription != null)
+        }
+        if (height != that.height) {
             return false;
+        }
+        if (snippetTitle != null ? !snippetTitle.equals(that.snippetTitle) : that.snippetTitle != null){
+            return false;
+        }
+        if (snippetDescription != null ? !snippetDescription.equals(that.snippetDescription) : that.snippetDescription != null){
+            return false;
+        }
         return thumbnailUrl != null ? thumbnailUrl.equals(that.thumbnailUrl) : that.thumbnailUrl == null;
 
     }
