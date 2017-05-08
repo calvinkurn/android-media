@@ -167,7 +167,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void renderReceipt(Receipt receipt) {
         totalChargedTextView.setText(receipt.getTotalCharged());
-        totalFareTextView.setText(receipt.getTotalCharged());
+        totalFareTextView.setText(receipt.getTotalFare());
     }
 
     @Override

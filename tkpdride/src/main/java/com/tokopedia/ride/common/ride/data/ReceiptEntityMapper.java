@@ -22,9 +22,14 @@ public class ReceiptEntityMapper {
             receipt.setDuratuinInMinute(transformDurationToMinute(entity.getDuration()));
             receipt.setRequestId(entity.getRequestId());
             receipt.setSubtotal(entity.getSubtotal());
-            receipt.setTotalCharged(entity.getTotalCharged());
             receipt.setTotalFare(entity.getTotalFare());
             receipt.setTotalOwe(entity.getTotalOwe());
+
+            String totalCharged = entity.getCurrencyCode() + " 0";
+            if (entity.getPayment() != null) {
+                totalCharged = entity.getCurrencyCode() + " " + entity.getPayment().getTotalAmount();
+            }
+            receipt.setTotalCharged(totalCharged);
         }
         return receipt;
     }

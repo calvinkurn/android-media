@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by alvarisi on 4/17/17.
  */
 
-public class WalletInterruptMetaEntity {
+public class InterruptMetaEntity {
     /**
      * {
      * "href": "https://ride-staging.tokopedia.com/user/linkwallet?authorisateion=324234-sdd-234-234",

@@ -16,10 +16,13 @@ public class InterruptConfirmationMetaEntity {
     SurgeConfirmationEntity surgeConfirmationEntity;
     @SerializedName("wallet_activation")
     @Expose
-    WalletInterruptMetaEntity walletActivationEntity;
+    InterruptMetaEntity walletActivationEntity;
     @SerializedName("wallet_topup")
     @Expose
-    WalletInterruptMetaEntity walletTopupEntity;
+    InterruptMetaEntity walletTopupEntity;
+    @SerializedName("interrupt")
+    @Expose
+    InterruptMetaEntity interruptEntity;
 
     public TosAcceptConfirmationEntity getTosAcceptConfirmationEntity() {
         return tosAcceptConfirmationEntity;
@@ -29,11 +32,15 @@ public class InterruptConfirmationMetaEntity {
         return surgeConfirmationEntity;
     }
 
-    public WalletInterruptMetaEntity getWalletActivationEntity() {
+    public InterruptMetaEntity getWalletActivationEntity() {
         return walletActivationEntity;
     }
 
-    public WalletInterruptMetaEntity getWalletTopupEntity() {
+    public InterruptMetaEntity getWalletTopupEntity() {
         return walletTopupEntity;
+    }
+
+    public InterruptMetaEntity getInterruptEntity() {
+        return interruptEntity;
     }
 }

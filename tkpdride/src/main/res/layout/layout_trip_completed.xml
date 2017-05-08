@@ -244,20 +244,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="12dp">
+                android:paddingTop="16dp">
 
                 <TextView
                     android:id="@+id/tv_sign_up_uber"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SIGN UP "
-                    android:textColor="@color/colorPrimary"
+                    android:text="SIGNUP WITH UBER TO GET ONE RIDE FREE"
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tv_tnc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FOR UBER NOW TO GET SOME PROMO!"
+                    android:autoLink="web"
+                    android:linksClickable="true"
+                    android:paddingLeft="4dp"
+                    android:text="@string/uber_signup_tnc"
+                    android:textColor="@color/blue_link"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>

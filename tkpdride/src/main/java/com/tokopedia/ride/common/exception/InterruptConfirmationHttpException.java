@@ -61,6 +61,9 @@ public class InterruptConfirmationHttpException extends IOException {
                     case "wallet_topup":
                         tosUrl = entity.getMeta().getWalletTopupEntity().getHref();
                         break;
+                    case "interrupt":
+                        tosUrl = entity.getMeta().getInterruptEntity().getHref();
+                        break;
                 }
 
             } else {

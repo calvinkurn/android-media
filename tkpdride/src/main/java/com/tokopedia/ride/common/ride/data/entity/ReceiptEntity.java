@@ -68,6 +68,9 @@ public class ReceiptEntity {
     @SerializedName("total_owe")
     @Expose
     String totalOwe;
+    @SerializedName("payment")
+    @Expose
+    RecieptPaymentEntity payment;
 
     public ReceiptEntity() {
     }
@@ -114,5 +117,9 @@ public class ReceiptEntity {
 
     public String getTotalOwe() {
         return totalOwe;
+    }
+
+    public RecieptPaymentEntity getPayment() {
+        return payment;
     }
 }
