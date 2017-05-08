@@ -171,6 +171,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                 }
             }
         });
+        budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus){
+                    CommonUtils.hideKeyboard(getActivity(), view);
+                }
+            }
+        });
         // trigger the watcher first time
         budgetPerDayEditText.setText(budgetPerDayEditText.getText());
 
