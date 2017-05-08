@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.Product;
 
 /**
  * @author anggaprasetiyo on 5/3/17.
@@ -23,7 +25,7 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    protected void initialViewListener() {
+    protected void initialViewListener(Context context) {
 
     }
 
@@ -35,5 +37,30 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
     @Override
     public void renderData(CategoryData data) {
 
+    }
+
+    @Override
+    public void renderUpdateProductSelected(Product product) {
+
+    }
+
+    @Override
+    public void renderUpdateOperatorSelected(Operator operator) {
+
+    }
+
+    @Override
+    public Operator getSelectedOperator() {
+        return null;
+    }
+
+    @Override
+    public Product getSelectedProduct() {
+        return null;
+    }
+
+    @Override
+    public String getClientNumber() {
+        return null;
     }
 }

@@ -5,67 +5,27 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/spinner_1"
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="bottom"
-        android:spinnerMode="dialog"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/tv_label_client_number"
+    <LinearLayout
+        android:id="@+id/holder_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
-        android:text="@string/prompt_phone" />
+        android:orientation="vertical" />
 
-    <com.tokopedia.digital.product.compoundview.ClientNumberInputView
-        android:id="@+id/et_client_number"
+
+    <LinearLayout
+        android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:visibility="visible" />
+        android:orientation="vertical" />
 
 
-    <TextView
-        android:id="@+id/tv_label_spinner_2"
+    <LinearLayout
+        android:id="@+id/holder_chooser_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
-        android:text="@string/title_nominal"
-        android:visibility="gone" />
+        android:orientation="vertical" />
 
-    <Spinner
-        android:id="@+id/spinner_2"
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-        android:layout_width="fill_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="bottom"
-        android:spinnerMode="dialog"
-        android:visibility="gone"
-        tools:visibility="visible" />
-
-    <TextView
-        android:id="@+id/tv_error_spinner_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingEnd="@null"
-        android:paddingLeft="@dimen/padding_vvs"
-        android:paddingRight="@null"
-        android:paddingStart="@dimen/padding_vvs"
-        android:text="@string/title_empty_stock"
-        android:textColor="@color/red_600"
-        android:textSize="@dimen/fontvs"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
     <CheckBox
         android:id="@+id/cb_instant_checkout"
@@ -82,7 +42,7 @@
         tools:visibility="visible" />
 
     <TextView
-        android:id="@+id/btn_next"
+        android:id="@+id/btn_buy_digital"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_marginTop="@dimen/padding_small"

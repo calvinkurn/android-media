@@ -3,9 +3,12 @@ package com.tokopedia.digital.product.compoundview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.RelativeLayout;
+
+import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.Product;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 
@@ -15,6 +18,7 @@ import butterknife.ButterKnife;
 public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     protected ActionListener actionListener;
+    protected Context context;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -22,77 +26,56 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     public BaseDigitalProductView(Context context) {
         super(context);
+        this.context = context;
         initialView(context, null, 0);
     }
 
     public BaseDigitalProductView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
         initialView(context, attrs, 0);
     }
 
     public BaseDigitalProductView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.context = context;
         initialView(context, attrs, defStyleAttr);
     }
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         ButterKnife.bind(this);
-        initialViewListener();
+        initialViewListener(context);
     }
 
-    protected abstract void initialViewListener();
+    protected abstract void initialViewListener(Context context);
 
     protected abstract int getHolderLayoutId();
 
     public abstract void renderData(T data);
 
-    public void setClientNumberInputViewCallback(ClientNumberInputView clientNumberInputView) {
-        if (clientNumberInputView != null) {
-            clientNumberInputView.getAutoCompleteTextView().setOnFocusChangeListener(getFocusChangeListener());
-        }
-    }
+    public abstract void renderUpdateProductSelected(Product product);
 
-    private OnFocusChangeListener getFocusChangeListener() {
-        return new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    //need more investigate to scroll page bottom banner and use customer activity
-                    //setParentToScroolToTop();
-                }
-            }
-        };
-    }
+    public abstract void renderUpdateOperatorSelected(Operator operator);
 
-    public void setClientNumberInputViewTouchCallback(ClientNumberInputView clientNumberInputView) {
-        if (clientNumberInputView != null) {
-            clientNumberInputView.getAutoCompleteTextView().setOnTouchListener(getTouchListener(clientNumberInputView));
-        }
-    }
+    public abstract Operator getSelectedOperator();
 
-    private View.OnTouchListener getTouchListener(final ClientNumberInputView clientNumberInputView) {
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        clientNumberInputView.getAutoCompleteTextView().setFocusable(true);
-                        clientNumberInputView.getAutoCompleteTextView().requestFocus();
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        //setParentToScroolToTop();
-                        break;
-                    default:
-                        break;
-                }
-                return false;
-            }
-        };
-    }
+    public abstract Product getSelectedProduct();
+
+    public abstract String getClientNumber();
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
+
+        void onProductChooserStyle1Clicked(List<Product> productListData);
+
+        void onProductChooserStyle2Clicked(List<Product> productListData);
+
+        void onOperatorChooserStyle3Clicked(List<Operator> operatorListData);
+
+        void onProductChooserStyle3Clicked(List<Product> productListData);
+
+        void onCannotBeCheckoutProduct(String messageError);
     }
 
     public static class PreCheckoutProduct {
