@@ -114,7 +114,7 @@
             android:orientation="vertical"
             android:paddingBottom="5dp"
             android:paddingTop="5dp"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/apply_promo_card_layout"

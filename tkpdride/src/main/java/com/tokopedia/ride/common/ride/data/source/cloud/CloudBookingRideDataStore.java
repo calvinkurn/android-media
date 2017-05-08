@@ -79,7 +79,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
-    public Observable<PromoEntity> getPromo(TKPDMapParam<String, Object> param) {
+    public Observable<List<PromoEntity>> getPromo(TKPDMapParam<String, Object> param) {
         return mRideApi.getPromo(param);
     }
 

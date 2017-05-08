@@ -46,7 +46,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     }
 
     private void actionGetPromo() {
-        getPromoUseCase.execute(RequestParams.EMPTY, new Subscriber<Promo>() {
+        getPromoUseCase.execute(RequestParams.EMPTY, new Subscriber<List<Promo>>() {
             @Override
             public void onCompleted() {
 
@@ -58,7 +58,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             }
 
             @Override
-            public void onNext(Promo promo) {
+            public void onNext(List<Promo> promo) {
                 getView().showAdsBadges("");
             }
         });
@@ -83,7 +83,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onNext(List<ProductEstimate> productEstimates) {
-                if (isViewAttached() && !isUnsubscribed()){
+                if (isViewAttached() && !isUnsubscribed()) {
                     List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
 
                     getView().hideProgress();
@@ -173,7 +173,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
-                if (isViewAttached() && !isUnsubscribed()){
+                if (isViewAttached() && !isUnsubscribed()) {
                     getView().hideErrorMessage();
                     getView().showProductList();
                     getView().renderFareProduct(mProductViewModelMapper.transform(productEstimate, fareEstimate), productId, position, fareEstimate);

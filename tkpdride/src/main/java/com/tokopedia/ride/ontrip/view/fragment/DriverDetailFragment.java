@@ -150,7 +150,7 @@ public class DriverDetailFragment extends BaseFragment {
         if (status != null && (status.equalsIgnoreCase("accepted") || status.equalsIgnoreCase("arriving"))) {
             cancelRideLayout.setVisibility(View.VISIBLE);
             driverEtaTextView.setVisibility(View.VISIBLE);
-            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(R.string.minute) + " away");
+            driverEtaTextView.setText(String.valueOf(eta) + " " + getResources().getString(eta > 1 ? R.string.minutes : R.string.minute) + " away");
         } else if (status != null && status.equalsIgnoreCase("in_progress")) {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.VISIBLE);
@@ -173,10 +173,12 @@ public class DriverDetailFragment extends BaseFragment {
                 .into(new BitmapImageViewTarget(driverImageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable roundedBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                        roundedBitmapDrawable.setCircular(true);
-                        driverImageView.setImageDrawable(roundedBitmapDrawable);
+                        if (getActivity() != null && !getActivity().isFinishing()) {
+                            RoundedBitmapDrawable roundedBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
+                            roundedBitmapDrawable.setCircular(true);
+                            driverImageView.setImageDrawable(roundedBitmapDrawable);
+                        }
                     }
                 });
 

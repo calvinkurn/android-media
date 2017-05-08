@@ -10,8 +10,16 @@ import com.tokopedia.ride.common.ride.domain.model.RideRequest;
  */
 
 public interface RideHomeContract {
-    interface View extends CustomerView{
+    interface View extends CustomerView {
+        boolean isUserLoggedIn();
 
+        void navigateToLoginPage();
+
+        void showVerificationPhoneNumberPage();
+
+        boolean isUserPhoneNumberVerified();
+
+        void inflateMapAndProductFragment();
         void showCheckPendingRequestLoading();
 
         RequestParams getCurrentRideRequestParam();
@@ -34,5 +42,7 @@ public interface RideHomeContract {
         void initialize();
 
         void actionCheckPendingRequestIfAny();
+    interface Presenter extends CustomerPresenter<View> {
+        void initialize();
     }
 }

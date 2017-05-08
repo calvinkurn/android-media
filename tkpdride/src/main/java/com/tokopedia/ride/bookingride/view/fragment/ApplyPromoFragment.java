@@ -1,11 +1,16 @@
 package com.tokopedia.ride.bookingride.view.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,13 +27,17 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.ApplyPromoDependencyInjection;
 import com.tokopedia.ride.bookingride.domain.ApplyPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
+import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.bookingride.view.ApplyPromoContract;
 import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
+import com.tokopedia.ride.bookingride.view.adapter.OnGoingPromoAdapter;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.common.ride.domain.model.ApplyPromo;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -40,7 +49,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 
 
-public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContract.View {
+public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContract.View, OnGoingPromoAdapter.OnAdapterInteractionListener {
     private static final String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
     @BindView(R2.id.et_promo)
     EditText promoEditText;
@@ -52,26 +61,17 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
     LinearLayout promoLayout;
     @BindView(R2.id.tv_description)
     TextView descriptionTextView;
+    @BindView(R2.id.on_going_promo_container)
+    LinearLayout onGoingPromoLayout;
+    @BindView(R2.id.rv_promo)
+    RecyclerView promoRecyclerView;
+    @BindView((R2.id.progress_bar_promo_list))
+    ProgressBar mPromoListProgressBar;
 
     ApplyPromoContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        presenter = ApplyPromoDependencyInjection.createPresenter(getActivity());
-        presenter.attachView(this);
-        confirmBookingViewModel = getArguments().getParcelable(EXTRA_CONFIRM_BOOKING);
-        if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
-            promoEditText.setText(String.valueOf(confirmBookingViewModel.getPromoCode()));
-            descriptionTextView.setText(String.valueOf(confirmBookingViewModel.getPromoDescription()));
-        }
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_apply_promo;
-    }
+    OnGoingPromoAdapter onGoingPromoAdapter;
+    OnFragmentInteractionListener interactionListener;
 
     public static ApplyPromoFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
         Bundle bundle = new Bundle();
@@ -79,6 +79,66 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         ApplyPromoFragment fragment = new ApplyPromoFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void openWebView(String url);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        presenter = ApplyPromoDependencyInjection.createPresenter(getActivity());
+        presenter.attachView(this);
+        presenter.getOnGoingPromo();
+        confirmBookingViewModel = getArguments().getParcelable(EXTRA_CONFIRM_BOOKING);
+        if (confirmBookingViewModel != null && !TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
+            promoEditText.setText(String.valueOf(confirmBookingViewModel.getPromoCode()));
+            descriptionTextView.setText(String.valueOf(confirmBookingViewModel.getPromoDescription()));
+        } else {
+            descriptionTextView.setVisibility(View.GONE);
+        }
+        onGoingPromoAdapter = new OnGoingPromoAdapter(getActivity());
+        onGoingPromoAdapter.setInteractionListener(this);
+        promoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        promoRecyclerView.setAdapter(onGoingPromoAdapter);
+        setViewListener();
+    }
+
+    private void setViewListener() {
+        promoEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (TextUtils.isEmpty(charSequence)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        promoEditText.setBackground(getResources().getDrawable(R.drawable.et_normal_bg));
+                    } else {
+                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_normal_bg));
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        promoEditText.setBackground(getResources().getDrawable(R.drawable.et_selected_bg));
+                    } else {
+                        promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_selected_bg));
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.fragment_apply_promo;
     }
 
     @OnClick(R2.id.tv_submit_promo)
@@ -114,11 +174,18 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onSuccessApplyPromo(FareEstimate fareEstimate) {
-        descriptionTextView.setTextColor(getResources().getColor(R.color.body_text_4_inverse));
-        descriptionTextView.setText(fareEstimate.getMessageSuccess());
+        //descriptionTextView.setVisibility(View.VISIBLE);
+        //descriptionTextView.setTextColor(getResources().getColor(R.color.body_text_4_inverse));
+        //descriptionTextView.setText(fareEstimate.getMessageSuccess());
         confirmBookingViewModel.setPromoCode(getPromo());
         confirmBookingViewModel.setPromoDescription(fareEstimate.getMessageSuccess());
         confirmBookingViewModel.setDeviceType(getDeviceName());
+
+        //set result back
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM, confirmBookingViewModel);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override
@@ -135,6 +202,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void onFailedApplyPromo(String message) {
+        descriptionTextView.setVisibility(View.VISIBLE);
         descriptionTextView.setTextColor(getResources().getColor(R.color.red_500));
         descriptionTextView.setText(message);
     }
@@ -202,6 +270,31 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         promoEditText.setError(null);
     }
 
+    @Override
+    public void showPromoLoading() {
+        mPromoListProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public RequestParams getPromoParams() {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetPromoUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetPromoUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetPromoUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetPromoUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetPromoUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return requestParams;
+    }
+
+    @Override
+    public void hidePromoLoading() {
+        mPromoListProgressBar.setVisibility(View.GONE);
+    }
+
     public ApplyPromoActivity.BackButtonListener getBackButtonListener() {
         return new ApplyPromoActivity.BackButtonListener() {
             @Override
@@ -209,5 +302,53 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
                 return confirmBookingViewModel;
             }
         };
+    }
+
+    @Override
+    public void renderPromoList(List<Promo> promos) {
+        onGoingPromoLayout.setVisibility(View.VISIBLE);
+        onGoingPromoAdapter.setPromos(promos);
+    }
+
+    @Override
+    public void renderEmptyOnGoingPromo() {
+        onGoingPromoLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onItemClicked(String promoCode) {
+        promoEditText.setText(promoCode);
+        presenter.actionApplyPromo();
+    }
+
+    @Override
+    public void onLinkBtnClicked(String url) {
+        if (interactionListener != null) {
+            interactionListener.openWebView(url);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(String.format("%s must implement OnFragmentInteractionListener",
+                    getActivity().getClass().getSimpleName())
+            );
+        }
+    }
+
+    @Override
+    public void onAttach(Activity context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            interactionListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(String.format("%s must implement OnFragmentInteractionListener",
+                    getActivity().getClass().getSimpleName())
+            );
+        }
     }
 }

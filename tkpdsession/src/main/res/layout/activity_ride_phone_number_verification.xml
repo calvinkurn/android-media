@@ -5,20 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tokopedia.tkpd.ride.RidePhoneNumberVerificationActivity">
+    tools:context="com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity">
 
     <TextView
         android:id="@+id/protect_account_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="@dimen/margin_large"
         android:layout_marginLeft="@dimen/margin_large"
         android:layout_marginRight="@dimen/margin_large"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/padding_vs"
         android:textSize="18sp"
-        android:text="@string/protect_your_account_with_phone_verification" />
+        android:text="@string/ride_phone_verification_header" />
 
     <FrameLayout
         android:id="@+id/container"

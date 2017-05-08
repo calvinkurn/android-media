@@ -45,7 +45,7 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
-        String RIDE = "tokopedia://ride";
+        String RIDE = "tokopedia://ride/uber";
         String RIDE_DETAIL = "tokopedia://ride/{request_id}";
     }
 }

@@ -29,6 +29,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.sothree.slidinguppanel.ScrollableViewHelper;
@@ -37,12 +38,16 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.bookingride.di.RideHomeDependencyInjection;
@@ -76,6 +81,7 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 public class RideHomeActivity extends BaseActivity implements RideHomeMapFragment.OnFragmentInteractionListener,
         UberProductFragment.OnFragmentInteractionListener, ConfirmBookingRideFragment.OnFragmentInteractionListener,
         SeatAdapter.OnItemClickListener, RideHomeContract.View {
+    private static final int RIDE_PHONE_VERIFY_REQUEST_CODE = 1011;
     public static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     public static final int LOGIN_REQUEST_CODE = 1005;
     public static int REQUEST_GO_TO_ONTRIP_CODE = 1009;
@@ -122,7 +128,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                 .setData(uri.build())
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
-        destination.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);
         return taskStackBuilder;
@@ -136,6 +141,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
         mPresenter = RideHomeDependencyInjection.createPresenter(this);
         mPresenter.attachView(this);
+        mPresenter.initialize();
 
         mPresenter.actionCheckPendingRequestIfAny();
 
@@ -212,6 +218,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void inflateInitialFragment() {
+        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
+    }
+
+    @Override
+    public void inflateMapAndProductFragment() {
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
@@ -296,6 +307,23 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                             ((ConfirmBookingRideFragment) bottomFragment).showErrorMessage(message);
                         }
                     }
+                    break;
+            }
+        } else if (requestCode == RideHomeActivity.LOGIN_REQUEST_CODE) {
+            if (!SessionHandler.isV4Login(this)) {
+                Toast.makeText(this, "Login Cancelled", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                mPresenter.initialize();
+            }
+        } else if (requestCode == RIDE_PHONE_VERIFY_REQUEST_CODE) {
+            switch (resultCode) {
+                case Activity.RESULT_CANCELED:
+                    Toast.makeText(this, "Cant cont., must verify your phone number.", Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+                default:
+                    mPresenter.initialize();
                     break;
             }
         }
@@ -564,5 +592,32 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_RIDE_HOME;
+    }
+
+    @Override
+    public boolean isUserLoggedIn() {
+        return SessionHandler.isV4Login(this);
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        Intent intent = SessionRouter.getLoginActivityIntent(this);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.LOGIN);
+        startActivityForResult(intent, RideHomeActivity.LOGIN_REQUEST_CODE);
+    }
+
+    @Override
+    public void showVerificationPhoneNumberPage() {
+        if (getApplicationContext() instanceof OtpRouter) {
+            OtpRouter otpRouter = (OtpRouter) getApplicationContext();
+            startActivityForResult(otpRouter.getRidePhoneNumberActivityIntent(this),
+                    RIDE_PHONE_VERIFY_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public boolean isUserPhoneNumberVerified() {
+        return SessionHandler.isMsisdnVerified();
     }
 }

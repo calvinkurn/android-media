@@ -94,6 +94,7 @@ class HomeCategoryMenuMapper {
         void invoke() {
             mCategoryItemModel.setRedirectValue(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setType(CategoryItemModel.TYPE.CATEGORY);
+            mCategoryItemModel.setApplinks(String.valueOf(mLayoutRow.getApplinks()));
         }
     }
 
@@ -107,6 +108,7 @@ class HomeCategoryMenuMapper {
         }
 
         void invoke() {
+            mCategoryItemModel.setApplinks(String.valueOf(mLayoutRow.getApplinks()));
             mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
             mCategoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
         }

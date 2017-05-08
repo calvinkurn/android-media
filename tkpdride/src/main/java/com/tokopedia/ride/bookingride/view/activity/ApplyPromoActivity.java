@@ -4,16 +4,18 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.ApplyPromoFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 
-public class ApplyPromoActivity extends BaseActivity {
+public class ApplyPromoActivity extends BaseActivity implements ApplyPromoFragment.OnFragmentInteractionListener {
     private static final String EXTRA_CONFIRM_BOOKING = "EXTRA_CONFIRM_BOOKING";
 
     public static Intent getCallingActivity(Activity activity,
@@ -76,6 +78,16 @@ public class ApplyPromoActivity extends BaseActivity {
             setResult(Activity.RESULT_CANCELED);
         }
         finish();
+    }
+
+    @Override
+    public void openWebView(String url) {
+        String seamlessURL = URLGenerator.generateURLSessionLogin(
+                (Uri.encode(url)),
+                this
+        );
+        Intent intent = TokoCashWebViewActivity.getCallingIntent(this, seamlessURL);
+        startActivity(intent);
     }
 
     public interface BackButtonListener {

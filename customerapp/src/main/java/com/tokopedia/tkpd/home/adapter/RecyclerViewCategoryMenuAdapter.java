@@ -61,18 +61,7 @@ public class RecyclerViewCategoryMenuAdapter extends
     @Override
     public void onBindViewHolder(ItemRowHolder itemRowHolder, int i) {
         final String sectionName = dataList.get(i).getHeaderTitle();
-//        ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
-        //
-        // TODO : remove if API is already work
-        ArrayList<CategoryItemModel> singleSectionItems = new ArrayList<>();
-        CategoryItemModel categoryItemModel = new CategoryItemModel();
-        categoryItemModel.setName("Ride");
-        categoryItemModel.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_telepon.png");
-        categoryItemModel.setRedirectValue("https://www.tokopedia.com/telepon?utm_source=mobile&utm_medium=categoriesicon&utm_campaign=");
-        categoryItemModel.setType(CategoryItemModel.TYPE.APPLINK);
-        singleSectionItems.add(categoryItemModel);
-        singleSectionItems.addAll(dataList.get(i).getAllItemsInSection());
-        //
+        ArrayList<CategoryItemModel> singleSectionItems = dataList.get(i).getAllItemsInSection();
         itemRowHolder.itemTitle.setText(sectionName);
         SectionListCategoryAdapter itemListDataAdapter = new SectionListCategoryAdapter(
                 singleSectionItems,

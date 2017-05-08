@@ -128,6 +128,7 @@ public class RideInterceptor extends TkpdBaseInterceptor {
         if (!response.isSuccessful()) {
             switch (response.code()) {
                 case 422:
+                case 500:
                     throw new UnProcessableHttpException(response.body().string());
                 case 409:
                     throw new InterruptConfirmationHttpException(response.body().string());

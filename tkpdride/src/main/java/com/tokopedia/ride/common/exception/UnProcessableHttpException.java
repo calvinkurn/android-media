@@ -27,7 +27,7 @@ public class UnProcessableHttpException extends IOException {
     }
 
     public UnProcessableHttpException(String errorMessage) {
-        super("Invalid Request");
+        super("Request data is invalid, please check message");
         JSONObject dataJsonObject = null;
         JSONObject jsonObject = null;
         try {
@@ -66,7 +66,7 @@ public class UnProcessableHttpException extends IOException {
                 }
             }
         } catch (Exception ex) {
-            title = "Invalid Request";
+            title = "Request data is invalid, please check message";
         }
     }
 
