@@ -345,13 +345,9 @@ public class RidePushNotificationBuildAndShow {
     }
 
     private static void showRideCompleted(Context context, RideRequest rideRequest) {
-        RideConfiguration rideConfiguration = new RideConfiguration();
-        if (!rideConfiguration.isWaitingDriverState()) return;
-
         DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
-        driverAndVehicle.setDriver(rideConfiguration.getActiveRequestObj().getDriver());
-        driverAndVehicle.setVehicle(rideConfiguration.getActiveRequestObj().getVehicle());
-        rideConfiguration.clearActiveRequest();
+        driverAndVehicle.setDriver(rideRequest.getDriver());
+        driverAndVehicle.setVehicle(rideRequest.getVehicle());
 
         Intent intent = CompleteTripActivity.getCallingIntentFromPushNotification(
                 context,

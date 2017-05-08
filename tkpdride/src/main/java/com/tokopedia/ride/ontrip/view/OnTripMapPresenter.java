@@ -197,6 +197,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void proccessGetCurrentRideRequest(RideRequest result) {
         getView().setRequestId(result.getRequestId());
+        if (result.getAddress() != null) {
+            getView().setAddressPickerText(result.getAddress().getStartAddressName(), result.getAddress().getEndAddressName());
+        }
         //processing accepted arriving in_progress driver_canceled completed
         switch (result.getStatus()) {
             case RideStatus.NO_DRIVER_AVAILABLE:
@@ -462,5 +465,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void actionMessageDriver() {
         getView().openSmsIntent(activeRideRequest.getDriver().getSmsNumber());
+    }
+
+    @Override
+    public boolean checkIsAnyPendingRequest() {
+        return activeRideRequest != null;
     }
 }

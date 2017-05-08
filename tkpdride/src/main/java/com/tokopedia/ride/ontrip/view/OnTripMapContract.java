@@ -132,6 +132,8 @@ public interface OnTripMapContract {
         void openCallIntent(String phoneNumber);
 
         void openSmsIntent(String smsNumber);
+
+        void setAddressPickerText(String startAddressName, String endAddressName);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -164,5 +166,7 @@ public interface OnTripMapContract {
         void actionCallDriver();
 
         void actionMessageDriver();
+
+        boolean checkIsAnyPendingRequest();
     }
 }

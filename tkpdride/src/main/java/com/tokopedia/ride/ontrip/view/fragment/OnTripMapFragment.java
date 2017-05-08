@@ -214,6 +214,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void setAddressPickerText(String startAddressName, String endAddressName) {
+        tvSource.setText(startAddressName);
+        tvDestination.setText(endAddressName);
+    }
+
+    @Override
     public RequestParams getParam() {
         String deviceId = GCMHandler.getRegistrationId(getActivity());
         String userId = SessionHandler.getLoginID(getActivity());
@@ -984,6 +990,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             public boolean canGoBack() {
                 return isScreenBlocked;
             }
+
+            @Override
+            public boolean isAnyPendingRequest() {
+                return presenter.checkIsAnyPendingRequest();
+            }
         };
     }
 
@@ -1000,11 +1011,5 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 presenter.actionOnReceivePushNotification(rideRequest);
             }
         };
-    }
-
-    private void setTitle(String title) {
-        if (getActivity() == null) return;
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 }

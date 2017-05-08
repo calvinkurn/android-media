@@ -60,13 +60,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<RideRequestEntity> createRideRequest(TKPDMapParam<String, Object> params) {
-        return mRideApi.createRequestRide(params).doOnNext(new Action1<RideRequestEntity>() {
-            @Override
-            public void call(RideRequestEntity entity) {
-                RideConfiguration rideConfiguration = new RideConfiguration();
-                rideConfiguration.setActiveRequest(entity);
-            }
-        });
+        return mRideApi.createRequestRide(params);
     }
 
     @Override
@@ -81,15 +75,7 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<RideRequestEntity> getRequestDetail(TKPDMapParam<String, Object> params) {
-        return mRideApi.getDetailRequestRide(params).doOnNext(new Action1<RideRequestEntity>() {
-            @Override
-            public void call(RideRequestEntity entity) {
-                if (entity.getStatus().equalsIgnoreCase("accepted")) {
-                    RideConfiguration rideConfiguration = new RideConfiguration();
-                    rideConfiguration.setActiveRequest(entity);
-                }
-            }
-        });
+        return mRideApi.getDetailRequestRide(params);
     }
 
     @Override

@@ -3,12 +3,14 @@ package com.tokopedia.ride.common.ride.data;
 import com.tokopedia.ride.common.ride.data.entity.DriverEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationLatLngEntity;
+import com.tokopedia.ride.common.ride.data.entity.RideRequestAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.VehicleEntity;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 /**
@@ -34,8 +36,21 @@ public class RideRequestEntityMapper {
             rideRequest.setDestination(transform(entity.getDestination()));
             rideRequest.setShared(entity.isShared());
             rideRequest.setEta(entity.getEta());
+            rideRequest.setAddress(transform(entity.getAddress()));
         }
         return rideRequest;
+    }
+
+    private RideRequestAddress transform(RideRequestAddressEntity entity) {
+        RideRequestAddress address = null;
+        if (entity != null) {
+            address = new RideRequestAddress();
+            address.setStartAddress(entity.getStartAddress());
+            address.setStartAddressName(entity.getStartAddressName());
+            address.setEndAddress(entity.getEndAddress());
+            address.setEndAddressName(entity.getEndAddressName());
+        }
+        return address;
     }
 
     public LocationLatLng transform(LocationLatLngEntity entity) {

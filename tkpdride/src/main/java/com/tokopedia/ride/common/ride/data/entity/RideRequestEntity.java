@@ -68,6 +68,9 @@ public class RideRequestEntity {
     @SerializedName("destination")
     @Expose
     LocationLatLngEntity destination;
+    @SerializedName("address")
+    @Expose
+    RideRequestAddressEntity address;
     @SerializedName("eta")
     @Expose
     int eta;
@@ -121,5 +124,9 @@ public class RideRequestEntity {
 
     public int getEta() {
         return eta;
+    }
+
+    public RideRequestAddressEntity getAddress() {
+        return address;
     }
 }

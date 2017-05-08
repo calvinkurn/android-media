@@ -2,6 +2,7 @@ package com.tokopedia.ride.bookingride.view;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 
 import rx.Subscriber;
@@ -49,7 +50,17 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                 if (isViewAttached()) {
                     if (rideRequest != null) {
                         getView().hideCheckPendingRequestLoading();
-                        getView().actionNavigateToOnTripScreen(rideRequest);
+                        switch (rideRequest.getStatus()){
+                            case RideStatus.ACCEPTED:
+                            case RideStatus.ARRIVING:
+                            case RideStatus.IN_PROGRESS:
+                            case RideStatus.PROCESSING:
+                                getView().actionNavigateToOnTripScreen(rideRequest);
+                                break;
+                            default:
+                                getView().inflateInitialFragment();
+                        }
+
                     } else {
                         getView().hideCheckPendingRequestLoading();
                         getView().inflateInitialFragment();

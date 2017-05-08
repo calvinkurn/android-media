@@ -179,10 +179,9 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
 
     @Override
     public void onBackPressed() {
-        RideConfiguration rideConfiguration = new RideConfiguration();
         if (backButtonListener != null && backButtonListener.canGoBack()) {
             backButtonListener.onBackPressed();
-        } else if (rideConfiguration.isWaitingDriverState()) {
+        } else if (backButtonListener != null && backButtonListener.isAnyPendingRequest()) {
             Intent intent = getIntent();
             setResult(APP_HOME_RESULT_CODE, intent);
             finish();
@@ -215,6 +214,8 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         void onBackPressed();
 
         boolean canGoBack();
+
+        boolean isAnyPendingRequest();
     }
 
 
