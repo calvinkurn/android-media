@@ -23,6 +23,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.adapter.BannerAdapter;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
@@ -38,6 +39,8 @@ import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
@@ -309,12 +312,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         String clientNumber = preCheckoutProduct.getClientNumber();
         DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
                 .action("init_data")
-                .categoryId(String.valueOf(preCheckoutProduct.getCategoryId()))
+                .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber(clientNumber)
                 .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
                 .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
-                .operatorId(String.valueOf(preCheckoutProduct.getOperatorId()))
-                .productId(String.valueOf(preCheckoutProduct.getProductId()))
+                .operatorId(preCheckoutProduct.getOperatorId())
+                .productId(preCheckoutProduct.getProductId())
                 .utmCampaign((preCheckoutProduct.getCategoryName()))
                 .utmContent(VersionInfo.getVersionInfo(getActivity()))
                 .idemPotencyKey(generateATokenRechargeCheckout())
@@ -328,6 +331,43 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
             );
         }
+    }
+
+    @Override
+    public void onProductChooserStyle1Clicked(List<Product> productListData) {
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
+    }
+
+    @Override
+    public void onProductChooserStyle2Clicked(List<Product> productListData) {
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
+    }
+
+    @Override
+    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData) {
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceOperatorChooser(getActivity(), operatorListData),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
+        );
+    }
+
+    @Override
+    public void onProductChooserStyle3Clicked(List<Product> productListData) {
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
+    }
+
+    @Override
+    public void onCannotBeCheckoutProduct(String messageError) {
+        showToastMessage(messageError);
     }
 
     private String generateATokenRechargeCheckout() {
@@ -345,5 +385,36 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
+                if (resultCode == Activity.RESULT_OK)
+                    handleCallBackOperatorChooser(
+                            (Operator) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
+                            )
+                    );
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
+                if (resultCode == Activity.RESULT_OK)
+                    handleCallBackProductChooser(
+                            (Product) data.getParcelableExtra(
+                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
+                            )
+                    );
+                break;
+        }
+    }
+
+    private void handleCallBackProductChooser(Product product) {
+        digitalProductView.renderUpdateProductSelected(product);
+    }
+
+    private void handleCallBackOperatorChooser(Operator operator) {
+        digitalProductView.renderUpdateOperatorSelected(operator);
     }
 }
