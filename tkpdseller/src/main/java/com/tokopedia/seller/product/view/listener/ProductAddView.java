@@ -4,6 +4,8 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
 import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
+import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
+import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
 import java.util.List;
 
@@ -36,4 +38,5 @@ public interface ProductAddView extends CustomerView {
     void populateCategory(List<String> categorys);
 
     void onSuccessStoreProductAndAddToDraft(Long productId);
+
 }

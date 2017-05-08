@@ -123,7 +123,9 @@ public class AddWholeSaleDialog extends DialogFragment {
 
         // set min based on previous data
         String minQuantity = null;
+        boolean isFirsttime = false;
         if (previousValue == null) {
+            isFirsttime = true;
             minQuantityRaw = baseValue.getQtyTwo() + 1;
             minQuantity = Integer.toString(minQuantityRaw);
         } else {
@@ -131,25 +133,27 @@ public class AddWholeSaleDialog extends DialogFragment {
             minQuantity = Integer.toString(minQuantityRaw);
         }
         minWholeSale.setText(minQuantity);
-        minWholeSale.invalidate();
-        minWholeSale.requestLayout();
+        /**
+         * first time means whole sale price at index 1.
+         */
+        if (isFirsttime) {
+            minWholeSale.setEnabled(true);
+            minWholeSale.addTextChangedListener(new NumberTextWatcher(minWholeSale.getEditText()) {
+                @Override
+                public void onNumberChanged(float minQuantity) {
+                    super.onNumberChanged(minQuantity);
+                    if (validateMinQuantity(minQuantity)) return;
+                    validateMaxQuantity(maxWholeSale.getFloatValue(), true);
+                }
+            });
+        }
 
-
-        maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText(), minQuantity) {
+        final boolean finalIsFirsttime = isFirsttime;
+        maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText()) {
             @Override
             public void onNumberChanged(float maxQuantity) {
                 super.onNumberChanged(maxQuantity);
-                /**
-                 * less than minimum is not allowed, equal and larger is a must.
-                 */
-                if (maxQuantity < minQuantityRaw) {
-                    maxWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
-                    isErrorReturn = true;
-                    return;
-                }
-
-                isErrorReturn = false;
-                maxWholeSale.setError(null);
+                validateMaxQuantity(maxQuantity, finalIsFirsttime);
             }
         });
         maxWholeSale.setText(Integer.toString(minQuantityRaw + 1));
@@ -201,6 +205,44 @@ public class AddWholeSaleDialog extends DialogFragment {
         wholesalePrice.requestLayout();
 
         return view;
+    }
+
+    protected void validateMaxQuantity(float maxQuantity, boolean finalIsFirsttime) {
+        /**
+         * less than minimum is not allowed, equal and larger is a must.
+         */
+        if (maxQuantity < minQuantityRaw) {
+            maxWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
+            isErrorReturn = true;
+            return;
+        }
+
+        if (finalIsFirsttime) {
+            if (maxQuantity <= minWholeSale.getFloatValue()) {
+                maxWholeSale.setError(getString(R.string.prompt_larger));
+                isErrorReturn = true;
+                return;
+            }
+            validateMinQuantity(minWholeSale.getFloatValue());
+        }
+
+        isErrorReturn = false;
+        maxWholeSale.setError(null);
+    }
+
+    protected boolean validateMinQuantity(float minQuantity) {
+        if (minQuantity <= 1) {
+            minWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
+            return isErrorReturn = true;
+        }
+
+        if (minQuantity >= maxWholeSale.getFloatValue()) {
+            minWholeSale.setError(getString(R.string.prompt_lesser));
+            return isErrorReturn = true;
+        }
+
+        minWholeSale.setError(null);
+        return isErrorReturn = false;
     }
 
     protected void extractBundle(Bundle data) {

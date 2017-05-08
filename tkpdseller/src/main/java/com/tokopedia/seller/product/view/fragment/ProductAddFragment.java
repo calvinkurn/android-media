@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -126,6 +127,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         valueIndicatorScoreModel = new ValueIndicatorScoreModel();
         Bundle args = getArguments();
         if (args != null && args.containsKey(ProductAddActivity.EXTRA_IMAGE_URLS)) {
@@ -488,6 +490,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
         viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
+        viewModel.setProductCatalogName(productInfoViewHolder.getCatalogName());
         viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());

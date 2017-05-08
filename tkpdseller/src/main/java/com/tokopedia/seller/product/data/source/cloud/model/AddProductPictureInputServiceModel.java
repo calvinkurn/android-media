@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.data.source.cloud.model;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 /**
@@ -31,7 +33,13 @@ public class AddProductPictureInputServiceModel {
             String defaultPhoto = "";
             for (int i = 0; i < getProductPhoto().getPhotosServiceModelList().size(); i++) {
                 if (i == getProductPhoto().getProductDefaultPhoto()){
-                    defaultPhoto = getProductPhoto().getPhotosServiceModelList().get(i).getPicureId();
+                    String picureId = getProductPhoto().getPhotosServiceModelList().get(i).getPicureId();
+                    // If add, need to put index, if edit need to put picture id
+                    if (!TextUtils.isEmpty(picureId)) {
+                        defaultPhoto = picureId;
+                    } else {
+                        defaultPhoto = String.valueOf(i);
+                    }
                 }
                 ProductPhotoServiceModel productPhoto = getProductPhoto().getPhotosServiceModelList().get(i);
                 productPhotosString += getPhotoParam(productPhoto);

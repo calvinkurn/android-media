@@ -1,5 +1,8 @@
 package com.tokopedia.seller.product.view.model.upload;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -279,4 +282,5 @@ public class UploadProductInputViewModel {
     public int getProductNameEditable() {
         return productNameEditable;
     }
+
 }
