@@ -104,6 +104,8 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
             if (isBaseHost(host) && isShop(linkSegment)) {
                 String shopDomain = linkSegment.get(0);
                 getShopInfo(url, shopDomain);
+            } else if (isBaseHost(host) && isProduct(linkSegment)) {
+                DeepLinkChecker.openProduct(url, getActivity());
             } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
                 DeepLinkChecker.openCategory(url, getActivity());
             } else {
@@ -121,6 +123,21 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
 
     private boolean isShop(List<String> linkSegment) {
         return (linkSegment.size() == 1
+                && !linkSegment.get(0).equals("pulsa")
+                && !linkSegment.get(0).equals("iklan")
+                && !linkSegment.get(0).equals("newemail.pl")
+                && !linkSegment.get(0).equals("search")
+                && !linkSegment.get(0).equals("hot")
+                && !linkSegment.get(0).equals("about")
+                && !linkSegment.get(0).equals("reset.pl")
+                && !linkSegment.get(0).equals("activation.pl")
+                && !linkSegment.get(0).equals("privacy.pl")
+                && !linkSegment.get(0).equals("terms.pl")
+                && !linkSegment.get(0).startsWith("invoice.pl"));
+    }
+
+    private boolean isProduct(List<String> linkSegment) {
+        return (linkSegment.size() == 2
                 && !linkSegment.get(0).equals("pulsa")
                 && !linkSegment.get(0).equals("iklan")
                 && !linkSegment.get(0).equals("newemail.pl")
