@@ -93,5 +93,8 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="MediumText">
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
 
 </resources>

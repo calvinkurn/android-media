@@ -218,4 +218,10 @@
         <item name="submitBackground">@color/white</item>
         <item name="queryBackground">@color/white</item>
     </style>
+
+    <style name="MediumText">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>
