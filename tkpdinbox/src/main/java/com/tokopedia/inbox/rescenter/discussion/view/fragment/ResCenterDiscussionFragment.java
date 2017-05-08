@@ -325,7 +325,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         uploadImageDialog = ImageUploadHandler.createInstance(this);
-        replyView.setVisibility(flagAllowReply ? View.VISIBLE : View.GONE);
+        replyView.setVisibility(View.GONE);
     }
 
     @Override
@@ -334,10 +334,12 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
         setViewEnabled(true);
         finishLoading();
         adapter.setCanLoadMore(canLoadMore);
-        if (list.size() > 0)
+        replyView.setVisibility(flagAllowReply ? View.VISIBLE : View.GONE);
+        if (list.size() > 0) {
             adapter.setList(list);
-        else
+        } else {
             adapter.showEmptyFull(true);
+        }
     }
 
     @Override
