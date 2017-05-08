@@ -43,6 +43,8 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -129,6 +131,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private SnackbarRetry messageSnackbar;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -256,6 +259,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void OnError() {
                 if (holder.MainView.getParent() != null && holder.bannerContainer != null)
                     ((ViewGroup) holder.MainView.getParent()).removeView(holder.bannerContainer);
+                showGetHomeMenuNetworkError();
             }
         };
     }
@@ -617,14 +621,20 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void showGetHomeMenuNetworkError() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                homeCatMenuPresenter.fetchHomeCategoryMenu(true);
-                topPicksPresenter.fetchTopPicks();
-                brandsPresenter.fetchBrands();
-            }
-        }).showRetrySnackbar();
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    rechargeCategoryPresenter.fecthDataRechargeCategory();
+                    getAnnouncement();
+                    getPromo();
+                    homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                    topPicksPresenter.fetchTopPicks();
+                    brandsPresenter.fetchBrands();
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
     }
 
     @Override
@@ -662,10 +672,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
+            if (messageSnackbar != null) {
+                messageSnackbar.resumeRetrySnackbar();
+            }
             ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
+            if (messageSnackbar != null) {
+                messageSnackbar.pauseRetrySnackbar();
+            }
             hideKeyboard();
         }
 
