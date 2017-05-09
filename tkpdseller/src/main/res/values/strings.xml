@@ -289,6 +289,7 @@
 
     <!-- product score -->
     <string name="product_score_label_title">Produk Skor</string>
+    <string name="title_activity_product_score">Skor Produk</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
     <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
     <string name="product_score_label_minus">Kurang</string>

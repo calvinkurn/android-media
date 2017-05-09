@@ -23,6 +23,7 @@ public class ProductScoreViewHolder extends ProductViewHolder {
     private TextView valueScore;
     private ImageView imageInfo;
     private RoundCornerProgressBar progressValueScore;
+    private View containerProductScore;
 
     private Listener listener;
 
@@ -31,10 +32,11 @@ public class ProductScoreViewHolder extends ProductViewHolder {
     }
 
     public ProductScoreViewHolder(View view) {
+        containerProductScore = view.findViewById(R.id.container_product_score);
         valueScore = (TextView) view.findViewById(R.id.text_score);
         imageInfo = (ImageView) view.findViewById(R.id.info_button);
         progressValueScore = (RoundCornerProgressBar) view.findViewById(R.id.progress_value_score);
-        imageInfo.setOnClickListener(new View.OnClickListener() {
+        containerProductScore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onDetailProductScoringClicked();

@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.FrameLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -81,6 +83,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_product_add);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -123,7 +126,6 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
     }
 
     protected void setupFragment() {
-        setContentView(R.layout.activity_product_add);
         if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
             checkIntentImageUrls();
         }
