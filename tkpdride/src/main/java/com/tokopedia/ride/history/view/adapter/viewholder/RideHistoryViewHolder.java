@@ -52,7 +52,7 @@ public class RideHistoryViewHolder extends AbstractViewHolder<RideHistoryViewMod
         rideStartTimeTextView.setText(element.getRequestTime());
         driverCarDisplayNameTextView.setText(element.getDriverCarDisplay());
         rideFareTextView.setText(element.getFare());
-        rideStatusTextView.setText(element.getStatus());
+        rideStatusTextView.setText(element.getDisplayStatus());
 
         Glide.with(mContext).load(element.getMapImage())
                 .asBitmap()
