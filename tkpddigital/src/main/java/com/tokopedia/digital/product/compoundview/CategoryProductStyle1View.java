@@ -101,7 +101,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
-
+        this.clientNumberInputView.setText(clientNumber);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
         return new ClientNumberInputView.ActionListener() {
             @Override
             public void onButtonContactPickerClicked() {
-
+                actionListener.onButtonContactPickerClicked();
             }
 
             @Override

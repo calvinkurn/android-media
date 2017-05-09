@@ -1,5 +1,9 @@
 package com.tokopedia.digital.product.presenter;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -10,6 +14,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 
 import java.net.ConnectException;
@@ -46,6 +51,71 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 getSubscriberProductDigitalData()
         );
     }
+
+    @Override
+    public ContactData processGenerateContactDataFromUri(Uri contactURI) {
+        String id = contactURI.getLastPathSegment();
+        ContactData contact = new ContactData();
+        ContentResolver contentResolver = view.getContentResolver();
+        String contactWhere = ContactsContract.CommonDataKinds.Phone._ID + " = ? AND "
+                + ContactsContract.Data.MIMETYPE + " = ?";
+
+        String[] contactWhereParams = new String[]{
+                id,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+        };
+        Cursor cursorPhone = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
+                null,
+                contactWhere,
+                contactWhereParams,
+                null
+        );
+
+        if (cursorPhone != null) {
+            if (cursorPhone.getCount() > 0) {
+                if (cursorPhone.moveToNext()) {
+                    if (Integer.parseInt(cursorPhone.getString(
+                            cursorPhone.getColumnIndex(
+                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0
+                            ) {
+                        String givenName = cursorPhone.getString(
+                                cursorPhone.getColumnIndex(
+                                        ContactsContract.Contacts.DISPLAY_NAME
+                                )
+                        );
+
+                        int contactType = cursorPhone.getInt(
+                                cursorPhone.getColumnIndex(
+                                        ContactsContract.CommonDataKinds.Phone.TYPE
+                                )
+                        );
+                        contact.setContactNumber(cursorPhone.getString(cursorPhone.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
+                        )));
+                        contact.setGivenName(givenName);
+                        contact.setContactType(contactType);
+                    }
+                    cursorPhone.moveToNext();
+                }
+            }
+            cursorPhone.close();
+        }
+        String phoneFormatted = contact.getContactNumber();
+        if (phoneFormatted.startsWith("62")) {
+            phoneFormatted = phoneFormatted.replaceFirst("62", "0");
+        }
+        if (phoneFormatted.startsWith("+62")) {
+            phoneFormatted = phoneFormatted.replace("+62", "0");
+        }
+        phoneFormatted = phoneFormatted.replace(".", "");
+
+        //noinspection ResultOfMethodCallIgnored
+        phoneFormatted.replaceAll("[^0-9]+", "");
+        contact.setContactNumber(phoneFormatted);
+        return contact;
+    }
+
 
     @NonNull
     private Subscriber<ProductDigitalData> getSubscriberProductDigitalData() {

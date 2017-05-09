@@ -1,11 +1,16 @@
 package com.tokopedia.digital.product.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -20,6 +25,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
@@ -40,6 +46,7 @@ import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
@@ -49,18 +56,22 @@ import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import java.util.List;
 
 import butterknife.BindView;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
-
+@RuntimePermissions
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
         implements IProductDigitalView, BannerAdapter.ActionListener,
         BaseDigitalProductView.ActionListener {
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
-
-    private String categoryId;
 
     @BindView(R2.id.rv_banner)
     RecyclerView rvBanner;
@@ -68,6 +79,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderProductDetail;
 
     private BannerAdapter bannerAdapter;
+    private String categoryId;
 
     private CompositeSubscription compositeSubscription;
     private BaseDigitalProductView<CategoryData> digitalProductView;
@@ -229,6 +241,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public ContentResolver getContentResolver() {
+        return getActivity().getContentResolver();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -371,6 +388,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         showToastMessage(messageError);
     }
 
+    @Override
+    public void onButtonContactPickerClicked() {
+        DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
+    }
+
     private String generateATokenRechargeCheckout() {
         String timeMillis = String.valueOf(System.currentTimeMillis());
         String token = AuthUtil.md5(timeMillis);
@@ -416,7 +438,60 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     }
                 }
                 break;
+            case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:
+                try {
+                    Uri contactURI = data.getData();
+                    ContactData contact = presenter.processGenerateContactDataFromUri(contactURI);
+                    renderContactDataToClientNumber(contact);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DigitalProductFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                this, requestCode, grantResults
+        );
+    }
+
+
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    public void openContactPicker() {
+        Intent contactPickerIntent = new Intent(
+                Intent.ACTION_PICK,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+        );
+        navigateToActivityRequest(
+                contactPickerIntent, IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER
+        );
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    void showDeniedForContacts() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_CONTACTS);
+
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    void showNeverAskForContacts() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_CONTACTS);
+
+    }
+
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    void showRationaleForContacts(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(
+                getActivity(), request, Manifest.permission.READ_CONTACTS
+        );
+    }
+
+    private void renderContactDataToClientNumber(ContactData contactData) {
+        digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
     }
 
     private void handleCallBackProductChooser(Product product) {
