@@ -25,6 +25,7 @@ import okio.Buffer;
  * @author Angga.Prasetiyo on 27/11/2015.
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
+    private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private final String authKey;
@@ -90,6 +91,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
+        //   Log.d(TAG, "header: " + new PrettyPrintingMap<>(authHeaders).toString());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -100,7 +102,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 && originRequest.body() != null
                 && originRequest.body().contentType() != null)
             contentTypeHeader = originRequest.body().contentType().toString();
-
+        if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
             case "PATCH":
             case "DELETE":

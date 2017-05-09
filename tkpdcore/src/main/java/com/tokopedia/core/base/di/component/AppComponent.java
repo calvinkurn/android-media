@@ -15,6 +15,7 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -56,6 +57,9 @@ public interface AppComponent {
 
     @DefaultAuthWithErrorHandler
     OkHttpClient okHttpClient();
+
+    @ResolutionQualifier
+    Retrofit resolutionRetrofit();
 
     Retrofit.Builder retrofitBuilder();
 

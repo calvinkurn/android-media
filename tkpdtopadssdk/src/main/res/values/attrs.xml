@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TagFlowLayout">
+        <attr name="auto_select_effect" format="boolean"></attr>
+        <attr name="max_select" format="integer"></attr>
+        <attr name="gravity">
+            <enum name="left" value="-1" />
+            <enum name="center" value="0" />
+            <enum name="right" value="1" />
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="TopAdsView">
+        <attr name="items" format="integer" />
+        <attr name="ep" format="enum">
+            <enum name="none" value="0" />
+            <enum name="product" value="1" />
+            <enum name="shop" value="2" />
+        </attr>
+        <attr name="display_type" format="enum">
+            <enum name="grid" value="0" />
+            <enum name="list" value="1" />
+        </attr>
+        <attr name="show_loading" format="boolean" />
+    </declare-styleable>
+</resources>
