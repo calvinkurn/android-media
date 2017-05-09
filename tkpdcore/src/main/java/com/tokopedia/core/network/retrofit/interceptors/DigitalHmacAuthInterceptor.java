@@ -6,8 +6,10 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -39,5 +41,14 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
             }
         }
         throw new HttpErrorException(response.code());
+    }
+
+    @Override
+    protected Map<String, String> getHeaderMap(
+            String path, String strParam, String method, String authKey, String contentTypeHeader
+    ) {
+        return AuthUtil.generateHeadersWithXUserId(
+                path, strParam, method, authKey, contentTypeHeader
+        );
     }
 }

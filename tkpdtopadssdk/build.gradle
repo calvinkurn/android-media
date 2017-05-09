@@ -13,7 +13,7 @@ publishing {
             groupId 'com.tokopedia.topads.sdk'
             artifactId 'topads'
             version getArtifactVersionCode()
-            artifact("$buildDir/outputs/aar/tkpdtopads-release.aar")
+            artifact("$buildDir/outputs/aar/tkpdtopadssdk-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
 

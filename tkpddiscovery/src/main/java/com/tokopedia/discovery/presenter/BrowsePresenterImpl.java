@@ -657,8 +657,8 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     }
 
     @Override
-    public void onRenderUpperCategoryLevel(String departmentId, String name) {
-        if (departmentId != null && name != null) {
+    public void onRenderUpperCategoryLevel(String departmentId) {
+        if (departmentId != null) {
             browseModel.setDepartmentId(departmentId);
         }
     }

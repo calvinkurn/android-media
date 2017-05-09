@@ -42,7 +42,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
 
         @Override
         public void onError(Throwable e) {
-            getView().emptyState();
+            getView().skipIntermediaryPage();
             e.printStackTrace();
         }
 

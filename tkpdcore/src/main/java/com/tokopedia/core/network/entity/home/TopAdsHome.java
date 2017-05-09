@@ -77,5 +77,7 @@ public class TopAdsHome {
 
         @SerializedName("shop_click_url")
         public String shopClickUrl;
+
+        public boolean isSelected;
     }
 }
