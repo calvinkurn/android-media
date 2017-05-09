@@ -627,7 +627,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mDriverMarker.remove();
         }
 
-        int markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+        int markerId = R.drawable.car_map_icon;
+        try {
+            markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
         MarkerOptions options = new MarkerOptions()
                 .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
