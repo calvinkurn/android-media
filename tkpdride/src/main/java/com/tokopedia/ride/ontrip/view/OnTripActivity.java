@@ -82,6 +82,8 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
 
         Intent parentHome = new Intent(context, RideHomeActivity.class)
                 .putExtras(extras);

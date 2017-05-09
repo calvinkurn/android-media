@@ -83,6 +83,8 @@ public class CompleteTripActivity extends BaseActivity {
     public void onBackPressed() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getApplicationContext());
         Intent homeIntent = HomeRouter.getHomeActivity(getApplicationContext());
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
         Intent destination = new Intent(this, RideHomeActivity.class);
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(destination);

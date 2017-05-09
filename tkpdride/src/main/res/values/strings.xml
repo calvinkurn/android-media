@@ -72,4 +72,11 @@
     <string name="complete_trip_your_fare">Your Fare</string>
     <string name="on_trip_failed_share">Failed to share eta</string>
     <string name="your_trip_with">Your trip with</string>
+    <string name="ride_push_toolbar_trip_completed">Trip Completed</string>
+    <string name="ride_push_toolbar_tap_view_detail">Tap to view detail</string>
+    <string name="ride_push_toolbar_driver_not_found">No Driver Found</string>
+    <string name="ride_push_toolbar_driver_not_found_desc">Sorry no driver found immediately, you can try again</string>
+    <string name="ride_push_driver_cancel">Driver cancelled your booking</string>
+    <string name="ride_push_book_request_again">Book another Uber</string>
+    <string name="ride_push_driver_arriving_now">Your Uber is arriving now</string>
 </resources>

@@ -666,17 +666,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return;
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
-                .setSmallIcon(R.drawable.ic_stat_notify)
-                .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.qc_launcher))
-                .setProgress(0, 0, true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentTitle(getResources().getString(R.string.notification_title_finding_uber));
-
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
+        RidePushNotificationBuildAndShow.showFindingUberNotication(getActivity());
 
         isFindingUberNotificationShown = true;
     }
@@ -695,43 +685,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             return;
         }
 
-        // Create remote view and set bigContentView.
-        final RemoteViews remoteView = new RemoteViews(getActivity().getPackageName(),
-                R.layout.notification_remote_view_ride_accepted);
-
-        remoteView.setTextViewText(R.id.tv_cab_name, result.getVehicle().getVehicleModel());
-        remoteView.setTextViewText(R.id.tv_cab_number, result.getVehicle().getLicensePlate());
-
-        remoteView.setTextViewText(R.id.tv_driver_name, result.getDriver().getName());
-        remoteView.setTextViewText(R.id.tv_driver_star, result.getDriver().getRating());
-        //remoteView.setImageViewUri(R.id.iv_driver_img, Uri.parse(result.getDriver().getPictureUrl()));
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getActivity())
-                .setSmallIcon(R.drawable.ic_stat_notify)
-                .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.qc_launcher))
-                .setContentTitle(getString(R.string.accepted_push_title))
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentText(getResources().getString(R.string.accepted_push_message, result.getDriver().getName(), result.getDriver().getRating(), (int) result.getPickup().getEta() + ""))
-                .setCustomBigContentView(remoteView);
-
-
-        //add event for call to driver
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + result.getDriver().getPhoneNumber()));
-        PendingIntent callPendingIntent = PendingIntent.getService(getActivity(), 0, callIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        remoteView.setOnClickPendingIntent(R.id.layout_call_driver, callPendingIntent);
-
-        // Builds the notification and issues it.
-        acceptedNotification = mBuilder.build();
-        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, acceptedNotification);
+        RidePushNotificationBuildAndShow.showRideAccepted(getActivity(), result);
 
         isAcceptedUberNotificationShown = true;
-
-        //update driver botmap after downloading
-        presenter.getDriverBitmap(remoteView, result.getDriver().getPictureUrl());
     }
 
     @Override
@@ -1001,10 +957,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 0xBB000000);
         backgroundColorAnimator.setDuration(500);
         backgroundColorAnimator.start();
-
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override
@@ -1023,9 +975,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 blockTranslucentView.setVisibility(View.GONE);
             }
         }, 500);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().invalidateOptionsMenu();
     }
 
     @Override

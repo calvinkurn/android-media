@@ -26,7 +26,6 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
@@ -48,10 +47,9 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 
 public class RidePushNotificationBuildAndShow {
-    private static int mNotificationId = 003;
-    public static final int FINDING_UBER_NOTIFICATION_ID = 003;
-    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 004;
-    public static final String RIDE_STATUS = "RIDE_STATUS";
+    private static int mNotificationId = 004;
+    public static final int FINDING_UBER_NOTIFICATION_ID = mNotificationId;
+    public static final int ACCEPTED_UBER_NOTIFICATION_ID = mNotificationId;
     private Context mContext;
     private Gson gson;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
@@ -88,7 +86,6 @@ public class RidePushNotificationBuildAndShow {
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         getRideRequestDetailUseCase.execute(requestParams, getSubscriber());
-
     }
 
     @NonNull
@@ -113,24 +110,24 @@ public class RidePushNotificationBuildAndShow {
                 manager.sendBroadcast(intent);
 
                 switch (rideRequest.getStatus()) {
-                    case "arriving":
-                    case "accepted":
+                    case RideStatus.ARRIVING:
+                    case RideStatus.ACCEPTED:
                         showRideAccepted(mContext, rideRequest);
                         break;
-                    case "no_drivers_available":
+                    case RideStatus.NO_DRIVER_AVAILABLE:
                         showNoDriverFoundNotification(mContext);
                         break;
-                    case "processing":
+                    case RideStatus.PROCESSING:
 
                         break;
-                    case "in_progress":
+                    case RideStatus.IN_PROGRESS:
                         break;
-                    case "driver_canceled":
+                    case RideStatus.DRIVER_CANCELED:
                         showDriverCancelledRide(mContext);
                         break;
-                    case "rider_canceled":
+                    case RideStatus.RIDER_CANCELED:
                         break;
-                    case "completed":
+                    case RideStatus.COMPLETED:
                         showRideCompleted(mContext, rideRequest);
                         break;
                 }
@@ -138,24 +135,7 @@ public class RidePushNotificationBuildAndShow {
         };
     }
 
-    public static void showFindingUberNotication(Context context) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
-                .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), com.tokopedia.ride.R.drawable.crux_cabs_uber_ic))
-                .setProgress(0, 0, true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setContentTitle("Finding your Uber");
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
-    }
-
-    private static void showRideAccepted(final Context context, final RideRequest rideRequest) {
+    public static void showRideAccepted(final Context context, final RideRequest rideRequest) {
         // Create remote view and set bigContentView.
         final RemoteViews remoteView = new RemoteViews(context.getPackageName(),
                 com.tokopedia.ride.R.layout.notification_remote_view_ride_accepted);
@@ -251,7 +231,7 @@ public class RidePushNotificationBuildAndShow {
                                                           .setSmallIcon(R.drawable.ic_stat_notify)
                                                           .setAutoCancel(true)
                                                           .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
-                                                          .setContentTitle("Your Uber is arriving now")
+                                                          .setContentTitle(context.getString(R.string.ride_push_driver_arriving_now))
                                                           .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                                                                   rideRequest.getDriver().getName(),
                                                                   rideRequest.getDriver().getRating(),
@@ -320,17 +300,41 @@ public class RidePushNotificationBuildAndShow {
 
     public static void showDriverCancelledRide(Context context) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), com.tokopedia.ride.R.drawable.qc_launcher))
-                .setContentTitle("Driver cancelled your booking")
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
+                .setContentTitle(context.getString(R.string.ride_push_driver_cancel))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentText("Book another Uber");
+                .setContentText(context.getString(R.string.ride_push_book_request_again));
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
-        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingApplinkTaskStack(context, bundle);
+        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingTaskStask(context, bundle);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+    }
+
+    public static void showFindingUberNotication(Context context) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
+                .setProgress(0, 0, true)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentTitle(context.getResources().getString(R.string.notification_title_finding_uber));
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingTaskStask(context, bundle);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 
@@ -361,13 +365,13 @@ public class RidePushNotificationBuildAndShow {
         );
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), com.tokopedia.ride.R.drawable.qc_launcher))
-                .setContentTitle("Trip Completed")
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
+                .setContentTitle(context.getString(R.string.ride_push_toolbar_trip_completed))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentText("Tap to view detail");
+                .setContentText(context.getString(R.string.ride_push_toolbar_tap_view_detail));
 
         mBuilder.setContentIntent(pendingIntent);
         // Gets an instance of the NotificationManager service
@@ -381,17 +385,17 @@ public class RidePushNotificationBuildAndShow {
     private static void showNoDriverFoundNotification(Context context) {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(com.tokopedia.ride.R.drawable.ic_stat_notify)
+                .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), com.tokopedia.ride.R.drawable.qc_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentTitle("No Driver Found")
-                .setContentText("Sorry no driver found immediately, you can try again");
+                .setContentTitle(context.getString(R.string.ride_push_toolbar_driver_not_found))
+                .setContentText(context.getString(R.string.ride_push_toolbar_driver_not_found_desc));
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
-        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingApplinkTaskStack(context, bundle);
+        TaskStackBuilder stackBuilder = RideHomeActivity.getCallingTaskStask(context, bundle);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 

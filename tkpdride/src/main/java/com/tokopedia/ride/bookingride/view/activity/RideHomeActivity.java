@@ -13,10 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -105,7 +107,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     private int mSlidingPanelMinHeightInPx, mToolBarHeightinPx;
 
-    private RideConfiguration configuration;
     private boolean isSeatPanelShowed;
 
     RideHomeContract.Presenter mPresenter;
@@ -115,7 +116,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @DeepLink({Constants.Applinks.RIDE, Constants.Applinks.RIDE_DETAIL})
-    public static TaskStackBuilder getCallingApplinkTaskStack(Context context, Bundle extras) {
+    public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -125,8 +126,32 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+
         Intent destination = new Intent(context, RideHomeActivity.class)
                 .setData(uri.build())
+                .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(destination);
+        return taskStackBuilder;
+    }
+
+
+    public static TaskStackBuilder getCallingTaskStask(Context context, Bundle extras) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+
+        Intent destination = new Intent(context, RideHomeActivity.class)
                 .putExtras(extras);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
         taskStackBuilder.addNextIntent(homeIntent);
@@ -146,21 +171,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
         mSlidingPanelMinHeightInPx = (int) getResources().getDimension(R.dimen.sliding_panel_min_height);
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
-
-        configuration = new RideConfiguration();
-
-//        /**
-//         * if user open push notif with status accepted/arriving, this must be true if user pressed back button on ontripscreep
-//         *  @see com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow#showRideAccepted(Context, RideRequest)
-//         */
-//        if (configuration.isWaitingDriverState() &&
-//                getIntent().getExtras() != null &&
-//                getIntent().getExtras().getBoolean(Constants.EXTRA_FROM_PUSH)) {
-//            finish();
-//        } else if (configuration.isWaitingDriverState()) {
-//            Intent intent = OnTripActivity.getCallingIntent(this);
-//            startActivityForResult(intent, REQUEST_GO_TO_ONTRIP_CODE);
-//        }
     }
 
     @Override
@@ -220,11 +230,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void actionInflateInitialToolbar() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
             mToolbar.setTitle(R.string.toolbar_title_booking);
+            mToolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             setSupportActionBar(mToolbar);
             if (getSupportActionBar() != null)
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
