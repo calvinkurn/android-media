@@ -240,14 +240,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void inflateMapAndProductFragment() {
-        RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams) mainLayout.getLayoutParams();
-        relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
-        mainLayout.setLayoutParams(relativeParams);
         RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
     }
 
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
+        RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams) mainLayout.getLayoutParams();
+        relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
+        mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
         addFragment(R.id.top_container, RideHomeMapFragment.newInstance());
         addFragment(R.id.bottom_container, UberProductFragment.newInstance());

@@ -58,7 +58,7 @@ public class RideProductViewHolder extends AbstractViewHolder<RideProductViewMod
         surgePriceImageView.setVisibility(element.isSurgePrice() ? View.VISIBLE : View.GONE);
         productPriceTextView.setVisibility(element.getProductPriceFmt() == null ? View.GONE : View.VISIBLE);
         productPriceTextView.setText(String.valueOf(element.getProductPriceFmt()));
-        baseFareTextView.setVisibility(element.getProductPriceFmt() == null ? View.VISIBLE : View.GONE);
+        baseFareTextView.setVisibility(element.getProductPrice() == 0.0 ? View.VISIBLE : View.GONE);
         baseFareTextView.setText(String.valueOf(element.getBaseFare()));
         Glide.with(mContext).load(element.getProductImage())
                 .asBitmap()
