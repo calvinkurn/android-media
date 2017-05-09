@@ -76,12 +76,16 @@
             android:value="OQcSB25ec2f92263c41b5a3d10152ace7888e" />
 
         <activity android:name=".onboarding.activity.OnboardingSellerActivity" />
+
         <activity
             android:name="com.tokopedia.sellerapp.gmstat.activities.GMStatActivity"
             android:label="@string/title_activity_gmstat"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3"></activity>
-        <activity android:name=".truecaller.TruecallerActivity"/>
+
+        <activity android:name=".truecaller.TruecallerActivity"
+            android:screenOrientation="portrait"
+            />
 
         <provider
             android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
