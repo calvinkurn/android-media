@@ -68,4 +68,5 @@
     <string name="minute">" minute"</string>
     <string name="minutes">" minutes"</string>
     <string name="uber_signup_tnc"><![CDATA[(T&C)]]></string>
+    <string name="your_trip_with">Your trip with</string>
 </resources>

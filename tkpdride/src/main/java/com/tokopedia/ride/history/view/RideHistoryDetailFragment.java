@@ -120,7 +120,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         requestTimeTextView.setText(rideHistory.getRequestTime());
         rideStatusTextView.setText(rideHistory.getStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
-        driverNameTextView.setText(rideHistory.getDriverName());
+        driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         rideFareTextView.setText(rideHistory.getFare());
         setPickupLocationText(rideHistory.getStartAddress());
         setDestinationLocation(rideHistory.getEndAddress());
