@@ -87,7 +87,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     private static final String ORDER_ID = "OrderID";
     public static final int REQUEST_CODE_BARCODE = 1;
 
-    private LinearLayoutManager linearLayoutManager;
     private BaseSellingAdapter adapter;
     private Dialog editRefDialog;
     private BottomSheetDialog bottomSheetDialog;
@@ -200,7 +199,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         mPaging = new PagingHandler();
-        linearLayoutManager = new LinearLayoutManager(getActivity());
         adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(),  R.layout.selling_transaction_list_item, StatusViewHolder.class) {
             @Override
             protected void populateViewHolder(StatusViewHolder viewHolder, final SellingStatusTxModel model, int position) {
@@ -255,7 +253,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
         setRefreshPullEnable(true);
-        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_status, null);
         searchTxt = ButterKnife.findById(filterView, R.id.search);
@@ -335,7 +333,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1);
+                presenter.onScrollList(((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }
