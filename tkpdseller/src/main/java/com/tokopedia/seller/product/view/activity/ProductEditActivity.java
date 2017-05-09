@@ -27,7 +27,6 @@ public class ProductEditActivity extends ProductDraftEditActivity {
 
     @Override
     protected void setupFragment() {
-        setContentView(R.layout.activity_product_add);
         String productId = getIntent().getStringExtra(PRODUCT_ID);
         if (StringUtils.isBlank(productId)){
             throw new RuntimeException("Product id is not selected");
