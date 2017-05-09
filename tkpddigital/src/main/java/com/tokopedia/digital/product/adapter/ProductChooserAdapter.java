@@ -22,6 +22,9 @@ import butterknife.ButterKnife;
 public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM =
             R.layout.view_holder_item_product_desc_and_price_digital_module;
+    private static final int TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC =
+            R.layout.view_holder_price_plus_admin_and_desc;
+
 
     private Fragment hostFragment;
     private List<Product> productList;
