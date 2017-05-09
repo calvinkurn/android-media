@@ -159,6 +159,11 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         return productWholesaleViewModels;
     }
 
+    public void addAllWholeSale(ArrayList<WholesaleModel> wholesaleModels) {
+        this.wholesaleModels.addAll(wholesaleModels);
+        notifyDataSetChanged();
+    }
+
     public interface Listener {
         /**
          * notify data size changed
