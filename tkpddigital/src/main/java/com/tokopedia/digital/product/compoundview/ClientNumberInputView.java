@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -52,7 +53,6 @@ public class ClientNumberInputView extends LinearLayout {
     TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
-    private TextWatcher textWatcher;
 
     public ClientNumberInputView(Context context) {
         super(context);
@@ -72,30 +72,41 @@ public class ClientNumberInputView extends LinearLayout {
     private void init(Context context) {
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
-
+        initialTextWatcher();
         initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
         setBtnClearInvisible();
     }
 
+    private void initialTextWatcher() {
+
+    }
+
+    @SuppressWarnings("deprecation")
     private void initBackgroundContactButtonAndClearButton() {
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_clear_widget).asBitmap().into(
+        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_clear_widget)
+                .asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
                                                 GlideAnimation<? super Bitmap> glideAnimation) {
-                        Drawable drawableClear = new BitmapDrawable(getContext().getResources(), resource);
+                        Drawable drawableClear = new BitmapDrawable(
+                                getContext().getResources(), resource
+                        );
                         btnClear.setBackgroundDrawable(drawableClear);
                     }
                 });
 
-        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_phonebook_widget).asBitmap().into(
+        Glide.with(getContext()).load(com.tokopedia.core.R.drawable.ic_phonebook_widget)
+                .asBitmap().into(
                 new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource,
                                                 GlideAnimation<? super Bitmap> glideAnimation) {
 
-                        Drawable drawablePhoneBook = new BitmapDrawable(getContext().getResources(), resource);
+                        Drawable drawablePhoneBook = new BitmapDrawable(
+                                getContext().getResources(), resource
+                        );
                         btnContactPicker.setBackgroundDrawable(drawablePhoneBook);
                     }
                 }
@@ -115,10 +126,6 @@ public class ClientNumberInputView extends LinearLayout {
                 }
             }
         };
-    }
-
-    public Button getBtnContactPicker() {
-        return btnContactPicker;
     }
 
     public String getText() {
@@ -164,9 +171,19 @@ public class ClientNumberInputView extends LinearLayout {
     public void renderData(final ClientNumber clientNumber) {
         tvLabel.setText(clientNumber.getText());
         autoCompleteTextView.setHint(clientNumber.getPlaceholder());
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+        setupLayoutParamAndInputType(clientNumber);
+        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
+        final TextWatcher textWatcher = getTextWatcherInput(clientNumber);
+        autoCompleteTextView.removeTextChangedListener(textWatcher);
+        autoCompleteTextView.addTextChangedListener(textWatcher);
+        this.btnClear.setOnClickListener(getButtonClearClickListener());
+        this.btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
+    }
+
+    private void setupLayoutParamAndInputType(ClientNumber clientNumber) {
+        LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (clientNumber.getType().equalsIgnoreCase("tel")) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
             btnContactPicker.setVisibility(View.VISIBLE);
             layoutParams.weight = 0.92f;
         } else {
@@ -174,13 +191,37 @@ public class ClientNumberInputView extends LinearLayout {
             layoutParams.weight = 1;
         }
         pulsaFramelayout.setLayoutParams(layoutParams);
-        if (clientNumber.getType().equalsIgnoreCase("tel") || clientNumber.getType().equalsIgnoreCase("numeric")) {
+        if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)
+                || clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_NUMERIC)) {
             setInputTypeNumber();
         } else {
             setInputTypeText();
         }
-        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
-        textWatcher = new TextWatcher() {
+    }
+
+    @NonNull
+    private OnClickListener getButtonContactPickerClickListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionListener.onButtonContactPickerClicked();
+            }
+        };
+    }
+
+    @NonNull
+    private OnClickListener getButtonClearClickListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoCompleteTextView.setText("");
+            }
+        };
+    }
+
+    @NonNull
+    private TextWatcher getTextWatcherInput(final ClientNumber clientNumber) {
+        return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -209,22 +250,6 @@ public class ClientNumberInputView extends LinearLayout {
 
             }
         };
-        autoCompleteTextView.removeTextChangedListener(textWatcher);
-        autoCompleteTextView.addTextChangedListener(textWatcher);
-
-
-        this.btnClear.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                autoCompleteTextView.setText("");
-            }
-        });
-        this.btnContactPicker.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onButtonContactPickerClicked();
-            }
-        });
     }
 
     public interface ActionListener {
@@ -235,7 +260,4 @@ public class ClientNumberInputView extends LinearLayout {
         void onClientNumberInputInvalid();
     }
 
-    public AutoCompleteTextView getAutoCompleteTextView() {
-        return autoCompleteTextView;
-    }
 }

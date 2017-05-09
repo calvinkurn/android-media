@@ -11,6 +11,10 @@ import java.util.List;
  */
 public class ClientNumber implements Parcelable {
 
+    public static final String TYPE_INPUT_TEL = "tel";
+    public static final String TYPE_INPUT_NUMERIC = "numeric";
+    public static final String TYPE_INPUT_ALPHANUMERIC = "tel";
+
     private String name;
     private String type;
     private String text;

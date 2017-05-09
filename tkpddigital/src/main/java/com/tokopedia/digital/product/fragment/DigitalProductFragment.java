@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -406,6 +407,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                                     DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
                             )
                     );
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+                if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        showToastMessage(message);
+                    }
+                }
                 break;
         }
     }

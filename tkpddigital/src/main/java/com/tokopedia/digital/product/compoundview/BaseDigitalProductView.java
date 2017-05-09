@@ -58,6 +58,8 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     public abstract void renderUpdateOperatorSelected(Operator operator);
 
+    public abstract void renderClientNumberFromContact(String clientNumber);
+
     public abstract Operator getSelectedOperator();
 
     public abstract Product getSelectedProduct();

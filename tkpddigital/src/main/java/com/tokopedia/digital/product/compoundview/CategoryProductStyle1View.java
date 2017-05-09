@@ -100,6 +100,11 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
+    public void renderClientNumberFromContact(String clientNumber) {
+
+    }
+
+    @Override
     public Operator getSelectedOperator() {
         return operatorSelected;
     }
