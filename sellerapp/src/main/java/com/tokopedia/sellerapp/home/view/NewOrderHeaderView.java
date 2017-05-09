@@ -1,16 +1,18 @@
 package com.tokopedia.sellerapp.home.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
 
 /**
  * Created by normansyahputa on 9/8/16.
@@ -20,7 +22,12 @@ public class NewOrderHeaderView extends FrameLayout {
 
     @OnClick(R.id.new_order_see_detail)
     public void newOrderSeeDetail(){
-        goToShopNewOrder(getContext());
+        Intent intent = SellerRouter.getActivitySellingTransaction(getContext());
+        Bundle bundle = new Bundle();
+        bundle.putInt("tab", 1);
+        bundle.putString("user_id", SessionHandler.getLoginID(getContext()));
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
     }
 
 

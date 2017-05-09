@@ -53,7 +53,18 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deposit.activity.DepositActivity;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerTopPoints;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManager;
+import com.tokopedia.core.drawer2.domain.datamanager.DrawerDataManagerImpl;
+import com.tokopedia.core.drawer2.view.DrawerDataListener;
+import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.home.BannerWebView;
@@ -66,6 +77,7 @@ import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -80,7 +92,6 @@ import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
@@ -119,11 +130,10 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
-import static com.tokopedia.sellerapp.drawer.DrawerVariableSeller.goToShopNewOrder;
-
 public class SellerHomeActivity extends BaseActivity implements GCMHandlerListener,
         SessionHandler.onLogoutListener,
-        SellerHomeView, ShopScoreWidgetCallback {
+        SellerHomeView, ShopScoreWidgetCallback,
+        DrawerDataListener{
     public static final String messageTAG = SellerHomeActivity.class.getSimpleName();
     public static final String STUART = "STUART";
     private static final String ARG_TRUECALLER_PACKAGE = "com.truecaller";
@@ -171,9 +181,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     SellerHomeNewOrderAdapter sellerHomeNewOrderAdapter;
 
-    @BindView(R.id.seller_home_toolbar)
-    Toolbar sellerHomeToolbar;
-
     @BindView(R.id.collapsing_toolbar_layout)
     CollapsingToolbarLayoutCust collapsingToolbar;
 
@@ -203,16 +210,19 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     LinearLayout sellerHomeLinLayContainer;
     String userId;
     String shopId;
-    DrawerVariableSeller drawer;
     ActionBarDrawerToggle mDrawerToggle;
-    SellerToolbarVariable toolbar;
     SnackbarRetry snackbarRetry;
     SnackbarRetry snackbarRetryUndefinite;
     @BindView(R.id.widget_shop_score)
     ShopScoreWidget shopScoreWidget;
     private boolean isInit = false;
     private SellerHomePresenterImpl presenter;
+
     private SessionHandler sessionHandler;
+    private DrawerDataManager drawerDataManager;
+    private LocalCacheHandler drawerCache;
+    private DrawerHelper drawerHelper;
+    private Toolbar toolbar;
 
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
@@ -231,7 +241,12 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
     @OnClick(R.id.seller_home_container)
     public void newOrderSeeMore() {
-        goToShopNewOrder(this);
+        Intent intent = SellerRouter.getActivitySellingTransaction(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt("tab", 1);
+        bundle.putString("user_id", SessionHandler.getLoginID(this));
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @OnClick(R.id.seller_home_deposit_container)
@@ -326,8 +341,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         shopId = SessionHandler.getShopID(this);
         imageHandler = new ImageHandler(this);
 
-        drawer.setDrawerPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
-
         GCMHandler gcmHandler = new GCMHandler(this);
         Gson gson = new GsonBuilder().create();
         ShopService shopService = new ShopService();
@@ -361,22 +374,14 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     private void initDrawer() {
-        drawer = new DrawerVariableSeller(this);
-        toolbar = new SellerToolbarVariable(this, sellerHomeToolbar);
-        toolbar.createToolbarWithDrawer();
-        drawer.setToolbar(toolbar);
-        drawer.createDrawer();
-        drawer.setEnabled(true);
+        sessionHandler = new SessionHandler(this);
+        drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        drawerHelper = ((TkpdCoreRouter) getApplication()).getDrawer(this, sessionHandler, drawerCache);
+        drawerHelper.initDrawer(this);
+        drawerHelper.setEnabled(true);
+        drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SELLER_INDEX_HOME);
+        drawerDataManager = new DrawerDataManagerImpl(this, this);
 
-        sellerHomeToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("NIS", "CLICK");
-                drawer.openDrawer();
-            }
-        });
-
-        collapsingToolbar.notifyScrimChange();
     }
 
     @Override
@@ -681,6 +686,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 }
                 goldMerchantAnnouncementImage.setVisibility(View.VISIBLE);
 
+                collapsingToolbar.notifyScrimChange();
+                collapsingToolbar.setTitleEnabled(true);
 
             }
 
@@ -741,33 +748,51 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     }
 
     private void initToolbar() {
-//        sellerHomeToolbar.setTitle("");
-//        sellerHomeToolbar.setNavigationIcon(R.drawable.ic_arrow_back_3x);
-        sellerHomeToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        toolbar = (Toolbar) findViewById(R.id.seller_home_toolbar);
+        toolbar.removeAllViews();
+        View notif = getLayoutInflater().inflate(
+                R.layout.custom_actionbar_drawer_notification, null);
+        final ImageView drawerToggle = (ImageView) notif.findViewById(R.id.toggle_but_ab);
+        drawerToggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+                if (drawerHelper.isOpened()) {
+                    drawerHelper.closeDrawer();
+                } else {
+                    drawerHelper.openDrawer();
+                }
             }
         });
-        setSupportActionBar(sellerHomeToolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-        collapsingToolbar.setTitleEnabled(true);
+        TextView notifRed = (TextView) notif.findViewById(R.id.toggle_count_notif);
+        toolbar.addView(notif);
+
+        View title = getLayoutInflater().inflate(R.layout.custom_action_bar_title, null);
+        toolbar.addView(title);
+        toolbar.setNavigationIcon(null);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setHomeButtonEnabled(false);
 
         collapsingToolbar.setOnScrimChangeListener(new CollapsingToolbarLayoutCust.OnScrimChangeListener() {
             @Override
             public void onScrimChange(boolean isScrimShown) {
+                TextView textView = (TextView) toolbar.findViewById(R.id.actionbar_title);
+
                 if (isScrimShown) {
-                    if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null)
-                        toolbar.setTitleText("Home");
+                    if (shopModel == null || shopModel.info == null || shopModel.info.shopName == null){
+                        textView.setText("Home");
+                    }
                     else
-                        toolbar.setTitleText(MethodChecker.fromHtml(shopModel.info.shopName).toString());
+                        textView.setText(MethodChecker.fromHtml(shopModel.info.shopName).toString());
                 } else {
-                    toolbar.setTitleText(" ");
+                    textView.setText(" ");
                 }
             }
         });
+
+
     }
 
     @Override
@@ -916,8 +941,8 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     public void onBackPressed() {
         if (isBoomMenuShown) {
             sellerHomeBoom.dismiss();
-        } else if (drawer.isOpened()) {
-            drawer.closeDrawer();
+        } else if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
         } else {
             showExitDialog();
         }
@@ -971,7 +996,14 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         shopController.init(this);
         sendToGTM();
         sendToLocalytics();
+        updateDrawerData();
 
+    }
+
+    private void updateDrawerData() {
+        drawerDataManager.getNotification();
+        drawerDataManager.getDeposit();
+        drawerDataManager.getProfile();
     }
 
     @Override
@@ -1030,6 +1062,82 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @Override
     public void getShopScoreData() {
         presenter.getShopScoreMainData();
+    }
+
+    @Override
+    public void onGetDeposit(DrawerDeposit drawerDeposit) {
+        if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader()).getData().setDrawerDeposit(drawerDeposit);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorGetDeposit(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onGetNotificationDrawer(DrawerNotification notification) {
+        int notificationCount = notification.getTotalNotif();
+
+        TextView notifRed = (TextView) toolbar.getRootView().findViewById(R.id.toggle_count_notif);
+        if (notifRed != null) {
+            if (notificationCount <= 0) {
+                notifRed.setVisibility(View.GONE);
+            } else {
+                notifRed.setVisibility(View.VISIBLE);
+                String totalNotif = notification.getTotalNotif() > 999 ? "999+" : String.valueOf(notification.getTotalNotif());
+                notifRed.setText(totalNotif);
+            }
+        }
+        if (notification.isUnread()) {
+            MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.green_circle));
+        } else {
+            MethodChecker.setBackground(notifRed, getResources().getDrawable(R.drawable.red_circle));
+        }
+        drawerHelper.getAdapter().getData().clear();
+        drawerHelper.getAdapter().setData(drawerHelper.createDrawerData());
+        drawerHelper.setExpand();
+    }
+
+    @Override
+    public void onErrorGetNotificationDrawer(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onGetTokoCash(DrawerTokoCash drawerTokoCash) {
+
+    }
+
+    @Override
+    public void onErrorGetTokoCash(String errorMessage) {
+
+    }
+
+    @Override
+    public void onGetTopPoints(DrawerTopPoints drawerTopPoints) {
+
+    }
+
+    @Override
+    public void onErrorGetTopPoints(String errorMessage) {
+
+    }
+
+    @Override
+    public void onGetProfile(DrawerProfile profile) {
+       if (drawerHelper.getAdapter().getHeader() instanceof DrawerSellerHeaderDataBinder)
+            ((DrawerSellerHeaderDataBinder) drawerHelper.getAdapter().getHeader())
+                    .getData().setDrawerProfile(profile);
+        drawerHelper.getAdapter().getHeader().notifyDataSetChanged();
+        drawerHelper.setFooterData(profile);
+
+    }
+
+    @Override
+    public void onErrorGetProfile(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     public static class SellerHomeNewOrderView {

@@ -24,9 +24,9 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -112,9 +112,11 @@ public abstract class TkpdActivity extends TActivity implements
         if (sessionHandler.isV4Login()) {
             getDrawerProfile();
             getDrawerDeposit();
-            getDrawerTopPoints();
-            getDrawerTokoCash();
             getDrawerNotification();
+            if (!GlobalConfig.isSellerApp()) {
+                getDrawerTopPoints();
+                getDrawerTokoCash();
+            }
         }
     }
 
