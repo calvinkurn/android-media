@@ -107,9 +107,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().hideRequestLoadingLayout();
-                getView().showFailedRideRequestMessage(e.getMessage());
-                getView().failedToRequestRide(e.getMessage());
+                if (isViewAttached()) {
+                    getView().hideRequestLoadingLayout();
+                    getView().showFailedRideRequestMessage(e.getMessage());
+                    getView().failedToRequestRide(e.getMessage());
+                }
             }
 
             @Override
