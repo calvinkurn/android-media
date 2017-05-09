@@ -255,13 +255,16 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 CommonUtils.dumper("NISNIS " + layoutManager.findFirstVisibleItemPosition() + " " + adapter.canLoadMore());
-                if ((layoutManager.findFirstVisibleItemPosition() == 0
-                        && adapter.canLoadMore() == 1)
-                        || adapter.getData().get(layoutManager.findFirstVisibleItemPosition()
-                        - adapter.canLoadMore()).getMessageReplyTimeFmt() == null) {
+                if (adapter.getData().size() == 0
+                        || ((layoutManager.findFirstVisibleItemPosition() == 0 && adapter.canLoadMore() == 1)
+                        || adapter.getData().get(
+                        layoutManager.findFirstVisibleItemPosition()
+                                - adapter.canLoadMore()).getMessageReplyTimeFmt() == null)) {
                     headerDate.setVisibility(View.GONE);
                 } else {
-                    headerDate.setText(adapter.getData().get(layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore()).getMessageReplyDateFmt());
+                    headerDate.setText(adapter.getData().get(
+                            layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore())
+                            .getMessageReplyDateFmt());
                 }
             }
         };

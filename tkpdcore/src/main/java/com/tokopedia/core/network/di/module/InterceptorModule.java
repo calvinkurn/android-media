@@ -45,7 +45,8 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     public StandardizedInterceptor provideStandardizedInterceptor() {
-        return new StandardizedInterceptor(SessionHandler.getAccessToken());
+        String oAuthString = "Bearer " + SessionHandler.getAccessToken();
+        return new StandardizedInterceptor(oAuthString);
     }
 
     @Named(AuthUtil.KEY.KEY_WSV4)

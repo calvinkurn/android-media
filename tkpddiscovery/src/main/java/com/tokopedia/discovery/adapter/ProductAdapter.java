@@ -108,7 +108,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     source = "hotlist";
                     break;
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
-                    category = activity.getIntent().getStringExtra(EXTRA_TITLE);
+                    category = activity.getBrowseProductActivityModel().getDepartmentId();
                     source = "directory";
                     break;
                 default:
@@ -121,10 +121,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TkpdState.RecyclerView.VIEW_PRODUCT:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_list, parent, false), source, category);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
+                        R.layout.listview_product_item_list,
+                        parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
-                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(R.layout.listview_product_item_grid, parent, false), source, category);
+                return new ViewHolderProductitem(context, LayoutInflater.from(context).inflate(
+                        R.layout.listview_product_item_grid, parent, false), source, category);
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
             case TkpdState.RecyclerView.VIEW_TOP_ADS:
                 return ProductFeedAdapter.createViewTopAds(parent);
@@ -436,15 +439,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             defaultCategoriesRecyclerView.setLayoutManager(
                     new NonScrollGridLayoutManager(categoryHeaderModel.context, 2,
                             GridLayoutManager.VERTICAL, false));
-            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(categoryHeaderModel.context));
-            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,categoryHeaderModel.activeChildren,categoryHeaderModel.listener);
+            defaultCategoriesRecyclerView.addItemDecoration(new DividerItemDecoration(
+                    categoryHeaderModel.context,R.drawable.divider300));
+            categoryAdapter = new DefaultCategoryAdapter(categoryHeaderModel.categoryWidth,
+                    categoryHeaderModel.activeChildren, categoryHeaderModel.listener);
             defaultCategoriesRecyclerView.setAdapter(categoryAdapter);
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UnifyTracking.eventShowMoreCategory();
+                        UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(6,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -521,12 +526,13 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             ImageHandler.loadImageFitTransformation(imageHeader.getContext(),imageHeader,
                     categoryHeaderModel.categoryHeader.getHeaderImage(), new CategoryHeaderTransformation(imageHeader.getContext()));
             titleHeader.setText(categoryHeaderModel.categoryHeader.getName().toUpperCase());
+            titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
             if (categoryHeaderModel.isUsedUnactiveChildren) {
                 expandLayout.setVisibility(View.VISIBLE);
                 expandLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        UnifyTracking.eventShowMoreCategory();
+                        UnifyTracking.eventShowMoreCategory(categoryHeaderModel.getCategoryHeader().getId());
                         categoryAdapter.addDataChild(categoryHeaderModel.categoryHeader.getChild()
                                 .subList(9,categoryHeaderModel.categoryHeader.getChild().size()));
                         expandLayout.setVisibility(View.GONE);
@@ -791,6 +797,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         }
 
+        public Data getCategoryHeader() {
+            return categoryHeader;
+        }
+
+        public void setCategoryHeader(Data categoryHeader) {
+            this.categoryHeader = categoryHeader;
+        }
+
         public CategoryHeaderModel(Data categoryHeader, Context context, int categoryWidth,
                                    DefaultCategoryAdapter.CategoryListener listener, String totalProduct,
                                    ScrollListener scrollListener) {
@@ -824,6 +838,14 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
         private CategoryHeaderRevampModel() {
             setType(TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER);
+        }
+
+        public Data getCategoryHeader() {
+            return categoryHeader;
+        }
+
+        public void setCategoryHeader(Data categoryHeader) {
+            this.categoryHeader = categoryHeader;
         }
 
         public CategoryHeaderRevampModel(Data categoryHeader, Context context, int categoryWidth,

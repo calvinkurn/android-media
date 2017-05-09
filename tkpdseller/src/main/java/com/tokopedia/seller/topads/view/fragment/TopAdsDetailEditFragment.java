@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -165,6 +166,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
                     budgetPerDayInputLayout.setError(errorMessage);
                 } else {
                     budgetPerDayInputLayout.setError(null);
+                }
+            }
+        });
+        budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(!hasFocus){
+                    CommonUtils.hideKeyboard(getActivity(), view);
                 }
             }
         });
