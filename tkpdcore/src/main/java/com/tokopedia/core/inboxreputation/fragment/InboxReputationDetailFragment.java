@@ -87,7 +87,6 @@ public class
         adapter = InboxReputationDetailAdapter.createAdapter(getActivity(), presenter);
         adapter.setInboxReputation((InboxReputationItem) getArguments().getParcelable(BUNDLE_INBOX_REPUTATION));
         refreshHandler = new RefreshHandler(getActivity(), getView(), onRefresh());
-        refreshHandler.setPullEnabled(false);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         listProduct.setLayoutManager(linearLayoutManager);
         listProduct.setAdapter(adapter);
@@ -209,11 +208,6 @@ public class
     }
 
     @Override
-    public void setPullEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
-    }
-
-    @Override
     public void clearData() {
         adapter.clearList();
     }
@@ -332,7 +326,6 @@ public class
 
     @Override
     public void setActionEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
         listProduct.setEnabled(isEnabled);
     }
 
