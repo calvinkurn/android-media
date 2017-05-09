@@ -64,7 +64,14 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     public abstract Product getSelectedProduct();
 
+    public abstract boolean isInstantCheckoutChecked();
+
     public abstract String getClientNumber();
+
+    public abstract void renderStateDataSelected(String clientNumberState,
+                                                 Operator operatorSelectedState,
+                                                 Product productSelectedState,
+                                                 boolean isInstantCheckoutChecked);
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
