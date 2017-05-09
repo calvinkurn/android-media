@@ -24,13 +24,14 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:layout_width="20dp"
             android:layout_height="10dp"
             android:layout_marginBottom="@dimen/margin_sm"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_arrow_down_grey" />
     </LinearLayout>
 </RelativeLayout>

@@ -134,12 +134,6 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        instagramMedia.initData();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,6 +143,8 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         emptyImage = (ImageView) view.findViewById(R.id.no_result_image);
         prepareView();
         setListener();
+
+        instagramMedia.initData();
         return view;
     }
 

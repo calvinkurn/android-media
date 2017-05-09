@@ -10,6 +10,6 @@ import static com.tokopedia.seller.product.constant.CurrencyTypeDef.TYPE_USD;
  */
 @IntDef({TYPE_IDR, TYPE_USD})
 public @interface CurrencyTypeDef {
-    int TYPE_IDR = 0;
-    int TYPE_USD = 1;
+    int TYPE_IDR = 1;
+    int TYPE_USD = 2;
 }

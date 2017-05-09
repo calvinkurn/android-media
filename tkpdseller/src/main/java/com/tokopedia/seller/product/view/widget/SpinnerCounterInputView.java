@@ -155,6 +155,10 @@ public class SpinnerCounterInputView extends FrameLayout {
         counterInputView.removeTextChangedListener(watcher);
     }
 
+    public int getSpinnerPosition(){
+        return spinnerTextView.getSpinnerPosition();
+    }
+
     public void setSpinnerPosition(int position) {
         spinnerTextView.setSpinnerPosition(position);
     }

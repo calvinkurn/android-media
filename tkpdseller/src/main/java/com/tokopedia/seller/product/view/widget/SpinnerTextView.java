@@ -159,6 +159,10 @@ public class SpinnerTextView extends FrameLayout {
         }
     }
 
+    public int getSpinnerPosition(){
+        return selectionIndex;
+    }
+
     private void updateOnItemChanged(final int position) {
         if (onItemChangeListener != null) {
             onItemChangeListener.onItemChanged(position, entries[position].toString(), values[position].toString());

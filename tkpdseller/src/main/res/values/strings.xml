@@ -387,7 +387,8 @@
     <string name="product_minimum_total_stock">1</string>
     <string name="product_maximum_total_stock">10,000</string>
     <string name="product_error_total_stock_not_valid">Jumlah stok harus diisi antara %1$s &#8212; %2$s</string>
-    <string name="product_confirmation_change_wholesale_price">Jika anda mengubah harga satuan, harga grosir anda akan dihapus. Lanjut ?</string>
+    <string name="title_product_confirmation_change_wholesale_price">Apakah Anda ingin mengubah harga?</string>
+    <string name="product_confirmation_change_wholesale_price">Harga grosir akan otomatis terhapus saat harga diubah.</string>
 
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
@@ -402,7 +403,7 @@
     <string name="title_notification_upload_product">Mengunggah</string>
     <string name="group_notification">com.tokopedia</string>
     <string name="notification_start_upload_product">Mulai mengunggah produk</string>
-    <string name="notification_progress_upload_product">Sedang meunggah produk</string>
+    <string name="notification_progress_upload_product">Sedang mengunggah produk</string>
     <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
     <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
     <string name="add_whole_sale_title">Tambah Harga Grosir</string>
