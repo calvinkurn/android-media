@@ -114,9 +114,22 @@
             android:label="@string/title_group_ad_edit"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".topads.view.activity.TopAdsAddProductListActivity"
+            android:label="@string/title_activity_top_ads_list"
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
             android:name=".lib.datepicker.DatePickerActivity"
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
@@ -127,6 +140,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".product.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
@@ -157,35 +171,53 @@
                 <data android:mimeType="image/*" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".product.view.activity.ProductEditActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductDraftAddActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductDraftEditActivity"
+            android:label="@string/title_activity_edit_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductDuplicateActivity"
+            android:label="@string/title_activity_duplicate_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.ProductScoringDetailActivity"
+            android:label="@string/product_score_label_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.CategoryPickerActivity"
+            android:label="@string/title_activity_category_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.EtalasePickerActivity"
+            android:label="@string/title_activity_etalase_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.CatalogPickerActivity"
+            android:exported="true"
+            android:label="@string/title_activity_catalog_picker"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".product.view.activity.YoutubeAddVideoActivity"
+            android:label="@string/product_label_video"
+            android:theme="@style/BasicThemeActionBar" />
 
-        <activity
-            android:name=".topads.view.activity.TopAdsStatisticProductActivity"
-            android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
-            android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".topads.view.activity.TopAdsAddProductListActivity"
-            android:label="@string/title_activity_top_ads_list"
-            android:theme="@style/Theme.Tokopedia3" />
-        <activity
-            android:name=".product.view.activity.CategoryPickerActivity"
-            android:label="@string/title_activity_category_picker"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.EtalasePickerActivity"
-            android:label="@string/title_activity_etalase_picker"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.CatalogPickerActivity"
-            android:exported="true"
-            android:label="@string/title_activity_catalog_picker" />
         <activity
             android:name=".reputation.view.activity.SellerReputationActivity"
             android:label="@string/title_activity_reputation"
@@ -194,35 +226,6 @@
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/product_label_video"
-            android:theme="@style/BasicThemeActionBar" />
-        <activity
-            android:name=".product.view.activity.ProductScoringDetailActivity"
-            android:label="@string/product_score_label_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.ProductEditActivity"
-            android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.ProductDraftAddActivity"
-            android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.ProductDraftEditActivity"
-            android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"/>
-        <activity
-            android:name=".product.view.activity.ProductDuplicateActivity"
-            android:label="@string/title_activity_duplicate_product"
-            android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"/>
 
         <service
             android:name=".selling.SellingService"

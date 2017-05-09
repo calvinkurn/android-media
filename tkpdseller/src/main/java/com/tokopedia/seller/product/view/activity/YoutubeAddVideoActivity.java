@@ -71,7 +71,7 @@ public class YoutubeAddVideoActivity extends BaseActivity
             case android.R.id.home:
                 onBackPressed();
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     private void initInjection() {
