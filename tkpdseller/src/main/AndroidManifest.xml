@@ -197,11 +197,12 @@
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.ProductScoringDetailActivity"
             android:label="@string/product_score_label_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"

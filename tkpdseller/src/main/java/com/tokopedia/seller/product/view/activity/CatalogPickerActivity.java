@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -21,7 +23,7 @@ import com.tokopedia.seller.product.view.fragment.CatalogPickerFragment;
  * @author hendry on 4/3/17.
  */
 
-public class CatalogPickerActivity extends TActivity implements HasComponent<CatalogPickerComponent>{
+public class CatalogPickerActivity extends BaseActivity implements HasComponent<CatalogPickerComponent>{
 
     private CatalogPickerComponent component;
 
@@ -67,9 +69,21 @@ public class CatalogPickerActivity extends TActivity implements HasComponent<Cat
         departmentId = extras.getLong(DEP_ID);
         selectedCatalogId = extras.getLong(CATALOG_ID);
 
-        inflateView(R.layout.activity_simple_fragment);
+        setContentView(R.layout.activity_simple_fragment);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         initInjection();
         inflateCatalogPickerFragment();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return true;
     }
 
     private void initInjection() {
