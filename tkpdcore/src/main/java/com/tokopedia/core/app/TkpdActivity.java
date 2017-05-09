@@ -7,11 +7,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.localytics.android.Localytics;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerDataListener;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 
 /**
@@ -19,9 +14,7 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
  */
 @Deprecated
 public abstract class TkpdActivity extends DrawerPresenterActivity implements
-        NotificationReceivedListener,
-        CartBadgeNotificationReceiver.ActionListener,
-        DrawerDataListener {
+        CartBadgeNotificationReceiver.ActionListener {
 
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
 
@@ -51,11 +44,6 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onGetNotif() {
-
-    }
-
     protected void RefreshDrawer() {
     }
 
@@ -63,15 +51,6 @@ public abstract class TkpdActivity extends DrawerPresenterActivity implements
     protected void onPause() {
         MainApplication.setCurrentActivity(null);
         super.onPause();
-    }
-
-    @Override
-    public void onRefreshCart(int status) {
-        LocalCacheHandler Cache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
-        Cache.putInt(DrawerNotification.IS_HAS_CART, status);
-        Cache.applyEditor();
-        invalidateOptionsMenu();
-        MainApplication.resetCartStatus(false);
     }
 
     @Override
