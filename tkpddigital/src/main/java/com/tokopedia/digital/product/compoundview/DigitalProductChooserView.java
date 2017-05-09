@@ -2,6 +2,8 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.digital.R;
@@ -23,6 +25,8 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     TextView tvNameProduct;
     @BindView(R2.id.tv_error_chooser)
     TextView tvErrorProduct;
+    @BindView(R2.id.layout_product)
+    RelativeLayout layoutProduct;
 
     @SuppressWarnings("ButterKnifeInjectNotCalled")
     public DigitalProductChooserView(Context context) {
@@ -72,7 +76,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         this.dataSelected = dataList.get(0);
         invalidateContentView();
         actionListener.onInitialDataDigitalChooserSelectedRendered(dataSelected);
-        tvNameProduct.setOnClickListener(getOnChooserClickedListener());
+        layoutProduct.setOnClickListener(getOnChooserClickedListener());
     }
 
 

@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.compoundview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @BindView(R2.id.tv_info)
     TextView tvInfo;
+    @BindView(R2.id.layout_container_additional)
+    LinearLayout containerAdditional;
 
     public ProductAdditionalInfoView(Context context) {
         super(context);
@@ -44,6 +47,11 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     }
 
     public void renderData(Product product) {
-        tvInfo.setText(product.getDetail());
+        if (!product.getDetail().equals("")) {
+            containerAdditional.setVisibility(VISIBLE);
+            tvInfo.setText(product.getDetail());
+        } else {
+            containerAdditional.setVisibility(GONE);
+        }
     }
 }
