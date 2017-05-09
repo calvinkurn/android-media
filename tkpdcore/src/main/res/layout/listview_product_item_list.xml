@@ -131,7 +131,7 @@
         <ImageView
             android:id="@+id/wishlist_button"
             android:layout_width="19dp"
-            android:layout_height="16dp"
+            android:layout_height="19dp"
             android:layout_centerInParent="true"
             android:background="@drawable/ic_wishlist"
             />
