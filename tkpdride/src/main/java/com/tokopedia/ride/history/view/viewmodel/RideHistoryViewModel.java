@@ -27,6 +27,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String startAddress;
     private String endAddress;
     private String mapImage;
+    private String displayStatus;
 
     public RideHistoryViewModel() {
     }
@@ -156,6 +157,14 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.endAddress = endAddress;
     }
 
+    public String getDisplayStatus() {
+        return displayStatus;
+    }
+
+    public void setDisplayStatus(String displayStatus) {
+        this.displayStatus = displayStatus;
+    }
+
     protected RideHistoryViewModel(Parcel in) {
         requestId = in.readString();
         requestTime = in.readString();
@@ -173,6 +182,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         mapImage = in.readString();
         startAddress = in.readString();
         endAddress = in.readString();
+        displayStatus = in.readString();
     }
 
     @Override
@@ -198,6 +208,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         dest.writeString(mapImage);
         dest.writeString(startAddress);
         dest.writeString(endAddress);
+        dest.writeString(displayStatus);
     }
 
     @SuppressWarnings("unused")
@@ -212,4 +223,41 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
             return new RideHistoryViewModel[size];
         }
     };
+
+    public static String transformToDisplayStatus(String status) {
+        switch (status) {
+            case "arriving":
+            case "ARRIVING":
+                return "ARRIVING";
+
+            case "accepted":
+            case "ACCEPTED":
+                return "ACCEPTED";
+
+            case "no_drivers_available":
+            case "NO_DRIVERS_AVAILABLE":
+                return "DRIVER NOT AVAILABLE";
+
+            case "processing":
+            case "PROCESSING":
+                return "PROCESSING";
+
+            case "in_progress":
+            case "IN_PROGRESS":
+                return "ON TRIP";
+
+            case "driver_canceled":
+            case "DRIVER_CANCELED":
+                return "DRIVER CANCELLED";
+
+            case "rider_canceled":
+            case "RIDER_CANCELED":
+                return "RIDER CANCELLED";
+
+            case "completed":
+            case "COMPLETED":
+                return "COMPLETED";
+        }
+        return status;
+    }
 }

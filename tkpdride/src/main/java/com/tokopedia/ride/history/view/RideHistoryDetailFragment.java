@@ -118,7 +118,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
 
         requestTimeTextView.setText(rideHistory.getRequestTime());
-        rideStatusTextView.setText(rideHistory.getStatus());
+        rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
         driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
         rideFareTextView.setText(rideHistory.getFare());
