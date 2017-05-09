@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.compoundview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,15 +28,23 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
     LinearLayout holderClientNumber;
     @BindView(R2.id.holder_chooser_product)
     LinearLayout holderChooserProduct;
+    @BindView(R2.id.holder_additional_info_product)
+    LinearLayout holderAdditionalInfoProduct;
+    @BindView(R2.id.holder_price_info_product)
+    LinearLayout holderPriceInfoProduct;
+    @BindView(R2.id.cb_instant_checkout)
+    CheckBox cbInstantCheckout;
     @BindView(R2.id.btn_buy_digital)
     TextView btnBuyDigital;
 
     private Product productSelected;
     private Operator operatorSelected;
 
-    DigitalOperatorChooserView digitalOperatorChooserView;
-    ClientNumberInputView clientNumberInputView;
-    DigitalProductChooserView digitalProductChooserView;
+    private DigitalOperatorChooserView digitalOperatorChooserView;
+    private ClientNumberInputView clientNumberInputView;
+    private DigitalProductChooserView digitalProductChooserView;
+    private ProductAdditionalInfoView productAdditionalInfoView;
+    private ProductPriceInfoView productPriceInfoView;
 
     @SuppressWarnings("ButterKnifeInjectNotCalled")
     public CategoryProductStyle3View(Context context) {
@@ -57,6 +66,8 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
         digitalOperatorChooserView = new DigitalOperatorChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
+        productAdditionalInfoView = new ProductAdditionalInfoView(context);
+        productPriceInfoView = new ProductPriceInfoView(context);
     }
 
     @Override
@@ -68,6 +79,12 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
     public void renderData(CategoryData data) {
         if (holderChooserOperator.getChildAt(0) != null) {
             holderChooserOperator.removeAllViews();
+        }
+        if (data.isInstantCheckout()) {
+            cbInstantCheckout.setVisibility(VISIBLE);
+        } else {
+            cbInstantCheckout.setChecked(false);
+            cbInstantCheckout.setVisibility(GONE);
         }
         holderChooserOperator.addView(digitalOperatorChooserView);
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());

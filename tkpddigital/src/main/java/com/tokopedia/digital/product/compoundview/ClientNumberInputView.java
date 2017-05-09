@@ -53,6 +53,7 @@ public class ClientNumberInputView extends LinearLayout {
     TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
+    private Context context;
 
     public ClientNumberInputView(Context context) {
         super(context);
@@ -70,6 +71,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     private void init(Context context) {
+        this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
         initialTextWatcher();
@@ -150,6 +152,16 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void setBtnClearInvisible() {
         this.btnClear.setVisibility(GONE);
+    }
+
+    public void enableImageOperator(String imageUrl) {
+        imgOperator.setVisibility(VISIBLE);
+        Glide.with(context).load(imageUrl).dontAnimate().into(this.imgOperator);
+    }
+
+    public void disableImageOperator() {
+        imgOperator.setVisibility(GONE);
+        Glide.with(context).load("").dontAnimate().into(this.imgOperator);
     }
 
     public void setInputTypeNumber() {

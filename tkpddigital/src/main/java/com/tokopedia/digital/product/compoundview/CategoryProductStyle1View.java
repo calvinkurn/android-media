@@ -42,6 +42,8 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
 
     private DigitalProductChooserView digitalProductChooserView;
     private ClientNumberInputView clientNumberInputView;
+    private ProductAdditionalInfoView productAdditionalInfoView;
+    private ProductPriceInfoView productPriceInfoView;
 
     @SuppressWarnings("ButterKnifeInjectNotCalled")
     public CategoryProductStyle1View(Context context) {
@@ -62,6 +64,8 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     protected void initialViewListener(Context context) {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
+        productAdditionalInfoView = new ProductAdditionalInfoView(context);
+        productPriceInfoView = new ProductPriceInfoView(context);
     }
 
     @Override
@@ -165,7 +169,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
                     operatorSelected = operator;
                     for (String prefix : operator.getPrefixList()) {
                         if (tempClientNumber.startsWith(prefix)) {
-
+                            clientNumberInputView.enableImageOperator(operator.getImage());
                             digitalProductChooserView.setActionListener(
                                     getActionListenerProductChooser(operator)
                             );
@@ -183,6 +187,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
                             );
                             return;
                         } else {
+                            clientNumberInputView.disableImageOperator();
                             if (holderChooserProduct.getChildAt(0) != null) {
                                 holderChooserProduct.removeAllViews();
                             }
@@ -226,13 +231,10 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
 
                 if (holderAdditionalInfoProduct.getChildAt(0) != null)
                     holderAdditionalInfoProduct.removeAllViews();
-                ProductAdditionalInfoView productAdditionalInfoView =
-                        new ProductAdditionalInfoView(context);
                 productAdditionalInfoView.renderData(data);
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
 
                 if (operator.getRule().isShowPrice()) {
-                    ProductPriceInfoView productPriceInfoView = new ProductPriceInfoView(context);
                     productPriceInfoView.renderData(productSelected);
                     if (holderPriceInfoProduct.getChildAt(0) != null)
                         holderPriceInfoProduct.removeAllViews();
@@ -249,13 +251,10 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
 
                 if (holderAdditionalInfoProduct.getChildAt(0) != null)
                     holderAdditionalInfoProduct.removeAllViews();
-                ProductAdditionalInfoView productAdditionalInfoView =
-                        new ProductAdditionalInfoView(context);
                 productAdditionalInfoView.renderData(data);
-
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+
                 if (operator.getRule().isShowPrice()) {
-                    ProductPriceInfoView productPriceInfoView = new ProductPriceInfoView(context);
                     productPriceInfoView.renderData(productSelected);
                     if (holderPriceInfoProduct.getChildAt(0) != null)
                         holderPriceInfoProduct.removeAllViews();

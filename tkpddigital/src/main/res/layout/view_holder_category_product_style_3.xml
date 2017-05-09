@@ -26,6 +26,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical" />
 
+    <LinearLayout
+        android:id="@+id/holder_additional_info_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/holder_price_info_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 
     <CheckBox
         android:id="@+id/cb_instant_checkout"
