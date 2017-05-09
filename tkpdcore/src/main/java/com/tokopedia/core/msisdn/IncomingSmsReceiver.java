@@ -49,10 +49,12 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
     }
 
     private boolean isTokopediaOtpSms(SmsMessage currentMessage) {
-        String senderNum = currentMessage.getDisplayOriginatingAddress();
-        String message = currentMessage.getDisplayMessageBody();
+        String senderNum = currentMessage.getDisplayOriginatingAddress() != null ?
+                currentMessage.getDisplayOriginatingAddress() : "";
+        String message = currentMessage.getDisplayMessageBody() != null ?
+                currentMessage.getDisplayMessageBody() : "";
 
-        return (senderNum!= null && senderNum.equals("Tokopedia")) ||
+        return (senderNum != null && senderNum.equals("Tokopedia")) ||
                 (message != null && message.startsWith("Tokopedia"));
     }
 

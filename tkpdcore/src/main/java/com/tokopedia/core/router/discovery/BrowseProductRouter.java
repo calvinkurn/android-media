@@ -19,6 +19,7 @@ public class BrowseProductRouter {
     public static final String EXTRAS_SEARCH_TERM = "EXTRAS_SEARCH_TERM";
     public static final String FRAGMENT_ID = "FRAGMENT_ID";
     public static final String DEPARTMENT_ID = "DEPARTMENT_ID";
+    public static final String DEPARTMENT_NAME = "DEPARTMENT_NAME";
     public static final String AD_SRC = "AD_SRC";
     public static final int VALUES_HISTORY_FRAGMENT_ID = 192_471;
     public static final String EXTRA_SOURCE = "EXTRA_SOURCE";

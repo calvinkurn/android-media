@@ -156,6 +156,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             if (CommonUtils.checkCollectionNotNull(strings)) {
                 presenter.fetchYoutube(strings);
             }
+            isFirstTime = false;
         }
 
     }

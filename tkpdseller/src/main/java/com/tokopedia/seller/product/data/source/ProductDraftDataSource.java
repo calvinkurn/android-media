@@ -25,4 +25,8 @@ public class ProductDraftDataSource {
     public Observable<String> getDraft(long productId) {
         return productDraftDataManager.getDraft(productId);
     }
+
+    public Observable<Boolean> clearAllDraft() {
+        return productDraftDataManager.clearAllDraft();
+    }
 }

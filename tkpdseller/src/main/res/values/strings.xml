@@ -289,6 +289,7 @@
 
     <!-- product score -->
     <string name="product_score_label_title">Produk Skor</string>
+    <string name="title_activity_product_score">Skor Produk</string>
     <string name="product_score_label_indicator_title">Indikator Skor Produk</string>
     <string name="product_score_label_title_score">Skor Produk Anda \u0020</string>
     <string name="product_score_label_minus">Kurang</string>
@@ -416,5 +417,7 @@
     <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
+    <string name="positive_button_dialog">Ya</string>
+    <string name="negative_button_dialog">Tidak</string>
 
 </resources>

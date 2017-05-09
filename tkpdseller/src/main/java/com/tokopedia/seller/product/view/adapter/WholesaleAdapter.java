@@ -159,6 +159,11 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         return productWholesaleViewModels;
     }
 
+    public void addAllWholeSale(ArrayList<WholesaleModel> wholesaleModels) {
+        this.wholesaleModels.addAll(wholesaleModels);
+        notifyDataSetChanged();
+    }
+
     public interface Listener {
         /**
          * notify data size changed
@@ -206,6 +211,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
                     formatter = NumberFormat.getNumberInstance(dollarLocale);
+                    formatter.setMinimumFractionDigits(2);
                     break;
                 default:
                 case CurrencyTypeDef.TYPE_IDR:

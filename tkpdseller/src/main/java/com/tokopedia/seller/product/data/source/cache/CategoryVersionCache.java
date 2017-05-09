@@ -42,6 +42,6 @@ public class CategoryVersionCache {
     }
 
     public void clearCategoryTimer() {
-        LocalCacheHandler.clearCache(context, CategoryDatabaseManager.KEY_STORAGE_NAME);
+        LocalCacheHandler.clearCache(context, CATEGORY_HADES_VERSION);
     }
 }

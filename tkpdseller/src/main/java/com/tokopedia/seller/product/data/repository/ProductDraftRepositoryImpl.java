@@ -30,4 +30,9 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
         return productDraftDataSource.getDraft(productId)
                 .map(new ProductDraftMapper(productId));
     }
+
+    @Override
+    public Observable<Boolean> clearAllDraft() {
+        return productDraftDataSource.clearAllDraft();
+    }
 }

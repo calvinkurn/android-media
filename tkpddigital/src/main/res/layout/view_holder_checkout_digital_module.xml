@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/small_dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="@dimen/small_dp">
 
     <android.support.v7.widget.CardView
         android:id="@+id/total_pembayaran"
-        style="@style/CardViewDigital"
-        android:layout_marginBottom="@dimen/padding_small">
+        style="@style/CardViewDigital">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,6 +111,10 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_small"/>
+
     <TextView
         android:id="@+id/btn_next"
         android:layout_width="match_parent"
@@ -124,4 +127,4 @@
         android:textSize="@dimen/font_small"
         android:textStyle="bold"/>
 
-</RelativeLayout>
+</LinearLayout>

@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
@@ -49,9 +50,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
+    public static final String IS_ACTIVE_WHOLESALE = "IS_ACTIVE_WHOLESALE";
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
     private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
+    private static final String KEY_WHOLESALE = "KEY_WHOLESALE";
     private static final String BUNDLE_SPINNER_POSITION = "BUNDLE_SPINNER_POSITION";
     private static final String BUNDLE_COUNTER_PRICE = "BUNDLE_COUNTER_PRICE";
     private static final String IS_WHOLESALE_VISIBLE = "IS_WHOLE_VISIBLE";
@@ -256,7 +259,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
     }
 
-
     public static Pair<Float, Float> minMaxPrice(Context context, int currencyType) {
         String spinnerValue = null;
         switch (currencyType) {
@@ -433,7 +435,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public void setEtalaseName(String name) {
-        this.etalaseLabelView.setContent(name);
+        this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
     }
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
@@ -472,13 +474,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         if (resultCode == Activity.RESULT_OK) {
             etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
             String etalaseNameString = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-            CharSequence etalaseName;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                etalaseName = Html.fromHtml(etalaseNameString, Html.FROM_HTML_MODE_LEGACY);
-            } else {
-                etalaseName = Html.fromHtml(etalaseNameString);
-            }
-            etalaseLabelView.setContent(etalaseName);
+            setEtalaseName(etalaseNameString);
         }
     }
 
@@ -581,6 +577,9 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
         savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
+        savedInstanceState.putBoolean(IS_ACTIVE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
+        savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
+                new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
         savedInstanceState.putString(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterEditText().getText().toString());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
@@ -597,6 +596,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
         }
 
         stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
+        wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_WHOLESALE));
+        ArrayList<WholesaleModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
+        if (wholesaleModels == null) {
+            wholesaleModels = new ArrayList<>();
+        }
+        wholesaleAdapter.addAllWholeSale(wholesaleModels);
+        wholesaleAdapter.notifyDataSetChanged();
 
         int spinnerPricePosition = savedInstanceState.getInt(BUNDLE_SPINNER_POSITION, 0);
         priceSpinnerCounterInputView.setSpinnerPosition(spinnerPricePosition);

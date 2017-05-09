@@ -1,39 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true">
+    android:orientation="vertical"
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <include layout="@layout/partial_product_score" />
+
+    <ScrollView
+        android:id="@+id/add_product_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
 
-        <include layout="@layout/partial_product_score"/>
-
-        <include layout="@layout/partial_product_info" />
-
-        <include layout="@layout/partial_product_image" />
-
-        <include layout="@layout/partial_product_detail" />
-
-        <include layout="@layout/partial_product_additional_info" />
-
-        <Button
-            android:id="@+id/button_save_and_add"
-            style="@style/Button.Product.Submit"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/product_margin_cards"
-            android:background="@color/white"
-            android:text="@string/product_label_save_and_add"
-            android:textColor="@color/black_fifty_four_percent" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_save"
-            style="@style/Button.Product.Submit.Green"
-            android:layout_width="match_parent"
-            android:text="@string/product_label_save"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"/>
-    </LinearLayout>
-</ScrollView>
+            <include layout="@layout/partial_product_info" />
+
+            <include layout="@layout/partial_product_image" />
+
+            <include layout="@layout/partial_product_detail" />
+
+            <include layout="@layout/partial_product_additional_info" />
+
+            <Button
+                android:id="@+id/button_save_and_add"
+                style="@style/Button.Product.Submit"
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/product_margin_cards"
+                android:background="@color/white"
+                android:text="@string/product_label_save_and_add"
+                android:textColor="@color/black_fifty_four_percent" />
+
+            <Button
+                android:id="@+id/button_save"
+                style="@style/Button.Product.Submit.Green"
+                android:layout_width="match_parent"
+                android:text="@string/product_label_save"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

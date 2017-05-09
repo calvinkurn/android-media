@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -26,7 +28,7 @@ import com.tokopedia.seller.product.view.listener.EtalasePickerView;
  */
 
 public class EtalasePickerActivity
-        extends TActivity
+        extends BaseActivity
         implements HasComponent<AppComponent>,
         EtalasePickerFragmentListener,
         TextPickerDialogListener {
@@ -46,12 +48,23 @@ public class EtalasePickerActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_simple_fragment);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        setContentView(R.layout.activity_simple_fragment);
         fragmentManager = getSupportFragmentManager();
         inflateEtalasePickerFragment();
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void inflateEtalasePickerFragment() {
         Fragment fragment = fragmentManager.findFragmentByTag(EtalasePickerFragment.TAG);
         if (fragment == null) {

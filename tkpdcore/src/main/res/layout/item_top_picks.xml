@@ -33,7 +33,7 @@
 
             <View
                 android:id="@+id/sparator"
-                android:layout_width="1dp"
+                android:layout_width="1px"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
