@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
@@ -427,7 +428,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public void setEtalaseName(String name) {
-        this.etalaseLabelView.setContent(name);
+        this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
     }
 
     public void addWholesaleItem(WholesaleModel wholesaleModel) {
@@ -466,13 +467,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         if (resultCode == Activity.RESULT_OK) {
             etalaseId = data.getIntExtra(EtalasePickerActivity.ETALASE_ID, -1);
             String etalaseNameString = data.getStringExtra(EtalasePickerActivity.ETALASE_NAME);
-            CharSequence etalaseName;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                etalaseName = Html.fromHtml(etalaseNameString, Html.FROM_HTML_MODE_LEGACY);
-            } else {
-                etalaseName = Html.fromHtml(etalaseNameString);
-            }
-            etalaseLabelView.setContent(etalaseName);
+            setEtalaseName(etalaseNameString);
         }
     }
 

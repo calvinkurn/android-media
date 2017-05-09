@@ -40,12 +40,12 @@
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/progress_value_score"
             android:layout_width="match_parent"
-            android:layout_height="4dp"
+            android:layout_height="12dp"
             app:rcBackgroundColor="@color/black_five_percent"
             app:rcMax="100"
             app:rcProgress="0"
             app:rcProgressColor="@color/low_score_value"
-            app:rcRadius="2dp" />
+            app:rcRadius="6.5dp" />
     </LinearLayout>
 
     <ImageView
