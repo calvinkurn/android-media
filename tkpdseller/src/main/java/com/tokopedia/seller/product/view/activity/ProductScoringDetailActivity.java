@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -18,18 +20,30 @@ import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScor
  * Created by zulfikarrahman on 4/12/17.
  */
 
-public class ProductScoringDetailActivity extends TActivity implements HasComponent<AppComponent> {
+public class ProductScoringDetailActivity extends BaseActivity implements HasComponent<AppComponent> {
 
     public static final String TAG = ProductScoringDetailFragment.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_detail_product_score);
+        setContentView(R.layout.activity_detail_product_score);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         ValueIndicatorScoreModel valueIndicatorScoreModel = getIntent().getParcelableExtra(ProductExtraConstant.VALUE_PRODUCT_SCORING_EXTRA);
 
         inflateFragment(valueIndicatorScoreModel);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return true;
     }
 
     private void inflateFragment(ValueIndicatorScoreModel valueIndicatorScoreModel) {

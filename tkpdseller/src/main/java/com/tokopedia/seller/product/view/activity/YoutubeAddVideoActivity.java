@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -24,7 +26,7 @@ import java.util.List;
 /**
  * @author normansyahputa on 4/17/17.
  */
-public class YoutubeAddVideoActivity extends TActivity
+public class YoutubeAddVideoActivity extends BaseActivity
         implements HasComponent<YoutubeVideoComponent>, YoutubeAddVideoActView, TextPickerDialogListener {
 
     private YoutubeVideoComponent youtubeVideoComponent;
@@ -39,7 +41,10 @@ public class YoutubeAddVideoActivity extends TActivity
         super.onCreate(savedInstanceState);
         initInjection();
 
-        inflateView(R.layout.activity_product_add);
+        setContentView(R.layout.activity_product_add);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         if (savedInstanceState == null) {
             Intent intent = getIntent();
@@ -58,6 +63,15 @@ public class YoutubeAddVideoActivity extends TActivity
                     .commit();
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return true;
     }
 
     private void initInjection() {
