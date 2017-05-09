@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -33,8 +35,10 @@ import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by nathan on 4/11/17.
@@ -44,13 +48,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
-
+    public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
     private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_ETALASE_ID = -1;
-    public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
-
+    private final Locale dollarLocale = Locale.US;
+    private final Locale idrLocale = new Locale("in", "ID");
     private RecyclerView recyclerViewWholesale;
     private WholesaleAdapter wholesaleAdapter;
     private ImageButton editPriceImageButton;
@@ -73,9 +77,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private Listener listener;
     @CurrencyTypeDef
     private int currencyType = CurrencyTypeDef.TYPE_IDR;
+    private NumberFormat formatter;
 
     public ProductDetailViewHolder(View view) {
         etalaseId = DEFAULT_ETALASE_ID;
+        determineFormatter();
         editPriceImageButton = (ImageButton) view.findViewById(R.id.image_button_edit_price);
         priceSpinnerCounterInputView = (SpinnerCounterInputView) view.findViewById(R.id.spinner_counter_input_view_price);
         wholesaleExpandableOptionSwitch = (ExpandableOptionSwitch) view.findViewById(R.id.expandable_option_switch_wholesale);
@@ -125,6 +131,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                     priceSpinnerCounterInputView.addTextChangedListener(usdTextWatcher);
                     currencyType = CurrencyTypeDef.TYPE_USD;
                 }
+                determineFormatter();
             }
         });
 
@@ -245,6 +252,28 @@ public class ProductDetailViewHolder extends ProductViewHolder
         wholesaleAdapter = new WholesaleAdapter();
         wholesaleAdapter.setListener(this);
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
+    }
+
+    public static Pair<Float, Float> minMaxPrice(Context context, @CurrencyTypeDef int currencyType) {
+        String spinnerValue = null;
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_USD);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_IDR);
+                break;
+        }
+        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
+        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp));
+        if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
+            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
+            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd));
+        }
+        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
+        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
+        return Pair.create(minPrice, maxPrice);
     }
 
     private void showEditPriceDialog() {
@@ -448,22 +477,31 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     private boolean isPriceValid() {
-        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_minimum_price_rp));
-        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_maximum_price_rp));
-        if (priceSpinnerCounterInputView.getSpinnerValue().equalsIgnoreCase(priceSpinnerCounterInputView.getContext().getString(R.string.product_currency_value_usd))) {
-            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_minimum_price_usd));
-            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(priceSpinnerCounterInputView.getContext().getString(R.string.product_maximum_price_usd));
-        }
-        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
-        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
-        if (minPrice > getPriceValue() || getPriceValue() > maxPrice) {
-            priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid, minPriceString, maxPriceString));
+        Pair<Float, Float> minMaxPrice = minMaxPrice(
+                priceSpinnerCounterInputView.getContext(),
+                Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
+
+        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
+            priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
+                    formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
             wholesaleExpandableOptionSwitch.setEnabled(false);
             return false;
         }
         priceSpinnerCounterInputView.setCounterError(null);
         wholesaleExpandableOptionSwitch.setEnabled(true);
         return true;
+    }
+
+    private void determineFormatter() {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                formatter = NumberFormat.getNumberInstance(dollarLocale);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                formatter = NumberFormat.getNumberInstance(idrLocale);
+                break;
+        }
     }
 
     private boolean isWeightValid() {

@@ -128,6 +128,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             @Override
             public void remove(int index) {
                 youtubeAddVideoActView.removeVideoIds(index);
+                setVideoSubtitle();
             }
         });
         addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
@@ -238,6 +239,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                     }
                 })
                 .showRetrySnackbar();
+    }
+
+    @Override
+    public void showMessageErrorRaw(String message) {
+        NetworkErrorHelper
+                .showSnackbar(getActivity(), message);
     }
 
     @Override

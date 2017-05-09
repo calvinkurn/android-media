@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata.ProductCategoryPrediction;
+import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -23,7 +23,7 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorLoadCatalog(String errorMessage);
 
-    void onSuccessLoadRecommendationCategory(List<ProductCategoryPrediction> categoryPredictionList);
+    void onSuccessLoadRecommendationCategory(List<ProductCategoryPredictionDomainModel> categoryPredictionList);
 
     void onErrorLoadRecommendationCategory(String errorMessage);
 
@@ -39,4 +39,5 @@ public interface ProductAddView extends CustomerView {
 
     void onSuccessStoreProductAndAddToDraft(Long productId);
 
+    void onErrorStoreProductAndAddToDraft(String errorMessage);
 }

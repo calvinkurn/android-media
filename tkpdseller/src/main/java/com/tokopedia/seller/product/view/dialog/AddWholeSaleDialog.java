@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,15 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * @author normansyahputa on 4/20/17.
@@ -35,13 +40,14 @@ public class AddWholeSaleDialog extends DialogFragment {
     public static final String KEY_WHOLE_SALE_BASE_VALUE = "KEY_WHOLE_SALE_BASE_VALUE";
     public static final String KEY_WHOLE_SALE_PREVIOUS_VALUE = "KEY_WHOLE_SALE_PREVIOUS_VALUE";
     public static final String KEY_CURRENCY_TYPE = "KEY_CURRENCY_TYPE";
+    private final Locale dollarLocale = Locale.US;
+    private final Locale idrLocale = new Locale("in", "ID");
     private WholeSaleDialogListener listener;
     private CounterInputView maxWholeSale;
     private CounterInputView minWholeSale;
     private CounterInputView wholesalePrice;
     private WholesaleModel baseValue;
     private TextView title;
-
     @CurrencyTypeDef
     private int currencyType;
     private WholesaleModel previousValue;
@@ -49,6 +55,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     private int minQuantityRaw = 0;
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
+    private NumberFormat formatter;
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
@@ -95,6 +102,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_whole_sale_dialog_layout, container, false);
+        determineFormatter();
         title = (TextView) view.findViewById(R.id.string_picker_dialog_title);
         title.setText(R.string.add_whole_sale_title);
         minWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_whole_sale);
@@ -167,8 +175,7 @@ public class AddWholeSaleDialog extends DialogFragment {
             idrBaseMinimumValue = previousValue.getQtyPrice() - 1;
         }
 
-        idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText(),
-                Double.toString(idrBaseMinimumValue)) {
+        idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText()) {
             @Override
             public void onNumberChanged(float number) {
                 validatePrice(number);
@@ -181,8 +188,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         } else {
             usdBaseMinimumValue = previousValue.getQtyPrice() - 0.01;
         }
-        usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText(),
-                Double.toString(usdBaseMinimumValue)) {
+        usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText()) {
             @Override
             public void onNumberChanged(float number) {
                 validatePrice(number);
@@ -192,12 +198,12 @@ public class AddWholeSaleDialog extends DialogFragment {
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
                 wholesalePrice.addTextChangedListener(usdTextWatcher);
-                wholesalePrice.setValue((float) usdBaseMinimumValue);
+//                wholesalePrice.setValue((float) usdBaseMinimumValue);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
                 wholesalePrice.addTextChangedListener(idrTextWatcher);
-                wholesalePrice.setValue((float) idrBaseMinimumValue);
+//                wholesalePrice.setValue((float) idrBaseMinimumValue);
                 break;
 
         }
@@ -205,6 +211,18 @@ public class AddWholeSaleDialog extends DialogFragment {
         wholesalePrice.requestLayout();
 
         return view;
+    }
+
+    private void determineFormatter() {
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                formatter = NumberFormat.getNumberInstance(dollarLocale);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                formatter = NumberFormat.getNumberInstance(idrLocale);
+                break;
+        }
     }
 
     protected void validateMaxQuantity(float maxQuantity, boolean finalIsFirsttime) {
@@ -264,6 +282,15 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void validatePrice(float currencyValue) {
+
+        Pair<Float, Float> minMaxPrice = ProductDetailViewHolder.minMaxPrice(getActivity(), currencyType);
+        if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
+            wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
+                    formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
+            isErrorReturn = true;
+            return;
+        }
+
         if (currencyValue >= baseValue.getQtyPrice()) {
             wholesalePrice.setError(getString(R.string.price_should_be_cheaper_than_fix_price));
             isErrorReturn = true;
@@ -293,6 +320,8 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void addItem(WholesaleModel object) {
+        validatePrice(wholesalePrice.getFloatValue());
+
         if (isErrorReturn)
             return;
 

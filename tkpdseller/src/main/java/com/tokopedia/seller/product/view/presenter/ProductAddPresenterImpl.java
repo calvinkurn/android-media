@@ -13,6 +13,7 @@ import com.tokopedia.seller.product.domain.interactor.ProductScoringUseCase;
 import com.tokopedia.seller.product.domain.interactor.productdraft.SaveDraftProductUseCase;
 import com.tokopedia.seller.product.domain.interactor.categorypicker.FetchCategoryDisplayUseCase;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
+import com.tokopedia.seller.product.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
@@ -239,7 +240,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         getCategoryRecommUseCase.unsubscribe();
         getCategoryRecommUseCase.execute(
                 GetCategoryRecommUseCase.createRequestParams(productTitle, expectRow),
-                new Subscriber<CategoryRecommDataModel>() {
+                new Subscriber<CategoryRecommDomainModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -251,10 +252,8 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
                     }
 
                     @Override
-                    public void onNext(CategoryRecommDataModel categoryRecommDataModel) {
-                        getView().onSuccessLoadRecommendationCategory(
-                                categoryRecommDataModel.getData().get(0).getProductCategoryPrediction()
-                        );
+                    public void onNext(CategoryRecommDomainModel categoryRecommDomainModel) {
+                        getView().onSuccessLoadRecommendationCategory(categoryRecommDomainModel.getProductCategoryPrediction());
                     }
                 });
     }
@@ -379,7 +378,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
         public void onError(Throwable e) {
 
             checkViewAttached();
-            getView().onErrorStoreProductToDraft(ViewUtils.getErrorMessage(e));
+            getView().onErrorStoreProductAndAddToDraft(ViewUtils.getErrorMessage(e));
         }
 
         @Override

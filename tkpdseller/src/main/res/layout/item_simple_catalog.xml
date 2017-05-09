@@ -6,8 +6,8 @@
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
     android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground">
 
@@ -15,14 +15,14 @@
         android:id="@+id/image_catalog"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         tools:src="@mipmap/ic_launcher"/>
     <TextView
         android:id="@+id/text_catalog_name"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
         android:textSize="16sp"
         tools:text="@string/title_catalog"/>
 

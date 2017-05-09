@@ -15,6 +15,8 @@ import java.util.regex.Pattern;
  * @author normansyahputa on 4/11/17.
  *
  * no one should override this, this is just util class.
+ *
+ * update !! use {@link YoutubeException} to detect exception from this class.
  */
 public final class YoutubeVideoLinkUtils {
     public static final int VIDEO_ID_INDEX = 1;
@@ -77,12 +79,12 @@ public final class YoutubeVideoLinkUtils {
         errorNoVideoUrlName = context.getString(R.string.error_no_video_url_name);
     }
 
-    public synchronized void checkIfVideoExists(YoutubeResponse youtubeResponse) {
+    public synchronized void checkIfVideoExists(YoutubeResponse youtubeResponse, String videoId) {
         if (!CommonUtils.checkNotNull(youtubeResponse))
             return;
 
         if (youtubeResponse.getItems().isEmpty())
-            throw new RuntimeException(videoNotFound);
+            throw new YoutubeException(String.format(YoutubeException.format, videoNotFound, videoId));
     }
 
     public synchronized void checkIfVideoNotAgeRestricted(YoutubeResponse youtubeResponse) {
@@ -91,7 +93,30 @@ public final class YoutubeVideoLinkUtils {
 
         ContentRating contentRating = youtubeResponse.getItems().get(0).getContentDetails().getContentRating();
         if (contentRating != null && contentRating.getYtRating().equals(YT_AGE_RESTRICTED)) {
-            throw new RuntimeException(videoAdultWarn);
+            throw new YoutubeException(videoAdultWarn);
+        }
+    }
+
+    /**
+     * this is for indication of error due to youtube api.
+     */
+    public static class YoutubeException extends RuntimeException {
+
+        public static final String format = "%s [%s]";
+
+        public YoutubeException(String message) {
+            super(message);
+        }
+
+        public String getVideoId() {
+            int i = getMessage().indexOf('[');
+            int j = getMessage().indexOf(']');
+            return getMessage().substring(i + 1, j);
+        }
+
+        public String getMessageWithoutVideoId() {
+            int i = getMessage().indexOf('[');
+            return getMessage().substring(0, i);
         }
     }
 

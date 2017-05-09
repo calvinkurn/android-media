@@ -10,6 +10,13 @@ public class YoutubeVideoModel {
     private String thumbnailUrl;
     private int width, height;
 
+    public static YoutubeVideoModel invalidYoutubeModel() {
+        YoutubeVideoModel youtubeVideoModel = new YoutubeVideoModel();
+        youtubeVideoModel.setWidth(-1);
+        youtubeVideoModel.setHeight(-1);
+        return youtubeVideoModel;
+    }
+
     public String getSnippetTitle() {
         return snippetTitle;
     }
@@ -48,5 +55,38 @@ public class YoutubeVideoModel {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        YoutubeVideoModel that = (YoutubeVideoModel) o;
+
+        if (width != that.width) {
+            return false;
+        }
+        if (height != that.height) {
+            return false;
+        }
+        if (snippetTitle != null ? !snippetTitle.equals(that.snippetTitle) : that.snippetTitle != null){
+            return false;
+        }
+        if (snippetDescription != null ? !snippetDescription.equals(that.snippetDescription) : that.snippetDescription != null){
+            return false;
+        }
+        return thumbnailUrl != null ? thumbnailUrl.equals(that.thumbnailUrl) : that.thumbnailUrl == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = snippetTitle != null ? snippetTitle.hashCode() : 0;
+        result = 31 * result + (snippetDescription != null ? snippetDescription.hashCode() : 0);
+        result = 31 * result + (thumbnailUrl != null ? thumbnailUrl.hashCode() : 0);
+        result = 31 * result + width;
+        result = 31 * result + height;
+        return result;
     }
 }
