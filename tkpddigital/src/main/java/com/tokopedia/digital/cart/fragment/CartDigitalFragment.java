@@ -17,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -601,7 +600,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onClickButtonNext() {
         UnifyTracking.eventClickLanjutCheckoutPage(AppEventTracking.Category.RECHARGE+cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName()+" - "+cartDigitalInfoDataState.getAttributes().getPricePlain());
         presenter.processToCheckout();
-
     }
 
     @Override
