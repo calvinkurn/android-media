@@ -254,6 +254,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void initFragmentWithPlace(PlacePassViewModel source, PlacePassViewModel destination) {
+        RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams) mainLayout.getLayoutParams();
+        relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
+        mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
         replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
         replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
