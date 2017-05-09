@@ -104,10 +104,14 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
+        data.add(new DrawerItem("Hubungi Kami",
+                R.drawable.ic_contact_us,
+                TkpdState.DrawerPosition.CONTACT_US,
+                true));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-            data.add(new DrawerItem("Hubungi Kami",
-                    R.drawable.ic_contact_us,
-                    TkpdState.DrawerPosition.CONTACT_US,
+            data.add(new DrawerItem("Bantuan",
+                    R.drawable.ic_help,
+                    TkpdState.DrawerPosition.HELP,
                     true));
         }
         data.add(new DrawerItem("Keluar",
@@ -254,16 +258,16 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void setFooterData(DrawerProfile profile) {
-            shopName.setText(profile.getShopName());
-            shopIcon.setVisibility(View.VISIBLE);
-            shopLabel.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(shopIcon, profile.getShopAvatar());
-            shopLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onGoToShop();
-                }
-            });
+        shopName.setText(profile.getShopName());
+        shopIcon.setVisibility(View.VISIBLE);
+        shopLabel.setVisibility(View.VISIBLE);
+        ImageHandler.LoadImage(shopIcon, profile.getShopAvatar());
+        shopLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShop();
+            }
+        });
     }
 
     @Override

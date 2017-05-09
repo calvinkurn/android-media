@@ -5,27 +5,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.widget.ImageView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
+import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -118,9 +115,12 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                if (TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
-                    intent.putExtra("link", "https://tokopedia.com/contact-us-android");
-                }
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.HELP:
+                intent = InboxRouter.getContactUsActivityIntent(context);
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
