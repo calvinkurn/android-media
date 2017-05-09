@@ -90,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:textColor="@color/black_54"
                 android:text="ORIGINAL-ZONE"
                 android:textSize="11sp" />
 
@@ -106,6 +107,7 @@
                     android:layout_weight="1"
                     android:drawableLeft="@drawable/ic_place_black_24dp"
                     android:gravity="center_vertical"
+                    android:textColor="@color/black_38"
                     android:text="Jakarta"
                     android:textSize="11sp" />
 
