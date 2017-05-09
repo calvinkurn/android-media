@@ -33,7 +33,7 @@ import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
-import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
 
@@ -347,9 +347,10 @@ public class RidePushNotificationBuildAndShow {
     }
 
     private static void showRideCompleted(Context context, RideRequest rideRequest) {
-        DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
+        DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
         driverAndVehicle.setDriver(rideRequest.getDriver());
         driverAndVehicle.setVehicle(rideRequest.getVehicle());
+        driverAndVehicle.setAddress(rideRequest.getAddress());
 
         Intent intent = CompleteTripActivity.getCallingIntentFromPushNotification(
                 context,

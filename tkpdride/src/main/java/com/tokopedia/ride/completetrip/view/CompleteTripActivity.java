@@ -15,23 +15,23 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
-import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 public class CompleteTripActivity extends BaseActivity {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
     private static final String EXTRA_DRIVER_VEHICLE = "EXTRA_DRIVER_VEHICLE";
 
-    public static Intent getCallingIntent(Activity activity, String requestId, DriverVehicleViewModel driverAndVehicle) {
+    public static Intent getCallingIntent(Activity activity, String requestId, DriverVehicleAddressViewModel driverVehicleAddressViewModel) {
         Intent intent = new Intent(activity, CompleteTripActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
-        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverVehicleAddressViewModel);
         return intent;
     }
 
-    public static Intent getCallingIntentFromPushNotification(Context activity, String requestId, DriverVehicleViewModel driverAndVehicle) {
+    public static Intent getCallingIntentFromPushNotification(Context activity, String requestId, DriverVehicleAddressViewModel driverVehicleAddressViewModel) {
         Intent intent = new Intent(activity, CompleteTripActivity.class);
         intent.putExtra(EXTRA_REQUEST_ID, requestId);
-        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverAndVehicle);
+        intent.putExtra(EXTRA_DRIVER_VEHICLE, driverVehicleAddressViewModel);
         intent.putExtra(Constants.EXTRA_FROM_PUSH, true);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
@@ -46,7 +46,7 @@ public class CompleteTripActivity extends BaseActivity {
         setupToolbar();
 
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
-        DriverVehicleViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
+        DriverVehicleAddressViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
         addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
     }
 

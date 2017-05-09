@@ -45,7 +45,7 @@ import rx.schedulers.Schedulers;
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
 
-    private static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 3000;
+    private static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
@@ -380,7 +380,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void startGetRequestDetailsPeriodicService(String requestId) {
-        handler.postDelayed(timedTask, 2000);
+        handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
     }
 
     @Override
