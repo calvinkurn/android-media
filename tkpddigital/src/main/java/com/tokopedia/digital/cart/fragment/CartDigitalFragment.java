@@ -288,6 +288,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
+        voucherCartHolderView.setVisibility(
+                cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
+        );
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
@@ -432,16 +435,19 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        voucherDigitalState = null;
         voucherCartHolderView.setErrorVoucher(message);
     }
 
     @Override
     public void renderErrorHttpCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showSnackBarAlert(message);
     }
 
@@ -454,6 +460,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorTimeoutConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
@@ -585,6 +592,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     public void onInputPriceByUserFilled(long paymentAmount) {
         Log.d(TAG, "userInputPayment: " + paymentAmount);
         checkoutDataBuilder.transactionAmount(paymentAmount);
+    }
+
+    @Override
+    public void enableCheckoutButton() {
+        checkoutHolderView.enableCheckoutButton();
+    }
+
+    @Override
+    public void disableCheckoutButton() {
+        checkoutHolderView.disableCheckoutButton();
     }
 
     @Override

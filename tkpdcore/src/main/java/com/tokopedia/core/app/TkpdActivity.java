@@ -24,6 +24,8 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -210,7 +212,7 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -240,6 +242,7 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -256,7 +259,7 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onErrorGetTokoCash(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -272,7 +275,7 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onErrorGetTopPoints(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -289,6 +292,6 @@ public abstract class TkpdActivity extends TActivity implements
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 }

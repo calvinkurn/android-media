@@ -26,7 +26,6 @@ import com.tokopedia.core.var.ToolbarVariable;
 public abstract class TActivity extends BaseActivity {
 
     protected FrameLayout parentView;
-    protected ToolbarVariable toolbarVariable;
     protected Toolbar toolbar;
 
     @Override
@@ -105,4 +104,7 @@ public abstract class TActivity extends BaseActivity {
         getLayoutInflater().inflate(layoutId, parentView);
     }
 
+    public void hideToolbar() {
+        getSupportActionBar().hide();
+    }
 }

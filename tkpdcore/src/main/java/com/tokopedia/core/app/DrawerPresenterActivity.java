@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -21,6 +22,7 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -190,7 +192,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetDeposit(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -221,6 +223,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetNotificationDrawer(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
 
     }
 
@@ -238,7 +241,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetTokoCash(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -254,7 +257,7 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetTopPoints(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
@@ -271,6 +274,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     @Override
     public void onErrorGetProfile(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 }

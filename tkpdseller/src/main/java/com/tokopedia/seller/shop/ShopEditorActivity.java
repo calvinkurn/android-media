@@ -107,7 +107,7 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, true, CREATE_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_open_shop));
-//                drawer.setEnabled(false);
+                drawerHelper.setEnabled(false);
                 break;
             case EDIT_SHOP_FRAGMENT_TAG:
                 if (!isFragmentCreated(EDIT_SHOP_FRAGMENT_TAG)) {
@@ -117,7 +117,7 @@ public class ShopEditorActivity extends TkpdActivity implements
                 }
                 moveToFragment(fragment, false, EDIT_SHOP_FRAGMENT_TAG);
                 createCustomToolbar(getString(R.string.title_shop_information_menu));
-//                drawer.setEnabled(true);
+                drawerHelper.setEnabled(true);
                 break;
         }
     }
@@ -183,9 +183,6 @@ public class ShopEditorActivity extends TkpdActivity implements
         activity.startActivity(intent);
         if (activity instanceof AppCompatActivity) {
             ((AppCompatActivity) activity).finish();
-        }
-        if (activity instanceof TkpdActivity) {
-            ((TkpdActivity) activity).onGetNotif();
         }
         TrackingUtils.eventLoca("event : open store");
     }

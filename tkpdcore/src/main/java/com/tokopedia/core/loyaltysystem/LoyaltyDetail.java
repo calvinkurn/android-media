@@ -30,10 +30,6 @@ public class LoyaltyDetail extends TActivity implements FragmentGeneralWebView.O
             getSupportActionBar().setTitle(R.string.title_activity_people_deposit);
         else
             getSupportActionBar().setTitle(R.string.title_activity_loyalty_detail);
-//        if (url != null && url.contains("https://pulsa.tokopedia.com/saldo/"))
-//            toolbar.setTitle(R.string.title_activity_people_deposit);
-//        else
-//            toolbar.setTitle(R.string.title_activity_loyalty_detail);
 
         showFragmentWebView();
     }

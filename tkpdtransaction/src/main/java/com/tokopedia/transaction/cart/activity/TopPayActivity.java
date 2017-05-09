@@ -32,7 +32,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -191,11 +190,11 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public void onGetThanksTopPaySuccess(ThanksTopPayData data) {
-        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE), data.getParameter().getGatewayName());
+        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data.getParameter().getGatewayName());
         presenter.clearNotificationCart();
         try {
             presenter.processPaymentAnalytics(
-                    new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE), data
+                    new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), data
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,7 +209,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
     @Override
     public void onGetThanksTopPayFailed(String message) {
         hideProgressLoading();
-        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE), PAYMENT_FAILED);
+        presenter.processCheckoutAnalytics(new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA), PAYMENT_FAILED);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -297,7 +296,7 @@ public class TopPayActivity extends BasePresenterActivity<ITopPayPresenter> impl
 
     @Override
     public LocalCacheHandler getLocalCacheHandlerNotification() {
-        return new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
+        return new LocalCacheHandler(this, TkpdCache.NOTIFICATION_DATA);
     }
 
     @NonNull
