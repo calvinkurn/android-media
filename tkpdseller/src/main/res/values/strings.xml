@@ -402,7 +402,7 @@
     <string name="title_notification_upload_product">Mengunggah</string>
     <string name="group_notification">com.tokopedia</string>
     <string name="notification_start_upload_product">Mulai mengunggah produk</string>
-    <string name="notification_progress_upload_product">Sedang meunggah produk</string>
+    <string name="notification_progress_upload_product">Sedang mengunggah produk</string>
     <string name="notification_complete_upload_product">Sukses Mengunggah Produk</string>
     <string name="product_error_must_be_gold_merchant">Anda Harus Berlangganan Gold Merchant</string>
     <string name="add_whole_sale_title">Tambah Harga Grosir</string>
