@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.domain.interactor;
+package com.tokopedia.seller.product.domain.interactor.productdraft;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;

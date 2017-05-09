@@ -131,7 +131,7 @@
             android:name=".product.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
+            android:theme="@style/BasicThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -176,10 +176,12 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".product.view.activity.CategoryPickerActivity"
-            android:label="@string/title_activity_category_picker" />
+            android:label="@string/title_activity_category_picker"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.EtalasePickerActivity"
-            android:label="@string/title_activity_etalase_picker" />
+            android:label="@string/title_activity_etalase_picker"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.CatalogPickerActivity"
             android:exported="true"
@@ -203,19 +205,23 @@
         <activity
             android:name=".product.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_duplicate_product"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
 
         <service
             android:name=".selling.SellingService"

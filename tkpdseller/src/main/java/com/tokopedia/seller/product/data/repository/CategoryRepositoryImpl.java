@@ -54,4 +54,9 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     public Observable<List<String>> fetchCategoryDisplay(long categoryId) {
         return fetchCategoryDataSource.fetchCategoryDisplay(categoryId);
     }
+
+    @Override
+    public Observable<Boolean> clearCache() {
+        return categoryVersionDataSource.clearCache();
+    }
 }
