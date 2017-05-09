@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
@@ -53,6 +53,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
     private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
+    private static final String KEY_WHOLESALE = "KEY_WHOLESALE";
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_ETALASE_ID = -1;
     private final Locale dollarLocale = Locale.US;
@@ -572,7 +573,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
         savedInstanceState.putBoolean(IS_ACTIVE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
-        wholesaleAdapter.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
+                new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
     }
 
     @Override
@@ -587,7 +589,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
         wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_WHOLESALE));
-        wholesaleAdapter.restoreSaveInstanceState(savedInstanceState);
+        ArrayList<WholesaleModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
+        if (wholesaleModels == null) {
+            wholesaleModels = new ArrayList<>();
+        }
+        wholesaleAdapter.addAllWholeSale(wholesaleModels);
+        wholesaleAdapter.notifyDataSetChanged();
     }
 
     public interface Listener {
