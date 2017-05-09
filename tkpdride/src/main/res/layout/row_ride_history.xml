@@ -47,8 +47,10 @@
             android:layout_below="@id/tv_ride_start_time"
             android:layout_marginBottom="12dp"
             android:layout_marginLeft="12dp"
+            android:layout_marginRight="150dp"
             android:text="Honda Amaze (XX 1234)"
-            android:textColor="@color/grey_600" />
+            android:textColor="@color/grey_600"
+            android:textSize="12sp" />
 
 
         <TextView
@@ -70,7 +72,8 @@
             android:layout_below="@id/tv_ride_start_time"
             android:layout_marginRight="12dp"
             android:text="Completed"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

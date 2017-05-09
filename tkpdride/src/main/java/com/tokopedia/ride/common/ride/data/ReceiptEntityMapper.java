@@ -27,7 +27,7 @@ public class ReceiptEntityMapper {
 
             String totalCharged = entity.getCurrencyCode() + " 0";
             if (entity.getPayment() != null) {
-                totalCharged = entity.getCurrencyCode() + " " + entity.getPayment().getTotalAmount();
+                totalCharged = entity.getPayment().getCurrencyCode() + " " + entity.getPayment().getTotalAmount();
             }
             receipt.setTotalCharged(totalCharged);
         }

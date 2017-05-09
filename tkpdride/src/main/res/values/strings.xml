@@ -71,4 +71,5 @@
     <string name="ride_home_toolbar">Tokopedia</string>
     <string name="complete_trip_your_fare">Your Fare</string>
     <string name="on_trip_failed_share">Failed to share eta</string>
+    <string name="your_trip_with">Your trip with</string>
 </resources>
