@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -311,6 +313,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else {
             pbMainLoading.setVisibility(View.GONE);
             mainContainer.setVisibility(View.VISIBLE);
+        }
+
+        sendGTMAnalytics(AppEventTracking.Category.RECHARGE+cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName()+" - "+cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+
+    }
+
+    private void sendGTMAnalytics(String ec, String el, boolean analyticsKind){
+        if(analyticsKind){
+            UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
+        }{
+            UnifyTracking.eventClickBeliWidget(ec, el);
         }
     }
 
