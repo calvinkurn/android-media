@@ -53,17 +53,21 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
+//                    getView().hideCheckPendingRequestLoading();
                     getView().hideCheckPendingRequestLoading();
-                    if (e instanceof UnprocessableEntityHttpException) {
-                        getView().hideCheckPendingRequestLoading();
-                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
-                    } else if (e instanceof UnProcessableHttpException) {
-                        getView().hideCheckPendingRequestLoading();
-                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
-                    } else {
-                        getView().hideCheckPendingRequestLoading();
-                        getView().showRetryCheckPendingRequestLayout();
-                    }
+                    getView().inflateMapAndProductFragment();
+//                    if (e instanceof UnprocessableEntityHttpException) {
+//                        getView().hideCheckPendingRequestLoading();
+//                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
+//                    } else if (e instanceof UnProcessableHttpException) {
+//                        getView().hideCheckPendingRequestLoading();
+//                        getView().showRetryCheckPendingRequestLayout(e.getMessage());
+//                    } else {
+////                        getView().hideCheckPendingRequestLoading();
+////                        getView().showRetryCheckPendingRequestLayout();
+//                        getView().hideCheckPendingRequestLoading();
+//                        getView().inflateMapAndProductFragment();
+//                    }
                 }
 
             }
