@@ -467,7 +467,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionMessageDriver() {
-        getView().openSmsIntent(activeRideRequest.getDriver().getSmsNumber());
+        getView().openSmsIntent(activeRideRequest.getDriver().getPhoneNumber());
     }
 
     @Override

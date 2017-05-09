@@ -979,9 +979,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void openSmsIntent(String smsNumber) {
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.fromParts("sms", smsNumber, null))
-        );
+        if(!TextUtils.isEmpty(smsNumber)) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.fromParts("sms", smsNumber, null))
+            );
+        }
     }
 
     public OnTripActivity.BackButtonListener getBackButtonListener() {
