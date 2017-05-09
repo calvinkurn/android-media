@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.view.adapter;
 
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
     private List<WholesaleModel> wholesaleModels;
     private List<ProductWholesaleViewModel> productWholesaleViewModels;
     private Listener listener;
+    private static final String KEY_WHOLESALE = "KEY_WHOLESALE";
 
     public WholesaleAdapter() {
         wholesaleModels = new CopyOnWriteArrayList<>();
@@ -235,5 +238,21 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             float value = Float.parseFloat(valueString);
             return formatter.format(value);
         }
+    }
+
+    public void onSaveInstanceState(Bundle saveInstanceState){
+        saveInstanceState.putParcelableArrayList(KEY_WHOLESALE,
+                new ArrayList<Parcelable>(wholesaleModels));
+    }
+
+    public void restoreSaveInstanceState(Bundle saveInstanceState){
+        wholesaleModels = saveInstanceState.getParcelableArrayList(KEY_WHOLESALE);
+
+        if(wholesaleModels == null){
+            wholesaleModels = new ArrayList<>();
+        }
+
+        notifyDataSetChanged();
+
     }
 }

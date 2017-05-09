@@ -49,6 +49,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
+    public static final String IS_ACTIVE_WHOLESALE = "IS_ACTIVE_WHOLESALE";
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
     private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
@@ -570,6 +571,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
         savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
+        savedInstanceState.putBoolean(IS_ACTIVE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
+        wholesaleAdapter.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -583,6 +586,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         }
 
         stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
+        wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_WHOLESALE));
+        wholesaleAdapter.restoreSaveInstanceState(savedInstanceState);
     }
 
     public interface Listener {
