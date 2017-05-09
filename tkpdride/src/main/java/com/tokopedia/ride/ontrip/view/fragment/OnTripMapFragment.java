@@ -72,7 +72,7 @@ import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
 import com.tokopedia.ride.ontrip.view.OnTripMapContract;
-import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -526,9 +526,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void renderCompletedRequest(RideRequest result) {
-        DriverVehicleViewModel driverAndVehicle = new DriverVehicleViewModel();
+        DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
         driverAndVehicle.setDriver(result.getDriver());
         driverAndVehicle.setVehicle(result.getVehicle());
+        driverAndVehicle.setAddress(result.getAddress());
         Intent intent = CompleteTripActivity.getCallingIntent(getActivity(), result.getRequestId(), driverAndVehicle);
         startActivity(intent);
         getActivity().finish();
@@ -929,11 +930,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         //hideCancelPanel();
     }
 
-    //
-//    @NeedsPermission({Manifest.permission.CALL_PHONE})
-//    private void openCallIntent() {
-//        Intent callIntent = new Intent(Intent.ACTION_CALL);
-//        callIntent.setData(Uri.parse("tel:" + rideConfiguration.getActiveRequestObj().getDriver().getPhoneNumber()));
+
     @NeedsPermission({Manifest.permission.CALL_PHONE})
     public void openCallIntent(String phoneNumber) {
 

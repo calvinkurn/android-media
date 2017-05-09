@@ -4,34 +4,37 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.ride.common.ride.domain.model.Driver;
+import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 /**
  * Created by alvarisi on 4/4/17.
  */
 
-public class DriverVehicleViewModel implements Parcelable {
+public class DriverVehicleAddressViewModel implements Parcelable {
     private Driver driver;
     private Vehicle vehicle;
+    private RideRequestAddress address;
 
-    protected DriverVehicleViewModel(Parcel in) {
+    protected DriverVehicleAddressViewModel(Parcel in) {
         driver = in.readParcelable(Driver.class.getClassLoader());
         vehicle = in.readParcelable(Vehicle.class.getClassLoader());
+        address = in.readParcelable(Vehicle.class.getClassLoader());
     }
 
-    public static final Creator<DriverVehicleViewModel> CREATOR = new Creator<DriverVehicleViewModel>() {
+    public static final Creator<DriverVehicleAddressViewModel> CREATOR = new Creator<DriverVehicleAddressViewModel>() {
         @Override
-        public DriverVehicleViewModel createFromParcel(Parcel in) {
-            return new DriverVehicleViewModel(in);
+        public DriverVehicleAddressViewModel createFromParcel(Parcel in) {
+            return new DriverVehicleAddressViewModel(in);
         }
 
         @Override
-        public DriverVehicleViewModel[] newArray(int size) {
-            return new DriverVehicleViewModel[size];
+        public DriverVehicleAddressViewModel[] newArray(int size) {
+            return new DriverVehicleAddressViewModel[size];
         }
     };
 
-    public DriverVehicleViewModel() {
+    public DriverVehicleAddressViewModel() {
     }
 
     @Override
@@ -43,6 +46,7 @@ public class DriverVehicleViewModel implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(driver, i);
         parcel.writeParcelable(vehicle, i);
+        parcel.writeParcelable(address, i);
     }
 
     public Driver getDriver() {
@@ -59,5 +63,13 @@ public class DriverVehicleViewModel implements Parcelable {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public RideRequestAddress getAddress() {
+        return address;
+    }
+
+    public void setAddress(RideRequestAddress address) {
+        this.address = address;
     }
 }

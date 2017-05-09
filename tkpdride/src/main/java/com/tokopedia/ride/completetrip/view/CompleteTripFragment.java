@@ -11,7 +11,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +25,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.completetrip.di.CompleteTripDependencyInjection;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
 import com.tokopedia.ride.completetrip.domain.model.Receipt;
-import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleViewModel;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import butterknife.BindView;
 
@@ -66,13 +65,13 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
-    private DriverVehicleViewModel driverVehicleViewModel;
+    private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
 
     public CompleteTripFragment() {
         // Required empty public constructor
     }
 
-    public static CompleteTripFragment newInstance(String requestId, DriverVehicleViewModel viewModel) {
+    public static CompleteTripFragment newInstance(String requestId, DriverVehicleAddressViewModel viewModel) {
         CompleteTripFragment fragment = new CompleteTripFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_REQUEST_ID, requestId);
@@ -95,7 +94,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     private void setInitialVariable() {
         presenter = CompleteTripDependencyInjection.createPresenter(getActivity());
         requestId = getArguments().getString(EXTRA_REQUEST_ID);
-        driverVehicleViewModel = getArguments().getParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL);
+        driverVehicleAddressViewModel = getArguments().getParcelable(EXTRA_DRIVER_VEHICLE_VIEW_MODEL);
     }
 
     @Override
@@ -107,18 +106,20 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     private void setInitialView() {
-        driverNameTextView.setText(String.valueOf(driverVehicleViewModel.getDriver().getName()));
-        driverRatingTextView.setText(String.valueOf(driverVehicleViewModel.getDriver().getRating()));
-        vehicleLicenseNumberTextView.setText(String.valueOf(driverVehicleViewModel.getVehicle().getLicensePlate()));
+        driverNameTextView.setText(String.valueOf(driverVehicleAddressViewModel.getDriver().getName()));
+        driverRatingTextView.setText(String.valueOf(driverVehicleAddressViewModel.getDriver().getRating()));
+        vehicleLicenseNumberTextView.setText(String.valueOf(driverVehicleAddressViewModel.getVehicle().getLicensePlate()));
         vehicleDescTextView.setText(String.format(
                 "%s %s %s",
-                driverVehicleViewModel.getVehicle().getMake(),
-                driverVehicleViewModel.getVehicle().getVehicleModel(),
-                driverVehicleViewModel.getVehicle().getLicensePlate())
+                driverVehicleAddressViewModel.getVehicle().getMake(),
+                driverVehicleAddressViewModel.getVehicle().getVehicleModel(),
+                driverVehicleAddressViewModel.getVehicle().getLicensePlate())
         );
+        sourceTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getStartAddressName() : "");
+        destinationTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getEndAddressName() : "");
 
 
-        Glide.with(getActivity()).load(driverVehicleViewModel.getDriver().getPictureUrl())
+        Glide.with(getActivity()).load(driverVehicleAddressViewModel.getDriver().getPictureUrl())
                 .asBitmap()
                 .centerCrop()
                 .error(R.mipmap.ic_launcher)
@@ -132,7 +133,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
                     }
                 });
 
-        Glide.with(getActivity()).load(driverVehicleViewModel.getVehicle().getPictureUrl())
+        Glide.with(getActivity()).load(driverVehicleAddressViewModel.getVehicle().getPictureUrl())
                 .asBitmap()
                 .centerCrop()
                 .error(R.mipmap.ic_launcher)

@@ -14,6 +14,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
@@ -24,7 +25,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
@@ -132,11 +132,15 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
         } else {
             RideRequest rideRequest = getIntent().getExtras().getParcelable(EXTRA_RIDE_REQUEST);
-
-            OnTripMapFragment fragment = OnTripMapFragment.newInstance(rideRequest.getRequestId());
-            backButtonListener = fragment.getBackButtonListener();
-            onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
-            addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
+            if (rideRequest != null) {
+                OnTripMapFragment fragment = OnTripMapFragment.newInstance(rideRequest.getRequestId());
+                backButtonListener = fragment.getBackButtonListener();
+                onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
+                addFragment(R.id.container, fragment, OnTripMapFragment.TAG);
+            } else {
+                Toast.makeText(this, "Invalid Request", Toast.LENGTH_LONG).show();
+                finish();
+            }
         }
     }
 
