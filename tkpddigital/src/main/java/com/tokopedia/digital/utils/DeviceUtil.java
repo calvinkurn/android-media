@@ -30,9 +30,10 @@ public class DeviceUtil {
                 }
             }
         } catch (SocketException ex) {
-            return "";
+            ex.printStackTrace();
+            return "127.0.0.1";
         }
-        return "";
+        return "127.0.0.1";
     }
 
     private static String getDeviceName() {
