@@ -161,7 +161,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
-        ScreenTracking.eventDiscoveryScreenAuth();
+        ScreenTracking.eventDiscoveryScreenAuth(((BrowseProductActivity) getActivity())
+                .getBrowseProductActivityModel().getDepartmentId());
     }
 
     @Override

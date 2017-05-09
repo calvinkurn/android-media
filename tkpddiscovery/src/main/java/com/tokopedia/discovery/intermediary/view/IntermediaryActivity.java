@@ -3,12 +3,12 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
+import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,8 +18,6 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -142,12 +140,6 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
                 fragment,
                 false,
                 IntermediaryFragment.TAG);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        ScreenTracking.screen(AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY_ID + departmentId);
     }
 
     protected boolean onSearchOptionSelected() {
