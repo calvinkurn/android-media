@@ -179,7 +179,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             initStateFragment = viewPagerIndex;
         }
         content = new ArrayList<>();
-        initView();
+        setView();
 
         if (isFirstTime()) {
             TrackFirstTime();
@@ -333,7 +333,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
     }
 
-    private void initView() {
+    private void setView() {
         inflateView(R.layout.activity_index_home_4);
         footerCat = View.inflate(ParentIndexHome.this, R.layout.fragment_category, null);
         mViewPager = (ViewPager) findViewById(R.id.index_page);

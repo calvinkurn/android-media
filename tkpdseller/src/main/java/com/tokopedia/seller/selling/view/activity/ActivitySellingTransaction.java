@@ -80,7 +80,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         super.onCreate(savedInstanceState);
         clearNotif();
         inflateView(R.layout.activity_shop_transaction_v2);
-        initView();
+        setView();
         initVariable();
         setAdapter();
         openTab();
@@ -96,7 +96,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         return 0;
     }
 
-    private void initView() {
+    private void setView() {
         sellerTickerView = (TextView) findViewById(R.id.seller_ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         mViewPager = (ViewPager) findViewById(R.id.pager);

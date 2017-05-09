@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
@@ -26,8 +25,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * Created on 3/23/16.
  */
@@ -38,16 +35,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     protected T presenter;
     private Boolean isLogin;
-    private CompositeSubscription compositeSubscription;
-    private DrawerHelper drawerHelper;
-    private SessionHandler sessionHandler;
-    private DrawerDataManager drawerDataManager;
-    private LocalCacheHandler drawerCache;
+    protected DrawerHelper drawerHelper;
+    protected SessionHandler sessionHandler;
+    protected DrawerDataManager drawerDataManager;
+    protected LocalCacheHandler drawerCache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        compositeSubscription = new CompositeSubscription();
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
@@ -275,5 +270,20 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     @Override
     public void onErrorGetProfile(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerHelper.isOpened()) {
+            drawerHelper.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        drawerDataManager.unsubscribe();
     }
 }
