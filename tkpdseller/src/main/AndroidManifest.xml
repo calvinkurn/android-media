@@ -176,10 +176,12 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".product.view.activity.CategoryPickerActivity"
-            android:label="@string/title_activity_category_picker" />
+            android:label="@string/title_activity_category_picker"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.EtalasePickerActivity"
-            android:label="@string/title_activity_etalase_picker" />
+            android:label="@string/title_activity_etalase_picker"
+            android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".product.view.activity.CatalogPickerActivity"
             android:exported="true"
