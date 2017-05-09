@@ -103,7 +103,6 @@ public class NewOrderImpl extends NewOrder {
     }
 
     public void getOrderList() {
-        view.setRefreshPullEnable(false);
         view.disableFilter();
         isLoading = true;
         requestGetNewOrder();
@@ -239,7 +238,6 @@ public class NewOrderImpl extends NewOrder {
                 modelNewOrder = model;
                 listDatas.addAll(modelNewOrder.DataList);
                 view.notifyDataSetChanged(listDatas);
-                view.setRefreshPullEnable(true);
                 view.showFab();
             }
 
@@ -251,7 +249,6 @@ public class NewOrderImpl extends NewOrder {
                     view.addEmptyView();
                 }
                 view.getPaging().setHasNext(false);
-                view.setRefreshPullEnable(true);
                 view.showFab();
                 view.removeRetry();
             }
@@ -271,7 +268,6 @@ public class NewOrderImpl extends NewOrder {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
 
-                view.setRefreshPullEnable(true);
             }
 
             @Override

@@ -174,7 +174,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        setRefreshPullEnable(true);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_order, null);
