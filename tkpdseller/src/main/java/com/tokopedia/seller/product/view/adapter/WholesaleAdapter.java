@@ -206,6 +206,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
                     formatter = NumberFormat.getNumberInstance(dollarLocale);
+                    formatter.setMinimumFractionDigits(2);
                     break;
                 default:
                 case CurrencyTypeDef.TYPE_IDR:
