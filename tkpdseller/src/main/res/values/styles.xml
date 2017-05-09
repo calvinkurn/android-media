@@ -306,4 +306,8 @@
         <item name="theme">@style/ColorSwitchCompat</item>
     </style>
 
+    <style name="BasicThemeActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/tkpd_main_green</item>
+    </style>
+
 </resources>

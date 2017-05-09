@@ -2,15 +2,21 @@ package com.tokopedia.seller.product.view.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.MenuItem;
+import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -49,7 +55,7 @@ import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
  */
 
 @RuntimePermissions
-public class ProductAddActivity extends TActivity implements HasComponent<AppComponent>,
+public class ProductAddActivity extends BaseActivity implements HasComponent<AppComponent>,
         TextPickerDialogListener, AddWholeSaleDialog.WholeSaleDialogListener, ProductAddFragment.Listener {
 
     public static final String EXTRA_IMAGE_URLS = "img_urls";
@@ -75,11 +81,49 @@ public class ProductAddActivity extends TActivity implements HasComponent<AppCom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         setupFragment();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        showExitDialog();
+    }
+
+    private void showExitDialog() {
+        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
+        myAlertDialog.setMessage(getString(R.string.dialog_cancel_add_product));
+
+        myAlertDialog.setPositiveButton(getString(R.string.positive_button_dialog), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        myAlertDialog.setNegativeButton(getString(R.string.negative_button_dialog), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
     protected void setupFragment() {
-        inflateView(R.layout.activity_product_add);
+        setContentView(R.layout.activity_product_add);
         if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
             checkIntentImageUrls();
         }

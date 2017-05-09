@@ -131,7 +131,7 @@
             android:name=".product.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
+            android:theme="@style/BasicThemeActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
