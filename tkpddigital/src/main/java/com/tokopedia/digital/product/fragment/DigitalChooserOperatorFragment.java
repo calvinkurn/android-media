@@ -10,6 +10,8 @@ import android.view.View;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.model.Operator;
 
 import java.util.ArrayList;
@@ -32,8 +34,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     private List<Operator> operatorListData;
     private String operatorStyleView;
-
     private ActionListener actionListener;
+    private OperatorChooserAdapter operatorChooserAdapter;
 
     public static Fragment newInstance(List<Operator> operatorListData, String operatorStyleView) {
         Bundle bundle = new Bundle();
@@ -98,12 +100,14 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void setViewListener() {
-
+        rvOperatorList.setAdapter(operatorChooserAdapter);
     }
 
     @Override
     protected void initialVar() {
-
+        operatorChooserAdapter = new OperatorChooserAdapter(this, operatorListData,
+                "1",
+                actionListener);
     }
 
     @Override
