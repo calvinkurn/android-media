@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -315,11 +314,14 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
             mainContainer.setVisibility(View.VISIBLE);
         }
 
-        sendGTMAnalytics(AppEventTracking.Category.RECHARGE+cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName()+" - "+cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
+        sendGTMAnalytics(cartDigitalInfoData.getAttributes().getCategoryName(), cartDigitalInfoData.getAttributes().getOperatorName()+" - "+cartDigitalInfoData.getAttributes().getPricePlain(), cartDigitalInfoData.isInstantCheckout());
 
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind){
+
+        UnifyTracking.eventViewCheckoutPage(ec, el);
+
         if(analyticsKind){
             UnifyTracking.eventClickBeliInstantSaldoWidget(ec, el);
         }{
@@ -598,7 +600,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void onClickButtonNext() {
-        UnifyTracking.eventClickLanjutCheckoutPage(AppEventTracking.Category.RECHARGE+cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName()+" - "+cartDigitalInfoDataState.getAttributes().getPricePlain());
+        UnifyTracking.eventClickLanjutCheckoutPage(cartDigitalInfoDataState.getAttributes().getCategoryName(), cartDigitalInfoDataState.getAttributes().getOperatorName()+" - "+cartDigitalInfoDataState.getAttributes().getPricePlain());
         presenter.processToCheckout();
     }
 
