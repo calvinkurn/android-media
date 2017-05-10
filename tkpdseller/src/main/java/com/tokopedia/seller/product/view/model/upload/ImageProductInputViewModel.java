@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.model.upload;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -28,6 +29,9 @@ public class ImageProductInputViewModel {
     }
 
     public String getImageDescription() {
+        if (TextUtils.isEmpty(imageDescription)) {
+            return "";
+        }
         return imageDescription;
     }
 
