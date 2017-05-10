@@ -4,8 +4,11 @@ import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.data.entity.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
+import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
+import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 
 import java.util.List;
 
@@ -22,5 +25,13 @@ public interface IProductDigitalMapper {
     CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
+    ) throws MapperDataException;
+
+    OrderClientNumber transformOrderClientNumber(
+            ResponseLastOrderData lastOrderData
+    ) throws MapperDataException;
+
+    OrderClientNumber transformOrderClientNumber(
+            ResponseRecentNumberData responseRecentNumberData
     ) throws MapperDataException;
 }

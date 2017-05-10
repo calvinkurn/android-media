@@ -3,6 +3,7 @@ package com.tokopedia.digital.product.listener;
 import android.app.Application;
 import android.content.ContentResolver;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -53,4 +54,6 @@ public interface IProductDigitalView extends IBaseView {
     String getCategoryId();
 
     void closeViewWithMessageAlert(String message);
+
+    LocalCacheHandler getLastInputClientNumberChaceHandler();
 }

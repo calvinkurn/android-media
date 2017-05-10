@@ -15,6 +15,8 @@ public interface IProductDigitalInteractor {
             String pathCategoryId,
             TKPDMapParam<String, String> paramQueryCategory,
             TKPDMapParam<String, String> paramQueryBanner,
+            TKPDMapParam<String, String> paramQueryLastNumber,
+            TKPDMapParam<String, String> paramQueryLastOrder,
             Subscriber<ProductDigitalData> subscriber
     );
 }

@@ -405,7 +405,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
-                if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
                         NetworkErrorHelper.showSnackbar(getActivity(), message);

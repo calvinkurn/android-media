@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
@@ -31,6 +32,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
@@ -44,6 +46,8 @@ import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
+import com.tokopedia.digital.product.domain.LastOrderNumberRepository;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
@@ -107,6 +111,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private CompositeSubscription compositeSubscription;
     private BaseDigitalProductView<CategoryData> digitalProductView;
 
+    private LocalCacheHandler cacheHandlerLastInputClientNumber;
+
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
@@ -159,13 +165,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void initialPresenter() {
         bannerAdapter = new BannerAdapter(this);
+        cacheHandlerLastInputClientNumber = new LocalCacheHandler(
+                getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
+        );
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
+        ILastOrderNumberRepository lastOrderNumberRepository =
+                new LastOrderNumberRepository(digitalEndpointService, productDigitalMapper);
         IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(compositeSubscription, digitalCategoryRepository);
+                new ProductDigitalInteractor(
+                        compositeSubscription, digitalCategoryRepository,
+                        lastOrderNumberRepository, cacheHandlerLastInputClientNumber
+                );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
 
@@ -387,6 +401,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public LocalCacheHandler getLastInputClientNumberChaceHandler() {
+        return cacheHandlerLastInputClientNumber;
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -14,6 +15,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
@@ -57,8 +59,26 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 view.getCategoryId(),
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
+                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
                 getSubscriberProductDigitalData()
         );
+    }
+
+    @Override
+    public String processGetLastInputClientNumberByCategory(String categoryId) {
+        return view.getLastInputClientNumberChaceHandler().getString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, ""
+        );
+    }
+
+    @Override
+    public void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId) {
+        LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
+        localCacheHandler.putString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
+        );
+        localCacheHandler.applyEditor();
     }
 
     @Override

@@ -87,6 +87,7 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
         void onCannotBeCheckoutProduct(String messageError);
 
         void onButtonContactPickerClicked();
+
     }
 
     public static class PreCheckoutProduct {

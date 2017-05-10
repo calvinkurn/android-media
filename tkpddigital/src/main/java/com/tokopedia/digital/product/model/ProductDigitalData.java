@@ -13,6 +13,8 @@ import java.util.List;
 public class ProductDigitalData implements Parcelable {
     private CategoryData categoryData;
     private List<BannerData> bannerDataList = new ArrayList<>();
+    private List<OrderClientNumber> recentClientNumberList = new ArrayList<>();
+    private OrderClientNumber recentClientNumber;
 
     public ProductDigitalData() {
     }
@@ -20,6 +22,8 @@ public class ProductDigitalData implements Parcelable {
     private ProductDigitalData(Builder builder) {
         setCategoryData(builder.categoryData);
         setBannerDataList(builder.bannerDataList);
+        recentClientNumberList = builder.recentClientNumberList;
+        recentClientNumber = builder.recentClientNumber;
     }
 
 
@@ -43,6 +47,8 @@ public class ProductDigitalData implements Parcelable {
     public static final class Builder {
         private CategoryData categoryData;
         private List<BannerData> bannerDataList;
+        private List<OrderClientNumber> recentClientNumberList;
+        private OrderClientNumber recentClientNumber;
 
         public Builder() {
         }
@@ -54,6 +60,16 @@ public class ProductDigitalData implements Parcelable {
 
         public Builder bannerDataList(List<BannerData> val) {
             bannerDataList = val;
+            return this;
+        }
+
+        public Builder recentClientNumberList(List<OrderClientNumber> val) {
+            recentClientNumberList = val;
+            return this;
+        }
+
+        public Builder recentClientNumber(OrderClientNumber val) {
+            recentClientNumber = val;
             return this;
         }
 
@@ -72,14 +88,18 @@ public class ProductDigitalData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.categoryData, flags);
         dest.writeTypedList(this.bannerDataList);
+        dest.writeTypedList(this.recentClientNumberList);
+        dest.writeParcelable(this.recentClientNumber, flags);
     }
 
     protected ProductDigitalData(Parcel in) {
         this.categoryData = in.readParcelable(CategoryData.class.getClassLoader());
         this.bannerDataList = in.createTypedArrayList(BannerData.CREATOR);
+        this.recentClientNumberList = in.createTypedArrayList(OrderClientNumber.CREATOR);
+        this.recentClientNumber = in.readParcelable(OrderClientNumber.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ProductDigitalData> CREATOR = new Parcelable.Creator<ProductDigitalData>() {
+    public static final Creator<ProductDigitalData> CREATOR = new Creator<ProductDigitalData>() {
         @Override
         public ProductDigitalData createFromParcel(Parcel source) {
             return new ProductDigitalData(source);
@@ -90,4 +110,6 @@ public class ProductDigitalData implements Parcelable {
             return new ProductDigitalData[size];
         }
     };
+
+
 }

@@ -4,10 +4,13 @@ import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.data.entity.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
+import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
+import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.model.Promo;
 import com.tokopedia.digital.product.model.Rule;
@@ -167,5 +170,29 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
             categoryData.setTeaser(categoryTeaser);
         }
         return categoryData;
+    }
+
+    @Override
+    public OrderClientNumber transformOrderClientNumber(
+            ResponseLastOrderData lastOrderData
+    ) throws MapperDataException {
+        return new OrderClientNumber.Builder()
+                .clientNumber(lastOrderData.getAttributes().getClientNumber())
+                .categoryId("")
+                .operatorId(String.valueOf(lastOrderData.getAttributes().getOperatorId()))
+                .productId(String.valueOf(lastOrderData.getAttributes().getProductId()))
+                .build();
+    }
+
+    @Override
+    public OrderClientNumber transformOrderClientNumber(
+            ResponseRecentNumberData responseRecentNumberData
+    ) throws MapperDataException {
+        return new OrderClientNumber.Builder()
+                .clientNumber(responseRecentNumberData.getAttributes().getClientNumber())
+                .productId("")
+                .categoryId(responseRecentNumberData.getRelationships().getCategory().getData().getId())
+                .operatorId("")
+                .build();
     }
 }

@@ -45,6 +45,7 @@ public class TkpdCache {
     public static String LIST_REPORT_TYPE = "LIST_REPORT_TYPE";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
     public static final String DEFAULT_GRID_SETTINGS = "DEFAULT_GRID_SETTINGS";
+    public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
 
 
     public static void clearAllCache(Context context) {
@@ -183,6 +184,8 @@ public class TkpdCache {
         public static final String WIDGET_RECHARGE_TAB_LAST_SELECTED = "WIDGET_RECHARGE_TAB_LAST_SELECTED";
 
         public static final String CATEOGRY_HEADER_LEVEL = "CATEGORY_LEVEL_";
+
+        public static final String DIGITAL_CLIENT_NUMBER_CATEGORY = "DIGITAL_CLIENT_NUMBER_CATEGORY_";
     }
 
 }
