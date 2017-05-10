@@ -394,6 +394,8 @@
     <string name="video_delete_confirmation">Anda akan menghapus Video ini, lanjutkan?</string>
     <string name="title_video_delete_confirmation">Hapus Video</string>
 
+    <string name="add_image">Tambah Gambar</string>
+
     <string name="video_not_found">Video tidak ditemukan</string>
     <string name="invalid_video_url">URL video tidak benar</string>
     <string name="video_adult_warn">Video ini mengandung unsur konten dewasa</string>

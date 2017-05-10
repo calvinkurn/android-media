@@ -307,7 +307,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(categoryLabelView.getContext(), R.color.green_400))
                     .show();
-            categoryLabelView.requestFocus();
+            categoryLabelView.getParent().requestChildFocus(categoryLabelView,categoryLabelView);
             return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
         }
         return new Pair<>(true, "");
