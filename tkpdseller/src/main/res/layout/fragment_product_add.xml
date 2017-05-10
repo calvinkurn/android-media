@@ -29,7 +29,7 @@
 
             <Button
                 android:id="@+id/button_save_and_add"
-                style="@style/Button.TopAds.Submit"
+                style="@style/Button.Product.Submit"
                 android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/product_margin_cards"
                 android:background="@color/white"
@@ -38,9 +38,10 @@
 
             <Button
                 android:id="@+id/button_save"
-                style="@style/Button.TopAds.Submit.Green"
+                style="@style/Button.Product.Submit.Green"
                 android:layout_width="match_parent"
-                android:text="@string/product_label_save" />
+                android:text="@string/product_label_save"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
