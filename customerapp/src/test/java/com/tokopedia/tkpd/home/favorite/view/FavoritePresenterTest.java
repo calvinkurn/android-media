@@ -41,6 +41,51 @@ public class FavoritePresenterTest {
 //    @Rule
 //    public TestSchedulerRule testSchedulerRule = new TestSchedulerRule();
 
+
+//    @Mock
+//    GetAllFeedDataPageUseCase getAllFeedDataPageUseCase;
+//    @Mock
+//    LoadMoreFeedUseCase loadMoreFeedUseCase;
+//    @Mock
+//    FeedContract.View view;
+//    @Mock
+//    FeedRepository feedRepository;
+//    @Before
+//    public void setUp() throws Exception {
+//        MockitoAnnotations.initMocks(this);
+//    }
+//    @Test
+//    public void refreshDataFeed() throws Exception {
+//        PostExecutionThread postExecutionThread = new PostExecutionThread() {
+//            @Override
+//            public Scheduler getScheduler() {
+//                return Schedulers.immediate();
+//            }
+//        };
+//        ThreadExecutor threadExecutor = new ThreadExecutor() {
+//            @Override
+//            public void execute(@NonNull Runnable command) {
+//                command.run();
+//            }
+//        };
+//        Feed feed = new Feed();
+//        doReturn(Observable.just(feed)).when(feedRepository).getFeedCache();
+//        List<ProductFeed> productFeedList = new ArrayList<>();
+//        doReturn(Observable.just(productFeedList)).when(feedRepository).getRecentViewProductFromCache();
+//        List<TopAds> topAdsList = new ArrayList<>();
+//        doReturn(Observable.just(topAdsList)).when(feedRepository).getTopAdsCache();
+//        GetDataFeedCacheUseCase getDataFeedCacheUseCase =
+//                new GetDataFeedCacheUseCase(threadExecutor, postExecutionThread,
+//                        feedRepository);
+//        FeedPresenter feedPresenter = new FeedPresenter(getAllFeedDataPageUseCase,
+//                getDataFeedCacheUseCase, loadMoreFeedUseCase);
+//        feedPresenter.attachView(view);
+//        feedPresenter.initializeDataFeed();
+//        verify(view).hideContentView();
+//        verify(view).hideRefreshLoading();
+//    }
+//}
+
     @Mock
     PostExecutionThread postExecutionThread;
     @Mock

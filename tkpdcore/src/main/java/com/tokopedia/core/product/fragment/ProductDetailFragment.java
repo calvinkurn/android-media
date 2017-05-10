@@ -235,7 +235,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductDepartmentClicked(@NonNull Bundle bundle) {
-        presenter.processToBrowseProduct(context, bundle);
+        presenter.processToIntermediary(context, bundle);
     }
 
     @Override
@@ -386,12 +386,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductHasEdited() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST);
     }
 
     @Override
     public void onProductTalkUpdated() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST);
     }
 
     @Override
@@ -602,7 +602,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            presenter.requestProductDetail(context, productPass, INIT_REQUEST);
         }
     }
 
@@ -656,7 +656,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 break;
             case REQUEST_CODE_LOGIN:
                 videoLayout.refreshVideo();
-                presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
+                presenter.requestProductDetail(context, productPass, RE_REQUEST);
                 break;
             default:
                 break;
@@ -738,7 +738,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST);
             }
         };
     }

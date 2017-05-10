@@ -1,9 +1,13 @@
 package com.tokopedia.seller.topads.view.presenter;
 
+import android.view.View;
+
+import com.tkpd.library.utils.ViewHelper;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
+import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsGroupEditPromoView;
 
 import rx.Subscriber;
@@ -66,7 +70,11 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
             @Override
             public void onError(Throwable e) {
                 getView().dismissLoading();
-                getView().showErrorSnackBar(e.getMessage());
+                if(ViewUtils.getErrorMessage(e) != null){
+                    getView().showErrorSnackBar(ViewUtils.getErrorMessage(e));
+                }else{
+                    getView().showErrorSnackBar(e.getMessage());
+                }
             }
 
             @Override

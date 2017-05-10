@@ -383,8 +383,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         selectedOperatorId, String.valueOf(selectedOperator.defaultProductId));
             } else {
                 if (checkStockProduct(selectedProduct))
-                    goToCheckout(getUrlCheckout());
-//                    goToNativeCheckout();
+//                    goToCheckout(getUrlCheckout());
+                    goToNativeCheckout();
             }
         } else {
             gotoLogin();
@@ -452,8 +452,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             spnOperator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    hideFormAndImageOperator();
                     rechargeEditText.setEmptyString();
                     selectedOperator = operatorList.get(i);
+                    setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                     selectedOperatorId = Integer.toString(selectedOperator.operatorId);
                     if (!category.getAttributes().getClientNumber().getIsShown()) {
                         setUpForNotUsingTextEdit();
@@ -551,8 +553,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void showProductById(Product product) {
         selectedProduct = product;
         if (checkStockProduct(selectedProduct))
-//            goToNativeCheckout();
-            goToCheckout(getUrlCheckout());
+            goToNativeCheckout();
+//            goToCheckout(getUrlCheckout());
     }
 
     @Override
@@ -624,6 +626,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
     }
 
+    private void setInputTypeEditTextRecharge(boolean allowAlphanumeric) {
+        if (allowAlphanumeric) {
+            rechargeEditText.setInputTypeText();
+        } else {
+            rechargeEditText.setInputTypeNumber();
+        }
+    }
+
     private void setUpForNotUsingTextEdit() {
         tlpLabelTextView.setVisibility(View.GONE);
         rechargeEditText.setVisibility(View.GONE);
@@ -651,6 +661,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         }
         radGroup.check(radGroup.getChildAt(0).getId());
         selectedOperator = operators.get(radGroup.getChildAt(0).getId());
+        setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
         checkRadioButtonBasedOnLastOrder(operators, radGroup);
         selectedOperatorId = Integer.toString(selectedOperator.operatorId);
         minLengthDefaultOperator = selectedOperator.minimumLength;
@@ -661,6 +672,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 rechargeEditText.setEmptyString();
                 selectedProduct = null;
                 selectedOperator = operators.get(i);
+                setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                 selectedOperatorId = Integer.toString(operators.get(i).operatorId);
                 minLengthDefaultOperator = selectedOperator.minimumLength;
                 rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);

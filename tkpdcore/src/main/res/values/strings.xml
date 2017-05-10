@@ -552,6 +552,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_all_categories">Semua Kategori</string>
     <string name="title_categories">BERANDA</string>
     <string name="title_all_location">Semua Lokasi</string>
+    <string name="title_category_view_all">Lihat Produk Kategori Lainnya</string>
 
     <string-array name="filter_browse_catalog">
         <item>Semua Kondisi</item>
@@ -1910,11 +1911,14 @@ di Tokopedia Sekarang!</string>
     <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
     <string name="action_check">Periksa</string>
     <string name="action_remember_account">Ingat saya</string>
+    <string name="label_buyer_trouble">Kendala Pembeli</string>
 
-    <!-- Official Store Homepage START -->
+    <!-- String related to Official Store START -->
     <string name="os_home_title_product">Produk</string>
     <string name="os_view_all_product">Lihat Semua Barang</string>
 
-    <!-- Official Store Homepage END -->
+    <string name="title_official_store">Official Store</string>
+    <!-- String related to Official Store END -->
 
+    <string name="hint_search_review">Cari ulasan</string>
 </resources>

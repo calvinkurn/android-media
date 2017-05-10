@@ -541,13 +541,14 @@ public class ShopInfoActivity extends BaseActivity
 
     private void showGoldCover() {
         if (shopModel.info.shopIsGold == 0) {
-            holder.goldShop.setVisibility(View.INVISIBLE);
             holder.infoShop.setBackgroundResource(0);
         } else {
-            holder.goldShop.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
+            if (shopModel.info.shopIsGoldBadge)
+                holder.goldShop.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void showOfficialCover() {

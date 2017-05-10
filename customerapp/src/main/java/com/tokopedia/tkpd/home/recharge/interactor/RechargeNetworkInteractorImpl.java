@@ -2,9 +2,12 @@ package com.tokopedia.tkpd.home.recharge.interactor;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.database.recharge.recentNumber.RecentData;
 import com.tokopedia.core.database.recharge.recentOrder.LastOrder;
+import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.apiservices.recharge.RechargeService;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 
 import java.util.Map;
@@ -24,18 +27,46 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
 
     private CompositeSubscription compositeSubscription;
     private RechargeService rechargeService;
+    private DigitalEndpointService digitalEndpointService;
 
     public RechargeNetworkInteractorImpl() {
         compositeSubscription = new CompositeSubscription();
         rechargeService = new RechargeService();
+        digitalEndpointService = new DigitalEndpointService();
     }
 
     @Override
     public void getRecentNumbers(Map<String, String> params, final OnGetRecentNumbersListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getRecentNumbers(MapNulRemover.removeNull(params))
+//        compositeSubscription.add(rechargeService.getApi().getRecentNumbers(MapNulRemover.removeNull(params))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe(new Subscriber<Response<RecentData>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                        listener.onNetworkError();
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<RecentData> recentNumberResponse) {
+//                        if (recentNumberResponse.isSuccessful()) {
+//                            listener.onGetRecentNumbersSuccess(recentNumberResponse.body());
+//                        } else {
+//                            listener.onNetworkError();
+//                        }
+//                    }
+//                }));
+
+        compositeSubscription.add(digitalEndpointService.getApi().getRecentNumber(MapNulRemover.removeNull(params))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<RecentData>>() {
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(new Subscriber<Response<TkpdDigitalResponse>>() {
                     @Override
                     public void onCompleted() {
 
@@ -48,9 +79,12 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                     }
 
                     @Override
-                    public void onNext(Response<RecentData> recentNumberResponse) {
+                    public void onNext(Response<TkpdDigitalResponse> recentNumberResponse) {
                         if (recentNumberResponse.isSuccessful()) {
-                            listener.onGetRecentNumbersSuccess(recentNumberResponse.body());
+                            RecentData recentData = new Gson().fromJson(
+                                    recentNumberResponse.body().getStrResponse(), RecentData.class
+                            );
+                            listener.onGetRecentNumbersSuccess(recentData);
                         } else {
                             listener.onNetworkError();
                         }
@@ -60,11 +94,39 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
 
     @Override
     public void getLastOrder(Map<String, String> params, final OnGetRecentOrderListener listener) {
-        compositeSubscription.add(rechargeService.getApi().getLastOrder(MapNulRemover.removeNull(params))
+//        compositeSubscription.add(rechargeService.getApi().getLastOrder(MapNulRemover.removeNull(params))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.newThread())
+//                .unsubscribeOn(Schedulers.newThread())
+//                .subscribe(new Subscriber<Response<LastOrder>>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        Log.e(TAG, "onError: " + e.getCause() + " message : " + e.getMessage());
+//                        e.printStackTrace();
+//                        listener.onNetworkError();
+//                    }
+//
+//                    @Override
+//                    public void onNext(Response<LastOrder> recentNumberResponse) {
+//                        if (recentNumberResponse.isSuccessful()) {
+//                            listener.onGetLastOrderSuccess(recentNumberResponse.body());
+//                        } else {
+//                            listener.onNetworkError();
+//                        }
+//                    }
+//                }));
+
+        compositeSubscription.add(digitalEndpointService.getApi()
+                .getLastOrder(MapNulRemover.removeNull(params))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.newThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe(new Subscriber<Response<LastOrder>>() {
+                .subscribe(new Subscriber<Response<TkpdDigitalResponse>>() {
                     @Override
                     public void onCompleted() {
 
@@ -78,9 +140,12 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
                     }
 
                     @Override
-                    public void onNext(Response<LastOrder> recentNumberResponse) {
+                    public void onNext(Response<TkpdDigitalResponse> recentNumberResponse) {
                         if (recentNumberResponse.isSuccessful()) {
-                            listener.onGetLastOrderSuccess(recentNumberResponse.body());
+                            LastOrder lastOrder = new Gson().fromJson(
+                                    recentNumberResponse.body().getStrResponse(), LastOrder.class
+                            );
+                            listener.onGetLastOrderSuccess(lastOrder);
                         } else {
                             listener.onNetworkError();
                         }
