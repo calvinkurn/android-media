@@ -285,6 +285,9 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_700));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+        }
 
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
