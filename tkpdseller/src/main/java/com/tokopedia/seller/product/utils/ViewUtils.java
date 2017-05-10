@@ -2,10 +2,13 @@ package com.tokopedia.seller.product.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -37,5 +40,27 @@ public class ViewUtils {
         }else {
             return context.getString(R.string.default_request_error_unknown);
         }
+    }
+
+    public static Pair<Float, Float> minMaxPrice(Context context, int currencyType) {
+        String spinnerValue = null;
+        switch (currencyType) {
+            case CurrencyTypeDef.TYPE_USD:
+                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_USD);
+                break;
+            default:
+            case CurrencyTypeDef.TYPE_IDR:
+                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_IDR);
+                break;
+        }
+        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
+        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp));
+        if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
+            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
+            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd));
+        }
+        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
+        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
+        return Pair.create(minPrice, maxPrice);
     }
 }
