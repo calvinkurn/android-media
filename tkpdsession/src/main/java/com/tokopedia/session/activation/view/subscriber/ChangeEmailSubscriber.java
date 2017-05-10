@@ -83,6 +83,8 @@ public class ChangeEmailSubscriber extends Subscriber<ChangeEmailModel> {
     public void onNext(ChangeEmailModel changeEmailModel) {
         if(changeEmailModel.isSuccess()){
             viewListener.onSuccessChangeEmail();
+        }else{
+            viewListener.onErrorChangeEmail(changeEmailModel.getErrorMessage());
         }
     }
 }

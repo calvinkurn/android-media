@@ -159,7 +159,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     protected void initView(View view) {
         final Typeface typeface = registerPassword.getTypeface();
 
-
         String sourceString = "Sudah punya akun? Masuk";
 
         Spannable spannable = new SpannableString(sourceString);
