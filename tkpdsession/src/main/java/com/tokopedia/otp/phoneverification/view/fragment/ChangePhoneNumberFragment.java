@@ -1,4 +1,4 @@
-package com.tokopedia.otp.phoneverification.fragment;
+package com.tokopedia.otp.phoneverification.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,15 +9,17 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
-import com.tokopedia.otp.phoneverification.listener.ChangePhoneNumberView;
-import com.tokopedia.otp.phoneverification.presenter.ChangePhoneNumberPresenter;
-import com.tokopedia.otp.phoneverification.presenter.ChangePhoneNumberPresenterImpl;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumberView;
+import com.tokopedia.otp.phoneverification.view.presenter.ChangePhoneNumberPresenter;
+import com.tokopedia.otp.phoneverification.view.presenter.ChangePhoneNumberPresenterImpl;
 import com.tokopedia.session.R;
 
 import static android.app.Activity.RESULT_OK;
-import static com.google.ads.conversiontracking.l.g;
 
 /**
  * Created by nisie on 2/24/17.
@@ -31,6 +33,8 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
 
     EditText phoneNumberEditText;
     TextView changePhoneNumberButton;
+    TkpdProgressDialog progressDialog;
+    SessionHandler sessionHandler;
 
     public static ChangePhoneNumberFragment createInstance() {
         return new ChangePhoneNumberFragment();
@@ -121,14 +125,23 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showLoading();
                 presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
             }
         });
     }
 
+    private void showLoading() {
+        if(progressDialog == null && getActivity()!= null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if(progressDialog != null)
+            progressDialog.showDialog();
+    }
+
     @Override
     protected void initialVar() {
-
+        sessionHandler = new SessionHandler(getActivity());
     }
 
     @Override
@@ -138,6 +151,8 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
 
     @Override
     public void onSuccessChangePhoneNumber() {
+        finishLoading();
+        sessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString());
         Intent intent = getActivity().getIntent();
         intent.putExtra(EXTRA_PHONE_NUMBER,
                 phoneNumberEditText.getText().toString());
@@ -145,8 +160,25 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         getActivity().finish();
     }
 
+    private void finishLoading() {
+        if(progressDialog!= null)
+        progressDialog.dismiss();
+    }
+
     @Override
     public EditText getPhoneNumberEditText() {
         return phoneNumberEditText;
+    }
+
+    @Override
+    public void onErrorChangePhoneNumber(String errorMessage) {
+        finishLoading();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.unsubscribeObservable();
     }
 }

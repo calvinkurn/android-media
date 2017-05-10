@@ -13,19 +13,19 @@ import rx.Observable;
  * Created by nisie on 3/7/17.
  */
 
-public class CloudMsisdnSource {
+public class CloudVerifyMsisdnSource {
     private final Context context;
     private AccountsService accountsService;
     private VerifyPhoneNumberMapper verifyPhoneNumberMapper;
 
-    public CloudMsisdnSource(Context context, AccountsService accountsService,
-                             VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
+    public CloudVerifyMsisdnSource(Context context, AccountsService accountsService,
+                                   VerifyPhoneNumberMapper verifyPhoneNumberMapper) {
         this.context = context;
         this.accountsService = accountsService;
         this.verifyPhoneNumberMapper = verifyPhoneNumberMapper;
     }
 
-    public Observable<VerifyPhoneNumberModel> verifyPhoneNumberModel(TKPDMapParam<String, Object> params) {
+    public Observable<VerifyPhoneNumberModel> verifyPhoneNumber(TKPDMapParam<String, Object> params) {
         return accountsService.getApi()
                 .verifyPhoneNumber(params).map(verifyPhoneNumberMapper);
     }

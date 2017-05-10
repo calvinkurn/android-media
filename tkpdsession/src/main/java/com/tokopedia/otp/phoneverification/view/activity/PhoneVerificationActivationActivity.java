@@ -1,4 +1,4 @@
-package com.tokopedia.otp.phoneverification.activity;
+package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -12,8 +12,8 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationActivationFragment;
-import com.tokopedia.otp.phoneverification.fragment.PhoneVerificationFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationActivationFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
 
 /**

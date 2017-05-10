@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.entity.phoneverification;
+package com.tokopedia.otp.phoneverification.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

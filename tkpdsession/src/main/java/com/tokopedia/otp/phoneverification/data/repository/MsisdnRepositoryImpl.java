@@ -1,6 +1,7 @@
 package com.tokopedia.otp.phoneverification.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.otp.phoneverification.data.ChangePhoneNumberModel;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
@@ -20,7 +21,12 @@ public class MsisdnRepositoryImpl implements MsisdnRepository {
 
     @Override
     public Observable<VerifyPhoneNumberModel> verifyMsisdn(TKPDMapParam<String, Object> parameters) {
-        return msisdnSourceFactory.createCloudOtpSource().verifyPhoneNumberModel(parameters);
+        return msisdnSourceFactory.createCloudVerifyMsisdnSource().verifyPhoneNumber(parameters);
+    }
+
+    @Override
+    public Observable<ChangePhoneNumberModel> changeMsisdn(TKPDMapParam<String, Object> parameters) {
+        return msisdnSourceFactory.createCloudChangeMsisdnSource().changePhoneNumber(parameters);
     }
 }
 

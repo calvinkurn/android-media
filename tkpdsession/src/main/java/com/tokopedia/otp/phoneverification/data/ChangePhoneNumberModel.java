@@ -1,13 +1,14 @@
 package com.tokopedia.otp.phoneverification.data;
 
-import com.tokopedia.otp.phoneverification.data.pojo.VerifyPhoneNumberData;
+import com.tokopedia.otp.phoneverification.data.pojo.ChangePhoneNumberData;
 
 /**
- * Created by nisie on 3/7/17.
+ * Created by nisie on 5/10/17.
  */
-public class VerifyPhoneNumberModel {
+
+public class ChangePhoneNumberModel {
     private boolean success;
-    private VerifyPhoneNumberData verifyPhoneNumberData;
+    private ChangePhoneNumberData changePhoneNumberData;
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
@@ -20,12 +21,12 @@ public class VerifyPhoneNumberModel {
         this.success = success;
     }
 
-    public VerifyPhoneNumberData getVerifyPhoneNumberData() {
-        return verifyPhoneNumberData;
+    public ChangePhoneNumberData getChangePhoneNumberData() {
+        return changePhoneNumberData;
     }
 
-    public void setVerifyPhoneNumberData(VerifyPhoneNumberData verifyPhoneNumberData) {
-        this.verifyPhoneNumberData = verifyPhoneNumberData;
+    public void setChangePhoneNumberData(ChangePhoneNumberData changePhoneNumberData) {
+        this.changePhoneNumberData = changePhoneNumberData;
     }
 
     public String getErrorMessage() {
@@ -50,9 +51,5 @@ public class VerifyPhoneNumberModel {
 
     public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
-    }
-
-    public boolean isResponseSuccess() {
-        return responseCode == 200;
     }
 }

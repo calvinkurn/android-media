@@ -1,4 +1,4 @@
-package com.tokopedia.otp.phoneverification.activity;
+package com.tokopedia.otp.phoneverification.view.activity;
 
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.otp.phoneverification.fragment.ChangePhoneNumberFragment;
+import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.session.R;
 
 /**

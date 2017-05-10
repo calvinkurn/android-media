@@ -80,7 +80,7 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> validateOtp( @FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
+    @POST(TkpdBaseURL.Accounts.MSISDN.VERIFY_PHONE_NUMBER)
     Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
@@ -101,4 +101,9 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP_EMAIL)
     Observable<Response<TkpdResponse>> requestOtpToEmail(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.MSISDN.CHANGE_PHONE_NUMBER)
+    Observable<Response<TkpdResponse>> changePhoneNumber(TKPDMapParam<String, Object> stringObjectTKPDMapParam);
+
 }

@@ -1,9 +1,12 @@
-package com.tokopedia.otp.phoneverification.presenter;
+package com.tokopedia.otp.phoneverification.view.presenter;
+
+import android.os.Bundle;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
@@ -14,9 +17,11 @@ import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.data.factory.MsisdnSourceFactory;
+import com.tokopedia.otp.phoneverification.data.mapper.ChangePhoneNumberMapper;
+import com.tokopedia.otp.phoneverification.data.mapper.VerifyPhoneNumberMapper;
 import com.tokopedia.otp.phoneverification.data.repository.MsisdnRepositoryImpl;
 import com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase;
-import com.tokopedia.otp.phoneverification.listener.PhoneVerificationFragmentView;
+import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
 import com.tokopedia.session.R;
 
 import java.net.UnknownHostException;
@@ -39,10 +44,21 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
 
     public PhoneVerificationPresenterImpl(PhoneVerificationFragmentView viewListener) {
         this.viewListener = viewListener;
+
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
+        bundle.putString(AccountsService.AUTH_KEY,
+                "Bearer " + sessionHandler.getAccessToken(viewListener.getActivity()));
+        bundle.putBoolean(AccountsService.USING_BOTH_AUTHORIZATION,
+                true);
+        AccountsService accountsService = new AccountsService(bundle);
         OtpRepositoryImpl otpRepository = new OtpRepositoryImpl(
                 new OtpSourceFactory(viewListener.getActivity()));
         MsisdnRepositoryImpl msisdnRepository = new MsisdnRepositoryImpl(
-                new MsisdnSourceFactory(viewListener.getActivity()));
+                new MsisdnSourceFactory(viewListener.getActivity(),
+                        accountsService,
+                        new VerifyPhoneNumberMapper(),
+                        new ChangePhoneNumberMapper()));
         this.requestOtpUseCase = new RequestOtpUseCase(new JobExecutor(),
                 new UIThread(), otpRepository);
         this.validateOtpUseCase = new ValidateOtpUseCase(new JobExecutor(),
