@@ -3,29 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_vvs">
+    android:layout_marginTop="@dimen/padding_small"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rp 1"/>
-
-    <TextView
-        android:id="@+id/tv_desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_vvs"
-        android:textColor="@color/digital_voucher"
-        android:textSize="@dimen/font_small"
-        tools:text="Extra Combo 6GB" />
+        android:text="Rp 1"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms" />
 
     <TextView
         android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_vvs"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginStart="@dimen/margin_ms"
         android:textColor="@color/digital_item_title"
         android:textSize="@dimen/font_small"
         tools:text="Extra Combo 6GB" />
@@ -33,6 +27,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="@dimen/padding_small"
         android:background="@color/digital_separator" />
 
 </LinearLayout>
