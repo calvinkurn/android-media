@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -16,6 +17,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
@@ -109,6 +111,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onLogout(AppComponent appComponent) {
+        TkpdSellerLogout.onLogOut(appComponent);
     }
 
     @Override
