@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -365,9 +366,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         } else if (requestCode == APPLY_PROMO_ACTIVITY_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 confirmBookingViewModel = data.getParcelableExtra(ConfirmBookingViewModel.EXTRA_CONFIRM_PARAM);
-                mPromoResultLayout.setVisibility(View.VISIBLE);
-                mApplyPromoLayout.setVisibility(View.GONE);
-                mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+                if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
+                    mPromoResultLayout.setVisibility(View.VISIBLE);
+                    mApplyPromoLayout.setVisibility(View.GONE);
+                    mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
+                }
             }
         }
     }
