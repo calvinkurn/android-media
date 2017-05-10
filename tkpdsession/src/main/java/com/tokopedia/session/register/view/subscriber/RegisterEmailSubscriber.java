@@ -71,7 +71,12 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
             }, Integer.parseInt(e.getLocalizedMessage()));
         } else if (e instanceof ErrorMessageException &&
                 e.getLocalizedMessage() != null) {
-            viewListener.onErrorRegister(e.getLocalizedMessage());
+
+            if(e.getLocalizedMessage().contains("sudah terdaftar")){
+                viewListener.showInfo();
+            }else {
+                viewListener.onErrorRegister(e.getLocalizedMessage());
+            }
         } else {
             viewListener.onErrorRegister(
                     viewListener.getString(R.string.default_request_error_unknown));

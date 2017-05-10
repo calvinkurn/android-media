@@ -78,6 +78,12 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPresenter>
         implements RegisterEmailViewListener, RegisterConstant {
 
+    @BindView(R2.id.container)
+    View container;
+
+    @BindView(R2.id.redirect_reset_password)
+    View redirectView;
+
     @BindView(R2.id.register_email)
     AutoCompleteTextView email;
 
@@ -171,6 +177,14 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
         String sourceString = "Sudah punya akun? Masuk";
 
+        Spannable spannable = getSpannable(sourceString, "Masuk");
+
+        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
+        showTermsAndOptionsTextView();
+
+    }
+
+    private Spannable getSpannable(String sourceString, String hyperlinkString) {
         Spannable spannable = new SpannableString(sourceString);
 
         spannable.setSpan(new ClickableSpan() {
@@ -185,13 +199,12 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , sourceString.indexOf("Masuk")
+                , sourceString.indexOf(hyperlinkString)
                 , sourceString.length()
                 , 0);
 
-        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
-        showTermsAndOptionsTextView();
 
+        return spannable;
     }
 
     private void showTermsAndOptionsTextView() {
@@ -552,6 +565,22 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
             }
         }
         return result;
+    }
+
+    public void showInfo(){
+        dismissLoadingProgress();
+        TextView view = (TextView) redirectView.findViewById(R.id.body);
+        String text = getString(R.string.account_registered_body, email.getText().toString());
+        String part = getString(R.string.account_registered_body_part);
+        view.setText(getSpannable(text, part), TextView.BufferType.SPANNABLE);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ForgotPasswordActivity.getCallingIntent(context, email.getText().toString()));
+            }
+        });
+        redirectView.setVisibility(View.VISIBLE);
+        container.setVisibility(View.GONE);
     }
 
     @Override
