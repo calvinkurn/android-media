@@ -99,8 +99,10 @@ class HomeCategoryMenuMapper {
         }
 
         void invoke() {
+            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setRedirectValue(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setType(CategoryItemModel.TYPE.CATEGORY);
+            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
         }
     }
 
@@ -117,6 +119,7 @@ class HomeCategoryMenuMapper {
             mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
             mCategoryItemModel.setType(CategoryItemModel.TYPE.DIGITAL);
+            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
         }
     }
 
@@ -130,8 +133,10 @@ class HomeCategoryMenuMapper {
         }
 
         void invoke() {
+            mCategoryItemModel.setCategoryId(String.valueOf(mLayoutRow.getCategoryId()));
             mCategoryItemModel.setRedirectValue(mLayoutRow.getUrl());
             mCategoryItemModel.setType(CategoryItemModel.TYPE.GIMMIC);
+            mCategoryItemModel.setAppLinks(mLayoutRow.getAppLinks());
         }
     }
 }

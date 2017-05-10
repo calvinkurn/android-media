@@ -2,6 +2,7 @@ package com.tokopedia.core.router.digitalmodule;
 
 import android.content.Intent;
 
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 
 /**
@@ -19,6 +20,6 @@ public interface IDigitalModuleRouter {
 
     Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData);
 
-    Intent instanceIntentDigitalProduct(String categoryId);
+    Intent instanceIntentDigitalProduct(DigitalCategoryDetailPassData passData);
 
 }

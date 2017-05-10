@@ -42,7 +42,6 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -53,14 +52,13 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -464,7 +462,14 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
             startActivity(((IDigitalModuleRouter) getActivity().getApplication())
-                    .instanceIntentDigitalProduct(itemModel.getCategoryId()));
+                    .instanceIntentDigitalProduct(
+                            new DigitalCategoryDetailPassData.Builder()
+                                    .appLinks(itemModel.getAppLinks())
+                                    .categoryId(itemModel.getCategoryId())
+                                    .categoryName(itemModel.getName())
+                                    .url(itemModel.getRedirectValue())
+                                    .build()
+                    ));
         }
     }
 
