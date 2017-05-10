@@ -42,7 +42,7 @@
 
     <Button
         android:id="@+id/text_add_url_video"
-        style="@style/Button.TopAds.Submit.Green"
+        style="@style/Button.Submit.Green"
         android:layout_marginTop="32dp"
         android:text="@string/add_url_video" />
 
