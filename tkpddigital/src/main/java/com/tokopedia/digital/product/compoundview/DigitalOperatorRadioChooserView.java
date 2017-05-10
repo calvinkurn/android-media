@@ -80,17 +80,13 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
     @Override
     public void renderInitDataList(List<Operator> data) {
         this.dataList = data;
-        if (data.size() > 2) {
-            radioGroupOparator.setOrientation(LinearLayout.VERTICAL);
-        } else {
-            radioGroupOparator.setOrientation(LinearLayout.HORIZONTAL);
-        }
+        radioGroupOparator.setOrientation(LinearLayout.VERTICAL);
         for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
             Operator operator = dataList.get(i);
             RadioButton radioButton = new RadioButton(context);
             radioButton.setId(i);
             radioButton.setText(operator.getName());
-            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
+            radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_medium) /
                     getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(context, R.color.grey_600));
             radioGroupOparator.addView(radioButton);
