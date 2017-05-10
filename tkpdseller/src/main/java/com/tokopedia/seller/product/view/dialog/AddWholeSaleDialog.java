@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.view.holder.ProductDetailViewHolder;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
@@ -217,10 +217,12 @@ public class AddWholeSaleDialog extends DialogFragment {
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
                 formatter = NumberFormat.getNumberInstance(dollarLocale);
+                formatter.setMinimumFractionDigits(2);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
                 formatter = NumberFormat.getNumberInstance(idrLocale);
+                formatter.setMinimumFractionDigits(0);
                 break;
         }
     }
@@ -283,7 +285,7 @@ public class AddWholeSaleDialog extends DialogFragment {
 
     protected void validatePrice(float currencyValue) {
 
-        Pair<Float, Float> minMaxPrice = ProductDetailViewHolder.minMaxPrice(getActivity(), currencyType);
+        Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
             wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));

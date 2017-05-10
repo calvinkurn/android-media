@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +25,7 @@ import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.view.adapter.WholesaleAdapter;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
@@ -259,28 +259,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
         recyclerViewWholesale.setAdapter(wholesaleAdapter);
     }
 
-    public static Pair<Float, Float> minMaxPrice(Context context, int currencyType) {
-        String spinnerValue = null;
-        switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
-                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_USD);
-                break;
-            default:
-            case CurrencyTypeDef.TYPE_IDR:
-                spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_IDR);
-                break;
-        }
-        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
-        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp));
-        if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
-            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
-            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd));
-        }
-        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
-        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
-        return Pair.create(minPrice, maxPrice);
-    }
-
     private void showEditPriceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(editPriceImageButton.getContext(),
                 R.style.AppCompatAlertDialogStyle);
@@ -479,7 +457,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     private boolean isPriceValid() {
-        Pair<Float, Float> minMaxPrice = minMaxPrice(
+        Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(
                 priceSpinnerCounterInputView.getContext(),
                 Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
 
