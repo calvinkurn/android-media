@@ -14,8 +14,10 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -143,6 +145,33 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
         if (cbInstantCheckout.getVisibility() == VISIBLE) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
+    }
+
+    @Override
+    public void renderDataRecentClientNumber(List<OrderClientNumber> recentClientNumberList,
+                                             OrderClientNumber lastOrderClientNumber) {
+        this.recentClientNumberList = recentClientNumberList;
+        this.lastOrderClientNumber = lastOrderClientNumber;
+        if (recentClientNumberList != null) {
+            List<String> lastClientNumberList = new ArrayList<>();
+            for (OrderClientNumber data : recentClientNumberList) {
+                lastClientNumberList.add(data.getClientNumber());
+            }
+            this.clientNumberInputView.setAdapterAutoCompleteClientNumber(lastClientNumberList);
+        }
+        if (lastOrderClientNumber != null)
+            this.clientNumberInputView.setText(lastOrderClientNumber.getClientNumber());
+        if (operatorSelected != null && lastOrderClientNumber != null
+                && TextUtils.isEmpty(lastOrderClientNumber.getProductId())) {
+            String productId = lastOrderClientNumber.getProductId();
+            for (Product product : operatorSelected.getProductList()) {
+                if (product.getProductId().equalsIgnoreCase(productId)) {
+                    renderUpdateProductSelected(product);
+                    return;
+                }
+            }
+        }
+
     }
 
     @NonNull

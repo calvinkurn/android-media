@@ -6,8 +6,10 @@ import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -19,6 +21,8 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     protected ActionListener actionListener;
     protected Context context;
+    protected List<OrderClientNumber> recentClientNumberList = new ArrayList<>();
+    protected OrderClientNumber lastOrderClientNumber;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -72,6 +76,10 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
                                                  Operator operatorSelectedState,
                                                  Product productSelectedState,
                                                  boolean isInstantCheckoutChecked);
+
+    public abstract void renderDataRecentClientNumber(
+            List<OrderClientNumber> recentClientNumberList, OrderClientNumber lastOrderClientNumber
+    );
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);

@@ -7,6 +7,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 
 import java.util.List;
 
@@ -21,11 +22,17 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderStateSelectedAllData();
 
-    void renderCategoryProductDataStyle1(CategoryData categoryData);
+    void renderCategoryProductDataStyle1(CategoryData categoryData,
+                                         List<OrderClientNumber> recentClientNumberList,
+                                         OrderClientNumber lastOrderClientNumber);
 
-    void renderCategoryProductDataStyle2(CategoryData categoryData);
+    void renderCategoryProductDataStyle2(CategoryData categoryData,
+                                         List<OrderClientNumber> recentClientNumberList,
+                                         OrderClientNumber lastOrderClientNumber);
 
-    void renderCategoryProductDataStyle3(CategoryData categoryData);
+    void renderCategoryProductDataStyle3(CategoryData categoryData,
+                                         List<OrderClientNumber> recentClientNumberList,
+                                         OrderClientNumber lastOrderClientNumber);
 
     void renderCategoryProductDataStyle4(CategoryData categoryData);
 
@@ -45,6 +52,10 @@ public interface IProductDigitalView extends IBaseView {
 
     List<BannerData> getBannerDataListState();
 
+    List<OrderClientNumber> getRecentClientNumberListState();
+
+    OrderClientNumber getLastOrderClientNumberState();
+
     String getVersionInfoApplication();
 
     String getUserLoginId();
@@ -56,4 +67,6 @@ public interface IProductDigitalView extends IBaseView {
     void closeViewWithMessageAlert(String message);
 
     LocalCacheHandler getLastInputClientNumberChaceHandler();
+
+
 }

@@ -14,7 +14,7 @@ public class ProductDigitalData implements Parcelable {
     private CategoryData categoryData;
     private List<BannerData> bannerDataList = new ArrayList<>();
     private List<OrderClientNumber> recentClientNumberList = new ArrayList<>();
-    private OrderClientNumber recentClientNumber;
+    private OrderClientNumber lastOrderClientNumber;
 
     public ProductDigitalData() {
     }
@@ -22,8 +22,8 @@ public class ProductDigitalData implements Parcelable {
     private ProductDigitalData(Builder builder) {
         setCategoryData(builder.categoryData);
         setBannerDataList(builder.bannerDataList);
-        recentClientNumberList = builder.recentClientNumberList;
-        recentClientNumber = builder.recentClientNumber;
+        setRecentClientNumberList(builder.recentClientNumberList);
+        setLastOrderClientNumber(builder.recentClientNumber);
     }
 
 
@@ -43,6 +43,21 @@ public class ProductDigitalData implements Parcelable {
         this.bannerDataList = bannerDataList;
     }
 
+    public List<OrderClientNumber> getRecentClientNumberList() {
+        return recentClientNumberList;
+    }
+
+    public void setRecentClientNumberList(List<OrderClientNumber> recentClientNumberList) {
+        this.recentClientNumberList = recentClientNumberList;
+    }
+
+    public OrderClientNumber getLastOrderClientNumber() {
+        return lastOrderClientNumber;
+    }
+
+    public void setLastOrderClientNumber(OrderClientNumber lastOrderClientNumber) {
+        this.lastOrderClientNumber = lastOrderClientNumber;
+    }
 
     public static final class Builder {
         private CategoryData categoryData;
@@ -89,14 +104,14 @@ public class ProductDigitalData implements Parcelable {
         dest.writeParcelable(this.categoryData, flags);
         dest.writeTypedList(this.bannerDataList);
         dest.writeTypedList(this.recentClientNumberList);
-        dest.writeParcelable(this.recentClientNumber, flags);
+        dest.writeParcelable(this.lastOrderClientNumber, flags);
     }
 
     protected ProductDigitalData(Parcel in) {
         this.categoryData = in.readParcelable(CategoryData.class.getClassLoader());
         this.bannerDataList = in.createTypedArrayList(BannerData.CREATOR);
         this.recentClientNumberList = in.createTypedArrayList(OrderClientNumber.CREATOR);
-        this.recentClientNumber = in.readParcelable(OrderClientNumber.class.getClassLoader());
+        this.lastOrderClientNumber = in.readParcelable(OrderClientNumber.class.getClassLoader());
     }
 
     public static final Creator<ProductDigitalData> CREATOR = new Creator<ProductDigitalData>() {

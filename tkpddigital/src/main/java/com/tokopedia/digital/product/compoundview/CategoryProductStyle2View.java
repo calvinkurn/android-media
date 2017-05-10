@@ -11,7 +11,10 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -177,6 +180,12 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
             Product productSelectedState, boolean isInstantCheckoutChecked
     ) {
         //TODO Angga
+    }
+
+    @Override
+    public void renderDataRecentClientNumber(List<OrderClientNumber> recentClientNumberList,
+                                             OrderClientNumber lastOrderClientNumber) {
+        //TODO ANGGA
     }
 
 }

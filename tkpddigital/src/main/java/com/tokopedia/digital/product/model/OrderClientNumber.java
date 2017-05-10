@@ -52,6 +52,10 @@ public class OrderClientNumber implements Parcelable {
         this.categoryId = categoryId;
     }
 
+    @Override
+    public String toString() {
+        return clientNumber;
+    }
 
     public OrderClientNumber() {
     }

@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.Validation;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -54,6 +56,7 @@ public class ClientNumberInputView extends LinearLayout {
 
     private ActionListener actionListener;
     private Context context;
+    private ArrayAdapter<String> adapterAutoComplete;
 
     public ClientNumberInputView(Context context) {
         super(context);
@@ -74,6 +77,11 @@ public class ClientNumberInputView extends LinearLayout {
         this.context = context;
         LayoutInflater.from(context).inflate(R.layout.view_holder_client_number_input, this, true);
         ButterKnife.bind(this);
+        adapterAutoComplete = new ArrayAdapter<>(
+                getContext(), com.tokopedia.core.R.layout.simple_spinner_tv_res
+        );
+        autoCompleteTextView.setAdapter(adapterAutoComplete);
+        autoCompleteTextView.setThreshold(1);
         initialTextWatcher();
         initBackgroundContactButtonAndClearButton();
         setImgOperatorInvisible();
@@ -128,6 +136,13 @@ public class ClientNumberInputView extends LinearLayout {
                 }
             }
         };
+    }
+
+    public void setAdapterAutoCompleteClientNumber(List<String> recentClientNumberList) {
+        adapterAutoComplete.clear();
+        adapterAutoComplete.notifyDataSetChanged();
+        adapterAutoComplete.addAll(recentClientNumberList);
+        adapterAutoComplete.notifyDataSetChanged();
     }
 
     public String getText() {
