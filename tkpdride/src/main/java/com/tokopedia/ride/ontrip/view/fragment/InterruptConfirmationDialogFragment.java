@@ -2,6 +2,7 @@ package com.tokopedia.ride.ontrip.view.fragment;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -203,6 +205,19 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
         params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
         super.onResume();
+        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialogInterface, int keyCode, KeyEvent keyEvent) {
+                if ((keyCode == android.view.KeyEvent.KEYCODE_BACK)) {
+                    // To dismiss the fragment when the back-button is pressed.
+                    dismiss();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
     }
 
     @Override
