@@ -631,7 +631,11 @@ public class BrowsePresenterImpl implements BrowsePresenter {
     @Override
     public void onBackPressed() {
         if (categoryLevel.size() > 0) {
+            resetBrowseProductActivityModel();
             SimpleCategory simpleCategory = categoryLevel.pop();
+            browseModel.setAdSrc(TopAdsApi.SRC_DIRECTORY);
+            browseModel.setDepartmentId(simpleCategory.getId());
+            browseModel.setSource(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY);
             browseView.renderUpperCategoryLevel(simpleCategory);
         } else {
             browseView.close();

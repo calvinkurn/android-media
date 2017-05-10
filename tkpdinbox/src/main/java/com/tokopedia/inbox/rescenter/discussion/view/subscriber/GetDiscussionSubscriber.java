@@ -111,7 +111,7 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
             AttachmentViewModel attachment = new AttachmentViewModel();
             attachment.setUrl(item.getUrl());
             attachment.setImgThumb(item.getImageThumb());
-            attachment.setImgLarge(item.getImageThumb());
+            attachment.setImgLarge(item.getUrl());
             list.add(attachment);
         }
         return list;

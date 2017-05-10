@@ -52,8 +52,11 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 getView().renderTopAds();
                 getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
                 getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
-                getView().renderHotList(domainModel.getHotListModelList());
+                if (domainModel.getHotListModelList().size()>0) {
+                    getView().renderHotList(domainModel.getHotListModelList());
+                }
                 getView().renderHeader(domainModel.getHeaderModel());
+                getView().updateDepartementId(domainModel.getDepartementId());
                 getView().backToTop();
             } else {
                 getView().skipIntermediaryPage();

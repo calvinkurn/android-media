@@ -73,6 +73,8 @@ public class ShopEditorActivity extends TkpdActivity implements
         fetchExtras(getIntent(), savedInstanceState);
 
         supportFragmentManager = getSupportFragmentManager();
+        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
+            initFragment(FRAGMENT);
     }
 
     @Override
@@ -89,8 +91,6 @@ public class ShopEditorActivity extends TkpdActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
-            initFragment(FRAGMENT);
     }
 
     @Override
@@ -129,6 +129,8 @@ public class ShopEditorActivity extends TkpdActivity implements
             SessionHandler session = new SessionHandler(this);
             session.Logout(this);
             UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
+        }else{
+            super.onBackPressed();
         }
     }
 
