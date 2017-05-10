@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -415,7 +416,11 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
+        if(freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE){
+            return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
+        }else {
+            return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
+        }
     }
 
     public void setFreeReturn(int unit) {
@@ -458,6 +463,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private void clearWholesaleItems() {
         if (wholesaleAdapter.getItemCount() > 0) {
             wholesaleAdapter.clearAll();
+
+
             wholesaleAdapter.notifyDataSetChanged();
         }
         updateWholesaleButton();
@@ -548,28 +555,31 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     @Override
-    public boolean isDataValid() {
+    public Pair<Boolean, String> isDataValid() {
         if (!isPriceValid()) {
             priceSpinnerCounterInputView.requestFocus();
-            return false;
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_PRICE);
         }
         if (!isWeightValid()) {
             weightSpinnerCounterInputView.requestFocus();
-            return false;
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
         }
-
+        if(!isMinPurchaseValid()){
+            minimumOrderCounterInputView.requestFocus();
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
+        }
         if (!isTotalStockValid()) {
             stockTotalCounterInputView.requestFocus();
-            return false;
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS);
         }
         if (getEtalaseId() < 0) {
             etalaseLabelView.requestFocus();
             Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
                     .show();
-            return false;
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_SHOWCASE);
         }
-        return true;
+        return new Pair<>(true, "");
     }
 
     @Override
@@ -612,6 +622,18 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
         wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible? View.VISIBLE: View.GONE);
+    }
+
+    public boolean isMinPurchaseValid() {
+        int purchaseMinimum = Integer.parseInt(minimumOrderCounterInputView.getValueText());
+
+        if (purchaseMinimum <= 0) {
+            minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().
+                    getString(R.string.product_error_product_minimum_order_not_valid));
+            return false;
+        }
+        minimumOrderCounterInputView.setError(null);
+        return true;
     }
 
     public interface Listener {
