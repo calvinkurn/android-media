@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_detail">
 
     <LinearLayout
         android:id="@+id/holder_radio_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_chooser_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_additional_info_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_price_info_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"/>
 
     <CheckBox
         android:id="@+id/cb_instant_checkout"
@@ -47,7 +50,7 @@
         android:textColor="@color/checkbox_text"
         android:textSize="@dimen/fontvs"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
     <TextView
         android:id="@+id/btn_buy_digital"
@@ -59,5 +62,5 @@
         android:text="@string/label_btn_buy_digital"
         android:textColor="@color/white"
         android:textSize="@dimen/font_small"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 </LinearLayout>
