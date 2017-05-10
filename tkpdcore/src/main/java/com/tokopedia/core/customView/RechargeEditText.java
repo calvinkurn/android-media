@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -215,6 +216,14 @@ public class RechargeEditText extends LinearLayout {
 
     public void setBtnClearInvisible() {
         this.btnClear.setVisibility(GONE);
+    }
+
+    public void setInputTypeNumber() {
+        this.autoCompleteTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
+    }
+
+    public void setInputTypeText() {
+        this.autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
     }
 
     public void setDropdownAutoComplete(List<String> displayList) {

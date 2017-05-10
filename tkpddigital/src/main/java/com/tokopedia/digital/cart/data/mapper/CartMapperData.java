@@ -66,6 +66,7 @@ public class CartMapperData implements ICartMapperData {
             attributesDigital.setSmsState(responseCartData.getAttributes().getSmsState());
             attributesDigital.setPrice(responseCartData.getAttributes().getPrice());
             attributesDigital.setPricePlain(responseCartData.getAttributes().getPricePlain());
+            attributesDigital.setEnableVoucher(responseCartData.getAttributes().isEnableVoucher());
             if (responseCartData.getAttributes().getUserInputPrice() != null) {
                 UserInputPriceDigital userInputPriceDigital = new UserInputPriceDigital();
                 userInputPriceDigital.setMaxPaymentPlain(

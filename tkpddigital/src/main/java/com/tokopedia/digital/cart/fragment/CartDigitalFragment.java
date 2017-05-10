@@ -288,6 +288,9 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     private void renderCartInfo(CartDigitalInfoData cartDigitalInfoData) {
         buildCheckoutData(cartDigitalInfoData);
         actionListener.setTitleCart(cartDigitalInfoData.getTitle());
+        voucherCartHolderView.setVisibility(
+                cartDigitalInfoData.getAttributes().isEnableVoucher() ? View.VISIBLE : View.GONE
+        );
         itemCartHolderView.renderAdditionalInfo(cartDigitalInfoData.getAdditionalInfos());
         itemCartHolderView.renderDataMainInfo(cartDigitalInfoData.getMainInfo());
         itemCartHolderView.setCategoryName(cartDigitalInfoData.getAttributes().getCategoryName());
@@ -301,6 +304,15 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.getAttributes().getPrice(),
                 cartDigitalInfoData.getAttributes().getPricePlain()
         );
+        if (voucherDigitalState != null) {
+            voucherCartHolderView.setUsedVoucher(
+                    voucherDigitalState.getAttributeVoucher().getVoucherCode(),
+                    voucherDigitalState.getAttributeVoucher().getMessage()
+            );
+            checkoutHolderView.enableVoucherDiscount(
+                    voucherDigitalState.getAttributeVoucher().getDiscountAmountPlain()
+            );
+        }
         if (passData.getInstantCheckout().equals("1")) {
             pbMainLoading.setVisibility(View.VISIBLE);
             mainContainer.setVisibility(View.GONE);
@@ -432,16 +444,19 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        voucherDigitalState = null;
         voucherCartHolderView.setErrorVoucher(message);
     }
 
     @Override
     public void renderErrorHttpCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
     @Override
     public void renderErrorNoConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showSnackBarAlert(message);
     }
 
@@ -454,6 +469,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void renderErrorTimeoutConnectionCheckVoucher(String message) {
+        voucherDigitalState = null;
         showToastMessage(message);
     }
 
@@ -588,6 +604,16 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void enableCheckoutButton() {
+        checkoutHolderView.enableCheckoutButton();
+    }
+
+    @Override
+    public void disableCheckoutButton() {
+        checkoutHolderView.disableCheckoutButton();
+    }
+
+    @Override
     public void onVoucherCheckButtonClicked() {
         presenter.processCheckVoucher();
         KeyboardHandler.hideSoftKeyboard(getActivity());
@@ -605,6 +631,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public void disableVoucherDiscount() {
+        this.voucherDigitalState = null;
         checkoutHolderView.disableVoucherDiscount();
     }
 

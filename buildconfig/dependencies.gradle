@@ -16,6 +16,7 @@ ext {
     tkpdDiscoveryVersion = '1.+'
     tkpdDigitalVersion = '1.+'
     tkpdTopAdsSDKVersion = '1.+'
+    tkpdPaymentVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 15
     targetSdkVersion = 24
@@ -146,7 +147,8 @@ ext {
             discovery  : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
-            topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}"
+            topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
+            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}"
     ]
 
 }

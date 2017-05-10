@@ -102,6 +102,9 @@ public class FragmentBannerWebView extends Fragment {
                     || Uri.parse(url).getHost().contains("m.tokopedia.com"))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                    case DeepLinkChecker.CATEGORY:
+                        DeepLinkChecker.openCategory(url, getActivity());
+                        return true;
                     case DeepLinkChecker.BROWSE:
                         DeepLinkChecker.openBrowse(url, getActivity());
                         return true;

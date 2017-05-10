@@ -563,7 +563,7 @@ public class TkpdBaseURL {
 
 
     public static class Recharge {
-        public static final String VERSION = "v1.1";
+        public static final String VERSION = "v1.3";
         public static final String RECHARGE = "recharge";
 
         public static final String PATH_STATUS = VERSION + "/status";
@@ -678,7 +678,7 @@ public class TkpdBaseURL {
     }
 
     public static class DigitalApi {
-        public static final String VERSION = "v1.2/";
+        public static final String VERSION = "v1.3/";
         public static final String HMAC_KEY = "web_service_v4";
 
         public static final String PATH_STATUS = "status";
@@ -701,6 +701,10 @@ public class TkpdBaseURL {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
         public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+    }
+
+    public static class OfficialStore {
+        public static final String URL_WEBVIEW = MOBILE_DOMAIN + "official-store/mobile";
     }
 
     public static class ResCenterV2 {
