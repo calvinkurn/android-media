@@ -6,10 +6,7 @@ import android.util.AttributeSet;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
-
-import java.util.List;
 
 /**
  * @author anggaprasetiyo on 5/3/17.
@@ -82,12 +79,13 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
             String clientNumberState, Operator operatorSelectedState,
             Product productSelectedState, boolean isInstantCheckoutChecked
     ) {
-
+//TODO Angga
     }
 
     @Override
-    public void renderDataRecentClientNumber(List<OrderClientNumber> recentClientNumberList,
-                                             OrderClientNumber lastOrderClientNumber) {
-        //TODO ANGGA
+    protected void onHistoryClientNumberRendered() {
+        //TODO Angga
     }
+
+
 }

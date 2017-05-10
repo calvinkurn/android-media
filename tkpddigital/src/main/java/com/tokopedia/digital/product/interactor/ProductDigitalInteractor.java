@@ -10,6 +10,7 @@ import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.ILastOrderNumberRepository;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 
@@ -126,8 +127,10 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                     List<OrderClientNumber> orderClientNumbers, OrderClientNumber orderClientNumber
             ) {
                 return new ProductDigitalData.Builder()
-                        .recentClientNumber(orderClientNumber)
-                        .recentClientNumberList(orderClientNumbers)
+                        .historyClientNumber(new HistoryClientNumber.Builder()
+                                .lastOrderClientNumber(orderClientNumber)
+                                .recentClientNumberList(orderClientNumbers)
+                                .build())
                         .categoryData(categoryData)
                         .bannerDataList(bannerDatas)
                         .build();

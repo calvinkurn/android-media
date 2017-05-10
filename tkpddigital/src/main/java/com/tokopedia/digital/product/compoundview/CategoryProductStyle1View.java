@@ -81,7 +81,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
         if (data.getClientNumberList().size() > 0) {
             renderEdittextClientNumber(data);
         } else {
-            for (Operator operator: data.getOperatorList()) {
+            for (Operator operator : data.getOperatorList()) {
                 if (operator.getOperatorId().equals(data.getDefaultOperatorId())) {
                     operatorSelected = operator;
                 }
@@ -154,13 +154,15 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    public void renderDataRecentClientNumber(List<OrderClientNumber> recentClientNumberList,
-                                             OrderClientNumber lastOrderClientNumber) {
-        this.recentClientNumberList = recentClientNumberList;
-        this.lastOrderClientNumber = lastOrderClientNumber;
-        if (recentClientNumberList != null) {
+    protected void onHistoryClientNumberRendered() {
+        if (historyClientNumber == null) return;
+        List<OrderClientNumber> recentOrderClientNumberList =
+                historyClientNumber.getRecentClientNumberList();
+        OrderClientNumber lastOrderClientNumber
+                = historyClientNumber.getLastOrderClientNumber();
+        if (recentOrderClientNumberList != null) {
             List<String> lastClientNumberList = new ArrayList<>();
-            for (OrderClientNumber data : recentClientNumberList) {
+            for (OrderClientNumber data : recentOrderClientNumberList) {
                 lastClientNumberList.add(data.getClientNumber());
             }
             this.clientNumberInputView.setAdapterAutoCompleteClientNumber(lastClientNumberList);
@@ -177,7 +179,6 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
                 }
             }
         }
-
     }
 
     @NonNull

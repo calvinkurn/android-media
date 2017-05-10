@@ -13,17 +13,12 @@ import java.util.List;
 public class ProductDigitalData implements Parcelable {
     private CategoryData categoryData;
     private List<BannerData> bannerDataList = new ArrayList<>();
-    private List<OrderClientNumber> recentClientNumberList = new ArrayList<>();
-    private OrderClientNumber lastOrderClientNumber;
-
-    public ProductDigitalData() {
-    }
+    private HistoryClientNumber historyClientNumber;
 
     private ProductDigitalData(Builder builder) {
         setCategoryData(builder.categoryData);
         setBannerDataList(builder.bannerDataList);
-        setRecentClientNumberList(builder.recentClientNumberList);
-        setLastOrderClientNumber(builder.recentClientNumber);
+        setHistoryClientNumber(builder.historyClientNumber);
     }
 
 
@@ -43,56 +38,13 @@ public class ProductDigitalData implements Parcelable {
         this.bannerDataList = bannerDataList;
     }
 
-    public List<OrderClientNumber> getRecentClientNumberList() {
-        return recentClientNumberList;
+    public HistoryClientNumber getHistoryClientNumber() {
+        return historyClientNumber;
     }
 
-    public void setRecentClientNumberList(List<OrderClientNumber> recentClientNumberList) {
-        this.recentClientNumberList = recentClientNumberList;
+    public void setHistoryClientNumber(HistoryClientNumber historyClientNumber) {
+        this.historyClientNumber = historyClientNumber;
     }
-
-    public OrderClientNumber getLastOrderClientNumber() {
-        return lastOrderClientNumber;
-    }
-
-    public void setLastOrderClientNumber(OrderClientNumber lastOrderClientNumber) {
-        this.lastOrderClientNumber = lastOrderClientNumber;
-    }
-
-    public static final class Builder {
-        private CategoryData categoryData;
-        private List<BannerData> bannerDataList;
-        private List<OrderClientNumber> recentClientNumberList;
-        private OrderClientNumber recentClientNumber;
-
-        public Builder() {
-        }
-
-        public Builder categoryData(CategoryData val) {
-            categoryData = val;
-            return this;
-        }
-
-        public Builder bannerDataList(List<BannerData> val) {
-            bannerDataList = val;
-            return this;
-        }
-
-        public Builder recentClientNumberList(List<OrderClientNumber> val) {
-            recentClientNumberList = val;
-            return this;
-        }
-
-        public Builder recentClientNumber(OrderClientNumber val) {
-            recentClientNumber = val;
-            return this;
-        }
-
-        public ProductDigitalData build() {
-            return new ProductDigitalData(this);
-        }
-    }
-
 
     @Override
     public int describeContents() {
@@ -103,15 +55,16 @@ public class ProductDigitalData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.categoryData, flags);
         dest.writeTypedList(this.bannerDataList);
-        dest.writeTypedList(this.recentClientNumberList);
-        dest.writeParcelable(this.lastOrderClientNumber, flags);
+        dest.writeParcelable(this.historyClientNumber, flags);
+    }
+
+    public ProductDigitalData() {
     }
 
     protected ProductDigitalData(Parcel in) {
         this.categoryData = in.readParcelable(CategoryData.class.getClassLoader());
         this.bannerDataList = in.createTypedArrayList(BannerData.CREATOR);
-        this.recentClientNumberList = in.createTypedArrayList(OrderClientNumber.CREATOR);
-        this.lastOrderClientNumber = in.readParcelable(OrderClientNumber.class.getClassLoader());
+        this.historyClientNumber = in.readParcelable(HistoryClientNumber.class.getClassLoader());
     }
 
     public static final Creator<ProductDigitalData> CREATOR = new Creator<ProductDigitalData>() {
@@ -127,4 +80,31 @@ public class ProductDigitalData implements Parcelable {
     };
 
 
+    public static final class Builder {
+        private CategoryData categoryData;
+        private List<BannerData> bannerDataList;
+        private HistoryClientNumber historyClientNumber;
+
+        public Builder() {
+        }
+
+        public Builder categoryData(CategoryData val) {
+            categoryData = val;
+            return this;
+        }
+
+        public Builder bannerDataList(List<BannerData> val) {
+            bannerDataList = val;
+            return this;
+        }
+
+        public Builder historyClientNumber(HistoryClientNumber val) {
+            historyClientNumber = val;
+            return this;
+        }
+
+        public ProductDigitalData build() {
+            return new ProductDigitalData(this);
+        }
+    }
 }

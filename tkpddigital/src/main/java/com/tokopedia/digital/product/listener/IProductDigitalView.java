@@ -7,7 +7,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 
 import java.util.List;
 
@@ -23,16 +23,13 @@ public interface IProductDigitalView extends IBaseView {
     void renderStateSelectedAllData();
 
     void renderCategoryProductDataStyle1(CategoryData categoryData,
-                                         List<OrderClientNumber> recentClientNumberList,
-                                         OrderClientNumber lastOrderClientNumber);
+                                         HistoryClientNumber historyClientNumber);
 
     void renderCategoryProductDataStyle2(CategoryData categoryData,
-                                         List<OrderClientNumber> recentClientNumberList,
-                                         OrderClientNumber lastOrderClientNumber);
+                                         HistoryClientNumber historyClientNumber);
 
     void renderCategoryProductDataStyle3(CategoryData categoryData,
-                                         List<OrderClientNumber> recentClientNumberList,
-                                         OrderClientNumber lastOrderClientNumber);
+                                         HistoryClientNumber historyClientNumber);
 
     void renderCategoryProductDataStyle4(CategoryData categoryData);
 
@@ -52,9 +49,7 @@ public interface IProductDigitalView extends IBaseView {
 
     List<BannerData> getBannerDataListState();
 
-    List<OrderClientNumber> getRecentClientNumberListState();
-
-    OrderClientNumber getLastOrderClientNumberState();
+    HistoryClientNumber getHistoryClientNumberState();
 
     String getVersionInfoApplication();
 

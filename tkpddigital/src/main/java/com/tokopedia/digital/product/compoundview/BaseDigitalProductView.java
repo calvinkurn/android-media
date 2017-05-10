@@ -5,11 +5,10 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -21,8 +20,7 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     protected ActionListener actionListener;
     protected Context context;
-    protected List<OrderClientNumber> recentClientNumberList = new ArrayList<>();
-    protected OrderClientNumber lastOrderClientNumber;
+    protected HistoryClientNumber historyClientNumber;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -52,6 +50,11 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
         initialViewListener(context);
     }
 
+    public void renderHistoryClientNumber(HistoryClientNumber historyClientNumber) {
+        this.historyClientNumber = historyClientNumber;
+        onHistoryClientNumberRendered();
+    }
+
     protected abstract void initialViewListener(Context context);
 
     protected abstract int getHolderLayoutId();
@@ -77,9 +80,7 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
                                                  Product productSelectedState,
                                                  boolean isInstantCheckoutChecked);
 
-    public abstract void renderDataRecentClientNumber(
-            List<OrderClientNumber> recentClientNumberList, OrderClientNumber lastOrderClientNumber
-    );
+    protected abstract void onHistoryClientNumberRendered();
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);

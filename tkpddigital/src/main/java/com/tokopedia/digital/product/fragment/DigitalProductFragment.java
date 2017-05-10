@@ -54,8 +54,8 @@ import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
@@ -89,18 +89,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
-    private static final String EXTRA_STATE_RECENT_ORDER_CLIENT_NUMBER_LIST
-            = "EXTRA_STATE_RECENT_ORDER_CLIENT_NUMBER_LIST";
-    private static final String EXTRA_STATE_LAST_ORDER_CLIENT_NUMBER =
-            "EXTRA_STATE_LAST_ORDER_CLIENT_NUMBER";
+    private static final String EXTRA_STATE_HISTORY_CLIENT_NUMBER =
+            "EXTRA_STATE_HISTORY_CLIENT_NUMBER";
 
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
-    private List<OrderClientNumber> recentClientNumberList;
-    private OrderClientNumber lastOrderClientNumber;
+    private HistoryClientNumber historyClientNumberState;
 
     private boolean isInstantCheckoutChecked;
 
@@ -151,11 +148,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         state.putBoolean(
                 EXTRA_STATE_INSTANT_CHECKOUT_CHECKED, digitalProductView.isInstantCheckoutChecked()
         );
-        state.putParcelableArrayList(
-                EXTRA_STATE_RECENT_ORDER_CLIENT_NUMBER_LIST,
-                (ArrayList<? extends Parcelable>) recentClientNumberList
-        );
-        state.putParcelable(EXTRA_STATE_LAST_ORDER_CLIENT_NUMBER, lastOrderClientNumber);
+        state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
     }
 
     @Override
@@ -166,10 +159,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
-        recentClientNumberList = savedState.getParcelableArrayList(
-                EXTRA_STATE_RECENT_ORDER_CLIENT_NUMBER_LIST
-        );
-        lastOrderClientNumber = savedState.getParcelable(EXTRA_STATE_LAST_ORDER_CLIENT_NUMBER);
+        historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
 
         presenter.processStateDataToReRender();
     }
@@ -250,55 +240,43 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCategoryProductDataStyle1(CategoryData categoryData,
-                                                List<OrderClientNumber> recentClientNumberList,
-                                                OrderClientNumber lastOrderClientNumber) {
+                                                HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
-        this.lastOrderClientNumber = lastOrderClientNumber;
-        this.recentClientNumberList = recentClientNumberList;
+        this.historyClientNumberState = historyClientNumber;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle1View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData);
-        digitalProductView.renderDataRecentClientNumber(
-                recentClientNumberList, lastOrderClientNumber
-        );
+        digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
     @Override
     public void renderCategoryProductDataStyle2(CategoryData categoryData,
-                                                List<OrderClientNumber> recentClientNumberList,
-                                                OrderClientNumber lastOrderClientNumber) {
+                                                HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
-        this.lastOrderClientNumber = lastOrderClientNumber;
-        this.recentClientNumberList = recentClientNumberList;
+        this.historyClientNumberState = historyClientNumber;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle2View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData);
-        digitalProductView.renderDataRecentClientNumber(
-                recentClientNumberList, lastOrderClientNumber
-        );
+        digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
     @Override
     public void renderCategoryProductDataStyle3(CategoryData categoryData,
-                                                List<OrderClientNumber> recentClientNumberList,
-                                                OrderClientNumber lastOrderClientNumber) {
+                                                HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
-        this.lastOrderClientNumber = lastOrderClientNumber;
-        this.recentClientNumberList = recentClientNumberList;
+        this.historyClientNumberState = historyClientNumber;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle3View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData);
-        digitalProductView.renderDataRecentClientNumber(
-                recentClientNumberList, lastOrderClientNumber
-        );
+        digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -354,14 +332,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public List<OrderClientNumber> getRecentClientNumberListState() {
-        return recentClientNumberList;
+    public HistoryClientNumber getHistoryClientNumberState() {
+        return historyClientNumberState;
     }
 
-    @Override
-    public OrderClientNumber getLastOrderClientNumberState() {
-        return lastOrderClientNumber;
-    }
 
     @Override
     public String getVersionInfoApplication() {

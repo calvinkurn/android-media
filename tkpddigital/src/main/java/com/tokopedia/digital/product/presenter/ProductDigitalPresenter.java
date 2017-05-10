@@ -23,7 +23,7 @@ import com.tokopedia.digital.product.listener.IProductDigitalView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
-import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 
 import java.net.ConnectException;
@@ -150,13 +150,10 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     public void processStateDataToReRender() {
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
-        List<OrderClientNumber> recentClientNumberList =
-                view.getRecentClientNumberListState();
-        OrderClientNumber lastOrderClientNumber =
-                view.getLastOrderClientNumberState();
+        HistoryClientNumber historyClientNumber = view.getHistoryClientNumberState();
         if (categoryData != null) {
             renderCategoryDataAndBannerToView(
-                    categoryData, bannerDataList, recentClientNumberList, lastOrderClientNumber
+                    categoryData, bannerDataList, historyClientNumber
             );
             view.renderStateSelectedAllData();
         }
@@ -240,40 +237,37 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 view.hideInitialProgressLoading();
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
-                List<OrderClientNumber> recentClientNumberList =
-                        productDigitalData.getRecentClientNumberList();
-                OrderClientNumber lastOrderClientNumber =
-                        productDigitalData.getLastOrderClientNumber();
+                HistoryClientNumber historyClientNumber =
+                        productDigitalData.getHistoryClientNumber();
                 renderCategoryDataAndBannerToView(
-                        categoryData, bannerDataList, recentClientNumberList, lastOrderClientNumber
+                        categoryData, bannerDataList, historyClientNumber
                 );
             }
         };
     }
 
-    private void renderCategoryDataAndBannerToView(
-            CategoryData categoryData, List<BannerData> bannerDataList,
-            List<OrderClientNumber> recentClientNumberList,
-            OrderClientNumber lastOrderClientNumber
-    ) {
+
+    private void renderCategoryDataAndBannerToView(CategoryData categoryData,
+                                                   List<BannerData> bannerDataList,
+                                                   HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
                 case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle1(
-                            categoryData, recentClientNumberList, lastOrderClientNumber
+                            categoryData, historyClientNumber
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_2:
                     view.renderCategoryProductDataStyle2(
-                            categoryData, recentClientNumberList, lastOrderClientNumber
+                            categoryData, historyClientNumber
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_3:
                 case CategoryData.STYLE_PRODUCT_CATEGORY_4:
                 case CategoryData.STYLE_PRODUCT_CATEGORY_5:
                     view.renderCategoryProductDataStyle3(
-                            categoryData, recentClientNumberList, lastOrderClientNumber
+                            categoryData, historyClientNumber
                     );
                     break;
             }
@@ -289,4 +283,5 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
             );
         }
     }
+
 }
