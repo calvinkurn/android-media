@@ -200,6 +200,7 @@ public class DataFeedAdapter extends ProductAdapter {
         if (data.size() == 1) {
             holder.emptyLayout.setVisibility(View.VISIBLE);
             holder.findFavoriteShop.setOnClickListener(onFindFavoriteClicked());
+            holder.officialStoreLinkContainer.setOnClickListener(onOfficialStoreLinkClicked());
         } else {
             holder.emptyLayout.setVisibility(View.GONE);
         }
