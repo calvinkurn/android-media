@@ -88,8 +88,6 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
         void OnProductInfoPageRedirected(String productId);
 
         void OnWebViewPageRedirected(String url);
-
-        void OnProductListPageRedirected();
     }
 
     @Override
@@ -221,7 +219,9 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
         buttonViewAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOfficialShopInteractionListener.OnProductListPageRedirected();
+                GetShopProductParam getShopProductParam = new GetShopProductParam();
+                getShopProductParam.setEtalaseId("all");
+                mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
             }
         });
     }

@@ -816,11 +816,6 @@ public class ShopInfoActivity extends BaseActivity
     }
 
     @Override
-    public void OnProductListPageRedirected() {
-        holder.pager.setCurrentItem(1, true);
-    }
-
-    @Override
     public void onProductListCompleted() {
         if(shopModel.info.shopIsOfficial == 1) {
             OfficialShopHomeFragment fragment = (OfficialShopHomeFragment) adapter.getItem(0);

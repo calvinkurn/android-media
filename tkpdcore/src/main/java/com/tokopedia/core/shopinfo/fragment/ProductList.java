@@ -596,7 +596,6 @@ public class ProductList extends V2BaseFragment {
 
     public void refreshProductListFromOffStore() {
         if(productModel != null && productModel.list != null) {
-
             productModel.list.clear();
             GetShopProductParam newProductParam = new GetShopProductParam();
             if (etalaseNameList.size() > 1) {
