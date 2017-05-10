@@ -193,12 +193,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 weightSpinnerCounterInputView.setCounterValue(Float.parseFloat(weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                weightSpinnerCounterInputView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        isWeightValid();
-                    }
-                });
+                weightSpinnerCounterInputView.setCounterError(null);
             }
         });
         etalaseLabelView.setOnClickListener(new View.OnClickListener() {
