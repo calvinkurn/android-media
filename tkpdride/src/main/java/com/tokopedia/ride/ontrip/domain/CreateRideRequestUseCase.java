@@ -29,6 +29,7 @@ public class CreateRideRequestUseCase extends UseCase<RideRequest> {
     public static final String PARAM_END_ADDRESS_NAME = "end_address_name";
     public static final String PARAM_END_ADDRESS = "end_address";
     public static final String PARAM_SURGE_CONFIRMATION_ID = "surge_confirmation_id";
+    public static final String PARAM_PRODUCT_ID = "product_id";
 
     public static final String PARAM_PROMO_CODE = "promocode";
     public static final String PARAM_PRODUCT_NAME = "product_name";
