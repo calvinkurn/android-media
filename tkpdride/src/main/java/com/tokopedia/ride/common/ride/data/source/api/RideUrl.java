@@ -5,7 +5,7 @@ package com.tokopedia.ride.common.ride.data.source.api;
  */
 
 public interface RideUrl {
-    String BASE_URL = "https://ride-staging.tokopedia.com/";
+    String BASE_URL = "https://ride.tokopedia.com/";
 
     String PRODUCTS = "/uber/products";
     String ESTIMATED_TIME = "/uber/estimates/time";
