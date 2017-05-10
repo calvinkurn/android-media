@@ -186,8 +186,6 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
                 saveAndAddDraft();
             }
         });
-
-        view.requestFocus();
         return view;
     }
 
@@ -517,6 +515,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onSuccessStoreProductAndAddToDraft(Long productId) {
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
         if (productAdditionalInfoViewHolder.isShare()) {
             listener.startUploadProductAndAddWithShare(productId);
         } else {

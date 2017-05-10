@@ -1,9 +1,11 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -130,12 +132,44 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                 youtubeAddVideoActView.removeVideoIds(index);
                 setVideoSubtitle();
             }
+
+            @Override
+            public void inflateDeleteConfirmation(int index) {
+                showRemoveVideoConfirmation(index);
+            }
         });
         addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         addUrlVideoAdapter.showEmptyFull(true);
         return view;
+    }
+
+    private void showRemoveVideoConfirmation(
+            final int index
+    ) {
+        if (index < 0)
+            return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                R.style.AppCompatAlertDialogStyle);
+        builder.setTitle(R.string.title_video_delete_confirmation);
+        builder.setMessage(R.string.video_delete_confirmation);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                addUrlVideoAdapter.remove(index);
+                dialog.cancel();
+            }
+        });
+        builder.setNegativeButton(R.string.No, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -156,6 +190,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             if (CommonUtils.checkCollectionNotNull(strings)) {
                 presenter.fetchYoutube(strings);
             }
+            isFirstTime = false;
         }
 
     }

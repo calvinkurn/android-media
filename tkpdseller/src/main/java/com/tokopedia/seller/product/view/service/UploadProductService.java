@@ -14,6 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.ManageProduct;
@@ -171,10 +172,26 @@ public class UploadProductService extends BaseService implements AddProductServi
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         return new NotificationCompat.Builder(this)
                 .setContentTitle(title)
-                .setSmallIcon(R.drawable.qc_launcher2)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.qc_launcher2))
+                .setSmallIcon(getDrawableLargeIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))
                 .setContentIntent(pIntent)
                 .setGroup(getString(R.string.group_notification));
+    }
+
+    private int getDrawableLargeIcon() {
+        if (GlobalConfig.isSellerApp()) {
+            return com.tokopedia.core.R.drawable.qc_launcher2;
+        } else {
+            return com.tokopedia.core.R.drawable.qc_launcher;
+        }
+    }
+
+    private int getDrawableIcon() {
+        if (GlobalConfig.isSellerApp()) {
+            return R.drawable.ic_stat_notify2;
+        } else {
+            return R.drawable.ic_stat_notify;
+        }
     }
 
     private Notification buildFailedNotification(String errorMessage, String productDraftId, @ProductStatus int productStatus) {

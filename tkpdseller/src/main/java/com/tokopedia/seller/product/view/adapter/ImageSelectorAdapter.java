@@ -70,6 +70,8 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         imageSelectModelList.add(imageSelectModel);
         notifyItemChanged(imageSelectModelList.size() - 1);
         notifyNextAddProductIfNeeded();
+
+        scrollToEnd();
     }
 
     public void addImages(@NonNull List<ImageSelectModel> imageSelectModelList) {
@@ -87,6 +89,8 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         notifyItemChanged(prevSize);
         notifyItemRangeInserted(prevSize + 1, imageSelectModelList.size());
         notifyNextAddProductIfNeeded();
+
+        scrollToEnd();
     }
 
     public void setImageString(@NonNull List<String> imageStringList) {
@@ -365,6 +369,17 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
                 @Override
                 public void run() {
                     recyclerView.smoothScrollToPosition(0);
+                }
+            },500);
+        }
+    }
+
+    private void scrollToEnd(){
+        if (recyclerView!= null) {
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.smoothScrollToPosition(getItemCount());
                 }
             },500);
         }
