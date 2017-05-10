@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="top"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <com.tokopedia.seller.product.view.widget.DecimalInputView
         android:id="@+id/decimal_input_view"
@@ -13,18 +15,19 @@
         android:layout_gravity="bottom"/>
 
     <android.support.v7.widget.AppCompatImageButton
-        android:layout_marginTop="20dp"
         android:id="@+id/image_button_minus"
         style="@style/ImageButton.Counter"
         android:src="@drawable/bg_button_counter_minus"
         android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"/>
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginTop="20dp"/>
 
     <android.support.v7.widget.AppCompatImageButton
-        android:layout_marginTop="20dp"
         android:id="@+id/image_button_plus"
         style="@style/ImageButton.Counter"
         android:src="@drawable/bg_button_counter_plus"
         android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"/>
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginTop="20dp"/>
+
 </LinearLayout>

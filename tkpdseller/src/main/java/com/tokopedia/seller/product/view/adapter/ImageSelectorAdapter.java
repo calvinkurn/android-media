@@ -38,6 +38,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     private Drawable addPictureDrawable;
     private OnImageSelectionListener onImageSelectionListener;
     private String mainPrimaryImageString;
+    private String addProductString;
     private RecyclerView recyclerView;
 
     public static final int VIEW_TYPE_ITEM = 1;
@@ -54,12 +55,14 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
                                 int limit,
                                 Drawable addPictureDrawable,
                                 OnImageSelectionListener onImageSelectionListener,
-                                String mainPrimaryImageString) {
+                                String mainPrimaryImageString,
+                                String addProductString) {
         this.imageSelectModelList = imageSelectModelList;
         this.limit = limit;
         this.addPictureDrawable = addPictureDrawable;
         this.onImageSelectionListener = onImageSelectionListener;
         this.mainPrimaryImageString = mainPrimaryImageString;
+        this.addProductString = addProductString;
     }
 
     public void addImage(ImageSelectModel imageSelectModel) {
@@ -136,21 +139,26 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_images_select, parent, false);
-        return new ViewHolder(itemLayoutView);
+        View view;
+        switch (viewType) {
+            case VIEW_TYPE_ADD:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_images_add, parent, false);
+                return new AddViewHolder(view);
+            default:
+                view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_images_select, parent, false);
+                return new ItemViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-
-        if (getItemViewType(position) == VIEW_TYPE_ADD) {
-            holder.imageView.setImageDrawable(addPictureDrawable);
-            if (holder.textViewMainPicture != null) {
-                holder.textViewMainPicture.setVisibility(View.INVISIBLE);
-            }
+        if (! (holder instanceof ItemViewHolder)) {
             return;
         }
+        ItemViewHolder itemViewHolder = (ItemViewHolder)holder;
+
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
             ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUri(), new SimpleTarget<Bitmap>() {
@@ -181,13 +189,14 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             );
         }
 
+
         if (currentPrimaryImageIndex == position) {
-            if (holder.textViewMainPicture != null) {
-                holder.textViewMainPicture.setVisibility(View.VISIBLE);
+            if (itemViewHolder.textViewMainPicture != null) {
+                itemViewHolder.textViewMainPicture.setVisibility(View.VISIBLE);
             }
         } else {
-            if (holder.textViewMainPicture != null) {
-                holder.textViewMainPicture.setVisibility(View.INVISIBLE);
+            if (itemViewHolder.textViewMainPicture != null) {
+                itemViewHolder.textViewMainPicture.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -211,13 +220,43 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, View.OnLongClickListener {
-        ImageView imageView;
-        TextView textViewMainPicture;
+            implements View.OnClickListener{
+        protected ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.imageview_picture);
+        }
+
+        @Override
+        public void onClick(View v) {
+
+        }
+    }
+
+    public class AddViewHolder extends ViewHolder{
+        TextView addImageTextView;
+        public AddViewHolder(View itemView) {
+            super(itemView);
+            addImageTextView = (TextView) itemView.findViewById(R.id.text_add_product);
+            addImageTextView.setText(addProductString);
+            imageView.setImageDrawable(addPictureDrawable);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (onImageSelectionListener != null) {
+                onImageSelectionListener.onAddClick(position);
+            }
+        }
+    }
+
+    public class ItemViewHolder extends ViewHolder{
+        TextView textViewMainPicture;
+        public ItemViewHolder(View itemView) {
+            super(itemView);
             if (TextUtils.isEmpty(mainPrimaryImageString)) {
                 textViewMainPicture = null;
             } else {
@@ -226,46 +265,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
             }
 
             itemView.setOnClickListener(this);
-//            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            switch (getItemViewType()) {
-                case VIEW_TYPE_ADD:
-                    if (onImageSelectionListener != null) {
-                        onImageSelectionListener.onAddClick(position);
-                    }
-                    break;
-                case VIEW_TYPE_ITEM:
-                    currentSelectedIndex = position;
-                    if (onImageSelectionListener != null) {
-                        onImageSelectionListener.onItemClick(position,
-                                imageSelectModelList.get(position));
-                    }
-                    break;
+            currentSelectedIndex = position;
+            if (onImageSelectionListener != null) {
+                onImageSelectionListener.onItemClick(position,
+                        imageSelectModelList.get(position));
             }
-        }
-
-        /**
-         * On long click not used, but keep this, it may be used for later
-         *
-         * @param v
-         * @return
-         */
-        @Override
-        public boolean onLongClick(View v) {
-            onClick(v);
-//            Context context = itemView.getContext();
-//            if(context != null && context instanceof MultiSelectInterface){
-//                ((AppCompatActivity) context).startSupportActionMode(
-//                        ((MultiSelectInterface)context)
-//                                .getMultiSelectorCallback(AddProductFragment.FRAGMENT_TAG)
-//                );
-//            }
-//            multiSelector.setSelected(this, true);
-            return true;
         }
     }
 
