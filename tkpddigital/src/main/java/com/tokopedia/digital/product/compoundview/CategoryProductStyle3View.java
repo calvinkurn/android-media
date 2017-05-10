@@ -37,9 +37,6 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
     @BindView(R2.id.btn_buy_digital)
     TextView btnBuyDigital;
 
-    private Product productSelected;
-    private Operator operatorSelected;
-
     private DigitalOperatorChooserView digitalOperatorChooserView;
     private ClientNumberInputView clientNumberInputView;
     private DigitalProductChooserView digitalProductChooserView;

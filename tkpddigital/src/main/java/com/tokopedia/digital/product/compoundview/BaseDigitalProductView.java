@@ -20,6 +20,9 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     protected ActionListener actionListener;
     protected Context context;
+
+    protected Product productSelected;
+    protected Operator operatorSelected;
     protected HistoryClientNumber historyClientNumber;
 
     public void setActionListener(ActionListener actionListener) {

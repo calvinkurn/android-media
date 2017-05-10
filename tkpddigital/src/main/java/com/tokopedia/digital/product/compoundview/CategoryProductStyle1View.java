@@ -40,9 +40,6 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     @BindView(R2.id.cb_instant_checkout)
     CheckBox cbInstantCheckout;
 
-    private Product productSelected;
-    private Operator operatorSelected;
-
     private DigitalProductChooserView digitalProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
