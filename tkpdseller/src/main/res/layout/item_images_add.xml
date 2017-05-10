@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:foreground="?attr/selectableItemBackground"
-        android:background="@color/colorGray">
+        android:background="@color/grey_300">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,8 +25,7 @@
                 android:layout_width="wrap_content"
                 android:scaleType="fitCenter"
                 tools:src="@mipmap/ic_launcher"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="8dp"/>
+                android:layout_gravity="center_horizontal"/>
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/text_add_product"
@@ -35,7 +34,8 @@
                 tools:text="Add Product"
                 android:textSize="@dimen/font_small"
                 android:textColor="@color/font_top_ads_black_54"
-                android:background="#FF0000"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
                 android:gravity="center_horizontal" />
         </LinearLayout>
     </FrameLayout>

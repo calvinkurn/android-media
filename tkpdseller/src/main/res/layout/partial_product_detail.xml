@@ -64,7 +64,7 @@
         android:layout_marginTop="@dimen/product_margin_cards"
         app:counter_hint="@string/product_label_minimum_buy"
         app:counter_text="@string/product_default_counter_minimum_order_text"
-        app:counter_min="@integer/product_default_counter_minimum_order_text"/>
+        app:counter_min="@integer/product_default_counter_minimum_stock_text"/>
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_stock_status"
@@ -79,13 +79,15 @@
         style="@style/LabelLayoutWithoutBorder"
         app:eo_checked="false"
         app:eo_theme="@style/ExpandableStyle"
-        app:eo_title="@string/product_label_manage_stock">
+        app:eo_title="@string/product_label_manage_stock"
+        android:visibility="gone">
 
         <com.tokopedia.seller.product.view.widget.CounterInputView
             android:id="@+id/counter_input_view_stock_total"
             style="@style/LabelLayoutWithoutBorder"
             android:layout_marginTop="@dimen/product_margin_cards"
-            app:counter_hint="@string/product_label_stock_total" />
+            app:counter_hint="@string/product_label_stock_total"
+            app:counter_min="1"/>
     </com.tokopedia.expandable.ExpandableOptionSwitch>
 
     <com.tokopedia.seller.lib.widget.LabelView
@@ -96,7 +98,8 @@
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:title="@string/product_label_shop_window" />
+        app:title="@string/product_label_shop_window"
+        android:focusable="true"/>
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_condition"

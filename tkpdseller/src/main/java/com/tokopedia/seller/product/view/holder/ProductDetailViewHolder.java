@@ -58,6 +58,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private static final String BUNDLE_SPINNER_POSITION = "BUNDLE_SPINNER_POSITION";
     private static final String BUNDLE_COUNTER_PRICE = "BUNDLE_COUNTER_PRICE";
     private static final String IS_WHOLESALE_VISIBLE = "IS_WHOLE_VISIBLE";
+    private static final String IS_STOCKTOTAL_VISIBLE = "IS_STOCKTOTAL_VISIBLE";
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_ETALASE_ID = -1;
     private final Locale dollarLocale = Locale.US;
@@ -230,13 +231,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
             public void onItemChanged(int position, String entry, String value) {
                 if (value.equalsIgnoreCase(stockStatusSpinnerTextView.getContext().getString(R.string.product_stock_not_available_value))) {
                     stockTotalExpandableOptionSwitch.setExpand(false);
-                    stockTotalExpandableOptionSwitch.setEnabled(false);
+                    stockTotalExpandableOptionSwitch.setVisibility(View.GONE);
                 } else {
-                    stockTotalExpandableOptionSwitch.setEnabled(true);
+                    stockTotalExpandableOptionSwitch.setVisibility(View.VISIBLE);
                 }
             }
         });
-        stockTotalExpandableOptionSwitch.setEnabled(false);
         stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
@@ -563,7 +563,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             return false;
         }
         if (getEtalaseId() < 0) {
-            etalaseLabelView.requestFocus();
+            etalaseLabelView.getParent().requestChildFocus(etalaseLabelView,etalaseLabelView);
             Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
                     .show();
@@ -583,6 +583,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
         savedInstanceState.putString(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterEditText().getText().toString());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
+        savedInstanceState.putBoolean(IS_STOCKTOTAL_VISIBLE, stockTotalExpandableOptionSwitch.getVisibility() == View.VISIBLE);
     }
 
     @Override
@@ -612,6 +613,9 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
         wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible? View.VISIBLE: View.GONE);
+
+        boolean isStockTotalVisible = savedInstanceState.getBoolean(IS_STOCKTOTAL_VISIBLE, false);
+        stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible? View.VISIBLE: View.GONE);
     }
 
     public interface Listener {
