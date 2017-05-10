@@ -104,6 +104,6 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.MSISDN.CHANGE_PHONE_NUMBER)
-    Observable<Response<TkpdResponse>> changePhoneNumber(TKPDMapParam<String, Object> stringObjectTKPDMapParam);
+    Observable<Response<TkpdResponse>> changePhoneNumber(@FieldMap TKPDMapParam<String, Object> parameters);
 
 }

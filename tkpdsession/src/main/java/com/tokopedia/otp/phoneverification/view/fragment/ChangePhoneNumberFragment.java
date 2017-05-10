@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
@@ -125,6 +126,7 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
                 showLoading();
                 presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
             }
