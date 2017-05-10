@@ -564,7 +564,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
                 new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
-        savedInstanceState.putString(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterEditText().getText().toString());
+        savedInstanceState.putFloat(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterValue());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
         savedInstanceState.putBoolean(IS_STOCKTOTAL_VISIBLE, stockTotalExpandableOptionSwitch.getVisibility() == View.VISIBLE);
     }
@@ -591,8 +591,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         int spinnerPricePosition = savedInstanceState.getInt(BUNDLE_SPINNER_POSITION, 0);
         priceSpinnerCounterInputView.setSpinnerPosition(spinnerPricePosition);
 
-        String counterPriceValue = savedInstanceState.getString(BUNDLE_COUNTER_PRICE, "0");
-        priceSpinnerCounterInputView.getCounterEditText().setText(counterPriceValue);
+        float counterPriceValue = savedInstanceState.getFloat(BUNDLE_COUNTER_PRICE, 0f);
+        priceSpinnerCounterInputView.setCounterValue(counterPriceValue);
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
         wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible? View.VISIBLE: View.GONE);
