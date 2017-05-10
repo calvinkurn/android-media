@@ -62,7 +62,9 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
                         addUrlVideoModels.get(position), new AddUrlVideoViewHolder.AddUrlVideoOnClickRemove() {
                             @Override
                             public void onClick(View v, int index) {
-                                remove(index);
+                                if (listener != null) {
+                                    listener.inflateDeleteConfirmation(index);
+                                }
                             }
                         }
                 );
@@ -101,7 +103,7 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         return addUrlVideoModels.size() + super.getItemCount();
     }
 
-    private void remove(int index) {
+    public void remove(int index) {
         addUrlVideoModels.remove(index);
 
         if (listener != null) {
@@ -153,5 +155,7 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         void notifyFull();
 
         void remove(int index);
+
+        void inflateDeleteConfirmation(int index);
     }
 }
