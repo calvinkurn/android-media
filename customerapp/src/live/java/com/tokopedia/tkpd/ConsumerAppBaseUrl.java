@@ -18,12 +18,11 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_INBOX_DOMAIN = "https://inbox.tokopedia.com";
     public static final String BASE_JS_DOMAIN = "https://js.tokopedia.com/";
     public static final String BASE_KERO_DOMAIN = "https://kero.tokopedia.com/";
-    public static final String BASE_JAHE_DOMAIN = "https://jahe.tokopedia.com/";
+    public static final String BASE_JAHE_DOMAIN = "https://jahe.tokopedia.com";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa.tokopedia.com";
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant.tokopedia.com";
-    public static final String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
+    public static final String BASE_WEB_DOMAIN = "https://www.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m.tokopedia.com/";
 
     public static final String BASE_DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
-
 }
