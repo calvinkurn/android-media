@@ -134,6 +134,10 @@ public class CounterInputView extends FrameLayout {
         plusImageButton.setEnabled(enable);
     }
 
+    public void updateMinusButtonState(boolean enable) {
+        minusImageButton.setEnabled(enable);
+    }
+
     private void updateButtonState() {
         if (enabled) {
             minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
