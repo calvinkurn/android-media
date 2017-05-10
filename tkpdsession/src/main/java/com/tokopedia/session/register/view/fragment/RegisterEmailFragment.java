@@ -12,10 +12,12 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
@@ -570,13 +572,18 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     public void showInfo(){
         dismissLoadingProgress();
         TextView view = (TextView) redirectView.findViewById(R.id.body);
-        String text = getString(R.string.account_registered_body, email.getText().toString());
+        final String emailString = email.getText().toString();
+        String text = getString(R.string.account_registered_body, emailString);
         String part = getString(R.string.account_registered_body_part);
-        view.setText(getSpannable(text, part), TextView.BufferType.SPANNABLE);
+        Spannable spannable = getSpannable(text, part);
+        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
+                                                        , text.indexOf(emailString)+emailString.length()
+                                                        , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(spannable, TextView.BufferType.SPANNABLE);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(context, email.getText().toString()));
+                startActivity(ForgotPasswordActivity.getCallingIntent(context, emailString));
             }
         });
         redirectView.setVisibility(View.VISIBLE);
