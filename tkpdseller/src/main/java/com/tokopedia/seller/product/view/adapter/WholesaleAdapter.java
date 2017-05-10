@@ -182,6 +182,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         private final TextView textRangeWholesale;
         private final ImageView imageWholesale;
         private final TextView textWholeSalePrice;
+        private final Locale dollarLocale = Locale.US;
         private final Locale idrLocale = new Locale("in", "ID");
         private NumberFormat formatter;
 
@@ -207,7 +208,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         }
 
         protected void formatter() {
-            formatter = NumberFormat.getNumberInstance(idrLocale);
+            formatter = NumberFormat.getNumberInstance(dollarLocale);
             switch (listener.getCurrencyType()) {
                 case CurrencyTypeDef.TYPE_USD:
                     formatter.setMinimumFractionDigits(2);
