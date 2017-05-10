@@ -10,12 +10,14 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -294,20 +296,20 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     @Override
-    public boolean isDataValid() {
+    public Pair<Boolean, String> isDataValid() {
         if (TextUtils.isEmpty(getName())) {
             nameTextInputLayout.setError(nameTextInputLayout.getContext().getString(R.string.product_error_product_name_empty));
             nameTextInputLayout.clearFocus();
             nameTextInputLayout.requestFocus();
-            return false;
+            return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_PRODUCT_NAME);
         }
         if (categoryId < 0) {
             Snackbar.make(categoryLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_category_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(categoryLabelView.getContext(), R.color.green_400))
                     .show();
-            return false;
+            return new Pair<>(false,AppEventTracking.AddProduct.FIELDS_MANDATORY_CATEGORY);
         }
-        return true;
+        return new Pair<>(true, "");
     }
 
     @Override

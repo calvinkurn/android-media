@@ -6,12 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -31,6 +33,8 @@ import java.util.List;
  */
 
 public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
+
+    public static final int INACTIVE_PREORDER = -1;
 
     private TextInputLayout descriptionTextInputLayout;
     private EditText descriptionEditText;
@@ -169,7 +173,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderUnit() {
-        return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
+        if(preOrderExpandableOptionSwitch.isExpanded()) {
+            return Integer.parseInt(preOrderSpinnerCounterInputView.getSpinnerValue());
+        }else{
+            return INACTIVE_PREORDER;
+        }
     }
 
     public void setPreOrderUnit(int unit) {
@@ -177,7 +185,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     public int getPreOrderValue() {
-        return (int) preOrderSpinnerCounterInputView.getCounterValue();
+        if(preOrderExpandableOptionSwitch.isExpanded()) {
+            return (int) preOrderSpinnerCounterInputView.getCounterValue();
+        }else{
+            return INACTIVE_PREORDER;
+        }
     }
 
     public void setPreOrderValue(float value) {
@@ -210,11 +222,11 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
     }
 
     @Override
-    public boolean isDataValid() {
+    public Pair<Boolean, String> isDataValid() {
         if (!isPreOrderValid()) {
-            return false;
+            return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_OPTIONAL_PREORDER);
         }
-        return true;
+        return new Pair<>(true, "");
     }
 
     @Override

@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -47,6 +48,7 @@ import com.tokopedia.seller.product.view.holder.ProductInfoViewHolder;
 import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
+import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
@@ -192,6 +194,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private void saveAndAddDraft() {
         if (isDataValid()) {
             UploadProductInputViewModel viewModel = collectDataFromView();
+            UnifyTracking.eventAddProductAddMore(
+                    AnalyticsMapper.mapViewToAnalytic(viewModel,
+                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                            productAdditionalInfoViewHolder.isShare()
+                            ));
             presenter.saveDraftAndAdd(viewModel);
         }
     }
@@ -199,6 +206,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private void saveDraft() {
         if (isDataValid()) {
             UploadProductInputViewModel viewModel = collectDataFromView();
+            UnifyTracking.eventAddProductAdd(
+                    AnalyticsMapper.mapViewToAnalytic(viewModel,
+                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                            productAdditionalInfoViewHolder.isShare()
+                    ));
             presenter.saveDraft(viewModel);
         }
     }
@@ -372,16 +384,20 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     private boolean isDataValid() {
-        if (!productInfoViewHolder.isDataValid()) {
+        if (!productInfoViewHolder.isDataValid().first) {
+            UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
             return false;
         }
-        if (!productDetailViewHolder.isDataValid()) {
+        if (!productDetailViewHolder.isDataValid().first) {
+            UnifyTracking.eventAddProductError(productDetailViewHolder.isDataValid().second);
             return false;
         }
-        if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid()) {
+        if (productDetailViewHolder.getStatusStock() == Integer.parseInt(getString(R.string.product_stock_available_value)) && !productImageViewHolder.isDataValid().first) {
+            UnifyTracking.eventAddProductError(productImageViewHolder.isDataValid().second);
             return false;
         }
-        if (!productAdditionalInfoViewHolder.isDataValid()) {
+        if (!productAdditionalInfoViewHolder.isDataValid().first) {
+            UnifyTracking.eventAddProductError(productAdditionalInfoViewHolder.isDataValid().second);
             return false;
         }
         return true;

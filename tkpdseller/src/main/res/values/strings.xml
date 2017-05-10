@@ -350,8 +350,8 @@
         <item>Tidak</item>
     </string-array>
     <string-array name="product_free_returns_values">
-        <item>1</item>
-        <item>-1</item>
+        <item>@string/product_free_return_values_active</item>
+        <item>@string/product_free_return_values_inactive</item>
     </string-array>
 
     <string name="product_pre_order_value_day">1</string>
@@ -365,6 +365,8 @@
         <item>@string/product_pre_order_value_week</item>
     </string-array>
 
+    <string name="product_free_return_values_active">1</string>
+    <string name="product_free_return_values_inactive">-1</string>
     <string name="product_error_product_name_empty">Nama produk harus diisi</string>
     <string name="product_error_product_category_empty">Kategori harus diisi</string>
     <string name="product_minimum_price_rp">100</string>
