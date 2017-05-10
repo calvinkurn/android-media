@@ -1,11 +1,13 @@
 package com.tokopedia.ride.common.ride.data.source.api;
 
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+
 /**
  * Created by alvarisi on 3/16/17.
  */
 
 public interface RideUrl {
-    String BASE_URL = "https://ride.tokopedia.com/";
+    String BASE_URL = TkpdBaseURL.RIDE_DOMAIN;
 
     String PRODUCTS = "/uber/products";
     String ESTIMATED_TIME = "/uber/estimates/time";
