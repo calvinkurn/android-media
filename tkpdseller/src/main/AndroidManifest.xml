@@ -193,7 +193,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.ProductScoringDetailActivity"
-            android:label="@string/product_score_label_title"
+            android:label="@string/title_activity_product_score"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
