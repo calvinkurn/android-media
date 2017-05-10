@@ -27,6 +27,8 @@ import butterknife.BindView;
  */
 public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryData> {
 
+    @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
+            TextView tvTitle;
     @BindView(R2.id.holder_client_number)
     LinearLayout holderClientNumber;
     @BindView(R2.id.holder_chooser_product)
@@ -75,6 +77,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
 
     @Override
     public void renderData(final CategoryData data) {
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         if (data.getClientNumberList().size() > 0) {
             renderEdittextClientNumber(data);
         } else {

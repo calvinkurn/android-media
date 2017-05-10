@@ -515,7 +515,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
-                if (resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
                             (Operator) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
@@ -523,7 +523,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackProductChooser(
                             (Product) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
@@ -531,7 +531,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     );
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
-                if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                if (data != null && data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
                     String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                     if (!TextUtils.isEmpty(message)) {
                         showToastMessage(message);

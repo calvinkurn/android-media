@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -23,6 +24,8 @@ import butterknife.BindView;
  */
 public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryData> {
 
+    @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
+            TextView tvTitle;
     @BindView(R2.id.holder_radio_chooser_operator)
     LinearLayout holderRadioChooserOperator;
     @BindView(R2.id.holder_client_number)
@@ -75,6 +78,7 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
 
     @Override
     public void renderData(CategoryData data) {
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         if (holderRadioChooserOperator.getChildAt(0) != null) {
             holderRadioChooserOperator.removeAllViews();
         }

@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -22,6 +23,8 @@ import butterknife.BindView;
  */
 public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryData> {
 
+    @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
+            TextView tvTitle;
     @BindView(R2.id.holder_chooser_operator)
     LinearLayout holderChooserOperator;
     @BindView(R2.id.holder_client_number)
@@ -74,6 +77,7 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
 
     @Override
     public void renderData(CategoryData data) {
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         if (holderChooserOperator.getChildAt(0) != null) {
             holderChooserOperator.removeAllViews();
         }
@@ -150,7 +154,7 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
             String clientNumberState, Operator operatorSelectedState,
             Product productSelectedState, boolean isInstantCheckoutChecked
     ) {
-//TODO Angga
+        //TODO Angga
     }
 
     @Override

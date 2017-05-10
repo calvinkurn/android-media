@@ -30,6 +30,7 @@ public class CategoryData implements Parcelable {
     private String categoryId;
     private String categoryType;
 
+    private String titleText;
     private String name;
     private String icon;
     private String iconUrl;
@@ -150,6 +151,17 @@ public class CategoryData implements Parcelable {
         return (Arrays.asList(STYLE_COLLECTION_SUPPORTED).contains(operatorStyle));
     }
 
+    public String getTitleText() {
+        return titleText;
+    }
+
+    public void setTitleText(String titleText) {
+        this.titleText = titleText;
+    }
+
+    public CategoryData() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -160,6 +172,7 @@ public class CategoryData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.categoryId);
         dest.writeString(this.categoryType);
+        dest.writeString(this.titleText);
         dest.writeString(this.name);
         dest.writeString(this.icon);
         dest.writeString(this.iconUrl);
@@ -169,16 +182,14 @@ public class CategoryData implements Parcelable {
         dest.writeString(this.slug);
         dest.writeString(this.defaultOperatorId);
         dest.writeString(this.operatorStyle);
-        dest.writeList(this.clientNumberList);
+        dest.writeTypedList(this.clientNumberList);
         dest.writeTypedList(this.operatorList);
-    }
-
-    public CategoryData() {
     }
 
     protected CategoryData(Parcel in) {
         this.categoryId = in.readString();
         this.categoryType = in.readString();
+        this.titleText = in.readString();
         this.name = in.readString();
         this.icon = in.readString();
         this.iconUrl = in.readString();
@@ -188,12 +199,11 @@ public class CategoryData implements Parcelable {
         this.slug = in.readString();
         this.defaultOperatorId = in.readString();
         this.operatorStyle = in.readString();
-        this.clientNumberList = new ArrayList<ClientNumber>();
-        in.readList(this.clientNumberList, ClientNumber.class.getClassLoader());
+        this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
         this.operatorList = in.createTypedArrayList(Operator.CREATOR);
     }
 
-    public static final Parcelable.Creator<CategoryData> CREATOR = new Parcelable.Creator<CategoryData>() {
+    public static final Creator<CategoryData> CREATOR = new Creator<CategoryData>() {
         @Override
         public CategoryData createFromParcel(Parcel source) {
             return new CategoryData(source);
