@@ -454,6 +454,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.processStoreLastInputClientNumberByCategory(
+                digitalProductView.getClientNumber(), categoryDataState.getCategoryId()
+        );
+    }
+
+    @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
         presenter.processAddToCartProduct(preCheckoutProduct);
     }
