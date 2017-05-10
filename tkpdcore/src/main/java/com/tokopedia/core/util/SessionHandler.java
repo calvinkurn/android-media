@@ -607,7 +607,7 @@ public class SessionHandler {
         return gson.fromJson(sharedPrefs.getString(USER_DATA, ""),dataObject);
     }
 
-    public static String isUserDataCached(Context context){
+    public String isUserDataCached(){
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(USER_DATA, "");
     }

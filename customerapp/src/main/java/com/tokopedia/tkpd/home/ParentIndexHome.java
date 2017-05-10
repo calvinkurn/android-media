@@ -232,7 +232,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
-        if(TextUtils.isEmpty(SessionHandler.isUserDataCached(this))){
+        if(TextUtils.isEmpty(new SessionHandler(this).isUserDataCached())){
             if(SessionHandler.isV4Login(this))
                 drawer.getUserInfo();
         }else {
