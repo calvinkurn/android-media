@@ -49,7 +49,7 @@
 
         <com.tokopedia.seller.product.view.widget.SpinnerCounterInputView
             android:id="@+id/spinner_counter_input_view_pre_order"
-            style="@style/LabelLayoutWithoutBorder"
+            style="@style/LabelLayoutInnerExpandable"
             app:spinner_decimal_spinner_width="100dp"
             app:spinner_decimal_entries="@array/product_pre_order_entries"
             app:spinner_decimal_hint="@string/product_label_time_process"

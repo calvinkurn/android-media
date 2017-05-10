@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ConverterUtils;
@@ -27,6 +26,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     private CounterInputView counterInputView;
     private SpinnerTextView spinnerTextView;
 
+    private String spinnerHintText;
     private String hintText;
     private CharSequence[] entries;
     private CharSequence[] values;
@@ -54,6 +54,7 @@ public class SpinnerCounterInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
+            spinnerHintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_hint);
             hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);
             entries = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_entries);
@@ -69,6 +70,9 @@ public class SpinnerCounterInputView extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        if (!TextUtils.isEmpty(spinnerHintText)) {
+            spinnerTextView.setHint(spinnerHintText);
+        }
         if (!TextUtils.isEmpty(hintText)) {
             counterInputView.setHint(hintText);
         }
@@ -103,6 +107,12 @@ public class SpinnerCounterInputView extends FrameLayout {
     public void setEnabled(boolean enabled) {
         spinnerTextView.setEnabled(enabled);
         counterInputView.setEnabled(enabled);
+    }
+
+    public void setSpinnerHint(String hintText) {
+        spinnerTextView.setHint(hintText);
+        invalidate();
+        requestLayout();
     }
 
     public void setHint(String hintText) {
