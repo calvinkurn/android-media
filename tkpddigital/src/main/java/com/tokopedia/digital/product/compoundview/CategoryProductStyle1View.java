@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -119,8 +120,29 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
+    public boolean isInstantCheckoutChecked() {
+        return false;
+    }
+
+    @Override
     public String getClientNumber() {
         return clientNumberInputView.getText();
+    }
+
+    @Override
+    public void renderStateDataSelected(
+            String clientNumberState, Operator operatorSelectedState,
+            Product productSelectedState, boolean isInstantCheckoutChecked
+    ) {
+        if (!TextUtils.isEmpty(clientNumberState)) {
+            clientNumberInputView.setText(clientNumberState);
+            if (operatorSelectedState != null && productSelectedState != null) {
+                digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            }
+        }
+        if (cbInstantCheckout.getVisibility() == VISIBLE) {
+            cbInstantCheckout.setChecked(isInstantCheckoutChecked);
+        }
     }
 
     @NonNull
@@ -132,9 +154,13 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
                 boolean canBeCheckout = false;
 
                 if (productSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct("Pilih dulu produk !");
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(R.string.message_error_digital_product_not_selected)
+                    );
                 } else if (operatorSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct("Pilih dulu operator !");
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(R.string.message_error_digital_operator_not_selected)
+                    );
                 } else {
                     preCheckoutProduct.setProductId(productSelected.getProductId());
                     preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());

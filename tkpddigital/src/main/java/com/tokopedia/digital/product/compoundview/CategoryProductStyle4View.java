@@ -65,7 +65,20 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
+    public boolean isInstantCheckoutChecked() {
+        return false;
+    }
+
+    @Override
     public String getClientNumber() {
         return null;
+    }
+
+    @Override
+    public void renderStateDataSelected(
+            String clientNumberState, Operator operatorSelectedState,
+            Product productSelectedState, boolean isInstantCheckoutChecked
+    ) {
+
     }
 }

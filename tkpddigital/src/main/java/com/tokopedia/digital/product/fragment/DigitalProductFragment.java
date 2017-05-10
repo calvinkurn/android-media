@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
@@ -9,6 +10,7 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -24,7 +26,6 @@ import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
@@ -53,6 +54,7 @@ import com.tokopedia.digital.product.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,6 +74,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         implements IProductDigitalView, BannerAdapter.ActionListener,
         BaseDigitalProductView.ActionListener {
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
+
+    private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
+    private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
+    private static final String EXTRA_STATE_CLIENT_NUMBER = "EXTRA_STATE_CLIENT_NUMBER";
+    private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
+    private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
+            "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
+
+    private Operator operatorSelectedState;
+    private Product productSelectedState;
+    private String clientNumberState;
+    private CategoryData categoryDataState;
+    private List<BannerData> bannerDataListState;
+    private boolean isInstantCheckoutChecked;
 
     @BindView(R2.id.rv_banner)
     RecyclerView rvBanner;
@@ -104,12 +121,28 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
+        state.putParcelable(EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator());
+        state.putParcelable(EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct());
+        state.putParcelable(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
+        state.putParcelableArrayList(
+                EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
+        );
+        state.putBoolean(
+                EXTRA_STATE_INSTANT_CHECKOUT_CHECKED, digitalProductView.isInstantCheckoutChecked()
+        );
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
+        clientNumberState = savedState.getString(EXTRA_STATE_CLIENT_NUMBER);
+        operatorSelectedState = savedState.getParcelable(EXTRA_STATE_OPERATOR_SELECTED);
+        productSelectedState = savedState.getParcelable(EXTRA_STATE_PRODUCT_SELECTED);
+        isInstantCheckoutChecked = savedState.getBoolean(EXTRA_STATE_INSTANT_CHECKOUT_CHECKED);
+        categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
+        bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
 
+        presenter.processStateDataToReRender();
     }
 
     @Override
@@ -165,18 +198,22 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     }
 
-    @Override
-    public String getCategoryId() {
-        return categoryId;
+    public void renderStateSelectedAllData() {
+        digitalProductView.renderStateDataSelected(
+                clientNumberState, operatorSelectedState, productSelectedState,
+                isInstantCheckoutChecked
+        );
     }
 
     @Override
     public void renderBannerListData(String categoryName, List<BannerData> bannerDataList) {
+        this.bannerDataListState = bannerDataList;
         bannerAdapter.addBannerDataListAndTitle(bannerDataList, categoryName);
     }
 
     @Override
     public void renderCategoryProductDataStyle1(CategoryData categoryData) {
+        this.categoryDataState = categoryData;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle1View(getActivity());
@@ -187,6 +224,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCategoryProductDataStyle2(CategoryData categoryData) {
+        this.categoryDataState = categoryData;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle2View(getActivity());
@@ -197,6 +235,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCategoryProductDataStyle3(CategoryData categoryData) {
+        this.categoryDataState = categoryData;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle3View(getActivity());
@@ -207,6 +246,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCategoryProductDataStyle4(CategoryData categoryData) {
+        this.categoryDataState = categoryData;
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle4View(getActivity());
@@ -243,6 +283,31 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public ContentResolver getContentResolver() {
         return getActivity().getContentResolver();
+    }
+
+    @Override
+    public CategoryData getCategoryDataState() {
+        return categoryDataState;
+    }
+
+    @Override
+    public List<BannerData> getBannerDataListState() {
+        return bannerDataListState;
+    }
+
+    @Override
+    public String getVersionInfoApplication() {
+        return VersionInfo.getVersionInfo(getActivity());
+    }
+
+    @Override
+    public String getUserLoginId() {
+        return SessionHandler.getLoginID(getActivity());
+    }
+
+    @Override
+    public Application getMainApplication() {
+        return getActivity().getApplication();
     }
 
     @Override
@@ -303,6 +368,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    @Override
     public String getStringFromResource(@StringRes int resId) {
         return getString(resId);
     }
@@ -327,28 +397,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
-        String clientNumber = preCheckoutProduct.getClientNumber();
-        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
-                .action("init_data")
-                .categoryId(preCheckoutProduct.getCategoryId())
-                .clientNumber(clientNumber)
-                .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
-                .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
-                .operatorId(preCheckoutProduct.getOperatorId())
-                .productId(preCheckoutProduct.getProductId())
-                .utmCampaign((preCheckoutProduct.getCategoryName()))
-                .utmContent(VersionInfo.getVersionInfo(getActivity()))
-                .idemPotencyKey(generateATokenRechargeCheckout())
-                .utmSource("android")
-                .utmMedium("widget")
-                .build();
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
-        }
+        presenter.processAddToCartProduct(preCheckoutProduct);
     }
 
     @Override
@@ -391,13 +440,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onButtonContactPickerClicked() {
         DigitalProductFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
-    }
-
-    private String generateATokenRechargeCheckout() {
-        String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
-        return SessionHandler.getLoginID(getActivity()) + "_"
-                + (token.isEmpty() ? timeMillis : token);
     }
 
     @Override
@@ -459,7 +501,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
     }
 
-
     @NeedsPermission(Manifest.permission.READ_CONTACTS)
     public void openContactPicker() {
         Intent contactPickerIntent = new Intent(
@@ -474,13 +515,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
     void showDeniedForContacts() {
         RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_CONTACTS);
-
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
     void showNeverAskForContacts() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_CONTACTS);
-
     }
 
     @OnShowRationale(Manifest.permission.READ_CONTACTS)

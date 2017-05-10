@@ -2,6 +2,7 @@ package com.tokopedia.digital.product.presenter;
 
 import android.net.Uri;
 
+import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.model.ContactData;
 
 /**
@@ -14,4 +15,8 @@ public interface IProductDigitalPresenter {
     void processGetCategoryAndBannerData();
 
     ContactData processGenerateContactDataFromUri(Uri contactURI);
+
+    void processStateDataToReRender();
+
+    void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct);
 }

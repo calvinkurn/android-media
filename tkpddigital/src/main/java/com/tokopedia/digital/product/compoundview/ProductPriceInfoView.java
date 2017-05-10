@@ -1,6 +1,8 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
@@ -23,6 +25,8 @@ public class ProductPriceInfoView extends RelativeLayout {
     @BindView(R2.id.tv_price_new)
     TextView tvPriceNew;
 
+    private Context context;
+
     public ProductPriceInfoView(Context context) {
         super(context);
         initialView(context, null, 0);
@@ -39,6 +43,7 @@ public class ProductPriceInfoView extends RelativeLayout {
     }
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this.context = context;
         LayoutInflater.from(context).inflate(
                 R.layout.view_holder_product_price_info_digital_module, this, true
         );
@@ -49,12 +54,17 @@ public class ProductPriceInfoView extends RelativeLayout {
         if (product.getPromo() == null) {
             tvPriceOrigin.setVisibility(GONE);
             tvPriceNew.setText(product.getPrice());
+            tvPriceNew.setTextColor(ContextCompat.getColor(context, R.color.digital_voucher));
         } else {
             tvPriceOrigin.setVisibility(VISIBLE);
             tvPriceOrigin.setText(product.getPrice());
             tvPriceNew.setText(product.getPromo().getNewPrice());
+            strikeOriginPrice();
+            tvPriceNew.setTextColor(ContextCompat.getColor(context, R.color.price_new_promo));
         }
     }
 
-
+    private void strikeOriginPrice() {
+        tvPriceOrigin.setPaintFlags(tvPriceOrigin.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+    }
 }

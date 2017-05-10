@@ -9,10 +9,16 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.listener.IProductDigitalView;
+import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.ProductDigitalData;
@@ -20,6 +26,8 @@ import com.tokopedia.digital.product.model.ProductDigitalData;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -116,6 +124,49 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         return contact;
     }
 
+    @Override
+    public void processStateDataToReRender() {
+        CategoryData categoryData = view.getCategoryDataState();
+        List<BannerData> bannerDataList = view.getBannerDataListState();
+        if (categoryData != null) {
+            renderCategoryDataAndBannerToView(categoryData, bannerDataList);
+            view.renderStateSelectedAllData();
+        }
+    }
+
+    @Override
+    public void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+        String clientNumber = preCheckoutProduct.getClientNumber();
+        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
+                .action("init_data")
+                .categoryId(preCheckoutProduct.getCategoryId())
+                .clientNumber(clientNumber)
+                .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
+                .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
+                .operatorId(preCheckoutProduct.getOperatorId())
+                .productId(preCheckoutProduct.getProductId())
+                .utmCampaign((preCheckoutProduct.getCategoryName()))
+                .utmContent(view.getVersionInfoApplication())
+                .idemPotencyKey(generateATokenRechargeCheckout())
+                .utmSource("android")
+                .utmMedium("widget")
+                .build();
+        if (view.getMainApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter =
+                    (IDigitalModuleRouter) view.getMainApplication();
+            view.navigateToActivityRequest(
+                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
+        }
+    }
+
+    @NonNull
+    private String generateATokenRechargeCheckout() {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = AuthUtil.md5(timeMillis);
+        return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
+    }
 
     @NonNull
     private Subscriber<ProductDigitalData> getSubscriberProductDigitalData() {
@@ -157,30 +208,41 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
-                if (productDigitalData.getCategoryData().isSupportedStyle()) {
-                    switch (productDigitalData.getCategoryData().getOperatorStyle()) {
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_1:
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_99:
-                            view.renderCategoryProductDataStyle1(productDigitalData.getCategoryData());
-                            break;
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_2:
-                            view.renderCategoryProductDataStyle2(productDigitalData.getCategoryData());
-                            break;
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_3:
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_4:
-                        case CategoryData.STYLE_PRODUCT_CATEGORY_5:
-                            view.renderCategoryProductDataStyle3(productDigitalData.getCategoryData());
-                            break;
-                    }
-                    view.renderBannerListData(
-                            productDigitalData.getCategoryData().getName(),
-                            productDigitalData.getBannerDataList()
-                    );
-                } else {
-                    view.renderErrorStyleNotSupportedProductDigitalData("");
-                }
-
+                CategoryData categoryData = productDigitalData.getCategoryData();
+                List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
+                renderCategoryDataAndBannerToView(categoryData, bannerDataList);
             }
         };
+    }
+
+    private void renderCategoryDataAndBannerToView(
+            CategoryData categoryData, List<BannerData> bannerDataList
+    ) {
+        if (categoryData.isSupportedStyle()) {
+            switch (categoryData.getOperatorStyle()) {
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
+                    view.renderCategoryProductDataStyle1(categoryData);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2:
+                    view.renderCategoryProductDataStyle2(categoryData);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4:
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5:
+                    view.renderCategoryProductDataStyle3(categoryData);
+                    break;
+            }
+            view.renderBannerListData(
+                    categoryData.getName(),
+                    bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
+            );
+        } else {
+            view.renderErrorStyleNotSupportedProductDigitalData(
+                    view.getStringFromResource(
+                            R.string.message_error_digital_category_style_not_supported
+                    )
+            );
+        }
     }
 }

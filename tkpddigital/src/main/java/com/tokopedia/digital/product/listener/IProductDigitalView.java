@@ -1,5 +1,6 @@
 package com.tokopedia.digital.product.listener;
 
+import android.app.Application;
 import android.content.ContentResolver;
 
 import com.tokopedia.digital.cart.listener.IBaseView;
@@ -16,6 +17,8 @@ public interface IProductDigitalView extends IBaseView {
     String getCategoryId();
 
     void renderBannerListData(String categoryName, List<BannerData> bannerDataList);
+
+    void renderStateSelectedAllData();
 
     void renderCategoryProductDataStyle1(CategoryData categoryData);
 
@@ -36,4 +39,14 @@ public interface IProductDigitalView extends IBaseView {
     void renderErrorTimeoutConnectionProductDigitalData(String message);
 
     ContentResolver getContentResolver();
+
+    CategoryData getCategoryDataState();
+
+    List<BannerData> getBannerDataListState();
+
+    String getVersionInfoApplication();
+
+    String getUserLoginId();
+
+    Application getMainApplication();
 }

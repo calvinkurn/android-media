@@ -107,6 +107,11 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
+    public void clearDataList() {
+        dataList.clear();
+        notifyDataSetChanged();
+    }
+
     static class BannerItemHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.tv_desc_banner)

@@ -139,7 +139,20 @@ public class CategoryProductStyle3View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
+    public boolean isInstantCheckoutChecked() {
+        return false;
+    }
+
+    @Override
     public String getClientNumber() {
         return clientNumberInputView.getText();
+    }
+
+    @Override
+    public void renderStateDataSelected(
+            String clientNumberState, Operator operatorSelectedState,
+            Product productSelectedState, boolean isInstantCheckoutChecked
+    ) {
+//TODO Angga
     }
 }
