@@ -171,6 +171,9 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
                 }
 
                 getView().showMessageError(videoId);
+                if (youtubeActView != null) {
+                    youtubeActView.removeVideoId(videoId);
+                }
             }
         }
 
