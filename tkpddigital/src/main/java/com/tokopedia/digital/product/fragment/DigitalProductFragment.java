@@ -14,10 +14,12 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -90,6 +92,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private List<BannerData> bannerDataListState;
     private boolean isInstantCheckoutChecked;
 
+    @BindView(R2.id.main_container)
+    NestedScrollView mainHolderContainer;
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
     @BindView(R2.id.rv_banner)
     RecyclerView rvBanner;
     @BindView(R2.id.holder_product_detail)
@@ -257,27 +263,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderErrorStyleNotSupportedProductDigitalData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorProductDigitalData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorHttpProductDigitalData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorNoConnectionProductDigitalData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionProductDigitalData(String message) {
-
+        closeViewWithMessageAlert(message);
     }
 
     @Override
@@ -322,17 +328,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void showInitialProgressLoading() {
-
+        pbMainLoading.setVisibility(View.VISIBLE);
+        mainHolderContainer.setVisibility(View.GONE);
     }
 
     @Override
     public void hideInitialProgressLoading() {
-
+        pbMainLoading.setVisibility(View.GONE);
+        mainHolderContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void clearContentRendered() {
-
+        pbMainLoading.setVisibility(View.GONE);
+        mainHolderContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -370,6 +379,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public String getCategoryId() {
         return categoryId;
+    }
+
+    @Override
+    public void closeViewWithMessageAlert(String message) {
+        Intent intent = new Intent();
+        intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @Override

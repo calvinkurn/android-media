@@ -52,6 +52,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
+        view.showInitialProgressLoading();
         productDigitalInteractor.getCategoryAndBanner(
                 view.getCategoryId(),
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
@@ -178,6 +179,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onError(Throwable e) {
+                view.clearContentRendered();
                 e.printStackTrace();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
             /* Ini kalau ga ada internet */
@@ -208,6 +210,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
+                view.hideInitialProgressLoading();
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 List<BannerData> bannerDataList = productDigitalData.getBannerDataList();
                 renderCategoryDataAndBannerToView(categoryData, bannerDataList);

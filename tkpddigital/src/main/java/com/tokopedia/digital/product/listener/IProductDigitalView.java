@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public interface IProductDigitalView extends IBaseView {
-    String getCategoryId();
+
 
     void renderBannerListData(String categoryName, List<BannerData> bannerDataList);
 
@@ -49,4 +49,8 @@ public interface IProductDigitalView extends IBaseView {
     String getUserLoginId();
 
     Application getMainApplication();
+
+    String getCategoryId();
+
+    void closeViewWithMessageAlert(String message);
 }

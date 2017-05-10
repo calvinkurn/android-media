@@ -14,6 +14,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -399,6 +400,21 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         super.onStop();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL:
+                if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                    String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                    if (!TextUtils.isEmpty(message)) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), message);
+                    }
+                }
+                break;
+        }
+    }
+
     private void stopSlideTicker() {
         tickerHandler.removeCallbacks(tickerIncrementPage);
     }
@@ -461,7 +477,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
         if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            startActivity(((IDigitalModuleRouter) getActivity().getApplication())
+            startActivityForResult(((IDigitalModuleRouter) getActivity().getApplication())
                     .instanceIntentDigitalProduct(
                             new DigitalCategoryDetailPassData.Builder()
                                     .appLinks(itemModel.getAppLinks())
@@ -469,7 +485,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                                     .categoryName(itemModel.getName())
                                     .url(itemModel.getRedirectValue())
                                     .build()
-                    ));
+                    ), IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL);
         }
     }
 
