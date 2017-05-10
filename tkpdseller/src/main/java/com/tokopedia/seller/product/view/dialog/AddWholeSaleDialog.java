@@ -251,8 +251,9 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected boolean validateMinQuantity(float minQuantity) {
-        if (minQuantity <= 1) {
+        if (minQuantity <= 0) {
             minWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
+            minWholeSale.updateMinusButtonState(false);
             return isErrorReturn = true;
         }
 
@@ -262,6 +263,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
 
         minWholeSale.setError(null);
+        minWholeSale.updateMinusButtonState(true);
         return isErrorReturn = false;
     }
 
