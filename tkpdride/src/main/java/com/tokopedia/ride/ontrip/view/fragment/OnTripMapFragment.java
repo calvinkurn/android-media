@@ -31,6 +31,7 @@ import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RemoteViews;
@@ -97,13 +98,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
     private static final float DEFAUL_MAP_ZOOM = 16;
+    private static final float SELECT_SOURCE_MAP_ZOOM = 18;
 
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
     private String requestId;
-//    RideConfiguration rideConfiguration;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -131,6 +132,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     TextView driverTelpTextView;
     @BindView(R2.id.cancel_panel)
     RelativeLayout cancelPanelLayout;
+    @BindView(R2.id.iv_my_location_button)
+    ImageView myLocationBtn;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -982,6 +985,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void moveMapToLocation(double latitude, double longitude) {
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
+    }
+
+    @Override
     public void openSmsIntent(String smsNumber) {
         if (!TextUtils.isEmpty(smsNumber)) {
             startActivity(new Intent(Intent.ACTION_VIEW,
@@ -1025,5 +1033,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 presenter.actionOnReceivePushNotification(rideRequest);
             }
         };
+    }
+
+    @OnClick(R2.id.iv_my_location_button)
+    public void actionMyLocationBtnClicked(){
+        presenter.actionGoToCurrentLocation();
     }
 }

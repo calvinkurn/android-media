@@ -440,6 +440,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onResume() {
         mapView.onResume();
         super.onResume();
+        if (mSource != null && mDestination != null) {
+            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
+                    mDestination.getLatitude(), mDestination.getLongitude());
+        }
     }
 
     @Override

@@ -138,6 +138,8 @@ public interface OnTripMapContract {
         void showRequestLoadingLayout();
 
         void hideRequestLoadingLayout();
+
+        void moveMapToLocation(double latitude, double longitude);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -172,5 +174,7 @@ public interface OnTripMapContract {
         void actionMessageDriver();
 
         boolean checkIsAnyPendingRequest();
+
+        void actionGoToCurrentLocation();
     }
 }
