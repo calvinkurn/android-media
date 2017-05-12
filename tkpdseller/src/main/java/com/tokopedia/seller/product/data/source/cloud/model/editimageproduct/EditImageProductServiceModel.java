@@ -14,7 +14,7 @@ public class EditImageProductServiceModel {
     private Object config;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private EditIageProductDataServiceModule data;
     @SerializedName("server_process_time")
     @Expose
     private String serverProcessTime;
@@ -35,11 +35,11 @@ public class EditImageProductServiceModel {
         this.config = config;
     }
 
-    public Data getData() {
+    public EditIageProductDataServiceModule getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(EditIageProductDataServiceModule data) {
         this.data = data;
     }
 

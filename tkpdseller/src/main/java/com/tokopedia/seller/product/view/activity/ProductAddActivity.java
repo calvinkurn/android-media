@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -223,7 +224,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         createProductAddFragment();
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlFromExternal() {
         showProgressDialog();
@@ -245,7 +246,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         createProductAddFragment();
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlImplicitSingle() {
         Uri imageUri = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
@@ -254,7 +255,7 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         processMultipleImage(imageUris);
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void handleImageUrlImplicitMultiple() {
         ArrayList<Uri> imageUris = getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM);
@@ -265,21 +266,21 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         }
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForExternalStorage() {
         RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         createProductAddFragment();
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         createProductAddFragment();
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showRationaleForExternalStorage(final PermissionRequest request) {
         request.proceed();
