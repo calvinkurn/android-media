@@ -5,6 +5,7 @@ import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.mapper.MyEtalaseDomainToView;
 
 import rx.Subscriber;
@@ -45,7 +46,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         checkViewAttached();
         getView().showNextListLoading();
         RequestParams requestParam = FetchMyEtalaseUseCase.generateRequestParam(page);
-        fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseDataSubscriber());
+        fetchMyEtalaseUseCase.execute(requestParam, new FetchEtalaseNextPageDataSubscriber());
     }
 
     private class FetchEtalaseDataSubscriber extends Subscriber<MyEtalaseDomainModel> {
@@ -59,7 +60,6 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
             checkViewAttached();
             getView().dismissListLoading();
             getView().showListRetry();
-
         }
 
         @Override
@@ -67,6 +67,15 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
             checkViewAttached();
             getView().dismissListLoading();
             getView().renderEtalaseList(MyEtalaseDomainToView.map(etalases));
+        }
+    }
+
+    private class FetchEtalaseNextPageDataSubscriber extends FetchEtalaseDataSubscriber {
+        @Override
+        public void onError(Throwable e) {
+            checkViewAttached();
+            getView().dismissListLoading();
+            getView().showError(e);
         }
     }
 
@@ -87,7 +96,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
             checkViewAttached();
             getView().dismissLoadingDialog();
             if (e instanceof FailedToAddEtalaseException){
-                getView().showError(e.getLocalizedMessage());
+                getView().showError(e);
             } else {
                 getView().showRetryAddNewEtalase(newEtalaseName);
             }
