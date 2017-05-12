@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -362,5 +363,10 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         start(this);
         startActivity(ProductInfoActivity.createInstance(this));
         finish();
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_ADD_PRODUCT;
     }
 }
