@@ -714,5 +714,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void onResume() {
         getOverViewPolyLine();
+        handler.removeCallbacks(timedTask);
+        handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
     }
 }
