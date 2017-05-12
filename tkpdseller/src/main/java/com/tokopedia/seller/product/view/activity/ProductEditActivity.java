@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.fragment.ProductDuplicateFragment;
@@ -47,5 +48,10 @@ public class ProductEditActivity extends ProductDraftEditActivity {
     @Override
     protected String getFragmentTAG() {
         return ProductEditFragment.class.getSimpleName();
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_EDIT_PRODUCT;
     }
 }

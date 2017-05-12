@@ -26,13 +26,9 @@ import java.text.DecimalFormat;
 
 public class DecimalInputView extends FrameLayout {
 
-    public static final String BUNDLE_SUPER_STATE = "BUNDLE_SUPER_STATE";
-    public static final String BUNDLE_HINT_TEXT = "BUNDLE_HINT_TEXT";
-    public static final String BUNDLE_VALUE_TEXT = "BUNDLE_VALUE_TEXT";
-    public static final String BUNDLE_ENABLED = "BUNDLE_ENABLED";
-
-    private static final String DECIMAL_FORMAT = "#";
+    private static final String DECIMAL_FORMAT = "#.##";
     private static final String DEFAULT_VALUE = "0";
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
 
     private TextInputLayout textInputLayout;
     private EditText editText;
@@ -40,6 +36,7 @@ public class DecimalInputView extends FrameLayout {
     private String hintText;
     private String valueText;
     private boolean enabled;
+    private int maxLength;
 
     private TextWatcher currentTextWatcher;
 
@@ -62,6 +59,7 @@ public class DecimalInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DecimalInputView);
         try {
+            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             hintText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_hint);
             valueText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_text);
             enabled = styledAttributes.getBoolean(R.styleable.DecimalInputView_decimal_input_enabled, true);
@@ -80,6 +78,7 @@ public class DecimalInputView extends FrameLayout {
             editText.setText(valueText);
         }
         setEnabled(enabled);
+        setMaxLength(maxLength);
         invalidate();
         requestLayout();
     }
@@ -139,18 +138,17 @@ public class DecimalInputView extends FrameLayout {
         return editText.getText().toString();
     }
 
-    public float getFloatValue() {
+    public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
         valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
         if (TextUtils.isEmpty(valueString)) {
             return 0;
         }
-        return Float.parseFloat(valueString);
+        return Double.parseDouble(valueString);
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-        df.setMaximumFractionDigits(2);
         editText.setText(df.format(value));
     }
 
@@ -188,7 +186,9 @@ public class DecimalInputView extends FrameLayout {
         }
     }
 
-    public void setMaxLengthInput(int maxLengthInput) {
-        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLengthInput)});
+    public void setMaxLength(int maxLengthInput) {
+        if(maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
+            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
+        }
     }
 }

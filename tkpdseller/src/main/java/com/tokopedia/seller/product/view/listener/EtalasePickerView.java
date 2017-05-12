@@ -31,7 +31,7 @@ public interface EtalasePickerView extends CustomerView {
 
     void dismissLoadingDialog();
 
-    void showError(String localizedMessage);
+    void showError(Throwable exception);
 
     void showRetryAddNewEtalase(String newEtalaseName);
 

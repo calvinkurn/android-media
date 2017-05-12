@@ -44,7 +44,7 @@ public class ViewUtils {
         return errorMessage;
     }
 
-    public static String getClickBudgetError(Context context, float clickBudget) {
+    public static String getClickBudgetError(Context context, double clickBudget) {
         if (clickBudget < TopAdsConstant.BUDGET_MULTIPLE_BY) {
             return context.getString(R.string.error_top_ads_click_budget_minimum, String.valueOf(TopAdsConstant.BUDGET_MULTIPLE_BY));
         }
@@ -57,7 +57,7 @@ public class ViewUtils {
         return null;
     }
 
-    public static String getDailyBudgetError(Context context, float clickBudget, float dailyBudget) {
+    public static String getDailyBudgetError(Context context, float clickBudget, double dailyBudget) {
         if (dailyBudget <= 0) {
             return context.getString(R.string.error_top_ads_daily_budget_cannot_empyt);
         }

@@ -22,6 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerEtalasePickerComponent;
 import com.tokopedia.seller.product.di.module.EtalasePickerModule;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapter;
 import com.tokopedia.seller.product.view.adapter.etalase.EtalasePickerAdapterListener;
 import com.tokopedia.seller.product.view.listener.EtalasePickerFragmentListener;
@@ -149,8 +150,8 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
 
     @Override
     public void dismissListLoading() {
-        adapter.showLoadingFull(false);
         adapter.showLoading(false);
+        adapter.showLoadingFull(false);
     }
 
     @Override
@@ -188,8 +189,10 @@ public class EtalasePickerFragment extends BaseDaggerFragment implements Etalase
     }
 
     @Override
-    public void showError(String localizedMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), localizedMessage);
+    public void showError(Throwable exception) {
+        NetworkErrorHelper.showSnackbar(
+                getActivity(), ViewUtils.getGeneralErrorMessage(getActivity(), exception)
+        );
     }
 
     @Override

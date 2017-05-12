@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.domain.model.CategoryRecommDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
+import com.tokopedia.seller.product.view.mapper.CategoryRecommDomainToViewMapper;
 import com.tokopedia.seller.product.view.mapper.UploadProductMapper;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -253,7 +254,9 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
 
                     @Override
                     public void onNext(CategoryRecommDomainModel categoryRecommDomainModel) {
-                        getView().onSuccessLoadRecommendationCategory(categoryRecommDomainModel.getProductCategoryPrediction());
+                        getView().onSuccessLoadRecommendationCategory(
+                                CategoryRecommDomainToViewMapper.mapDomainView(categoryRecommDomainModel)
+                                        .getProductCategoryPrediction() );
                     }
                 });
     }

@@ -19,6 +19,7 @@ import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
+import com.tokopedia.seller.product.view.widget.DecimalInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
@@ -28,11 +29,11 @@ import java.util.Locale;
 
 /**
  * @author normansyahputa on 4/20/17.
- *
- * KEEP IN MIND !!!
- * rules for minimum and maximum
- *
- * { 1 < minimum quantity <= maximum quantity <= INFINITY }
+ *         <p>
+ *         KEEP IN MIND !!!
+ *         rules for minimum and maximum
+ *         <p>
+ *         { 1 < minimum quantity <= maximum quantity <= INFINITY }
  */
 public class AddWholeSaleDialog extends DialogFragment {
 
@@ -45,7 +46,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     private WholeSaleDialogListener listener;
     private CounterInputView maxWholeSale;
     private CounterInputView minWholeSale;
-    private CounterInputView wholesalePrice;
+    private DecimalInputView wholesalePrice;
     private WholesaleModel baseValue;
     private TextView title;
     @CurrencyTypeDef
@@ -75,8 +76,9 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (previousValue != null)
+        if (previousValue != null) {
             outState.putParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE, previousValue);
+        }
         outState.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, baseValue);
         outState.putInt(KEY_CURRENCY_TYPE, currencyType);
     }
@@ -85,16 +87,11 @@ public class AddWholeSaleDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         RelativeLayout root = new RelativeLayout(getActivity());
-        root.setLayoutParams(
-                new ViewGroup.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        );
+        root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(root);
-        dialog.getWindow().setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         return dialog;
     }
 
@@ -107,7 +104,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         title.setText(R.string.add_whole_sale_title);
         minWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_whole_sale);
         maxWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_maximum_whole_sale);
-        wholesalePrice = (CounterInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
+        wholesalePrice = (DecimalInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
         view.findViewById(R.id.string_picker_dialog_confirm)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -148,10 +145,10 @@ public class AddWholeSaleDialog extends DialogFragment {
             minWholeSale.setEnabled(true);
             minWholeSale.addTextChangedListener(new NumberTextWatcher(minWholeSale.getEditText()) {
                 @Override
-                public void onNumberChanged(float minQuantity) {
+                public void onNumberChanged(double minQuantity) {
                     super.onNumberChanged(minQuantity);
                     if (validateMinQuantity(minQuantity)) return;
-                    validateMaxQuantity(maxWholeSale.getFloatValue(), true);
+                    validateMaxQuantity(maxWholeSale.getDoubleValue(), true);
                 }
             });
         }
@@ -159,7 +156,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         final boolean finalIsFirsttime = isFirsttime;
         maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText()) {
             @Override
-            public void onNumberChanged(float maxQuantity) {
+            public void onNumberChanged(double maxQuantity) {
                 super.onNumberChanged(maxQuantity);
                 validateMaxQuantity(maxQuantity, finalIsFirsttime);
             }
@@ -177,7 +174,7 @@ public class AddWholeSaleDialog extends DialogFragment {
 
         idrTextWatcher = new CurrencyIdrTextWatcher(wholesalePrice.getEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 validatePrice(number);
             }
         };
@@ -190,7 +187,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
         usdTextWatcher = new CurrencyUsdTextWatcher(wholesalePrice.getEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 validatePrice(number);
             }
         };
@@ -198,12 +195,12 @@ public class AddWholeSaleDialog extends DialogFragment {
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
                 wholesalePrice.addTextChangedListener(usdTextWatcher);
-                wholesalePrice.setValue((float) usdBaseMinimumValue);
+                wholesalePrice.setValue(usdBaseMinimumValue);
                 break;
             default:
             case CurrencyTypeDef.TYPE_IDR:
                 wholesalePrice.addTextChangedListener(idrTextWatcher);
-                wholesalePrice.setValue((float) idrBaseMinimumValue);
+                wholesalePrice.setValue(idrBaseMinimumValue);
                 break;
 
         }
@@ -227,7 +224,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
     }
 
-    protected void validateMaxQuantity(float maxQuantity, boolean finalIsFirsttime) {
+    protected void validateMaxQuantity(double maxQuantity, boolean finalIsFirsttime) {
         /**
          * less than minimum is not allowed, equal and larger is a must.
          */
@@ -238,26 +235,26 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
 
         if (finalIsFirsttime) {
-            if (maxQuantity <= minWholeSale.getFloatValue()) {
+            if (maxQuantity <= minWholeSale.getDoubleValue()) {
                 maxWholeSale.setError(getString(R.string.prompt_larger));
                 isErrorReturn = true;
                 return;
             }
-            validateMinQuantity(minWholeSale.getFloatValue());
+            validateMinQuantity(minWholeSale.getDoubleValue());
         }
 
         isErrorReturn = false;
         maxWholeSale.setError(null);
     }
 
-    protected boolean validateMinQuantity(float minQuantity) {
+    protected boolean validateMinQuantity(double minQuantity) {
         if (minQuantity <= 0) {
             minWholeSale.setError(getString(R.string.quantity_range_is_not_valid));
             minWholeSale.updateMinusButtonState(false);
             return isErrorReturn = true;
         }
 
-        if (minQuantity >= maxWholeSale.getFloatValue()) {
+        if (minQuantity >= maxWholeSale.getDoubleValue()) {
             minWholeSale.setError(getString(R.string.prompt_lesser));
             return isErrorReturn = true;
         }
@@ -285,8 +282,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         previousValue = data.getParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE);
     }
 
-    protected void validatePrice(float currencyValue) {
-
+    protected void validatePrice(double currencyValue) {
         Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
             wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
@@ -324,7 +320,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void addItem(WholesaleModel object) {
-        validatePrice(wholesalePrice.getFloatValue());
+        validatePrice(wholesalePrice.getDoubleValue());
 
         if (isErrorReturn)
             return;

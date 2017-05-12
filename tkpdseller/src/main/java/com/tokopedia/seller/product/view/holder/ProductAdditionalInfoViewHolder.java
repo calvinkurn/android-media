@@ -80,9 +80,17 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
                 }
             }
         });
-        preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText(), preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
+        preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
-            public void onNumberChanged(float number) {
+            public void onExpandViewChange(boolean isExpand) {
+                if (!isExpand) {
+                    preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                }
+            }
+        });
+        preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText()) {
+            @Override
+            public void onNumberChanged(double number) {
                 if (isPreOrderValid()) {
                     preOrderSpinnerCounterInputView.setCounterError(null);
                 }
@@ -92,20 +100,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                preOrderSpinnerCounterInputView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        isPreOrderValid();
-                    }
-                });
-            }
-        });
-        preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
-            @Override
-            public void onExpandViewChange(boolean isExpand) {
-                if (!isExpand) {
-                    preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                }
+                preOrderSpinnerCounterInputView.setCounterError(null);
             }
         });
     }

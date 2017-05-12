@@ -22,10 +22,11 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.product.data.source.cloud.model.catalogdata.Catalog;
-import com.tokopedia.seller.product.domain.model.ProductCategoryPredictionDomainModel;
 import com.tokopedia.seller.product.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +52,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private static final String BUNDLE_CATALOG_SHOWN = "BUNDLE_CATALOG_SHOWN";
     private static final String BUNDLE_CATALOG_ID = "BUNDLE_CATALOG_ID";
     private static final String BUNDLE_CATALOG_NAME = "BUNDLE_CATALOG_NAME";
+    private static final String BUNDLE_CAT_RECOMM = "BUNDLE_CAT_RECOM";
 
     private static final int DEFAULT_CATEGORY_ID = -1;
     private static final int DEFAULT_CATALOG_ID = -1;
@@ -67,6 +69,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     private Listener listener;
     private long categoryId;
     private long catalogId;
+
+    ArrayList <ProductCategoryPredictionViewModel> categoryPredictionList;
 
     public void setListener(Listener listener) {
         this.listener = listener;
@@ -142,7 +146,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             categoryLabelView.resetContentText();
             return;
         }
-        ProductCategoryPredictionDomainModel productCategoryPrediction = (ProductCategoryPredictionDomainModel) radioButton.getTag();
+        int childIndex = group.indexOfChild(radioButton);
+        ProductCategoryPredictionViewModel productCategoryPrediction = categoryPredictionList.get(childIndex);
         if (productCategoryPrediction == null) {
             categoryLabelView.resetContentText();
             return;
@@ -178,7 +183,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         nameEditText.setEnabled(enabled);
     }
 
-    public void successGetCategoryRecommData(List<ProductCategoryPredictionDomainModel> categoryPredictionList) {
+    public void successGetCategoryRecommData(List<ProductCategoryPredictionViewModel> categoryPredictionList) {
         if (categoryPredictionList == null || categoryPredictionList.size() == 0) {
             hideAndClearCategoryRecomm();
             return;
@@ -202,8 +207,8 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.getChildAt(i);
             radioButton.setText(categoryPredictionList.get(i).getPrintedString());
             radioButton.setId(categoryPredictionList.get(i).getLastCategoryId());
-            radioButton.setTag(categoryPredictionList.get(i));
         }
+        this.categoryPredictionList = (ArrayList) categoryPredictionList;
         categoryRecommView.setVisibility(View.VISIBLE);
     }
 
@@ -219,16 +224,20 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
             }
             // reselect the id if exist on the radio button
             // unselect if the id not exist
-            radioGroupCategoryRecomm.setOnCheckedChangeListener(null);
-            RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById((int) categoryId);
-            if (radioButton == null) {
-                radioGroupCategoryRecomm.clearCheck();
-            } else if (!radioButton.isChecked()) {
-                radioButton.setChecked(true);
-            }
-            radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
+            selectRadioByCategoryId((int)categoryId);
         }
         listener.fetchCategory(categoryId);
+    }
+
+    private void selectRadioByCategoryId(int categoryId){
+        radioGroupCategoryRecomm.setOnCheckedChangeListener(null);
+        RadioButton radioButton = (RadioButton) radioGroupCategoryRecomm.findViewById(categoryId);
+        if (radioButton == null) {
+            radioGroupCategoryRecomm.clearCheck();
+        } else if (!radioButton.isChecked()) {
+            radioButton.setChecked(true);
+        }
+        radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
     }
 
     public void processCategory(String[] categoryNameArr) {
@@ -247,6 +256,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
     }
 
     private void hideAndClearCategoryRecomm() {
+        categoryPredictionList = null;
         categoryRecommView.setVisibility(View.GONE);
     }
 
@@ -320,6 +330,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         savedInstanceState.putBoolean(BUNDLE_CATALOG_SHOWN, catalogLabelView.getVisibility() == View.VISIBLE);
         savedInstanceState.putLong(BUNDLE_CATALOG_ID, catalogId);
         savedInstanceState.putString(BUNDLE_CATALOG_NAME, catalogLabelView.getValue());
+        savedInstanceState.putParcelableArrayList(BUNDLE_CAT_RECOMM, categoryPredictionList);
     }
 
     @Override
@@ -333,5 +344,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         }
         setCatalog(savedInstanceState.getLong(BUNDLE_CATALOG_ID, DEFAULT_CATALOG_ID), savedInstanceState.getString(BUNDLE_CATALOG_NAME));
         catalogLabelView.setVisibility(savedInstanceState.getBoolean(BUNDLE_CATALOG_SHOWN, false) ? View.VISIBLE : View.GONE);
+
+        List<ProductCategoryPredictionViewModel> productCategoryPredictionViewModelList = savedInstanceState.getParcelableArrayList(BUNDLE_CAT_RECOMM);
+        successGetCategoryRecommData(productCategoryPredictionViewModelList);
+
+        selectRadioByCategoryId((int)categoryId);
     }
 }

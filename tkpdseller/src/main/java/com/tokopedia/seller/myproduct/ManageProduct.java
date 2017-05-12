@@ -343,13 +343,13 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
         GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
-    @TargetApi(16)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
         GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);

@@ -73,7 +73,7 @@ public class EtalasePickerAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
     private boolean isLastItemPosition(int position) {
-        return position == dataRendered.size();
+        return position >= dataRendered.size();
     }
 
     @Override
