@@ -97,6 +97,7 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         super.onCreate(savedInstanceState);
         items = new ArrayList<>();
         adapter = InboxTalkAdapter.createAdapter(getActivity(), this, items, false, true, presenter);
+
     }
 
     @Override
@@ -105,9 +106,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         displayLoading(true);
         requestFromCache();
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+
     }
 
     @Override
