@@ -305,7 +305,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void updatePolylineIfResetedByUiLifecycle(RideRequest result) {
-        if (getView().isAlreadyRouteDrawed()) {
+        if (!getView().isAlreadyRouteDrawed()) {
             getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
             getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
             getOverViewPolyLine();
@@ -335,15 +335,18 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         }
                         getView().renderTripRoute(routes);
                         if (activeRideRequest != null) {
-                            getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(),
-                                    activeRideRequest.getDestination().getLongitude());
-                            getView().renderDestinationMarker(activeRideRequest.getPickup().getLatitude(),
-                                    activeRideRequest.getDestination().getLongitude());
+                            double startLat = activeRideRequest.getPickup().getLatitude();
+                            double startLng = activeRideRequest.getPickup().getLongitude();
+                            double endLat = activeRideRequest.getDestination().getLatitude();
+                            double endLng = activeRideRequest.getDestination().getLongitude();
+
+                            getView().renderSourceMarker(startLat, startLng);
+                            getView().renderDestinationMarker(endLat, endLng);
                             getView().zoomMapFitWithSourceAndDestination(
-                                    activeRideRequest.getPickup().getLatitude(),
-                                    activeRideRequest.getDestination().getLongitude(),
-                                    activeRideRequest.getPickup().getLatitude(),
-                                    activeRideRequest.getDestination().getLongitude()
+                                    startLat,
+                                    startLng,
+                                    endLat,
+                                    endLng
                             );
                         }
                     }
