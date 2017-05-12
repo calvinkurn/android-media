@@ -189,8 +189,10 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
     private void showLoading() {
-        if (viewListener.getAdapter().getList().size() == 0) {
+        if (!viewListener.isRefreshing() &&
+                viewListener.getAdapter().getList().size() == 0) {
             viewListener.setLoading();
+
         } else if(paging.getPage() == 1){
             viewListener.showRefreshing();
         }else{
