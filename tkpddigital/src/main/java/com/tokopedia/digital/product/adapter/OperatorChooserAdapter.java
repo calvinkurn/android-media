@@ -93,5 +93,8 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
+    public void setSearchResultData(List<Operator> operatorQuery) {
+        this.operatorList = operatorQuery;
+    }
 }
 
