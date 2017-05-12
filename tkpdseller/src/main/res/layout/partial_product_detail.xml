@@ -33,7 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:src="@drawable/ic_action_edit"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_edit_green"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -77,10 +78,10 @@
     <com.tokopedia.expandable.ExpandableOptionSwitch
         android:id="@+id/expandable_option_switch_stock_total"
         style="@style/LabelLayoutWithoutBorder"
+        android:visibility="gone"
         app:eo_checked="false"
         app:eo_theme="@style/ExpandableStyle"
-        app:eo_title="@string/product_label_manage_stock"
-        android:visibility="gone">
+        app:eo_title="@string/product_label_manage_stock">
 
         <com.tokopedia.seller.product.view.widget.CounterInputView
             android:id="@+id/counter_input_view_stock_total"
@@ -93,11 +94,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/product_margin_cards"
+        android:focusable="true"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
         app:label_show_arrow="true"
-        app:title="@string/product_label_shop_window"
-        android:focusable="true"/>
+        app:title="@string/product_label_shop_window" />
 
     <com.tokopedia.seller.product.view.widget.SpinnerTextView
         android:id="@+id/spinner_text_view_condition"
