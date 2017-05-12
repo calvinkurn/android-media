@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -121,9 +122,9 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         return isChanging;
     }
 
-    private ImageProductInputViewModel findImage(String url, List<ImageProductInputViewModel> photoList) {
+    private ImageProductInputViewModel findImage(@NonNull String url, List<ImageProductInputViewModel> photoList) {
         for (ImageProductInputViewModel viewModel : photoList) {
-            if (viewModel.getUrl().equals(url)) {
+            if (url.equals(viewModel.getUrl())) {
                 return viewModel;
             }
         }
