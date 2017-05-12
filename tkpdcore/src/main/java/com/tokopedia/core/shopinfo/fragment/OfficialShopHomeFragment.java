@@ -64,6 +64,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
     private static final String URL_PATH_PAGE = "page";
 
     private static final String STATE_PRODUCT_MODEL = "STATE_PRODUCT_MODEL";
+    private static final String PARAM_ALL = "all";
 
     @BindView(R2.id.webview)
     WebView webView;
@@ -220,7 +221,7 @@ public class OfficialShopHomeFragment extends BasePresenterFragment<OsHomePresen
             @Override
             public void onClick(View v) {
                 GetShopProductParam getShopProductParam = new GetShopProductParam();
-                getShopProductParam.setEtalaseId("all");
+                getShopProductParam.setEtalaseId(PARAM_ALL);
                 mOfficialShopInteractionListener.OnProductListPageRedirected(getShopProductParam);
             }
         });
