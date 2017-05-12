@@ -463,14 +463,17 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 priceSpinnerCounterInputView.getContext(),
                 Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
 
-        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
+        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second ) {
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
             wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
             return false;
+        }else if(minMaxPrice.first == getPriceValue()){
+            wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
+        }else{
+            wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
         }
         priceSpinnerCounterInputView.setCounterError(null);
-        wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -537,7 +540,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             weightSpinnerCounterInputView.requestFocus();
             return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
         }
-        if(!isMinPurchaseValid()){
+        if(!isMinOrderValid()){
             minimumOrderCounterInputView.requestFocus();
             return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
         }
@@ -601,10 +604,15 @@ public class ProductDetailViewHolder extends ProductViewHolder
         stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible? View.VISIBLE: View.GONE);
     }
 
-    public boolean isMinPurchaseValid() {
-        int purchaseMinimum = Integer.parseInt(minimumOrderCounterInputView.getValueText());
+    public boolean isMinOrderValid() {
+        float orderMinimum = 0;
+        try {
+            orderMinimum = Float.parseFloat(minimumOrderCounterInputView.getValueText());
+        }catch (Exception e){
+            orderMinimum = -1;
+        }
 
-        if (purchaseMinimum <= 0) {
+        if (orderMinimum <= 0) {
             minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().
                     getString(R.string.product_error_product_minimum_order_not_valid));
             return false;

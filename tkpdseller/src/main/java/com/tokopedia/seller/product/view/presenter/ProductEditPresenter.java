@@ -57,7 +57,7 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
         public void onError(Throwable e) {
             e.printStackTrace();
             checkViewAttached();
-            getView().onErrorLoadProduct(ViewUtils.getErrorMessage(e));
+            getView().onErrorLoadProduct(e);
         }
 
         @Override

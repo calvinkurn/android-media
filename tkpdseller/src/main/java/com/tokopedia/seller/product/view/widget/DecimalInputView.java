@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -179,5 +180,9 @@ public class DecimalInputView extends FrameLayout {
         for (int i = 0; i < getChildCount(); i++) {
             getChildAt(i).restoreHierarchyState(ss.getChildrenStates());
         }
+    }
+
+    public void setMaxLengthInput(int maxLengthInput) {
+        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLengthInput)});
     }
 }
