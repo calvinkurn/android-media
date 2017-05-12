@@ -31,6 +31,8 @@ public class ViewUtils {
     public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {
         if (t instanceof ResponseErrorListStringException) {
             return ((ResponseErrorListStringException) t).getErrorList().get(0);
+        }else if(t instanceof ResponseErrorException){
+            return getErrorMessage(t);
         }else if (t instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
         } else if (t instanceof SocketTimeoutException) {

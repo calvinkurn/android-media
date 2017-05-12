@@ -11,6 +11,6 @@ public interface ProductDraftView extends ProductAddView {
 
     void onSuccessLoadProduct(UploadProductInputViewModel model);
 
-    void onErrorLoadProduct(String errorMessage);
+    void onErrorLoadProduct(Throwable throwable);
 
 }

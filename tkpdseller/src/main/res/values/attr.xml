@@ -154,6 +154,7 @@
         <attr name="decimal_input_enabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="CounterInputView">
+        <attr name="max_length_input" format="integer|reference"/>
         <attr name="counter_hint" format="string"/>
         <attr name="counter_text" format="string"/>
         <attr name="counter_min" format="integer"/>

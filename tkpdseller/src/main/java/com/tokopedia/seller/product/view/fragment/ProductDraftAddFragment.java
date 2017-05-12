@@ -14,6 +14,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
+import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductDraftView;
@@ -125,10 +126,10 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    public void onErrorLoadProduct(String errorMessage) {
+    public void onErrorLoadProduct(Throwable throwable) {
         hideLoading();
         hideView();
-        NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), mainView, ViewUtils.getGeneralErrorMessage(getActivity(), throwable), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 fetchInputData();

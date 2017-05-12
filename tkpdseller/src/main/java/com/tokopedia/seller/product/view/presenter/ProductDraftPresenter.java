@@ -48,7 +48,7 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
             public void onError(Throwable e) {
                 e.printStackTrace();
                 checkViewAttached();
-                getView().onErrorLoadProduct(ViewUtils.getErrorMessage(e));
+                getView().onErrorLoadProduct(e);
             }
 
             @Override
