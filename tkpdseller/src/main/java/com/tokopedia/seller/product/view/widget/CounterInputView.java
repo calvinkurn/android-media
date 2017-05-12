@@ -130,8 +130,8 @@ public class CounterInputView extends FrameLayout {
     @Override
     public void setEnabled(boolean enable) {
         decimalInputView.setEnabled(enable);
-        minusImageButton.setEnabled(enable);
         plusImageButton.setEnabled(enable);
+        updateButtonState();
     }
 
     public void updateMinusButtonState(boolean enable) {
