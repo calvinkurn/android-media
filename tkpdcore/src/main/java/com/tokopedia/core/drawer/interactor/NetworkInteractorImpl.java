@@ -2,9 +2,7 @@ package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -27,7 +25,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import org.json.JSONException;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 
 import retrofit2.Response;
@@ -80,7 +77,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
-                    saveUserData(context, response.body().convertDataObj(ProfileData.class));
+                    saveUserData(response.body().convertDataObj(ProfileData.class));
                     listener.onSuccess(parseToDrawerHeader(response.body()
                             .convertDataObj(ProfileData.class)));
                 } else {
@@ -95,14 +92,8 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .subscribe(subscriber));
     }
 
-    private void saveUserData(Context context, ProfileData userData){
+    private void saveUserData(ProfileData userData){
         try {
-//            SessionHandler sessionHandler = new SessionHandler(context);
-//            Gson gson = new Gson();
-//            Type dataObject = new TypeToken<ProfileData>() {
-//            }.getType();
-//            String json = gson.toJson(userData, dataObject);
-//            sessionHandler.setUserData(json);
 
             AnalyticsCacheHandler cacheHandler = new AnalyticsCacheHandler();
             cacheHandler.setUserDataCache(userData);
