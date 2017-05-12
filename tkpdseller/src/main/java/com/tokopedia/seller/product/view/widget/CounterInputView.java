@@ -22,7 +22,7 @@ import com.tokopedia.seller.R;
 public class CounterInputView extends FrameLayout {
 
     private static final int DEFAULT_MIN_VALUE = 0;
-    public static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
 
     private DecimalInputView decimalInputView;
     private ImageButton minusImageButton;
@@ -33,7 +33,7 @@ public class CounterInputView extends FrameLayout {
     private int minValue;
     private boolean showCounterButton;
     private boolean enabled;
-    private int maxLenghtInput;
+    private int maxLength;
 
     public CounterInputView(Context context) {
         super(context);
@@ -54,7 +54,7 @@ public class CounterInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.CounterInputView);
         try {
-            maxLenghtInput = styledAttributes.getInt(R.styleable.CounterInputView_max_length_input, DEFAULT_INPUT_VALUE_LENGTH);
+            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             hintText = styledAttributes.getString(R.styleable.CounterInputView_counter_hint);
             valueText = styledAttributes.getString(R.styleable.CounterInputView_counter_text);
             minValue = styledAttributes.getInt(R.styleable.CounterInputView_counter_min, DEFAULT_MIN_VALUE);
@@ -110,7 +110,7 @@ public class CounterInputView extends FrameLayout {
         if (!TextUtils.isEmpty(valueText)) {
             decimalInputView.setText(valueText);
         }
-        setMaxLengthInput(maxLenghtInput);
+        setMaxLength(maxLength);
         updateCounterButtonView(showCounterButton);
         setEnabled(enabled);
         updateButtonState();
@@ -224,14 +224,9 @@ public class CounterInputView extends FrameLayout {
         }
     }
 
-    public void setMaxLengthInput(int maxLengthInput) {
-        this.maxLenghtInput = maxLengthInput;
-        if(maxLengthInput != DEFAULT_INPUT_VALUE_LENGTH){
-            decimalInputView.setMaxLengthInput(maxLengthInput);
+    public void setMaxLength(int maxLengthInput) {
+        if(maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH){
+            decimalInputView.setMaxLength(maxLengthInput);
         }
-    }
-
-    public int getMaxLenghtInput() {
-        return maxLenghtInput;
     }
 }

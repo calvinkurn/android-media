@@ -28,6 +28,7 @@ public class DecimalInputView extends FrameLayout {
 
     private static final String DECIMAL_FORMAT = "#.##";
     private static final String DEFAULT_VALUE = "0";
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
 
     private TextInputLayout textInputLayout;
     private EditText editText;
@@ -35,6 +36,7 @@ public class DecimalInputView extends FrameLayout {
     private String hintText;
     private String valueText;
     private boolean enabled;
+    private int maxLength;
 
     private TextWatcher currentTextWatcher;
 
@@ -57,6 +59,7 @@ public class DecimalInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.DecimalInputView);
         try {
+            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             hintText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_hint);
             valueText = styledAttributes.getString(R.styleable.DecimalInputView_decimal_input_text);
             enabled = styledAttributes.getBoolean(R.styleable.DecimalInputView_decimal_input_enabled, true);
@@ -75,6 +78,7 @@ public class DecimalInputView extends FrameLayout {
             editText.setText(valueText);
         }
         setEnabled(enabled);
+        setMaxLength(maxLength);
         invalidate();
         requestLayout();
     }
@@ -182,7 +186,9 @@ public class DecimalInputView extends FrameLayout {
         }
     }
 
-    public void setMaxLengthInput(int maxLengthInput) {
-        editText.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLengthInput)});
+    public void setMaxLength(int maxLengthInput) {
+        if(maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
+            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
+        }
     }
 }

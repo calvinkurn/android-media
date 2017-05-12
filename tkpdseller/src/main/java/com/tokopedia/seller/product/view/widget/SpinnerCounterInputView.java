@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Parcelable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -23,6 +24,8 @@ import com.tokopedia.seller.product.utils.ConverterUtils;
 
 public class SpinnerCounterInputView extends FrameLayout {
 
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
+
     private CounterInputView counterInputView;
     private SpinnerTextView spinnerTextView;
 
@@ -34,6 +37,7 @@ public class SpinnerCounterInputView extends FrameLayout {
     private boolean showCounterButton;
     private boolean enabled;
     private int spinnerWidth;
+    private int maxLength;
 
     public SpinnerCounterInputView(Context context) {
         super(context);
@@ -54,6 +58,7 @@ public class SpinnerCounterInputView extends FrameLayout {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
+            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             spinnerHintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_hint);
             hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);
@@ -83,6 +88,7 @@ public class SpinnerCounterInputView extends FrameLayout {
             spinnerTextView.setValues(ConverterUtils.convertCharSequenceToString(values));
         }
         counterInputView.showCounterButton(showCounterButton);
+        setMaxLength(maxLength);
         setEnabled(enabled);
 
         updateSpinnerWidth();
@@ -175,6 +181,12 @@ public class SpinnerCounterInputView extends FrameLayout {
 
     public EditText getCounterEditText() {
         return counterInputView.getEditText();
+    }
+
+    public void setMaxLength(int maxLength) {
+        if(maxLength > DEFAULT_INPUT_VALUE_LENGTH) {
+            counterInputView.setMaxLength(maxLength);
+        }
     }
 
     @Override

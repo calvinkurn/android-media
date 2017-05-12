@@ -17,7 +17,6 @@
         android:id="@+id/counter_input_view_minimum_whole_sale"
         style="@style/LabelLayoutWithoutPadding.White"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:max_length_input="@integer/product_max_counter_int_length"
         app:counter_enabled="false"
         app:counter_hint="@string/product_label_minimum_whole_sale" />
 
@@ -25,15 +24,13 @@
         android:id="@+id/counter_input_view_maximum_whole_sale"
         style="@style/LabelLayoutWithoutPadding.White"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:max_length_input="@integer/product_max_counter_int_length"
         app:counter_hint="@string/product_label_maximum_whole_sale" />
 
-    <com.tokopedia.seller.product.view.widget.CounterInputView
+    <com.tokopedia.seller.product.view.widget.DecimalInputView
         android:id="@+id/counter_input_view_wholesale_price"
         style="@style/LabelLayoutWithoutPadding.White"
         android:layout_marginTop="@dimen/product_margin_cards"
-        app:counter_hint="@string/product_label_price_whole_sale"
-        app:counter_show_counter_button="false" />
+        app:decimal_input_hint="@string/product_label_price_whole_sale" />
 
     <RelativeLayout
         android:layout_width="match_parent"

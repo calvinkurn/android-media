@@ -19,6 +19,7 @@ import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.widget.CounterInputView;
+import com.tokopedia.seller.product.view.widget.DecimalInputView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
 import com.tokopedia.seller.util.NumberTextWatcher;
@@ -45,7 +46,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     private WholeSaleDialogListener listener;
     private CounterInputView maxWholeSale;
     private CounterInputView minWholeSale;
-    private CounterInputView wholesalePrice;
+    private DecimalInputView wholesalePrice;
     private WholesaleModel baseValue;
     private TextView title;
     @CurrencyTypeDef
@@ -107,7 +108,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         title.setText(R.string.add_whole_sale_title);
         minWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_minimum_whole_sale);
         maxWholeSale = (CounterInputView) view.findViewById(R.id.counter_input_view_maximum_whole_sale);
-        wholesalePrice = (CounterInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
+        wholesalePrice = (DecimalInputView) view.findViewById(R.id.counter_input_view_wholesale_price);
         view.findViewById(R.id.string_picker_dialog_confirm)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override

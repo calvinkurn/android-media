@@ -155,7 +155,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 });
             }
 
-            private void onItemClicked (int position) {
+            private void onItemClicked(int position) {
                 priceSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
                 EditText editText = priceSpinnerCounterInputView.getCounterEditText();
                 editText.setSelection(editText.getText().length());
@@ -389,9 +389,9 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getFreeReturns() {
-        if(freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE){
+        if (freeReturnsSpinnerTextView.getVisibility() != View.VISIBLE) {
             return Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_inactive));
-        }else {
+        } else {
             return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
         }
     }
@@ -436,8 +436,6 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private void clearWholesaleItems() {
         if (wholesaleAdapter.getItemCount() > 0) {
             wholesaleAdapter.clearAll();
-
-
             wholesaleAdapter.notifyDataSetChanged();
         }
         updateWholesaleButton();
@@ -463,14 +461,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 priceSpinnerCounterInputView.getContext(),
                 Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
 
-        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second ) {
+        if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
             wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
             return false;
-        }else if(minMaxPrice.first == getPriceValue()){
+        } else if (minMaxPrice.first == getPriceValue()) {
             wholesaleExpandableOptionSwitch.setVisibility(View.GONE);
-        }else{
+        } else {
             wholesaleExpandableOptionSwitch.setVisibility(View.VISIBLE);
         }
         priceSpinnerCounterInputView.setCounterError(null);
@@ -540,7 +538,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             weightSpinnerCounterInputView.requestFocus();
             return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_WEIGHT);
         }
-        if(!isMinOrderValid()){
+        if (!isMinOrderValid()) {
             minimumOrderCounterInputView.requestFocus();
             return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_MIN_PURCHASE);
         }
@@ -549,7 +547,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             return new Pair<>(false, AppEventTracking.AddProduct.FIELDS_MANDATORY_STOCK_STATUS);
         }
         if (getEtalaseId() < 0) {
-            etalaseLabelView.getParent().requestChildFocus(etalaseLabelView,etalaseLabelView);
+            etalaseLabelView.getParent().requestChildFocus(etalaseLabelView, etalaseLabelView);
             Snackbar.make(etalaseLabelView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_etalase_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(etalaseLabelView.getContext(), R.color.green_400))
                     .show();
@@ -598,17 +596,17 @@ public class ProductDetailViewHolder extends ProductViewHolder
         priceSpinnerCounterInputView.setCounterValue(counterPriceValue);
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);
-        wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible? View.VISIBLE: View.GONE);
+        wholesaleExpandableOptionSwitch.setVisibility(isWholeSaleVisible ? View.VISIBLE : View.GONE);
 
         boolean isStockTotalVisible = savedInstanceState.getBoolean(IS_STOCKTOTAL_VISIBLE, false);
-        stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible? View.VISIBLE: View.GONE);
+        stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible ? View.VISIBLE : View.GONE);
     }
 
     public boolean isMinOrderValid() {
         float orderMinimum = 0;
         try {
             orderMinimum = Float.parseFloat(minimumOrderCounterInputView.getValueText());
-        }catch (Exception e){
+        } catch (Exception e) {
             orderMinimum = -1;
         }
 
