@@ -424,5 +424,6 @@
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="positive_button_dialog">Ya</string>
     <string name="negative_button_dialog">Tidak</string>
+    <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
 
 </resources>
