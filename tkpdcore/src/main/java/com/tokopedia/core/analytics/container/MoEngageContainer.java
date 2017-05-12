@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;
 import com.moe.pushlibrary.PayloadBuilder;
@@ -155,7 +156,9 @@ public class MoEngageContainer implements IMoengageContainer {
                 helper.setUniqueId(value.getCustomerId());
                 helper.setEmail(value.getEmailAddress());
                 helper.setNumber(value.getPhoneNumber());
-                helper.setBirthDate(value.getDateOfBirth());
+                if(!TextUtils.isEmpty(value.getDateOfBirth())) {
+                    helper.setBirthDate(value.getDateOfBirth());
+                }
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_GOLD_MERCHANT, String.valueOf(value.isGoldMerchant()));
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.IS_SELLER, String.valueOf(value.isSeller()));
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_ID, value.getShopId());
