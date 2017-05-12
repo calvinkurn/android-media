@@ -92,12 +92,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
-                preOrderSpinnerCounterInputView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        isPreOrderValid();
-                    }
-                });
+                preOrderSpinnerCounterInputView.setCounterError(null);
             }
         });
         preOrderExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
