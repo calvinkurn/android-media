@@ -104,6 +104,23 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
 
     @Override
     public void renderUpdateDataSelected(Operator data) {
+        for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
+            Operator operator = dataList.get(i);
+            if (operator.getOperatorId().equalsIgnoreCase(data.getOperatorId())) {
+                int resIdRadio = getChildAt(i).getId();
+                radioGroupOparator.check(resIdRadio);
+                return;
+            }
+        }
         actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data);
+    }
+
+    public void renderUpdateDataSelectedByOperatorId(String operatorId) {
+        for (Operator operator : dataList) {
+            if (operator.getOperatorId().equalsIgnoreCase(operatorId)) {
+                renderUpdateDataSelected(operator);
+                return;
+            }
+        }
     }
 }

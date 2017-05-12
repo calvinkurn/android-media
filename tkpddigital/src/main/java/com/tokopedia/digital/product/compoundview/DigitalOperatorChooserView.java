@@ -75,7 +75,7 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
     @Override
     public void renderInitDataList(List<Operator> dataList) {
         this.dataList = dataList;
-        this.dataSelected = dataList.get(0);
+        if (dataSelected == null) this.dataSelected = dataList.get(0);
         invalidateContentView();
         actionListener.onInitialDataDigitalChooserSelectedRendered(dataSelected);
     }

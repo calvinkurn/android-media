@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 
@@ -22,7 +23,8 @@ import butterknife.BindView;
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryData> {
+public class CategoryProductStyle2View extends
+        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
 
     @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
             TextView tvTitle;
@@ -63,7 +65,7 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    protected void initialViewListener(Context context) {
+    protected void onCreateView() {
         digitalOperatorRadioChooserView = new DigitalOperatorRadioChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
@@ -77,7 +79,7 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    public void renderData(CategoryData data) {
+    protected void onInitialDataRendered() {
         tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         if (holderRadioChooserOperator.getChildAt(0) != null) {
             holderRadioChooserOperator.removeAllViews();
@@ -92,6 +94,59 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
         digitalOperatorRadioChooserView.setActionListener(getActionListenerRadioChooserOperator());
         digitalOperatorRadioChooserView.renderInitDataList(data.getOperatorList());
         btnBuyDigital.setOnClickListener(getButtonBuyListener(data));
+    }
+
+    @Override
+    protected void onUpdateSelectedProductData() {
+        digitalProductChooserView.renderUpdateDataSelected(productSelected);
+    }
+
+
+    @Override
+    protected void onUpdateSelectedOperatorData() {
+        digitalOperatorRadioChooserView.renderUpdateDataSelected(operatorSelected);
+    }
+
+    @Override
+    public void renderClientNumberFromContact(String clientNumber) {
+
+    }
+
+    @Override
+    public boolean isInstantCheckoutChecked() {
+        return false;
+    }
+
+    @Override
+    public String getClientNumber() {
+        return clientNumberInputView.getText();
+    }
+
+
+    @Override
+    protected void onRestoreSelectedData(
+            Operator operatorSelectedState, Product productSelectedState,
+            String clientNumberState, boolean isInstantCheckoutChecked
+    ) {
+
+    }
+
+    @Override
+    protected void onHistoryClientNumberRendered() {
+        //TODO Angga
+        if (historyClientNumber == null) return;
+        if (!TextUtils.isEmpty(historyClientNumber.getLastOrderClientNumber().getOperatorId())) {
+            digitalOperatorRadioChooserView.renderUpdateDataSelectedByOperatorId(
+                    historyClientNumber.getLastOrderClientNumber().getOperatorId()
+            );
+            if (operatorSelected != null && !TextUtils.isEmpty(
+                    historyClientNumber.getLastOrderClientNumber().getClientNumber()
+            )) {
+                clientNumberInputView.setText(
+                        historyClientNumber.getLastOrderClientNumber().getClientNumber()
+                );
+            }
+        }
     }
 
     @NonNull
@@ -123,6 +178,7 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
         };
     }
 
+    @NonNull
     private OnClickListener getButtonBuyListener(final CategoryData data) {
         return new OnClickListener() {
             @Override
@@ -182,55 +238,6 @@ public class CategoryProductStyle2View extends BaseDigitalProductView<CategoryDa
         };
     }
 
-
-
-    @Override
-    public void renderUpdateProductSelected(Product product) {
-        digitalProductChooserView.renderUpdateDataSelected(product);
-    }
-
-    @Override
-    public void renderUpdateOperatorSelected(Operator operator) {
-        digitalOperatorRadioChooserView.renderUpdateDataSelected(operator);
-    }
-
-    @Override
-    public void renderClientNumberFromContact(String clientNumber) {
-
-    }
-
-    @Override
-    public Operator getSelectedOperator() {
-        return operatorSelected;
-    }
-
-    @Override
-    public Product getSelectedProduct() {
-        return productSelected;
-    }
-
-    @Override
-    public boolean isInstantCheckoutChecked() {
-        return false;
-    }
-
-    @Override
-    public String getClientNumber() {
-        return clientNumberInputView.getText();
-    }
-
-    @Override
-    public void renderStateDataSelected(
-            String clientNumberState, Operator operatorSelectedState,
-            Product productSelectedState, boolean isInstantCheckoutChecked
-    ) {
-        //TODO Angga
-    }
-
-    @Override
-    protected void onHistoryClientNumberRendered() {
-        //TODO Angga
-    }
 
     @NonNull
     private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser(

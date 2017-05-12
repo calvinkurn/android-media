@@ -5,13 +5,15 @@ import android.util.AttributeSet;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryData> {
+public class CategoryProductStyle4View extends
+        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
     public CategoryProductStyle4View(Context context) {
         super(context);
     }
@@ -25,7 +27,7 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    protected void initialViewListener(Context context) {
+    protected void onCreateView() {
 
     }
 
@@ -34,34 +36,25 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
         return R.layout.view_holder_category_product_style_4;
     }
 
+
     @Override
-    public void renderData(CategoryData data) {
+    protected void onInitialDataRendered() {
 
     }
 
     @Override
-    public void renderUpdateProductSelected(Product product) {
+    protected void onUpdateSelectedProductData() {
 
     }
 
     @Override
-    public void renderUpdateOperatorSelected(Operator operator) {
+    protected void onUpdateSelectedOperatorData() {
 
     }
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
 
-    }
-
-    @Override
-    public Operator getSelectedOperator() {
-        return null;
-    }
-
-    @Override
-    public Product getSelectedProduct() {
-        return null;
     }
 
     @Override
@@ -74,12 +67,13 @@ public class CategoryProductStyle4View extends BaseDigitalProductView<CategoryDa
         return null;
     }
 
+
     @Override
-    public void renderStateDataSelected(
-            String clientNumberState, Operator operatorSelectedState,
-            Product productSelectedState, boolean isInstantCheckoutChecked
+    protected void onRestoreSelectedData(
+            Operator operatorSelectedState, Product productSelectedState,
+            String clientNumberState, boolean isInstantCheckoutChecked
     ) {
-//TODO Angga
+
     }
 
     @Override

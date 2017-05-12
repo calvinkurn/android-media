@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
-import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.Product;
 
@@ -16,14 +15,15 @@ import butterknife.ButterKnife;
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public abstract class BaseDigitalProductView<T> extends RelativeLayout {
+public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout {
 
     protected ActionListener actionListener;
     protected Context context;
 
-    protected Product productSelected;
-    protected Operator operatorSelected;
-    protected HistoryClientNumber historyClientNumber;
+    protected P productSelected;
+    protected O operatorSelected;
+    protected H historyClientNumber;
+    protected C data;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -31,57 +31,87 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
 
     public BaseDigitalProductView(Context context) {
         super(context);
-        this.context = context;
         initialView(context, null, 0);
     }
 
     public BaseDigitalProductView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         initialView(context, attrs, 0);
     }
 
     public BaseDigitalProductView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context = context;
         initialView(context, attrs, defStyleAttr);
     }
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this.context = context;
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         ButterKnife.bind(this);
-        initialViewListener(context);
+        onCreateView();
     }
 
-    public void renderHistoryClientNumber(HistoryClientNumber historyClientNumber) {
+    public void renderHistoryClientNumber(H historyClientNumber) {
         this.historyClientNumber = historyClientNumber;
         onHistoryClientNumberRendered();
     }
 
-    protected abstract void initialViewListener(Context context);
+    public void renderData(C data) {
+        this.data = data;
+        onInitialDataRendered();
+    }
+
+    public void renderUpdateProductSelected(P product) {
+        this.productSelected = product;
+        onUpdateSelectedProductData();
+    }
+
+    public void renderUpdateOperatorSelected(O operator) {
+        this.operatorSelected = operator;
+        onUpdateSelectedOperatorData();
+    }
+
+    public O getSelectedOperator() {
+        return operatorSelected;
+    }
+
+    public P getSelectedProduct() {
+        return productSelected;
+    }
+
+    public void restoreStateData(C categoryDataState, O operatorSelectedState,
+                                 P productSelectedState, String clientNumberState,
+                                 boolean isInstantCheckoutChecked) {
+        if (data == null) renderData(categoryDataState);
+        this.operatorSelected = operatorSelectedState;
+        this.productSelected = productSelectedState;
+        onRestoreSelectedData(
+                operatorSelectedState, productSelectedState,
+                clientNumberState, isInstantCheckoutChecked
+        );
+    }
+
+
+    protected abstract void onCreateView();
 
     protected abstract int getHolderLayoutId();
 
-    public abstract void renderData(T data);
+    protected abstract void onInitialDataRendered();
 
-    public abstract void renderUpdateProductSelected(Product product);
+    protected abstract void onUpdateSelectedProductData();
 
-    public abstract void renderUpdateOperatorSelected(Operator operator);
+    protected abstract void onUpdateSelectedOperatorData();
 
     public abstract void renderClientNumberFromContact(String clientNumber);
-
-    public abstract Operator getSelectedOperator();
-
-    public abstract Product getSelectedProduct();
 
     public abstract boolean isInstantCheckoutChecked();
 
     public abstract String getClientNumber();
 
-    public abstract void renderStateDataSelected(String clientNumberState,
-                                                 Operator operatorSelectedState,
-                                                 Product productSelectedState,
-                                                 boolean isInstantCheckoutChecked);
+    protected abstract void onRestoreSelectedData(
+            O operatorSelectedState, P productSelectedState,
+            String clientNumberState, boolean isInstantCheckoutChecked
+    );
 
     protected abstract void onHistoryClientNumberRendered();
 
@@ -163,7 +193,7 @@ public abstract class BaseDigitalProductView<T> extends RelativeLayout {
             return categoryName;
         }
 
-        public void setCategoryName(String categoryName) {
+        void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
         }
     }
