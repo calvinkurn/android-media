@@ -140,6 +140,12 @@ public interface OnTripMapContract {
         void hideRequestLoadingLayout();
 
         void moveMapToLocation(double latitude, double longitude);
+
+        boolean isAlreadyRouteDrawed();
+
+        void updateSourceCoordinate(double latitude, double longitude);
+
+        void updateDestinationCoordinate(double latitude, double longitude);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -176,5 +182,7 @@ public interface OnTripMapContract {
         boolean checkIsAnyPendingRequest();
 
         void actionGoToCurrentLocation();
+
+        void onResume();
     }
 }

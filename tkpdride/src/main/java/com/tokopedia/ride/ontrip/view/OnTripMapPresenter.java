@@ -230,6 +230,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void proccessGetCurrentRideRequest(RideRequest result) {
+
+
         getView().setRequestId(result.getRequestId());
         if (result.getAddress() != null) {
             getView().setAddressPickerText(result.getAddress().getStartAddressName(), result.getAddress().getEndAddressName());
@@ -246,6 +248,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
+                updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.ACCEPTED:
                 getView().hideRequestLoadingLayout();
@@ -255,6 +258,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showAcceptedNotification(result);
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
+                updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.ARRIVING:
                 getView().hideRequestLoadingLayout();
@@ -264,7 +268,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 getView().renderAcceptedRequest(result);
                 getView().renderArrivingDriverEvent(result);
-
+                updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.IN_PROGRESS:
                 getView().hideRequestLoadingLayout();
@@ -275,6 +279,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
+                updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideRequestLoadingLayout();
@@ -299,42 +304,52 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         }
     }
 
+    private void updatePolylineIfResetedByUiLifecycle(RideRequest result) {
+        if (getView().isAlreadyRouteDrawed()) {
+            getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
+            getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
+            getOverViewPolyLine();
+        }
+    }
+
     @Override
     public void getOverViewPolyLine() {
-        getOverviewPolylineUseCase.execute(getView().getPolyLineParam(), new Subscriber<List<String>>() {
-            @Override
-            public void onCompleted() {
+        if (getView().getPolyLineParam() != null) {
+            getOverviewPolylineUseCase.execute(getView().getPolyLineParam(), new Subscriber<List<String>>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                }
 
-            @Override
-            public void onNext(List<String> strings) {
-                if (isViewAttached()) {
-                    List<List<LatLng>> routes = new ArrayList<>();
-                    for (String route : strings) {
-                        routes.add(PolyUtil.decode(route));
-                    }
-                    getView().renderTripRoute(routes);
-                    if (activeRideRequest != null) {
-                        getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(),
-                                activeRideRequest.getDestination().getLongitude());
-                        getView().renderDestinationMarker(activeRideRequest.getPickup().getLatitude(),
-                                activeRideRequest.getDestination().getLongitude());
-                        getView().zoomMapFitWithSourceAndDestination(
-                                activeRideRequest.getPickup().getLatitude(),
-                                activeRideRequest.getDestination().getLongitude(),
-                                activeRideRequest.getPickup().getLatitude(),
-                                activeRideRequest.getDestination().getLongitude()
-                        );
+                @Override
+                public void onNext(List<String> strings) {
+                    if (isViewAttached()) {
+                        List<List<LatLng>> routes = new ArrayList<>();
+                        for (String route : strings) {
+                            routes.add(PolyUtil.decode(route));
+                        }
+                        getView().renderTripRoute(routes);
+                        if (activeRideRequest != null) {
+                            getView().renderSourceMarker(activeRideRequest.getPickup().getLatitude(),
+                                    activeRideRequest.getDestination().getLongitude());
+                            getView().renderDestinationMarker(activeRideRequest.getPickup().getLatitude(),
+                                    activeRideRequest.getDestination().getLongitude());
+                            getView().zoomMapFitWithSourceAndDestination(
+                                    activeRideRequest.getPickup().getLatitude(),
+                                    activeRideRequest.getDestination().getLongitude(),
+                                    activeRideRequest.getPickup().getLatitude(),
+                                    activeRideRequest.getDestination().getLongitude()
+                            );
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -643,4 +658,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
 
+    @Override
+    public void onResume() {
+        getOverViewPolyLine();
+    }
 }

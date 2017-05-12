@@ -62,6 +62,8 @@ import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
@@ -137,10 +139,12 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
+    private Location source, destination;
 
     private boolean isScreenBlocked;
     private boolean isFindingUberNotificationShown = false;
     private boolean isAcceptedUberNotificationShown = false;
+    private boolean isRouteAlreadyDrawed;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -181,6 +185,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (getArguments() != null) {
             confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
             requestId = getArguments().getString(EXTRA_RIDE_REQUEST_ID);
+            if (confirmBookingViewModel != null) {
+                source = new Location();
+                source.setLatitude(confirmBookingViewModel.getSource().getLatitude());
+                source.setLongitude(confirmBookingViewModel.getSource().getLongitude());
+                destination = new Location();
+                destination.setLatitude(confirmBookingViewModel.getDestination().getLatitude());
+                destination.setLongitude(confirmBookingViewModel.getDestination().getLongitude());
+            }
         }
     }
 
@@ -336,17 +348,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public RequestParams getPolyLineParam() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("origin", String.format("%s,%s",
-                confirmBookingViewModel.getSource().getLatitude(),
-                confirmBookingViewModel.getSource().getLongitude()
-        ));
-        requestParams.putString("destination", String.format("%s,%s",
-                confirmBookingViewModel.getDestination().getLatitude(),
-                confirmBookingViewModel.getDestination().getLongitude()
-        ));
-        requestParams.putString("sensor", "false");
-        return requestParams;
+        if (source == null || destination == null) {
+            return null;
+        } else {
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString("origin", String.format("%s,%s",
+                    source.getLatitude(),
+                    source.getLongitude()
+            ));
+            requestParams.putString("destination", String.format("%s,%s",
+                    destination.getLatitude(),
+                    destination.getLongitude()
+            ));
+            requestParams.putString("sensor", "false");
+            return requestParams;
+        }
     }
 
     @OnClick(R2.id.cabs_processing_cancel_button)
@@ -568,6 +584,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void onResume() {
         mapView.onResume();
         super.onResume();
+        presenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isRouteAlreadyDrawed = false;
     }
 
     @Override
@@ -587,6 +610,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderTripRoute(List<List<LatLng>> routes) {
         mGoogleMap.clear();
+        isRouteAlreadyDrawed = true;
 
         for (List<LatLng> route : routes) {
             if (route.size() > 1) {
@@ -990,6 +1014,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public boolean isAlreadyRouteDrawed() {
+        return isRouteAlreadyDrawed;
+    }
+
+    @Override
     public void openSmsIntent(String smsNumber) {
         if (!TextUtils.isEmpty(smsNumber)) {
             startActivity(new Intent(Intent.ACTION_VIEW,
@@ -1036,7 +1065,21 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @OnClick(R2.id.iv_my_location_button)
-    public void actionMyLocationBtnClicked(){
+    public void actionMyLocationBtnClicked() {
         presenter.actionGoToCurrentLocation();
+    }
+
+    @Override
+    public void updateSourceCoordinate(double latitude, double longitude) {
+        source = new Location();
+        source.setLatitude(latitude);
+        source.setLongitude(longitude);
+    }
+
+    @Override
+    public void updateDestinationCoordinate(double latitude, double longitude) {
+        destination = new Location();
+        destination.setLatitude(latitude);
+        destination.setLongitude(longitude);
     }
 }
