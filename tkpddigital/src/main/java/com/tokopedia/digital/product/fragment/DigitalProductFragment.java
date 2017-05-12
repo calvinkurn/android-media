@@ -114,7 +114,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String categoryId;
 
     private CompositeSubscription compositeSubscription;
-    private BaseDigitalProductView<CategoryData> digitalProductView;
+    private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     private LocalCacheHandler cacheHandlerLastInputClientNumber;
 
@@ -138,15 +138,17 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onSaveState(Bundle state) {
-        state.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
-        state.putParcelable(EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator());
-        state.putParcelable(EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct());
+        if (digitalProductView != null) {
+            state.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
+            state.putParcelable(EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator());
+            state.putParcelable(EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct());
+            state.putBoolean(
+                    EXTRA_STATE_INSTANT_CHECKOUT_CHECKED, digitalProductView.isInstantCheckoutChecked()
+            );
+        }
         state.putParcelable(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
         state.putParcelableArrayList(
                 EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
-        );
-        state.putBoolean(
-                EXTRA_STATE_INSTANT_CHECKOUT_CHECKED, digitalProductView.isInstantCheckoutChecked()
         );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
     }
@@ -226,9 +228,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     public void renderStateSelectedAllData() {
-        digitalProductView.renderStateDataSelected(
-                clientNumberState, operatorSelectedState, productSelectedState,
-                isInstantCheckoutChecked
+        digitalProductView.restoreStateData(
+                categoryDataState, operatorSelectedState, productSelectedState,
+                clientNumberState, isInstantCheckoutChecked
         );
     }
 
@@ -456,9 +458,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.processStoreLastInputClientNumberByCategory(
-                digitalProductView.getClientNumber(), categoryDataState.getCategoryId()
-        );
+        if (digitalProductView != null && categoryDataState != null)
+            presenter.processStoreLastInputClientNumberByCategory(
+                    digitalProductView.getClientNumber(), categoryDataState.getCategoryId()
+            );
     }
 
     @Override
