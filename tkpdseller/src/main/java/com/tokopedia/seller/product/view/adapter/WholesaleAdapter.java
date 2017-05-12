@@ -15,6 +15,7 @@ import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -223,10 +224,12 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         public void bindData(WholesaleModel wholesaleModel) {
             formatter();
 
-            String qtyOne = wholesaleModel.getQtyOne() + "";
-            String qtyTwo = wholesaleModel.getQtyTwo() + "";
+            NumberFormat quantityNumberFormat = new DecimalFormat();
+            quantityNumberFormat.setMinimumIntegerDigits(0);
+            String qtyOne = quantityNumberFormat.format(wholesaleModel.getQtyOne());
+            String qtyTwo = quantityNumberFormat.format(wholesaleModel.getQtyTwo());
             textRangeWholesale.setText(itemView.getContext().getString(R.string.wholesale_range_format,
-                    formatValue(qtyOne), formatValue(qtyTwo)));
+                    qtyOne, qtyTwo));
             String qtyPrice = wholesaleModel.getQtyPrice() + "";
             textWholeSalePrice.setText(formatValue(qtyPrice));
         }

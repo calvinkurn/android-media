@@ -605,9 +605,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
     public boolean isMinOrderValid() {
         float orderMinimum = 0;
         try {
-            orderMinimum = Float.parseFloat(minimumOrderCounterInputView.getValueText());
+            orderMinimum = minimumOrderCounterInputView.getFloatValue();
         } catch (Exception e) {
-            orderMinimum = -1;
+            minimumOrderCounterInputView.setError(
+                    minimumOrderCounterInputView
+                            .getContext()
+                            .getString(R.string.product_error_product_minimum_order_number_not_valid)
+            );
         }
 
         if (orderMinimum <= 0) {
