@@ -14,7 +14,7 @@ public class EditProductServiceModel {
     private Object config;
     @SerializedName("data")
     @Expose
-    private Data data;
+    private EditProductDataServiceModel data;
     @SerializedName("server_process_time")
     @Expose
     private String serverProcessTime;
@@ -35,11 +35,11 @@ public class EditProductServiceModel {
         this.config = config;
     }
 
-    public Data getData() {
+    public EditProductDataServiceModel getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(EditProductDataServiceModel data) {
         this.data = data;
     }
 
