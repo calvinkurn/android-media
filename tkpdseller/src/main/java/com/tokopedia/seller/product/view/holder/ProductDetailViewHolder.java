@@ -215,11 +215,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 }
             }
         });
-
-        freeReturnsSpinnerTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        freeReturnsSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                listener.onFreeReturnChecked(false);
+            public void onItemChanged(int position, String entry, String value) {
+                listener.onFreeReturnChecked(value.equals(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_active)));
             }
         });
         stockStatusSpinnerTextView.setOnItemChangeListener(new SpinnerTextView.OnItemChangeListener() {
