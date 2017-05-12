@@ -10,7 +10,6 @@ import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
@@ -67,9 +66,9 @@ public class TrackingUtils extends TrackingConfig {
                 .setEmailAddress(profileData.getUserInfo().getUserEmail())
                 .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
                 .setCustomerId(profileData.getUserInfo().getUserId())
-                .setShopId(profileData.getShopInfo().getShopId())
-                .setSeller(!TextUtils.isEmpty(profileData.getShopInfo().getShopId()))
-                .setShopName(profileData.getShopInfo().getShopName())
+                .setShopId(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopId():"")
+                .setSeller(profileData.getShopInfo()!=null)
+                .setShopName(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopName():"")
                 .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName()," "))
                 .build();
 
