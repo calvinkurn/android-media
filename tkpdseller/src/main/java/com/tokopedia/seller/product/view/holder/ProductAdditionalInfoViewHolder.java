@@ -90,7 +90,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         });
         preOrderSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(preOrderSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 if (isPreOrderValid()) {
                     preOrderSpinnerCounterInputView.setCounterError(null);
                 }

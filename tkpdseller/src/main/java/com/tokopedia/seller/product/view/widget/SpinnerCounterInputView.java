@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
 import android.os.Parcelable;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -135,11 +134,11 @@ public class SpinnerCounterInputView extends FrameLayout {
         spinnerTextView.setOnItemChangeListener(onItemChangeListener);
     }
 
-    public float getCounterValue() {
-        return counterInputView.getFloatValue();
+    public double getCounterValue() {
+        return counterInputView.getDoubleValue();
     }
 
-    public void setCounterValue(float value) {
+    public void setCounterValue(double value) {
         counterInputView.setValue(value);
     }
 

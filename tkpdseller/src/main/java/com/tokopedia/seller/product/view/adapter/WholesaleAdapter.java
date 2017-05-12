@@ -237,7 +237,7 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             if (TextUtils.isEmpty(valueString)) {
                 return null;
             }
-            float value = Float.parseFloat(valueString);
+            double value = Double.parseDouble(valueString);
             return formatter.format(value);
         }
     }

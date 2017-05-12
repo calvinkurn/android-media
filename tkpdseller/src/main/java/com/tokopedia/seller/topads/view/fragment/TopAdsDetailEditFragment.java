@@ -141,7 +141,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
                 if (!TextUtils.isEmpty(errorMessage)) {
@@ -154,7 +154,7 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
 
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
                 String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
                 float clickBudget = 0;

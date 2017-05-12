@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -112,14 +111,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
         });
         idrTextWatcher = new CurrencyIdrTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 isPriceValid();
                 clearWholesaleItems();
             }
         };
         usdTextWatcher = new CurrencyUsdTextWatcher(priceSpinnerCounterInputView.getCounterEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 isPriceValid();
                 clearWholesaleItems();
             }
@@ -185,7 +184,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         weightSpinnerCounterInputView.addTextChangedListener(new NumberTextWatcher(weightSpinnerCounterInputView.getCounterEditText(), weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 if (isWeightValid()) {
                     weightSpinnerCounterInputView.setCounterError(null);
                 }
@@ -236,12 +235,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
         stockTotalExpandableOptionSwitch.setExpandableListener(new BaseExpandableOption.ExpandableListener() {
             @Override
             public void onExpandViewChange(boolean isExpand) {
-                listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getFloatValue() : 0);
+                listener.onTotalStockUpdated(isExpand ? (int) stockTotalCounterInputView.getDoubleValue() : 0);
             }
         });
         stockTotalCounterInputView.addTextChangedListener(new NumberTextWatcher(stockTotalCounterInputView.getEditText()) {
             @Override
-            public void onNumberChanged(float number) {
+            public void onNumberChanged(double number) {
                 if (isTotalStockValid()) {
                     stockTotalCounterInputView.setError(null);
                 }
@@ -317,7 +316,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         priceSpinnerCounterInputView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public float getPriceValue() {
+    public double getPriceValue() {
         return priceSpinnerCounterInputView.getCounterValue();
     }
 
@@ -342,7 +341,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getMinimumOrder() {
-        return (int) minimumOrderCounterInputView.getFloatValue();
+        return (int) minimumOrderCounterInputView.getDoubleValue();
     }
 
     public void setMinimumOrder(float value) {
@@ -366,7 +365,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getTotalStock() {
-        return (int) stockTotalCounterInputView.getFloatValue();
+        return (int) stockTotalCounterInputView.getDoubleValue();
     }
 
     public void setTotalStock(float value) {
@@ -566,7 +565,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
                 new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
-        savedInstanceState.putFloat(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterValue());
+        savedInstanceState.putDouble(BUNDLE_COUNTER_PRICE, priceSpinnerCounterInputView.getCounterValue());
         savedInstanceState.putBoolean(IS_WHOLESALE_VISIBLE, wholesaleExpandableOptionSwitch.getVisibility() == View.VISIBLE);
         savedInstanceState.putBoolean(IS_STOCKTOTAL_VISIBLE, stockTotalExpandableOptionSwitch.getVisibility() == View.VISIBLE);
     }
@@ -593,7 +592,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         int spinnerPricePosition = savedInstanceState.getInt(BUNDLE_SPINNER_POSITION, 0);
         priceSpinnerCounterInputView.setSpinnerPosition(spinnerPricePosition);
 
-        float counterPriceValue = savedInstanceState.getFloat(BUNDLE_COUNTER_PRICE, 0f);
+        double counterPriceValue = savedInstanceState.getDouble(BUNDLE_COUNTER_PRICE, 0f);
         priceSpinnerCounterInputView.setCounterValue(counterPriceValue);
 
         boolean isWholeSaleVisible = savedInstanceState.getBoolean(IS_WHOLESALE_VISIBLE, false);

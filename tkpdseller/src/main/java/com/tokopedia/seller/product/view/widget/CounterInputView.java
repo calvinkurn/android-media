@@ -88,7 +88,7 @@ public class CounterInputView extends FrameLayout {
             @Override
             public void onClick(View view) {
                 try {
-                    long result = (long) decimalInputView.getFloatValue() - 1;
+                    long result = (long) decimalInputView.getDoubleValue() - 1;
                     if (result >= 0) {
                         decimalInputView.setText(String.valueOf(result));
                     }
@@ -100,7 +100,7 @@ public class CounterInputView extends FrameLayout {
         plusImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                decimalInputView.setText(String.valueOf((long) decimalInputView.getFloatValue() + 1));
+                decimalInputView.setText(String.valueOf((long) decimalInputView.getDoubleValue() + 1));
             }
         });
 
@@ -144,7 +144,7 @@ public class CounterInputView extends FrameLayout {
 
     private void updateButtonState() {
         if (enabled) {
-            minusImageButton.setEnabled(decimalInputView.getFloatValue() > minValue);
+            minusImageButton.setEnabled(decimalInputView.getDoubleValue() > minValue);
         }
     }
 
@@ -182,11 +182,11 @@ public class CounterInputView extends FrameLayout {
         return decimalInputView.getText();
     }
 
-    public float getFloatValue() {
-        return decimalInputView.getFloatValue();
+    public double getDoubleValue() {
+        return decimalInputView.getDoubleValue();
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         decimalInputView.setValue(value);
     }
 

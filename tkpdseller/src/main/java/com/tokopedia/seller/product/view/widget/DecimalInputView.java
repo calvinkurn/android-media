@@ -138,16 +138,16 @@ public class DecimalInputView extends FrameLayout {
         return editText.getText().toString();
     }
 
-    public float getFloatValue() {
+    public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
         valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
         if (TextUtils.isEmpty(valueString)) {
             return 0;
         }
-        return Float.parseFloat(valueString);
+        return Double.parseDouble(valueString);
     }
 
-    public void setValue(float value) {
+    public void setValue(double value) {
         DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
         editText.setText(df.format(value));
     }

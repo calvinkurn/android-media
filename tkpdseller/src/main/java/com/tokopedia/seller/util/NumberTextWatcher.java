@@ -53,11 +53,11 @@ public class NumberTextWatcher implements TextWatcher {
             editText.setSelection(editText.getText().length());
             return;
         }
-        float value = Float.parseFloat(valueString);
+        double value = Double.parseDouble(valueString);
         onNumberChanged(value);
     }
 
-    public void onNumberChanged(float number) {
+    public void onNumberChanged(double number) {
 
     }
 }
