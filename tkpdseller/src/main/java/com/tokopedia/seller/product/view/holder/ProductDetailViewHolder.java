@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.view.holder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +11,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
@@ -191,6 +194,24 @@ public class ProductDetailViewHolder extends ProductViewHolder
                 }
             }
         });
+        minimumOrderCounterInputView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(isMinOrderValid()){
+                    minimumOrderCounterInputView.setError(null);
+                }
+            }
+        });
         weightSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -342,7 +363,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public int getMinimumOrder() {
-        return (int) minimumOrderCounterInputView.getFloatValue();
+        int minOrder;
+        try {
+            minOrder = (int) minimumOrderCounterInputView.getFloatValue();
+        }catch (Exception e){
+            minOrder = -1;
+        }
+        return minOrder;
     }
 
     public void setMinimumOrder(float value) {
@@ -606,16 +633,14 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     public boolean isMinOrderValid() {
-        float orderMinimum = 0;
-        try {
-            orderMinimum = Float.parseFloat(minimumOrderCounterInputView.getValueText());
-        }catch (Exception e){
-            orderMinimum = -1;
-        }
+        Context context = minimumOrderCounterInputView.getContext();
+        String minOrderString = context.getString(R.string.product_minimum_order);
+        String maxOrderString = context.getString(R.string.product_maximum_order);
 
-        if (orderMinimum <= 0) {
-            minimumOrderCounterInputView.setError(minimumOrderCounterInputView.getContext().
-                    getString(R.string.product_error_product_minimum_order_not_valid));
+        float minOrder = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minOrderString));
+        float maxOrder = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxOrderString));
+        if (minOrder > getMinimumOrder() || getMinimumOrder() > maxOrder) {
+            minimumOrderCounterInputView.setError(context.getString(R.string.product_error_product_minimum_order_not_valid, minOrderString, maxOrderString));
             return false;
         }
         minimumOrderCounterInputView.setError(null);
