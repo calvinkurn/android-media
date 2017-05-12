@@ -23,11 +23,13 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
+import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -105,6 +107,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected int viewPagerIndex;
 
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+    private AnalyticsCacheHandler cacheHandler;
     CompositeSubscription subscription = new CompositeSubscription();
 
     public ViewPager getViewPager() {
@@ -232,7 +235,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
 
-        if(TextUtils.isEmpty(new SessionHandler(this).isUserDataCached())){
+        cacheHandler = new AnalyticsCacheHandler();
+
+        if(TextUtils.isEmpty(cacheHandler.isUserDataCached())){
             if(SessionHandler.isV4Login(this))
                 drawer.getUserInfo();
         }else {
@@ -241,7 +246,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private void setMoengageUserAttributes(){
-        TrackingUtils.setMoEUserAttributes(SessionHandler.getUserData(this));
+        cacheHandler.getUserDataCache(new AnalyticsCacheHandler.GetUserDataListener() {
+            @Override
+            public void onSuccessGetUserData(ProfileData result) {
+                TrackingUtils.setMoEUserAttributes(result);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void initCreate() {

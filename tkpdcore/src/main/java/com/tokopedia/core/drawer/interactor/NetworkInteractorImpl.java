@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -96,12 +97,16 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
     private void saveUserData(Context context, ProfileData userData){
         try {
-            SessionHandler sessionHandler = new SessionHandler(context);
-            Gson gson = new Gson();
-            Type dataObject = new TypeToken<ProfileData>() {
-            }.getType();
-            String json = gson.toJson(userData, dataObject);
-            sessionHandler.setUserData(json);
+//            SessionHandler sessionHandler = new SessionHandler(context);
+//            Gson gson = new Gson();
+//            Type dataObject = new TypeToken<ProfileData>() {
+//            }.getType();
+//            String json = gson.toJson(userData, dataObject);
+//            sessionHandler.setUserData(json);
+
+            AnalyticsCacheHandler cacheHandler = new AnalyticsCacheHandler();
+            cacheHandler.setUserDataCache(userData);
+
         }catch (Exception e){
             e.printStackTrace();
         }
