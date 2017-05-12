@@ -42,29 +42,20 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/margin_med"
-                android:layout_marginTop="@dimen/margin_large"
-                android:text="@string/title_activate_account"
-                android:textColor="@color/grey_800"
-                android:textSize="@dimen/font_medium"
-                android:layout_centerHorizontal="true"
-                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/activation_text"
                 android:layout_below="@id/header"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/margin_large"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/margin_med"
                 android:layout_marginLeft="@dimen/margin_med"
+                android:lineSpacingExtra="8dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginRight="@dimen/margin_med"
                 android:gravity="center"
@@ -86,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/margin_med"
+                android:layout_marginTop="@dimen/margin_large"
                 android:gravity="center"
                 android:text="@string/title_otp" />
 
@@ -101,8 +93,10 @@
                 android:background="@null"
                 android:cursorVisible="false"
                 android:digits="1234567890"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionSend"
                 android:inputType="number"
+                android:nextFocusUp="@id/input_verify_code"
+                android:nextFocusLeft="@id/input_verify_code"
                 android:layout_centerHorizontal="true"
                 android:maxLength="5"
                 android:paddingBottom="@dimen/margin_small"

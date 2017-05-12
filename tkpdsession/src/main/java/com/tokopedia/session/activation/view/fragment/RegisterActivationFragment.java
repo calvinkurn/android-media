@@ -12,22 +12,25 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
-import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
-import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
+import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
+import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.session.activity.Login;
 
 /**
@@ -129,7 +132,6 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
                                   ds.setColor(MethodChecker.getColor(getActivity(),
                                           com.tokopedia.core.R.color.tkpd_main_green));
                               }
@@ -144,7 +146,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     private void setActivateText() {
         String activateText = getString(R.string.activation_header_text) + " <br><b>" + getEmail() + "</b>";
-        activationText.setText(MethodChecker.fromHtml(activateText).toString());
+        activationText.setText(MethodChecker.fromHtml(activateText));
     }
 
     @Override
@@ -186,6 +188,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                             MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
+            }
+        });
+
+        verifyCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    presenter.activateAccount();
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -247,6 +260,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onSuccessResendActivation(String statusMessage) {
+        KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
         SnackbarManager.make(getActivity(), statusMessage,
                 Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.title_ok),
@@ -270,6 +284,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
+        KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());

@@ -176,7 +176,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     protected void initView(View view) {
         final Typeface typeface = registerPassword.getTypeface();
 
-
         String sourceString = "Sudah punya akun? Masuk";
 
         Spannable spannable = getSpannable(sourceString, "Masuk");
@@ -197,7 +196,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setUnderlineText(true);
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
@@ -212,7 +210,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     private void showTermsAndOptionsTextView() {
         String joinString = context.getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
                 " " + context.getString(com.tokopedia.core.R.string.link_term_condition) +
-                ", serta " + context.getString(com.tokopedia.core.R.string.link_privacy_policy) + " Tokopedia";
+                ", serta " + context.getString(com.tokopedia.core.R.string.link_privacy_policy);
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
