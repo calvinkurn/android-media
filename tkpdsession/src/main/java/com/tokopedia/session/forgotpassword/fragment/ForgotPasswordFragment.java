@@ -160,7 +160,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
         registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
-        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
+//        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
