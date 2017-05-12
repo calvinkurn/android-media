@@ -34,6 +34,11 @@ public class CloudBookingRideDataStore implements BookingRideDataStore {
     }
 
     @Override
+    public Observable<ProductEntity> getProduct(TKPDMapParam<String, Object> params) {
+        return mRideApi.getProduct(params);
+    }
+
+    @Override
     public Observable<List<ProductEntity>> getProducts(TKPDMapParam<String, Object> params) {
         return mRideApi.getProducts(params).map(new Func1<ProductResponseEntity, List<ProductEntity>>() {
             @Override

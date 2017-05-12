@@ -9,6 +9,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 public interface RideUrl {
     String BASE_URL = TkpdBaseURL.RIDE_DOMAIN;
 
+    String PRODUCT = "/uber/product/detail";
     String PRODUCTS = "/uber/products";
     String ESTIMATED_TIME = "/uber/estimates/time";
     String ESTIMATED_FARE = "/uber/estimates/fare";

@@ -22,6 +22,8 @@ import rx.Observable;
  */
 
 public interface BookingRideDataStore {
+    Observable<ProductEntity> getProduct(TKPDMapParam<String, Object> params);
+
     Observable<List<ProductEntity>> getProducts(TKPDMapParam<String, Object> params);
 
     Observable<List<TimesEstimateEntity>> getEstimatedTimes(TKPDMapParam<String, Object> params);

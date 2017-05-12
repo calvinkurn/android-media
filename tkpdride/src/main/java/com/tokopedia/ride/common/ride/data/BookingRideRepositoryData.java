@@ -57,6 +57,18 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
+    public Observable<Product> getProduct(TKPDMapParam<String, Object> params) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getProduct(params)
+                .map(new Func1<ProductEntity, Product>() {
+                    @Override
+                    public Product call(ProductEntity productEntity) {
+                        return mProductEntityMapper.transform(productEntity);
+                    }
+                });
+    }
+
+    @Override
     public Observable<List<Product>> getProducts(TKPDMapParam<String, Object> params) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getProducts(params).map(new Func1<List<ProductEntity>, List<Product>>() {

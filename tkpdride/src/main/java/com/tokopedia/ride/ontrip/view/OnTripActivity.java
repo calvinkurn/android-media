@@ -133,7 +133,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         } else {
             RideRequest rideRequest = getIntent().getExtras().getParcelable(EXTRA_RIDE_REQUEST);
             if (rideRequest != null) {
-                OnTripMapFragment fragment = OnTripMapFragment.newInstance(rideRequest.getRequestId());
+                OnTripMapFragment fragment = OnTripMapFragment.newInstance(rideRequest.getRequestId(), rideRequest.getProductId());
                 backButtonListener = fragment.getBackButtonListener();
                 onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
                 addFragment(R.id.container, fragment, OnTripMapFragment.TAG);

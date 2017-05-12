@@ -20,15 +20,17 @@ import rx.Observable;
  */
 
 public interface BookingRideRepository {
-    Observable<List<Product>> getProducts(TKPDMapParam<String, Object> productParams);
+    Observable<Product> getProduct(TKPDMapParam<String, Object> params);
+    
+    Observable<List<Product>> getProducts(TKPDMapParam<String, Object> params);
 
-    Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> productParams);
+    Observable<List<TimesEstimate>> getEstimatedTimes(TKPDMapParam<String, Object> params);
 
-    Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> productParams);
+    Observable<FareEstimate> getEstimatedFare(TKPDMapParam<String, Object> params);
 
-    Observable<RideRequest> createRequest(TKPDMapParam<String, Object> productParams);
+    Observable<RideRequest> createRequest(TKPDMapParam<String, Object> params);
 
-    Observable<String> cancelRequest(TKPDMapParam<String, Object> productParams);
+    Observable<String> cancelRequest(TKPDMapParam<String, Object> params);
 
     Observable<RideRequest> getRequestDetail(TKPDMapParam<String, Object> parameters);
 

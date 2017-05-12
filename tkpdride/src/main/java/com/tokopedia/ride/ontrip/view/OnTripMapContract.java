@@ -146,6 +146,10 @@ public interface OnTripMapContract {
         void updateSourceCoordinate(double latitude, double longitude);
 
         void updateDestinationCoordinate(double latitude, double longitude);
+
+        RequestParams getProductDetailParam(String productId);
+
+        void setDriverIcon(RideRequest rideRequest, int drawable);
     }
 
     interface Presenter extends CustomerPresenter<View> {

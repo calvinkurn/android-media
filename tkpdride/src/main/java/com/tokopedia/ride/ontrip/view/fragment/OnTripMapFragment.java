@@ -63,13 +63,13 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.ride.domain.model.Location;
-import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.OnTripDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
@@ -96,6 +96,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
+    private static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
@@ -145,6 +146,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private boolean isFindingUberNotificationShown = false;
     private boolean isAcceptedUberNotificationShown = false;
     private boolean isRouteAlreadyDrawed;
+    private int markerId;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -158,9 +160,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         presenter.onMapReady();
     }
 
-    public static OnTripMapFragment newInstance(String requestId) {
+    public static OnTripMapFragment newInstance(String requestId, String productId) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_RIDE_REQUEST_ID, requestId);
+        bundle.putString(EXTRA_PRODUCT_ID, productId);
         OnTripMapFragment fragment = new OnTripMapFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -655,18 +658,25 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             mDriverMarker.remove();
         }
 
-        int markerId = R.drawable.car_map_icon;
-        try {
+
+        if (confirmBookingViewModel != null) {
+            markerId = R.drawable.car_map_icon;
             markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
-                .icon(getCarMapIcon(markerId))
-                .rotation(result.getLocation().getBearing())
-                .title("Driver");
+        MarkerOptions options;
+        if (markerId != 0) {
+            options = new MarkerOptions()
+                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                    .icon(getCarMapIcon(markerId))
+                    .rotation(result.getLocation().getBearing())
+                    .title("Driver");
+        } else {
+            options = new MarkerOptions()
+                    .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                    .rotation(result.getLocation().getBearing())
+                    .title("Driver");
+        }
 
         mDriverMarker = mGoogleMap.addMarker(options);
     }
@@ -1081,5 +1091,36 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         destination = new Location();
         destination.setLatitude(latitude);
         destination.setLongitude(longitude);
+    }
+
+    @Override
+    public RequestParams getProductDetailParam(String productId) {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetRideProductUseCase.PARAM_PRODUCT_ID, productId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
+    }
+
+    @Override
+    public void setDriverIcon(RideRequest result, int drawable) {
+        if (mDriverMarker != null) {
+            mDriverMarker.remove();
+        }
+        markerId = drawable;
+
+        MarkerOptions options = new MarkerOptions()
+                .position(new LatLng(result.getLocation().getLatitude(), result.getLocation().getLongitude()))
+                .icon(getCarMapIcon(drawable))
+                .rotation(result.getLocation().getBearing())
+                .title("Driver");
+
+        mDriverMarker = mGoogleMap.addMarker(options);
     }
 }

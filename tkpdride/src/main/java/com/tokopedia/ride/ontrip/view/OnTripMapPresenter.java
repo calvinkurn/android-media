@@ -40,9 +40,11 @@ import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
+import com.tokopedia.ride.ontrip.domain.GetRideProductUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestMapUseCase;
 
@@ -75,6 +77,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GetRideRequestMapUseCase getRideRequestMapUseCase;
     private GetRideRequestDetailUseCase getRideRequestUseCase;
     private GetFareEstimateUseCase getFareEstimateUseCase;
+    private GetRideProductUseCase getRideProductUseCase;
     private RideRequest activeRideRequest;
 
     private GoogleApiClient mGoogleApiClient;
@@ -88,13 +91,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                               GetOverviewPolylineUseCase getOverviewPolylineUseCase,
                               GetRideRequestMapUseCase getRideRequestMapUseCase,
                               GetRideRequestDetailUseCase getRideRequestUseCase,
-                              GetFareEstimateUseCase getFareEstimateUseCase) {
+                              GetFareEstimateUseCase getFareEstimateUseCase,
+                              GetRideProductUseCase getRideProductUseCase) {
         this.createRideRequestUseCase = createRideRequestUseCase;
         this.cancelRideRequestUseCase = cancelRideRequestUseCase;
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getRideRequestMapUseCase = getRideRequestMapUseCase;
         this.getRideRequestUseCase = getRideRequestUseCase;
         this.getFareEstimateUseCase = getFareEstimateUseCase;
+        this.getRideProductUseCase = getRideProductUseCase;
     }
 
 
@@ -119,6 +124,31 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             createLocationRequest();
             initializeLocationService();
         }
+    }
+
+    private void actionGetProductDetailToDecideIcon(final RideRequest rideRequest) {
+        getRideProductUseCase.execute(getView().getProductDetailParam(rideRequest.getProductId()), new Subscriber<Product>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Product product) {
+                if (isViewAttached()) {
+                    if (product.getDisplayName().equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))) {
+                        getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
+                    } else {
+                        getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -348,6 +378,24 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                     endLat,
                                     endLng
                             );
+                        } else {
+                            if (routes.size() > 0) {
+                                List<LatLng> route = routes.get(0);
+                                double startLat = route.get(0).latitude;
+                                double startLng = route.get(0).longitude;
+                                if (route.size() > 0) {
+                                    double endLat = route.get(route.size() - 1).latitude;
+                                    double endLng = route.get(route.size() - 1).longitude;
+                                    getView().renderSourceMarker(startLat, startLng);
+                                    getView().renderDestinationMarker(endLat, endLng);
+                                    getView().zoomMapFitWithSourceAndDestination(
+                                            startLat,
+                                            startLng,
+                                            endLat,
+                                            endLng
+                                    );
+                                }
+                            }
                         }
                     }
                 }
@@ -416,14 +464,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         public void onNext(RideRequest rideRequest) {
                             CommonUtils.dumper("GetCurrentRideRequestService timedTask onNext");
 
-                            //return of fragment finished on not present
-                            if (getView() == null) {
-                                return;
-                            }
-                            activeRideRequest = rideRequest;
+                            if (isViewAttached()) {
+                                if (activeRideRequest == null) {
+                                    actionGetProductDetailToDecideIcon(rideRequest);
+                                }
+                                activeRideRequest = rideRequest;
 
-                            proccessGetCurrentRideRequest(rideRequest);
-                            handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                                proccessGetCurrentRideRequest(rideRequest);
+                                handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+                            }
                         }
                     });
         }
@@ -443,6 +492,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     @Override
                     public void call(RideRequest rideRequest) {
                         if (isViewAttached()) {
+                            actionGetProductDetailToDecideIcon(rideRequest);
                             activeRideRequest = rideRequest;
                             proccessGetCurrentRideRequest(rideRequest);
                         }
