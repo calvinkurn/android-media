@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.expandable.ExpandableOptionSwitch;
@@ -305,6 +306,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         } else {
             freeReturnsSpinnerTextView.setVisibility(View.GONE);
         }
+        listener.onFreeReturnChecked(getFreeReturns() == Integer.parseInt(freeReturnsSpinnerTextView.getContext().getString(R.string.product_free_return_values_active)));
     }
 
     public int getPriceUnit() {
