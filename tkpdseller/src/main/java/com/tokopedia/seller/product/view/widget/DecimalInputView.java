@@ -149,7 +149,7 @@ public class DecimalInputView extends FrameLayout {
 
     public void setValue(float value) {
         DecimalFormat df = new DecimalFormat(DECIMAL_FORMAT);
-        df.setMaximumFractionDigits(0);
+        df.setMaximumFractionDigits(2);
         editText.setText(df.format(value));
     }
 
