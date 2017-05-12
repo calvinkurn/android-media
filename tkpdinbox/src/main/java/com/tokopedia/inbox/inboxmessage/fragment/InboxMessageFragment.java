@@ -396,6 +396,7 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         if (presenter.hasActionListener()) {
             adapter.setEnabled(true);
         }
+        finishContextMode();
     }
 
     @Override
