@@ -100,18 +100,133 @@ public class CategoryProductStyle3View extends
             @Override
             public void onInitialDataDigitalChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
-                //TODO terusin
+                if (holderClientNumber.getChildCount() > 0) holderClientNumber.removeAllViews();
+                if (holderChooserProduct.getChildCount() > 0) holderChooserProduct.removeAllViews();
+                if (!data.getClientNumberList().isEmpty()) {
+                    clientNumberInputView.setActionListener(getActionListenerClientNumberInputView(data));
+                    clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
+                    holderClientNumber.addView(clientNumberInputView);
+                } else {
+                    digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
+                    digitalProductChooserView.renderInitDataList(data.getProductList());
+                    holderChooserProduct.addView(digitalOperatorChooserView);
+                }
             }
 
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
-                //TODO terusin
+                if (holderClientNumber.getChildCount() > 0) holderClientNumber.removeAllViews();
+                if (holderChooserProduct.getChildCount() > 0) holderChooserProduct.removeAllViews();
+                if (!data.getClientNumberList().isEmpty()) {
+                    clientNumberInputView.setActionListener(getActionListenerClientNumberInputView(data));
+                    clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
+                    holderClientNumber.addView(clientNumberInputView);
+                } else {
+                    digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
+                    digitalProductChooserView.renderInitDataList(data.getProductList());
+                    holderChooserProduct.addView(digitalOperatorChooserView);
+                }
             }
 
             @Override
             public void onDigitalChooserClicked(List<Operator> data) {
                 actionListener.onOperatorChooserStyle3Clicked(data);
+            }
+        };
+    }
+
+    @NonNull
+    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser(final Operator operator) {
+        return new BaseDigitalChooserView.ActionListener<Product>() {
+            @Override
+            public void onInitialDataDigitalChooserSelectedRendered(Product data) {
+                productSelected = data;
+
+                if (holderAdditionalInfoProduct.getChildAt(0) != null)
+                    holderAdditionalInfoProduct.removeAllViews();
+                productAdditionalInfoView.renderData(data);
+                holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+
+                if (operator.getRule().isShowPrice()) {
+                    productPriceInfoView.renderData(productSelected);
+                    if (holderPriceInfoProduct.getChildAt(0) != null)
+                        holderPriceInfoProduct.removeAllViews();
+                    holderPriceInfoProduct.addView(productPriceInfoView);
+                } else {
+                    if (holderPriceInfoProduct.getChildAt(0) != null)
+                        holderPriceInfoProduct.removeAllViews();
+                }
+            }
+
+            @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
+                productSelected = data;
+
+                if (holderAdditionalInfoProduct.getChildAt(0) != null)
+                    holderAdditionalInfoProduct.removeAllViews();
+                productAdditionalInfoView.renderData(data);
+                holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+
+                if (operator.getRule().isShowPrice()) {
+                    productPriceInfoView.renderData(productSelected);
+                    if (holderPriceInfoProduct.getChildAt(0) != null)
+                        holderPriceInfoProduct.removeAllViews();
+                    holderPriceInfoProduct.addView(productPriceInfoView);
+                } else {
+                    if (holderPriceInfoProduct.getChildAt(0) != null)
+                        holderPriceInfoProduct.removeAllViews();
+                }
+            }
+
+            @Override
+            public void onDigitalChooserClicked(List<Product> data) {
+                actionListener.onProductChooserStyle3Clicked(data);
+            }
+        };
+    }
+
+    @NonNull
+    private ClientNumberInputView.ActionListener getActionListenerClientNumberInputView(final Operator data) {
+        return new ClientNumberInputView.ActionListener() {
+            @Override
+            public void onButtonContactPickerClicked() {
+
+            }
+
+            @Override
+            public void onClientNumberInputValid(String tempClientNumber) {
+                if (holderChooserProduct.getChildCount() > 0) holderChooserProduct.removeAllViews();
+                if (data.getProductList().size() == 1
+                        && String.valueOf(data.getDefaultProductId()).equalsIgnoreCase(data.getProductList().get(0).getProductId())) {
+                    productSelected = data.getProductList().get(0);
+                    clientNumberInputView.enableImageOperator(data.getImage());
+                } else if (data.getProductList().isEmpty()) {
+                    Product product = new Product();
+                    product.setProductId(String.valueOf(data.getDefaultProductId()));
+                    productSelected = product;
+                } else {
+                    digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
+                    digitalProductChooserView.renderInitDataList(data.getProductList());
+                    holderChooserProduct.addView(digitalProductChooserView);
+                }
+                if (productSelected != null) {
+                    if (data.getRule().isShowPrice()) {
+                        productPriceInfoView.renderData(productSelected);
+                        if (holderPriceInfoProduct.getChildAt(0) != null)
+                            holderPriceInfoProduct.removeAllViews();
+                        holderPriceInfoProduct.addView(productPriceInfoView);
+                    } else {
+                        if (holderPriceInfoProduct.getChildAt(0) != null)
+                            holderPriceInfoProduct.removeAllViews();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onClientNumberInputInvalid() {
+                clientNumberInputView.disableImageOperator();
             }
         };
     }
