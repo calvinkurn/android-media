@@ -46,6 +46,29 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
     }
 
     @Override
+    public List<BannerData> transformBannerDataList(
+            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
+    ) throws MapperDataException {
+        List<BannerData> bannerDataList = new ArrayList<>();
+        for (ResponseCategoryDetailIncluded data : responseCategoryDetailIncludedList) {
+            if (data.getType().equalsIgnoreCase("banner")) {
+                bannerDataList.add(
+                        new BannerData.Builder()
+                                .title(data.getAttributes().getTitle())
+                                .subtitle(data.getAttributes().getSubtitle())
+                                .promocode(data.getAttributes().getPromocode())
+                                .image(data.getAttributes().getImage())
+                                .dataTitle(data.getAttributes().getDataTitle())
+                                .link(data.getAttributes().getLink())
+                                .build()
+                );
+            }
+        }
+        return bannerDataList;
+    }
+
+
+    @Override
     public CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
@@ -62,6 +85,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setNew(responseCategoryDetailData.getAttributes().isNew());
         categoryData.setSlug(responseCategoryDetailData.getAttributes().getSlug());
         categoryData.setOperatorStyle(responseCategoryDetailData.getAttributes().getOperatorStyle());
+
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
@@ -91,6 +115,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setClientNumberList(clientNumberCategoryList);
 
         List<Operator> operatorCategoryList = new ArrayList<>();
+        List<BannerData> bannerDataList = new ArrayList<>();
         for (ResponseCategoryDetailIncluded categoryDetailIncluded : responseCategoryDetailIncludedList) {
             if (categoryDetailIncluded.getType().equalsIgnoreCase("operator")) {
                 Operator operatorCategory = new Operator();
@@ -160,9 +185,23 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 operatorCategory.setRule(operatorRule);
 
                 operatorCategoryList.add(operatorCategory);
+            } else if (categoryDetailIncluded.getType().equalsIgnoreCase("banner")) {
+                bannerDataList.add(
+                        new BannerData.Builder()
+                                .id(categoryDetailIncluded.getId())
+                                .type(categoryDetailIncluded.getType())
+                                .title(categoryDetailIncluded.getAttributes().getTitle())
+                                .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                .image(categoryDetailIncluded.getAttributes().getImage())
+                                .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                .link(categoryDetailIncluded.getAttributes().getLink())
+                                .build()
+                );
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
+        categoryData.setBannerDataListIncluded(bannerDataList);
 
         if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
             Teaser categoryTeaser = new Teaser();

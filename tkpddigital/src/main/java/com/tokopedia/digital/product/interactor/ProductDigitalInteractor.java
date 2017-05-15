@@ -56,8 +56,14 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-                        categoryRepository.getBanner(paramQueryBanner)
-                                .onErrorResumeNext(Observable.<List<BannerData>>empty()),
+//                        categoryRepository.getBanner(paramQueryBanner)
+//                                .onErrorReturn(new Func1<Throwable, List<BannerData>>() {
+//                                    @Override
+//                                    public List<BannerData> call(Throwable throwable) {
+//                                        return new ArrayList<>();
+//                                    }
+//                                }),
+                        Observable.just(new ArrayList<BannerData>()),
                         lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber)
                                 .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
                                 .onErrorReturn(getResumeFunctionOnErrorReturnRecentNumber()),
@@ -164,7 +170,9 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                 .recentClientNumberList(orderClientNumbers)
                                 .build())
                         .categoryData(categoryData)
-                        .bannerDataList(bannerDatas)
+                        .bannerDataList(
+                                bannerDatas.isEmpty() ? categoryData.getBannerDataListIncluded()
+                                        : bannerDatas)
                         .build();
             }
         };

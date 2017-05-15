@@ -22,6 +22,10 @@ public interface IProductDigitalMapper {
             ResponseBanner responseBanner
     ) throws MapperDataException;
 
+    List<BannerData> transformBannerDataList(
+            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
+    ) throws MapperDataException;
+
     CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
