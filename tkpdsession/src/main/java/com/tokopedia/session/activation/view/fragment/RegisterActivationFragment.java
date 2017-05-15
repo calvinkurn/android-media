@@ -26,6 +26,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
+import com.tokopedia.session.activation.view.di.RegisterActivationDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
@@ -95,7 +96,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     protected void initialPresenter() {
-        presenter = new RegisterActivationPresenterImpl(this);
+        presenter = RegisterActivationDependencyInjector.getPresenter(this);
     }
 
     @Override

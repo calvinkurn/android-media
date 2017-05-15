@@ -40,6 +40,7 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
+import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenterImpl;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
@@ -136,8 +137,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     protected void initialPresenter() {
-        presenter = new RegisterEmailPresenterImpl(this
-        );
+        presenter = RegisterEmailDependencyInjector.getPresenter(this);
     }
 
     @Override

@@ -42,26 +42,12 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
     private RegisterViewModel registerViewModel;
     private RegisterEmailUseCase registerEmailUseCase;
 
-    public RegisterEmailPresenterImpl(RegisterEmailViewListener viewListener) {
+    public RegisterEmailPresenterImpl(RegisterEmailViewListener viewListener,
+                                      RegisterEmailUseCase registerEmailUseCase,
+                                      RegisterViewModel registerViewModel) {
         this.viewListener = viewListener;
-        this.registerViewModel = new RegisterViewModel();
-
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
-        String authKey = sessionHandler.getAccessToken(viewListener.getActivity());
-        authKey = sessionHandler.getTokenType(viewListener.getActivity()) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-        RegisterEmailRepositoryImpl registerEmailRepository = new RegisterEmailRepositoryImpl(
-                new RegisterEmailSourceFactory(
-                        viewListener.getActivity(),
-                        accountsService,
-                        new RegisterEmailMapper()
-                ));
-
-        this.registerEmailUseCase = new RegisterEmailUseCase(
-                new JobExecutor(), new UIThread(), registerEmailRepository);
+        this.registerEmailUseCase = registerEmailUseCase;
+        this.registerViewModel = registerViewModel;
     }
 
     @Override

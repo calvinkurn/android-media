@@ -30,38 +30,12 @@ public class RegisterActivationPresenterImpl implements RegisterActivationPresen
     private ResendActivationUseCase resendActivationUseCase;
     private ActivateUnicodeUseCase activateUnicodeUseCase;
 
-    public RegisterActivationPresenterImpl(RegisterActivationView viewListener) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.USING_HMAC, true);
-        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-        AccountsService accountsServiceBearer = new AccountsService(new Bundle());
-
-        ResendActivationMapper resendActivationMapper = new ResendActivationMapper();
-        ActivateUnicodeMapper activateUnicodeMapper = new ActivateUnicodeMapper();
-        ChangeEmailMapper changeEmailMapper = new ChangeEmailMapper();
-        RegisterActivationFactory registerActivationFactory =
-                new RegisterActivationFactory(
-                        viewListener.getActivity(),
-                        accountsService,
-                        accountsServiceBearer,
-                        resendActivationMapper,
-                        activateUnicodeMapper,
-                        changeEmailMapper
-                );
-
-        RegisterActivationRepository registerActivationRepository =
-                new RegisterActivationRepositoryImpl(registerActivationFactory);
-
+    public RegisterActivationPresenterImpl(RegisterActivationView viewListener,
+                                           ResendActivationUseCase resendActivationUseCase,
+                                           ActivateUnicodeUseCase activateUnicodeUseCase) {
         this.viewListener = viewListener;
-        this.resendActivationUseCase = new ResendActivationUseCase(
-                new JobExecutor(), new UIThread(), registerActivationRepository
-        );
-        this.activateUnicodeUseCase = new ActivateUnicodeUseCase(
-                new JobExecutor(), new UIThread(), registerActivationRepository
-        );
+        this.resendActivationUseCase = resendActivationUseCase;
+        this.activateUnicodeUseCase = activateUnicodeUseCase;
     }
 
     @Override

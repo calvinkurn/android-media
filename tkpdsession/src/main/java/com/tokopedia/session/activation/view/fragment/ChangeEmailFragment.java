@@ -8,16 +8,19 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.view.di.ChangeEmailDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.ChangeEmailPresenter;
 import com.tokopedia.session.activation.view.presenter.ChangeEmailPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.ChangeEmailView;
 
 import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.session.activation.domain.interactor.ChangeEmailUseCase.PARAM_NEW_EMAIL;
+import static com.tokopedia.session.activation.domain.interactor.ChangeEmailUseCase.PARAM_OLD_EMAIL;
+import static com.tokopedia.session.activation.domain.interactor.ChangeEmailUseCase.PARAM_PASSWORD;
 
 /**
  * Created by nisie on 4/18/17.
@@ -48,17 +51,22 @@ public class ChangeEmailFragment extends BasePresenterFragment<ChangeEmailPresen
     @Override
     protected void onFirstTimeLaunched() {
         if (getActivity().getIntent().getExtras() != null)
-            oldEmailEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_EMAIL, ""));
+            oldEmailEditText.setText(getActivity().getIntent()
+                    .getExtras().getString(EXTRA_EMAIL, ""));
     }
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putString(PARAM_OLD_EMAIL, oldEmailEditText.getText().toString());
+        state.putString(PARAM_NEW_EMAIL, newEmailEditText.getText().toString());
+        state.putString(PARAM_PASSWORD, passwordEditText.getText().toString());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        oldEmailEditText.setText(savedState.getString(PARAM_OLD_EMAIL,""));
+        newEmailEditText.setText(savedState.getString(PARAM_NEW_EMAIL,""));
+        passwordEditText.setText(savedState.getString(PARAM_PASSWORD,""));
     }
 
     @Override
@@ -68,7 +76,7 @@ public class ChangeEmailFragment extends BasePresenterFragment<ChangeEmailPresen
 
     @Override
     protected void initialPresenter() {
-        presenter = new ChangeEmailPresenterImpl(this);
+        presenter = ChangeEmailDependencyInjector.getPresenter(this);
     }
 
     @Override
@@ -101,10 +109,11 @@ public class ChangeEmailFragment extends BasePresenterFragment<ChangeEmailPresen
             @Override
             public void onClick(View v) {
                 KeyboardHandler.DropKeyboard(getActivity(), getView());
-                presenter.getPass().setOldEmail(oldEmailEditText.getText().toString());
-                presenter.getPass().setNewEmail(newEmailEditText.getText().toString());
-                presenter.getPass().setPassword(passwordEditText.getText().toString());
-                presenter.changeEmail();
+                presenter.changeEmail(
+                        presenter.getChangeEmailParam(
+                                oldEmailEditText.getText().toString(),
+                                newEmailEditText.getText().toString(),
+                                passwordEditText.getText().toString()));
             }
         });
     }
@@ -158,7 +167,8 @@ public class ChangeEmailFragment extends BasePresenterFragment<ChangeEmailPresen
     @Override
     public void showLoadingProgress() {
         if (progressDialog == null && getActivity() != null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new TkpdProgressDialog(getActivity(),
+                    TkpdProgressDialog.NORMAL_PROGRESS);
 
         if (progressDialog != null)
             progressDialog.showDialog();
