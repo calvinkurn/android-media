@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relative_layout_product_scoring"
-    style="@style/LabelLayoutWithoutBorder">
+    style="@style/LabelLayoutWithBorder">
 
     <LinearLayout
         android:layout_width="match_parent"
