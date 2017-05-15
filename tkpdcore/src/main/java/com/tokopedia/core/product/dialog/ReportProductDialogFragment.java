@@ -1,6 +1,8 @@
 package com.tokopedia.core.product.dialog;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -84,6 +86,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     private Bundle recentBundle;
     private CacheInteractor cacheInteractor;
     private RetrofitInteractor retrofitInteractor;
+    private OnFragmentInteractionListener interactionListener;
 
     public static ReportProductDialogFragment createInstance(ProductDetailData productData, Bundle recentBundle) {
         ReportProductDialogFragment fragment = new ReportProductDialogFragment();
@@ -122,6 +125,29 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
 
         super.onResume();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener){
+            interactionListener = (OnFragmentInteractionListener) context;
+        }else {
+            throw new RuntimeException(
+                    String.format("%s must implement OnFragmentInteractionListener", getActivity().getClass().getSimpleName())
+            );
+        }
+    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnFragmentInteractionListener){
+            interactionListener = (OnFragmentInteractionListener) activity;
+        }else {
+            throw new RuntimeException(
+                    String.format("%s must implement OnFragmentInteractionListener", getActivity().getClass().getSimpleName())
+            );
+        }
     }
 
     @OnClick(R2.id.cancel_but)
@@ -218,6 +244,10 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         wrapper.setError(null);
     }
 
+    public interface OnFragmentInteractionListener{
+        void onReportProductSubmited(Bundle bundle);
+    }
+
     private void doReport() {
         ReportProductPass pass = new ReportProductPass();
         pass.setProductID(String.valueOf(productDetailData.getInfo().getProductId()));
@@ -226,7 +256,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         pass.setDesc(reportDesc.getText().toString());
         Bundle bundle = new Bundle();
         bundle.putParcelable(ReportProductPass.TAG, pass);
-        ((ProductInfoActivity) getActivity()).doReport(bundle);
+        interactionListener.onReportProductSubmited(bundle);
         listener.setRecentBundle(bundle);
     }
 

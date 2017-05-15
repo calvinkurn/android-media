@@ -94,8 +94,12 @@ public class BuyerEditResCenterFormFragment extends BasePresenterFragment<BuyerE
         passData = savedState.getParcelable(ARGS_PARAM_PASS_DATA);
         setLoading(false);
         setMainView(true);
-        renderPackageReceivedFormView();
-        presenter.renderView(passData.getFormData());
+        if (passData.getFormData() == null) {
+            presenter.setOnLaunching(getActivity());
+        } else {
+            renderPackageReceivedFormView();
+            presenter.renderView(passData.getFormData());
+        }
     }
 
     @Override

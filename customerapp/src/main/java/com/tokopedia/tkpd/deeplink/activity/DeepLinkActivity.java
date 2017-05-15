@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
@@ -19,7 +20,10 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
+import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
+import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -35,13 +39,16 @@ import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 
 /**
- * @author  by Angga.Prasetiyo on 14/12/2015.
- * modified Alvarisi
+ * @author by Angga.Prasetiyo on 14/12/2015.
+ *         modified Alvarisi
  */
 public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements
         DeepLinkView, DeepLinkWebViewHandleListener,
         ProductDetailFragment.OnFragmentInteractionListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener, ICatalogActionFragment {
+        FragmentGeneralWebView.OnFragmentInteractionListener,
+        ReportProductDialogFragment.OnFragmentInteractionListener,
+        ProductInfoResultReceiver.Receiver,
+        ICatalogActionFragment {
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private Bundle mExtras;
 
@@ -192,12 +199,12 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                 if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
                     CommonUtils.dumper("GAv4 Entering HADES");
                     showProgressService();
-                }else{
+                } else {
                     CommonUtils.dumper("GAv4 Escape HADES non webview");
                     presenter.processDeepLinkAction(uriData);
                 }
             }
-        } else  {
+        } else {
             if (verifyFetchDepartment() || HadesService.getIsHadesRunning()) {
                 CommonUtils.dumper("GAv4 Entering HADES null Uri");
                 showProgressService();
@@ -238,7 +245,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private void sendNotifLocalyticsCallback(Intent intent) {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)){
+            if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
             }
         }
@@ -254,5 +261,35 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void deliverCatalogShareData(ShareData shareData) {
 
+    }
+
+    @Override
+    public void onReportProductSubmited(Bundle bundle) {
+        ProductInfoResultReceiver mReceiver = new ProductInfoResultReceiver(new Handler());
+        mReceiver.setReceiver(this);
+        ProductInfoIntentService.startAction(this, bundle, mReceiver);
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.main_view);
+        if (fragment != null && fragment instanceof ProductDetailFragment) {
+            switch (resultCode) {
+                case ProductInfoIntentService.STATUS_SUCCESS_REPORT_PRODUCT:
+                    onReceiveResultSuccess(fragment, resultData, resultCode);
+                    break;
+                case ProductInfoIntentService.STATUS_ERROR_REPORT_PRODUCT:
+                    onReceiveResultError(fragment, resultData, resultCode);
+                    break;
+            }
+        }
+    }
+
+    private void onReceiveResultError(Fragment fragment, Bundle resultData, int resultCode) {
+        ((ProductDetailFragment) fragment).onErrorAction(resultData, resultCode);
+    }
+
+    private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
+        ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
     }
 }

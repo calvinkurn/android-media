@@ -179,6 +179,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(BrowseProductRouter.DEPARTMENT_ID, data.getDepartmentId());
+            bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, data.getDepartmentName());
             bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
             bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
             bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);

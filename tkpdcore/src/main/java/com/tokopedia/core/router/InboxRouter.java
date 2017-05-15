@@ -19,7 +19,7 @@ public class InboxRouter {
 
     private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
-    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detail.activity.ResCenterActivity";
+    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
     private static final String INBOX_TALK_ACTIVITY = "com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity";
@@ -29,7 +29,7 @@ public class InboxRouter {
     public static final String ARG_PARAM_EXTRA_INSTANCE_TYPE = "ARG_PARAM_EXTRA_INSTANCE_TYPE";
     public static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
-    public static final String EXTRA_RESOLUTION_ID = "EXTRA_RESOLUTION_ID";
+    public static final String EXTRA_RESOLUTION_ID = "resolution_id";
     public static final String EXTRA_STATE_FLAG_RECEIVED = "EXTRA_STATE_FLAG_RECEIVED";
     public static final String EXTRA_TROUBLE_ID = "EXTRA_TROUBLE_ID";
     public static final String EXTRA_SOLUTION_ID = "EXTRA_SOLUTION_ID";

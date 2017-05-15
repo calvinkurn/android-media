@@ -98,6 +98,11 @@ public class NetworkParam {
             data.put(BrowseApi.DEFAULT_SC, product.sc);
             data.remove(BrowseApi.SC);
         }
+        if (product.source.equals(BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY)) {
+            data.remove(BrowseApi.H);
+            data.remove(BrowseApi.Q);
+            data.remove(BrowseApi.HASHTAG);
+        }
         return data;
     }
 
