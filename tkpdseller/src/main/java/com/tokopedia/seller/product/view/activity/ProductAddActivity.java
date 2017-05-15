@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -335,6 +336,15 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                 fixedPrice, currencyType, previousWholesalePrice
         );
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
+        addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                View view = getCurrentFocus();
+                if (view != null) {
+                    CommonUtils.hideSoftKeyboard(view);
+                }
+            }
+        });
     }
 
     public void startUploadProduct(long productId) {
