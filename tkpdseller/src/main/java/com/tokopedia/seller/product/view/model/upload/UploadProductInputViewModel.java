@@ -89,6 +89,9 @@ public class UploadProductInputViewModel {
     }
 
     public String getProductDescription() {
+        if ("0".equals(productDescription)) {
+            return "";
+        }
         return productDescription;
     }
 

@@ -494,7 +494,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     // Others
     @Override
     public void onResolutionImageCheckFailed(String uri) {
-        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
     }
 
     @Override
