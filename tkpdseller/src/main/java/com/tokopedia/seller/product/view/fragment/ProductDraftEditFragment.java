@@ -12,6 +12,7 @@ import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
+import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -26,6 +27,8 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
 
     private String productId;
     private ProductPhotoListViewModel productPhotosBeforeEdit;
+    private List<ProductWholesaleViewModel> productWholesaleBeforeEdit;
+    private long catalogIdBeforeEdit;
 
     public static Fragment createInstance(String productDraftId) {
         ProductDraftEditFragment fragment = new ProductDraftEditFragment();
@@ -55,7 +58,9 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         hideLoading();
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
-        if (model.getProductNameEditable() == 0){
+        productWholesaleBeforeEdit = model.getProductWholesaleList();
+        catalogIdBeforeEdit = model.getProductCatalogId();
+        if (model.getProductNameEditable() == 0) {
             productInfoViewHolder.setNameEnabled(false);
         }
         super.onSuccessLoadProduct(model);
@@ -71,12 +76,40 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     protected UploadProductInputViewModel collectDataFromView() {
         UploadProductInputViewModel viewModel = super.collectDataFromView();
         viewModel.setProductId(productId);
-        if (proccessEditImage(viewModel.getProductPhotos(), productPhotosBeforeEdit)){
+        if (proccessEditImage(viewModel.getProductPhotos(), productPhotosBeforeEdit)) {
             viewModel.setProductChangePhoto(1);
         } else {
             viewModel.setProductChangePhoto(0);
         }
+        if (processEditWholesale(viewModel.getProductWholesaleList(), productWholesaleBeforeEdit)) {
+            viewModel.setProductChangeWholesale(1);
+        } else {
+            viewModel.setProductChangeWholesale(0);
+        }
+        if (viewModel.getProductCatalogId() != catalogIdBeforeEdit) {
+            viewModel.setProductChangeCatalog(1);
+        } else {
+            viewModel.setProductChangeCatalog(0);
+        }
         return viewModel;
+    }
+
+    private boolean processEditWholesale(List<ProductWholesaleViewModel> productWholesaleList, List<ProductWholesaleViewModel> productWholesaleBeforeEdit) {
+        if (productWholesaleList.size() != productWholesaleBeforeEdit.size()) {
+            return true;
+        }
+        for (int i = 0; i < productWholesaleBeforeEdit.size(); i++) {
+            if (productWholesaleList.get(i).getPrice() != productWholesaleBeforeEdit.get(i).getPrice()) {
+                return true;
+            }
+            if (productWholesaleList.get(i).getQtyMin() != productWholesaleBeforeEdit.get(i).getQtyMin()) {
+                return true;
+            }
+            if (productWholesaleList.get(i).getQtyMax() != productWholesaleBeforeEdit.get(i).getQtyMax()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean proccessEditImage(ProductPhotoListViewModel productPhotos, ProductPhotoListViewModel productPhotosBeforeEdit) {
@@ -91,7 +124,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
             try {
                 findImage(viewModel.getUrl(), productPhotos.getPhotos());
-            } catch (RuntimeException e){
+            } catch (RuntimeException e) {
                 viewModel.setUrl("");
                 newPhotosList.add(viewModel);
                 isChanging = true;
@@ -109,7 +142,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
             } else {
                 isChanging = true;
             }
-            if (i == productPhotos.getProductDefaultPicture()){
+            if (i == productPhotos.getProductDefaultPicture()) {
                 newPhotosList.add(0, viewModel);
                 defaultImage = 0;
             } else {

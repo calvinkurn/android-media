@@ -43,6 +43,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         UploadProductInputDomainModel domainModel = new UploadProductInputDomainModel();
         domainModel.setProductPhotos(mapProductPhoto(draftModel.getProductPhotos()));
         domainModel.setProductWholesaleList(mapWholesaleDraftToDomain(draftModel.getProductWholesaleList()));
+        domainModel.setProductChangeCatalog(draftModel.getProductChangeCatalog());
+        domainModel.setProductChangeWholesale(draftModel.getProductChangeWholesale());
         domainModel.setProductVideos(draftModel.getProductVideos());
         domainModel.setProductName(draftModel.getProductName());
         domainModel.setProductDescription(draftModel.getProductDescription());
@@ -113,6 +115,8 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         ProductDraftModel draftModel = new ProductDraftModel();
         draftModel.setProductPhotos(mapProductPhoto(domainModel.getProductPhotos()));
         draftModel.setProductWholesaleList(mapWholesaleDomainToDraft(domainModel.getProductWholesaleList()));
+        draftModel.setProductChangeWholesale(domainModel.getProductChangeWholesale());
+        draftModel.setProductChangeCatalog(domainModel.getProductChangeCatalog());
         draftModel.setProductVideos(domainModel.getProductVideos());
         draftModel.setProductName(domainModel.getProductName());
         draftModel.setProductDescription(domainModel.getProductDescription());
