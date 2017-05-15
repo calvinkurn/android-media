@@ -11,10 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
-import android.widget.FrameLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -32,7 +31,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.view.dialog.AddWholeSaleDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
-import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.service.UploadProductService;
@@ -335,6 +333,15 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
                 fixedPrice, currencyType, previousWholesalePrice
         );
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
+        addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                View view = getCurrentFocus();
+                if (view != null) {
+                    CommonUtils.hideSoftKeyboard(view);
+                }
+            }
+        });
     }
 
     public void startUploadProduct(long productId) {

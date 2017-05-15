@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,6 +57,15 @@ public class AddWholeSaleDialog extends DialogFragment {
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
+
+    OnDismissListener onDismissListener;
+    public interface OnDismissListener{
+        void onDismiss();
+    }
+
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
@@ -345,5 +355,14 @@ public class AddWholeSaleDialog extends DialogFragment {
 
     public interface WholeSaleDialogListener {
         void addWholesaleItem(WholesaleModel item);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener!= null) {
+            onDismissListener.onDismiss();
+            onDismissListener = null;
+        }
     }
 }
