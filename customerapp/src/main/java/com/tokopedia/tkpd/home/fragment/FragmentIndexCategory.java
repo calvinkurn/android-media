@@ -62,9 +62,12 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
 import com.tokopedia.tkpd.home.TopPicksView;
@@ -453,6 +456,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
         recyclerViewCategoryMenuAdapter.setOnCategoryClickedListener(this);
         recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
+        recyclerViewCategoryMenuAdapter.setOnGimmicClickedListener(this);
 
 
         holder.categoriesRecylerview.setLayoutManager(
@@ -482,17 +486,34 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onDigitalCategoryClicked(CategoryItemModel itemModel) {
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            startActivityForResult(((IDigitalModuleRouter) getActivity().getApplication())
-                    .instanceIntentDigitalProduct(
-                            new DigitalCategoryDetailPassData.Builder()
-                                    .appLinks(itemModel.getAppLinks())
-                                    .categoryId(itemModel.getCategoryId())
-                                    .categoryName(itemModel.getName())
-                                    .url(itemModel.getRedirectValue())
-                                    .build()
-                    ), IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL);
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        if (deepLinkDelegate.supportsUri(itemModel.getAppLinks())) {
+            DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
+                    .appLinks(itemModel.getAppLinks())
+                    .categoryId(itemModel.getCategoryId())
+                    .categoryName(itemModel.getName())
+                    .url(itemModel.getRedirectValue())
+                    .build();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+            Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+            intent.putExtras(bundle);
+            intent.setData(Uri.parse(itemModel.getAppLinks()));
+            startActivity(intent);
+        } else {
+            onGimmicClicked(itemModel);
         }
+//        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+//            startActivityForResult(((IDigitalModuleRouter) getActivity().getApplication())
+//                    .instanceIntentDigitalProduct(
+//                            new DigitalCategoryDetailPassData.Builder()
+//                                    .appLinks(itemModel.getAppLinks())
+//                                    .categoryId(itemModel.getCategoryId())
+//                                    .categoryName(itemModel.getName())
+//                                    .url(itemModel.getRedirectValue())
+//                                    .build()
+//                    ), IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_DETAIL);
+//        }
     }
 
     private void navigateToGimmicWebview(String url, String label) {

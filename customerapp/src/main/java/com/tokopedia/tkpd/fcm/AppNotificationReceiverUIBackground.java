@@ -25,6 +25,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -200,11 +201,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
-                new ConsumerDeeplinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader()
-        );
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
         return deepLinkDelegate.supportsUri(applink);
     }
 
