@@ -4,16 +4,21 @@ import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -25,6 +30,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
@@ -37,6 +43,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
@@ -63,6 +70,9 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
+import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
+
 /**
  * Created by nisie on 1/27/17.
  */
@@ -71,11 +81,17 @@ import permissions.dispatcher.RuntimePermissions;
 public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPresenter>
         implements RegisterEmailViewListener, RegisterConstant {
 
+    @BindView(R2.id.container)
+    View container;
+
+    @BindView(R2.id.redirect_reset_password)
+    View redirectView;
+
     @BindView(R2.id.register_email)
     AutoCompleteTextView email;
 
     @BindView(R2.id.register_password)
-    PasswordView registerPassword;
+    TextInputEditText registerPassword;
 
     @BindView(R2.id.register_button)
     TextView registerButton;
@@ -117,7 +133,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     @Override
@@ -161,6 +178,14 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
         String sourceString = "Sudah punya akun? Masuk";
 
+        Spannable spannable = getSpannable(sourceString, "Masuk");
+
+        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
+        showTermsAndOptionsTextView();
+
+    }
+
+    private Spannable getSpannable(String sourceString, String hyperlinkString) {
         Spannable spannable = new SpannableString(sourceString);
 
         spannable.setSpan(new ClickableSpan() {
@@ -174,13 +199,12 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
                                   ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , sourceString.indexOf("Masuk")
+                , sourceString.indexOf(hyperlinkString)
                 , sourceString.length()
                 , 0);
 
-        loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
-        showTermsAndOptionsTextView();
 
+        return spannable;
     }
 
     private void showTermsAndOptionsTextView() {
@@ -543,6 +567,27 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         return result;
     }
 
+    public void showInfo(){
+        dismissLoadingProgress();
+        TextView view = (TextView) redirectView.findViewById(R.id.body);
+        final String emailString = email.getText().toString();
+        String text = getString(R.string.account_registered_body, emailString);
+        String part = getString(R.string.account_registered_body_part);
+        Spannable spannable = getSpannable(text, part);
+        spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
+                                                        , text.indexOf(emailString)+emailString.length()
+                                                        , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(spannable, TextView.BufferType.SPANNABLE);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(ForgotPasswordActivity.getCallingIntent(context, emailString));
+            }
+        });
+        redirectView.setVisibility(View.VISIBLE);
+        container.setVisibility(View.GONE);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -579,5 +624,21 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         outState.putString(PHONE, phone.getText().toString());
         outState.putString(EMAIL, email.getText().toString());
         outState.putString(PASSWORD, registerPassword.getText().toString());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case RC_SIGN_IN_GOOGLE:
+                if (data != null) {
+                    GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+                    email.setText(googleSignInAccount.getEmail());
+                    if(googleSignInAccount.getDisplayName() != null
+                            && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
+                        name.setText(googleSignInAccount.getDisplayName());
+                }
+                break;
+        }
     }
 }
