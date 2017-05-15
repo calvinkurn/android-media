@@ -278,7 +278,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     break;
             }
             view.renderBannerListData(
-                    categoryData.getName(),
+                    "Promo " + categoryData.getName(),
                     bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
             );
         } else {

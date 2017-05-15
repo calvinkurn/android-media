@@ -21,7 +21,8 @@ import com.tokopedia.digital.product.fragment.DigitalProductFragment;
  * @author anggaprasetiyo on 4/25/17.
  */
 
-public class DigitalProductActivity extends BasePresenterActivity {
+public class DigitalProductActivity extends BasePresenterActivity
+        implements DigitalProductFragment.ActionListener {
     public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
     private DigitalCategoryDetailPassData passData;
 
@@ -98,4 +99,8 @@ public class DigitalProductActivity extends BasePresenterActivity {
     }
 
 
+    @Override
+    public void updateTitleToolbar(String title) {
+        toolbar.setTitle(title);
+    }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.digital.product.adapter;
 
 import android.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -57,33 +58,68 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         final int type = getItemViewType(position);
         if (type == TYPE_HOLDER_BANNER_ITEM) {
             final BannerData bannerData = (BannerData) dataList.get(position);
+
             BannerItemHolder bannerItemHolder = (BannerItemHolder) holder;
+            if (bannerData.isVoucherCodeCopied()) {
+                bannerItemHolder.mainContainer.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(
+                                R.drawable.digital_bg_banner_selected
+                        )
+                );
+            } else {
+                bannerItemHolder.mainContainer.setBackgroundDrawable(
+                        hostFragment.getResources().getDrawable(
+                                R.drawable.digital_bg_banner_normal
+                        )
+                );
+            }
+
             bannerItemHolder.tvDescBanner.setText(MethodChecker.fromHtml(bannerData.getTitle()));
             bannerItemHolder.holderVoucherCode.setVisibility(
                     TextUtils.isEmpty(bannerData.getPromocode()) ? View.GONE : View.VISIBLE
             );
             bannerItemHolder.tvVoucherCode.setText(bannerData.getPromocode());
-            bannerItemHolder.btnCopy.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    actionListener.onButtonCopyBannerVoucherCodeClicked(bannerData.getPromocode());
-                }
-            });
+            bannerItemHolder.btnCopy.setOnClickListener(getButtonCopyClickedListener(position, bannerData));
             bannerItemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     actionListener.onBannerItemClicked(bannerData);
                 }
             });
+
         } else if (type == TYPE_HOLDER_TITLE) {
             BannerTitle bannerTitle = (BannerTitle) dataList.get(position);
             BannerTitleHolder bannerTitleHolder = (BannerTitleHolder) holder;
             bannerTitleHolder.tvTitle.setText(bannerTitle.getTitle());
         }
+    }
+
+    @NonNull
+    private View.OnClickListener getButtonCopyClickedListener(
+            final int position, final BannerData bannerData
+    ) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
+                    Object object = dataList.get(i);
+                    if (object instanceof BannerData) {
+                        if (((BannerData) object).isVoucherCodeCopied()) {
+                            ((BannerData) dataList.get(i)).setVoucherCodeCopied(false);
+                            notifyItemChanged(i);
+                            break;
+                        }
+                    }
+                }
+                ((BannerData) dataList.get(position)).setVoucherCodeCopied(true);
+                notifyItemChanged(position);
+                actionListener.onButtonCopyBannerVoucherCodeClicked(bannerData.getPromocode());
+            }
+        };
     }
 
     @Override
@@ -114,6 +150,8 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class BannerItemHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.main_container)
+        LinearLayout mainContainer;
         @BindView(R2.id.tv_desc_banner)
         TextView tvDescBanner;
         @BindView(R2.id.tv_voucher_code)
