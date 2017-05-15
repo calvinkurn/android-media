@@ -41,6 +41,8 @@ import java.util.Date;
 
 import rx.Subscriber;
 
+import static android.app.Notification.DEFAULT_SOUND;
+import static android.app.Notification.DEFAULT_VIBRATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
@@ -238,6 +240,8 @@ public class RidePushNotificationBuildAndShow {
                                                   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                           .setSmallIcon(R.drawable.ic_stat_notify)
                                                           .setAutoCancel(true)
+                                                          .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                                                          .setPriority(Notification.PRIORITY_MAX)
                                                           .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                                                           .setContentTitle(context.getString(R.string.ride_push_driver_arriving_now))
                                                           .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
