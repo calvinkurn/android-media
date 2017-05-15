@@ -211,7 +211,7 @@
             android:drawableLeft="@drawable/ic_tokocash_icon"
             android:drawablePadding="10dp"
             android:gravity="center"
-            android:text="Toko Cash Charged"
+            android:text="@string/complete_trip_tokocash_charged"
             android:textColor="@color/black_full"
             android:textSize="14sp" />
 
