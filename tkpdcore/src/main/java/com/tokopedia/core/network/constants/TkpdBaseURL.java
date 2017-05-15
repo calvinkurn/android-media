@@ -641,6 +641,8 @@ public class TkpdBaseURL {
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+        public static final String ACTIVATE_UNICODE = "/token";
+        public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
 
 
         public class OTP {
