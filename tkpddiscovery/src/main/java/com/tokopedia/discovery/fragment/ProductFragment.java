@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +19,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -38,6 +38,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.adapter.ProductAdapter;
@@ -53,6 +54,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.text.NumberFormat;
@@ -95,6 +97,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
+    private Config topAdsconfig;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -172,6 +175,16 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        topAdsconfig = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .withPreferedCategory()
+                .build();
+    }
+
+    @Override
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
@@ -184,7 +197,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceResult(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         productAdapter.addAll(true, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -204,7 +217,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             TrackingUtils.eventLocaSearched(browseModel.q);
 
         }
-
+        if (model.size() == 0)
+            displayTopAds();
     }
 
     @Override
@@ -229,10 +243,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         productAdapter.incrementPage();
-        if (model.isEmpty()) {
-            productAdapter.setSearchNotFound();
-        }
         productAdapter.notifyDataSetChanged();
+        if (model.size() == 0)
+            displayTopAds();
     }
 
     @Override
@@ -242,6 +255,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         } else {
             return 0;
         }
+    }
+
+    @Override
+    public void displayTopAds() {
+        productAdapter.setSearchNotFound();
     }
 
     @Override

@@ -25,7 +25,7 @@ public interface FragmentBrowseProductView extends BaseView {
     int getDataSize(String TAG);
     void setupAdapter();
     boolean setupRecyclerView();
-    void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void onCallProductServiceResult(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
@@ -36,5 +36,6 @@ public interface FragmentBrowseProductView extends BaseView {
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
     void addCategoryHeader(Data category);
     BrowseProductModel getDataModel();
+    void displayTopAds();
 
 }

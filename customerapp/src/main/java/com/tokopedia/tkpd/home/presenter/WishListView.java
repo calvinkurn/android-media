@@ -81,7 +81,9 @@ public interface WishListView {
 
     void setAdapter();
 
-    void displayMainContent(boolean isShow);
+    void displayContentList(boolean isShow);
+
+    void displayTopAds();
 
     void displayLoading(boolean isShow);
 

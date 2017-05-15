@@ -146,7 +146,7 @@
     <item name="category_view_all" type="id"/>
     <item name="top_ads_view" type="id"/>
     <item name="nested_intermediary" type="id"/>
-
-
+    <item name="fragmentv2list" type="id"/>
+    <item name="topads" type="id"/>
 
 </resources>

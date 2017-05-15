@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
@@ -118,7 +117,7 @@ public class WishListImpl implements WishList {
     public void setData() {
         wishListView.displayPull(false);
         wishListView.loadDataChange();
-        wishListView.displayMainContent(true);
+        wishListView.displayContentList(true);
         wishListView.displayLoading(false);
     }
 
@@ -140,7 +139,7 @@ public class WishListImpl implements WishList {
     @Override
     public void loadMore(Context context) {
         wishListView.setPullEnabled(false);
-        if(mPaging.getPagination().getNextUrl().contains("search") && mPaging.CheckNextPage()){
+        if (mPaging.getPagination().getNextUrl().contains("search") && mPaging.CheckNextPage()) {
             searchWishlistLoadMore();
         } else if (mPaging.CheckNextPage()) {
             mPaging.nextPage();
@@ -218,12 +217,13 @@ public class WishListImpl implements WishList {
     public void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData) {
         if (mPaging.getPage() == 1) {
             data.clear();
+            if (wishlistData.getWishlist().size() == 0)
+                wishListView.displayTopAds();
         }
         wishListView.displayPull(false);
         dataWishlist.addAll(wishlistData.getWishlist());
         data.addAll(convertToProductItemList(wishlistData.getWishlist()));
         mPaging.setPagination(wishlistData.getPaging());
-        //mPaging.setHasNext(PagingHandler.CheckHasNext(wishlistData.getData().getPagingHandlerModel()));
 
         if (mPaging.CheckNextPage()) {
             wishListView.displayLoadMore(true);
@@ -233,7 +233,7 @@ public class WishListImpl implements WishList {
         wishListView.setPullEnabled(true);
 
         wishListView.loadDataChange();
-        wishListView.displayMainContent(true);
+        wishListView.displayContentList(true);
         wishListView.displayLoading(false);
         wishListView.clearSearch();
     }
@@ -348,7 +348,7 @@ public class WishListImpl implements WishList {
                 data.addAll(convertToProductItemList(wishlistData.getWishlist()));
                 mPaging.setPagination(wishlistData.getPaging());
                 wishListView.loadDataChange();
-                wishListView.displayMainContent(true);
+                wishListView.displayContentList(true);
 
                 if (mPaging.CheckNextPage()) {
                     wishListView.displayLoadMore(true);
@@ -433,6 +433,8 @@ public class WishListImpl implements WishList {
     }
 
     private class SearchWishlistSubscriber extends Subscriber<DataWishlist> {
+
+
         @Override
         public void onCompleted() {
 
@@ -446,11 +448,13 @@ public class WishListImpl implements WishList {
         @Override
         public void onNext(DataWishlist wishlist) {
             WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
-            if(mPaging.getPage() == 1 || wishlist.getWishlists().size() == 0) {
+            wishListView.displayPull(false);
+            if (mPaging.getPage() == 1 || wishlist.getWishlists().size() == 0) {
                 data.clear();
                 dataWishlist.clear();
+                if (wishlist.getWishlists().size() == 0)
+                    wishListView.displayTopAds();
             }
-            wishListView.displayPull(false);
             dataWishlist.addAll(wishlistData.getWishlist());
             data.addAll(convertToProductItemList(wishlistData.getWishlist()));
             mPaging.setPagination(wishlistData.getPaging());
@@ -461,7 +465,7 @@ public class WishListImpl implements WishList {
             }
             wishListView.setPullEnabled(true);
             wishListView.loadDataChange();
-            wishListView.displayMainContent(true);
+            wishListView.displayContentList(true);
             wishListView.displayLoading(false);
         }
 

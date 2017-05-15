@@ -30,7 +30,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -186,7 +185,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+        view.onCallProductServiceResult(totalProduct, productItems, pagingHandlerModel);
     }
 
     public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
