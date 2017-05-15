@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class Operator implements Parcelable {
 
+    public static final String DEFAULT_TYPE_CONTRACT = "operator";
     private String operatorId;
     private String operatorType;
 

@@ -67,13 +67,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public String processGetLastInputClientNumberByCategory(String categoryId) {
-        return view.getLastInputClientNumberChaceHandler().getString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, ""
-        );
-    }
-
-    @Override
     public void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId) {
         LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
         localCacheHandler.putString(

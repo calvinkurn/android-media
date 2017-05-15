@@ -103,6 +103,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_HISTORY_CLIENT_NUMBER =
             "EXTRA_STATE_HISTORY_CLIENT_NUMBER";
 
+    private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
+            "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
+    private static final String URL_TRANSACTION_LIST_DIGITAL =
+            "https://pulsa.tokopedia.com/order-list/";
+    private static final String URL_PRODUCT_LIST_DIGITAL =
+            "https://pulsa.tokopedia.com/products/";
+    private static final String URL_SUBSCRIPTIONS_DIGITAL = "";
+
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
@@ -125,7 +133,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String categoryId;
 
     private CompositeSubscription compositeSubscription;
-    private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
+    private BaseDigitalProductView<
+            CategoryData, Operator, Product, HistoryClientNumber
+            > digitalProductView;
 
     private LocalCacheHandler cacheHandlerLastInputClientNumber;
 
@@ -153,10 +163,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onSaveState(Bundle state) {
         if (digitalProductView != null) {
             state.putString(EXTRA_STATE_CLIENT_NUMBER, digitalProductView.getClientNumber());
-            state.putParcelable(EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator());
-            state.putParcelable(EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct());
+            state.putParcelable(
+                    EXTRA_STATE_OPERATOR_SELECTED, digitalProductView.getSelectedOperator()
+            );
+            state.putParcelable(
+                    EXTRA_STATE_PRODUCT_SELECTED, digitalProductView.getSelectedProduct()
+            );
             state.putBoolean(
-                    EXTRA_STATE_INSTANT_CHECKOUT_CHECKED, digitalProductView.isInstantCheckoutChecked()
+                    EXTRA_STATE_INSTANT_CHECKOUT_CHECKED,
+                    digitalProductView.isInstantCheckoutChecked()
             );
         }
         state.putParcelable(EXTRA_STATE_CATEGORY_DATA, categoryDataState);
@@ -544,7 +559,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
         ClipboardManager clipboard = (ClipboardManager)
                 getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("VOUCHER_CODE_DIGITAL", voucherCode);
+        ClipData clip = ClipData.newPlainText(
+                CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL, voucherCode
+        );
         clipboard.setPrimaryClip(clip);
         showToastMessage(getString(R.string.message_voucher_code_banner_copied));
     }
@@ -611,7 +628,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             navigateToActivity(DigitalWebActivity.newInstance(
                     getActivity(),
                     URLGenerator.generateURLSessionLogin(
-                            Uri.encode("https://pulsa.tokopedia.com/products/"), getActivity())
+                            Uri.encode(URL_PRODUCT_LIST_DIGITAL), getActivity())
             ));
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
@@ -620,7 +637,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             navigateToActivity(DigitalWebActivity.newInstance(
                     getActivity(),
                     URLGenerator.generateURLSessionLogin(
-                            Uri.encode("https://pulsa.tokopedia.com/order-list/"), getActivity())
+                            Uri.encode(URL_TRANSACTION_LIST_DIGITAL), getActivity())
             ));
             return true;
         } else {

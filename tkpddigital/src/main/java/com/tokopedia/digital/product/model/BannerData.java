@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class BannerData implements Parcelable {
+    public static final String DEFAULT_TYPE_CONTRACT = "banner";
     private String id;
     private String type;
     private int rechargeCmsbannerId;

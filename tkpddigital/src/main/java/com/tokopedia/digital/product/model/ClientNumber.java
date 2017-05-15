@@ -14,6 +14,7 @@ public class ClientNumber implements Parcelable {
     public static final String TYPE_INPUT_TEL = "tel";
     public static final String TYPE_INPUT_NUMERIC = "numeric";
     public static final String TYPE_INPUT_ALPHANUMERIC = "tel";
+    public static final String DEFAULT_TYPE_CONTRACT = "client_number";
 
     private String name;
     private String type;
