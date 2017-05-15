@@ -51,9 +51,12 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 
 public class RidePushNotificationBuildAndShow {
-    private static int mNotificationId = 004;
-    public static final int FINDING_UBER_NOTIFICATION_ID = mNotificationId;
-    public static final int ACCEPTED_UBER_NOTIFICATION_ID = mNotificationId;
+    public static final int FINDING_UBER_NOTIFICATION_ID = 004;
+    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 005;
+    public static final int DRIVER_CANCELLED_UBER_NOTIFICATION_ID = 006;
+    public static final int COMPLETED_UBER_NOTIFICATION_ID = 007;
+    public static final int NO_DRIVER_FOUND_UBER_NOTIFICATION_ID = 007;
+
     private Context mContext;
     private Gson gson;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
@@ -232,7 +235,7 @@ public class RidePushNotificationBuildAndShow {
                                                                   (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                                                           // Builds the notification and issues it.
-                                                          mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                                                          mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
                                                       }
                                                   });
                                               } else {
@@ -272,7 +275,7 @@ public class RidePushNotificationBuildAndShow {
                                                           (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                                                   // Builds the notification and issues it.
-                                                  mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                                                  mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
                                               }
                                           }
                                       }
@@ -307,7 +310,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void showDriverCancelledRide(Context context) {
@@ -331,7 +334,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(DRIVER_CANCELLED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void showFindingUberNotication(Context context) {
@@ -355,7 +358,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     private static void showRideCompleted(Context context, RideRequest rideRequest) {
@@ -392,7 +395,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(COMPLETED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     private static void showNoDriverFoundNotification(Context context) {
@@ -417,12 +420,16 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(NO_DRIVER_FOUND_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void cancelActiveNotification(Context context) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(mNotificationId);
+        notificationManager.cancel(FINDING_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(ACCEPTED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(COMPLETED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(DRIVER_CANCELLED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(NO_DRIVER_FOUND_UBER_NOTIFICATION_ID);
     }
 }
