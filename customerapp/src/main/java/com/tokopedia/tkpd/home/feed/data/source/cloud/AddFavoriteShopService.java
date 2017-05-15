@@ -88,7 +88,6 @@ public class AddFavoriteShopService extends IntentService {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new AddFavoriteShopSubscriber());
-
     }
 
     private Retrofit buildRetrofit() {

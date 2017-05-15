@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/include_no_result"
+        android:id="@id/include_no_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -15,7 +15,7 @@
         android:padding="@dimen/large_dp">
 
         <ImageView
-            android:id="@+id/no_result_image"
+            android:id="@id/no_result_image"
             android:layout_width="@dimen/img_hotprod"
             android:layout_height="@dimen/img_hotprod"
             android:layout_gravity="center"
@@ -23,7 +23,7 @@
             android:layout_marginBottom="@dimen/margin_vs" />
 
         <TextView
-            android:id="@+id/text_no_result"
+            android:id="@id/text_no_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

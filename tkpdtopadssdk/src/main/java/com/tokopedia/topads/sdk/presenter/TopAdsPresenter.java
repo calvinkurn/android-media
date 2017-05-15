@@ -87,6 +87,9 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     @Override
     public void loadTopAds() {
         Log.d(TAG, "Load TopAds");
+        if(config.getEndpoint()!=null) {
+            setEndpoinParam(config.getEndpoint().getDescription());
+        }
         if(config.isWithPreferedCategory()){
             getPreferedCategory();
         } else {

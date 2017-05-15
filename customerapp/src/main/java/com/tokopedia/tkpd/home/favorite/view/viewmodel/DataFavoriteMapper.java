@@ -45,8 +45,10 @@ public class DataFavoriteMapper {
                 wishlistItem.setProductId(dataWishlist.getId());
                 wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
                 ArrayList<String> badges = new ArrayList<>();
-                for (WishListBadge badge : dataWishlist.getBadges()) {
-                    badges.add(badge.getImgUrl());
+                if(dataWishlist.getBadges()!=null) {
+                    for (WishListBadge badge : dataWishlist.getBadges()) {
+                        badges.add(badge.getImgUrl());
+                    }
                 }
                 wishlistItem.setBadgeImageUrl(badges);
                 wishlistItems.add(wishlistItem);

@@ -148,5 +148,8 @@
     <item name="nested_intermediary" type="id"/>
     <item name="fragmentv2list" type="id"/>
     <item name="topads" type="id"/>
+    <item name="include_no_result" type="id"/>
+    <item name="no_result_image" type="id"/>
+    <item name="text_no_result" type="id"/>
 
 </resources>

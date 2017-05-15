@@ -49,6 +49,7 @@ import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenter;
 import com.tokopedia.discovery.presenter.FragmentDiscoveryPresenterImpl;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -97,7 +98,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
-    private Config topAdsconfig;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -172,16 +172,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public View onCreateView(View parentView, Bundle savedInstanceState) {
         return parentView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        topAdsconfig = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
-                .withPreferedCategory()
-                .build();
     }
 
     @Override
@@ -297,6 +287,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.PRODUCT)
                 .build();
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);

@@ -19,24 +19,37 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 16/06/15.
@@ -47,6 +60,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     private List<RecyclerViewItem> data;
     private Context context;
     private WishListView wishlistView;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -95,6 +109,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
 
+    public void setSearchNotFound() {
+        data.add(new EmptySearchItem());
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
@@ -105,13 +123,70 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 return createProductView(viewGroup);
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 return createProductView(viewGroup);
+            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                return createEmptySearch(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
     }
 
+
+    public static class EmptySearchItem extends RecyclerViewItem {
+        public EmptySearchItem() {
+            setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
+        }
+    }
+
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_empty_state, null);
+        return new TopAdsEmptyStateViewHolder(view);
+    }
+
+    public static class TopAdsEmptyStateViewHolder extends RecyclerView.ViewHolder implements
+            TopAdsItemClickListener {
+        @BindView(R.id.topads)
+        TopAdsView topAdsView;
+        private Context context;
+
+        public TopAdsEmptyStateViewHolder(View itemView) {
+            super(itemView);
+            context = itemView.getContext();
+            ButterKnife.bind(this, itemView);
+            Config topAdsconfig = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(context))
+                    .setUserId(SessionHandler.getLoginID(context))
+                    .withPreferedCategory()
+                    .build();
+            topAdsView.setConfig(topAdsconfig);
+            topAdsView.loadTopAds();
+            topAdsView.setAdsItemClickListener(this);
+        }
+
+        @Override
+        public void onProductItemClicked(Product product) {
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
+                    product.getId());
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onShopItemClicked(Shop shop) {
+            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+            Intent intent = new Intent(context, ShopInfoActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+
+        }
+    }
+
     private ViewHolder createProductView(ViewGroup viewGroup) {
-        View itemLayoutView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.listview_product_item, null);
+        View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.listview_product_item, null);
         ViewHolder viewHolder = new ViewHolder(itemLayoutView);
         return viewHolder;
     }
@@ -357,6 +432,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
         if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
+        }
+
+        if(data.get(position) instanceof EmptySearchItem){
+            return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
         }
 
         return TkpdState.RecyclerView.VIEW_PRODUCT;

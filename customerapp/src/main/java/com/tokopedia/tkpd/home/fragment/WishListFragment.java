@@ -236,7 +236,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void displayTopAds() {
-//        adapter.setSearchNotFound();
+        adapter.setSearchNotFound();
     }
 
     @Override
@@ -428,7 +428,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 if (position == wishList.getData().size()) {
                     // header column
                     return footerColumnSize;
-                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST) {
+                } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH) {
                     // top ads span column
                     return headerColumnSize;
                 } else {
