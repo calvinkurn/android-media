@@ -25,6 +25,8 @@ public class UploadProductMapper {
         domainModel.setProductName(viewModel.getProductName());
         domainModel.setProductDescription(viewModel.getProductDescription());
         domainModel.setProductChangePhoto(viewModel.getProductChangePhoto());
+        domainModel.setProductChangeWholesale(viewModel.getProductChangeWholesale());
+        domainModel.setProductChangeCatalog(viewModel.getProductChangeCatalog());
         domainModel.setProductCatalogId(viewModel.getProductCatalogId());
         domainModel.setProductDepartmentId(viewModel.getProductDepartmentId());
         domainModel.setProductCondition(viewModel.getProductCondition());

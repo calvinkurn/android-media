@@ -47,6 +47,8 @@ public class UploadProductInputViewModel {
     private int productStatus;
     private String productId;
     private int productNameEditable;
+    private int productChangeWholesale;
+    private int productChangeCatalog;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -283,4 +285,19 @@ public class UploadProductInputViewModel {
         return productNameEditable;
     }
 
+    public int getProductChangeWholesale() {
+        return productChangeWholesale;
+    }
+
+    public void setProductChangeWholesale(int productChangeWholesale) {
+        this.productChangeWholesale = productChangeWholesale;
+    }
+
+    public void setProductChangeCatalog(int productChangeCatalog) {
+        this.productChangeCatalog = productChangeCatalog;
+    }
+
+    public int getProductChangeCatalog() {
+        return productChangeCatalog;
+    }
 }
