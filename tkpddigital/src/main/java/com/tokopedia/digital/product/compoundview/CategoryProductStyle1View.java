@@ -88,9 +88,7 @@ public class CategoryProductStyle1View extends
                     operatorSelected = operator;
                 }
             }
-            if (operatorSelected.getPrefixList().size() > 0) {
-
-            } else {
+            if (operatorSelected.getPrefixList().size() <= 0) {
                 renderDropdownProduct(operatorSelected);
             }
         }
@@ -229,16 +227,10 @@ public class CategoryProductStyle1View extends
                             return;
                         } else {
                             clientNumberInputView.disableImageOperator();
-                            if (holderChooserProduct.getChildAt(0) != null) {
-                                holderChooserProduct.removeAllViews();
-                            }
                             productSelected = null;
-                            if (holderAdditionalInfoProduct.getChildCount() > 0) {
-                                holderAdditionalInfoProduct.removeAllViews();
-                            }
-                            if (holderPriceInfoProduct.getChildCount() > 0) {
-                                holderPriceInfoProduct.removeAllViews();
-                            }
+                            clearHolder(holderChooserProduct);
+                            clearHolder(holderAdditionalInfoProduct);
+                            clearHolder(holderPriceInfoProduct);
                         }
                     }
                 }
@@ -248,15 +240,9 @@ public class CategoryProductStyle1View extends
             public void onClientNumberInputInvalid() {
                 operatorSelected = null;
                 productSelected = null;
-                if (holderChooserProduct.getChildAt(0) != null) {
-                    holderChooserProduct.removeAllViews();
-                }
-                if (holderAdditionalInfoProduct.getChildCount() > 0) {
-                    holderAdditionalInfoProduct.removeAllViews();
-                }
-                if (holderPriceInfoProduct.getChildCount() > 0) {
-                    holderPriceInfoProduct.removeAllViews();
-                }
+                clearHolder(holderChooserProduct);
+                clearHolder(holderAdditionalInfoProduct);
+                clearHolder(holderPriceInfoProduct);
             }
         };
     }
@@ -270,19 +256,14 @@ public class CategoryProductStyle1View extends
             public void onInitialDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
 
-                if (holderAdditionalInfoProduct.getChildAt(0) != null)
-                    holderAdditionalInfoProduct.removeAllViews();
+                clearHolder(holderAdditionalInfoProduct);
                 productAdditionalInfoView.renderData(data);
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
 
+                clearHolder(holderPriceInfoProduct);
                 if (operator.getRule().isShowPrice()) {
                     productPriceInfoView.renderData(productSelected);
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                     holderPriceInfoProduct.addView(productPriceInfoView);
-                } else {
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                 }
             }
 
@@ -290,19 +271,14 @@ public class CategoryProductStyle1View extends
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
 
-                if (holderAdditionalInfoProduct.getChildAt(0) != null)
-                    holderAdditionalInfoProduct.removeAllViews();
+                clearHolder(holderAdditionalInfoProduct);
                 productAdditionalInfoView.renderData(data);
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
 
+                clearHolder(holderPriceInfoProduct);
                 if (operator.getRule().isShowPrice()) {
                     productPriceInfoView.renderData(productSelected);
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                     holderPriceInfoProduct.addView(productPriceInfoView);
-                } else {
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                 }
             }
 
@@ -315,13 +291,10 @@ public class CategoryProductStyle1View extends
 
     private void renderEdittextClientNumber(CategoryData data) {
         final ClientNumber clientNumber = data.getClientNumberList().get(0);
-        if (holderClientNumber.getChildAt(0) != null) {
-            holderClientNumber.removeAllViews();
-        }
-        holderClientNumber.addView(clientNumberInputView);
-
+        clearHolder(holderClientNumber);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput(data));
         clientNumberInputView.renderData(clientNumber);
+        holderClientNumber.addView(clientNumberInputView);
     }
 
     private void renderDropdownProduct(Operator operator) {
@@ -334,9 +307,7 @@ public class CategoryProductStyle1View extends
         digitalProductChooserView.setLabelText(
                 operator.getRule().getProductText()
         );
-        if (holderChooserProduct.getChildAt(0) != null) {
-            holderChooserProduct.removeAllViews();
-        }
+        clearHolder(holderChooserProduct);
         holderChooserProduct.addView(digitalProductChooserView);
     }
 
