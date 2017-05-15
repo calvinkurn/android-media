@@ -290,6 +290,21 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     @Override
+    public void showLoading() {
+        addUrlVideoAdapter.showLoadingFull(true);
+    }
+
+    @Override
+    public void hideLoading() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                addUrlVideoAdapter.showLoadingFull(false);
+            }
+        });
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_youtube, menu);
 

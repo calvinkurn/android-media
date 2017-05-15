@@ -151,6 +151,8 @@ public class AddWholeSaleDialog extends DialogFragment {
                     validateMaxQuantity(maxWholeSale.getDoubleValue(), true);
                 }
             });
+        } else {
+            minWholeSale.setEnabled(false);
         }
 
         final boolean finalIsFirsttime = isFirsttime;
@@ -211,17 +213,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     private void determineFormatter() {
-        switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
-                formatter = NumberFormat.getNumberInstance(dollarLocale);
-                formatter.setMinimumFractionDigits(2);
-                break;
-            default:
-            case CurrencyTypeDef.TYPE_IDR:
-                formatter = NumberFormat.getNumberInstance(idrLocale);
-                formatter.setMinimumFractionDigits(0);
-                break;
-        }
+        formatter = NumberFormat.getNumberInstance(dollarLocale);
     }
 
     protected void validateMaxQuantity(double maxQuantity, boolean finalIsFirsttime) {

@@ -503,15 +503,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     private void determineFormatter() {
-        switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
-                formatter = NumberFormat.getNumberInstance(dollarLocale);
-                break;
-            default:
-            case CurrencyTypeDef.TYPE_IDR:
-                formatter = NumberFormat.getNumberInstance(idrLocale);
-                break;
-        }
+        formatter = NumberFormat.getNumberInstance(dollarLocale);
     }
 
     private boolean isWeightValid() {
