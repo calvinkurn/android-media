@@ -13,8 +13,10 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -239,7 +241,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     public boolean isInstantCheckoutChecked() {
-        return false;
+        return cbInstantCheckout.isChecked();
     }
 
     @Override
@@ -252,12 +254,36 @@ public class CategoryProductStyle3View extends
             Operator operatorSelectedState, Product productSelectedState,
             String clientNumberState, boolean isInstantCheckoutChecked
     ) {
-
+        if (operatorSelected != null) {
+            digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
+            if (!TextUtils.isEmpty(clientNumberState)) {
+                clientNumberInputView.setText(clientNumberState);
+            }
+        }
     }
 
     @Override
     protected void onHistoryClientNumberRendered() {
-        //TODO Angga
+        if (historyClientNumber == null) return;
+        if (!TextUtils.isEmpty(historyClientNumber.getLastOrderClientNumber().getOperatorId())) {
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getOperatorId()
+                )) {
+                    digitalOperatorChooserView.renderUpdateDataSelected(operator);
+                    return;
+                }
+            }
+            clientNumberInputView.setText(
+                    historyClientNumber.getLastOrderClientNumber().getClientNumber()
+            );
+
+            List<String> lastClientNumberList = new ArrayList<>();
+            for (OrderClientNumber data : historyClientNumber.getRecentClientNumberList()) {
+                lastClientNumberList.add(data.getClientNumber());
+            }
+            this.clientNumberInputView.setAdapterAutoCompleteClientNumber(lastClientNumberList);
+        }
     }
 
 

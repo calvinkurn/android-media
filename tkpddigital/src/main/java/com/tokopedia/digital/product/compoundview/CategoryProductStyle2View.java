@@ -14,8 +14,10 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -107,12 +109,12 @@ public class CategoryProductStyle2View extends
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
-
+        clientNumberInputView.setText(clientNumber);
     }
 
     @Override
     public boolean isInstantCheckoutChecked() {
-        return false;
+        return cbInstantCheckout.isChecked();
     }
 
     @Override
@@ -126,7 +128,12 @@ public class CategoryProductStyle2View extends
             Operator operatorSelectedState, Product productSelectedState,
             String clientNumberState, boolean isInstantCheckoutChecked
     ) {
-
+        if (operatorSelected != null) {
+            digitalOperatorRadioChooserView.renderUpdateDataSelected(operatorSelected);
+            if (!TextUtils.isEmpty(clientNumberState)) {
+                clientNumberInputView.setText(clientNumberState);
+            }
+        }
     }
 
     @Override
@@ -143,6 +150,11 @@ public class CategoryProductStyle2View extends
                         historyClientNumber.getLastOrderClientNumber().getClientNumber()
                 );
             }
+            List<String> lastClientNumberList = new ArrayList<>();
+            for (OrderClientNumber data : historyClientNumber.getRecentClientNumberList()) {
+                lastClientNumberList.add(data.getClientNumber());
+            }
+            this.clientNumberInputView.setAdapterAutoCompleteClientNumber(lastClientNumberList);
         }
     }
 
