@@ -524,17 +524,17 @@ public class DrawerVariableSeller extends DrawerVariable {
         CommonUtils.dumper("DrawerTag : CreateDataGuest");
 
         model.data.add(new DrawerHeader());
-        model.data.add(new DrawerItem("Beranda", 0, 0, TkpdState.DrawerPosition.INDEX_HOME, true));
+        model.data.add(new DrawerItem(context.getString(R.string.drawer_title_home), 0, 0, TkpdState.DrawerPosition.INDEX_HOME, true));
         model.data.add(new DrawerSeparator());
-        model.data.add(new DrawerItem("Masuk", 0, 0, TkpdState.DrawerPosition.LOGIN, true));
+        model.data.add(new DrawerItem(context.getString(R.string.drawer_title_login), 0, 0, TkpdState.DrawerPosition.LOGIN, true));
         model.data.add(new DrawerSeparator());
-        model.data.add(new DrawerItem("Daftar", 0, 0, TkpdState.DrawerPosition.REGISTER, true));
+        model.data.add(new DrawerItem(context.getString(R.string.drawer_title_register), 0, 0, TkpdState.DrawerPosition.REGISTER, true));
         model.data.add(new DrawerSeparator());
         if (TrackingUtils.getBoolean(AppEventTracking.GTM.REPORT)) {
-            model.data.add(new DrawerItem("Laporkan", 0, 0, TkpdState.DrawerPosition.REPORT, true));
+            model.data.add(new DrawerItem(context.getString(R.string.drawer_title_report), 0, 0, TkpdState.DrawerPosition.REPORT, true));
         }
         if (BuildConfig.DEBUG) {
-            model.data.add(new DrawerItem("Developer Options", 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
+            model.data.add(new DrawerItem(context.getString(R.string.drawer_title_developer_option), 0, 0, TkpdState.DrawerPosition.DEVELOPER_OPTIONS, true));
         }
         adapter.notifyDataSetChanged();
 
@@ -875,10 +875,10 @@ public class DrawerVariableSeller extends DrawerVariable {
         public Model() {
             data = new ArrayList<>();
             header = new DrawerHeader(context);
-            sellerHome = new DrawerItem("Beranda", 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
-            shopMenu = new DrawerItemList("Penjualan", 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
-            inboxMenu = new DrawerItemList("Kotak Masuk", 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
-            gmSubscribeMenu = new DrawerItemList("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
+            sellerHome = new DrawerItem(context.getString(R.string.drawer_title_home), 0, R.drawable.icon_home, TkpdState.DrawerPosition.SELLER_INDEX_HOME, false);
+            shopMenu = new DrawerItemList(context.getString(R.string.drawer_title_seller), 0, R.drawable.icon_penjualan, TkpdState.DrawerPosition.SHOP, true);
+            inboxMenu = new DrawerItemList(context.getString(R.string.drawer_title_inbox), 0, R.drawable.icon_inbox, TkpdState.DrawerPosition.INBOX, true);
+            gmSubscribeMenu = new DrawerItemList(context.getString(R.string.drawer_title_gold_merchant), 0, R.drawable.ic_goldmerchant_drawer, TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE, true);
             topAdsMenu = new DrawerItem(context.getString(R.string.title_top_ads), 0, R.drawable.ic_top_ads, TkpdState.DrawerPosition.SELLER_TOP_ADS, false);
         }
 
