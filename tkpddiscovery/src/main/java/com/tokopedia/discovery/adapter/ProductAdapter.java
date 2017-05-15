@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
@@ -75,7 +77,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 
 
 /**
@@ -141,6 +142,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 return onCreateRevampCategoryHeader(parent);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(parent);
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                return onCreateBannerOfficialStore(context, parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -176,6 +179,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
                 ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
+                break;
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
+                ((BannerOsViewHolder) holder).bind((OsBannerViewModel) data.get(position));
                 break;
             default:
                 super.onBindViewHolder(holder, position);
@@ -603,6 +609,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
             case TkpdState.RecyclerView.VIEW_TOP_ADS_LIST:
+            case TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE:
                 return recyclerViewItem.getType();
             default:
                 return -1;
@@ -636,6 +643,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         if (position > data.size())
             return false;
         return ProductFeedAdapter.isTopAds(data.get(position)) || data.get(position).getType() == TkpdState.RecyclerView.VIEW_TOP_ADS_4;
+    }
+
+    public boolean isOfficialStoreBanner(int position) {
+        return data.get(position).getType() == TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE;
     }
 
     /**
@@ -736,9 +747,12 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     protected boolean checkIfOffset() {
-        return data != null && data.size() > 1 && (data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
-        || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
-                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER));
+        return data != null && data.size() > 1 && (
+                data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_HOT_LIST)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER)
+                || data.get(0).getType() == (TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE)
+        );
     }
 
     public void setSearchNotFound() {
@@ -756,6 +770,10 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public void addCategoryRevampHeader(CategoryHeaderRevampModel categoryHeaderModel) {
         data.add(0, categoryHeaderModel);
+    }
+
+    public void addOfficialStoreBanner(OsBannerViewModel bannerModel) {
+        data.add(0, bannerModel);
     }
 
     public static class EmptySearchItem extends RecyclerViewItem {
@@ -1005,5 +1023,64 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
 
     public interface ScrollListener {
         void backToTop();
+    }
+
+    /**
+     * @author brilliant.oka
+     * View Model for Official Stores Banner
+     */
+    public static class OsBannerViewModel extends RecyclerViewItem {
+        private BannerOfficialStoreModel bannerOfficialStore;
+
+        private OsBannerViewModel() {
+            setType(TkpdState.RecyclerView.VIEW_BANNER_OFFICIAL_STORE);
+        }
+
+        public OsBannerViewModel(BannerOfficialStoreModel bannerOfficialStore) {
+            this();
+            this.bannerOfficialStore = bannerOfficialStore;
+        }
+    }
+
+    /**
+     * @author brilliant.oka
+     * Create new Official Stores Banner View Holder
+     * @param parent parent view
+     * @return view holder of Official Store Banner
+     */
+    private BannerOsViewHolder onCreateBannerOfficialStore(Context context, ViewGroup parent) {
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.official_store_banner, parent, false);
+        return new BannerOsViewHolder(context, inflate);
+    }
+
+    /**
+     * View Holder for Official Store Banner
+     */
+    public static class BannerOsViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R2.id.image_banner_os)
+        ImageView imageBannerOs;
+
+        Context context;
+
+        public BannerOsViewHolder(Context context, View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            this.context = context;
+        }
+
+        public void bind(final OsBannerViewModel viewModel) {
+            ImageHandler.loadImageAndCache(imageBannerOs, viewModel.bannerOfficialStore.getBannerUrl());
+            imageBannerOs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(viewModel.bannerOfficialStore.getShopUrl())
+                    );
+                    context.startActivity(myIntent);
+                    UnifyTracking.eventClickOsBanner(viewModel.bannerOfficialStore.getKeyword());
+                }
+            });
+        }
     }
 }

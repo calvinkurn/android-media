@@ -208,6 +208,16 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageAndCache(ImageView imageview, String url) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(imageview);
+    }
+
     public static void loadImageCover2(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)

@@ -112,6 +112,7 @@ public interface AppEventTracking {
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
         String CLICK_VIEW_ALL_OS = "clickOS";
+        String CLICK_AD_BANNER = "clickAdBanner";
     }
 
     interface Category {
@@ -174,6 +175,7 @@ public interface AppEventTracking {
         String PUSH_NOTIFICATION = "Push Notification";
         String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
+        String OS_AD_BANNER = "OS Ad Banner";
     }
 
     interface Action {

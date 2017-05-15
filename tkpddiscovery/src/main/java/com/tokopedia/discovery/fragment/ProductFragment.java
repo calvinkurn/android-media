@@ -12,10 +12,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
@@ -26,6 +28,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
@@ -274,14 +277,19 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
                 if (position == productAdapter.getData().size()) {
                     return spanCount;
-                } else if (position == 0 && !productAdapter.isTopAds(position) && !productAdapter.isHotListBanner(position)
-                        && !productAdapter.isCategoryHeader(position)) {
+                } else if (position == 0
+                        && !productAdapter.isTopAds(position)
+                        && !productAdapter.isHotListBanner(position)
+                        && !productAdapter.isCategoryHeader(position)
+                        && !productAdapter.isOfficialStoreBanner(position)) {
                     return regularColumnSize;
                 } else if (productAdapter.isTopAds(position)) {
                     // top ads span column
                     return spanCount;
-                } else if (productAdapter.isHotListBanner(position) || productAdapter.isCategoryHeader(position)
-                        || productAdapter.isEmptySearch(position)){
+                } else if (productAdapter.isHotListBanner(position)
+                        || productAdapter.isCategoryHeader(position)
+                        || productAdapter.isEmptySearch(position)
+                        || productAdapter.isOfficialStoreBanner(position)){
                     return spanCount;
                 } else {
                     // regular one column
@@ -505,5 +513,14 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void backToTop() {
         mRecyclerView.scrollToPosition(0);
+    }
+
+    public void showOfficialStoreBanner(BannerOfficialStoreModel model) {
+        if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
+            if (!TextUtils.isEmpty(model.getBannerUrl()) && !TextUtils.isEmpty(model.getShopUrl())) {
+                productAdapter.addOfficialStoreBanner(new ProductAdapter.OsBannerViewModel(model));
+                productAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

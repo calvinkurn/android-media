@@ -391,6 +391,7 @@ public class TkpdState {
         public static final int VIEW_TOP_ADS_LIST = 997;
         public static final int VIEW_CATEGORY_HEADER = 996;
         public static final int VIEW_CATEGORY_REVAMP_HEADER = 995;
+        public static final int VIEW_BANNER_OFFICIAL_STORE = 994;
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;

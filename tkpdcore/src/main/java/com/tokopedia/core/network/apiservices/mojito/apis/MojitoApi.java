@@ -2,12 +2,12 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -38,4 +38,9 @@ public interface MojitoApi {
             @Query("q") String query,
             @Query("page") int page,
             @Query("count") int count);
+
+    @GET(TkpdBaseURL.Mojito.PATH_OS_BANNER)
+    Observable<Response<BannerOfficialStoreModel>> getOSBanner(
+            @Query("keywords") String keyword
+    );
 }
