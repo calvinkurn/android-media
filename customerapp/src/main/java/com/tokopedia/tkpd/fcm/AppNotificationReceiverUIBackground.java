@@ -4,8 +4,8 @@ import android.app.Application;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -19,18 +19,13 @@ import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
-import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
-import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
-import com.tokopedia.core.gcm.notification.promotions.DeeplinkNotification;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
-import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
+import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -107,6 +102,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
+        Log.d("Push", "AppNotificationReceiverUIBackground handleApplinkNotification");
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
@@ -135,7 +131,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 mFCMCacheManager.resetCache(data);
             }
         } else {
-            if(data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
+            if (data.getString(Constants.KEY_ORIGIN, "").equals(Constants.ARG_NOTIFICATION_APPLINK_PROMO_LABEL))
                 prepareAndExecuteApplinkPromoNotification(data);
             else
                 prepareAndExecuteApplinkNotification(data);
@@ -175,6 +171,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
+                Log.d("Push", "AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
                 RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
                 push.processReceivedNotification(data);
                 break;

@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -87,6 +88,8 @@ public class RidePushNotificationBuildAndShow {
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         getRideRequestDetailUseCase.execute(requestParams, getSubscriber());
+
+        Log.d("Push", "RidePushNotificationBuildAndShow processReceivedNotification :: " + ridePushNotification.getRequestId());
     }
 
     @NonNull
@@ -109,6 +112,8 @@ public class RidePushNotificationBuildAndShow {
                 intent.putExtra(EXTRA_RIDE_RIDE_REQUEST, rideRequest);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
                 manager.sendBroadcast(intent);
+
+                Log.d("Push", "RidePushNotificationBuildAndShow Subscriber OnNext :: " + rideRequest.getStatus());
 
                 switch (rideRequest.getStatus()) {
                     case RideStatus.ARRIVING:
@@ -212,7 +217,7 @@ public class RidePushNotificationBuildAndShow {
                                                           remoteView.setOnClickPendingIntent(R.id.layout_call_driver, pendingSwitchIntent);
 
                                                           Bundle bundle = new Bundle();
-                                                          bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+                                                          bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
                                                           bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
                                                           bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                           TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
@@ -250,7 +255,7 @@ public class RidePushNotificationBuildAndShow {
                                                   remoteView.setOnClickPendingIntent(R.id.layout_call_driver, pendingSwitchIntent);
 
                                                   Bundle bundle = new Bundle();
-                                                  bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+                                                  bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
                                                   bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
                                                   bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                   TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
@@ -286,7 +291,7 @@ public class RidePushNotificationBuildAndShow {
                 .setCustomBigContentView(remoteView);
 
         Bundle bundle = new Bundle();
-        bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+        bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
         TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
 
