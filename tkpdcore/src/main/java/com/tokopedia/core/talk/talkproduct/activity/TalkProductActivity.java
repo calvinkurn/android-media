@@ -2,16 +2,13 @@ package com.tokopedia.core.talk.talkproduct.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;

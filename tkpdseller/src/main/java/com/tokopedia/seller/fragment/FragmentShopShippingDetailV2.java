@@ -40,8 +40,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
@@ -349,7 +349,9 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         productListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                startActivity(ProductInfoActivity.createInstance(getActivity(), getProductDataToPass(position)));
+                startActivity(ProductDetailRouter
+                        .createInstanceProductDetailInfoActivity(
+                                getActivity(), getProductDataToPass(position)));
             }
         });
         askBuyer.setOnClickListener(onAskBuyerClickListener());

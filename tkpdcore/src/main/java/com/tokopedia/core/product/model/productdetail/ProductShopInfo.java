@@ -2,7 +2,6 @@ package com.tokopedia.core.product.model.productdetail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.Html;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -494,7 +493,7 @@ public class ProductShopInfo implements Parcelable{
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductShopInfo> CREATOR = new Parcelable.Creator<ProductShopInfo>() {
+    public static final Creator<ProductShopInfo> CREATOR = new Creator<ProductShopInfo>() {
         @Override
         public ProductShopInfo createFromParcel(Parcel in) {
             return new ProductShopInfo(in);

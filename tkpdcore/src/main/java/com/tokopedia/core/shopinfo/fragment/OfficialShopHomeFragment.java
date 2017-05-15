@@ -7,7 +7,6 @@ package com.tokopedia.core.shopinfo.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
@@ -30,9 +29,6 @@ import android.widget.ProgressBar;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.GetShopProductParam;
 
 import java.util.List;

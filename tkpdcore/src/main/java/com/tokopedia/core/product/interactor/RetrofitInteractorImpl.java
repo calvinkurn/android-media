@@ -601,7 +601,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         Observable<Response<ProductOtherDataAce>> observable = aceSearchService.getApi()
                 .getOtherProducts(MapNulRemover.removeNull(params));
 
-        Subscriber<java.util.List<ProductOther>> subscriber = new Subscriber<List<ProductOther>>() {
+        Subscriber<List<ProductOther>> subscriber = new Subscriber<List<ProductOther>>() {
             @Override
             public void onCompleted() {
 
@@ -625,11 +625,11 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             }
         };
 
-        Func1<Response<ProductOtherDataAce>, java.util.List<ProductOther>>
+        Func1<Response<ProductOtherDataAce>, List<ProductOther>>
                 func1 = new Func1<Response<ProductOtherDataAce>, List<ProductOther>>() {
             @Override
             public List<ProductOther> call(Response<ProductOtherDataAce> response) {
-                java.util.List<ProductOther> others = new ArrayList<>();
+                List<ProductOther> others = new ArrayList<>();
                 for (ProductOtherAce data : response.body().getProductOthers()) {
                     others.add(new ProductOther(data));
                 }

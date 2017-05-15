@@ -38,6 +38,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.DownloadResultSender;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.fragment.TwitterDialogV4;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.dialog.DialogFragmentImageAddProduct;
@@ -53,7 +54,6 @@ import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -579,7 +579,7 @@ public class ProductActivity extends BaseProductActivity implements
 
     public static void moveToProductShare(ShareData shareData, Context context) {
 
-        context.startActivity(ProductInfoActivity.createInstance(context, shareData));
+        context.startActivity(ProductDetailRouter.createInstanceProductDetailInfoActivity(context, shareData));
 
         if (context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).finish();
@@ -588,7 +588,7 @@ public class ProductActivity extends BaseProductActivity implements
 
     public static void moveToProductShare(Context context) {
 
-        context.startActivity(ProductInfoActivity.createInstance(context));
+        context.startActivity(ProductDetailRouter.createAddProductDetailInfoActivity(context));
 
         if (context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).finish();

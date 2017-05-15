@@ -24,7 +24,6 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.var.Badge;
@@ -253,7 +252,8 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                     UnifyTracking.eventWishlistView(product.getName());
 
                     Bundle bundle = new Bundle();
-                    Intent intent = new Intent(context, ProductInfoActivity.class);
+                    Intent intent
+                            = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data.get(position));
                     intent.putExtras(bundle);
                     context.startActivity(intent);

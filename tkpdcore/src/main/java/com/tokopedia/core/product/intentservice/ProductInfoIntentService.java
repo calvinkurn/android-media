@@ -14,7 +14,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.product.model.report.ReportProductPass;
+import com.tokopedia.core.product.report.ReportProductPass;
 
 import org.json.JSONObject;
 

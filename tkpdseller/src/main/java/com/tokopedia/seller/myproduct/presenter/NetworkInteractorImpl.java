@@ -17,11 +17,6 @@ import com.tokopedia.core.myproduct.model.CatalogDataModel;
 import com.tokopedia.core.myproduct.model.DepartmentParentModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.model.MyShopInfoModel;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.model.EditPriceParam;
-import com.tokopedia.seller.myproduct.model.GetShopNoteModel;
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.etc.DepartmentService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
@@ -33,8 +28,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.model.EditPriceParam;
+import com.tokopedia.seller.myproduct.model.GetShopNoteModel;
+import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
+import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.selling.network.apiservices.ProductActService;
 
 import java.io.File;
@@ -82,7 +81,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
     private ShopService shopService;
     private ProductService productService;
     private ProductActService productActService;
-    private RetrofitInteractorImpl retrofitInteractorImpl;
     private DepartmentService departmentService;
 
 
@@ -91,7 +89,6 @@ public class NetworkInteractorImpl implements NetworkInteractor {
         myShopNoteService = new MyShopNoteService();
         productService = new ProductService();
         productActService = new ProductActService();
-        retrofitInteractorImpl = new RetrofitInteractorImpl();
         departmentService = new DepartmentService();
     }
 

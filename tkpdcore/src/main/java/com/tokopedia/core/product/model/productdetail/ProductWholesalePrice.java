@@ -68,7 +68,7 @@ public class ProductWholesalePrice implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductWholesalePrice> CREATOR = new Parcelable.Creator<ProductWholesalePrice>() {
+    public static final Creator<ProductWholesalePrice> CREATOR = new Creator<ProductWholesalePrice>() {
         @Override
         public ProductWholesalePrice createFromParcel(Parcel in) {
             return new ProductWholesalePrice(in);

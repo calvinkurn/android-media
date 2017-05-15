@@ -12,7 +12,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
+import com.tokopedia.discovery.PdpRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -22,6 +24,7 @@ import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
@@ -29,7 +32,7 @@ import com.tokopedia.transaction.wallet.WalletActivity;
  */
 
 public class ConsumerRouterApplication extends MainApplication implements
-        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter, PdpRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -47,7 +50,14 @@ public class ConsumerRouterApplication extends MainApplication implements
 
     @Override
     public void goToProductDetail(Context context, String productUrl) {
-        throw new RuntimeException("right now, it implement at Seller Application !!");
+        Intent intent = ProductInfoActivity.createInstance(context, productUrl);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToProductDetail(Context context, ProductPass productPass) {
+        Intent intent = ProductInfoActivity.createInstance(context, productPass);
+        context.startActivity(intent);
     }
 
     @Override

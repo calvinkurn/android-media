@@ -17,6 +17,7 @@ ext {
     tkpdDigitalVersion = '1.+'
     tkpdTopAdsSDKVersion = '1.+'
     tkpdPaymentVersion = '1.+'
+    tkpdPdpVersion = '1.+'
     compileSdkVersion = 24
     minSdkVersion = 15
     targetSdkVersion = 24
@@ -145,7 +146,8 @@ ext {
             seller     : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
             digital    : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             topads     : "com.tokopedia.topads.sdk:topads:${tkpdTopAdsSDKVersion}",
-            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}"
+            payment    : "com.tokopedia.payment:payment:${tkpdPaymentVersion}",
+            tkpdpdp    : "com.tokopedia.tkpdpdp:tkpdpdp:${tkpdPdpVersion}"
     ]
 
 }

@@ -28,9 +28,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -49,7 +46,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
-import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.MethodChecker;
@@ -61,9 +58,11 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.DividerItemDecoration;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.custom.TopAdsListRecyclerViewAdapter;
 import com.tokopedia.discovery.adapter.custom.TopAdsRecyclerViewAdapter;
 import com.tokopedia.discovery.presenter.BrowseView;
+import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 
 import org.parceler.Parcels;
 
@@ -75,7 +74,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 
 
 /**
@@ -975,7 +973,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 UnifyTracking.eventProductOnCategory(categoryId);
             }
             Bundle bundle = new Bundle();
-            Intent intent = new Intent(context, ProductInfoActivity.class);
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context);
             bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
             intent.putExtras(bundle);
             context.startActivity(intent);

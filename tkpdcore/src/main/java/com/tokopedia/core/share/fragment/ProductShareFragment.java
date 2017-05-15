@@ -36,12 +36,15 @@ import com.tokopedia.core.database.model.ProductDB;
 import com.tokopedia.core.database.model.ProductDB_Table;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
 import com.tokopedia.core.share.presenter.ProductSharePresenterImpl;
 import com.tokopedia.core.var.TkpdState;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.IS_ADDING_PRODUCT;
 
 /**
  * Created by Angga.Prasetiyo on 11/12/2015.
@@ -50,7 +53,7 @@ import butterknife.OnClick;
 public class ProductShareFragment extends BasePresenterFragment<ProductSharePresenter> {
     public static final String TAG = "ProductShareFragment";
     private static final String ARGS_SHARE_DATA = "ARGS_SHARE_DATA";
-    public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
+
 
     private ShareData shareData;
     @BindView(R2.id.text_line)
@@ -168,7 +171,7 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     @Override
     protected void setupArguments(Bundle arguments) {
         this.shareData = arguments.getParcelable(ARGS_SHARE_DATA);
-        this.isAdding = arguments.getBoolean(IS_ADDING_PRODUCT);
+        this.isAdding = arguments.getBoolean(ProductDetailRouter.IS_ADDING_PRODUCT);
     }
 
     @Override

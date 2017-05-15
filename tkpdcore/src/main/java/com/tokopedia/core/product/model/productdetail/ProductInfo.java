@@ -354,7 +354,7 @@ public class ProductInfo implements Parcelable {
     }
 
     @SuppressWarnings("unused")
-    public static final Parcelable.Creator<ProductInfo> CREATOR = new Parcelable.Creator<ProductInfo>() {
+    public static final Creator<ProductInfo> CREATOR = new Creator<ProductInfo>() {
         @Override
         public ProductInfo createFromParcel(Parcel in) {
             return new ProductInfo(in);

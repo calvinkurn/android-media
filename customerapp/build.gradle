@@ -227,6 +227,7 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
+    compile project(':tkpdpdp')
 
 //    compile rootProject.ext.tkpdDependencies.discovery
 //    compile rootProject.ext.tkpdDependencies.transaction
