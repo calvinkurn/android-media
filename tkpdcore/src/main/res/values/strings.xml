@@ -1924,6 +1924,12 @@ di Tokopedia Sekarang!</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
+    <!-- String related to Official Store START -->
+    <string name="os_home_title_product">Produk</string>
+    <string name="os_view_all_product">Lihat Semua Barang</string>
+
     <string name="title_official_store">Official Store</string>
+    <!-- String related to Official Store END -->
+
     <string name="hint_search_review">Cari ulasan</string>
 </resources>
