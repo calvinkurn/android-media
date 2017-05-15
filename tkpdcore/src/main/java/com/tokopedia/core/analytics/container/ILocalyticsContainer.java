@@ -97,5 +97,5 @@ public interface ILocalyticsContainer {
 
     void sendEventLogin(Customer build, String label, Map<String, String> attributesLogin);
 
-    void setNotificationsDisabled(boolean value);
+    void setNotificationsDisabled(boolean notificationsDisabled);
 }

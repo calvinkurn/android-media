@@ -565,7 +565,7 @@ public class LocalyticsContainer implements ILocalyticsContainer {
     }
 
     @Override
-    public void setNotificationsDisabled(boolean value) {
-        Localytics.setNotificationsDisabled(value);
+    public void setNotificationsDisabled(boolean notificationsDisabled) {
+        Localytics.setNotificationsDisabled(notificationsDisabled);
     }
 }

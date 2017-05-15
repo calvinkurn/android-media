@@ -181,7 +181,8 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
             }
 
             if(preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO)){
-                TrackingUtils.eventLocaSetNotification(!(boolean)value);
+                boolean notificationsDisabled = !(boolean)value;
+                TrackingUtils.eventLocaSetNotification(notificationsDisabled);
             }
 
             return true;
