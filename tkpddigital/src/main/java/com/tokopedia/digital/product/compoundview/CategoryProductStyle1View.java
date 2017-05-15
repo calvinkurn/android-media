@@ -13,6 +13,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
+import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
@@ -25,7 +26,8 @@ import butterknife.BindView;
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryData> {
+public class CategoryProductStyle1View extends
+        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
 
     @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
             TextView tvTitle;
@@ -63,7 +65,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    protected void initialViewListener(Context context) {
+    protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
@@ -76,7 +78,7 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    public void renderData(final CategoryData data) {
+    protected void onInitialDataRendered() {
         tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         if (data.getClientNumberList().size() > 0) {
             renderEdittextClientNumber(data);
@@ -102,29 +104,20 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
         btnBuyDigital.setOnClickListener(getButtonBuyClickListener(data));
     }
 
+
     @Override
-    public void renderUpdateProductSelected(Product product) {
-        this.digitalProductChooserView.renderUpdateDataSelected(product);
+    protected void onUpdateSelectedProductData() {
+        this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
     }
 
     @Override
-    public void renderUpdateOperatorSelected(Operator operator) {
+    protected void onUpdateSelectedOperatorData() {
 
     }
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
         this.clientNumberInputView.setText(clientNumber);
-    }
-
-    @Override
-    public Operator getSelectedOperator() {
-        return operatorSelected;
-    }
-
-    @Override
-    public Product getSelectedProduct() {
-        return productSelected;
     }
 
     @Override
@@ -138,17 +131,17 @@ public class CategoryProductStyle1View extends BaseDigitalProductView<CategoryDa
     }
 
     @Override
-    public void renderStateDataSelected(
-            String clientNumberState, Operator operatorSelectedState,
-            Product productSelectedState, boolean isInstantCheckoutChecked
+    protected void onRestoreSelectedData(
+            Operator operatorSelectedState, Product productSelectedState,
+            String clientNumberState, boolean isInstantCheckoutChecked
     ) {
         if (!TextUtils.isEmpty(clientNumberState)) {
             clientNumberInputView.setText(clientNumberState);
-            if (operatorSelectedState != null && productSelectedState != null) {
-                digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            if (operatorSelected != null && productSelectedState != null) {
+                digitalProductChooserView.renderUpdateDataSelected(productSelectedState);
             }
         }
-        if (cbInstantCheckout.getVisibility() == VISIBLE) {
+        if (data.isInstantCheckout()) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
     }

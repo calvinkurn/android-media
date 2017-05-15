@@ -61,6 +61,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                 .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
                                 .onErrorResumeNext(Observable.<List<OrderClientNumber>>empty()),
                         lastOrderNumberRepository.getLastOrder(paramQueryLastOrder)
+                                .map(getFunctionCheckCategoryIdMatcher(pathCategoryId))
                                 .onErrorReturn(getOnErrorResumeFunctionLastOrder(pathCategoryId)),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
@@ -68,6 +69,22 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)
         );
+    }
+
+    @NonNull
+    private Func1<OrderClientNumber, OrderClientNumber> getFunctionCheckCategoryIdMatcher(
+            final String pathCategoryId
+    ) {
+        return new Func1<OrderClientNumber, OrderClientNumber>() {
+            @Override
+            public OrderClientNumber call(OrderClientNumber orderClientNumber) {
+                if (orderClientNumber.getCategoryId().equalsIgnoreCase(pathCategoryId)) {
+                    return orderClientNumber;
+                } else {
+                    throw new RuntimeException("last order nor match with category id");
+                }
+            }
+        };
     }
 
     @NonNull
@@ -98,7 +115,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
             public OrderClientNumber call(Throwable throwable) {
                 String lastInputNumber = localCacheHandler.getString(
                         TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-                                + pathCategoryId
+                                + pathCategoryId, ""
                 );
                 if (lastInputNumber.isEmpty() && (
                         pathCategoryId.equalsIgnoreCase("1")

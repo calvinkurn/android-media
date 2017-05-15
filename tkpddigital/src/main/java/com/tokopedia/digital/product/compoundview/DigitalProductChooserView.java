@@ -2,7 +2,6 @@ package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -73,7 +72,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     @Override
     public void renderInitDataList(List<Product> dataList) {
         this.dataList = dataList;
-        this.dataSelected = dataList.get(0);
+        if (this.dataSelected == null) this.dataSelected = dataList.get(0);
         invalidateContentView();
         actionListener.onInitialDataDigitalChooserSelectedRendered(dataSelected);
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
