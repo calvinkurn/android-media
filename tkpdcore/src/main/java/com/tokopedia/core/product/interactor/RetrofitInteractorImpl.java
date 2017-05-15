@@ -10,6 +10,7 @@ import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
@@ -69,7 +70,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final MyShopEtalaseService myShopEtalaseService;
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
-    private final MojitoAuthService mojitoAuthService;
+    private final MojitoNoRetryAuthService mojitoNoRetryAuthService;
     private final GoldMerchantService goldMerchantService;
     private final MojitoService mojitoService;
     private final int SERVER_ERROR_CODE = 500;
@@ -81,7 +82,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.productActService = new ProductActService();
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
-        this.mojitoAuthService = new MojitoAuthService();
+        this.mojitoNoRetryAuthService = new MojitoNoRetryAuthService();
         this.goldMerchantService = new GoldMerchantService();
         this.mojitoService = new MojitoService();
     }
@@ -446,7 +447,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void addToWishList(@NonNull Context context, @NonNull Integer params,
                               @NonNull final AddWishListListener listener) {
-        Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
+        Observable<Response<TkpdResponse>> observable = mojitoNoRetryAuthService.getApi()
                 .addWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -484,7 +485,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void removeFromWishList(@NonNull Context context, @NonNull Integer params,
                                    @NonNull final RemoveWishListListener listener) {
-        final Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
+        final Observable<Response<TkpdResponse>> observable = mojitoNoRetryAuthService.getApi()
                 .removeWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

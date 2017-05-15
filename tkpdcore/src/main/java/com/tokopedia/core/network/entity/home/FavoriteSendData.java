@@ -25,7 +25,7 @@ public class FavoriteSendData {
     @Expose
     List<String> messageError;
 
-    static class Result{
+    public class Result {
         @SerializedName("content")
         @Expose
         String content;
@@ -34,5 +34,37 @@ public class FavoriteSendData {
         int isSuccess;
 
         public static final int SUCCESS = 1;
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public int getIsSuccess() {
+            return isSuccess;
+        }
+
+        public void setIsSuccess(int isSuccess) {
+            this.isSuccess = isSuccess;
+        }
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public List<String> getMessageError() {
+        return messageError;
+    }
+
+    public void setMessageError(List<String> messageError) {
+        this.messageError = messageError;
     }
 }

@@ -2,13 +2,11 @@ package com.tokopedia.core.network.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.base.di.qualifier.NoAuthInterceptor;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -28,12 +26,27 @@ public class RetrofitFactory {
                 .serializeNulls()
                 .create();
         return new Retrofit.Builder()
-                        .baseUrl(baseUrl)
-                        .addConverterFactory(new GeneratedHostConverter())
-                        .addConverterFactory(new TkpdResponseConverter())
-                        .addConverterFactory(new StringResponseConverter())
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+                .baseUrl(baseUrl)
+                .addConverterFactory(new GeneratedHostConverter())
+                .addConverterFactory(new TkpdResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+    }
+
+    public static Retrofit.Builder createRetrofitDigitalConfig(String baseUrl) {
+
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setPrettyPrinting()
+                .serializeNulls()
+                .create();
+        return new Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(new DigitalResponseConverter())
+                .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }
 
     public static Retrofit.Builder createDaggerRetrofitDefaultConfig(

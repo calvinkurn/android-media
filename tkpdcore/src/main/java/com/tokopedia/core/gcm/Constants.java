@@ -16,10 +16,13 @@ public interface Constants {
     String ARG_NOTIFICATION_TARGET_USER_ID = "to_user_id";
     String ARG_NOTIFICATION_CART_EXISTS = "is_cart_exists";
     String ARG_NOTIFICATION_APPLINK = "applinks";
+    String ARG_NOTIFICATION_ISPROMO = "ispromo";
     String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
+    String ARG_NOTIFICATION_APPLINK_PROMO_LABEL = "promo";
+    String KEY_ORIGIN = "origin";
     int REGISTRATION_STATUS_OK = 1;
     int REGISTRATION_STATUS_ERROR = 2;
     String REGISTRATION_MESSAGE_OK = "FCM Sucessfully";
@@ -31,6 +34,7 @@ public interface Constants {
     String EXTRA_APPLINK_RESET = "applink_reset";
     int ARG_NOTIFICATION_APPLINK_MESSAGE_ID = 1001;
     int ARG_NOTIFICATION_APPLINK_DISCUSSION_ID = 1002;
+    int ARG_NOTIFICATION_APPLINK_PROMO = 1003;
 
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";

@@ -113,7 +113,11 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         passData = savedState.getParcelable(ARGS_PARAM_PASS_DATA);
         setLoading(false);
         setMainView(true);
-        presenter.renderView(passData.getFormData());
+        if (passData.getFormData() == null) {
+            presenter.setOnLaunching(getActivity());
+        } else {
+            presenter.renderView(passData.getFormData());
+        }
     }
 
     @Override

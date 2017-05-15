@@ -78,6 +78,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
         if (dynamicObject.getIndentation() == 0) {
             parentViewHolder.setPaddingLeft(0);
             parentViewHolder.setCheckboxVisibility(View.GONE);
+            showDropDownIndicator(parentViewHolder.dropDownIndicator, position);
             parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {toggleGroup(position);
@@ -87,6 +88,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
             parentViewHolder.setPaddingLeft(0);
             if (dynamicObject.getChildren().size() > 0) {
                 parentViewHolder.setCheckboxVisibility(View.INVISIBLE);
+                showDropDownIndicator(parentViewHolder.dropDownIndicator, position);
                 parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -95,6 +97,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 });
             } else {
                 parentViewHolder.setCheckboxVisibility(View.VISIBLE);
+                hideDropDownIndicator(parentViewHolder.dropDownIndicator);
                 parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -105,6 +108,7 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
             }
         } else {
             parentViewHolder.setCheckboxVisibility(View.VISIBLE);
+            hideDropDownIndicator(parentViewHolder.dropDownIndicator);
             parentViewHolder.setPaddingLeft(25);
             parentViewHolder.dynamicParentViewHolderText.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -114,6 +118,15 @@ public class DynamicCategoryAdapter extends MultiLevelExpIndListAdapter {
                 }
             });
         }
+    }
+
+    private void showDropDownIndicator(View view, int position) {
+        view.setVisibility(View.VISIBLE);
+        view.setBackgroundResource(getItemAt(position).isGroup() ? R.drawable.arrow_drop_down : R.drawable.arrow_up);
+    }
+
+    private void hideDropDownIndicator(View view) {
+        view.setVisibility(View.GONE);
     }
 
     private void setCheckedView(DynamicViewHolder parentViewHolder, DynamicObject dynamicObject, boolean isChecked){

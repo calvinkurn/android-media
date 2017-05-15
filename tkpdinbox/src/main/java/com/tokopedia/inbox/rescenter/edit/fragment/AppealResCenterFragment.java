@@ -109,7 +109,11 @@ public class AppealResCenterFragment extends BasePresenterFragment<AppealResCent
         passData = savedState.getParcelable(ARGS_PARAM_PASS_DATA);
         setLoading(false);
         setMainView(true);
-        presenter.renderView(passData.getAppealFormData());
+        if (passData.getAppealFormData() == null) {
+            presenter.setOnLaunching(getActivity());
+        } else {
+            presenter.renderView(passData.getAppealFormData());
+        }
     }
 
     @Override

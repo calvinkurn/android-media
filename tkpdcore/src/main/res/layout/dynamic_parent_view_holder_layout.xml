@@ -25,8 +25,14 @@
 
         <TextView
             android:id="@+id/dynamic_parent_view_holder_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"/>
+
+        <View
+            android:id="@+id/drop_down_indicator"
+            android:layout_width="@dimen/drop_down_indicator_width"
+            android:layout_height="@dimen/drop_down_indicator_height" />
 
     </LinearLayout>
 

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-
 import com.tokopedia.core.R2;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 
@@ -92,7 +91,7 @@ public class RevampCategoryAdapter extends
     }
 
     public void hideExpandable() {
-        categories.subList(6,categories.size()).clear();
+        categories.subList(9,categories.size()).clear();
         notifyDataSetChanged();
     }
 }

@@ -31,6 +31,7 @@ public class DeepLinkChecker {
     public static final int SHOP = 4;
     public static final int TOPPICKS = 5;
     public static final int HOT_LIST = 6;
+    public static final int CATEGORY = 7;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -42,6 +43,8 @@ public class DeepLinkChecker {
                 return BROWSE;
             else if (isHot(linkSegment))
                 return HOT;
+            else if (isCategory(linkSegment))
+                return CATEGORY;
             else if (isHotList(linkSegment))
                 return HOT_LIST;
             else if (isCatalog(linkSegment))
@@ -66,7 +69,14 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("search") || linkSegment.get(0).equals("p")
                 && !isHot(linkSegment)
                 && !isCatalog(linkSegment)
+                && !isCategory(linkSegment)
                 && !isTopPicks(linkSegment));
+    }
+
+    private static boolean isCategory(List<String> linkSegment) {
+        return linkSegment.size() > 0 && (
+                linkSegment.get(0).equals("p")
+        );
     }
 
     private static boolean isCatalog(List<String> linkSegment) {
@@ -190,6 +200,16 @@ public class DeepLinkChecker {
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));
+    }
+
+    public static void openCategory(String url, Context context) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, getLinkSegment(url).get(1));
+        bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
+        bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
     }
 
     public static void openProduct(String url, Context context) {

@@ -11,6 +11,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTopAdsSdk() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -116,6 +121,7 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
+    compile rootProject.ext.playServicesDependencies.auth
 
     apt rootProject.ext.dbDependencies.dbFlowProcessor
     compile rootProject.ext.dbDependencies.dbFlowCore
@@ -169,6 +175,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile getTopAdsSdk()
 
 }
 

@@ -178,6 +178,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void processToIntermediary(@NonNull Context context, @NonNull Bundle bundle) {
+        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
+        intent.putExtras(bundle);
+        viewListener.navigateToActivity(intent);
+    }
+
+    @Override
     public void processToCreateShop(@NonNull Context context) {
         Intent intent;
         if (SessionHandler.isV4Login(context)) {
@@ -276,31 +283,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void requestProductDetail(@NonNull final Context context,
                                      @NonNull final ProductPass productPass,
-                                     final int type,
-                                     final boolean forceNetwork) {
-        if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
-        if (forceNetwork) {
-            getProductDetailFromNetwork(context, productPass);
-        } else {
-            getProductDetailFromCache(productPass,
-                    new CacheInteractor.GetProductDetailCacheListener() {
-                        @Override
-                        public void onSuccess(ProductDetailData productDetailData) {
-                            viewListener.onProductDetailLoaded(productDetailData);
-                            viewListener.hideProgressLoading();
-                            viewListener.refreshMenu();
-                            requestOtherProducts(context,
-                                    NetworkParam.paramOtherProducts(productDetailData));
-                            setGoldMerchantFeatures(context, productDetailData);
-                        }
+                                     final int type) {
 
-                        @Override
-                        public void onError(Throwable e) {
-                            getProductDetailFromNetwork(context, productPass);
-                            e.printStackTrace();
-                        }
-                    });
-        }
+        if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
+
+        getProductDetailFromNetwork(context, productPass);
         getProductCampaign(context, productPass.getProductId());
     }
 
@@ -381,7 +368,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onSuccessToWarehouse();
                             requestProductDetail(context, ProductPass.Builder.aProductPass()
                                             .setProductId(productId).build(),
-                                    ProductDetailFragment.RE_REQUEST, true);
+                                    ProductDetailFragment.RE_REQUEST);
                         }
                     }
 
@@ -645,7 +632,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                                     ProductPass.Builder.aProductPass()
                                                             .setProductId(productId)
                                                             .build(),
-                                                    ProductDetailFragment.RE_REQUEST, true);
+                                                    ProductDetailFragment.RE_REQUEST);
                                         }
                                     }
 
@@ -746,8 +733,28 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     public void getProductDetailFromCache(@NonNull final ProductPass productPass,
-                                          @NonNull CacheInteractor.GetProductDetailCacheListener listener) {
-        cacheInteractor.getProductDetailCache(productPass.getProductId(), listener);
+                                          final Context context) {
+
+        cacheInteractor.getProductDetailCache(productPass.getProductId(),
+                new CacheInteractor.GetProductDetailCacheListener() {
+                    @Override
+                    public void onSuccess(ProductDetailData productDetailData) {
+                        viewListener.onProductDetailLoaded(productDetailData);
+                        viewListener.hideProgressLoading();
+                        viewListener.refreshMenu();
+                        requestOtherProducts(context,
+                                NetworkParam.paramOtherProducts(productDetailData));
+                        setGoldMerchantFeatures(context, productDetailData);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        viewListener.showProductDetailRetry();
+                        viewListener.hideProgressLoading();
+                        e.printStackTrace();
+                    }
+                }
+        );
     }
 
     public void getProductDetailFromNetwork(@NonNull final Context context,
@@ -767,14 +774,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onTimeout() {
-                        viewListener.showProductDetailRetry();
-                        viewListener.hideProgressLoading();
+                        getProductDetailFromCache(productPass, context);
                     }
 
                     @Override
                     public void onError(String error) {
-                        viewListener.showProductDetailRetry();
-                        viewListener.hideProgressLoading();
+                        getProductDetailFromCache(productPass, context);
                     }
 
                     @Override

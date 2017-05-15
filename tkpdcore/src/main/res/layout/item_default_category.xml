@@ -10,29 +10,32 @@
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_small">
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_vs"
+        android:paddingBottom="@dimen/padding_vs">
 
         <TextView
             android:id="@id/categoryTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_vs"
+            android:layout_marginBottom="@dimen/margin_vs"
             android:layout_weight="1"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:lines="1"
             android:text="Title"
+            android:drawableRight="@drawable/ic_navigate_next_black_24dp"
             android:padding="@dimen/padding_vs"
             android:textColor="@color/tkpd_dark_gray"
             android:textSize="@dimen/textsize" />
 
-        <ImageView
+        <View
             android:id="@id/separator"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/med_dp"
-            android:gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_small"
-            android:visibility="visible"
-            android:src="@drawable/ic_navigate_next_black_24dp"/>
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:background="@color/grey_300" />
 
 
     </LinearLayout>

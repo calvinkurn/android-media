@@ -55,12 +55,8 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
         super(view);
     }
 
-    public BrowseProductActivityModel getBrowseProductActivityModel() {
-        return browseProductActivityModel;
-    }
-
     @Override
-    public BrowseProductModel getDataForBrowseProduct(boolean firstTimeOnly) {
+    public BrowseProductModel getDataForBrowseProduct() {
         return browseProductModel;
     }
 
@@ -107,10 +103,13 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT:
                 p.unique_id = null;
+                p.source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_HOT_PRODUCT;
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
             case BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY:
                 p.unique_id = null;
+                p.source = BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY;
+                p.sc = browseProductActivityModel.getDepartmentId();
                 discoveryInteractor.getProducts(NetworkParam.generateNetworkParamProduct(p));
                 break;
         }
@@ -272,13 +271,14 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
                             view.setCurrentTabs(0);
                         }
                     }
-                    if(view.getActivityPresenter().checkHasFilterAttrIsNull(index)) {
+                    if(view.checkHasFilterAttrIsNull(index)) {
                         discoveryInteractor.getDynamicAttribute(view.getContext(), source, browseProductActivityModel.getDepartmentId());
                     }
                     view.setLoadingProgress(false);
                 } else {
                     view.redirectUrl(browseProductModel);
                 }
+
                 break;
             case DiscoveryListener.TOPADS:
                 Log.d("MNORMANSYAH", "masuk sini gan!!");

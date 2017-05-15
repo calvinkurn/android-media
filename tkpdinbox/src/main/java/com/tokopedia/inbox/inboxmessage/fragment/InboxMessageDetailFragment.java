@@ -178,7 +178,7 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom,
                                        int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if ( bottom < oldBottom) {
+                if (bottom < oldBottom) {
                     mainList.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -255,13 +255,16 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 CommonUtils.dumper("NISNIS " + layoutManager.findFirstVisibleItemPosition() + " " + adapter.canLoadMore());
-                if ((layoutManager.findFirstVisibleItemPosition() == 0
-                        && adapter.canLoadMore() == 1)
-                        || adapter.getData().get(layoutManager.findFirstVisibleItemPosition()
-                        - adapter.canLoadMore()).getMessageReplyTimeFmt() == null) {
+                if (adapter.getData().size() == 0
+                        || ((layoutManager.findFirstVisibleItemPosition() == 0 && adapter.canLoadMore() == 1)
+                        || adapter.getData().get(
+                        layoutManager.findFirstVisibleItemPosition()
+                                - adapter.canLoadMore()).getMessageReplyTimeFmt() == null)) {
                     headerDate.setVisibility(View.GONE);
                 } else {
-                    headerDate.setText(adapter.getData().get(layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore()).getMessageReplyDateFmt());
+                    headerDate.setText(adapter.getData().get(
+                            layoutManager.findFirstVisibleItemPosition() - adapter.canLoadMore())
+                            .getMessageReplyDateFmt());
                 }
             }
         };
@@ -290,7 +293,9 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
 
         if (toolbar != null && inboxMessageDetail.getConversationBetween() != null) {
             toolbar.setTitle(inboxMessageDetail.getOpponent().getUserName());
-            toolbar.setSubtitle(inboxMessageDetail.getOpponent().getUserLabel());
+            InboxMessageItem messageItem = getArguments().getParcelable(PARAM_MESSAGE);
+            if (messageItem != null)
+                toolbar.setSubtitle(messageItem.getUserLabel());
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 

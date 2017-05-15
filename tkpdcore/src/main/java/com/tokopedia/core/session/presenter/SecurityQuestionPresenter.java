@@ -89,4 +89,5 @@ public interface SecurityQuestionPresenter {
 
     void doSendAnalytics();
 
+    void doRequestOtpToEmail();
 }

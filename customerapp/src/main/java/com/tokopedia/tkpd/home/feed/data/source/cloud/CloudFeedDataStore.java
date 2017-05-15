@@ -2,13 +2,12 @@ package com.tokopedia.tkpd.home.feed.data.source.cloud;
 
 import android.content.Context;
 
+import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.core.base.common.service.AceService;
 import com.tokopedia.core.database.model.DbFeed;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.home.feed.data.mapper.FeedMapper;
-import com.tokopedia.core.base.common.dbManager.FeedDbManager;
 import com.tokopedia.tkpd.home.feed.domain.model.Feed;
 
 import retrofit2.Response;

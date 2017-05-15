@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-    >
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/shop_layout"
@@ -12,8 +12,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/cards_ui_selected"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_small"
-        >
+        android:padding="@dimen/padding_small">
 
         <ImageView
             android:id="@+id/shop_avatar"
@@ -22,25 +21,28 @@
             android:layout_marginBottom="0.5dp"
             android:layout_marginTop="0.5dp"
             android:src="@drawable/ic_notebook"
-            />
+            android:contentDescription="@string/home_fav_store" />
 
         <TextView
             android:id="@+id/shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@+id/shop_avatar"
-            android:singleLine="true"
+            android:layout_toEndOf="@+id/shop_avatar"
+            android:maxLines="1"
             android:textColor="@color/href_link"
-            android:textSize="@dimen/fontvs"
-            />
+            android:textSize="@dimen/fontvs" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/shop_name"
             android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@+id/shop_avatar"
+            android:layout_toEndOf="@+id/shop_avatar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             >
@@ -61,17 +63,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
             <View
                 android:layout_width="0.5dp"
                 android:layout_height="@dimen/img_thumb_m"
                 android:layout_marginRight="@dimen/margin_small"
-                android:background="@color/label_color"
-                />
+                android:layout_marginEnd="@dimen/margin_small"
+                android:background="@color/label_color" />
 
             <ImageView
                 android:id="@+id/fav_button"
@@ -81,7 +83,7 @@
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
                 android:src="@drawable/ic_fav"
-                />
+                android:contentDescription="@string/home_fav_store"/>
         </LinearLayout>
 
     </RelativeLayout>

@@ -1,10 +1,8 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.tkpd.library.utils.AnalyticsLog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -18,7 +16,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -51,6 +48,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         final Request finalRequest = newRequest.build();
         Response response = getResponse(chain, finalRequest);
 
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
+
         String bodyResponse = response.body().string();
         if (isMaintenance(bodyResponse)) {
             showMaintenancePage();
@@ -60,12 +61,18 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-        } else if (isForbiddenRequest(response)
+        } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
 
         return createNewResponse(response, bodyResponse);
+    }
+
+
+
+    public void throwChainProcessCauseHttpError(Response response) throws IOException {
+        /* this can override for throw error */
     }
 
     private void showTimezoneErrorSnackbar() {
@@ -78,93 +85,74 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(Response response) {
-        return response.code() == ERROR_FORBIDDEN_REQUEST;
+    private boolean isForbiddenRequest(String bodyResponse, int code) {
+
+        JSONObject json;
+        try {
+            json = new JSONObject(bodyResponse);
+            String status = json.optString("status", "OK");
+            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
+        //   Log.d(TAG, "header: " + new PrettyPrintingMap<>(authHeaders).toString());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
+
+        String contentTypeHeader = null;
+        if (!"GET".equals(originRequest.method())
+                && originRequest.body() != null
+                && originRequest.body().contentType() != null)
+            contentTypeHeader = originRequest.body().contentType().toString();
+        if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
             case "PATCH":
+            case "DELETE":
             case "POST":
-                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
-                        generateParamBodyString(originRequest), originRequest.method(), authKey);
+                authHeaders = getHeaderMap(
+                        originRequest.url().uri().getPath(),
+                        generateParamBodyString(originRequest),
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
+                );
                 break;
             case "GET":
-                authHeaders = getHeaderMap(originRequest.url().uri().getPath(),
-                        generateQueryString(originRequest), originRequest.method(), authKey);
+                authHeaders = getHeaderMap(
+                        originRequest.url().uri().getPath(),
+                        generateQueryString(originRequest),
+                        originRequest.method(),
+                        authKey,
+                        contentTypeHeader
+                );
                 break;
         }
         return authHeaders;
     }
 
-    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey) {
-        return AuthUtil.generateHeaders(path, strParam, method, authKey);
+    protected Map<String, String> getHeaderMap(
+            String path, String strParam, String method, String authKey, String contentTypeHeader) {
+        return AuthUtil.generateHeaders(path, strParam, method, authKey, contentTypeHeader);
     }
 
-    void generateHeader(Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest) {
+    void generateHeader(
+            Map<String, String> authHeaders, Request originRequest, Request.Builder newRequest
+    ) {
         for (Map.Entry<String, String> entry : authHeaders.entrySet())
             newRequest.addHeader(entry.getKey(), entry.getValue());
         newRequest.method(originRequest.method(), originRequest.body());
     }
 
-    @SuppressWarnings("unused")
-    @Deprecated
-    /**
-     * Move to #generateParamBodyString
-     */
-    private Map<String, String> generateMapBody(final Request request) {
-        try {
-            final Buffer buffer = new Buffer();
-            request.body().writeTo(buffer);
-            String bodyStr = buffer.readUtf8();
-            Map<String, String> myMap = new HashMap<>();
-            String[] pairs = bodyStr.split("&");
-            for (String pair : pairs) {
-                int indexSplit = pair.indexOf('=');
-                String key1 = pair.substring(0, indexSplit);
-                String key2 = "";
-                if (pair.length() > indexSplit + 1) {
-                    key2 = pair.substring(indexSplit + 1);
-                }
-                myMap.put(key1.trim(), key2.trim());
-            }
-            return myMap;
-        } catch (final IOException e) {
-            return new HashMap<>();
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @Deprecated
-    /**
-     * Move to #generateQueryString
-     */
-    private Map<String, String> generateMapQuery(final Request request) {
-        String bodyStr = request.url().query();
-        Map<String, String> myMap = new HashMap<>();
-        if (bodyStr != null) {
-            String[] pairs = bodyStr.split("&");
-            for (String pair : pairs) {
-                int indexSplit = pair.indexOf('=');
-                String key1 = pair.substring(0, indexSplit);
-                String key2 = "";
-                if (pair.length() > indexSplit + 1) {
-                    key2 = pair.substring(indexSplit + 1);
-                }
-                myMap.put(key1.trim(), key2.trim());
-            }
-        }
-        return myMap;
-    }
-
-    protected String generateParamBodyString(final Request request) {
+    String generateParamBodyString(final Request request) {
         try {
             final Buffer buffer = new Buffer();
             request.body().writeTo(buffer);
@@ -174,12 +162,12 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected String generateQueryString(final Request request) {
+    private String generateQueryString(final Request request) {
         String query = request.url().query();
         return query != null ? query : "";
     }
 
-    private Boolean isMaintenance(String response) {
+    private boolean isMaintenance(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -203,7 +191,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Boolean isRequestDenied(String response) {
+    private boolean isRequestDenied(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -215,7 +203,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Boolean isInvalidRequest(String response) {
+    @SuppressWarnings("unused")
+    private boolean isInvalidRequest(String response) {
         JSONObject json;
         try {
             json = new JSONObject(response);
@@ -229,7 +218,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return false;
     }
 
-    private Boolean isServerError(int code) {
+    private boolean isServerError(int code) {
         return code >= 500;
     }
 
@@ -244,7 +233,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 .protocol(oldResponse.protocol())
                 .cacheResponse(oldResponse.cacheResponse())
                 .priorResponse(oldResponse.priorResponse())
-                .code(isServerError(oldResponse.code()) && isHasErrorMessage(oldBodyResponse) ? 200 : oldResponse.code())
+                .code(isServerError(oldResponse.code())
+                        && isHasErrorMessage(oldBodyResponse) ? 200 : oldResponse.code())
                 .request(oldResponse.request())
                 .networkResponse(oldResponse.networkResponse());
 

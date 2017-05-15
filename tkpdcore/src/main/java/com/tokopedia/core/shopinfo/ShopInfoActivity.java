@@ -538,13 +538,14 @@ public class ShopInfoActivity extends BaseActivity
 
     private void showGoldCover() {
         if (shopModel.info.shopIsGold == 0) {
-            holder.goldShop.setVisibility(View.INVISIBLE);
             holder.infoShop.setBackgroundResource(0);
         } else {
-            holder.goldShop.setVisibility(View.VISIBLE);
             ImageHandler.loadImageCover2(holder.banner, shopModel.info.shopCover);
             holder.infoShop.setBackgroundResource(R.drawable.cover_shader);
+            if (shopModel.info.shopIsGoldBadge)
+                holder.goldShop.setVisibility(View.VISIBLE);
         }
+
     }
 
     private void showOfficialCover() {
@@ -773,6 +774,9 @@ public class ShopInfoActivity extends BaseActivity
         if (!productParam.getEtalaseId().equalsIgnoreCase("all")) {
             ProductList productListFragment = (ProductList) adapter.getItem(1);
             productListFragment.refreshProductList(productParam);
+        } else {
+            ProductList productListFragment = (ProductList) adapter.getItem(1);
+            productListFragment.refreshProductListFromOffStore();
         }
         holder.pager.setCurrentItem(1, true);
     }
