@@ -18,6 +18,9 @@ public class Receipt implements Parcelable {
     private String totalFare;
     private String totalOwe;
     private int duratuinInMinute;
+    private String uberSignupUrl;
+    private String uberSignupText;
+    private String uberSignupTermsUrl;
 
     public Receipt() {
     }
@@ -33,6 +36,9 @@ public class Receipt implements Parcelable {
         totalFare = in.readString();
         totalOwe = in.readString();
         duratuinInMinute = in.readInt();
+        uberSignupUrl = in.readString();
+        uberSignupText = in.readString();
+        uberSignupTermsUrl = in.readString();
     }
 
     public static final Creator<Receipt> CREATOR = new Creator<Receipt>() {
@@ -127,6 +133,30 @@ public class Receipt implements Parcelable {
         this.duratuinInMinute = duratuinInMinute;
     }
 
+    public String getUberSignupUrl() {
+        return uberSignupUrl;
+    }
+
+    public void setUberSignupUrl(String uberSignupUrl) {
+        this.uberSignupUrl = uberSignupUrl;
+    }
+
+    public String getUberSignupText() {
+        return uberSignupText;
+    }
+
+    public void setUberSignupText(String uberSignupText) {
+        this.uberSignupText = uberSignupText;
+    }
+
+    public String getUberSignupTermsUrl() {
+        return uberSignupTermsUrl;
+    }
+
+    public void setUberSignupTermsUrl(String uberSignupTermsUrl) {
+        this.uberSignupTermsUrl = uberSignupTermsUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -144,5 +174,10 @@ public class Receipt implements Parcelable {
         parcel.writeString(totalFare);
         parcel.writeString(totalOwe);
         parcel.writeInt(duratuinInMinute);
+        parcel.writeString(uberSignupUrl);
+        parcel.writeString(uberSignupText);
+        parcel.writeString(uberSignupTermsUrl);
+
+
     }
 }

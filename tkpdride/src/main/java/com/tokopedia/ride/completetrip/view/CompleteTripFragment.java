@@ -1,13 +1,17 @@
 package com.tokopedia.ride.completetrip.view;
 
 
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,6 +32,7 @@ import com.tokopedia.ride.completetrip.domain.model.Receipt;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -62,10 +67,15 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     AppCompatTextView sourceTextView;
     @BindView(R2.id.tv_destination)
     AppCompatTextView destinationTextView;
+    @BindView(R2.id.uber_signup_layout)
+    LinearLayout uberSingupLayout;
+    @BindView(R2.id.tv_signup_tnc)
+    TextView signUpUberTermsTextView;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
     private DriverVehicleAddressViewModel driverVehicleAddressViewModel;
+    private Receipt receipt;
 
     public CompleteTripFragment() {
         // Required empty public constructor
@@ -118,7 +128,6 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         sourceTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getStartAddressName() : "");
         destinationTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getEndAddressName() : "");
 
-
         Glide.with(getActivity()).load(driverVehicleAddressViewModel.getDriver().getPictureUrl())
                 .asBitmap()
                 .centerCrop()
@@ -166,9 +175,27 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void renderReceipt(Receipt receipt) {
+        this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
         totalFareTextView.setText(receipt.getTotalFare());
+        if (receipt.getUberSignupText() != null) {
+            uberSingupLayout.setVisibility(View.VISIBLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                signUpUberTextView.setText(Html.fromHtml(receipt.getUberSignupText(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                signUpUberTextView.setText(Html.fromHtml(receipt.getUberSignupText()));
+            }
+        } else {
+            uberSingupLayout.setVisibility(View.GONE);
+        }
+
+        if (receipt.getUberSignupTermsUrl() == null || receipt.getUberSignupTermsUrl().length() == 0) {
+            signUpUberTermsTextView.setVisibility(View.GONE);
+        } else {
+            signUpUberTermsTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -200,5 +227,30 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @Override
     public void hideReceiptLayout() {
         onTripCompleteLayout.setVisibility(View.GONE);
+    }
+
+
+    @OnClick(R2.id.tv_sign_up_uber)
+    public void actionSignupClicked() {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = UberSignupDialogFragment.newInstance(this.receipt.getUberSignupUrl());
+        dialogFragment.show(getFragmentManager().beginTransaction(), "uber_singup_dialog");
+    }
+
+    @OnClick(R2.id.tv_signup_tnc)
+    public void actionTermsClicked() {
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("uber_singup_dialog");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = UberSignupDialogFragment.newInstance(this.receipt.getUberSignupTermsUrl());
+        dialogFragment.show(getFragmentManager().beginTransaction(), "uber_singup_dialog");
     }
 }

@@ -11,9 +11,14 @@ public class PaymentEntity {
     @SerializedName("currency_code")
     @Expose
     private String currencyCode;
-    @SerializedName("amount")
+
+    @SerializedName("pre_auth_amount")
     @Expose
-    private String amount;
+    private String preAuthAmount;
+
+    @SerializedName("total_amount")
+    @Expose
+    private String totalAmount;
 
     public PaymentEntity() {
     }
@@ -22,7 +27,11 @@ public class PaymentEntity {
         return currencyCode;
     }
 
-    public String getAmount() {
-        return amount;
+    public String getTotalAmount() {
+        return totalAmount;
+    }
+
+    public String getPreAuthAmount() {
+        return preAuthAmount;
     }
 }
