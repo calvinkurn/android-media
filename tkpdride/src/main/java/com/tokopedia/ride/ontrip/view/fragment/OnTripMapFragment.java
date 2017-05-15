@@ -62,6 +62,7 @@ import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
@@ -1122,5 +1123,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .title("Driver");
 
         mDriverMarker = mGoogleMap.addMarker(options);
+    }
+
+    @Override
+    public void saveActiveRequestId(String requestId) {
+        RideConfiguration rideConfiguration = new RideConfiguration(getActivity());
+        rideConfiguration.setActiveRequestId(requestId);
+    }
+
+    @Override
+    public void clearSavedActiveRequestId() {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        configuration.clearActiveRequestId();
     }
 }

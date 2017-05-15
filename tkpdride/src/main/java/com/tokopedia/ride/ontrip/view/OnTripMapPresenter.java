@@ -252,6 +252,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (isViewAttached()) {
                     getView().onSuccessCancelRideRequest();
                     getView().clearActiveNotification();
+                    getView().clearSavedActiveRequestId();
                 }
             }
         });
@@ -273,6 +274,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideFindingUberNotification();
                 getView().hideLoadingWaitingResponse();
                 getView().showNoDriverAvailableDialog();
+                getView().clearSavedActiveRequestId();
                 break;
             case RideStatus.PROCESSING:
                 getView().showFindingUberNotification();
@@ -281,6 +283,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.ACCEPTED:
+                getView().saveActiveRequestId(result.getRequestId());
                 getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
@@ -291,6 +294,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.ARRIVING:
+                getView().saveActiveRequestId(result.getRequestId());
                 getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideCancelRequestButton();
@@ -301,6 +305,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 updatePolylineIfResetedByUiLifecycle(result);
                 break;
             case RideStatus.IN_PROGRESS:
+                getView().saveActiveRequestId(result.getRequestId());
                 getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
@@ -316,12 +321,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
+                getView().clearSavedActiveRequestId();
                 break;
             case RideStatus.RIDER_CANCELED:
                 getView().hideRequestLoadingLayout();
                 getView().hideFindingUberNotification();
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
+                getView().clearSavedActiveRequestId();
                 break;
             case RideStatus.COMPLETED:
                 getView().hideRequestLoadingLayout();
@@ -714,7 +721,9 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void onResume() {
         getOverViewPolyLine();
-        handler.removeCallbacks(timedTask);
-        handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+        if (getView().getRequestId() != null) {
+            handler.removeCallbacks(timedTask);
+            handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+        }
     }
 }

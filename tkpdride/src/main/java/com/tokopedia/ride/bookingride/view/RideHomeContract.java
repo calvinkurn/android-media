@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 /**
  * Created by alvarisi on 4/21/17.
@@ -38,6 +39,12 @@ public interface RideHomeContract {
         void showRetryCheckPendingRequestLayout(String message);
 
         void actionInflateInitialToolbar();
+
+        String getLastRequestId();
+
+        void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle);
+
+        void showDialogDriverCancelled();
     }
 
     interface Presenter extends CustomerPresenter<View> {

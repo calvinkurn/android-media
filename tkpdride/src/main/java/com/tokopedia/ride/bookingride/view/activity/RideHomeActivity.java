@@ -18,7 +18,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.transition.ChangeBounds;
 import android.transition.Slide;
 import android.view.Gravity;
@@ -64,9 +63,11 @@ import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
 import com.tokopedia.ride.ontrip.view.OnTripActivity;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import java.util.Date;
 import java.util.List;
@@ -242,6 +243,24 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             invalidateOptionsMenu();
         }
+    }
+
+    @Override
+    public String getLastRequestId() {
+        RideConfiguration rideConfiguration = new RideConfiguration(getApplicationContext());
+        return rideConfiguration.getActiveRequestId();
+    }
+
+    @Override
+    public void navigateToCompleteTripScreen(String requestId, DriverVehicleAddressViewModel driverAndVehicle) {
+        Intent intent = CompleteTripActivity.getCallingIntent(this, requestId, driverAndVehicle);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    public void showDialogDriverCancelled() {
+        Toast.makeText(this, R.string.ride_home_driver_cancel_last_rid, Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -22,14 +22,19 @@ public class RideConfiguration {
     private static final String RIDE_SOURCE = "RIDE_SOURCE";
     private static final String RIDE_DESTINATION = "RIDE_DESTINATION";
     private static final String KEY_REQUEST_ID = "request_id";
+    private static final String DEFAULT_EMPTY_VALUE = "";
+
     private static final String KEY_USER_STATE = "user_state";
 
     private static final int STATE_WAITING_FOR_DRIVER = 1;
 
     GlobalCacheManager cacheManager;
 
-    public RideConfiguration() {
+    private Context context;
+
+    public RideConfiguration(Context context) {
         cacheManager = new GlobalCacheManager();
+        this.context = context;
     }
 
     public void clearActiveRequest() {
@@ -69,7 +74,7 @@ public class RideConfiguration {
         return request.getRequestId();
     }
 
-    public RideRequest getActiveRequestObj(){
+    public RideRequest getActiveRequestObj() {
         RideRequestEntity entity = cacheManager.getConvertObjData(RIDE_CONFIGURATION, RideRequestEntity.class);
         RideRequestEntityMapper mapper = new RideRequestEntityMapper();
         return mapper.transform(entity);
@@ -113,5 +118,22 @@ public class RideConfiguration {
             return null;
         }
         return place;
+    }
+
+    public void setActiveRequestId(String requestId) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_REQUEST_ID, requestId);
+        cache.applyEditor();
+    }
+
+    public String getActiveRequestId() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        return cache.getString(KEY_REQUEST_ID, DEFAULT_EMPTY_VALUE);
+    }
+
+    public void clearActiveRequestId() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_REQUEST_ID, DEFAULT_EMPTY_VALUE);
+        cache.applyEditor();
     }
 }

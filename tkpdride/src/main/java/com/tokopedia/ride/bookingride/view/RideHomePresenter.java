@@ -6,6 +6,7 @@ import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.UnProcessableHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import rx.Subscriber;
 
@@ -83,6 +84,27 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                             case RideStatus.IN_PROGRESS:
                             case RideStatus.PROCESSING:
                                 getView().actionNavigateToOnTripScreen(rideRequest);
+                                break;
+                            case RideStatus.DRIVER_CANCELED:
+                                // if user didnt see about driver canceled his ride
+                                if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())) {
+                                    getView().showDialogDriverCancelled();
+                                    getView().inflateMapAndProductFragment();
+                                } else {
+                                    getView().inflateMapAndProductFragment();
+                                }
+                                break;
+                            case RideStatus.COMPLETED:
+                                // if user didnt see last trip thanks page
+                                if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())) {
+                                    DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
+                                    driverAndVehicle.setDriver(rideRequest.getDriver());
+                                    driverAndVehicle.setVehicle(rideRequest.getVehicle());
+                                    driverAndVehicle.setAddress(rideRequest.getAddress());
+                                    getView().navigateToCompleteTripScreen(rideRequest.getRequestId(), driverAndVehicle);
+                                } else {
+                                    getView().inflateMapAndProductFragment();
+                                }
                                 break;
                             default:
                                 getView().inflateMapAndProductFragment();

@@ -26,6 +26,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
@@ -136,6 +137,8 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showRideAccepted(final Context context, final RideRequest rideRequest) {
+        RideConfiguration rideConfiguration = new RideConfiguration(context);
+        rideConfiguration.setActiveRequestId(rideRequest.getRequestId());
         // Create remote view and set bigContentView.
         final RemoteViews remoteView = new RemoteViews(context.getPackageName(),
                 com.tokopedia.ride.R.layout.notification_remote_view_ride_accepted);

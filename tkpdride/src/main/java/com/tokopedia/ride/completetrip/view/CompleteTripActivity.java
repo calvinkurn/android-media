@@ -15,6 +15,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 public class CompleteTripActivity extends BaseActivity {
@@ -44,10 +45,16 @@ public class CompleteTripActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_completed);
         setupToolbar();
+        clearActiveRequest();
 
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         DriverVehicleAddressViewModel viewModel = getIntent().getParcelableExtra(EXTRA_DRIVER_VEHICLE);
         addFragment(R.id.container, CompleteTripFragment.newInstance(requestId, viewModel));
+    }
+
+    private void clearActiveRequest() {
+        RideConfiguration configuration = new RideConfiguration(this);
+        configuration.clearActiveRequestId();
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

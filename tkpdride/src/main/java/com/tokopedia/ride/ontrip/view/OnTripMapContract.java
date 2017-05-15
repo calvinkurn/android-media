@@ -150,6 +150,10 @@ public interface OnTripMapContract {
         RequestParams getProductDetailParam(String productId);
 
         void setDriverIcon(RideRequest rideRequest, int drawable);
+
+        void saveActiveRequestId(String requestId);
+
+        void clearSavedActiveRequestId();
     }
 
     interface Presenter extends CustomerPresenter<View> {
