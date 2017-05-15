@@ -61,6 +61,8 @@ public interface IProductDigitalView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
+    void showSnackBarCallbackCloseView(String message);
+
     LocalCacheHandler getLastInputClientNumberChaceHandler();
 
     boolean isUserLoggedIn();

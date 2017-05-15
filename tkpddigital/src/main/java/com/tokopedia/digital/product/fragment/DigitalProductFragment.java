@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -327,27 +328,27 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderErrorStyleNotSupportedProductDigitalData(String message) {
-        closeViewWithMessageAlert(message);
+        showSnackBarCallbackCloseView(message);
     }
 
     @Override
     public void renderErrorProductDigitalData(String message) {
-        closeViewWithMessageAlert(message);
+        showSnackBarCallbackCloseView(message);
     }
 
     @Override
     public void renderErrorHttpProductDigitalData(String message) {
-        closeViewWithMessageAlert(message);
+        showSnackBarCallbackCloseView(message);
     }
 
     @Override
     public void renderErrorNoConnectionProductDigitalData(String message) {
-        closeViewWithMessageAlert(message);
+        showSnackBarCallbackCloseView(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionProductDigitalData(String message) {
-        closeViewWithMessageAlert(message);
+        showSnackBarCallbackCloseView(message);
     }
 
     @Override
@@ -457,6 +458,26 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+    }
+
+    @Override
+    public void showSnackBarCallbackCloseView(String message) {
+        View view = getView();
+        if (view != null) {
+            Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_SHORT);
+            snackbar.setCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    super.onDismissed(snackbar, event);
+                    clearContentRendered();
+                    closeView();
+                }
+            });
+            snackbar.show();
+        } else {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            closeView();
+        }
     }
 
     @Override

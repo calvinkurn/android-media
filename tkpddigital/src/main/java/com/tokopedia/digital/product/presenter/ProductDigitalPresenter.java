@@ -202,7 +202,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.clearContentRendered();
                 e.printStackTrace();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
             /* Ini kalau ga ada internet */
