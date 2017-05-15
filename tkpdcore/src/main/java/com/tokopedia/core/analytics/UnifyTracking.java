@@ -1505,19 +1505,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickOsBanner(String keyword) {
+    public static void eventClickOsBanner(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_AD_BANNER,
                 AppEventTracking.Category.OS_AD_BANNER,
                 AppEventTracking.Action.CLICK,
-                keyword
+                label
         ).getEvent());
-        /*
-         * TODO: what is banner name?
-         * Event: clickAdBanner
-         * eventCategory: OS Ad Banner
-         * eventAction: Click
-         * eventLabel: {{Banner Name}} - {{keyword searched}}
-         */
     }
 }

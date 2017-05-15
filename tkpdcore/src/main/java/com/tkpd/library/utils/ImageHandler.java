@@ -213,8 +213,6 @@ public class ImageHandler {
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .dontAnimate()
-                .placeholder(R.drawable.loading_page)
-                .error(R.drawable.error_drawable)
                 .into(imageview);
     }
 

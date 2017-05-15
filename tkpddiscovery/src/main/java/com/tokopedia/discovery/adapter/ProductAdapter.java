@@ -1026,7 +1026,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     /**
-     * @author brilliant.oka
      * View Model for Official Stores Banner
      */
     public static class OsBannerViewModel extends RecyclerViewItem {
@@ -1043,7 +1042,6 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     }
 
     /**
-     * @author brilliant.oka
      * Create new Official Stores Banner View Holder
      * @param parent parent view
      * @return view holder of Official Store Banner
@@ -1073,12 +1071,16 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             imageBannerOs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent myIntent = new Intent(
+                    Intent intent = new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(viewModel.bannerOfficialStore.getShopUrl())
                     );
-                    context.startActivity(myIntent);
-                    UnifyTracking.eventClickOsBanner(viewModel.bannerOfficialStore.getKeyword());
+                    context.startActivity(intent);
+                    UnifyTracking.eventClickOsBanner(
+                            viewModel.bannerOfficialStore.getBannerUrl()
+                            + " - "
+                            + viewModel.bannerOfficialStore.getKeyword()
+                    );
                 }
             });
         }
