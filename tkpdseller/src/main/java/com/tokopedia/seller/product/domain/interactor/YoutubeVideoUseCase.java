@@ -13,6 +13,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -53,8 +54,53 @@ public class YoutubeVideoUseCase extends UseCase<YoutubeVideoModel> {
                 ).toList();
     }
 
+    public Observable<List<YoutubeVideoModel>> createObservable(List<RequestParams> requestParams,
+                                                                final YoutubeVideoUseCaseListener youtubeVideoUseCaseListener) {
+        return Observable.from(requestParams)
+                .doOnNext(new Action1<RequestParams>() {
+                    @Override
+                    public void call(RequestParams requestParams) {
+                        if (youtubeVideoUseCaseListener != null) {
+                            youtubeVideoUseCaseListener.onShowLoading();
+                        }
+                    }
+                })
+                .flatMap(
+                        new Func1<RequestParams, Observable<YoutubeVideoModel>>() {
+                            @Override
+                            public Observable<YoutubeVideoModel> call(RequestParams requestParams) {
+                                return createObservable(requestParams);
+                            }
+                        }
+                ).toList()
+                .doOnNext(new Action1<List<YoutubeVideoModel>>() {
+                    @Override
+                    public void call(List<YoutubeVideoModel> youtubeVideoModels) {
+                        if (youtubeVideoUseCaseListener != null) {
+                            youtubeVideoUseCaseListener.onHideLoading();
+                        }
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        if (youtubeVideoUseCaseListener != null) {
+                            youtubeVideoUseCaseListener.onHideLoading();
+                        }
+                    }
+                });
+    }
+
     public void executeList(List<RequestParams> requestParams, Subscriber<List<YoutubeVideoModel>> subscriber) {
         this.listSubscription = createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(subscriber);
+    }
+
+    public void executeList(List<RequestParams> requestParams, Subscriber<List<YoutubeVideoModel>> subscriber, YoutubeVideoUseCaseListener youtubeVideoUseCaseListener) {
+        this.listSubscription = createObservable(requestParams, youtubeVideoUseCaseListener)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -77,5 +123,11 @@ public class YoutubeVideoUseCase extends UseCase<YoutubeVideoModel> {
         requestParams.putString(KEY_YOUTUBE_ID, keyId);
         requestParams.putString(KEY_VIDEO_ID, videoId);
         return requestParams;
+    }
+
+    public interface YoutubeVideoUseCaseListener {
+        void onShowLoading();
+
+        void onHideLoading();
     }
 }
