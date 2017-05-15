@@ -159,7 +159,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             }
 
             private void onItemClicked(int position) {
-                priceSpinnerCounterInputView.setCounterValue(Float.parseFloat(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                priceSpinnerCounterInputView.setCounterValue(Double.parseDouble(priceSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
                 EditText editText = priceSpinnerCounterInputView.getCounterEditText();
                 editText.setSelection(editText.getText().length());
                 priceSpinnerCounterInputView.setCounterError(null);
@@ -214,7 +214,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         weightSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                weightSpinnerCounterInputView.setCounterValue(Float.parseFloat(weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                weightSpinnerCounterInputView.setCounterValue(Double.parseDouble(weightSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
                 weightSpinnerCounterInputView.setCounterError(null);
             }
         });
@@ -341,7 +341,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return priceSpinnerCounterInputView.getCounterValue();
     }
 
-    public void setPriceValue(float price) {
+    public void setPriceValue(double price) {
         priceSpinnerCounterInputView.setCounterValue(price);
     }
 
@@ -357,7 +357,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return (int) weightSpinnerCounterInputView.getCounterValue();
     }
 
-    public void setWeightValue(float value) {
+    public void setWeightValue(int value) {
         weightSpinnerCounterInputView.setCounterValue(value);
     }
 
@@ -371,7 +371,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return minOrder;
     }
 
-    public void setMinimumOrder(float value) {
+    public void setMinimumOrder(int value) {
         minimumOrderCounterInputView.setValue(value);
     }
 
@@ -395,7 +395,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return (int) stockTotalCounterInputView.getDoubleValue();
     }
 
-    public void setTotalStock(float value) {
+    public void setTotalStock(int value) {
         stockTotalCounterInputView.setValue(value);
     }
 
@@ -484,7 +484,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     private boolean isPriceValid() {
-        Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(
+        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
                 priceSpinnerCounterInputView.getContext(),
                 Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
 
@@ -521,8 +521,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
             minWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_minimum_weight_kg));
             maxWeightString = CurrencyFormatHelper.removeCurrencyPrefix(weightSpinnerCounterInputView.getContext().getString(R.string.product_maximum_weight_kg));
         }
-        float minWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minWeightString));
-        float maxWeight = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxWeightString));
+        double minWeight = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minWeightString));
+        double maxWeight = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxWeightString));
         if (minWeight > getWeightValue() || getWeightValue() > maxWeight) {
             weightSpinnerCounterInputView.setCounterError(weightSpinnerCounterInputView.getContext().getString(R.string.product_error_product_weight_not_valid, minWeightString, maxWeightString));
             return false;
@@ -536,8 +536,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         }
         String minStockString = CurrencyFormatHelper.removeCurrencyPrefix(stockTotalCounterInputView.getContext().getString(R.string.product_minimum_total_stock));
         String maxStockString = CurrencyFormatHelper.removeCurrencyPrefix(stockTotalCounterInputView.getContext().getString(R.string.product_maximum_total_stock));
-        float minStock = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minStockString));
-        float maxStock = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxStockString));
+        double minStock = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minStockString));
+        double maxStock = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxStockString));
         if (minStock > getTotalStock() || getTotalStock() > maxStock) {
             stockTotalCounterInputView.setError(stockTotalCounterInputView.getContext().getString(R.string.product_error_total_stock_not_valid, minStockString, maxStockString));
             return false;
@@ -634,8 +634,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         String minOrderString = context.getString(R.string.product_minimum_order);
         String maxOrderString = context.getString(R.string.product_maximum_order);
 
-        float minOrder = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minOrderString));
-        float maxOrder = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxOrderString));
+        double minOrder = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minOrderString));
+        double maxOrder = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxOrderString));
         if (minOrder > getMinimumOrder() || getMinimumOrder() > maxOrder) {
             minimumOrderCounterInputView.setError(context.getString(R.string.product_error_product_minimum_order_not_valid, minOrderString, maxOrderString));
             return false;

@@ -283,7 +283,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void validatePrice(double currencyValue) {
-        Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
+        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
             wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
