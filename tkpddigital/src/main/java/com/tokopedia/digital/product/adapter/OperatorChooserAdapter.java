@@ -86,8 +86,8 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemViewType(int position) {
-        //return TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE;
-        return TYPE_HOLDER_OPERATOR_NAME;
+        return TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE;
+        //return TYPE_HOLDER_OPERATOR_NAME;
     }
 
     static class ItemNameHolder extends RecyclerView.ViewHolder {
