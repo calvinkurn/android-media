@@ -39,6 +39,7 @@ import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -437,6 +438,12 @@ public class DrawerVariableSeller extends DrawerVariable {
                 intent = new Intent(context, TopAdsDashboardActivity.class);
                 context.startActivity(intent);
                 break;
+            case TkpdState.DrawerPosition.HELP:
+                intent = InboxRouter.getContactUsActivityIntent(context);
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
+                context.startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -671,8 +678,9 @@ public class DrawerVariableSeller extends DrawerVariable {
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS,
                     false));
+            model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contactus, TkpdState.DrawerPosition.CONTACT_US, false));
             if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-                model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
+                model.data.add(new DrawerItem("Bantuan", 0, R.drawable.ic_help, TkpdState.DrawerPosition.HELP, false));
             }
             model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT,
                     false));

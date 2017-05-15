@@ -352,7 +352,6 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         replyEditText.setEnabled(isEnabled);
         attachmentButton.setEnabled(isEnabled);
         sendButton.setEnabled(isEnabled);
-        refreshHandler.setPullEnabled(isEnabled);
         mainList.setEnabled(isEnabled);
         if (isEnabled) {
             header.setVisibility(View.VISIBLE);

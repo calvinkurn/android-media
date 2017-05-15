@@ -46,12 +46,12 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.Arrays;
 
 public class SessionHandler {
-    public static final String SAVE_REAL = "SAVE_REAL";
-    public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String SAVE_REAL = "SAVE_REAL";
+    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
-    public static final String PHONE_NUMBER = "PHONE_NUMBER";
-    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    public static final String TEMP_NAME = "TEMP_NAME";
+    private static final String PHONE_NUMBER = "PHONE_NUMBER";
+    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    private static final String TEMP_NAME = "TEMP_NAME";
     private static final String IS_LOGIN = "IS_LOGIN";
     private static final String LOGIN_ID = "LOGIN_ID";
     private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
@@ -554,12 +554,11 @@ public class SessionHandler {
         editor.apply();
     }
 
-    public void setToken(String accessToken, String tokenType, String refreshToken) {
+    public void setToken(String accessToken, String tokenType) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
         saveToSharedPref(editor, TOKEN_TYPE, tokenType);
-        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 
