@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.View;
@@ -83,19 +84,6 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     protected void initialListener(Activity activity) {
         actionListener = (ActionListener) activity;
-        operatorSerachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fiterData(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                checkEmptyQuery(newText);
-                return false;
-            }
-        });
     }
 
     @Override
@@ -111,7 +99,20 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void initView(View view) {
+        rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        operatorSerachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                fiterData(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                checkEmptyQuery(newText);
+                return false;
+            }
+        });
     }
 
     @Override
