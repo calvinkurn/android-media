@@ -35,14 +35,6 @@ public class EtalaseModel {
         return this;
     }
 
-    public ArrayList<String> getChilds() {
-        return childs;
-    }
-
-    public void setChilds(ArrayList<String> childs) {
-        this.childs = childs;
-    }
-
     public String getText() {
         return text;
     }
@@ -50,18 +42,5 @@ public class EtalaseModel {
     public EtalaseModel setText(String temp) {
         this.text = temp;
         return this;
-    }
-
-    public static TextDeleteModel toTextDeleteModel(EtalaseModel model, int level){
-        TextDeleteModel deleteModel = new TextDeleteModel(model.getText());
-        deleteModel.setDataPosition(level);
-        return deleteModel;
-    }
-
-    public static SimpleTextModel toSimpleTextModel(EtalaseModel model, int position, int level){
-        SimpleTextModel simpleTextModel = new SimpleTextModel(model.getText());
-        simpleTextModel.setLevel(level);
-        simpleTextModel.setPosition(position);
-        return simpleTextModel;
     }
 }
