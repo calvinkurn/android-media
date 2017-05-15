@@ -90,8 +90,6 @@ public class NotificationModHandler {
                     CommonUtils.dumper("Failed Clear Storage Notification");
             }
         });
-
-        FCMCacheManager.clearDialogNotificationSetting(activity);
     }
 
     public void dismissAllActivedNotifications() {
