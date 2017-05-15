@@ -145,6 +145,7 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
                 || link.equals("p")
                 || link.equals("catalog")
                 || link.equals("toppicks")
+                || link.equals("promo")
                 || link.startsWith("invoice.pl");
     }
 
