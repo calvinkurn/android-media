@@ -642,6 +642,8 @@ public class TkpdBaseURL {
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+        public static final String ACTIVATE_UNICODE = "/token";
+        public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
 
 
         public class OTP {
@@ -681,7 +683,6 @@ public class TkpdBaseURL {
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
-        public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
     public static class TopCash {

@@ -67,13 +67,12 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
     }
 
     private void getStatusList() {
-        view.setRefreshPullEnable(false);
+
         isLoading = true;
         requestGetStatusList();
     }
 
     private void getTransactionList() {
-        view.setRefreshPullEnable(false);
         isLoading = true;
         requestGetTransactionList();
     }
@@ -230,7 +229,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         finishConnection();
         listDatas.addAll(model);
         view.notifyDataSetChanged(listDatas);
-        view.setRefreshPullEnable(true);
         view.showFab();
     }
 
@@ -242,7 +240,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
             view.addEmptyView();
         }
         view.getPaging().setHasNext(false);
-        view.setRefreshPullEnable(true);
         view.showFab();
         view.removeRetry();
     }
@@ -256,7 +253,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
-        view.setRefreshPullEnable(true);
     }
 
     @Override
@@ -268,7 +264,6 @@ public class SellingStatusTransactionImpl extends SellingStatusTransaction imple
         } else {
             NetworkErrorHelper.showSnackbar((Activity) context);
         }
-        view.setRefreshPullEnable(true);
     }
 
     @Override
