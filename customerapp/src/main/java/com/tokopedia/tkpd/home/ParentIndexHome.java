@@ -424,6 +424,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onResume();
 
         sendNotifLocalyticsCallback();
+
+        NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override

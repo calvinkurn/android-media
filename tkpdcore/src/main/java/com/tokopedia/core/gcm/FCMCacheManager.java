@@ -34,6 +34,7 @@ import java.util.UUID;
 public class FCMCacheManager {
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
+    private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     private LocalCacheHandler cache;
     private Context context;
 
@@ -255,6 +256,23 @@ public class FCMCacheManager {
     public static String getRegistrationId(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         return cache.getString("gcm_id", "");
+    }
+
+    public static void setDialogNotificationSetting(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        cache.putBoolean("notification_dialog", true);
+        cache.applyEditor();
+    }
+
+    public static boolean isDialogNotificationSettingShowed(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        return cache.getBoolean("notification_dialog", false);
+    }
+
+    public static void clearDialogNotificationSetting(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, NOTIFICATION_STORAGE);
+        cache.putBoolean("notification_dialog", false);
+        cache.applyEditor();
     }
 
     public static String getRegistrationIdWithTemp(Context context) {
