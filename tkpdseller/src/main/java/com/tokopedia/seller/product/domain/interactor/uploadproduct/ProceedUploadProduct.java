@@ -39,10 +39,11 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .doOnNext(notificationManager.getUpdateNotification());
         } else if (domainModel.getProductStatus() == ProductStatus.EDIT){
             return Observable.just(domainModel)
-                    .flatMap(new EditProductImage(uploadProductRepository, imageProductUploadRepository))
+                    .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareEditProduct(domainModel))
                     .flatMap(new EditProduct(uploadProductRepository))
+                    .flatMap(new DeleteImageEditProduct(domainModel, uploadProductRepository))
                     .map(new ToUploadProductModel(domainModel));
         } else {
             throw new RuntimeException("No product status available");
