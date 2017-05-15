@@ -91,8 +91,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
             @Override
             public OrderClientNumber call(Throwable throwable) {
                 String lastInputNumber = localCacheHandler.getString(
-                        TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-                                + pathCategoryId, ""
+                        TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + pathCategoryId, ""
                 );
                 if (lastInputNumber.isEmpty() && (
                         pathCategoryId.equalsIgnoreCase("1")
