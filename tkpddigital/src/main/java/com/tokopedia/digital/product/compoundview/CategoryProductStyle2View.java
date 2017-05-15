@@ -165,6 +165,7 @@ public class CategoryProductStyle2View extends
             @Override
             public void onInitialDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                clientNumberInputView.enableImageOperator(data.getImage());
                 clientNumberInputView.setActionListener(getActionListenerClientNumberInput(data));
                 clientNumberInputView.renderData(data.getClientNumberList().get(0));
                 clearHolder(holderClientNumber);
@@ -174,12 +175,12 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                clientNumberInputView.enableImageOperator(data.getImage());
                 clientNumberInputView.setActionListener(getActionListenerClientNumberInput(data));
                 clientNumberInputView.renderData(data.getClientNumberList().get(0));
                 clearHolder(holderClientNumber);
                 holderClientNumber.addView(clientNumberInputView);
                 if (!clientNumberInputView.getText().equals("")) {
-                    clientNumberInputView.enableImageOperator(data.getImage());
                     renderDropdownProduct(data);
                 }
             }
@@ -227,7 +228,6 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
-                clientNumberInputView.enableImageOperator(operator.getImage());
                 renderDropdownProduct(operator);
             }
 

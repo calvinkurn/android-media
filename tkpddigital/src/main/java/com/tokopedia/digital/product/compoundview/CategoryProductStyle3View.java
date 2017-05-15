@@ -109,6 +109,7 @@ public class CategoryProductStyle3View extends
                     clientNumberInputView.setActionListener(getActionListenerClientNumberInputView(data));
                     clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
                     holderClientNumber.addView(clientNumberInputView);
+                    clientNumberInputView.enableImageOperator(data.getImage());
                 } else {
                     digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
                     digitalProductChooserView.renderInitDataList(data.getProductList());
@@ -125,6 +126,7 @@ public class CategoryProductStyle3View extends
                     clientNumberInputView.setActionListener(getActionListenerClientNumberInputView(data));
                     clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
                     holderClientNumber.addView(clientNumberInputView);
+                    clientNumberInputView.enableImageOperator(data.getImage());
                 } else {
                     digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
                     digitalProductChooserView.renderInitDataList(data.getProductList());
@@ -196,7 +198,6 @@ public class CategoryProductStyle3View extends
                         && String.valueOf(data.getDefaultProductId())
                         .equalsIgnoreCase(data.getProductList().get(0).getProductId())) {
                     productSelected = data.getProductList().get(0);
-                    clientNumberInputView.enableImageOperator(data.getImage());
                 } else if (data.getProductList().isEmpty()) {
                     Product product = new Product();
                     product.setProductId(String.valueOf(data.getDefaultProductId()));
