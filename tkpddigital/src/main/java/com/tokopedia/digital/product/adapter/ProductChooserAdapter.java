@@ -71,16 +71,14 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemDescAndPriceHolder.tvPrice.setText(product.getPrice());
         } else if (type == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
             ItemPriceAdmin itemPriceAdmin = (ItemPriceAdmin) holder;
-            itemPriceAdmin.tvProductPrice.setText(product.getPrice());
+            itemPriceAdmin.tvProductPrice.setText(product.getDesc());
             itemPriceAdmin.tvProductDescription.setText(product.getDetail());
             itemPriceAdmin.tvProductTotalPrice.setText(product.getPrice());
         } else if (type == TYPE_HOLDER_PRODUCT_PROMO) {
             ItemHolderPromoProduct itemHolderPromoProduct = (ItemHolderPromoProduct) holder;
-            //itemHolderPromoProduct.tvProductPromoTitle.setText(product.getPromo().getValueText());
-            itemHolderPromoProduct.tvProductPromoTitle.setText("Test Title");
-/*            itemHolderPromoProduct.tvProductPromoDescription.setText(product.getPromo()
-                    .getBonusText());*/
-            itemHolderPromoProduct.tvProductPromoDescription.setText("Test Title");
+            itemHolderPromoProduct.tvProductPromoTitle.setText(product.getDesc());
+            itemHolderPromoProduct.tvProductPromoDescription.setText(product.getPromo()
+                    .getBonusText());
             itemHolderPromoProduct.tvPromoProductPrice.setText(product.getPromo().getNewPrice());
             itemHolderPromoProduct.tvProductPromoOldPrice.setText(product.getPrice());
             itemHolderPromoProduct.tvProductPromoOldPrice

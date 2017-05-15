@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -31,6 +33,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @BindView(R2.id.rv_list_chooser)
     RecyclerView rvOperatorList;
+    @BindView(R2.id.search_operator)
+    SearchView operatorSerachView;
 
     private List<Operator> operatorListData;
     private String operatorStyleView;
@@ -95,7 +99,20 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void initView(View view) {
+        rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        operatorSerachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                fiterData(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                checkEmptyQuery(newText);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -119,5 +136,22 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
         void onOperatorItemSelected(Operator operator);
 
         void onOperatortItemChooserCanceled();
+    }
+
+    private void fiterData(String query) {
+        List<Operator> searchOperatorList = new ArrayList<>();
+        for (int i = 0; i < operatorListData.size(); i++) {
+            if(operatorListData.get(i).getName().toLowerCase()
+                    .contains(query.toLowerCase())) {
+                searchOperatorList.add(operatorListData.get(i));
+            }
+        }
+        operatorChooserAdapter.setSearchResultData(searchOperatorList);
+        operatorChooserAdapter.notifyDataSetChanged();
+    }
+
+    private void checkEmptyQuery(String query) {
+        if(query.isEmpty())
+        operatorChooserAdapter.setSearchResultData(operatorListData);
     }
 }
