@@ -1,14 +1,11 @@
 package com.tokopedia.session.activation.data;
 
-import com.tokopedia.session.activation.data.pojo.ChangeEmailData;
-
 /**
  * Created by nisie on 4/18/17.
  */
 
 public class ChangeEmailModel {
     private boolean success;
-    private ChangeEmailData changeEmailData;
     private String errorMessage;
     private String statusMessage;
     private int responseCode;
@@ -19,14 +16,6 @@ public class ChangeEmailModel {
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public ChangeEmailData getChangeEmailData() {
-        return changeEmailData;
-    }
-
-    public void setChangeEmailData(ChangeEmailData changeEmailData) {
-        this.changeEmailData = changeEmailData;
     }
 
     public String getErrorMessage() {

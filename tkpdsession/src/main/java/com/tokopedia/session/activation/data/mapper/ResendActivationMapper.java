@@ -25,8 +25,7 @@ public class ResendActivationMapper implements Func1<Response<TkpdResponse>, Res
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 ResendActivationData data = response.body().convertDataObj(ResendActivationData.class);
-                model.setSuccess(true);
-                model.setResendActivationData(data);
+                model.setSuccess(data.getIsSuccess() == 1);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {

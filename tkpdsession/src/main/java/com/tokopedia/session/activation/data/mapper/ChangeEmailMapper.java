@@ -25,8 +25,7 @@ public class ChangeEmailMapper implements Func1<Response<TkpdResponse>, ChangeEm
         if (response.isSuccessful()) {
             if (!response.body().isError()) {
                 ChangeEmailData data = response.body().convertDataObj(ChangeEmailData.class);
-                model.setSuccess(true);
-                model.setChangeEmailData(data);
+                model.setSuccess(data.getIsSuccess() == 1);
             } else {
                 if (response.body().getErrorMessages() == null
                         && response.body().getErrorMessages().isEmpty()) {
