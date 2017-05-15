@@ -28,11 +28,14 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.activity.DigitalChooserActivity;
@@ -430,6 +433,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public LocalCacheHandler getLastInputClientNumberChaceHandler() {
         return cacheHandlerLastInputClientNumber;
+    }
+
+    @Override
+    public boolean isUserLoggedIn() {
+        return SessionHandler.isV4Login(getActivity());
+    }
+
+    @Override
+    public void interruptUserNeedLogin() {
+        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+        navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }
 
     @Override

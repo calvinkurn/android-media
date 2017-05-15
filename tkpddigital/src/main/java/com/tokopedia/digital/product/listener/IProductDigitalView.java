@@ -63,5 +63,7 @@ public interface IProductDigitalView extends IBaseView {
 
     LocalCacheHandler getLastInputClientNumberChaceHandler();
 
+    boolean isUserLoggedIn();
 
+    void interruptUserNeedLogin();
 }

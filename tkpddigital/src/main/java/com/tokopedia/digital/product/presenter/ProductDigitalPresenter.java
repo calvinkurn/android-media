@@ -176,14 +176,20 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 .utmSource("android")
                 .utmMedium("widget")
                 .build();
-        if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter =
-                    (IDigitalModuleRouter) view.getMainApplication();
-            view.navigateToActivityRequest(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
+
+        if (view.isUserLoggedIn()) {
+            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
+                IDigitalModuleRouter digitalModuleRouter =
+                        (IDigitalModuleRouter) view.getMainApplication();
+                view.navigateToActivityRequest(
+                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                );
+            }
+        } else {
+            view.interruptUserNeedLogin();
         }
+
     }
 
     @NonNull

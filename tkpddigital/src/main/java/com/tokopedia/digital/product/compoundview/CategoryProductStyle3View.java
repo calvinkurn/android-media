@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -92,7 +93,9 @@ public class CategoryProductStyle3View extends
         holderChooserOperator.addView(digitalOperatorChooserView);
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
         digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
+        btnBuyDigital.setOnClickListener(getButtonBuyClickedListener());
     }
+
 
     @NonNull
     private BaseDigitalChooserView.ActionListener<Operator> getActionListenerOperatorChooser() {
@@ -286,5 +289,34 @@ public class CategoryProductStyle3View extends
         }
     }
 
+    @NonNull
+    private OnClickListener getButtonBuyClickedListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
+                boolean canBeCheckout = false;
+
+                if (productSelected == null) {
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(R.string.message_error_digital_product_not_selected)
+                    );
+                } else {
+                    preCheckoutProduct.setProductId(productSelected.getProductId());
+                    preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
+                    canBeCheckout = true;
+                    if (productSelected.getPromo() != null) {
+                        preCheckoutProduct.setPromo(true);
+                    }
+                }
+                preCheckoutProduct.setCategoryId(data.getCategoryId());
+                preCheckoutProduct.setCategoryName(data.getName());
+                preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
+                preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
+
+                if (canBeCheckout) actionListener.onButtonBuyClicked(preCheckoutProduct);
+            }
+        };
+    }
 
 }

@@ -12,6 +12,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 public interface IDigitalModuleRouter {
 
     int REQUEST_CODE_CART_DIGITAL = 216;
+    int REQUEST_CODE_LOGIN = 221;
     int REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER = 217;
     int REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER = 218;
     int REQUEST_CODE_DIGITAL_PRODUCT_DETAIL = 220;
