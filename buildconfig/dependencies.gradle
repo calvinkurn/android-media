@@ -145,7 +145,7 @@ ext {
     ]
 
     tkpdLibDependencies = [
-            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.9"
+            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.10"
     ]
 
 }

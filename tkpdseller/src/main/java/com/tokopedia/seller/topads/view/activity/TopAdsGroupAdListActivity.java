@@ -13,6 +13,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsGroupAdListFragment;
+import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -113,17 +114,13 @@ public class TopAdsGroupAdListActivity extends TActivity
             }, 300);
 
         } else {
-            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    startShowCase();
-                    if (Build.VERSION.SDK_INT < 16) {
-                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                }
-            });
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar,
+                    new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            startShowCase();
+                        }
+                    }));
         }
 
     }

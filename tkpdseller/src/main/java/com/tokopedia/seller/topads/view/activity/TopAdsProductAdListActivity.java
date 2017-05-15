@@ -15,6 +15,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsProductAdListFragment;
+import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -114,17 +115,12 @@ public class TopAdsProductAdListActivity extends TActivity
             }, 300);
 
         } else {
-            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar, new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
                     startShowCase();
-                    if (Build.VERSION.SDK_INT < 16) {
-                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
                 }
-            });
+            }));
         }
 
     }

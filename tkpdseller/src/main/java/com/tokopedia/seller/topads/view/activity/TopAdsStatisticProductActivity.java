@@ -15,6 +15,7 @@ import android.view.ViewTreeObserver;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.data.Cell;
+import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.topads.view.listener.TopAdsStatisticViewListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -81,17 +82,13 @@ public class TopAdsStatisticProductActivity extends TopAdsStatisticActivity {
             showCaseDialog.show(TopAdsStatisticProductActivity.this, showCaseTag, showCaseList);
 
         } else {
-            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    startShowCase();
-                    if (Build.VERSION.SDK_INT < 16) {
-                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                }
-            });
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar,
+                    new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            startShowCase();
+                        }
+                    }));
         }
 
 

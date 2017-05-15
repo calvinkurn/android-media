@@ -26,6 +26,8 @@ public class ShowCaseDialogFactory {
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
+                .useSkipWord(true)
+                .skipStringRes(R.string.title_skip_2)
                 .build();
     }
 }

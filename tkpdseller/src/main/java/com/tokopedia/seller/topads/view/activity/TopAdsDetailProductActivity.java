@@ -14,6 +14,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
+import com.tokopedia.seller.topads.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -106,17 +107,15 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             showCaseDialog.show(TopAdsDetailProductActivity.this, showCaseTag, showCaseList);
         }
         else {
-            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    startShowCase();
-                    if (Build.VERSION.SDK_INT < 16) {
-                        toolbar.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        toolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(
+                    toolbar,
+                    new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            startShowCase();
+                        }
                     }
-                }
-            });
+            ));
         }
 
     }
