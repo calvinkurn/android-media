@@ -54,7 +54,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
-    public static final String IS_ACTIVE_WHOLESALE = "IS_ACTIVE_WHOLESALE";
+    public static final String IS_ENABLE_WHOLESALE = "IS_ENABLE_WHOLESALE";
+    public static final String IS_ON_WHOLESALE = "IS_ON_WHOLESALE";
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
     private static final String BUNDLE_ETALASE_ID = "BUNDLE_ETALASE_ID";
     private static final String BUNDLE_ETALASE_NAME = "BUNDLE_ETALASE_NAME";
@@ -63,6 +64,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private static final String BUNDLE_COUNTER_PRICE = "BUNDLE_COUNTER_PRICE";
     private static final String IS_WHOLESALE_VISIBLE = "IS_WHOLE_VISIBLE";
     private static final String IS_STOCKTOTAL_VISIBLE = "IS_STOCKTOTAL_VISIBLE";
+
     private static final int MAX_WHOLESALE = 5;
     private static final int DEFAULT_ETALASE_ID = -1;
     private final Locale dollarLocale = Locale.US;
@@ -580,7 +582,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         savedInstanceState.putLong(BUNDLE_ETALASE_ID, etalaseId);
         savedInstanceState.putString(BUNDLE_ETALASE_NAME, etalaseLabelView.getValue());
         savedInstanceState.putBoolean(IS_ACTIVE_STOCK, stockTotalExpandableOptionSwitch.isEnabled());
-        savedInstanceState.putBoolean(IS_ACTIVE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
+        savedInstanceState.putBoolean(IS_ENABLE_WHOLESALE, wholesaleExpandableOptionSwitch.isEnabled());
+        savedInstanceState.putBoolean(IS_ON_WHOLESALE, editPriceImageButton.getVisibility() == View.VISIBLE);
         savedInstanceState.putParcelableArrayList(KEY_WHOLESALE,
                 new ArrayList<Parcelable>(wholesaleAdapter.getWholesaleModels()));
         savedInstanceState.putInt(BUNDLE_SPINNER_POSITION, priceSpinnerCounterInputView.getSpinnerPosition());
@@ -600,13 +603,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         }
 
         stockTotalExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_STOCK));
-        wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ACTIVE_WHOLESALE));
-        ArrayList<WholesaleModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
-        if (wholesaleModels == null) {
-            wholesaleModels = new ArrayList<>();
-        }
-        wholesaleAdapter.addAllWholeSale(wholesaleModels);
-        wholesaleAdapter.notifyDataSetChanged();
+        wholesaleExpandableOptionSwitch.setEnabled(savedInstanceState.getBoolean(IS_ENABLE_WHOLESALE));
+        wholesaleExpandableOptionSwitch.setExpand(savedInstanceState.getBoolean(IS_ON_WHOLESALE));
 
         int spinnerPricePosition = savedInstanceState.getInt(BUNDLE_SPINNER_POSITION, 0);
         priceSpinnerCounterInputView.setSpinnerPosition(spinnerPricePosition);
@@ -619,6 +617,15 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
         boolean isStockTotalVisible = savedInstanceState.getBoolean(IS_STOCKTOTAL_VISIBLE, false);
         stockTotalExpandableOptionSwitch.setVisibility(isStockTotalVisible ? View.VISIBLE : View.GONE);
+
+        // wholesale must be executed at the last, because the wholesale will be cleared on when the price changes.
+        ArrayList<WholesaleModel> wholesaleModels = savedInstanceState.getParcelableArrayList(KEY_WHOLESALE);
+        if (wholesaleModels == null) {
+            wholesaleModels = new ArrayList<>();
+        }
+        wholesaleAdapter.addAllWholeSale(wholesaleModels);
+        wholesaleAdapter.notifyDataSetChanged();
+
     }
 
     public boolean isMinOrderValid() {
