@@ -36,6 +36,7 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
 
         if (categoryHadesModelResponse.body().getData().getIsIntermediary()) {
             intermediaryCategoryDomainModel.setIntermediary(true);
+            intermediaryCategoryDomainModel.setDepartementId(categoryHadesModelResponse.body().getData().getId());
             intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
             intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
             intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
@@ -118,6 +119,7 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
     private List<HotListModel> mapHotList(HotListResponse hotListResponse) {
 
         List<HotListModel> hotListModels = new ArrayList<>();
+        if (hotListResponse==null) return hotListModels;
         for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
             HotListModel hotListModel = new HotListModel();
             hotListModel.setId(list.getHotProductId());

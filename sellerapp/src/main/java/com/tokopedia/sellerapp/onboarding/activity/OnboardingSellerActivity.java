@@ -101,9 +101,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-        SessionHandler.setFirstTimeUser(this, false);
+        onDonePressed();
     }
 
     private boolean isUserHasShop() {

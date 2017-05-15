@@ -552,7 +552,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_all_categories">Semua Kategori</string>
     <string name="title_categories">BERANDA</string>
     <string name="title_all_location">Semua Lokasi</string>
-    <string name="title_category_view_all">Lihat Produk Fashion Wanita Lainnya</string>
+    <string name="title_category_view_all">Lihat Produk Kategori Lainnya</string>
 
     <string-array name="filter_browse_catalog">
         <item>Semua Kondisi</item>
@@ -1914,6 +1914,7 @@ di Tokopedia Sekarang!</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
     <string name="title_official_store">Official Store</string>
+    <string name="hint_search_review">Cari ulasan</string>
     <string name="notification_dialog_content_main_app">Kami mendeteksi aplikasi Seller Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
     <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
     <string name="notification_dialog_positive_button">Pengaturan</string>
