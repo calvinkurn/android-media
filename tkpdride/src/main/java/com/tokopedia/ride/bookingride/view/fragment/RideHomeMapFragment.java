@@ -291,11 +291,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
 
         //animate marker to lift up
+        /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
         mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
         mMarkerImageView.animate().setInterpolator(interpolator).translationY(-mToolBarHeightinPx).setDuration(300);
         mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(1).scaleY(1).setDuration(300);
-
+        */
         //animate toolbar and source destination layout
         if (mListener.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
             mToolbar.animate().translationY(-mToolBarHeightinPx).setDuration(300);
@@ -315,10 +316,12 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             mPresenter.actionMapDragStopped(latitude, longitude);
         }
         //animate marker to lift down
+        /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
         mMarkerTimeLayout.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
         mMarkerImageView.animate().setInterpolator(interpolator).translationY(0).setDuration(300);
         mMarkerCenterCrossImage.animate().setInterpolator(interpolator).scaleX(0).scaleY(0).setDuration(300);
+        */
 
         //animate toolbar and source destination layout
         mToolbar.animate().translationY(0).setDuration(300);

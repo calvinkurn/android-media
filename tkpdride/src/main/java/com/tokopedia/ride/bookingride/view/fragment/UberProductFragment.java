@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -61,8 +60,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     TextView mRetryButtonTextView;
     @BindView(R2.id.product_list_progress)
     ProgressBar mProgressBar;
-    @BindView(R2.id.layout_progress_and_error_view)
-    View mProgreessAndErrorView;
+    @BindView(R2.id.layout_error_view)
+    View mErrorView;
+    @BindView(R2.id.layout_progress_view)
+    View mProgressView;
 
     boolean isCompleteLocations;
 
@@ -193,7 +194,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         this.destination = destination;
         this.source = source;
         isCompleteLocations = source != null && destination != null;
-        showProgress();
         mPresenter.actionGetRideProducts(source, destination);
     }
 
@@ -212,7 +212,6 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void actionRetry() {
         if (source != null) {
             hideErrorMessageLayout();
-            showProgress();
             mPresenter.actionGetRideProducts(source, destination);
         } else {
             //open a dialog to enter source location
@@ -233,16 +232,12 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showProgress() {
-        if (mProgressBar != null) {
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
+        mProgressView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        if (mProgressBar != null) {
-            mProgressBar.setVisibility(View.GONE);
-        }
+        mProgressView.setVisibility(View.GONE);
     }
 
     @Override
@@ -262,8 +257,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void showErrorMessage(String message, String btnText) {
         hideProgress();
-
-        mProgreessAndErrorView.setVisibility(View.VISIBLE);
+        mErrorView.setVisibility(View.VISIBLE);
         mErrorLayout.setVisibility(View.VISIBLE);
         mErrorDescriptionTextView.setText(message);
         if (btnText != null && !btnText.isEmpty()) {
@@ -276,8 +270,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void hideErrorMessage() {
-        if (mProgreessAndErrorView != null) {
-            mProgreessAndErrorView.setVisibility(View.GONE);
+        if (mErrorView != null) {
+            mErrorView.setVisibility(View.GONE);
         }
     }
 

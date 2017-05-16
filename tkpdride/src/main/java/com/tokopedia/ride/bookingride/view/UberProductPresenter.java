@@ -75,6 +75,8 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void actionGetRideProducts(final PlacePassViewModel source, final PlacePassViewModel destination) {
+        getView().showProgress();
+        getView().hideProductList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetUberProductsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
         requestParams.putString(GetUberProductsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
@@ -86,18 +88,21 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().hideProductList();
-                getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+                e.printStackTrace();
+                if (isViewAttached()){
+                    getView().hideProductList();
+                    getView().hideProgress();
+                    getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+                }
+
             }
 
             @Override
             public void onNext(List<ProductEstimate> productEstimates) {
                 if (isViewAttached() && !isUnsubscribed()) {
                     List<Visitable> productsList = mProductViewModelMapper.transform(productEstimates);
-
-                    getView().hideProgress();
-
                     if (productsList.size() == 0) {
+                        getView().hideProgress();
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                     } else {
@@ -108,14 +113,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                 return;
                             }
                         }
-
-
-                        getView().hideErrorMessage();
-                        getView().showProductList();
-                        getView().renderProductList(productsList);
                         if (destination != null) {
-//                            actionGetFareProduct(source, destination, productEstimates);
                             actionGetFareProduct2(source, destination, productEstimates);
+                        }else{
+                            getView().hideProgress();
+                            getView().hideErrorMessage();
+                            getView().showProductList();
+                            getView().renderProductList(productsList);
                         }
 
                         getMinimalProductEstimateAndRender(productEstimates);
@@ -205,13 +209,24 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (isViewAttached()){
+                            getView().hideProgress();
+                            getView().hideProductList();
+                            getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
+                        }
                     }
 
                     @Override
                     public void onNext(List<RideProductViewModel> rideProductViewModels) {
-                        List<Visitable> visitables = new ArrayList<Visitable>();
-                        visitables.addAll(rideProductViewModels);
-                        getView().renderProductList(visitables);
+                        if (isViewAttached()){
+                            getView().hideProgress();
+                            getView().hideErrorMessage();
+                            getView().showProductList();
+                            List<Visitable> visitables = new ArrayList<>();
+                            visitables.addAll(rideProductViewModels);
+                            getView().renderProductList(visitables);
+                        }
+
                     }
                 });
 
