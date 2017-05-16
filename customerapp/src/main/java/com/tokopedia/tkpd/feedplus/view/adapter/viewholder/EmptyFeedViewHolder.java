@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.adapter.viewholder;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 import butterknife.BindView;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.di;
 
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

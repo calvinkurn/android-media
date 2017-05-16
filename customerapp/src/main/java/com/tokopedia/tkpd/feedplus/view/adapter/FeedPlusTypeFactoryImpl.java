@@ -1,15 +1,17 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.EmptyFeedViewHolder;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
+public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements FeedPlusTypeFactory {
 
     public FeedPlusTypeFactoryImpl() {
 

@@ -1,6 +1,7 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
 
 /**
  * @author by nisie on 5/15/17.

@@ -1,6 +1,7 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.tkpd.feedplus.FeedPlus;
 
 import javax.inject.Inject;
 

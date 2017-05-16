@@ -1,6 +1,7 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.di;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.tkpd.feedplus.view.fragment.FeedPlusFragment;
 
 import dagger.Component;
 

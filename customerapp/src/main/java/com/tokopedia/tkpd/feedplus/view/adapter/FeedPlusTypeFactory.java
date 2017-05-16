@@ -1,8 +1,9 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 /**
  * @author by nisie on 5/15/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +18,13 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.feedplus.DaggerFeedPlusComponent;
+import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
+import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactoryImpl;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus;
+package com.tokopedia.tkpd.feedplus.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -16,7 +16,7 @@ import java.util.List;
  * @author by nisie on 5/15/17.
  */
 
-class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private final FeedPlusTypeFactory typeFactory;
