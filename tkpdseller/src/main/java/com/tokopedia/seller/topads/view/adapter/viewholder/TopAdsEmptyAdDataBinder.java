@@ -16,32 +16,12 @@ import com.tokopedia.seller.R;
  */
 public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
 
-    public interface Callback {
-
-        void onEmptyContentItemTextClicked();
-
-    }
-
     private String emptyTitleText;
     private String emptyContentText;
     private String emptyContentItemText;
     private Callback callback;
-
     public TopAdsEmptyAdDataBinder(DataBindAdapter dataBindAdapter) {
         super(dataBindAdapter);
-    }
-
-    public static class EmptyViewHolder extends ViewHolder {
-        TextView emptyTitleTextView;
-        TextView emptyContentTextView;
-        TextView emptyContentItemTextView;
-
-        public EmptyViewHolder(View view) {
-            super(view);
-            emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
-            emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
-            emptyContentItemTextView = (TextView) view.findViewById(R.id.text_view_empty_content_item_text);
-        }
     }
 
     public void setEmptyTitleText(String emptyTitleText) {
@@ -93,6 +73,25 @@ public class TopAdsEmptyAdDataBinder extends NoResultDataBinder {
             });
         } else {
             emptyViewHolder.emptyContentItemTextView.setVisibility(View.GONE);
+        }
+    }
+
+    public interface Callback {
+
+        void onEmptyContentItemTextClicked();
+
+    }
+
+    public static class EmptyViewHolder extends ViewHolder {
+        protected TextView emptyTitleTextView;
+        protected TextView emptyContentTextView;
+        protected TextView emptyContentItemTextView;
+
+        public EmptyViewHolder(View view) {
+            super(view);
+            emptyTitleTextView = (TextView) view.findViewById(R.id.text_view_empty_title_text);
+            emptyContentTextView = (TextView) view.findViewById(R.id.text_view_empty_content_text);
+            emptyContentItemTextView = (TextView) view.findViewById(R.id.text_view_empty_content_item_text);
         }
     }
 }

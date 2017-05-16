@@ -16,7 +16,7 @@
 
     <Button
         android:id="@+id/button_submit"
-        style="@style/Button.TopAds.Submit"
+        style="@style/Button.Submit"
         android:layout_width="match_parent"
         android:enabled="false"
         android:text="@string/label_top_ads_choose_credit"/>

@@ -43,7 +43,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     public void renderPurchaseSummary(List<TxSummaryItem> summaryItemList) {
         summaryAdapter.setDataList(summaryItemList);
         summaryAdapter.notifyDataSetChanged();
-        refreshHandler.setPullEnabled(true);
         refreshHandler.finishRefresh();
     }
 
@@ -66,7 +65,6 @@ public class TxSummaryFragment extends BasePresenterFragment<TxSummaryPresenter>
     @Override
     public void onRefresh(View view) {
         presenter.getNotificationFromNetwork(getActivity());
-        refreshHandler.setPullEnabled(false);
     }
 
     public static TxSummaryFragment createInstancePurchase() {

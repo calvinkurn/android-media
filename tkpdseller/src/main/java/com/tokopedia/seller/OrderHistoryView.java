@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.view.MenuItem;
 import android.widget.ListView;
 
@@ -14,7 +13,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.customadapter.ListViewOrderStatus;
-import com.tokopedia.seller.selling.model.shopconfirmationdetail.*;
+import com.tokopedia.seller.selling.model.shopconfirmationdetail.ShippingConfirmDetModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
