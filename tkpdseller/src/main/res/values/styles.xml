@@ -251,10 +251,8 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset
-        </item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
 
