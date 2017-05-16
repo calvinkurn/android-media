@@ -56,6 +56,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -971,7 +972,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         shopController.init(this);
         sendToGTM();
         sendToLocalytics();
-
+        NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override

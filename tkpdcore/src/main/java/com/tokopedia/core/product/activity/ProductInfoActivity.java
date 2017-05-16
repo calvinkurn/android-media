@@ -15,6 +15,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.product.dialog.ReportProductDialogFragment;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
@@ -30,7 +31,8 @@ import com.tokopedia.core.share.fragment.ProductShareFragment;
 public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
         ProductInfoView,
         ProductDetailFragment.OnFragmentInteractionListener,
-        ProductInfoResultReceiver.Receiver{
+        ReportProductDialogFragment.OnFragmentInteractionListener,
+        ProductInfoResultReceiver.Receiver {
     public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
@@ -75,7 +77,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
      * @param context
      * @return
      */
-    public static Intent createInstance(Context context){
+    public static Intent createInstance(Context context) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_ADDING_PRODUCT, true);
@@ -222,7 +224,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         }
     }
 
-    public void doReport(Bundle bundle) {
+    private void doReport(Bundle bundle) {
         ProductInfoIntentService.startAction(this, bundle, mReceiver);
     }
 
@@ -247,5 +249,10 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
+    }
+
+    @Override
+    public void onReportProductSubmited(Bundle bundle) {
+        doReport(bundle);
     }
 }

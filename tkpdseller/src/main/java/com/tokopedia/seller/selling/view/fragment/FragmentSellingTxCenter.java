@@ -90,7 +90,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     @Override
     public void initView() {
         Refresh = new RefreshHandler(getActivity(), getView(), refreshListener());
-        Refresh.setPullEnabled(false);
         TitleMenuListView.setAdapter(ListViewPeopleTransactionSummaryAdapter);
         TitleMenuListView.setOnItemClickListener(gridListener());
     }
@@ -244,7 +243,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
             }
             Refresh.finishRefresh();
             ListViewPeopleTransactionSummaryAdapter.notifyDataSetChanged();
-            Refresh.setPullEnabled(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

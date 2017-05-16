@@ -15,7 +15,9 @@ import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
+import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
@@ -24,6 +26,8 @@ import com.tokopedia.core.network.di.qualifier.RechargeQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Module;
@@ -43,6 +47,14 @@ public class NetModule {
     @Provides
     public Retrofit provideWsV4Retrofit(@DefaultAuth OkHttpClient okHttpClient,
                                         Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
+    }
+
+    @WsV4QualifierWithErrorHander
+    @ApplicationScope
+    @Provides
+    public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
+                                        Retrofit.Builder retrofitBuilder){
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 
@@ -92,6 +104,22 @@ public class NetModule {
     public Retrofit provideRechargeRetrofit(@NoAuth OkHttpClient okHttpClient,
                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.RECHARGE_API_DOMAIN).client(okHttpClient).build();
+    }
+
+    @YoutubeQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideYoutubeRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                           Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GOOGLE_APIS).client(okHttpClient).build();
+    }
+
+    @MerlinQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideMerlinRetrofit(@NoAuth OkHttpClient okHttpClient,
+                                          Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.MERLIN_DOMAIN).client(okHttpClient).build();
     }
 
     @ResolutionQualifier

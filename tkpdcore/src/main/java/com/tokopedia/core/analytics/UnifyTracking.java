@@ -1486,4 +1486,58 @@ public class UnifyTracking extends TrackingUtils {
                 label
         ).getEvent());
     }
+
+    public static void eventViewAllOSNonLogin() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OS_MICROSITE_NON_LOGIN
+        ).getEvent());
+    }
+
+    public static void eventViewAllOSLogin() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
+                AppEventTracking.Category.HOMEPAGE,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+        ).getEvent());
+    }
+
+    public static void eventAddProductErrorServer(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductError(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ERROR,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductAdd(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductAddMore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD_MORE,
+                label
+        ).getEvent());
+    }
 }
