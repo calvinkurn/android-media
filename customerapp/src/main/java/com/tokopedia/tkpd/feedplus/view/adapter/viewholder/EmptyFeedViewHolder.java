@@ -33,7 +33,7 @@ public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel
     @Override
     public void bind(ProductCardViewModel productCardViewModel) {
         this.productCardViewModel = productCardViewModel;
-        authorName.setText(productCardViewModel.getAuthorName());
+        authorName.setText(productCardViewModel.getShopName());
     }
 
 

@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.EmptyFeedViewHolder;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.OneProductViewHolder;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 /**
@@ -19,7 +20,22 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
     @Override
     public int type(ProductCardViewModel productCardViewModel) {
-        return EmptyFeedViewHolder.LAYOUT;
+        switch (productCardViewModel.getListProduct().size()) {
+            case 0:
+                return EmptyFeedViewHolder.LAYOUT;
+            case 1:
+                return OneProductViewHolder.LAYOUT;
+            case 2:
+                return EmptyFeedViewHolder.LAYOUT;
+            case 3:
+                return EmptyFeedViewHolder.LAYOUT;
+            case 4:
+                return EmptyFeedViewHolder.LAYOUT;
+            case 5:
+                return EmptyFeedViewHolder.LAYOUT;
+            default:
+                return EmptyFeedViewHolder.LAYOUT;
+        }
     }
 
     @Override
@@ -28,6 +44,9 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         switch (type) {
             case EmptyFeedViewHolder.LAYOUT:
                 viewHolder = new EmptyFeedViewHolder(parent);
+                break;
+            case OneProductViewHolder.LAYOUT:
+                viewHolder = new OneProductViewHolder(parent);
                 break;
             default:
                 viewHolder = super.createViewHolder(parent, type);

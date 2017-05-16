@@ -25,7 +25,9 @@ import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactoryImpl;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,10 +117,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        ArrayList<ProductFeedViewModel> listProduct = new ArrayList<>();
+        listProduct.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+
         List<Visitable> list = new ArrayList<>();
-        list.add(new ProductCardViewModel("Nisie 1"));
-        list.add(new ProductCardViewModel("Nisie 2"));
-        list.add(new ProductCardViewModel("Nisie 3"));
+        list.add(new ProductCardViewModel("Nisie 1", listProduct));
+        list.add(new ProductCardViewModel("Nisie 2", listProduct));
+        list.add(new ProductCardViewModel("Nisie 3", listProduct));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();
