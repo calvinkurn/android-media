@@ -6,20 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <receiver
-        android:name=".ontrip.receiver.CallDriverReceiver"
-        android:exported="false">
-        <intent-filter>
-            <action android:name="com.tokopedia.tkpd.calldriver" />
-        </intent-filter>
-    </receiver>
-    <receiver
-        android:name=".ontrip.receiver.ShareEtaReceiver"
-        android:exported="false">
-        <intent-filter>
-            <action android:name="com.tokopedia.tkpd.shareeta" />
-        </intent-filter>
-    </receiver>
 
     <application
         android:allowBackup="true"
@@ -57,7 +43,21 @@
         <activity
             android:name=".bookingride.view.activity.ApplyPromoActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
-        <activity android:name=".bookingride.view.activity.RideGeneralWebViewActivity"></activity>
+
+        <receiver
+            android:name=".ontrip.receiver.CallDriverReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.calldriver" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".ontrip.receiver.ShareEtaReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.shareeta" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
