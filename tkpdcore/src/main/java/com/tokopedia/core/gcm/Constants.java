@@ -44,5 +44,21 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+        String DIGITAL = "tokopedia://digital";
+        String DIGITAL_PRODUCT = "tokopedia://digital/form";
+    }
+
+    interface Settings{
+        String NOTIFICATION_RINGTONE    = "notifications_new_message_ringtone";
+        String NOTIFICATION_VIBRATE     = "notifications_new_message_vibrate";
+        String NOTIFICATION_PROMO       = "notification_receive_promo";
+        String NOTIFICATION_PM          = "notification_receive_pm";
+        String NOTIFICATION_TALK        = "notification_receive_talk";
+        String NOTIFICATION_REVIEW      = "notification_receive_review";
+        String NOTIFICATION_REP         = "notification_receive_reputation";
+        String NOTIFICATION_SALES       = "notification_sales";
+        String NOTIFICATION_PURCHASE    = "notification_purchase";
+        String NOTIFICATION_RESCENTER   = "notification_receive_rescenter";
+
     }
 }

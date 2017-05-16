@@ -18,7 +18,7 @@ import java.util.List;
 public interface IProductDigitalView extends IBaseView {
 
 
-    void renderBannerListData(String categoryName, List<BannerData> bannerDataList);
+    void renderBannerListData(String title, List<BannerData> bannerDataList);
 
     void renderStateSelectedAllData();
 
@@ -61,7 +61,11 @@ public interface IProductDigitalView extends IBaseView {
 
     void closeViewWithMessageAlert(String message);
 
+    void showSnackBarCallbackCloseView(String message);
+
     LocalCacheHandler getLastInputClientNumberChaceHandler();
 
+    boolean isUserLoggedIn();
 
+    void interruptUserNeedLogin();
 }

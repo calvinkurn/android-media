@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.deeplink.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -11,7 +10,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
+import com.localytics.android.Localytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -247,6 +246,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (bundle != null) {
             if (bundle.containsKey(AppEventTracking.LOCA.NOTIFICATION_BUNDLE)) {
                 TrackingUtils.eventLocaNotificationCallback(getIntent());
+                Localytics.onNewIntent(this, intent);
             }
         }
     }

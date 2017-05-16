@@ -1,6 +1,7 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -54,7 +55,12 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
 
     @Override
     public void setLabelText(String labelText) {
-        tvLabel.setText(labelText);
+        if (!TextUtils.isEmpty(labelText)) {
+            tvLabel.setText(labelText);
+            tvLabel.setVisibility(VISIBLE);
+        } else {
+            tvLabel.setVisibility(GONE);
+        }
     }
 
     @Override

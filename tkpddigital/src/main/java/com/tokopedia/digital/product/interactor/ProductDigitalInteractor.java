@@ -14,6 +14,7 @@ import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -55,20 +56,63 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-                        categoryRepository.getBanner(paramQueryBanner)
-                                .onErrorResumeNext(Observable.<List<BannerData>>empty()),
+//                        categoryRepository.getBanner(paramQueryBanner)
+//                                .onErrorReturn(new Func1<Throwable, List<BannerData>>() {
+//                                    @Override
+//                                    public List<BannerData> call(Throwable throwable) {
+//                                        return new ArrayList<>();
+//                                    }
+//                                }),
+                        Observable.just(new ArrayList<BannerData>()),
                         lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber)
                                 .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
-                                .onErrorResumeNext(Observable.<List<OrderClientNumber>>empty()),
+                                .onErrorReturn(getResumeFunctionOnErrorReturnRecentNumber()),
                         lastOrderNumberRepository.getLastOrder(paramQueryLastOrder)
                                 .map(getFunctionCheckCategoryIdMatcher(pathCategoryId))
-                                .onErrorReturn(getOnErrorResumeFunctionLastOrder(pathCategoryId)),
+                                .onErrorReturn(
+                                        getResumeFunctionOnErrorReturnLastOrder(pathCategoryId)
+                                ),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .subscribe(subscriber)
         );
+    }
+
+    @NonNull
+    private Func1<Throwable, List<OrderClientNumber>> getResumeFunctionOnErrorReturnRecentNumber() {
+        return new Func1<Throwable, List<OrderClientNumber>>() {
+            @Override
+            public List<OrderClientNumber> call(Throwable throwable) {
+                return new ArrayList<>();
+            }
+        };
+    }
+
+    @NonNull
+    private Func1<Throwable, OrderClientNumber>
+    getResumeFunctionOnErrorReturnLastOrder(final String pathCategoryId) {
+        return new Func1<Throwable, OrderClientNumber>() {
+            @Override
+            public OrderClientNumber call(Throwable throwable) {
+                String lastInputNumber = localCacheHandler.getString(
+                        TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + pathCategoryId, ""
+                );
+                if (lastInputNumber.isEmpty() && (
+                        pathCategoryId.equalsIgnoreCase("1")
+                                || pathCategoryId.equalsIgnoreCase("2")
+                )) {
+                    lastInputNumber = SessionHandler.getPhoneNumber();
+                }
+                OrderClientNumber orderClientNumber = new OrderClientNumber();
+                orderClientNumber.setCategoryId(pathCategoryId);
+                orderClientNumber.setClientNumber(lastInputNumber);
+                orderClientNumber.setOperatorId("");
+                orderClientNumber.setProductId("");
+                return orderClientNumber;
+            }
+        };
     }
 
     @NonNull
@@ -81,7 +125,11 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 if (orderClientNumber.getCategoryId().equalsIgnoreCase(pathCategoryId)) {
                     return orderClientNumber;
                 } else {
-                    throw new RuntimeException("last order nor match with category id");
+                    orderClientNumber.setCategoryId(pathCategoryId);
+                    orderClientNumber.setOperatorId("");
+                    orderClientNumber.setProductId("");
+                    orderClientNumber.setClientNumber("");
+                    return orderClientNumber;
                 }
             }
         };
@@ -107,33 +155,6 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     }
 
     @NonNull
-    private Func1<Throwable, OrderClientNumber> getOnErrorResumeFunctionLastOrder(
-            final String pathCategoryId
-    ) {
-        return new Func1<Throwable, OrderClientNumber>() {
-            @Override
-            public OrderClientNumber call(Throwable throwable) {
-                String lastInputNumber = localCacheHandler.getString(
-                        TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-                                + pathCategoryId, ""
-                );
-                if (lastInputNumber.isEmpty() && (
-                        pathCategoryId.equalsIgnoreCase("1")
-                                || pathCategoryId.equalsIgnoreCase("2")
-                )) {
-                    lastInputNumber = SessionHandler.getPhoneNumber();
-                }
-                OrderClientNumber orderClientNumber = new OrderClientNumber();
-                orderClientNumber.setCategoryId(pathCategoryId);
-                orderClientNumber.setClientNumber(lastInputNumber);
-                orderClientNumber.setOperatorId("");
-                orderClientNumber.setProductId("");
-                return orderClientNumber;
-            }
-        };
-    }
-
-    @NonNull
     private Func4<CategoryData, List<BannerData>, List<OrderClientNumber>,
             OrderClientNumber, ProductDigitalData> getZipFunctionProductDigitalData() {
         return new Func4<CategoryData, List<BannerData>, List<OrderClientNumber>,
@@ -149,7 +170,9 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                                 .recentClientNumberList(orderClientNumbers)
                                 .build())
                         .categoryData(categoryData)
-                        .bannerDataList(bannerDatas)
+                        .bannerDataList(
+                                bannerDatas.isEmpty() ? categoryData.getBannerDataListIncluded()
+                                        : bannerDatas)
                         .build();
             }
         };

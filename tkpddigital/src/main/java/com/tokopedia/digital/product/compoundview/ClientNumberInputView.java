@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -196,6 +197,12 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void renderData(final ClientNumber clientNumber) {
+        if (!TextUtils.isEmpty(clientNumber.getText())) {
+            tvLabel.setVisibility(VISIBLE);
+            tvLabel.setText(clientNumber.getText());
+        } else {
+            tvLabel.setVisibility(GONE);
+        }
         tvLabel.setText(clientNumber.getText());
         autoCompleteTextView.setHint(clientNumber.getPlaceholder());
         setupLayoutParamAndInputType(clientNumber);

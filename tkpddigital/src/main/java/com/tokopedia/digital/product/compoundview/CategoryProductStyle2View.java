@@ -14,8 +14,10 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,8 +28,8 @@ import butterknife.BindView;
 public class CategoryProductStyle2View extends
         BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
 
-    @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
-            TextView tvTitle;
+    @BindView(R2.id.tv_title_category)
+    TextView tvTitle;
     @BindView(R2.id.holder_radio_chooser_operator)
     LinearLayout holderRadioChooserOperator;
     @BindView(R2.id.holder_client_number)
@@ -80,10 +82,8 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
-        if (holderRadioChooserOperator.getChildAt(0) != null) {
-            holderRadioChooserOperator.removeAllViews();
-        }
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "Title belum ada" : data.getTitleText());
+        clearHolder(holderRadioChooserOperator);
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
         } else {
@@ -109,12 +109,12 @@ public class CategoryProductStyle2View extends
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
-
+        clientNumberInputView.setText(clientNumber);
     }
 
     @Override
     public boolean isInstantCheckoutChecked() {
-        return false;
+        return cbInstantCheckout.isChecked();
     }
 
     @Override
@@ -128,12 +128,16 @@ public class CategoryProductStyle2View extends
             Operator operatorSelectedState, Product productSelectedState,
             String clientNumberState, boolean isInstantCheckoutChecked
     ) {
-
+        if (operatorSelected != null) {
+            digitalOperatorRadioChooserView.renderUpdateDataSelected(operatorSelected);
+            if (!TextUtils.isEmpty(clientNumberState)) {
+                clientNumberInputView.setText(clientNumberState);
+            }
+        }
     }
 
     @Override
     protected void onHistoryClientNumberRendered() {
-        //TODO Angga
         if (historyClientNumber == null) return;
         if (!TextUtils.isEmpty(historyClientNumber.getLastOrderClientNumber().getOperatorId())) {
             digitalOperatorRadioChooserView.renderUpdateDataSelectedByOperatorId(
@@ -146,32 +150,37 @@ public class CategoryProductStyle2View extends
                         historyClientNumber.getLastOrderClientNumber().getClientNumber()
                 );
             }
+            List<String> lastClientNumberList = new ArrayList<>();
+            for (OrderClientNumber data : historyClientNumber.getRecentClientNumberList()) {
+                lastClientNumberList.add(data.getClientNumber());
+            }
+            this.clientNumberInputView.setAdapterAutoCompleteClientNumber(lastClientNumberList);
         }
     }
 
     @NonNull
-    private BaseDigitalRadioChooserView.ActionListener<Operator> getActionListenerRadioChooserOperator() {
+    private BaseDigitalRadioChooserView.ActionListener<Operator>
+    getActionListenerRadioChooserOperator() {
         return new BaseDigitalRadioChooserView.ActionListener<Operator>() {
             @Override
             public void onInitialDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                clientNumberInputView.enableImageOperator(data.getImage());
                 clientNumberInputView.setActionListener(getActionListenerClientNumberInput(data));
                 clientNumberInputView.renderData(data.getClientNumberList().get(0));
-                if (holderClientNumber.getChildAt(0) != null)
-                    holderClientNumber.removeAllViews();
+                clearHolder(holderClientNumber);
                 holderClientNumber.addView(clientNumberInputView);
             }
 
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                clientNumberInputView.enableImageOperator(data.getImage());
                 clientNumberInputView.setActionListener(getActionListenerClientNumberInput(data));
                 clientNumberInputView.renderData(data.getClientNumberList().get(0));
-                if (holderClientNumber.getChildAt(0) != null)
-                    holderClientNumber.removeAllViews();
+                clearHolder(holderClientNumber);
                 holderClientNumber.addView(clientNumberInputView);
                 if (!clientNumberInputView.getText().equals("")) {
-                    clientNumberInputView.enableImageOperator(data.getImage());
                     renderDropdownProduct(data);
                 }
             }
@@ -209,7 +218,8 @@ public class CategoryProductStyle2View extends
     }
 
     @NonNull
-    private ClientNumberInputView.ActionListener getActionListenerClientNumberInput(final Operator operator) {
+    private ClientNumberInputView.ActionListener
+    getActionListenerClientNumberInput(final Operator operator) {
         return new ClientNumberInputView.ActionListener() {
             @Override
             public void onButtonContactPickerClicked() {
@@ -218,22 +228,15 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
-                clientNumberInputView.enableImageOperator(operator.getImage());
                 renderDropdownProduct(operator);
             }
 
             @Override
             public void onClientNumberInputInvalid() {
                 clientNumberInputView.disableImageOperator();
-                if (holderChooserProduct.getChildAt(0) != null) {
-                    holderChooserProduct.removeAllViews();
-                }
-                if (holderAdditionalInfoProduct.getChildCount() > 0) {
-                    holderAdditionalInfoProduct.removeAllViews();
-                }
-                if (holderPriceInfoProduct.getChildCount() > 0) {
-                    holderPriceInfoProduct.removeAllViews();
-                }
+                clearHolder(holderChooserProduct);
+                clearHolder(holderAdditionalInfoProduct);
+                clearHolder(holderPriceInfoProduct);
             }
         };
     }
@@ -247,20 +250,14 @@ public class CategoryProductStyle2View extends
             @Override
             public void onInitialDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
-
-                if (holderAdditionalInfoProduct.getChildAt(0) != null)
-                    holderAdditionalInfoProduct.removeAllViews();
+                clearHolder(holderAdditionalInfoProduct);
                 productAdditionalInfoView.renderData(data);
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
 
+                clearHolder(holderPriceInfoProduct);
                 if (operator.getRule().isShowPrice()) {
                     productPriceInfoView.renderData(productSelected);
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                     holderPriceInfoProduct.addView(productPriceInfoView);
-                } else {
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                 }
             }
 
@@ -268,19 +265,14 @@ public class CategoryProductStyle2View extends
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
 
-                if (holderAdditionalInfoProduct.getChildAt(0) != null)
-                    holderAdditionalInfoProduct.removeAllViews();
+                clearHolder(holderAdditionalInfoProduct);
                 productAdditionalInfoView.renderData(data);
                 holderAdditionalInfoProduct.addView(productAdditionalInfoView);
 
+                clearHolder(holderPriceInfoProduct);
                 if (operator.getRule().isShowPrice()) {
                     productPriceInfoView.renderData(productSelected);
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                     holderPriceInfoProduct.addView(productPriceInfoView);
-                } else {
-                    if (holderPriceInfoProduct.getChildAt(0) != null)
-                        holderPriceInfoProduct.removeAllViews();
                 }
             }
 
@@ -293,9 +285,7 @@ public class CategoryProductStyle2View extends
 
     private void renderDropdownProduct(Operator operator) {
         if (operator.getRule().getProductViewStyle() == 99) {
-            if (holderChooserProduct.getChildAt(0) != null) {
-                holderChooserProduct.removeAllViews();
-            }
+            clearHolder(holderChooserProduct);
             Product product = new Product();
             product.setProductId(String.valueOf(operator.getDefaultProductId()));
             productSelected = product;
@@ -309,9 +299,7 @@ public class CategoryProductStyle2View extends
             digitalProductChooserView.setLabelText(
                     operator.getRule().getProductText()
             );
-            if (holderChooserProduct.getChildAt(0) != null) {
-                holderChooserProduct.removeAllViews();
-            }
+            clearHolder(holderChooserProduct);
             holderChooserProduct.addView(digitalProductChooserView);
         }
     }

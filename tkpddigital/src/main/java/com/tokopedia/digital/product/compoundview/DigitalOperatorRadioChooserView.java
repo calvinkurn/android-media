@@ -107,9 +107,9 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
         for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
             Operator operator = dataList.get(i);
             if (operator.getOperatorId().equalsIgnoreCase(data.getOperatorId())) {
-                int resIdRadio = getChildAt(i).getId();
+                int resIdRadio = radioGroupOparator.getChildAt(i).getId();
                 radioGroupOparator.check(resIdRadio);
-                return;
+                break;
             }
         }
         actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data);
@@ -119,7 +119,7 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
         for (Operator operator : dataList) {
             if (operator.getOperatorId().equalsIgnoreCase(operatorId)) {
                 renderUpdateDataSelected(operator);
-                return;
+                break;
             }
         }
     }

@@ -46,27 +46,57 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
     }
 
     @Override
+    public List<BannerData> transformBannerDataList(
+            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
+    ) throws MapperDataException {
+        List<BannerData> bannerDataList = new ArrayList<>();
+        for (ResponseCategoryDetailIncluded data : responseCategoryDetailIncludedList) {
+            if (data.getType().equalsIgnoreCase("banner")) {
+                bannerDataList.add(
+                        new BannerData.Builder()
+                                .title(data.getAttributes().getTitle())
+                                .subtitle(data.getAttributes().getSubtitle())
+                                .promocode(data.getAttributes().getPromocode())
+                                .image(data.getAttributes().getImage())
+                                .dataTitle(data.getAttributes().getDataTitle())
+                                .link(data.getAttributes().getLink())
+                                .build()
+                );
+            }
+        }
+        return bannerDataList;
+    }
+
+
+    @Override
     public CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
     ) throws MapperDataException {
         CategoryData categoryData = new CategoryData();
-        categoryData.setTitleText("Loren Ipsum"); //TODO title value from WS
+        categoryData.setTitleText(responseCategoryDetailData.getAttributes().getTitle());
         categoryData.setCategoryId(responseCategoryDetailData.getId());
         categoryData.setCategoryType(responseCategoryDetailData.getType());
-        categoryData.setDefaultOperatorId(responseCategoryDetailData.getAttributes().getDefaultOperatorId());
+        categoryData.setDefaultOperatorId(
+                responseCategoryDetailData.getAttributes().getDefaultOperatorId()
+        );
         categoryData.setIcon(responseCategoryDetailData.getAttributes().getIcon());
         categoryData.setIconUrl(responseCategoryDetailData.getAttributes().getIconUrl());
         categoryData.setName(responseCategoryDetailData.getAttributes().getName());
-        categoryData.setInstantCheckout(responseCategoryDetailData.getAttributes().isInstantCheckout());
+        categoryData.setInstantCheckout(
+                responseCategoryDetailData.getAttributes().isInstantCheckout()
+        );
         categoryData.setNew(responseCategoryDetailData.getAttributes().isNew());
         categoryData.setSlug(responseCategoryDetailData.getAttributes().getSlug());
-        categoryData.setOperatorStyle(responseCategoryDetailData.getAttributes().getOperatorStyle());
+        categoryData.setOperatorStyle(
+                responseCategoryDetailData.getAttributes().getOperatorStyle()
+        );
+
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
         for (com.tokopedia.digital.product.data.entity.response.Field field
                 : responseCategoryDetailData.getAttributes().getFields()) {
-            if (field.getName().equalsIgnoreCase("client_number")) {
+            if (field.getName().equalsIgnoreCase(ClientNumber.DEFAULT_TYPE_CONTRACT)) {
                 ClientNumber clientNumberCategory = new ClientNumber();
                 clientNumberCategory.setName(field.getName());
                 clientNumberCategory.set_default(field.get_default());
@@ -91,13 +121,19 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         categoryData.setClientNumberList(clientNumberCategoryList);
 
         List<Operator> operatorCategoryList = new ArrayList<>();
-        for (ResponseCategoryDetailIncluded categoryDetailIncluded : responseCategoryDetailIncludedList) {
-            if (categoryDetailIncluded.getType().equalsIgnoreCase("operator")) {
+        List<BannerData> bannerDataList = new ArrayList<>();
+        for (ResponseCategoryDetailIncluded categoryDetailIncluded
+                : responseCategoryDetailIncludedList) {
+            if (categoryDetailIncluded.getType().equalsIgnoreCase(Operator.DEFAULT_TYPE_CONTRACT)) {
                 Operator operatorCategory = new Operator();
                 operatorCategory.setName(categoryDetailIncluded.getAttributes().getName());
-                operatorCategory.setDefaultProductId(categoryDetailIncluded.getAttributes().getDefaultProductId());
+                operatorCategory.setDefaultProductId(
+                        categoryDetailIncluded.getAttributes().getDefaultProductId()
+                );
                 operatorCategory.setImage(categoryDetailIncluded.getAttributes().getImage());
-                operatorCategory.setLastorderUrl(categoryDetailIncluded.getAttributes().getLastorderUrl());
+                operatorCategory.setLastorderUrl(
+                        categoryDetailIncluded.getAttributes().getLastorderUrl()
+                );
                 operatorCategory.setOperatorId(categoryDetailIncluded.getId());
                 operatorCategory.setPrefixList(categoryDetailIncluded.getAttributes().getPrefix());
                 operatorCategory.setOperatorType(categoryDetailIncluded.getType());
@@ -117,7 +153,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
                         productPromo.setId(product.getAttributes().getPromo().getId());
                         productPromo.setNewPrice(product.getAttributes().getPromo().getNewPrice());
-                        productPromo.setNewPricePlain(product.getAttributes().getPromo().getNewPricePlain());
+                        productPromo.setNewPricePlain(
+                                product.getAttributes().getPromo().getNewPricePlain()
+                        );
                         productPromo.setTag(product.getAttributes().getPromo().getTag());
                         productPromo.setTerms(product.getAttributes().getPromo().getTerms());
                         productPromo.setValueText(product.getAttributes().getPromo().getValueText());
@@ -153,21 +191,48 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 operatorCategory.setClientNumberList(clientNumberOperatorList);
 
                 Rule operatorRule = new Rule();
-                operatorRule.setEnableVoucher(categoryDetailIncluded.getAttributes().getRule().isEnableVoucher());
-                operatorRule.setShowPrice(categoryDetailIncluded.getAttributes().getRule().isShowPrice());
-                operatorRule.setProductText(categoryDetailIncluded.getAttributes().getRule().getProductText());
-                operatorRule.setProductViewStyle(categoryDetailIncluded.getAttributes().getRule().getProductViewStyle());
+                operatorRule.setEnableVoucher(
+                        categoryDetailIncluded.getAttributes().getRule().isEnableVoucher()
+                );
+                operatorRule.setShowPrice(
+                        categoryDetailIncluded.getAttributes().getRule().isShowPrice()
+                );
+                operatorRule.setProductText(
+                        categoryDetailIncluded.getAttributes().getRule().getProductText()
+                );
+                operatorRule.setProductViewStyle(
+                        categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
+                );
                 operatorCategory.setRule(operatorRule);
 
                 operatorCategoryList.add(operatorCategory);
+            } else if (categoryDetailIncluded.getType()
+                    .equalsIgnoreCase(BannerData.DEFAULT_TYPE_CONTRACT)) {
+                bannerDataList.add(
+                        new BannerData.Builder()
+                                .id(categoryDetailIncluded.getId())
+                                .type(categoryDetailIncluded.getType())
+                                .title(categoryDetailIncluded.getAttributes().getTitle())
+                                .subtitle(categoryDetailIncluded.getAttributes().getSubtitle())
+                                .promocode(categoryDetailIncluded.getAttributes().getPromocode())
+                                .image(categoryDetailIncluded.getAttributes().getImage())
+                                .dataTitle(categoryDetailIncluded.getAttributes().getDataTitle())
+                                .link(categoryDetailIncluded.getAttributes().getLink())
+                                .build()
+                );
             }
         }
         categoryData.setOperatorList(operatorCategoryList);
+        categoryData.setBannerDataListIncluded(bannerDataList);
 
         if (responseCategoryDetailData.getAttributes().getTeaser() != null) {
             Teaser categoryTeaser = new Teaser();
-            categoryTeaser.setContent(responseCategoryDetailData.getAttributes().getTeaser().getContent());
-            categoryTeaser.setTitle(responseCategoryDetailData.getAttributes().getTeaser().getTitle());
+            categoryTeaser.setContent(
+                    responseCategoryDetailData.getAttributes().getTeaser().getContent()
+            );
+            categoryTeaser.setTitle(
+                    responseCategoryDetailData.getAttributes().getTeaser().getTitle()
+            );
             categoryData.setTeaser(categoryTeaser);
         }
         return categoryData;
@@ -192,7 +257,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         return new OrderClientNumber.Builder()
                 .clientNumber(responseRecentNumberData.getAttributes().getClientNumber())
                 .productId("")
-                .categoryId(responseRecentNumberData.getRelationships().getCategory().getData().getId())
+                .categoryId(
+                        responseRecentNumberData.getRelationships().getCategory().getData().getId()
+                )
                 .operatorId("")
                 .build();
     }

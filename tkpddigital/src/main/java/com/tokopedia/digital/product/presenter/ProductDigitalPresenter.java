@@ -67,13 +67,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public String processGetLastInputClientNumberByCategory(String categoryId) {
-        return view.getLastInputClientNumberChaceHandler().getString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, ""
-        );
-    }
-
-    @Override
     public void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId) {
         LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
         localCacheHandler.putString(
@@ -176,14 +169,20 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 .utmSource("android")
                 .utmMedium("widget")
                 .build();
-        if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter =
-                    (IDigitalModuleRouter) view.getMainApplication();
-            view.navigateToActivityRequest(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
+
+        if (view.isUserLoggedIn()) {
+            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
+                IDigitalModuleRouter digitalModuleRouter =
+                        (IDigitalModuleRouter) view.getMainApplication();
+                view.navigateToActivityRequest(
+                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                );
+            }
+        } else {
+            view.interruptUserNeedLogin();
         }
+
     }
 
     @NonNull
@@ -203,7 +202,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
             @Override
             public void onError(Throwable e) {
-                view.clearContentRendered();
                 e.printStackTrace();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
             /* Ini kalau ga ada internet */
@@ -272,7 +270,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     break;
             }
             view.renderBannerListData(
-                    categoryData.getName(),
+                    "Promo " + categoryData.getName(),
                     bannerDataList != null ? bannerDataList : new ArrayList<BannerData>()
             );
         } else {

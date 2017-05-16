@@ -122,7 +122,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 }
             }
         };
-        swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -168,6 +167,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
 
     private void updateEmptyViewDefault(){
         adapter.setEmptyView(getEmptyViewBinder());
+
         adapter.notifyDataSetChanged();
     }
 
@@ -186,7 +186,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     protected void searchAd() {
-        swipeToRefresh.setEnabled(false);
     }
 
     @Override
@@ -243,7 +242,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             });
         } else {
             recyclerView.removeOnScrollListener(onScrollListener);
-            swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
             if (fabFilter.getVisibility() == View.VISIBLE) {
                 fabFilter.setVisibility(View.GONE);
@@ -259,7 +257,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
-        swipeToRefresh.setEnabled(true);
         progressDialog.dismiss();
         hideSnackBarRetry();
     }

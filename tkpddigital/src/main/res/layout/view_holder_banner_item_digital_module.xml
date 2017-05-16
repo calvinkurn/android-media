@@ -5,63 +5,61 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        style="@style/CardViewDigital"
+
+    <LinearLayout
+        android:id="@+id/main_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/digital_padding_4"
         android:layout_marginLeft="@dimen/digital_padding_8"
         android:layout_marginRight="@dimen/digital_padding_8"
-        android:layout_marginTop="@dimen/digital_padding_4">
+        android:layout_marginTop="@dimen/digital_padding_4"
+        android:orientation="vertical"
+        android:padding="@dimen/digital_padding_14"
+        tools:background="@drawable/digital_bg_banner_selected">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_desc_banner"
+            style="@style/TextSubTitleSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/digital_padding_14">
+            tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
+
+        <LinearLayout
+            android:id="@+id/holder_voucher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/digital_padding_8">
 
             <TextView
-                android:id="@+id/tv_desc_banner"
                 style="@style/TextSubTitleSmall"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
+                android:text="Kode Voucher:" />
 
-            <LinearLayout
-                android:id="@+id/holder_voucher"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_voucher_code"
+                style="@style/TextSubTitleSmall"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="@dimen/digital_padding_8">
+                android:paddingEnd="@dimen/padding_vs"
+                android:paddingStart="@dimen/padding_vs"
+                android:textColor="@color/tkpd_main_green"
+                tools:text="ANGGAKEREN" />
 
-                <TextView
-                    style="@style/TextSubTitleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Kode Voucher:" />
-
-                <TextView
-                    android:id="@+id/tv_voucher_code"
-                    style="@style/TextSubTitleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="@dimen/padding_vs"
-                    android:paddingStart="@dimen/padding_vs"
-                    android:textColor="@color/tkpd_main_green"
-                    tools:text="ANGGAKEREN" />
-
-                <TextView
-                    android:id="@+id/btn_copy"
-                    style="@style/TextSubTitleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/digital_white_grey_button_rounded"
-                    android:padding="3dp"
-                    android:paddingEnd="@dimen/padding_small"
-                    android:paddingStart="@dimen/padding_small"
-                    android:text="salin"
-                    android:textSize="@dimen/text_size_xxsmall" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/btn_copy"
+                style="@style/TextSubTitleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/digital_white_grey_button_rounded"
+                android:padding="3dp"
+                android:paddingEnd="@dimen/padding_small"
+                android:paddingStart="@dimen/padding_small"
+                android:text="salin"
+                android:textSize="@dimen/text_size_xxsmall" />
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
+
 </RelativeLayout>

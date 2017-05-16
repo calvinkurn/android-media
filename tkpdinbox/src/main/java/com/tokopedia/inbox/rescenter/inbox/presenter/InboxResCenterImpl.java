@@ -144,7 +144,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
         setNoResultView(false);
         setLoadingView(true);
         listener.setFilterAble(false);
-        listener.setPullToRefreshAble(false);
     }
 
     @Override
@@ -250,7 +249,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
     @Override
     public void setOnRequestSuccess() {
         listener.setFilterAble(true);
-        listener.setPullToRefreshAble(true);
     }
 
     @Override
@@ -262,7 +260,6 @@ public class InboxResCenterImpl implements InboxResCenterPresenter {
             listener.showTimeOutEmtpyState(retryClickedListener);
         } else {
             listener.setFilterAble(true);
-            listener.setPullToRefreshAble(true);
             setAllowConnection(true);
             listener.setRetryView();
         }

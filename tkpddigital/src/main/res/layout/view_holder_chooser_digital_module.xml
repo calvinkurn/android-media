@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/digital_padding_10"
+              tools:background="@color/green_200">
 
     <TextView
         android:id="@+id/tv_label_chooser"
@@ -15,7 +17,9 @@
         android:paddingStart="@dimen/padding_vvs"
         android:textColor="@color/digital_voucher_notes"
         android:textSize="@dimen/font_small"
-        android:text="@string/prompt_phone" />
+        android:visibility="gone"
+        tools:text="@string/prompt_phone"
+        tools:visibility="visible"/>
 
     <RelativeLayout
         android:id="@+id/layout_product"
@@ -29,22 +33,24 @@
             android:padding="@dimen/padding_vs"
             android:textColor="@color/digital_voucher"
             android:textSize="@dimen/font_medium"
-            tools:text="Extra Combo 6GB" />
+            tools:text="Extra Combo 6GB"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey"
-            android:layout_below="@+id/tv_operator_product_name"/>
+            android:layout_below="@+id/tv_operator_product_name"
+            android:background="@color/grey"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/page_2"
-            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:tint="@color/grey"
-            android:layout_marginRight="@dimen/margin_small"/>
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:src="@drawable/page_2"
+            android:tint="@color/grey"/>
 
     </RelativeLayout>
 
@@ -60,6 +66,6 @@
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
 </LinearLayout>

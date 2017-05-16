@@ -8,6 +8,7 @@ import android.os.Parcelable;
  */
 
 public class BannerData implements Parcelable {
+    public static final String DEFAULT_TYPE_CONTRACT = "banner";
     private String id;
     private String type;
     private int rechargeCmsbannerId;
@@ -22,6 +23,10 @@ public class BannerData implements Parcelable {
     private String subtitle;
     private String promocode;
     private String dataTitle;
+    private String image;
+    private String link;
+
+    private boolean voucherCodeCopied;
 
     private BannerData(Builder builder) {
         setId(builder.id);
@@ -38,6 +43,9 @@ public class BannerData implements Parcelable {
         setSubtitle(builder.subtitle);
         setPromocode(builder.promocode);
         setDataTitle(builder.dataTitle);
+        setImage(builder.image);
+        setLink(builder.link);
+        setVoucherCodeCopied(builder.voucherCodeCopied);
     }
 
     public String getId() {
@@ -152,60 +160,33 @@ public class BannerData implements Parcelable {
         this.dataTitle = dataTitle;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isVoucherCodeCopied() {
+        return voucherCodeCopied;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.type);
-        dest.writeInt(this.rechargeCmsbannerId);
-        dest.writeString(this.fileName);
-        dest.writeString(this.fileNameWebp);
-        dest.writeString(this.startDate);
-        dest.writeString(this.endDate);
-        dest.writeString(this.imgUrl);
-        dest.writeInt(this.priority);
-        dest.writeInt(this.status);
-        dest.writeString(this.title);
-        dest.writeString(this.subtitle);
-        dest.writeString(this.promocode);
-        dest.writeString(this.dataTitle);
+    public void setVoucherCodeCopied(boolean voucherCodeCopied) {
+        this.voucherCodeCopied = voucherCodeCopied;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 
     public BannerData() {
     }
 
-    protected BannerData(Parcel in) {
-        this.id = in.readString();
-        this.type = in.readString();
-        this.rechargeCmsbannerId = in.readInt();
-        this.fileName = in.readString();
-        this.fileNameWebp = in.readString();
-        this.startDate = in.readString();
-        this.endDate = in.readString();
-        this.imgUrl = in.readString();
-        this.priority = in.readInt();
-        this.status = in.readInt();
-        this.title = in.readString();
-        this.subtitle = in.readString();
-        this.promocode = in.readString();
-        this.dataTitle = in.readString();
-    }
-
-    public static final Creator<BannerData> CREATOR = new Creator<BannerData>() {
-        @Override
-        public BannerData createFromParcel(Parcel source) {
-            return new BannerData(source);
-        }
-
-        @Override
-        public BannerData[] newArray(int size) {
-            return new BannerData[size];
-        }
-    };
 
     public static final class Builder {
         private String id;
@@ -222,6 +203,9 @@ public class BannerData implements Parcelable {
         private String subtitle;
         private String promocode;
         private String dataTitle;
+        private String image;
+        private String link;
+        private boolean voucherCodeCopied;
 
         public Builder() {
         }
@@ -296,8 +280,84 @@ public class BannerData implements Parcelable {
             return this;
         }
 
+        public Builder image(String val) {
+            image = val;
+            return this;
+        }
+
+        public Builder link(String val) {
+            link = val;
+            return this;
+        }
+
+        public Builder voucherCodeCopied(boolean val) {
+            voucherCodeCopied = val;
+            return this;
+        }
+
         public BannerData build() {
             return new BannerData(this);
         }
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.type);
+        dest.writeInt(this.rechargeCmsbannerId);
+        dest.writeString(this.fileName);
+        dest.writeString(this.fileNameWebp);
+        dest.writeString(this.startDate);
+        dest.writeString(this.endDate);
+        dest.writeString(this.imgUrl);
+        dest.writeInt(this.priority);
+        dest.writeInt(this.status);
+        dest.writeString(this.title);
+        dest.writeString(this.subtitle);
+        dest.writeString(this.promocode);
+        dest.writeString(this.dataTitle);
+        dest.writeString(this.image);
+        dest.writeString(this.link);
+        dest.writeByte(this.voucherCodeCopied ? (byte) 1 : (byte) 0);
+    }
+
+    protected BannerData(Parcel in) {
+        this.id = in.readString();
+        this.type = in.readString();
+        this.rechargeCmsbannerId = in.readInt();
+        this.fileName = in.readString();
+        this.fileNameWebp = in.readString();
+        this.startDate = in.readString();
+        this.endDate = in.readString();
+        this.imgUrl = in.readString();
+        this.priority = in.readInt();
+        this.status = in.readInt();
+        this.title = in.readString();
+        this.subtitle = in.readString();
+        this.promocode = in.readString();
+        this.dataTitle = in.readString();
+        this.image = in.readString();
+        this.link = in.readString();
+        this.voucherCodeCopied = in.readByte() != 0;
+    }
+
+    public static final Creator<BannerData> CREATOR = new Creator<BannerData>() {
+        @Override
+        public BannerData createFromParcel(Parcel source) {
+            return new BannerData(source);
+        }
+
+        @Override
+        public BannerData[] newArray(int size) {
+            return new BannerData[size];
+        }
+    };
+
+
 }

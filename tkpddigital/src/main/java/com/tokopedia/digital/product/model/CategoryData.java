@@ -43,6 +43,26 @@ public class CategoryData implements Parcelable {
     private List<ClientNumber> clientNumberList = new ArrayList<>();
     private List<Operator> operatorList = new ArrayList<>();
 
+    private List<BannerData> bannerDataListIncluded = new ArrayList<>();
+
+    private CategoryData(Builder builder) {
+        setCategoryId(builder.categoryId);
+        setCategoryType(builder.categoryType);
+        setTitleText(builder.titleText);
+        setName(builder.name);
+        setIcon(builder.icon);
+        setIconUrl(builder.iconUrl);
+        setTeaser(builder.teaser);
+        setNew(builder.isNew);
+        setInstantCheckout(builder.instantCheckout);
+        setSlug(builder.slug);
+        setDefaultOperatorId(builder.defaultOperatorId);
+        setOperatorStyle(builder.operatorStyle);
+        setClientNumberList(builder.clientNumberList);
+        setOperatorList(builder.operatorList);
+        setBannerDataListIncluded(builder.bannerDataListIncluded);
+    }
+
     public String getName() {
         return name;
     }
@@ -159,6 +179,14 @@ public class CategoryData implements Parcelable {
         this.titleText = titleText;
     }
 
+    public List<BannerData> getBannerDataListIncluded() {
+        return bannerDataListIncluded;
+    }
+
+    public void setBannerDataListIncluded(List<BannerData> bannerDataListIncluded) {
+        this.bannerDataListIncluded = bannerDataListIncluded;
+    }
+
     public CategoryData() {
     }
 
@@ -184,6 +212,7 @@ public class CategoryData implements Parcelable {
         dest.writeString(this.operatorStyle);
         dest.writeTypedList(this.clientNumberList);
         dest.writeTypedList(this.operatorList);
+        dest.writeTypedList(this.bannerDataListIncluded);
     }
 
     protected CategoryData(Parcel in) {
@@ -201,6 +230,7 @@ public class CategoryData implements Parcelable {
         this.operatorStyle = in.readString();
         this.clientNumberList = in.createTypedArrayList(ClientNumber.CREATOR);
         this.operatorList = in.createTypedArrayList(Operator.CREATOR);
+        this.bannerDataListIncluded = in.createTypedArrayList(BannerData.CREATOR);
     }
 
     public static final Creator<CategoryData> CREATOR = new Creator<CategoryData>() {
@@ -214,4 +244,105 @@ public class CategoryData implements Parcelable {
             return new CategoryData[size];
         }
     };
+
+
+    public static final class Builder {
+        private String categoryId;
+        private String categoryType;
+        private String titleText;
+        private String name;
+        private String icon;
+        private String iconUrl;
+        private Teaser teaser;
+        private boolean isNew;
+        private boolean instantCheckout;
+        private String slug;
+        private String defaultOperatorId;
+        private String operatorStyle;
+        private List<ClientNumber> clientNumberList;
+        private List<Operator> operatorList;
+        private List<BannerData> bannerDataListIncluded;
+
+        public Builder() {
+        }
+
+        public Builder categoryId(String val) {
+            categoryId = val;
+            return this;
+        }
+
+        public Builder categoryType(String val) {
+            categoryType = val;
+            return this;
+        }
+
+        public Builder titleText(String val) {
+            titleText = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder icon(String val) {
+            icon = val;
+            return this;
+        }
+
+        public Builder iconUrl(String val) {
+            iconUrl = val;
+            return this;
+        }
+
+        public Builder teaser(Teaser val) {
+            teaser = val;
+            return this;
+        }
+
+        public Builder isNew(boolean val) {
+            isNew = val;
+            return this;
+        }
+
+        public Builder instantCheckout(boolean val) {
+            instantCheckout = val;
+            return this;
+        }
+
+        public Builder slug(String val) {
+            slug = val;
+            return this;
+        }
+
+        public Builder defaultOperatorId(String val) {
+            defaultOperatorId = val;
+            return this;
+        }
+
+        public Builder operatorStyle(String val) {
+            operatorStyle = val;
+            return this;
+        }
+
+        public Builder clientNumberList(List<ClientNumber> val) {
+            clientNumberList = val;
+            return this;
+        }
+
+        public Builder operatorList(List<Operator> val) {
+            operatorList = val;
+            return this;
+        }
+
+        public Builder bannerDataListIncluded(List<BannerData> val) {
+            bannerDataListIncluded = val;
+            return this;
+        }
+
+        public CategoryData build() {
+            return new CategoryData(this);
+        }
+    }
 }

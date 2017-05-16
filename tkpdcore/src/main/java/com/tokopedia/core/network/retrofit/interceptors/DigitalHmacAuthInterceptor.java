@@ -2,7 +2,6 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.util.Log;
 
-import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
@@ -35,7 +34,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
                         TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody)
                                 .getErrorMessageFormatted()
                 );
-            } catch (JsonSyntaxException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 throw new ResponseErrorException();
             }

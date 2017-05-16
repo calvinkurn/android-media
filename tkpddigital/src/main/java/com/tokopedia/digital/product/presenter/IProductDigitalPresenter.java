@@ -14,8 +14,6 @@ public interface IProductDigitalPresenter {
 
     void processGetCategoryAndBannerData();
 
-    String processGetLastInputClientNumberByCategory(String categoryId);
-
     void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId);
 
     ContactData processGenerateContactDataFromUri(Uri contactURI);
