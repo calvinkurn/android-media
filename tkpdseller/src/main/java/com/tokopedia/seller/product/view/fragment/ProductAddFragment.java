@@ -331,6 +331,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @Override
     public void onSuccessStoreProductToDraft(long productId) {
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.upload_product_waiting));
         if (productAdditionalInfoViewHolder.isShare()) {
             listener.startUploadProductWithShare(productId);
         } else {
@@ -494,7 +495,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     // Others
     @Override
     public void onResolutionImageCheckFailed(String uri) {
-        Snackbar.make(getView(), getString(R.string.error_image_resolution), Snackbar.LENGTH_LONG).show();
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.error_image_resolution));
     }
 
     @Override

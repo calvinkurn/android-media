@@ -158,8 +158,13 @@ public class ProductImageViewHolder extends ProductViewHolder {
         for (int i = 0; i < productPhotos.getPhotos().size(); i++) {
             ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
             String url = productPhoto.getUrl();
+            String path = productPhoto.getImagePath();
             if(StringUtils.isBlank(url)){
-                url = productPhoto.getImagePath();
+                if (StringUtils.isBlank(path)) {
+                    continue;
+                } else {
+                    url = productPhoto.getImagePath();
+                }
             }
             ImageSelectModel image = new ImageSelectModel(
                     url,

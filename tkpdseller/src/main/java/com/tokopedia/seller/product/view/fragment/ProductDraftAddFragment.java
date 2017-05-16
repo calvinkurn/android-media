@@ -94,13 +94,13 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productImageViewHolder.setProductPhotos(model.getProductPhotos());
 
         productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
-        productDetailViewHolder.setPriceValue((float) model.getProductPrice());
+        productDetailViewHolder.setPriceValue(model.getProductPrice());
         if (model.getProductWholesaleList().size() > 0) {
             productDetailViewHolder.expandWholesale(true);
             productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
         }
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
-        productDetailViewHolder.setWeightValue((float) model.getProductWeight());
+        productDetailViewHolder.setWeightValue(model.getProductWeight());
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         productDetailViewHolder.setStockStatus(model.getProductUploadTo());
 
@@ -121,7 +121,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         if (model.getPoProcessValue() > 0) {
             productAdditionalInfoViewHolder.expandPreOrder(true);
             productAdditionalInfoViewHolder.setPreOrderUnit(model.getPoProcessType());
-            productAdditionalInfoViewHolder.setPreOrderValue((float) model.getPoProcessValue());
+            productAdditionalInfoViewHolder.setPreOrderValue(model.getPoProcessValue());
         }
     }
 

@@ -44,7 +44,7 @@ public class ViewUtils {
         }
     }
 
-    public static Pair<Float, Float> minMaxPrice(Context context, int currencyType) {
+    public static Pair<Double, Double> minMaxPrice(Context context, int currencyType) {
         String spinnerValue = null;
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
@@ -61,8 +61,8 @@ public class ViewUtils {
             minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
             maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd));
         }
-        float minPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
-        float maxPrice = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
+        double minPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
+        double maxPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));
         return Pair.create(minPrice, maxPrice);
     }
 }

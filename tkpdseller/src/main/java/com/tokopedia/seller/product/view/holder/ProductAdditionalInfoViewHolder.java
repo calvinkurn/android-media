@@ -84,7 +84,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             @Override
             public void onExpandViewChange(boolean isExpand) {
                 if (!isExpand) {
-                    preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                    preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
                 }
             }
         });
@@ -99,7 +99,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         preOrderSpinnerCounterInputView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                preOrderSpinnerCounterInputView.setCounterValue(Float.parseFloat(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
+                preOrderSpinnerCounterInputView.setCounterValue(Double.parseDouble(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_default_counter_text)));
                 preOrderSpinnerCounterInputView.setCounterError(null);
             }
         });
@@ -187,7 +187,7 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         }
     }
 
-    public void setPreOrderValue(float value) {
+    public void setPreOrderValue(int value) {
         preOrderSpinnerCounterInputView.setCounterValue(value);
     }
 
@@ -205,8 +205,8 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
             minPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_minimum_pre_order_week));
             maxPreOrderString = CurrencyFormatHelper.removeCurrencyPrefix(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_maximum_pre_order_week));
         }
-        float minValue = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(minPreOrderString));
-        float maxValue = Float.parseFloat(CurrencyFormatHelper.RemoveNonNumeric(maxPreOrderString));
+        double minValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPreOrderString));
+        double maxValue = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPreOrderString));
         if (minValue > getPreOrderValue() || getPreOrderValue() > maxValue) {
             preOrderSpinnerCounterInputView.setCounterError(preOrderSpinnerCounterInputView.getContext().getString(R.string.product_error_product_pre_order_not_valid, minPreOrderString, maxPreOrderString));
             preOrderSpinnerCounterInputView.clearFocus();

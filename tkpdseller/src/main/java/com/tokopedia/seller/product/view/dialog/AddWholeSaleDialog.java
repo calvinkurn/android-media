@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -57,6 +58,15 @@ public class AddWholeSaleDialog extends DialogFragment {
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
+
+    OnDismissListener onDismissListener;
+    public interface OnDismissListener{
+        void onDismiss();
+    }
+
+    public void setOnDismissListener(OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
@@ -151,6 +161,8 @@ public class AddWholeSaleDialog extends DialogFragment {
                     validateMaxQuantity(maxWholeSale.getDoubleValue(), true);
                 }
             });
+        } else {
+            minWholeSale.setEnabled(false);
         }
 
         final boolean finalIsFirsttime = isFirsttime;
@@ -211,17 +223,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     private void determineFormatter() {
-        switch (currencyType) {
-            case CurrencyTypeDef.TYPE_USD:
-                formatter = NumberFormat.getNumberInstance(dollarLocale);
-                formatter.setMinimumFractionDigits(2);
-                break;
-            default:
-            case CurrencyTypeDef.TYPE_IDR:
-                formatter = NumberFormat.getNumberInstance(idrLocale);
-                formatter.setMinimumFractionDigits(0);
-                break;
-        }
+        formatter = NumberFormat.getNumberInstance(dollarLocale);
     }
 
     protected void validateMaxQuantity(double maxQuantity, boolean finalIsFirsttime) {
@@ -283,7 +285,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void validatePrice(double currencyValue) {
-        Pair<Float, Float> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
+        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
             wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));
@@ -343,5 +345,14 @@ public class AddWholeSaleDialog extends DialogFragment {
 
     public interface WholeSaleDialogListener {
         void addWholesaleItem(WholesaleModel item);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (onDismissListener!= null) {
+            onDismissListener.onDismiss();
+            onDismissListener = null;
+        }
     }
 }
