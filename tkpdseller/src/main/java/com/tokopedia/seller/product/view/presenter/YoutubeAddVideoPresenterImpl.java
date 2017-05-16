@@ -101,6 +101,7 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
             Log.i(TAG, "error here : " + e);
             if (isViewAttached()) {
                 getView().hideLoading();
+                getView().hideRetryFull();
                 if (e instanceof YoutubeVideoLinkUtils.YoutubeException) {
                     showYoutubeException((YoutubeVideoLinkUtils.YoutubeException) e);
                     return;
@@ -119,6 +120,7 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
             Log.i(TAG, "result here : " + youtubeVideoModels);
             if (isViewAttached()) {
                 getView().hideLoading();
+                getView().hideRetryFull();
                 getView().addAddUrlVideModels(convert(youtubeVideoModels));
             }
         }
