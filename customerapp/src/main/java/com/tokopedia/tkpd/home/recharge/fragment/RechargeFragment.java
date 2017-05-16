@@ -726,9 +726,9 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && !TextUtils.isEmpty(lastTypedClientNumber)) {
             rechargeEditText.setText(lastTypedClientNumber);
             showFormAndImageOperator();
-        } else {
-            handlingAppearanceFormAndImageOperator();
         }
+        handlingAppearanceFormAndImageOperator();
+
     }
 
     private void renderLastOrder() {
