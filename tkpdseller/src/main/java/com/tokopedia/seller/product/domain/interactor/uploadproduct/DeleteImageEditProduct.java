@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
-import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.data.repository.UploadProductRepositoryImpl;
+import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
@@ -48,7 +47,8 @@ class DeleteImageEditProduct implements Func1<Boolean, Observable<Boolean>> {
 
         @Override
         public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel imageProductInputDomainModel) {
-            if (StringUtils.isBlank(imageProductInputDomainModel.getUrl())) {
+            if (imageProductInputDomainModel.getUrl() != null &&
+                    imageProductInputDomainModel.getUrl().equals(ProductNetworkConstant.IMAGE_STATUS_DELETED)) {
                 return Observable
                         .just(imageProductInputDomainModel)
                         .flatMap(new DeleteImage(uploadProductRepository, productId));
