@@ -10,17 +10,17 @@
 
         <ImageView
             android:id="@+id/operator_image"
-            android:layout_width="@dimen/btn_height"
-            android:layout_height="@dimen/btn_height"
+            android:layout_width="@dimen/img_thumb_m"
+            android:layout_height="@dimen/img_thumb_m"
+            android:padding="@dimen/small_dp"
             android:layout_gravity="center_vertical" />
-
         <TextView
             android:id="@+id/operator_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:textSize="@dimen/font_medium"
-            android:padding="@dimen/small_dp"/>
+            android:padding="@dimen/small_dp"
+            android:textSize="@dimen/font_medium" />
     </LinearLayout>
 
     <View
