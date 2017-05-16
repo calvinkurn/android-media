@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.feedplus.view.adapter;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
@@ -13,6 +14,6 @@ public interface FeedPlusTypeFactory  {
 
     int type(ProductCardViewModel viewModel);
 
-    AbstractViewHolder createViewHolder(View view, int viewType);
+    AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
 
 }

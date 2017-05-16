@@ -1,13 +1,11 @@
-package com.tokopedia.tkpd.feedplus.view.adapter.viewholder;
+package com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard;
 
-import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.feedplus.FeedPlus;

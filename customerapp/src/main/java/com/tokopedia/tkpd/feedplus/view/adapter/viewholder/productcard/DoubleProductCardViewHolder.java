@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus.view.adapter.viewholder;
+package com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,7 +20,9 @@ import butterknife.BindView;
 public class DoubleProductCardViewHolder extends ProductCardViewHolder<ProductCardViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_feed_product_double;
+    public static final int LAYOUT = R.layout.list_feed_product_multi;
+
+    public static final int IDENTIFIER = 101;
 
     @BindView(R.id.product_list)
     RecyclerView recyclerView;

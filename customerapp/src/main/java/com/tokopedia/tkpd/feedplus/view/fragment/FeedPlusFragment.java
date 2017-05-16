@@ -133,10 +133,24 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 "Rp 11.0000",
                 "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
 
+        ArrayList<ProductFeedViewModel> listProduct3 = new ArrayList<>();
+        listProduct3.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+        listProduct3.add(new ProductFeedViewModel(
+                "Produk2",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+        listProduct3.add(new ProductFeedViewModel(
+                "Produk3",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+
         List<Visitable> list = new ArrayList<>();
         list.add(new ProductCardViewModel("Nisie 1", listProduct));
         list.add(new ProductCardViewModel("Nisie 2", listProduct2));
-        list.add(new ProductCardViewModel("Nisie 3", listProduct));
+        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();
