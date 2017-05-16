@@ -17,7 +17,7 @@ import butterknife.BindView;
 
 public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.promoted_shop_layout;
+    public static final int LAYOUT = R.layout.list_feed_product_empty;
 
     @BindView(R.id.author_name)
     TextView authorName;
@@ -33,7 +33,7 @@ public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel
     @Override
     public void bind(ProductCardViewModel productCardViewModel) {
         this.productCardViewModel = productCardViewModel;
-        authorName.setText(productCardViewModel.getAuthorName());
+        authorName.setText(productCardViewModel.getShopName());
     }
 
 

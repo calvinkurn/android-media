@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/share_button"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/selectable_background_tokopedia">
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@drawable/abc_ic_menu_share_mtrl_alpha"
+        android:drawablePadding="@dimen/padding_vs"
+        android:gravity="center"
+        android:padding="@dimen/padding_small"
+        android:text="@string/share" />
+
+</RelativeLayout>
