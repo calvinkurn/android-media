@@ -51,7 +51,6 @@ public class ShopImpl extends Shop implements DiscoveryListener {
             shop.start = 0;
             shop.extraFilter = browseView.getProductParam().extraFilter;
             discoveryInteractor.getShops(NetworkParam.generateShopQuery(shop));
-            view.setLoading(true);
         }
     }
 

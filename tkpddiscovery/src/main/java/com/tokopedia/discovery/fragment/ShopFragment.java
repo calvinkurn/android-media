@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -13,21 +14,34 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.browseparent.BrowseShopAdapter;
 import com.tokopedia.discovery.interfaces.FetchNetwork;
+import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.presenter.BrowseView;
 import com.tokopedia.discovery.presenter.browseparent.Shop;
 import com.tokopedia.discovery.presenter.browseparent.ShopImpl;
 import com.tokopedia.discovery.view.ShopView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +52,8 @@ import butterknife.BindView;
  * Created by Erry on 6/30/2016.
  * modified by m.normansyah
  */
-public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
+public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork,
+        TopAdsItemClickListener {
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
     @BindView(R2.id.list_shop)
@@ -46,6 +61,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();
     private BrowseShopAdapter browseShopAdapter;
+    private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private GridLayoutManager gridLayoutManager;
     private static final String TAG = ShopFragment.class.getSimpleName();
 
@@ -74,7 +90,6 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void ariseRetry(int type, Object... data) {
-        browseShopAdapter.setIsLoading(false);
         browseShopAdapter.setIsErrorState(true);
         browseShopAdapter.setOnRetryListenerRV(new BaseRecyclerViewAdapter.OnRetryListener() {
             @Override
@@ -123,26 +138,63 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     }
 
     @Override
+    public void onProductItemClicked(Product product) {
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
+                product.getId());
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onShopItemClicked(com.tokopedia.topads.sdk.domain.model.Shop shop) {
+        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onAddFavorite(Data data) {
+
+    }
+
+    @Override
     public void setupRecyclerView() {
         if (list_shop.getAdapter() != null) {
             return;
         }
-        list_shop.setLayoutManager(gridLayoutManager);
-        list_shop.setAdapter(browseShopAdapter);
-        list_shop.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.SHOP)
+                .build();
 
+        topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseShopAdapter);
+        topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
+        topAdsRecyclerAdapter.setAdsItemClickListener(this);
+//        topAdsRecyclerAdapter.setTopAdsParams(populatedNetworkParams());
+        topAdsRecyclerAdapter.setConfig(config);
+        topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
-                    presenter.loadMore(getActivity());
-                }
+            public void onLoad(int page, int totalCount) {
+                presenter.loadMore(getActivity());
             }
         });
+        list_shop.setLayoutManager(gridLayoutManager);
+        list_shop.setAdapter(browseShopAdapter);
+    }
+
+    private TopAdsParams populatedNetworkParams() {
+        NetworkParam.Product networkParam = ((BrowseProductActivity) getActivity()).getProductParam();
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC, networkParam.source);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, networkParam.sc);
+        if (networkParam.q != null) {
+            params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.q);
+        }
+        if (networkParam.extraFilter != null) {
+            params.getParam().putAll(networkParam.extraFilter);
+        }
+        return params;
     }
 
     @Override
@@ -151,11 +203,8 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             return;
         }
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
-        browseShopAdapter.setIsLoading(true);
         gridLayoutManager = new GridLayoutManager(getActivity(),
                 ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation));
-
-        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
 
     // to determine size of grid columns
@@ -163,27 +212,12 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-
-                // column size default is one
-                int headerColumnSize = 1,
-                        footerColumnSize = 1,
-                        regularColumnSize = 1;
-
-                headerColumnSize = ProductFeedHelper.PORTRAIT_COLUMN_HEADER;
-                regularColumnSize = ProductFeedHelper.PORTRAIT_COLUMN;
-                footerColumnSize = ProductFeedHelper.PORTRAIT_COLUMN_FOOTER;
-
-                // set the value of footer, regular and header
-                if (position == browseShopAdapter.getData().size()) {
-                    // productFeedPresenter.getData().size()
-                    // header column
-                    return footerColumnSize;
-                } else if (position == 0) {
-//                    return headerColumnSize;
-                    return regularColumnSize;
+                if (topAdsRecyclerAdapter.isTopAdsViewHolder(position)
+                        || topAdsRecyclerAdapter.isLoading(position)
+                        || browseShopAdapter.isEmptySearch(position)) {
+                    return 2;
                 } else {
-                    // regular one column
-                    return regularColumnSize;
+                    return 1;
                 }
             }
         };
@@ -196,13 +230,9 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.hideLoading();
         browseShopAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseShopAdapter.setPagingHandlerModel(pagingHandlerModel);
-        if (browseShopAdapter.checkHasNext()) {
-            browseShopAdapter.setIsLoading(true);
-        } else {
-            browseShopAdapter.setIsLoading(false);
-        }
         browseShopAdapter.incrementPage();
     }
 
