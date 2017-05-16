@@ -179,10 +179,10 @@ public class AuthUtil {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
 
-        String authString = method + "\n" + contentMD5 + "\n" + CONTENT_TYPE_JSON + "\n" + date + "\n" + path;
+        String authString = String.format("%s\n%s\n%s\n%s\n%s", method, contentMD5, CONTENT_TYPE_JSON, date, path);
         String signature = calculateRFC2104HMAC(authString, authKey);
 
-        return "TKPD Authorization:" + signature.trim();
+        return String.format("TKPD Authorization:%s", signature.trim());
     }
 
     public static Map<String, String> generateHeadersAccount(String authKey) {
