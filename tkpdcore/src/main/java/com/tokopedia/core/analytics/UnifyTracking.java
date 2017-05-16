@@ -1279,6 +1279,18 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventMoRegistrationStart(String medium) {
+        getMoEngine().sendRegistrationStartEvent(medium);
+    }
+
+    public static void eventMoRegister(CustomerWrapper customerWrapper) {
+        getMoEngine().sendRegisterEvent(
+                customerWrapper.getFullName(),
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM),
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH)
+        );
+    }
+
     public static void eventOTPSuccess(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_OTP,
@@ -1502,6 +1514,42 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+        ).getEvent());
+    }
+
+    public static void eventAddProductErrorServer(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductError(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ERROR,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductAdd(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD,
+                label
+        ).getEvent());
+    }
+
+    public static void eventAddProductAddMore(String label){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
+                AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
+                AppEventTracking.AddProduct.EVENT_ACTION_ADD_MORE,
+                label
         ).getEvent());
     }
 }

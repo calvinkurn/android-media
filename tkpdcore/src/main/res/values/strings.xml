@@ -47,7 +47,7 @@
     <!-- <string name="prompt_password">Password</string> -->
     <string name="prompt_phone">Nomor Ponsel</string>
     <string name="prompt_confirm_password">Konfirmasi kata sandi</string>
-    <string name="title_register">Daftar Sekarang!</string>
+    <string name="title_register">Daftar Sekarang di Tokopedia</string>
     <string name="title_register_wo_u">Daftar</string>
     <string name="title_register_process">Sedang mendaftar</string>
     <string name="action_sign_in">MASUK</string>
@@ -77,7 +77,7 @@
     <string name="error_not_logged">Anda harus login untuk menggunakan fitur ini</string>
     <string name="title_forgot_password_1">Lupa kata sandi?</string>
     <string name="title_forgot_password_hint">Masukkan email login Anda dibawah ini. Kami akan mengirimkan pesan email beserta link untuk reset kata sandi Anda.</string>
-    <string name="title_reset_password">Reset Kata Sandi</string>
+    <string name="title_reset_password">Ganti Kata Sandi</string>
     <string name="title_reset_success">Kata sandi Anda akan diatur ulang</string>
     <string name="title_reset_success_hint_1">Sebuah email telah dikirim ke email kontak Anda dikaitkan dengan akun Anda,</string>
     <string name="title_reset_success_hint_2">Harap bersabar, pengiriman email dapat tertunda. \n
@@ -92,6 +92,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="warning_check_activation_resent_2">Pastikan untuk cek folder spam dan folder sampah sebelum melakukan kirim ulang email aktivasi.</string>
     <string name="welcome_text_1">Ini adalah aplikasi khusus untuk berjualan di Tokopedia.</string>
     <string name="welcome_text_2">Yuk mulai kelola tokomu di Tokopedia, mudah &amp; gratis!</string>
+    <string name="account_registered_title">Akun Anda Sudah Pernah Terdaftar</string>
+    <string name="account_registered_body">Anda sudah pernah melakukan pendaftaran akun tokopedia dengan email %1$s.\nSilahkan login menggunakan akun anda atau klik disini untuk mengganti kata sandi anda.</string>
+    <string name="account_registered_body_part">klik disini untuk mengganti kata sandi anda.</string>
+    <string name="forgot_password_title">Kesulitan mengakses akun Anda?</string>
+    <string name="forgot_password_body">Lupa kata sandi? Masukkan email login Anda di bawah ini. Kami akan mengirimkan pesan email beserta tautan untuk reset kata sandi anda.</string>
+
+
     <!-- Strings related to login and register -->
 
     <!-- Strings related to phone and email verification -->
@@ -116,6 +123,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
 
     <!-- Strings related to add product -->
     <string name="title_activity_add_product">Tambah Produk</string>
+    <string name="title_activity_duplicate_product">Salin Produk</string>
     <string name="title_activity_edit_product">Ubah Produk</string>
     <string name="submit_but">Simpan</string>
     <string name="submit_but2">Simpan dan Tambah </string>
@@ -434,6 +442,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_shop_owner">Pemilik Toko</string>
     <string name="title_name">Nama</string>
     <string name="title_email">Email</string>
+    <string name="title_email_long">Alamat Email</string>
     <string name="title_phone_number">Nomor Ponsel</string>
     <string name="title_shop_location">Lokasi Toko</string>
     <string name="title_transaction_statistic">Statistik Transaksi</string>
@@ -825,7 +834,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
     <string name="title_activity_manage_people_profile">Pengaturan Profil</string>
     <string name="title_activity_people_favorited_shop">Toko Favorit</string>
     <string name="title_activity_manage_people_password">Ganti kata sandi</string>
-    <string name="title_activity_activation">Email Aktivasi</string>
+    <string name="title_activity_activation">Aktivasi akun</string>
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
@@ -999,6 +1008,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_edit">Ubah</string>
     <string name="title_my_review">ULASAN SAYA</string>
     <string name="title_skip">Lewatkan</string>
+    <string name="title_skip_2">Lewati</string>
     <string name="hint_review">Tulis ulasan Anda</string>
     <string name="error_review_message_empty">Ulasan harus diisi</string>
     <string name="error_review_response_message_empty">Balasan harus diisi</string>
@@ -1288,7 +1298,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="change_phone_number_restriction">Silakan melakukan ubah nomor telepon melalui desktop atau mobile browser dengan mengakses www.tokopedia.com atau m.tokopedia.com. Lalu masuk melalui halaman Profil Saya</string>
     <string name="title_activity_credit_card">Informasi Credit Card</string>
     <string name="title_activity_term_and_privacy">Kebijakan Privasi</string>
-    <string name="detail_term_and_privacy">Dengan menekan Daftar, Anda Telah Menyetujui  </string>
+    <string name="detail_term_and_privacy">Dengan mendaftar, saya menyetujui  </string>
     <string name="link_term_condition">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=0\'&gt;Syarat dan Ketentuan&lt;/a&gt;&lt;/font&gt;</string>
     <string name="link_privacy_policy">&lt;font color=\'#5eba46\'&gt;&lt;a href=\'launch.TermPrivacy://parent?param=1\'&gt;Kebijakan Privasi&lt;/a&gt;&lt;/font&gt;</string>
     <string name="privacy_pl">https://m.tokopedia.com/privacy.pl?device=android&amp;flag_app=1</string>
@@ -1547,7 +1557,8 @@ di Tokopedia Sekarang!</string>
     <string name="rating_title_5">Sangat bagus</string>
     <string name="subtitle_accuracy">* Nilai ketepatan produk dengan gambar</string>
     <string name="subtitle_quality">* Nilai kualitas produk</string>
-    <string name="image_description">Keterangan gambar...</string>
+    <string name="image_description">Keterangan gambar...</string>s
+    <string name="image_description_2">Deskripsi gambar</string>
     <string name="deadline_prompt">"Batas waktu penilaian "</string>
     <string name="edited">(diubah)</string>
     <string name="message_smiley_prompt_bad">Apakah anda yakin memberi nilai Tidak Puas?</string>
@@ -1702,6 +1713,7 @@ di Tokopedia Sekarang!</string>
     <string name="filter_description">Silahkan pilih menu di sebelah kiri untuk menemukan produk yang lebih spesifik</string>
     <string name="msg_filter_invalid_amount">Harga tidak sesuai</string>
     <string name="no_catalog_selected">Tidak ada katalog</string>
+    <string name="no_use_catalog">Tanpa katalog</string>
     <string name="ibg_report_bug">Laporkan Bug</string>
     <string name="ibg_report_feedback">Kritik dan Saran</string>
     <string name="ibg_hint_bug_report">Deskripsikan bug yang anda alami</string>
@@ -1913,8 +1925,18 @@ di Tokopedia Sekarang!</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
+    <!-- String related to Official Store START -->
+    <string name="os_home_title_product">Produk</string>
+    <string name="os_view_all_product">Lihat Semua Barang</string>
+
     <string name="title_official_store">Official Store</string>
+    <!-- String related to Official Store END -->
+
     <string name="hint_search_review">Cari ulasan</string>
+    <string name="notification_dialog_content_main_app">Kami mendeteksi aplikasi Seller Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
+    <string name="notification_dialog_positive_button">Pengaturan</string>
+    <string name="notification_dialog_negative_button">Batal</string>
     <string name="banner_official_store_title_text">Sudah Pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
 </resources>

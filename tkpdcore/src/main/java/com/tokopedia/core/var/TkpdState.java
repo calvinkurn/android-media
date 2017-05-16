@@ -78,6 +78,7 @@ public class TkpdState {
         public static final int SELLER_TOP_ADS = 48;
         public static final int SELLER_GM_STAT = 49;
         public static final int GOLD_MERCHANT = 50;
+        public static final int HELP = 51;
     }
 
     public class Application {
@@ -490,6 +491,9 @@ public class TkpdState {
         public static final String INVALID_MESSAGE_ERROR = "default";
 
 
-
+        public static final String PRODUCT_NAME = "PRODUCT_NAME";
+        public static final String IMAGE_URI = "IMAGE_URI";
+        public static final String PRODUCT_DESCRIPTION = "PRODUCT_DESCRIPTION";
+        public static final String PRODUCT_URI = "PRODUCT_URI";
     }
 }

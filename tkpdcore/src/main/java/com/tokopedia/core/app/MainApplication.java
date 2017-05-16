@@ -23,6 +23,7 @@ import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.TkpdMultiDexApplication;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
+import com.tokopedia.core.analytics.TrackingConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
@@ -32,7 +33,6 @@ import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.NotificationVariable;
-import com.tokopedia.core.network.di.module.*;
 
 import java.util.List;
 
@@ -301,6 +301,8 @@ public class MainApplication extends TkpdMultiDexApplication {
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.GTM);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.APPSFLYER);
         TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.LOCALYTICS);
+        TrackingUtils.runFirstTime(TrackingUtils.AnalyticsKind.MOENGAGE);
+        TrackingUtils.setMoEngageExistingUser();
         TrackingUtils.enableDebugging(true);
     }
 

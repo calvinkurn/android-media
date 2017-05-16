@@ -13,6 +13,7 @@ public interface AppEventTracking {
     String NOT_AVAILABLE = "NOT AVAILABLE";
     String DEFAULT_CHANNEL = "Email";
     String DEFAULT_EVENT = "Event";
+    String ACCOUNTS_KEY = "accounts";
 
     interface GTMKey{
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
@@ -29,7 +30,7 @@ public interface AppEventTracking {
         String EMAIL = "Email";
         String FACEBOOK = "Facebook";
         String GMAIL = "Gmail";
-        String WEBVIEW = "Webview";
+        String WEBVIEW = "Web View";
         String REGISTER = "Register";
         String LOGIN = "Login";
     }
@@ -428,11 +429,89 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
     }
 
+    interface MOENGAGE {
+        String CURRENCY = "currency";
+        String QUANTITY = "quantity";
+        String PRODUCT = "product";
+        String PURCHASE_DATE = "purchaseDate";
+        String PRICE = "price";
+        String IS_GOLD_MERCHANT = "is_gold_merchant";
+        String IS_SELLER        = "is_seller";
+        String SHOP_ID          = "shop_id";
+        String SHOP_NAME        = "shop_name";
+        String MOBILE_NUM = "Mobile Number";
+        String USER_ID = "User_ID";
+        String MEDIUM = "Medium";
+        String EMAIL = "Email";
+        String LOGIN_STATUS = "Logged_in_Status";
+        String PRODUCTS_NUMBER = "Number_of_Products";
+        String SUBCATEGORY = "SubCategory_name";
+        String SUBCATEGORY_ID = "SubCategory_id";
+        String CATEGORY = "Category";
+        String PRODUCT_ID = "Product_id";
+        String PRODUCT_NAME = "Product_name";
+        String PRODUCT_URL = "Product_url";
+        String PRODUCT_PRICE = "Product_price";
+        String BRAND_NAME = "Brand_name";
+        String BRAND_ID = "Brand_id";
+        String DATE_OF_BIRTH = "Date of Birth";
+        String NAME = "Name";
+
+        String EVENT_LOGIN = "Login";
+        String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
+        String EVENT_OPEN_FEED = "Feed_Screen_Launched";
+        String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
+        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
+
+
+        String REG_START = "Registration_Start";
+        String REG_COMPL = "Registration_Completed";
+        String ADDR_ADD = "Address_Added";
+
+        String EVENT_REG_START = "Registration_Start";
+        String EVENT_REG_COMPL = "Registration_Completed";
+        String EVENT_ADDR_ADD = "Address_Added";
+        String EVENT_USER_ATTR = "User_Attribute_Name";
+
+    }
+
+
     interface LOCA {
         String NOTIFICATION_BUNDLE = "ll";
     }
 
     interface AF {
         String APPSFLYER_KEY = "APPSFLYER_KEY";
+    }
+
+    interface AddProduct{
+        String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
+        String CATEGORY_ADD_PRODUCT = "Add Product";
+        String EVENT_ACTION_ADD = "Add";
+        String EVENT_ACTION_ADD_MORE = "Add More";
+        String EVENT_ACTION_ERROR = "Error";
+        String EVENT_ACTION_ERROR_SERVER = "Error Server";
+
+        String FIELDS_MANDATORY_PRODUCT_NAME = "M1";
+        String FIELDS_MANDATORY_CATEGORY= "M2";
+        String FIELDS_MANDATORY_PRICE = "M3";
+        String FIELDS_MANDATORY_WEIGHT = "M4";
+        String FIELDS_MANDATORY_MIN_PURCHASE = "M5";
+        String FIELDS_MANDATORY_STOCK_STATUS = "M6";
+        String FIELDS_MANDATORY_SHOWCASE = "M7";
+        String FIELDS_MANDATORY_CONDITION = "M8";
+        String FIELDS_MANDATORY_INSURANCE = "M9";
+        String FIELDS_OPTIONAL_PICTURE = "O1";
+        String FIELDS_OPTIONAL_WHOLESALE = "O2";
+        String FIELDS_OPTIONAL_STOCK_MANAGEMENT = "O3";
+        String FIELDS_OPTIONAL_FREE_RETURN = "O4";
+        String FIELDS_OPTIONAL_DESCRIPTION = "O5";
+        String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
+        String FIELDS_OPTIONAL_PREORDER = "O7";
+        String FIELDS_OPTIONAL_SHARE = "O8";
     }
 }

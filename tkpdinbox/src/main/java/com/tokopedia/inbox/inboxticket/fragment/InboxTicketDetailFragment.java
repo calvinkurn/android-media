@@ -372,7 +372,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         imageAdapter.addImage(image);
         listImage.setVisibility(View.VISIBLE);
         if (imageAdapter.getList().size() == 5) {
-            attachButton.setVisibility(View.GONE);
+            attachButton.setVisibility(View.INVISIBLE);
         } else {
             attachButton.setVisibility(View.VISIBLE);
         }
