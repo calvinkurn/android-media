@@ -152,6 +152,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private int currentPosition;
     private Unbinder unbinder;
     private RadioGroup radGroup;
+    private LocalCacheHandler localCacheHandlerLastClientNumber;
     //endregion
 
     public static RechargeFragment newInstance(Category category, int position) {
@@ -343,7 +344,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     @Override
     public void onRechargeTextClear() {
-        LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+        //TODO ini yang lama
+      /*  LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);*/
         rechargePresenter.clearRechargePhonebookCache();
         hideFormAndImageOperator();
     }
@@ -682,22 +684,48 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void setTextToEditTextOrSetVisibilityForm() {
         cacheHandlerPhoneBook = new LocalCacheHandler(getActivity(), KEY_PHONEBOOK);
-        if (rechargePresenter.isAlreadyHavePhonebookDataOnCache(LAST_INPUT_KEY + category.getId())) {
-            rechargeEditText.setText(
-                    rechargePresenter.getLastInputFromCache(LAST_INPUT_KEY + category.getId())
-            );
-            showFormAndImageOperator();
-        } else if (!TextUtils.isEmpty(
-                cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId()))
-                ) {
-            rechargeEditText.setText(
-                    cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId())
-            );
-            LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+//        if (rechargePresenter.isAlreadyHavePhonebookDataOnCache(LAST_INPUT_KEY + category.getId())) {
+//            rechargeEditText.setText(
+//                    rechargePresenter.getLastInputFromCache(LAST_INPUT_KEY + category.getId())
+//            );
+//            showFormAndImageOperator();
+//        } else if (!TextUtils.isEmpty(
+//                cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId()))
+//                ) {
+//            rechargeEditText.setText(
+//                    cacheHandlerPhoneBook.getString(KEY_PHONEBOOK + category.getId())
+//            );
+//            LocalCacheHandler.clearCache(getActivity(), KEY_PHONEBOOK);
+//            showFormAndImageOperator();
+//        } else if (SessionHandler.isV4Login(getActivity())
+//                && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
+//            renderLastOrder();
+//        } else {
+//            handlingAppearanceFormAndImageOperator();
+//        }
+
+        String lastTypedClientNumber = getLastClientNumberTyped(String.valueOf(category.getId()));
+        String defaultPhoneNumber = SessionHandler.getPhoneNumber();
+
+        if (SessionHandler.isV4Login(getActivity())
+                && rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())) {
+            renderLastOrder();
+        } else if (SessionHandler.isV4Login(getActivity())
+                && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
+                && !TextUtils.isEmpty(lastTypedClientNumber)) {
+            rechargeEditText.setText(lastTypedClientNumber);
             showFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
-                && rechargePresenter.isAlreadyHaveLastOrderDataOnCache()) {
-            renderLastOrder();
+                && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
+                && TextUtils.isEmpty(lastTypedClientNumber)
+                && (category.getId() == 1 || category.getId() == 2)
+                && !TextUtils.isEmpty(defaultPhoneNumber)) {
+            rechargeEditText.setText(defaultPhoneNumber);
+            showFormAndImageOperator();
+        } else if (!SessionHandler.isV4Login(getActivity())
+                && !TextUtils.isEmpty(lastTypedClientNumber)) {
+            rechargeEditText.setText(lastTypedClientNumber);
+            showFormAndImageOperator();
         } else {
             handlingAppearanceFormAndImageOperator();
         }
@@ -796,6 +824,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         phoneNumber = validateTextPrefix(phoneNumber);
         rechargeEditText.setText(phoneNumber);
         rechargePresenter.saveLastInputToCache(LAST_INPUT_KEY + category.getId(), rechargeEditText.getText());
+        storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
         cacheHandlerPhoneBook.putString(KEY_PHONEBOOK + category.getId(), phoneNumber);
         cacheHandlerPhoneBook.applyEditor();
     }
@@ -904,6 +933,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 LAST_INPUT_KEY + category.getId(),
                 rechargeEditText.getText()
         );
+
+        storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
 
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
 
@@ -1063,5 +1094,31 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         bundle = argument;
         category = bundle.getParcelable(ARG_PARAM_CATEGORY);
         rechargePresenter = new RechargePresenterImpl(getContext(), this);
+    }
+
+    private void storeLastClientNumberTyped(String categoryId, String clientNumber) {
+        if (localCacheHandlerLastClientNumber == null)
+            localCacheHandlerLastClientNumber = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+        );
+        localCacheHandlerLastClientNumber.applyEditor();
+    }
+
+    private String getLastClientNumberTyped(String categoryId) {
+        if (localCacheHandlerLastClientNumber == null)
+            localCacheHandlerLastClientNumber = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        return localCacheHandlerLastClientNumber.getString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, ""
+        );
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (rechargeEditText != null)
+            storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
     }
 }
