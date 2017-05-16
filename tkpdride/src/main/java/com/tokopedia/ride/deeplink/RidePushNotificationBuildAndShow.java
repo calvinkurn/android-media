@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -20,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
@@ -94,7 +94,7 @@ public class RidePushNotificationBuildAndShow {
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         getRideRequestDetailUseCase.execute(requestParams, getSubscriber());
 
-        Log.d("Push", "RidePushNotificationBuildAndShow processReceivedNotification :: " + ridePushNotification.getRequestId());
+        CommonUtils.dumper("RidePushNotificationBuildAndShow processReceivedNotification :: " + ridePushNotification.getRequestId());
     }
 
     @NonNull
@@ -118,7 +118,7 @@ public class RidePushNotificationBuildAndShow {
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
                 manager.sendBroadcast(intent);
 
-                Log.d("Push", "RidePushNotificationBuildAndShow Subscriber OnNext :: " + rideRequest.getStatus());
+                CommonUtils.dumper("RidePushNotificationBuildAndShow Subscriber OnNext :: " + rideRequest.getStatus());
 
                 switch (rideRequest.getStatus()) {
                     case RideStatus.ARRIVING:
@@ -129,16 +129,19 @@ public class RidePushNotificationBuildAndShow {
                         showNoDriverFoundNotification(mContext);
                         break;
                     case RideStatus.PROCESSING:
-
                         break;
                     case RideStatus.IN_PROGRESS:
+                        cancelActiveNotification(mContext);
+                        showInProgressRide(mContext, rideRequest);
                         break;
                     case RideStatus.DRIVER_CANCELED:
+                        cancelActiveNotification(mContext);
                         showDriverCancelledRide(mContext);
                         break;
                     case RideStatus.RIDER_CANCELED:
                         break;
                     case RideStatus.COMPLETED:
+                        cancelActiveNotification(mContext);
                         showRideCompleted(mContext, rideRequest);
                         break;
                 }
@@ -157,6 +160,9 @@ public class RidePushNotificationBuildAndShow {
         remoteView.setTextViewText(R.id.tv_cab_number, rideRequest.getVehicle().getLicensePlate());
         remoteView.setTextViewText(R.id.tv_driver_name, rideRequest.getDriver().getName());
         remoteView.setTextViewText(R.id.tv_driver_star, String.format("%s star", rideRequest.getDriver().getRating()));
+        remoteView.setTextViewText(R.id.tv_eta, String.format(String.format("%s will pick you up in %s minutes.",
+                rideRequest.getDriver().getName(),
+                String.valueOf(rideRequest.getEta()))));
         Glide
                 .with(context)
                 .load(rideRequest.getVehicle().getPictureUrl())
@@ -326,6 +332,33 @@ public class RidePushNotificationBuildAndShow {
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
         TaskStackBuilder stackBuilder = RideHomeActivity.getCallingTaskStask(context, bundle);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+
+        // Gets an instance of the NotificationManager service
+        NotificationManager mNotifyMgr =
+                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        // Builds the notification and issues it.
+        mNotifyMgr.notify(DRIVER_CANCELLED_UBER_NOTIFICATION_ID, mBuilder.build());
+    }
+
+    public static void showInProgressRide(Context context, final RideRequest rideRequest) {
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_stat_notify)
+                .setAutoCancel(true)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
+                .setContentTitle(context.getString(R.string.ride_push_in_progress))
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setContentText(context.getString(R.string.ride_push_track_ride));
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
+        bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+        bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
+        TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
+
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 

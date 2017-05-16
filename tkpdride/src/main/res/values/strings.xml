@@ -81,4 +81,6 @@
     <string name="ride_push_driver_arriving_now">Your Uber is arriving now</string>
     <string name="ride_home_driver_cancel_last_rid">Driver canceled your last ride.</string>
     <string name="complete_trip_tokocash_charged">Tokocash Charged</string>
+    <string name="ride_push_in_progress">Trip Started</string>
+    <string name="ride_push_track_ride">Track Your Ride</string>
 </resources>

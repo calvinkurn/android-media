@@ -486,7 +486,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (!getActivity().isFinishing()) {
             FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
             fragmentTransaction.replace(containerViewId, fragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
         }
     }
 

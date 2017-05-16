@@ -4,8 +4,8 @@ import android.app.Application;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
@@ -102,7 +102,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
-        Log.d("Push", "AppNotificationReceiverUIBackground handleApplinkNotification");
+        CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification");
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
@@ -171,7 +171,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_RIDE:
-                Log.d("Push", "AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
+                CommonUtils.dumper("AppNotificationReceiverUIBackground handleApplinkNotification for Ride");
                 RidePushNotificationBuildAndShow push = new RidePushNotificationBuildAndShow(mContext);
                 push.processReceivedNotification(data);
                 break;

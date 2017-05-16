@@ -3,14 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/grey_50"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingTop="16dp">
+
+    <TextView
+        android:id="@+id/tv_eta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:paddingTop="4dp"
+        android:text=""
+        android:textColor="@color/black_full"
+        android:textSize="14sp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"

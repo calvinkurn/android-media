@@ -105,6 +105,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void initialize() {
+        getView().showRequestLoadingLayout();
         getView().showLoadingWaitingResponse();
         getView().hideRideRequestStatus();
         getView().hideCancelRequestButton();
