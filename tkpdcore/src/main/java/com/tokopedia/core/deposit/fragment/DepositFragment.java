@@ -273,7 +273,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     public void finishLoading() {
         adapter.showLoading(false);
         adapter.showEmpty(false);
-        refreshHandler.setPullEnabled(true);
         refreshHandler.setRefreshing(false);
 
     }
@@ -331,7 +330,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         endDate.setEnabled(isEnabled);
         drawButton.setEnabled(isEnabled);
         searchButton.setEnabled(isEnabled);
-        refreshHandler.setPullEnabled(isEnabled);
     }
 
     @Override

@@ -271,16 +271,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void skipIntermediaryPage() {
-        BrowseProductActivity.moveToWithoutAnimation(
-            getActivity(),
-                departmentId,
-            TopAdsApi.SRC_DIRECTORY,
-            BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                ((IntermediaryActivity) getActivity()).getCategoryName()
-        );
-        getActivity().overridePendingTransition(0,0);
-        getActivity().finish();
-
+        if (isAdded()) {
+            BrowseProductActivity.moveToWithoutAnimation(
+                    getActivity(),
+                    departmentId,
+                    TopAdsApi.SRC_DIRECTORY,
+                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                    ((IntermediaryActivity) getActivity()).getCategoryName()
+            );
+            getActivity().overridePendingTransition(0,0);
+            getActivity().finish();
+        }
     }
 
     @Override

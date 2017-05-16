@@ -5,16 +5,16 @@ import android.content.Context;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
-import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.network.core.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -88,6 +88,12 @@ public class InterceptorModule {
     @Provides
     public LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
         return new LocalCacheHandler(context, DeveloperOptions.CHUCK_ENABLED);
+    }
+
+    @ApplicationScope
+    @Provides
+    TkpdErrorResponseInterceptor provideTkpdErrorResponseInterceptor(){
+        return new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class);
     }
 
 }
