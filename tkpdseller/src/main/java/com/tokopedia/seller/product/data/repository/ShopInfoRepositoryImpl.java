@@ -9,7 +9,6 @@ import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author hendry on 4/20/17.

@@ -3,7 +3,6 @@ package com.tokopedia.session.activation.data.mapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.activation.data.ActivateUnicodeModel;
 import com.tokopedia.session.activation.data.pojo.ActivateUnicodeData;
 

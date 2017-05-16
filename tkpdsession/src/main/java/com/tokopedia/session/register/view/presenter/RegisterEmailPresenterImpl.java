@@ -1,33 +1,19 @@
 package com.tokopedia.session.register.view.presenter;
 
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
-import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
-import com.tokopedia.session.register.data.repository.RegisterEmailRepositoryImpl;
-import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
+import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
 import com.tokopedia.session.register.view.subscriber.RegisterEmailSubscriber;
 import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
-
-import static com.tokopedia.otp.phoneverification.domain.interactor.VerifyPhoneNumberUseCase.PARAM_PHONE;
-import static com.tokopedia.session.activation.domain.interactor.ChangeEmailUseCase.PARAM_PASSWORD;
-import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_CONFIRM_PASSWORD;
-import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_FULLNAME;
-import static com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase.PARAM_IS_AUTO_VERIFY;
 
 /**
  * Created by nisie on 1/27/17.

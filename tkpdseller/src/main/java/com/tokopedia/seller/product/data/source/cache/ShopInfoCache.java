@@ -1,19 +1,11 @@
 package com.tokopedia.seller.product.data.source.cache;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.seller.topads.data.model.data.Etalase;
-
-import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 

@@ -3,17 +3,12 @@ package com.tokopedia.seller.topads.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.view.Window;
 
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.myproduct.utils.CurrencyFormatter;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 /**
  * @author normansyahputa on 2/16/17.

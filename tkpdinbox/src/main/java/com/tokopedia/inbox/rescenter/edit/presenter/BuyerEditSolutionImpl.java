@@ -9,8 +9,8 @@ import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditSolutionListener;
-import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
+import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 
 import java.util.List;
 import java.util.Map;

@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
 import com.tokopedia.seller.product.data.exception.UploadProductException;
-import com.tokopedia.seller.product.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;

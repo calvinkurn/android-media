@@ -17,8 +17,6 @@ import android.widget.FrameLayout;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.utils.ConverterUtils;
 
-import org.w3c.dom.Text;
-
 /**
  * Created by nathan on 04/05/17.
  */

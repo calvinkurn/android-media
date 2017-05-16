@@ -1,11 +1,6 @@
 package com.tokopedia.seller.product.data.source;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.product.data.source.cache.ShopInfoCache;
 import com.tokopedia.seller.product.data.source.cloud.ShopInfoCloud;

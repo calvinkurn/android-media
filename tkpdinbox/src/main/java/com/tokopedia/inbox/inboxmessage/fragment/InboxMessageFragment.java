@@ -30,6 +30,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageAdapter;
 import com.tokopedia.inbox.inboxmessage.listener.InboxMessageView;
@@ -38,9 +41,6 @@ import com.tokopedia.inbox.inboxmessage.model.InboxMessagePass;
 import com.tokopedia.inbox.inboxmessage.model.inboxmessage.InboxMessageItem;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageFragmentPresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
 

@@ -26,14 +26,14 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxticket.InboxTicketConstant;
 import com.tokopedia.inbox.inboxticket.adapter.InboxTicketAdapter;
 import com.tokopedia.inbox.inboxticket.listener.InboxTicketView;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketFragmentPresenter;
 import com.tokopedia.inbox.inboxticket.presenter.InboxTicketFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.RefreshHandler;
 
 import butterknife.BindView;
 
