@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -297,7 +298,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onStart() {
         super.onStart();
-        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+        if(!TextUtils.isEmpty(departmentId)) {
+            ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+        }
     }
 
     private void showErrorEmptyState() {
