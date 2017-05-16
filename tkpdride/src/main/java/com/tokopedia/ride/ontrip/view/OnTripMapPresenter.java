@@ -262,8 +262,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void proccessGetCurrentRideRequest(RideRequest result) {
-
-
         getView().setRequestId(result.getRequestId());
         if (result.getAddress() != null) {
             getView().setAddressPickerText(result.getAddress().getStartAddressName(), result.getAddress().getEndAddressName());

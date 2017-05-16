@@ -330,6 +330,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         }
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
 
 //        if (confirmBookingViewModel != null) {
