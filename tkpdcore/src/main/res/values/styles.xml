@@ -229,8 +229,4 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="normalText">
-        <item name="android:textStyle">normal</item>
-    </style>
-
 </resources>
