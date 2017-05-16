@@ -13,4 +13,6 @@ public interface ProductDraftRepository {
     Observable<UploadProductInputDomainModel> getDraft(long productId);
 
     Observable<Boolean> clearAllDraft();
+
+    void deleteDraft(long productId);
 }

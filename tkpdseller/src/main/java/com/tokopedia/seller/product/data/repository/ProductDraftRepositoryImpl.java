@@ -35,4 +35,9 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public Observable<Boolean> clearAllDraft() {
         return productDraftDataSource.clearAllDraft();
     }
+
+    @Override
+    public void deleteDraft(long productId) {
+        productDraftDataSource.deleteDraft(productId);
+    }
 }

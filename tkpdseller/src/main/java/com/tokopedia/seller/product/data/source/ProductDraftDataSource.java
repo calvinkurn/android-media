@@ -29,4 +29,8 @@ public class ProductDraftDataSource {
     public Observable<Boolean> clearAllDraft() {
         return productDraftDataManager.clearAllDraft();
     }
+
+    public void deleteDraft(long productId) {
+        productDraftDataManager.deleteDeraft(productId);
+    }
 }
