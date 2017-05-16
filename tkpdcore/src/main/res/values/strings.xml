@@ -551,7 +551,7 @@ Fitur Promo berlaku setiap 60 menit sekali untuk masing-masing toko.\nPromosi be
 
 
     <!-- Strings related to browse category -->
-    <string name="title_total_prods">produk</string>
+    <string name="title_total_prods">Produk</string>
     <string name="hint_search_categories">Cari kategori</string>
     <string name="title_shop">Toko</string>
     <string name="title_location">Lokasi</string>
