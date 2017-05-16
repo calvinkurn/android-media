@@ -447,8 +447,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCategoryClicked(CategoryItemModel categoryItemModel, int position) {
-        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null)
+        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null){
+            TrackingUtils.sendMoEngageClickMainCategoryIcon(categoryItemModel.getName());
             navigateToNextActivity(categoryItemModel.getRedirectValue(), categoryItemModel.getName());
+        }
+
     }
 
     @Override
@@ -675,6 +678,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 messageSnackbar.resumeRetrySnackbar();
             }
             ScreenTracking.screen(getScreenName());
+            TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {

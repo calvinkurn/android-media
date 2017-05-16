@@ -41,6 +41,7 @@ import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
+import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -93,6 +94,7 @@ public class DrawerVariable {
     private DefaultItemAnimator animator;
     private ToolbarVariable toolbar;
     private boolean hasUpdated = false;
+    private GetUserInfoListener getUserInfoListener;
 
     public boolean hasUpdated() {
         return hasUpdated;
@@ -132,6 +134,8 @@ public class DrawerVariable {
 
     public DrawerVariable(AppCompatActivity context) {
         this.context = context;
+        if(context instanceof GetUserInfoListener)
+            getUserInfoListener = (GetUserInfoListener)context;
     }
 
     public void createDrawer(boolean withSearchBox) {
@@ -766,7 +770,7 @@ public class DrawerVariable {
 
     }
 
-    private void getUserInfo() {
+    public void getUserInfo() {
         networkInteractor.getProfileInfo(context, new NetworkInteractor.ProfileInfoListener() {
             @Override
             public void onSuccess(DrawerHeader profile) {
@@ -786,6 +790,8 @@ public class DrawerVariable {
                 SessionHandler.setUserAvatarUri(context, profile.userIcon);
                 model.header.setDataToCache(context);
                 adapter.notifyDataSetChanged();
+                if(getUserInfoListener!=null)
+                    getUserInfoListener.onGetUserInfo();
                 setShop();
             }
 
