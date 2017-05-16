@@ -84,7 +84,7 @@ public class GetShopProductCampaignRetrofit {
             public void onNext(Response<ShopProductCampaignResponse> tkpdResponse) {
                 if(tkpdResponse.isSuccessful()) {
                     ShopProductCampaignResponse response = tkpdResponse.body();
-                    // TODO: 16/05/17  
+                    // TODO: 16/05/17 process the response
                 }
 
                 productsCampaignListener.onSuccess(productModel);
