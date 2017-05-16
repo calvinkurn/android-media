@@ -168,6 +168,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_img_delete">Hapus</string>
     <string name="title_dollar">US$</string>
     <string name="title_rupiah">Rp</string>
+    <string name="title_rupiah_empty">Rp - </string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
@@ -1425,6 +1426,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="toko_cash_top_up">Topup</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
