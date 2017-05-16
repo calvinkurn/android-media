@@ -714,18 +714,18 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
                 && !TextUtils.isEmpty(lastTypedClientNumber)) {
             rechargeEditText.setText(lastTypedClientNumber);
-            showFormAndImageOperator();
+            //   showFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
                 && TextUtils.isEmpty(lastTypedClientNumber)
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
             rechargeEditText.setText(defaultPhoneNumber);
-            showFormAndImageOperator();
+            //   showFormAndImageOperator();
         } else if (!SessionHandler.isV4Login(getActivity())
                 && !TextUtils.isEmpty(lastTypedClientNumber)) {
             rechargeEditText.setText(lastTypedClientNumber);
-            showFormAndImageOperator();
+            //    showFormAndImageOperator();
         }
         handlingAppearanceFormAndImageOperator();
 
