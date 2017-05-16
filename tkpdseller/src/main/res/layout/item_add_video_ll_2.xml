@@ -67,10 +67,9 @@
 
         <ImageView
             android:id="@+id/image_add_video_url_remove"
-            android:layout_width="22dp"
-            android:layout_height="24dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_delete_green" />
+            android:layout_width="16dp"
+            android:layout_height="18dp"
+            app:srcCompat="@drawable/ic_delete" />
     </LinearLayout>
 
 </LinearLayout>
