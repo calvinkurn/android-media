@@ -79,7 +79,7 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "Title belum ada" : data.getTitleText());
         if (data.getClientNumberList().size() > 0) {
             renderEdittextClientNumber(data);
         } else {

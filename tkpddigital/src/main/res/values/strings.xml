@@ -38,4 +38,6 @@
     <string name="title_menu_transaction_list_digital">Daftar Transaksi</string>
     <string name="title_menu_subsciption_digital">Subcriptions</string>
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
+
+    <string name="label_instant_payment_digital">Bayar Instan</string>
 </resources>

@@ -82,7 +82,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "Title belum ada" : data.getTitleText());
         clearHolder(holderChooserOperator);
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);

@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/digital_padding_10"
+    tools:background="@color/green_200">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +104,6 @@
         android:id="@+id/tv_error_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ac_client_number"
         android:paddingEnd="@null"
         android:paddingLeft="@dimen/padding_vvs"
         android:paddingRight="@null"

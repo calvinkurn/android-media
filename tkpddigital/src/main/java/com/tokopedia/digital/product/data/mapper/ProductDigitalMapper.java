@@ -74,7 +74,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
             List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
     ) throws MapperDataException {
         CategoryData categoryData = new CategoryData();
-        categoryData.setTitleText("Loren Ipsum"); //TODO title value from WS
+        categoryData.setTitleText(responseCategoryDetailData.getAttributes().getTitle());
         categoryData.setCategoryId(responseCategoryDetailData.getId());
         categoryData.setCategoryType(responseCategoryDetailData.getType());
         categoryData.setDefaultOperatorId(

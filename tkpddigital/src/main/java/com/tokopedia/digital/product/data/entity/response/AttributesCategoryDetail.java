@@ -15,6 +15,9 @@ public class AttributesCategoryDetail {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("title")
+    @Expose
+    private String title;
     @SerializedName("icon")
     @Expose
     private String icon;
@@ -45,6 +48,10 @@ public class AttributesCategoryDetail {
 
     public String getName() {
         return name;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getIcon() {

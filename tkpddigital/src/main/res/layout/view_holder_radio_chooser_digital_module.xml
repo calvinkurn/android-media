@@ -3,7 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:orientation="vertical">
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/digital_padding_10"
+              tools:background="@color/green_200">
 
     <TextView
         android:id="@+id/tv_label_chooser"
