@@ -230,7 +230,7 @@
     </style>
 
     <style name="normalText">
-        <item name="textStyle">normal</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>
