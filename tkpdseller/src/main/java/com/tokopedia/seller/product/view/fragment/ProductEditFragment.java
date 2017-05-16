@@ -3,18 +3,10 @@ package com.tokopedia.seller.product.view.fragment;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
-import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
-import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
-import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductEditView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 

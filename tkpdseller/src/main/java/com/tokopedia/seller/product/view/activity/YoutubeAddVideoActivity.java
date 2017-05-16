@@ -8,7 +8,6 @@ import android.view.MenuItem;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.DaggerYoutubeVideoComponent;

@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.data.source.cloud;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;

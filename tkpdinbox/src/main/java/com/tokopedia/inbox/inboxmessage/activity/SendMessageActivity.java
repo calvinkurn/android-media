@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.inboxmessage.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;

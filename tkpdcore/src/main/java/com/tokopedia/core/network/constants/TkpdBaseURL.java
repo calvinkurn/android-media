@@ -38,6 +38,7 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
@@ -671,6 +672,7 @@ public class TkpdBaseURL {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
         public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
+        public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
     }
 
     public static class FCM {
@@ -689,7 +691,11 @@ public class TkpdBaseURL {
         public static final String PATH_WALLET = "balance";
     }
 
-    public static class Truecaller {
+    public class TkpdCart {
+        public static final String CHECK_VOUCHER = "v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+    public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 

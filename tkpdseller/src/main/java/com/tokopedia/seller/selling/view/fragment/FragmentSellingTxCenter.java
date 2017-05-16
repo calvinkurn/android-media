@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -14,13 +13,13 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
-import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.var.NotificationVariable;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
+import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 
 import java.util.ArrayList;
 

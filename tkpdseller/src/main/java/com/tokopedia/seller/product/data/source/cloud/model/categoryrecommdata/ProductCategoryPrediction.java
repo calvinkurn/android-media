@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.data.source.cloud.model.categoryrecommdata;
 
-import android.text.TextUtils;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,8 +1,5 @@
 package com.tokopedia.seller.product.domain.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by Hendry on 5/6/2017.
  */

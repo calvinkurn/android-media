@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;

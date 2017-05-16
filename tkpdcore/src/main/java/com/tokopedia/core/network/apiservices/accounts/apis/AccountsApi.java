@@ -15,7 +15,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
-import rx.Completable;
 import rx.Observable;
 
 import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.HEADER_USER_ID;

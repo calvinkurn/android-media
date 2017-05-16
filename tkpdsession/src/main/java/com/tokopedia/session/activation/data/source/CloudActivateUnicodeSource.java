@@ -6,9 +6,7 @@ import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.activation.data.ActivateUnicodeModel;
-import com.tokopedia.session.activation.data.ResendActivationModel;
 import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
-import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
 
 import rx.Observable;
 

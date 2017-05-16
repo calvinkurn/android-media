@@ -9,9 +9,11 @@ import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthIntercepto
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdResponseError;
+import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.util.GlobalConfig;
 
 import okhttp3.Interceptor;
@@ -125,6 +127,14 @@ public class OkHttpFactory {
                 .build();
     }
 
+    public OkHttpClient buildClientBearerWithClientDefaultAuth(){
+        return new TkpdOkHttpBuilder(builder)
+                .addInterceptor(new TkpdBearerWithAuthTypeJsonUtInterceptor())
+                .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
+                .addDebugInterceptor()
+                .build();
+    }
+
     public OkHttpClient buildClientDigitalAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
@@ -213,6 +223,23 @@ public class OkHttpFactory {
 
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBaseInterceptor)
+                .setOkHttpRetryPolicy(okHttpRetryPolicy);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdbBuilder.addInterceptor(debugInterceptor);
+            tkpdbBuilder.addInterceptor(chuckInterceptor);
+        }
+        return tkpdbBuilder.build();
+    }
+
+    public OkHttpClient buildDaggerClientBearerWithClientDefaultAuth(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
+                                                                     OkHttpRetryPolicy okHttpRetryPolicy,
+                                                                     ChuckInterceptor chuckInterceptor,
+                                                                     DebugInterceptor debugInterceptor){
+
+        TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
+                .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
+                .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {

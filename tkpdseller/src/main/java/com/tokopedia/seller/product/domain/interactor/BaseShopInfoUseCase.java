@@ -1,13 +1,10 @@
 package com.tokopedia.seller.product.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 

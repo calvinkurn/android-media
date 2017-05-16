@@ -9,7 +9,6 @@ import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
 import com.tokopedia.session.activation.data.source.CloudActivateUnicodeSource;
 import com.tokopedia.session.activation.data.source.CloudChangeEmailSource;
 import com.tokopedia.session.activation.data.source.CloudResendActivationSource;
-import com.tokopedia.session.activation.domain.RegisterActivationRepository;
 
 /**
  * Created by nisie on 4/17/17.
