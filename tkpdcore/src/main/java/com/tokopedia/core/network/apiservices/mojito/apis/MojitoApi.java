@@ -38,7 +38,8 @@ public interface MojitoApi {
             @Path("userId") String userId,
             @Query("q") String query,
             @Query("page") int page,
-            @Query("count") int count);
+            @Query("count") int count,
+            @Header("X-Device") String device);
 
     @GET(TkpdBaseURL.Mojito.PATH_CHECK_WISHLIST)
     Observable<Response<WishlistCheckResult>> checkWishlist(

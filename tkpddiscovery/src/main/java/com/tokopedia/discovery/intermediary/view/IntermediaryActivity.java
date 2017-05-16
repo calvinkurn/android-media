@@ -18,22 +18,17 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.fragment.BrowseParentFragment;
-import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
-import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
-import com.tokopedia.discovery.search.view.DiscoverySearchView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener{
+public class IntermediaryActivity extends BasePresenterActivity implements MenuItemCompat.OnActionExpandListener {
 
     private FragmentManager fragmentManager;
     MenuItem searchItem;
