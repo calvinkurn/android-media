@@ -37,6 +37,8 @@ public interface IntermediaryContract {
 
         void backToTop();
 
+        void updateDepartementId(String id);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.core.network.apiservices.ace.AceSearchService;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
-import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.apiservices.product.ProductActService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
 import com.tokopedia.core.network.apiservices.shop.MyShopEtalaseService;
@@ -35,9 +35,11 @@ import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
 import com.tokopedia.core.util.SessionHandler;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -66,9 +68,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     private final MyShopEtalaseService myShopEtalaseService;
     private final FaveShopActService faveShopActService;
     private final AceSearchService aceSearchService;
-    private final MojitoAuthService mojitoAuthService;
+    private final MojitoNoRetryAuthService mojitoNoRetryAuthService;
     private final GoldMerchantService goldMerchantService;
     private final int SERVER_ERROR_CODE = 500;
+    private static final String ERROR_MESSAGE = "message_error";
 
     public RetrofitInteractorImpl() {
         this.productService = new ProductService();
@@ -77,7 +80,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         this.productActService = new ProductActService();
         this.compositeSubscription = new CompositeSubscription();
         this.aceSearchService = new AceSearchService();
-        this.mojitoAuthService = new MojitoAuthService();
+        this.mojitoNoRetryAuthService = new MojitoNoRetryAuthService();
         this.goldMerchantService = new GoldMerchantService();
     }
 
@@ -441,7 +444,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void addToWishList(@NonNull Context context, @NonNull Integer params,
                               @NonNull final AddWishListListener listener) {
-        Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
+        Observable<Response<TkpdResponse>> observable = mojitoNoRetryAuthService.getApi()
                 .addWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override
@@ -465,7 +468,20 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
             public void onNext(Response<TkpdResponse> response) {
                 if (response.code() == ResponseStatus.SC_CREATED) {
                     listener.onSuccess();
-                } else {
+                } else if (response.code() == ResponseStatus.SC_BAD_REQUEST) {
+                    try {
+                        String msgError = "";
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                msgError+=jsonArray.get(i).toString()+" ";
+                            }
+                        listener.onError(msgError);
+                    } catch (Exception e) {
+                        listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+                }
+                else {
                     listener.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
@@ -479,7 +495,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     @Override
     public void removeFromWishList(@NonNull Context context, @NonNull Integer params,
                                    @NonNull final RemoveWishListListener listener) {
-        final Observable<Response<TkpdResponse>> observable = mojitoAuthService.getApi()
+        final Observable<Response<TkpdResponse>> observable = mojitoNoRetryAuthService.getApi()
                 .removeWishlist(String.valueOf(params), SessionHandler.getLoginID(context));
         Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
             @Override

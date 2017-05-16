@@ -2,6 +2,9 @@ package com.tokopedia.seller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -22,8 +25,6 @@ public class Router {
         if(context == null)
             return;
 
-        if(context.getApplicationContext() instanceof SellerModuleRouter){
-            ((SellerModuleRouter)context.getApplicationContext()).goToGMSubscribe(context);
-        }
+        context.startActivity(new Intent(context, GmSubscribeHomeActivity.class));
     }
 }

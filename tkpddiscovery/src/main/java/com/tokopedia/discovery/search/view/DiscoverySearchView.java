@@ -33,8 +33,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -335,8 +335,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         if (mOnQueryChangeListener != null && !TextUtils.equals(newText, mOldQueryText)) {
             mOnQueryChangeListener.onQueryTextChange(newText.toString());
         }
+
         mOldQueryText = newText.toString();
-        mSuggestionFragment.search(newText.toString());
+
+        if (mSuggestionFragment != null) {
+            mSuggestionFragment.search(newText.toString());
+        }
     }
 
     private void onSubmitQuery() {

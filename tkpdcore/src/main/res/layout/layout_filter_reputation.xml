@@ -18,7 +18,7 @@
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_search_message"
+            android:hint="@string/hint_search_review"
             android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 

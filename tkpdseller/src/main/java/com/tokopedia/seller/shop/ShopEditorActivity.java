@@ -20,26 +20,25 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.core.shipping.OpenShopEditShipping;
 import com.tokopedia.core.shipping.fragment.EditShippingViewListener;
 import com.tokopedia.core.shipping.model.openshopshipping.OpenShopData;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.Router;
+import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
 import com.tokopedia.seller.shop.fragment.ShopCreateFragment;
 import com.tokopedia.seller.shop.fragment.ShopEditorFragment;
 import com.tokopedia.seller.shop.presenter.ShopCreateView;
 import com.tokopedia.seller.shop.presenter.ShopEditorView;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.SessionHandler;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 
-import static android.R.attr.tag;
 import static com.tokopedia.core.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
 /**
@@ -73,6 +72,8 @@ public class ShopEditorActivity extends TkpdActivity implements
         fetchExtras(getIntent(), savedInstanceState);
 
         supportFragmentManager = getSupportFragmentManager();
+        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
+            initFragment(FRAGMENT);
     }
 
     @Override
@@ -89,8 +90,6 @@ public class ShopEditorActivity extends TkpdActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
-            initFragment(FRAGMENT);
     }
 
     @Override
@@ -129,6 +128,8 @@ public class ShopEditorActivity extends TkpdActivity implements
             SessionHandler session = new SessionHandler(this);
             session.Logout(this);
             UnifyTracking.eventDrawerClick((AppEventTracking.EventLabel.SIGN_OUT));
+        }else{
+            super.onBackPressed();
         }
     }
 
