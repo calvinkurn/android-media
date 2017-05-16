@@ -89,12 +89,6 @@ public class BrowseShopAdapter extends ProductAdapter {
         @BindView(R2.id.item_shop_name)
         TextView itemShopName;
 
-        @BindView(R2.id.item_shop_bought)
-        TextView itemShopBought;
-
-        @BindView(R2.id.item_shop_count_fav)
-        TextView itemShopCountFav;
-
         public ShopViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -108,8 +102,6 @@ public class BrowseShopAdapter extends ProductAdapter {
 
         public void bindData(final Context context, final ShopModel shopModel, int position){
             ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
-            itemShopBought.setText(shopModel.getTotalTransaction() + " " + context.getString(R.string.title_total_tx));
-            itemShopCountFav.setText(shopModel.getNumberOfFavorite() + " " + context.getString(R.string.title_favorite));
             itemShopName.setText(shopModel.getShopName());
             if (shopModel.getIsGold() != null){
                 LuckyShopImage.loadImage(itemShopLucky, shopModel.getLuckyImage());
@@ -117,13 +109,11 @@ public class BrowseShopAdapter extends ProductAdapter {
             if(shopModel.isOfficial() || shopModel.getIsGold().equals("1")){
                 itemShopBadge.setVisibility(View.VISIBLE);
                 if(shopModel.isOfficial()) {
-                    itemShopBought.setVisibility(View.GONE);
                     itemShopBadge.setImageResource(R.drawable.ic_badge_official);
                 } else if(shopModel.getIsGold().equals("1")){
                     itemShopBadge.setImageResource(R.drawable.ic_shop_gold);
                 }
             } else {
-                itemShopBought.setVisibility(View.VISIBLE);
                 itemShopBadge.setVisibility(View.GONE);
             }
             mainContent.setOnClickListener(new View.OnClickListener() {

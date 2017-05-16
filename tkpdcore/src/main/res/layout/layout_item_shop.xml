@@ -5,16 +5,18 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_product_list"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:padding="5dp">
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp">
 
         <com.tokopedia.core.customwidget.SquareImageView
             android:id="@+id/item_shop_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
             android:adjustViewBounds="true"
             android:scaleType="fitCenter" />
 
@@ -46,23 +48,71 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="left"
+        android:layout_marginTop="9dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textColor="@color/href_link"
         android:textSize="@dimen/fontvs"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/item_shop_bought"
+    <com.tokopedia.seller.home.view.ReputationView
+        android:id="@+id/reputation_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/label_color"
-        android:textSize="@dimen/fontvs" />
+        android:layout_marginTop="2dp"/>
 
     <TextView
-        android:id="@+id/item_shop_count_fav"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/label_color"
-        android:textSize="@dimen/fontvs" />
+        android:layout_marginTop="5dp"
+        android:drawableLeft="@drawable/ic_place_black_24dp"
+        android:text="Jakarta"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="9dp">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="41dp" />
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="41dp"
+            android:layout_marginLeft="12dp"/>
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="41dp"
+            android:layout_marginLeft="12dp"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/green_button_rounded">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawableLeft="@drawable/ic_add"
+            android:drawablePadding="6dp"
+            android:textSize="13sp"
+            android:textColor="@color/white"
+            android:text="Favoritkan"/>
+
+    </RelativeLayout>
+
+
+
+
+
 </LinearLayout>
