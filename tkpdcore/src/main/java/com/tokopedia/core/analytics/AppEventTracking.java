@@ -85,6 +85,8 @@ public interface AppEventTracking {
         String TOP_SELLER = "clickTopSeller";
         String SLIDE_BANNER = "sliderBanner";
         String SUCCESS_SMART_LOCK = "eventSuccessSmartLock";
+        String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
+        String RECHARGE_TRACKING = "rechargeTracking";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -175,6 +177,7 @@ public interface AppEventTracking {
         String PUSH_NOTIFICATION = "Push Notification";
         String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
+        String RECHARGE = "Recharge - ";
     }
 
     interface Action {
@@ -227,6 +230,12 @@ public interface AppEventTracking {
         String OPEN = "Open";
         String OTP_SUCCESS = "OTP Success";
         String RECEIVED = "received";
+        String CLICK_BELI = "Click Beli";
+        String CLICK_BELI_WIDGET = CLICK_BELI + " from Widget";
+        String CLICK_BELI_INSTANT_SALDO = CLICK_BELI + " with Instant Saldo";
+        String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
+        String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
+        String VIEW_CHECKOUT_PAGE = "View Checkout Page";
     }
 
     interface EventLabel {
