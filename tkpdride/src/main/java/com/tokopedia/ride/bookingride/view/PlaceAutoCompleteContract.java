@@ -69,6 +69,10 @@ public interface PlaceAutoCompleteContract {
         void hideGoogleLabel();
 
         void showGoogleLabel();
+
+        void showClearButton();
+
+        void hideClearButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {

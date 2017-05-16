@@ -295,6 +295,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 //        if (isLoadingPlaces) return;
 //        isLoadingPlaces = true;
         getView().showAutoCompleteLoadingCross();
+        getView().hideClearButton();
         getView().hideAutoDetectLocationButton();
         getView().hideHomeLocationButton();
         getView().hideWorkLocationButton();
@@ -422,6 +423,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                                getView().showGoogleLabel();
                                                getView().renderPlacesList(addresses);
                                                getView().hideAutoCompleteLoadingCross();
+                                               getView().showClearButton();
                                            }
                                        }
                                    }

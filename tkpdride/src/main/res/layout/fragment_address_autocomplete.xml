@@ -46,11 +46,12 @@
                     android:id="@+id/layout_loader_cross"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginBottom="2dp">
 
                     <ImageView
-                        android:id="@+id/cabs_autocomplete_cross"
+                        android:id="@+id/iv_cross"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
@@ -59,12 +60,12 @@
                         android:visibility="gone" />
 
                     <ProgressBar
-                        android:id="@+id/materialLoader"
+                        android:id="@+id/pb_loader"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
                         android:padding="8dp"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
                 </FrameLayout>
 
                 <EditText

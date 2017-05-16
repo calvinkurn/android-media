@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -65,8 +66,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     @BindView(R2.id.cabs_autocomplete_edit_text)
     EditText mAutocompleteEditText;
-    @BindView(R2.id.layout_loader_cross)
-    FrameLayout mLoaderCrossFrameLayout;
+    @BindView(R2.id.pb_loader)
+    ProgressBar mLoaderCrossFrameLayout;
     @BindView(R2.id.cabs_autocomplete_back_icon)
     ImageView mBackIconImageView;
     @BindView(R2.id.crux_cabs_auto_detect_container)
@@ -79,6 +80,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     RecyclerView mAutoCompleteRecylerView;
     @BindView(R2.id.iv_google_label)
     ImageView googleLabelImageView;
+    @BindView(R2.id.iv_cross)
+    ImageView clearFieldImageView;
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
     private boolean showAutodetectLocation;
@@ -401,5 +404,21 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     @Override
     public void showGoogleLabel() {
         googleLabelImageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showClearButton() {
+        clearFieldImageView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideClearButton() {
+        clearFieldImageView.setVisibility(View.GONE);
+    }
+
+    @OnClick(R2.id.iv_cross)
+    public void actionClearIconClicked(){
+        mAutocompleteEditText.setText("");
+        hideClearButton();
     }
 }
