@@ -17,7 +17,7 @@ import butterknife.BindView;
 
 public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_feed_product_empty;
+    public static final int LAYOUT = R.layout.promoted_shop_layout;
 
     @BindView(R.id.author_name)
     TextView authorName;

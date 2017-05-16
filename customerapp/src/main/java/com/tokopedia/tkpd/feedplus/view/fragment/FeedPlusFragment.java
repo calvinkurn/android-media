@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
+
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -18,8 +19,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.feedplus.DaggerFeedPlusComponent;
+
 import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
