@@ -268,9 +268,14 @@ public class ClientNumberInputView extends LinearLayout {
                 for (Validation validation : clientNumber.getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), tempInput)) {
                         actionListener.onClientNumberInputInvalid();
-                        tvErrorClientNumber.setText(validation.getError());
-                        tvErrorClientNumber.setVisibility(VISIBLE);
-                        return;
+                        if (tempInput.isEmpty()) {
+                            tvErrorClientNumber.setText("");
+                            tvErrorClientNumber.setVisibility(GONE);
+                        } else {
+                            tvErrorClientNumber.setText(validation.getError());
+                            tvErrorClientNumber.setVisibility(VISIBLE);
+                        }
+                        break;
                     } else {
                         tvErrorClientNumber.setText("");
                         tvErrorClientNumber.setVisibility(GONE);

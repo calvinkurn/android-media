@@ -13,20 +13,27 @@ public class AttributesLastOrderData {
     private String clientNumber;
     @SerializedName("operator_id")
     @Expose
-    private int operatorId;
+    private String operatorId;
     @SerializedName("product_id")
     @Expose
-    private int productId;
+    private String productId;
+    @SerializedName("category_id")
+    @Expose
+    private String categoryId;
 
     public String getClientNumber() {
         return clientNumber;
     }
 
-    public int getOperatorId() {
+    public String getOperatorId() {
         return operatorId;
     }
 
-    public int getProductId() {
+    public String getProductId() {
         return productId;
+    }
+
+    public String getCategoryId() {
+        return categoryId;
     }
 }

@@ -80,7 +80,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         this.dataList = dataList;
         if (this.dataSelected == null) this.dataSelected = dataList.get(0);
         invalidateContentView();
-        actionListener.onInitialDataDigitalChooserSelectedRendered(dataSelected);
+        actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
     }
 

@@ -52,13 +52,9 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         onCreateView();
     }
 
-    public void renderHistoryClientNumber(H historyClientNumber) {
-        this.historyClientNumber = historyClientNumber;
-        onHistoryClientNumberRendered();
-    }
-
-    public void renderData(C data) {
+    public void renderData(C data, H historyClientNumber) {
         this.data = data;
+        this.historyClientNumber = historyClientNumber;
         onInitialDataRendered();
     }
 
@@ -80,10 +76,12 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         return productSelected;
     }
 
-    public void restoreStateData(C categoryDataState, O operatorSelectedState,
+    public void restoreStateData(C categoryDataState,
+                                 H historyClientNumberState,
+                                 O operatorSelectedState,
                                  P productSelectedState, String clientNumberState,
                                  boolean isInstantCheckoutChecked) {
-        if (data == null) renderData(categoryDataState);
+        if (data == null) renderData(categoryDataState, historyClientNumberState);
         this.operatorSelected = operatorSelectedState;
         this.productSelected = productSelectedState;
         onRestoreSelectedData(
@@ -119,8 +117,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
             O operatorSelectedState, P productSelectedState,
             String clientNumberState, boolean isInstantCheckoutChecked
     );
-
-    protected abstract void onHistoryClientNumberRendered();
 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
