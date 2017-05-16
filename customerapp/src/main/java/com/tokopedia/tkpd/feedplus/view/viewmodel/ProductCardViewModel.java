@@ -17,7 +17,7 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
     private ArrayList<ProductFeedViewModel> listProduct;
     private String actionText;
     private boolean isGoldMerchant;
-    private int postTime;
+    private String postTime;
 
     public ProductCardViewModel(String s, ArrayList<ProductFeedViewModel> listProduct) {
         this.shopName = s;
@@ -25,6 +25,7 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
         this.actionText = "ubah 1 produk";
         this.shopAvatar = "https://imagerouter.tokopedia.com/img/100-square/shops-1/2016/8/5/1205649/1205649_620e3ec4-9a94-4210-bac4-f31ab1d1b9f5.jpg";
         this.isGoldMerchant = true;
+        this.postTime = "4 hours ago";
     }
 
     @Override
@@ -73,11 +74,11 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
         isGoldMerchant = goldMerchant;
     }
 
-    public int getPostTime() {
+    public String getPostTime() {
         return postTime;
     }
 
-    public void setPostTime(int postTime) {
+    public void setPostTime(String postTime) {
         this.postTime = postTime;
     }
 }

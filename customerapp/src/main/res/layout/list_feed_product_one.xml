@@ -18,7 +18,8 @@
             android:layout_width="@dimen/user_ava"
             android:layout_height="@dimen/user_ava"
             android:layout_marginRight="@dimen/margin_small"
-            tools:src="@drawable/ic_check_green_24dp" />
+            tools:src="@drawable/ic_check_green_24dp"
+            android:background="@drawable/cards_ui_2"/>
 
         <ImageView
             android:id="@+id/gold_merchant"
@@ -50,7 +51,7 @@
             tools:text="4 hours ago" />
     </RelativeLayout>
 
-    <ImageView
+    <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

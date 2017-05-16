@@ -18,16 +18,15 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.feedplus.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.feedplus.FeedPlus;
-import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactoryImpl;
+import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +86,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
-        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl();
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
 
     }
@@ -153,6 +152,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.onDestroyView();
         unbinder.unbind();
         presenter.detachView();
+    }
+
+    @Override
+    public void onShareButtonClicked() {
+
     }
 
 //    @Override

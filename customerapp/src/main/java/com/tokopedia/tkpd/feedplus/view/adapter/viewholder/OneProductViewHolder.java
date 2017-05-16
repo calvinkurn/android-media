@@ -10,6 +10,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.feedplus.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 import butterknife.BindView;
@@ -48,12 +49,14 @@ public class OneProductViewHolder extends AbstractViewHolder<ProductCardViewMode
     View shareButton;
 
     private ProductCardViewModel productCardViewModel;
+    private FeedPlus.View viewListener;
 
     private Context context;
 
-    public OneProductViewHolder(View itemView) {
+    public OneProductViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         context = itemView.getContext();
+        this.viewListener = viewListener;
     }
 
     @Override
@@ -79,13 +82,9 @@ public class OneProductViewHolder extends AbstractViewHolder<ProductCardViewMode
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showShareDialog();
+                viewListener.onShareButtonClicked();
             }
         });
-
-    }
-
-    private void showShareDialog() {
 
     }
 

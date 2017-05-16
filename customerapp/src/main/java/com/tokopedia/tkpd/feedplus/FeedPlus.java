@@ -10,6 +10,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 public interface FeedPlus{
 
     public interface View extends CustomerView {
+        void onShareButtonClicked();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
