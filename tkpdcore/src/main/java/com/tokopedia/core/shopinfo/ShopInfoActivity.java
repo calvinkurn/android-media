@@ -77,7 +77,8 @@ import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
  */
 
 public class ShopInfoActivity extends BaseActivity
-        implements OfficialShopHomeFragment.OfficialShopInteractionListener {
+        implements OfficialShopHomeFragment.OfficialShopInteractionListener,
+        ProductList.ProductListListener {
     public static final int REQUEST_CODE_LOGIN = 561;
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String URL_RECHARGE_HOST = "pulsa.tokopedia.com";
@@ -245,6 +246,11 @@ public class ShopInfoActivity extends BaseActivity
         facadeAction.cancelToggleFav();
         facadeGetRetrofit.cancelGetShopInfo();
         unregisterReceiver(loginReceiver);
+    }
+
+    @Override
+    public boolean isOfficialStore() {
+        return shopModel.info.shopIsOfficial == 1;
     }
 
     private void clearVariable() {

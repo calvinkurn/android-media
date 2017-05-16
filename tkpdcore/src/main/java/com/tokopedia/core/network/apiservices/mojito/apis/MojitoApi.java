@@ -4,8 +4,10 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Brands;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
+import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
@@ -45,5 +47,10 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_DETAIL)
     Observable<Response<ProductCampaignResponse>> getProductCampaign(
             @Query(ID) String id
+    );
+
+    @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_PRODUCT)
+    Observable<Response<ShopProductCampaignResponse>> getProductsCampaign(
+            @Query("pid") String ids
     );
 }

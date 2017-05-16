@@ -128,12 +128,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
-            textDiscount.setText(
-                    String.format(
-                            discount,
-                            data.getPercentage()
-                    )
-            );
+            textDiscount.setText(String.format(discount,data.getPercentage()));
 
             try {
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);

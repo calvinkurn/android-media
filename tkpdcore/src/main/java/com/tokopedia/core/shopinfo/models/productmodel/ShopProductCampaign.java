@@ -7,19 +7,23 @@ import com.google.gson.annotations.SerializedName;
  * Created by brilliant.oka on 29/03/17.
  */
 
-public class ProductCampaign {
+public class ShopProductCampaign {
+
     @SerializedName("percentage_amount")
     @Expose
     private int percentageAmount;
-    @SerializedName("original_price")
+
+    @SerializedName("discounted_price")
     @Expose
-    private String originalPrice;
+    private String discountedPrice;
+
     @SerializedName("end_date")
     @Expose
     private String endDate;
-    @SerializedName("original_price_no_idr")
+
+    @SerializedName("original_price")
     @Expose
-    private String originalPriceNoIdr;
+    private String originalPrice;
 
     public int getPercentageAmount() {
         return percentageAmount;
@@ -29,12 +33,12 @@ public class ProductCampaign {
         this.percentageAmount = percentageAmount;
     }
 
-    public String getOriginalPrice() {
-        return originalPrice;
+    public String getDiscountedPrice() {
+        return discountedPrice;
     }
 
-    public void setOriginalPrice(String originalPrice) {
-        this.originalPrice = originalPrice;
+    public void setDiscountedPrice(String discountedPrice) {
+        this.discountedPrice = discountedPrice;
     }
 
     public String getEndDate() {
@@ -45,11 +49,12 @@ public class ProductCampaign {
         this.endDate = endDate;
     }
 
-    public String getOriginalPriceNoIdr() {
-        return originalPriceNoIdr;
+    public String getOriginalPrice() {
+        return originalPrice;
     }
 
-    public void setOriginalPriceNoIdr(String originalPriceNoIdr) {
-        this.originalPriceNoIdr = originalPriceNoIdr;
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
     }
+
 }

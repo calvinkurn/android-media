@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.tkpd.library.utils.BadgeUtil;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
@@ -28,7 +25,6 @@ import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.shopinfo.models.productmodel.Label;
 import com.tokopedia.core.shopinfo.models.productmodel.List;
-import com.tokopedia.core.shopinfo.models.productmodel.ProductCampaign;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.util.MethodChecker;
 
@@ -108,14 +104,14 @@ public class ProductLargeDelegate {
         vholder.shopName.setVisibility(View.GONE);
         vholder.location.setVisibility(View.GONE);
 
-        if (item.productCampaign != null && item.productCampaign.getOriginalPrice() != null) {
+        if (item.shopProductCampaign != null && item.shopProductCampaign.getDiscountedPrice() != null) {
             vholder.price.setTextColor(ContextCompat.getColor(context, R.color.bright_red));
-            vholder.textOriginalPrice.setText(item.productCampaign.getOriginalPrice());
+            vholder.textOriginalPrice.setText(item.shopProductCampaign.getDiscountedPrice());
             vholder.textOriginalPrice.setPaintFlags(
                     vholder.textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
             vholder.textDiscount.setText(
-                String.format(vholder.discount,item.productCampaign.getPercentageAmount())
+                String.format(vholder.discount,item.shopProductCampaign.getPercentageAmount())
             );
             vholder.textOriginalPrice.setVisibility(View.VISIBLE);
             vholder.frameDiscount.setVisibility(View.VISIBLE);

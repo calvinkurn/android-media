@@ -102,7 +102,6 @@ public class List {
     @SerializedName("labels")
     @Expose
     public java.util.List<Label> labels;
-    @SerializedName("product_campaign")
-    @Expose
-    public ProductCampaign productCampaign;
+
+    public ShopProductCampaign shopProductCampaign;
 }
