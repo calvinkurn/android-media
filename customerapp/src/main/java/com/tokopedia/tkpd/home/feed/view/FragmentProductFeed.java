@@ -19,6 +19,8 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -185,6 +187,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showFeedDataFromCache(List<RecyclerViewItem> dataFeedList) {
+        TrackingUtils.sendMoEngageOpenFeedEvent(dataFeedList.size());
         final int historyDataPosition = 0;
         adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
         adapter.addAll(true, false, dataFeedList);

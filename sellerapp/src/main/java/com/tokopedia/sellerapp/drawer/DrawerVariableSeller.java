@@ -677,7 +677,7 @@ public class DrawerVariableSeller extends DrawerVariable {
 
     }
 
-    private void getUserInfo() {
+    public void getUserInfo() {
         networkInteractor.getProfileInfo(context, new NetworkInteractor.ProfileInfoListener() {
             @Override
             public void onSuccess(DrawerHeader profile) {

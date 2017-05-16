@@ -1279,6 +1279,18 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventMoRegistrationStart(String medium) {
+        getMoEngine().sendRegistrationStartEvent(medium);
+    }
+
+    public static void eventMoRegister(CustomerWrapper customerWrapper) {
+        getMoEngine().sendRegisterEvent(
+                customerWrapper.getFullName(),
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.MOBILE_NUM),
+                customerWrapper.getExtraAttr().get(AppEventTracking.MOENGAGE.DATE_OF_BIRTH)
+        );
+    }
+
     public static void eventOTPSuccess(){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.EVENT_OTP,

@@ -1,8 +1,11 @@
 package com.tokopedia.seller.topads.view.fragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -40,6 +43,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
 
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
+        void startShowCase();
     }
 
     private LabelView promoGroupLabelView;
@@ -61,6 +65,15 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onAttach(activity);
         if (activity instanceof TopAdsDetailProductFragmentListener) {
             listener = (TopAdsDetailProductFragmentListener) activity;
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopAdsDetailProductFragmentListener) {
+            listener = (TopAdsDetailProductFragmentListener) context;
         }
     }
 
@@ -141,7 +154,13 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     public void onAdLoaded(Ad ad) {
         super.onAdLoaded(ad);
-        productAd = (ProductAd) ad;
+        if (ad == null) {
+            // default ad from intent
+            this.productAd = (ProductAd) super.ad;
+        } else {
+            this.productAd = (ProductAd) ad;
+        }
+        if (this.productAd == null) return;
         String groupName = productAd.getGroupName();
         if (isHasGroupAd()) {
             priceAndSchedule.setTitle(getString(R.string.topads_label_title_price_promo));
@@ -151,6 +170,9 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         } else {
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
+        }
+        if (listener!= null) {
+            listener.startShowCase();
         }
     }
 
@@ -223,5 +245,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         super.onRestoreState(savedState);
         productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
         onAdLoaded(productAd);
+    }
+
+    // for show case
+    public View getStatusView(){
+        return getView().findViewById(R.id.status);
     }
 }

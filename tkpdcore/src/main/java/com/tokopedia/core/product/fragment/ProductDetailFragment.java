@@ -476,7 +476,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showWishListRetry(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity());
+        NetworkErrorHelper.showSnackbar(getActivity(),errorMessage);
     }
 
     @Override
