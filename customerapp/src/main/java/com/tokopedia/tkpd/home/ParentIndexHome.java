@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -41,14 +42,12 @@ import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
-import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -60,7 +59,6 @@ import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
 
-//import com.tokopedia.tkpd.home.fragment.DaggerFragmentProductFeed;
 
 /**
  * Created by Nisie on 1/07/15.
@@ -82,19 +80,13 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static final String VIEW_PAGE_POSITION = "VIEW_PAGE_POSITION";
     public static final String FETCH_BANK = "FETCH_BANK";
     private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
-    private static final int ONBOARDING_REQUEST = 101;
+    public static final int ONBOARDING_REQUEST = 101;
+    public static final int WISHLIST_REQUEST = 202;
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
-    protected WrappedTabPageIndicator indicatorTab;
-    //    protected boolean isLogin = false;
-//    protected String[] CONTENT;
-//    protected ListView vHotList;
     List<String> content;
-    protected ListViewHotProductParent lvAdapter;
     protected View footerCat;
-    protected IndexHomeInterafaces.IndexFavRefresh2 prodListener;
-    protected IndexHomeInterafaces.IndexFavRefresh2 shopListener;
     protected LocalCacheHandler cache;
 
     TkpdProgressDialog progressDialog;
@@ -537,11 +529,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
         }, requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ONBOARDING_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == ONBOARDING_REQUEST && resultCode == RESULT_OK) {
             Intent intent = SessionRouter.getLoginActivityIntent(this);
             intent.putExtras(data.getExtras());
             startActivity(intent);
             finish();
+        }
+        if(requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
+            mViewPager.setCurrentItem(3);
         }
     }
 

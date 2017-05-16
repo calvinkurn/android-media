@@ -18,6 +18,7 @@ public class Config {
     private String sessionId;
     private String device;
     private String clientId;
+    private Endpoint endpoint;
     private boolean withPreferedCategory;
 
     public Config(Builder builder) {
@@ -27,6 +28,7 @@ public class Config {
         this.device = builder.device;
         this.clientId = builder.clientId;
         this.withPreferedCategory = builder.withPreferedCategory;
+        this.endpoint = builder.endpoint;
     }
 
     public boolean isWithPreferedCategory() {
@@ -49,6 +51,10 @@ public class Config {
         return device;
     }
 
+    public Endpoint getEndpoint() {
+        return endpoint;
+    }
+
     public String getClientId() {
         return clientId;
     }
@@ -60,6 +66,7 @@ public class Config {
         private String sessionId;
         private String device;
         private String clientId;
+        private Endpoint endpoint;
         private boolean withPreferedCategory;
 
         public Builder() {
@@ -78,10 +85,17 @@ public class Config {
             return this;
         }
 
+        public Builder setEndpoint(Endpoint endpoint) {
+            this.endpoint = endpoint;
+            return this;
+        }
+
         public Builder withPreferedCategory() {
             this.withPreferedCategory = true;
             return this;
         }
+
+
 
         public Config build() {
             return new Config(this);

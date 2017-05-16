@@ -218,7 +218,7 @@ public class WishListImpl implements WishList {
         if (mPaging.getPage() == 1) {
             data.clear();
             if (wishlistData.getWishlist().size() == 0)
-                wishListView.displayTopAds();
+                wishListView.setSearchNotFound();
         }
         wishListView.displayPull(false);
         dataWishlist.addAll(wishlistData.getWishlist());
@@ -235,7 +235,7 @@ public class WishListImpl implements WishList {
         wishListView.loadDataChange();
         wishListView.displayContentList(true);
         wishListView.displayLoading(false);
-        wishListView.clearSearch();
+        wishListView.clearSearchView();
     }
 
     @Override
@@ -356,6 +356,9 @@ public class WishListImpl implements WishList {
                     wishListView.displayLoadMore(false);
                 }
                 wishListView.setPullEnabled(true);
+                if(response.body().getWishlist().size() == 0){
+                    wishListView.setEmptyState();
+                }
             }
         };
 
@@ -453,7 +456,7 @@ public class WishListImpl implements WishList {
                 data.clear();
                 dataWishlist.clear();
                 if (wishlist.getWishlists().size() == 0)
-                    wishListView.displayTopAds();
+                    wishListView.setSearchNotFound();
             }
             dataWishlist.addAll(wishlistData.getWishlist());
             data.addAll(convertToProductItemList(wishlistData.getWishlist()));

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -26,7 +26,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -55,7 +54,8 @@ import butterknife.Unbinder;
  * Created by m.normansyah on 01/12/2015.
  */
 public class WishListFragment extends TkpdBaseV4Fragment implements WishListView,
-        SearchView.OnQueryTextListener, TopAdsItemClickListener {
+        SearchView.OnQueryTextListener, TopAdsItemClickListener,
+        GridLayoutProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private Unbinder unbinder;
@@ -195,15 +195,19 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        searchEditText.setQuery("", false);
-                        searchEditText.setIconified(true);
-                        wishList.fetchDataAfterClearSearch(getActivity());
+                        clearSearchResult();
                     }
                 });
     }
 
+    public void clearSearchResult() {
+        searchEditText.setQuery("", false);
+        searchEditText.setIconified(true);
+        wishList.fetchDataAfterClearSearch(getActivity());
+    }
+
     @Override
-    public void clearSearch() {
+    public void clearSearchView() {
         searchEditText.setQuery("", false);
         searchEditText.clearFocus();
     }
@@ -235,7 +239,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void displayTopAds() {
+    public void setSearchNotFound() {
         adapter.setSearchNotFound();
     }
 
@@ -355,6 +359,18 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void initAdapterWithData(List<RecyclerViewItem> data) {
         adapter = new GridLayoutProductAdapter(getActivity(), data);
         adapter.setWishlistView(this);
+        adapter.setActionButtonClicked(this);
+    }
+
+    @Override
+    public void showAllWishlist() {
+        clearSearchResult();
+    }
+
+    @Override
+    public void findProduct() {
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override
@@ -429,7 +445,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     // header column
                     return footerColumnSize;
                 } else if (position % 5 == 0 && wishList.getData().get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
-                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH) {
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH
+                        || wishList.getData().get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_STATE) {
                     // top ads span column
                     return headerColumnSize;
                 } else {
@@ -443,6 +460,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void loadDataChange() {
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setEmptyState() {
+        adapter.setEmptyState();
     }
 
     @Override

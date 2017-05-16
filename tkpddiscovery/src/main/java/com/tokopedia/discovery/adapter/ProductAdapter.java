@@ -159,6 +159,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                 case TkpdState.RecyclerView.VIEW_CATEGORY_REVAMP_HEADER:
                     ((RevampCategoryHeaderViewHolder) holder).bind((CategoryHeaderRevampModel) data.get(position));
                     break;
+                case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                    ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
+                    break;
                 default:
                     super.onBindViewHolder(holder, position);
             }
@@ -223,8 +226,11 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     .withPreferedCategory()
                     .build();
             topAdsView.setConfig(topAdsconfig);
-            topAdsView.loadTopAds();
             topAdsView.setAdsItemClickListener(this);
+        }
+
+        public void loadTopAds(){
+            topAdsView.loadTopAds();
         }
 
         @Override

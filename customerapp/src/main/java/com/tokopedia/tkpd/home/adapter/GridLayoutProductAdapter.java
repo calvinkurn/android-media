@@ -13,13 +13,13 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.FlowLayout;
@@ -36,10 +36,10 @@ import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
@@ -60,6 +60,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     private List<RecyclerViewItem> data;
     private Context context;
     private WishListView wishlistView;
+    private OnWishlistActionButtonClicked actionButtonClicked;
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -104,6 +105,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
     }
 
+    public void setActionButtonClicked(OnWishlistActionButtonClicked actionButtonClicked) {
+        this.actionButtonClicked = actionButtonClicked;
+    }
+
     public void setWishlistView(WishListView view) {
         wishlistView = view;
     }
@@ -111,6 +116,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
 
     public void setSearchNotFound() {
         data.add(new EmptySearchItem());
+    }
+
+    public void setEmptyState() {
+        data.add(new EmptyStateItem());
     }
 
     @Override
@@ -125,11 +134,18 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 return createProductView(viewGroup);
             case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
                 return createEmptySearch(viewGroup);
+            case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
+                return createEmptyState(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
     }
 
+    public static class EmptyStateItem extends RecyclerViewItem {
+        public EmptyStateItem() {
+            setType(TkpdState.RecyclerView.VIEW_EMPTY_STATE);
+        }
+    }
 
     public static class EmptySearchItem extends RecyclerViewItem {
         public EmptySearchItem() {
@@ -137,19 +153,41 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+    public RecyclerView.ViewHolder createEmptyState(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.layout_wishlist_empty_state, null);
-        return new TopAdsEmptyStateViewHolder(view);
+        return new EmptyViewHolder(view, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (actionButtonClicked != null) {
+                    actionButtonClicked.findProduct();
+                }
+            }
+        });
     }
 
-    public static class TopAdsEmptyStateViewHolder extends RecyclerView.ViewHolder implements
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_empty_search, null);
+        return new EmptyViewHolder(view, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (actionButtonClicked != null) {
+                    actionButtonClicked.showAllWishlist();
+                }
+            }
+        });
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
             TopAdsItemClickListener {
         @BindView(R.id.topads)
         TopAdsView topAdsView;
+        @BindView(R.id.action_btn)
+        Button actionBtn;
         private Context context;
 
-        public TopAdsEmptyStateViewHolder(View itemView) {
+        public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
             super(itemView);
             context = itemView.getContext();
             ButterKnife.bind(this, itemView);
@@ -159,8 +197,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                     .withPreferedCategory()
                     .build();
             topAdsView.setConfig(topAdsconfig);
-            topAdsView.loadTopAds();
             topAdsView.setAdsItemClickListener(this);
+            actionBtn.setOnClickListener(clickListener);
+        }
+
+        public void loadTopAds() {
+            topAdsView.loadTopAds();
         }
 
         @Override
@@ -179,7 +221,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         @Override
-        public void onAddFavorite(com.tokopedia.topads.sdk.domain.model.Data data) {
+        public void onAddFavorite(Data data) {
 
         }
     }
@@ -202,6 +244,11 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
+                break;
+            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+            case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
+                ((EmptyViewHolder) viewHolder).loadTopAds();
+                break;
             default:
                 super.onBindViewHolder(viewHolder, position);
         }
@@ -272,7 +319,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         viewHolder.shopName.setText(Html.fromHtml(product.shop));
         viewHolder.location.setText(product.getShopLocation());
         setProductImage(viewHolder, product.getImgUri());
-        if(product.labels == null) {
+        if (product.labels == null) {
             product.labels = new ArrayList<Label>();
             if (product.preorder != null && product.preorder.equals("1")) {
                 Label label = new Label();
@@ -287,14 +334,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 product.labels.add(label);
             }
         }
-        if(product.badges == null){
+        if (product.badges == null) {
             product.badges = new ArrayList<>();
-            if(product.isGold!=null && product.isGold.equals("1")){
+            if (product.isGold != null && product.isGold.equals("1")) {
                 Badge badge = new Badge();
                 badge.setImageUrl("https://ecs7.tokopedia.net/img/gold-active-large.png");
                 product.badges.add(badge);
             }
-            if(product.luckyShop!=null && !product.luckyShop.isEmpty()){
+            if (product.luckyShop != null && !product.luckyShop.isEmpty()) {
                 Badge badge = new Badge();
                 badge.setImageUrl(product.luckyShop);
                 product.badges.add(badge);
@@ -323,7 +370,7 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(data.get(position) instanceof ProductItem) {
+                if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
                     UnifyTracking.eventWishlistView(product.getName());
 
@@ -368,14 +415,14 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
     }
 
 
-    private void setLabels(ViewHolder holder, ProductItem data){
+    private void setLabels(ViewHolder holder, ProductItem data) {
         holder.labelContainer.removeAllViews();
-        if(data.getLabels() != null){
+        if (data.getLabels() != null) {
             for (Label label : data.getLabels()) {
                 View view = LayoutInflater.from(context).inflate(R.layout.label_layout, null);
                 TextView labelText = (TextView) view.findViewById(R.id.label);
                 labelText.setText(label.getTitle());
-                if(!label.getColor().toLowerCase().equals("#ffffff")){
+                if (!label.getColor().toLowerCase().equals("#ffffff")) {
                     labelText.setBackgroundResource(R.drawable.bg_label);
                     labelText.setTextColor(ContextCompat.getColor(context, R.color.white));
                     ColorStateList tint = ColorStateList.valueOf(Color.parseColor(label.getColor()));
@@ -426,18 +473,18 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 }
             }
         }
-
         if (isLastItemPosition(position) || data.size() == 0) {
             return super.getItemViewType(position);
         }
         if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
         }
-
-        if(data.get(position) instanceof EmptySearchItem){
+        if (data.get(position) instanceof EmptySearchItem) {
             return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
         }
-
+        if (data.get(position) instanceof EmptyStateItem) {
+            return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
+        }
         return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
 
@@ -493,6 +540,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 .setProductName(recentView.getProductName())
                 .setProductImage(recentView.getProductImage())
                 .build();
+    }
+
+    public interface OnWishlistActionButtonClicked {
+        void showAllWishlist();
+
+        void findProduct();
     }
 
 }

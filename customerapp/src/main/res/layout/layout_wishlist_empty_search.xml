@@ -17,9 +17,11 @@
         <ImageView
             android:id="@id/no_result_image"
             android:layout_width="@dimen/img_hotprod"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/img_hotprod"
             android:layout_gravity="center"
-            android:src="@drawable/ic_wishlist_empty_state"
+            android:padding="@dimen/margin_large"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_wishlist_empty_search"
             android:layout_marginBottom="@dimen/margin_vs" />
 
         <TextView
@@ -30,7 +32,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
-            android:text="@string/empty_wishlist"
+            android:text="Produk tidak ditemukan di Wishlist"
             android:textColor="@color/black"
             android:textStyle="bold" />
 
@@ -38,7 +40,7 @@
             android:id="@+id/action_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/find_product"
+            android:text="Lihat semua Wishlist"
             android:textColor="@color/white"
             android:background="@drawable/bg_btn_green"
             android:layout_margin="@dimen/padding_small"/>

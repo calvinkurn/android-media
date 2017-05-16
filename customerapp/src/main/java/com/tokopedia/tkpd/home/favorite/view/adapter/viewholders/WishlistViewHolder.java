@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.home.favorite.view.adapter.viewholders;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
@@ -85,7 +86,11 @@ public class WishlistViewHolder extends AbstractViewHolder<WishlistViewModel> {
         UnifyTracking.eventWishlistAll();
         Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-        context.startActivity(intent);
+        if(context instanceof Activity){
+            ((Activity) context).startActivityForResult(intent, ParentIndexHome.WISHLIST_REQUEST);
+        } else {
+            context.startActivity(intent);
+        }
     }
 
     @OnClick(R.id.find_now)
