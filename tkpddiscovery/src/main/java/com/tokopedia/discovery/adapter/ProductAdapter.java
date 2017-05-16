@@ -31,6 +31,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.core.network.entity.discovery.BannerOfficialStoreModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tkpd.library.utils.ImageHandler;
@@ -1071,11 +1072,9 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
             imageBannerOs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(viewModel.bannerOfficialStore.getShopUrl())
-                    );
-                    context.startActivity(intent);
+                    goToUrl(viewModel.bannerOfficialStore.getShopUrl());
+
+                    // GTM Tracker
                     UnifyTracking.eventClickOsBanner(
                             viewModel.bannerOfficialStore.getBannerUrl()
                             + " - "
@@ -1083,6 +1082,36 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     );
                 }
             });
+        }
+
+        private void goToUrl(String url) {
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, context);
+                    break;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, context);
+                    break;
+                case DeepLinkChecker.HOT_LIST:
+                    DeepLinkChecker.openHomepage(context);
+                    break;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, context);
+                    break;
+                case DeepLinkChecker.PRODUCT:
+                    DeepLinkChecker.openProduct(url, context);
+                    break;
+                case DeepLinkChecker.SHOP:
+                    DeepLinkChecker.openShop(url, context);
+                    break;
+                case DeepLinkChecker.ETALASE:
+                    DeepLinkChecker.openShopEtalase(url, context);
+                    break;
+                default:
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    context.startActivity(intent);
+                    break;
+            }
         }
     }
 }

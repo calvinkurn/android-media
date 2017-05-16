@@ -39,7 +39,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -125,6 +124,7 @@ public class ShopInfoActivity extends BaseActivity
     public static String SHOP_FAVORITE = "shop_favorite";
     public static String SHOP_COVER = "shop_cover";
     public static String SHOP_AD_KEY = "shop_ad_key";
+    public static String ETALASE_NAME = "etalase_name";
     private final int REQ_RELOAD = 100;
     private ViewHolder holder;
     private com.tokopedia.core.shopinfo.models.shopmodel.ShopModel shopModel;
@@ -176,6 +176,12 @@ public class ShopInfoActivity extends BaseActivity
     public static Bundle createBundle(String id, String domain, String name, String avatar, String cover, int favorite) {
         Bundle bundle = createBundle(id, domain, name, avatar, favorite);
         bundle.putString(SHOP_COVER, cover);
+        return bundle;
+    }
+
+    public static Bundle createBundleWithEtalase(String id, String domain, String etalase) {
+        Bundle bundle = createBundle(id, domain);
+        bundle.putString(ETALASE_NAME, etalase);
         return bundle;
     }
 
@@ -499,6 +505,11 @@ public class ShopInfoActivity extends BaseActivity
         showNotice();
         ReputationLevelUtils.setReputationMedals(this, holder.badges, shopModel.stats.shopBadgeLevel.set, shopModel.stats.shopBadgeLevel.level, shopModel.stats.shopReputationScore);
         getIntent().putExtra(SHOP_AVATAR, shopModel.info.shopAvatar);
+
+        // switch to product tab if ETALASE_NAME not empty
+        if(getIntent().getStringExtra(ETALASE_NAME) != null) {
+            holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
+        }
     }
 
     private void setFreeReturn(ViewHolder holder, Info data) {

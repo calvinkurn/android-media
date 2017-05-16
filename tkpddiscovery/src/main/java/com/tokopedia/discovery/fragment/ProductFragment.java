@@ -84,6 +84,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
+    private boolean isHasOfficialStoreBanner = false;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -442,7 +443,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void addTopAds(List<ProductItem> passProduct, int page, String tag) {
         if(!tag.equals(ProductFragment.TAG))
             return;
-        if(!passProduct.isEmpty() && !(isHasCategoryHeader && page==1) ) {
+        if(!passProduct.isEmpty() &&
+                !((isHasOfficialStoreBanner && page==1) || (isHasCategoryHeader && page==1))) {
             mRecyclerView.scrollToPosition(productAdapter.addTopAds(passProduct, page));
         } else if (!passProduct.isEmpty()) {
             productAdapter.addTopAds(passProduct, page);
@@ -520,6 +522,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             if (!TextUtils.isEmpty(model.getBannerUrl()) && !TextUtils.isEmpty(model.getShopUrl())) {
                 productAdapter.addOfficialStoreBanner(new ProductAdapter.OsBannerViewModel(model));
                 productAdapter.notifyDataSetChanged();
+                isHasOfficialStoreBanner = true;
+                backToTop();
             }
         }
     }

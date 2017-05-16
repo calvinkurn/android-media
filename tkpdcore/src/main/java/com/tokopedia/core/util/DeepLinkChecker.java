@@ -32,6 +32,7 @@ public class DeepLinkChecker {
     public static final int TOPPICKS = 5;
     public static final int HOT_LIST = 6;
     public static final int CATEGORY = 7;
+    public static final int ETALASE = 8;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -55,6 +56,8 @@ public class DeepLinkChecker {
                 return SHOP;
             else if (isTopPicks(linkSegment))
                 return TOPPICKS;
+            else if (isEtalase(linkSegment))
+                return ETALASE;
             else return -1;
         } catch (Exception e) {
             return -1;
@@ -115,6 +118,10 @@ public class DeepLinkChecker {
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
+    }
+
+    private static boolean isEtalase(List<String> linkSegment) {
+        return (linkSegment.size() == 3 && linkSegment.get(1).equals("etalase"));
     }
 
     private static String getQuery(String url, String q) {
@@ -239,4 +246,11 @@ public class DeepLinkChecker {
         context.startActivity(intent);
     }
 
+    public static void openShopEtalase(String url, Context context) {
+        Bundle bundle = ShopInfoActivity
+                .createBundleWithEtalase("", getLinkSegment(url).get(0), getLinkSegment(url).get(2));
+        Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
 }
