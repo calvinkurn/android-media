@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.model.Operator;
 
@@ -33,8 +34,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @BindView(R2.id.rv_list_chooser)
     RecyclerView rvOperatorList;
-    @BindView(R2.id.search_operator)
-    SearchView operatorSerachView;
+    @BindView(R2.id.field_search)
+    EditText fieldSearch;
 
     private List<Operator> operatorListData;
     private String operatorStyleView;
@@ -100,19 +101,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        operatorSerachView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                fiterData(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                checkEmptyQuery(newText);
-                return false;
-            }
-        });
+        fieldSearch.addTextChangedListener(onSearchTextChange());
     }
 
     @Override
@@ -154,4 +143,25 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
         if(query.isEmpty())
         operatorChooserAdapter.setSearchResultData(operatorListData);
     }
+
+    private TextWatcher onSearchTextChange() {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                fiterData(s.toString());
+                checkEmptyQuery(s.toString());
+            }
+        };
+    }
+
 }
