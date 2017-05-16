@@ -30,6 +30,12 @@ public class ReceiptEntityMapper {
                 totalCharged = entity.getPayment().getCurrencyCode() + " " + entity.getPayment().getTotalAmount();
             }
             receipt.setTotalCharged(totalCharged);
+
+            if (entity.getRideOffer() != null) {
+                receipt.setUberSignupUrl(entity.getRideOffer().getUrl());
+                receipt.setUberSignupText(entity.getRideOffer().getHtml());
+                receipt.setUberSignupTermsUrl(entity.getRideOffer().getTerms());
+            }
         }
         return receipt;
     }

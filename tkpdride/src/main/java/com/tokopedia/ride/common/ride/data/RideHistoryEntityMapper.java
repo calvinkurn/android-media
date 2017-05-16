@@ -58,7 +58,7 @@ public class RideHistoryEntityMapper {
         if (paymentEntity != null) {
             payment = new Payment();
             payment.setCurrency(paymentEntity.getCurrencyCode());
-            payment.setValue(paymentEntity.getAmount());
+            payment.setValue(paymentEntity.getTotalAmount());
         }
         return payment;
     }

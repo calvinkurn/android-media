@@ -71,6 +71,9 @@ public class ReceiptEntity {
     @SerializedName("payment")
     @Expose
     RecieptPaymentEntity payment;
+    @SerializedName("ride_offer")
+    @Expose
+    RideOfferEntity rideOffer;
 
     public ReceiptEntity() {
     }
@@ -121,5 +124,9 @@ public class ReceiptEntity {
 
     public RecieptPaymentEntity getPayment() {
         return payment;
+    }
+
+    public RideOfferEntity getRideOffer() {
+        return rideOffer;
     }
 }

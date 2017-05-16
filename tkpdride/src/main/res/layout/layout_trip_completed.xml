@@ -241,10 +241,12 @@
                 android:background="@color/grey_400" />
 
             <LinearLayout
+                android:id="@+id/uber_signup_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="16dp">
+                android:paddingTop="16dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_sign_up_uber"
@@ -254,7 +256,7 @@
                     android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/tv_tnc"
+                    android:id="@+id/tv_signup_tnc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:autoLink="web"

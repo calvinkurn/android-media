@@ -12,11 +12,11 @@ public class RecieptPaymentEntity {
     @Expose
     private String currencyCode;
 
-    @SerializedName("preAuthAmount")
+    @SerializedName("pre_auth_amount")
     @Expose
     private float preAuthAmount;
 
-    @SerializedName("totalAmount")
+    @SerializedName("total_amount")
     @Expose
     private float totalAmount;
 

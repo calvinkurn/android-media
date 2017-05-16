@@ -39,9 +39,9 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -289,7 +289,12 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         relativeParams.setMargins(0, 0, 0, 0);  // left, top, right, bottom
         mainLayout.setLayoutParams(relativeParams);
         mToolbar.setVisibility(View.GONE);
-        replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
+
+        if (source != null && destination != null) {
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
+        } else {
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
+        }
         replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
@@ -347,11 +352,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
                         source = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_SOURCE);
                         destionation = data.getParcelableExtra(OnTripActivity.EXTRA_PLACE_DESTINATION);
                     }
-                    if (source != null && destionation != null) {
-                        initFragmentWithPlace(source, destionation);
-                    } else {
-                        RideHomeActivityPermissionsDispatcher.initFragmentWithCheck(this);
-                    }
+                    initFragmentWithPlace(source, destionation);
                     break;
                 case OnTripActivity.RIDE_BOOKING_RESULT_CODE:
                     //message on confirm booking fragment

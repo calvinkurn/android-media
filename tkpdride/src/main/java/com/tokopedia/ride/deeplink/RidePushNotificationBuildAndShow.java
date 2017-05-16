@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -40,6 +41,8 @@ import java.util.Date;
 
 import rx.Subscriber;
 
+import static android.app.Notification.DEFAULT_SOUND;
+import static android.app.Notification.DEFAULT_VIBRATE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
@@ -48,9 +51,12 @@ import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
  */
 
 public class RidePushNotificationBuildAndShow {
-    private static int mNotificationId = 004;
-    public static final int FINDING_UBER_NOTIFICATION_ID = mNotificationId;
-    public static final int ACCEPTED_UBER_NOTIFICATION_ID = mNotificationId;
+    public static final int FINDING_UBER_NOTIFICATION_ID = 004;
+    public static final int ACCEPTED_UBER_NOTIFICATION_ID = 005;
+    public static final int DRIVER_CANCELLED_UBER_NOTIFICATION_ID = 006;
+    public static final int COMPLETED_UBER_NOTIFICATION_ID = 007;
+    public static final int NO_DRIVER_FOUND_UBER_NOTIFICATION_ID = 007;
+
     private Context mContext;
     private Gson gson;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
@@ -87,6 +93,8 @@ public class RidePushNotificationBuildAndShow {
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_OS_TYPE, "1");
         requestParams.putString(GetRideRequestDetailUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         getRideRequestDetailUseCase.execute(requestParams, getSubscriber());
+
+        Log.d("Push", "RidePushNotificationBuildAndShow processReceivedNotification :: " + ridePushNotification.getRequestId());
     }
 
     @NonNull
@@ -109,6 +117,8 @@ public class RidePushNotificationBuildAndShow {
                 intent.putExtra(EXTRA_RIDE_RIDE_REQUEST, rideRequest);
                 LocalBroadcastManager manager = LocalBroadcastManager.getInstance(mContext);
                 manager.sendBroadcast(intent);
+
+                Log.d("Push", "RidePushNotificationBuildAndShow Subscriber OnNext :: " + rideRequest.getStatus());
 
                 switch (rideRequest.getStatus()) {
                     case RideStatus.ARRIVING:
@@ -212,7 +222,7 @@ public class RidePushNotificationBuildAndShow {
                                                           remoteView.setOnClickPendingIntent(R.id.layout_call_driver, pendingSwitchIntent);
 
                                                           Bundle bundle = new Bundle();
-                                                          bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+                                                          bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
                                                           bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
                                                           bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                           TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
@@ -225,7 +235,7 @@ public class RidePushNotificationBuildAndShow {
                                                                   (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                                                           // Builds the notification and issues it.
-                                                          mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                                                          mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
                                                       }
                                                   });
                                               } else {
@@ -233,6 +243,8 @@ public class RidePushNotificationBuildAndShow {
                                                   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                           .setSmallIcon(R.drawable.ic_stat_notify)
                                                           .setAutoCancel(true)
+                                                          .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
+                                                          .setPriority(Notification.PRIORITY_MAX)
                                                           .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
                                                           .setContentTitle(context.getString(R.string.ride_push_driver_arriving_now))
                                                           .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
@@ -250,7 +262,7 @@ public class RidePushNotificationBuildAndShow {
                                                   remoteView.setOnClickPendingIntent(R.id.layout_call_driver, pendingSwitchIntent);
 
                                                   Bundle bundle = new Bundle();
-                                                  bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+                                                  bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
                                                   bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
                                                   bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
                                                   TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
@@ -263,7 +275,7 @@ public class RidePushNotificationBuildAndShow {
                                                           (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
                                                   // Builds the notification and issues it.
-                                                  mNotifyMgr.notify(mNotificationId, mBuilder.build());
+                                                  mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
                                               }
                                           }
                                       }
@@ -286,7 +298,7 @@ public class RidePushNotificationBuildAndShow {
                 .setCustomBigContentView(remoteView);
 
         Bundle bundle = new Bundle();
-        bundle.putString(RideHomeActivity.EXTRA_REQUEST_ID, rideRequest.getRequestId());
+        bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
         TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
 
@@ -298,7 +310,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void showDriverCancelledRide(Context context) {
@@ -322,7 +334,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(DRIVER_CANCELLED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void showFindingUberNotication(Context context) {
@@ -346,7 +358,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(FINDING_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     private static void showRideCompleted(Context context, RideRequest rideRequest) {
@@ -383,7 +395,7 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(COMPLETED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     private static void showNoDriverFoundNotification(Context context) {
@@ -408,12 +420,16 @@ public class RidePushNotificationBuildAndShow {
                 (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         // Builds the notification and issues it.
-        mNotifyMgr.notify(mNotificationId, mBuilder.build());
+        mNotifyMgr.notify(NO_DRIVER_FOUND_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void cancelActiveNotification(Context context) {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(mNotificationId);
+        notificationManager.cancel(FINDING_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(ACCEPTED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(COMPLETED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(DRIVER_CANCELLED_UBER_NOTIFICATION_ID);
+        notificationManager.cancel(NO_DRIVER_FOUND_UBER_NOTIFICATION_ID);
     }
 }
