@@ -28,6 +28,7 @@ public class ProductNetworkConstant {
     public static final String RESOLUTION = "resolution";
     public static final String SERVER_ID = "server_id";
     public static final String PRODUCT_ID = "product_id";
+    public static final String IMAGE_STATUS_DELETED = "DELETED";
 
     public static String getUploadImageUrl(String uploadHostUrl){
         return HTTPS + uploadHostUrl + UPLOAD_IMAGE;

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.view.model.upload.ProductWholesaleViewModel;
@@ -125,7 +126,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
             try {
                 findImage(viewModel.getUrl(), productPhotos.getPhotos());
             } catch (RuntimeException e) {
-                viewModel.setUrl("");
+                viewModel.setUrl(ProductNetworkConstant.IMAGE_STATUS_DELETED);
                 newPhotosList.add(viewModel);
                 isChanging = true;
             }
