@@ -26,14 +26,11 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.raizlabs.android.dbflow.sql.language.Select;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.database.model.ProductDB;
-import com.tokopedia.core.database.model.ProductDB_Table;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.presenter.ProductSharePresenter;
@@ -246,35 +243,24 @@ public class ProductShareFragment extends BasePresenterFragment<ProductSharePres
     }
 
     public void setData(Bundle data) {
-        final long productServerId = data.getLong(TkpdState.ProductService.PRODUCT_DB_ID, -1);
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ProductDB ProductDB = new Select()
-                        .from(ProductDB.class)
-                        .where(ProductDB_Table.productId.is((int) productServerId))
-                        .querySingle();
-                if (ProductDB!= null && ProductDB.getImages() != null)
-                    ProductDB.setPictureDBs(ProductDB.getImages());
-                if (ProductDB!= null && ProductDB.getWholeSales() != null)
-                    ProductDB.setWholesalePriceDBs(ProductDB.getWholeSales());
-                shareData = new ShareData();
-                shareData.setType(ShareData.PRODUCT_TYPE);
-                if (ProductDB!= null && ProductDB.getNameProd() != null)
-                    shareData.setName(ProductDB.getNameProd());
-
-                        if (ProductDB!= null && ProductDB.getPictureDBs()!= null
-                                && CommonUtils.checkCollectionNotNull(ProductDB.getPictureDBs()))
-                            shareData.setImgUri(ProductDB.getPictureDBs().get(0).getPictureImageSourceUrl());
-
-                if (ProductDB!= null && ProductDB.getProductUrl() != null)
-                    shareData.setUri(ProductDB.getProductUrl());
-                if (ProductDB!= null && ProductDB.getDescProd() != null)
-                    shareData.setDescription(ProductDB.getDescProd());
-                if (ProductDB!= null)
-                    shareData.setPrice(ProductDB.getPriceProd() + "");
-            }
-        }, 100);//[END] move to manage product
+        shareData = new ShareData();
+        shareData.setType(ShareData.PRODUCT_TYPE);
+        String productName = data.getString(TkpdState.ProductService.PRODUCT_NAME);
+        if (StringUtils.isNotBlank(productName)) {
+            shareData.setName(productName);
+        }
+        String imageUri = data.getString(TkpdState.ProductService.IMAGE_URI);
+        if (StringUtils.isNotBlank(imageUri)) {
+            shareData.setImgUri(imageUri);
+        }
+        String productDescription = data.getString(TkpdState.ProductService.PRODUCT_DESCRIPTION);
+        if (StringUtils.isNotBlank(productDescription)) {
+            shareData.setDescription(productDescription);
+        }
+        String productUri = data.getString(TkpdState.ProductService.PRODUCT_URI);
+        if (StringUtils.isNotBlank(productUri)) {
+            shareData.setUri(productUri);
+        }
     }
 
     public void addingProduct(boolean isAdding) {

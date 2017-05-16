@@ -17,7 +17,6 @@ import android.view.View;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -44,16 +43,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.WrappedTabPageIndicator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.ProductActivity;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,33 +73,30 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     public static final String TAG = ParentIndexHome.class.getSimpleName();
     public static final String messageTAG = TAG + " : ";
-    private static final java.lang.String BUNDLE_EXTRA_REFRESH = "refresh";
     public static final String VIEW_PAGE_POSITION = "VIEW_PAGE_POSITION";
     public static final String FETCH_BANK = "FETCH_BANK";
+    private static final java.lang.String BUNDLE_EXTRA_REFRESH = "refresh";
     private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     private static final int ONBOARDING_REQUEST = 101;
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
     protected WrappedTabPageIndicator indicatorTab;
-    //    protected boolean isLogin = false;
-//    protected String[] CONTENT;
-//    protected ListView vHotList;
-    List<String> content;
     protected ListViewHotProductParent lvAdapter;
     protected View footerCat;
     protected IndexHomeInterafaces.IndexFavRefresh2 prodListener;
     protected IndexHomeInterafaces.IndexFavRefresh2 shopListener;
     protected LocalCacheHandler cache;
-
-    TkpdProgressDialog progressDialog;
-    //[END] this is for fetch bank
-
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
-
-    private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+    //[END] this is for fetch bank
+    //    protected boolean isLogin = false;
+//    protected String[] CONTENT;
+//    protected ListView vHotList;
+    List<String> content;
+    TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
+    private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
 
     public ViewPager getViewPager() {
         return mViewPager;
@@ -113,11 +105,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     public AppComponent getComponent() {
         return getApplicationComponent();
-    }
-
-
-    public interface ChangeTabListener {
-        void onChangeTab(int i);
     }
 
     @Override
@@ -233,7 +220,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
     }
 
-
     public void initCreate() {
 
         if (SessionHandler.isV4Login(getBaseContext())) {
@@ -292,7 +278,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         adapter.notifyDataSetChanged();// DON'T DELETE THIS BECAUSE IT WILL NOTIFY ADAPTER TO CHANGE FROM GUEST TO LOGIN
     }
 
-
     /**
      * send Localytics user attributes
      * by : Hafizh Herdi
@@ -335,57 +320,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
-
-    protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
-        public PagerAdapter(android.support.v4.app.FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (SessionHandler.isV4Login(ParentIndexHome.this)) {
-
-                if (getPageTitle(position).equals(content.get(0))) {
-                    return FragmentIndexCategory.newInstance();
-                }
-
-                if (getPageTitle(position).equals(content.get(1))) {
-                    return new FragmentProductFeed();
-                }
-
-                if (getPageTitle(position).equals(content.get(2))) {
-                    return new FragmentFavorite();
-                }
-
-                if (getPageTitle(position).equals(content.get(3))) {
-                    return new FragmentHotListV2();
-                }
-            } else {
-                switch (position) {
-                    case 0:
-                        return FragmentIndexCategory.newInstance();
-                    case 1:
-                        return new FragmentHotListV2();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return ParentIndexHome.this.content.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return ParentIndexHome.this.content.size();
-        }
     }
 
     @Override
@@ -489,6 +423,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onResume();
 
         sendNotifLocalyticsCallback();
+
+        NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override
@@ -504,26 +440,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-                Intent intent = new Intent(ParentIndexHome.this, ProductActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(GalleryBrowser.IMAGE_URLS, Parcels.wrap(imageUrls));
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, -1);
-                intent.putExtras(bundle);
-
-                ParentIndexHome.this.startActivity(intent);
+                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
             }
 
             @Override
             public void onSuccess(String path, int position) {
-                Intent intent = new Intent(ParentIndexHome.this, ProductActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(IMAGE_GALLERY, path);
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
-                intent.putExtras(bundle);
-
-                ParentIndexHome.this.startActivity(intent);
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(path);
+                ProductAddActivity.start(ParentIndexHome.this,imageUrls);
             }
 
             @Override
@@ -567,7 +491,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         cache.applyEditor();
     }
 
-
     private int getDefaultTabPosition() {
         if (SessionHandler.isV2Login(getApplicationContext()) || SessionHandler.isV4Login(getApplicationContext())) {
             return 1;
@@ -595,6 +518,62 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
 
             UnifyTracking.eventHomeTab(label);
+        }
+    }
+
+
+    public interface ChangeTabListener {
+        void onChangeTab(int i);
+    }
+
+    protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
+        public PagerAdapter(android.support.v4.app.FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (SessionHandler.isV4Login(ParentIndexHome.this)) {
+
+                if (getPageTitle(position).equals(content.get(0))) {
+                    return FragmentIndexCategory.newInstance();
+                }
+
+                if (getPageTitle(position).equals(content.get(1))) {
+                    return new FragmentProductFeed();
+                }
+
+                if (getPageTitle(position).equals(content.get(2))) {
+                    return new FragmentIndexFavoriteV2();
+                }
+
+                if (getPageTitle(position).equals(content.get(3))) {
+                    return new FragmentHotListV2();
+                }
+            } else {
+                switch (position) {
+                    case 0:
+                        return FragmentIndexCategory.newInstance();
+                    case 1:
+                        return new FragmentHotListV2();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return ParentIndexHome.this.content.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return ParentIndexHome.this.content.size();
         }
     }
 }

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-
 import com.tokopedia.core.onboarding.FreeReturnOnboardingActivity;
 import com.tokopedia.core.util.RouterUtils;
 
@@ -48,6 +47,7 @@ public class InboxRouter {
     public static final java.lang.String PARAM_OWNER_FULLNAME = "owner_fullname";
     public static final java.lang.String PARAM_USER_ID = "to_user_id";
     public static final java.lang.String PARAM_SHOP_ID = "to_shop_id";
+    public static final String PARAM_URL = "PARAM_URL";
 
 
     /////////// INTENT
