@@ -83,4 +83,5 @@
     <string name="complete_trip_tokocash_charged">TokoCash Charged</string>
     <string name="ride_push_in_progress">Trip Started</string>
     <string name="ride_push_track_ride">Track Your Ride</string>
+    <string name="title_fetching_ride">Fetching Ride Details</string>
 </resources>

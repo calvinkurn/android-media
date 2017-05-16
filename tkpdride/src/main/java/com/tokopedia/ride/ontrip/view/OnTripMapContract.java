@@ -73,6 +73,8 @@ public interface OnTripMapContract {
 
         void renderArrivingDriverEvent(RideRequest result);
 
+        public void setTitle(int resId);
+
         void onSuccessCancelRideRequest();
 
         void renderTripRoute(List<List<LatLng>> routes);

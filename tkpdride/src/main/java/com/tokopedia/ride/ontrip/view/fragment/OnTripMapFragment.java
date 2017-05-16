@@ -505,6 +505,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         setTitle(R.string.title_trip_in_progress);
     }
 
+    @Override
     public void setTitle(int resId) {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(resId);
     }
