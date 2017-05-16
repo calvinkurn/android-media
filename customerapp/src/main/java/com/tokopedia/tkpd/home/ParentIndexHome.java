@@ -30,7 +30,6 @@ import com.tokopedia.core.customadapter.ListViewHotProductParent;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
-import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
@@ -45,7 +44,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
@@ -82,17 +80,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
-    protected WrappedTabPageIndicator indicatorTab;
-    protected ListViewHotProductParent lvAdapter;
-    List<String> content;
     protected View footerCat;
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
-    //[END] this is for fetch bank
-    //    protected boolean isLogin = false;
-//    protected String[] CONTENT;
-//    protected ListView vHotList;
     List<String> content;
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
@@ -547,7 +538,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 }
 
                 if (getPageTitle(position).equals(content.get(2))) {
-                    return new FragmentIndexFavoriteV2();
+                    return new FragmentFavorite();
                 }
 
                 if (getPageTitle(position).equals(content.get(3))) {
