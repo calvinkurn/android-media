@@ -252,7 +252,6 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
-        setRefreshPullEnable(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_status, null);

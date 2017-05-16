@@ -57,9 +57,9 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.presenter.*;
-import com.tokopedia.session.activation.activity.ActivationActivity;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.session.register.activity.SmartLockActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -714,6 +714,7 @@ LoginFragment extends Fragment implements LoginView {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
                 startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                getActivity().finish();
             }
         }
         switch (type) {
@@ -780,6 +781,8 @@ LoginFragment extends Fragment implements LoginView {
                     Bundle lbundle = new Bundle();
                     lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
                     startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                    getActivity().finish();
+
                 }
                 break;
             case 200:

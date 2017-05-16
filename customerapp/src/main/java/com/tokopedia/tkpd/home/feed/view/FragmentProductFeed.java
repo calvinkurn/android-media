@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +17,6 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.ui.floatbutton.FabSpeedDial;
 import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -38,8 +36,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
@@ -461,9 +457,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.action_instagram:
-                        onAddInstagram();
-                        break;
                     case R.id.action_gallery:
                         GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
@@ -483,7 +476,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private void onAddInstagram() {
         Intent moveToProductActivity = new Intent(getActivity(), InstopedActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
+        bundle.putString(InstopedActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
         startActivity(moveToProductActivity);
     }

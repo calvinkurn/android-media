@@ -257,7 +257,6 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public void setActionEnabled(boolean isEnabled) {
-        refreshHandler.setPullEnabled(isEnabled);
         if (isEnabled) {
             fab.setVisibility(View.VISIBLE);
         } else {
@@ -320,8 +319,10 @@ public class InboxTicketFragment extends BasePresenterFragment<InboxTicketFragme
 
     @Override
     public void showRefreshLoading() {
-        refreshHandler.setIsRefreshing(true);
-        refreshHandler.setRefreshing(true);
+        if(!refreshHandler.isRefreshing()) {
+            refreshHandler.setIsRefreshing(true);
+            refreshHandler.setRefreshing(true);
+        }
     }
 
     @Override

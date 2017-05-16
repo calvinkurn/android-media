@@ -487,4 +487,31 @@ public interface AppEventTracking {
     interface AF {
         String APPSFLYER_KEY = "APPSFLYER_KEY";
     }
+
+    interface AddProduct{
+        String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
+        String CATEGORY_ADD_PRODUCT = "Add Product";
+        String EVENT_ACTION_ADD = "Add";
+        String EVENT_ACTION_ADD_MORE = "Add More";
+        String EVENT_ACTION_ERROR = "Error";
+        String EVENT_ACTION_ERROR_SERVER = "Error Server";
+
+        String FIELDS_MANDATORY_PRODUCT_NAME = "M1";
+        String FIELDS_MANDATORY_CATEGORY= "M2";
+        String FIELDS_MANDATORY_PRICE = "M3";
+        String FIELDS_MANDATORY_WEIGHT = "M4";
+        String FIELDS_MANDATORY_MIN_PURCHASE = "M5";
+        String FIELDS_MANDATORY_STOCK_STATUS = "M6";
+        String FIELDS_MANDATORY_SHOWCASE = "M7";
+        String FIELDS_MANDATORY_CONDITION = "M8";
+        String FIELDS_MANDATORY_INSURANCE = "M9";
+        String FIELDS_OPTIONAL_PICTURE = "O1";
+        String FIELDS_OPTIONAL_WHOLESALE = "O2";
+        String FIELDS_OPTIONAL_STOCK_MANAGEMENT = "O3";
+        String FIELDS_OPTIONAL_FREE_RETURN = "O4";
+        String FIELDS_OPTIONAL_DESCRIPTION = "O5";
+        String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
+        String FIELDS_OPTIONAL_PREORDER = "O7";
+        String FIELDS_OPTIONAL_SHARE = "O8";
+    }
 }

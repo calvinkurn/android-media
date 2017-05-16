@@ -61,13 +61,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-        } else if (isForbiddenRequest(response)
+        } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
 
         return createNewResponse(response, bodyResponse);
     }
+
+
 
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         /* this can override for throw error */
@@ -83,8 +85,17 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(Response response) {
-        return response.code() == ERROR_FORBIDDEN_REQUEST;
+    private boolean isForbiddenRequest(String bodyResponse, int code) {
+
+        JSONObject json;
+        try {
+            json = new JSONObject(bodyResponse);
+            String status = json.optString("status", "OK");
+            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
