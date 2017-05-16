@@ -111,9 +111,10 @@ public class CategoryProductStyle3View extends
                     holderClientNumber.addView(clientNumberInputView);
                     clientNumberInputView.enableImageOperator(data.getImage());
                 } else {
+                    digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
                     digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
                     digitalProductChooserView.renderInitDataList(data.getProductList());
-                    holderChooserProduct.addView(digitalOperatorChooserView);
+                    holderChooserProduct.addView(digitalProductChooserView);
                 }
             }
 
@@ -128,9 +129,10 @@ public class CategoryProductStyle3View extends
                     holderClientNumber.addView(clientNumberInputView);
                     clientNumberInputView.enableImageOperator(data.getImage());
                 } else {
+                    digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
                     digitalProductChooserView.setActionListener(getActionListenerProductChooser(data));
                     digitalProductChooserView.renderInitDataList(data.getProductList());
-                    holderChooserProduct.addView(digitalOperatorChooserView);
+                    holderChooserProduct.addView(digitalProductChooserView);
                 }
             }
 
@@ -203,6 +205,9 @@ public class CategoryProductStyle3View extends
                     product.setProductId(String.valueOf(data.getDefaultProductId()));
                     productSelected = product;
                 } else {
+                    digitalProductChooserView.setLabelText(
+                            operatorSelected.getRule().getProductText()
+                    );
                     digitalProductChooserView.setActionListener(
                             getActionListenerProductChooser(data)
                     );
