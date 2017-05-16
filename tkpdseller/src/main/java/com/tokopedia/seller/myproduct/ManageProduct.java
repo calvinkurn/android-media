@@ -55,12 +55,10 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.SimpleListView;
 import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -70,7 +68,6 @@ import com.tokopedia.core.myproduct.model.ActResponseModelData;
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.prototype.ProductCache;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -96,11 +93,9 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;

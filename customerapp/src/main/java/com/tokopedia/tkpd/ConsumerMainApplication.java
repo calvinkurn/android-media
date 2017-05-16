@@ -1,21 +1,18 @@
 package com.tokopedia.tkpd;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.tokopedia.core.app.MainApplication;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
-import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 
 /**
  * Created by ricoharisin on 11/11/16.

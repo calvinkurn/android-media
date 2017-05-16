@@ -9,9 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.service.notification.StatusBarNotification;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -26,14 +23,11 @@ import com.tokopedia.core.gcm.domain.PushNotificationRepository;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryAndServerIdUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationByCategoryUseCase;
 import com.tokopedia.core.gcm.domain.usecase.DeleteSavedPushNotificationUseCase;
-import com.tokopedia.core.review.var.Const;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import rx.Subscriber;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class NotificationModHandler {
     public static final String PACKAGE_SELLER_APP = "com.tokopedia.sellerapp";

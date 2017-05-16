@@ -5,8 +5,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.data.source.db.model.ProductDraftDataBase_Table;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 
 import rx.Observable;

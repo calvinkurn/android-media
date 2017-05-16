@@ -10,18 +10,18 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 
-import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
 import com.tokopedia.core.fragment.FragmentSettingShop;
 import com.tokopedia.core.fragment.SettingsFragment;
+import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;

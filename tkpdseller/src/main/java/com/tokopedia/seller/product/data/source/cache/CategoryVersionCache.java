@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.database.manager.CategoryDatabaseManager;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 
 import javax.inject.Inject;
 

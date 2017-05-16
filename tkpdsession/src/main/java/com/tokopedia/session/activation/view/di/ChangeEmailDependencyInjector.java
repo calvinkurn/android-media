@@ -1,6 +1,5 @@
 package com.tokopedia.session.activation.view.di;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.tokopedia.core.base.data.executor.JobExecutor;

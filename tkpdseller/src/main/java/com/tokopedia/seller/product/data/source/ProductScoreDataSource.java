@@ -1,12 +1,10 @@
 package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.cache.ProductScoreDataSourceCache;
-import com.tokopedia.seller.product.data.source.cache.model.ProductScore.DataScoringProduct;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 4/12/17.

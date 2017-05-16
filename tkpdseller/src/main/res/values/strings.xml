@@ -13,7 +13,7 @@
     <string name="seven_days_ago">7 hari terakhir</string>
     <string name="thirty_days_ago">30 hari terakhir</string>
 
-    <!-- untuk tanggal gmstat -->
+    <string name="back">Kembali</string>
 
     <!-- untuk tanggal gmstat -->
     <string-array name="month_names_abrev">
@@ -68,9 +68,12 @@
     <string name="label_top_ads_items">Produk</string>
     <string name="label_top_ads_choose_credit">Pilih</string>
     <string name="label_top_ads_deposit_desc">Kredit TopAds: %1$s</string>
+    <string name="label_top_ads_next">Selanjutnya</string>
     <string name="label_top_ads_save">Simpan</string>
 
     <string name="menu_top_ads_add_promo_shop">Tambah Promo Toko</string>
+    <string name="menu_top_ads_add_promo_group">Tambah Grup Promo</string>
+    <string name="menu_top_ads_add_promo_product">Tambah Promo Produk</string>
 
     <string name="top_ads_statistic_info_default_value">-</string>
     <string name="top_ads_range_date_text">%1$s - %2$s</string>
@@ -95,13 +98,13 @@
     <string name="top_ads_group_name_format_text">%1$s: %2$s</string>
     <string name="top_ads_spent_separator">/</string>
     <string name="top_ads_empty_shop_title_text">Promo Toko Anda Kosong</string>
-    <string name="top_ads_empty_shop_content_text">Tambah promo untuk mempromosikan toko anda</string>
+    <string name="top_ads_empty_shop_content_text">Promosikan toko Anda untuk menambah banyak pengunjung dan mendapatkan banyak favorit.</string>
     <string name="top_ads_empty_promo_not_found_title_empty_text">Hasil tidak ditemukan</string>
     <string name="top_ads_empty_promo_not_found_content_empty_text">Silahkan coba lagi atau ganti kata kunci</string>
-    <string name="top_ads_empty_group_title_promo_text">Promo Group Anda Kosong</string>
+    <string name="top_ads_empty_group_title_promo_text">Grup Promo Anda Kosong</string>
     <string name="top_ads_empty_product_title_promo_text">Promo Produk Anda Kosong</string>
-    <string name="top_ads_empty_group_promo_content_empty_text">Anda belum memiliki group yang dipromosikan</string>
-    <string name="top_ads_empty_product_promo_content_empty_text">Anda belum memiliki produk yang dipromosikan</string>
+    <string name="top_ads_empty_group_promo_content_text">Gunakan Grup Promo dan nikmati kemudahan mengatur Promo Anda dalam sekali pengaturan.</string>
+    <string name="top_ads_empty_product_promo_content_text">Promosikan produk Anda agar lebih mudah ditemukan pembeli untuk mendapatkan lebih banyak pengunjung dan meningkatkan penjualan.</string>
     <string name="top_ads_empty_group_promo_content_not_empty_text">Produk yang telah anda promosikan ada di dalam items</string>
     <string name="top_ads_empty_group_promo_content_item_no_text">Lihat %1$s Promo Produk</string>
 
@@ -177,6 +180,57 @@
     <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 
+
+    <string name="gm_home_title">Gold Merchant</string>
+    <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
+    <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
+
+    <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat beda serta lebih terpercaya</string>
+    <string name="gmsubscribe_feature_topads">TopAds</string>
+    <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
+    <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
+    <string name="gmsubscribe_feature_statistic_desc">Pantau perkembangan toko hingga detail penjualan jadi lebih mudah</string>
+    <string name="gmsubscribe_feature_ticket">Gold Ticket</string>
+    <string name="gmsubscribe_feature_ticket_desc">Tiket kendala yang Anda kirim jadi prioritas Tim Customer Care kami</string>
+    <string name="gmsubscribe_feature_cover">Sampul Toko</string>
+    <string name="gmsubscribe_feature_cover_desc">Jadikan halaman toko Anda lebih menarik dengan upload kreasi sampul foto Anda sendiri</string>
+
+    <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
+    <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
+    <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
+    <string name="gmsubscribe_feature_cashback">Cashback TopPoints</string>
+    <string name="gmsubscribe_feature_video">Tambah\nVideo Produk</string>
+    <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
+    <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
+
+    <string name="gmsubscribe_current_product_selector">Paket Berlangganan</string>
+    <string name="gmsubscribe_extend_product_selector">Paket Perpanjang Otomatis</string>
+    <string name="gmsubscribe_product_button_subscribe">Berlangganan</string>
+    <string name="gmsubscribe_product_button_change">Ubah</string>
+    <string name="gmsubscribe_product_button_activate">Aktifkan</string>
+
+    <string name="gmsubscribe_checkout_title">Gold Checkout</string>
+    <string name="gmsubscribe_continue_checkout">Berlangganan</string>
+    <string name="gmsubscribe_button_change">Ubah</string>
+
+    <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
+
+    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_package_price">Harga</string>
+    <string name="gmsubscribe_auto_package_next_subscribe">Tanggal Tagihan Berikutnya</string>
+    <string name="gmsubscribe_auto_package_payment_method">Metode Pembayaran</string>
+    <string name="gmsubscribe_change_auto">Ubah</string>
+    <string name="gmsubscribe_voucher_code_title">Gunakan Voucher Tokopedia</string>
+    <string name="gmsubscribe_voucher_hint">Kode Voucher</string>
+    <string name="gmsubscribe_voucher_code_check_button">Cek</string>
+    <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
+
+
+
+    <string name="positive_button_dialog">Ya</string>
+    <string name="negative_button_dialog">Tidak</string>
     <string name="title_shop_score">Performa Toko</string>
     <string name="description_shop_score_percent"> / 100</string>
     <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
@@ -244,6 +298,61 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
+    <string name="best_deal">BEST DEAL!</string>
+
+    <!-- TOP ADS HOME -->
+    <string name="topads_showcase_home_title_1">TopAds Produk</string>
+    <string name="topads_showcase_home_desc_1">Kumpulan promo produk di toko Anda. Anda dapat melihat performa dari promo produk Anda di bawah ini.</string>
+    <string name="topads_showcase_home_title_2">TopAds Toko</string>
+    <string name="topads_showcase_home_desc_2">Promosikan toko Anda agar semakin banyak yang memfavoritkan toko Anda.</string>
+    <string name="topads_showcase_home_title_3">Tambah Kredit</string>
+    <string name="topads_showcase_home_desc_3">Tambah Kredit TopAds Anda untuk dapat melakukan promo.</string>
+    <string name="topads_showcase_home_title_4">Tanggal Statistik</string>
+    <string name="topads_showcase_home_desc_4">Pilih tanggal untuk atur tampilan statistik promo Anda.</string>
+    <string name="topads_showcase_home_title_5">Statistik Promo</string>
+    <string name="topads_showcase_home_desc_5">Pantau performa promo Anda pada tampilan statistik ini.</string>
+    <string name="topads_showcase_home_title_6">Tambah Promo</string>
+    <string name="topads_showcase_home_desc_6">Klik di sini untuk menambahkan promo Anda.</string>
+
+    <!-- TOP ADS STATISTIK -->
+    <string name="topads_showcase_statistics_title_1">Atur Periode</string>
+    <string name="topads_showcase_statistics_desc_1">Atur tampilan statistik berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_statistics_title_2">Statistik</string>
+    <string name="topads_showcase_statistics_desc_2">Lihat performa toko Anda, geser layar untuk melihat data statistik lain.</string>
+
+    <!-- TOP ADS GROUP LIST -->
+    <string name="topads_showcase_group_list_title_1">Pencarian</string>
+    <string name="topads_showcase_group_list_desc_1">Memudahkan Anda dalam mencari nama grup.</string>
+    <string name="topads_showcase_group_list_title_2">Atur periode</string>
+    <string name="topads_showcase_group_list_desc_2">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_group_list_title_3">Daftar Grup Promo</string>
+    <string name="topads_showcase_group_list_desc_3">Informasi singkat promo yang telah Anda buat.</string>
+    <string name="topads_showcase_group_list_title_4">Filter</string>
+    <string name="topads_showcase_group_list_desc_4">Atur daftar tampilan berdasarkan filter.</string>
+
+    <!-- TOP ADS GROUP DETAIL -->
+    <string name="topads_showcase_detail_group_title_1">Pengaturan</string>
+    <string name="topads_showcase_detail_group_desc_1">Untuk mengubah atau menghapus promo.</string>
+    <string name="topads_showcase_detail_group_title_2">Pengaturan Status</string>
+    <string name="topads_showcase_detail_group_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
+    <string name="topads_showcase_detail_group_title_3">Info Produk</string>
+    <string name="topads_showcase_detail_group_desc_3">Untuk melihat daftar produk yang ada pada grup promo.</string>
+
+    <!-- TOP ADS PRODUCT LIST -->
+    <string name="topads_showcase_product_list_title_2">Atur Periode</string>
+    <string name="topads_showcase_product_list_desc_2">Atur daftar tampilan berdasarkan periode yang dipilih.</string>
+    <string name="topads_showcase_product_list_title_1">Pencarian</string>
+    <string name="topads_showcase_product_list_desc_1">Memudahkan Anda dalam mencari nama produk.</string>
+    <string name="topads_showcase_product_list_title_3">Daftar Promo</string>
+    <string name="topads_showcase_product_list_desc_3">Informasi singkat promo yang telah Anda buat.</string>
+    <string name="topads_showcase_product_list_title_4">Filter</string>
+    <string name="topads_showcase_product_list_desc_4">Atur daftar tampilan berdasarkan filter.</string>
+
+    <!-- TOP ADS PRODUCT DETAIL -->
+    <string name="topads_showcase_detail_promo_title_1">Pengaturan</string>
+    <string name="topads_showcase_detail_promo_desc_1">Untuk mengubah atau menghapus promo.</string>
+    <string name="topads_showcase_detail_promo_title_2">Pengaturan Status</string>
+    <string name="topads_showcase_detail_promo_desc_2">Mengubah status aktif dan tidak aktif promo.</string>
 
     <!-- Product -->
     <string name="product_label_product_info">Info Produk</string>
@@ -424,8 +533,6 @@
     <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
-    <string name="positive_button_dialog">Ya</string>
-    <string name="negative_button_dialog">Tidak</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
 
 </resources>
