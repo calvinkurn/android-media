@@ -150,7 +150,9 @@
 
         <activity android:name=".deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".truecaller.TruecallerActivity"/>
+
+        <activity android:name=".truecaller.TruecallerActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
