@@ -89,6 +89,17 @@ public class ProductDraftModel {
     private int productStatus;
     private String productId;
 
+    @SerializedName("product_name_editable")
+    private int productNameEditable;
+
+    public int getProductNameEditable() {
+        return productNameEditable;
+    }
+
+    public void setProductNameEditable(int productNameEditable) {
+        this.productNameEditable = productNameEditable;
+    }
+
     public ProductPhotoListDraftModel getProductPhotos() {
         return productPhotos;
     }

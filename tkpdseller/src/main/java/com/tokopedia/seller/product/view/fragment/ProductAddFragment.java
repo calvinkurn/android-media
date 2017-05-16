@@ -589,6 +589,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
         }
         viewModel.setProductStatus(getStatusUpload());
+        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
         return viewModel;
     }
 

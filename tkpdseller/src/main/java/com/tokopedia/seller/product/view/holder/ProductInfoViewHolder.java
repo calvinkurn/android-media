@@ -126,6 +126,10 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         radioGroupCategoryRecomm.setOnCheckedChangeListener(this);
     }
 
+    public boolean isNameEditable(){
+        return nameEditText.isEnabled();
+    }
+
     @Override
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
         if(checkedId < 0){

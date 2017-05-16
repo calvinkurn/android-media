@@ -45,6 +45,7 @@ public class UploadProductMapper {
         domainModel.setServerId(viewModel.getServerId());
         domainModel.setProductStatus(viewModel.getProductStatus());
         domainModel.setProductId(viewModel.getProductId());
+        domainModel.setNameEditable(viewModel.getProductNameEditable());
         return domainModel;
     }
 
