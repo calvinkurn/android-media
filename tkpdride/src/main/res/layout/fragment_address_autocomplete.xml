@@ -96,10 +96,10 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="0dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:background="@android:color/white"
                 android:foreground="?attr/selectableItemBackground"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
                 android:visibility="visible">
 
                 <ImageView
@@ -240,12 +240,14 @@
                 android:background="@color/white" />
 
             <ImageView
+                android:id="@+id/iv_google_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cabs_autocomplete_recycler_view"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
-                android:src="@drawable/powered_by_google_light" />
+                android:src="@drawable/powered_by_google_light"
+                android:visibility="gone" />
         </RelativeLayout>
 
     </RelativeLayout>

@@ -116,6 +116,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             .observeOn(new UIThread().getScheduler())
                             .subscribe(new AutoCompletePlaceTextChanged())
             );
+            getView().hideGoogleLabel();
             getView().setActiveMarketplaceSource();
             actionGetUserAddresses(false);
         }
@@ -165,6 +166,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 getView().renderMorePlacesList(addresses);
                             }
                             getView().hideAutoCompleteLoadingCross();
+                            getView().hideGoogleLabel();
                         }
                     }
                 });
@@ -417,6 +419,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                                    address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
                                                    addresses.add(address);
                                                }
+                                               getView().showGoogleLabel();
                                                getView().renderPlacesList(addresses);
                                                getView().hideAutoCompleteLoadingCross();
                                            }

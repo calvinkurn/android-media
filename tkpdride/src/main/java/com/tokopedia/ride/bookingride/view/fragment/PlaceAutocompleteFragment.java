@@ -77,6 +77,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     RelativeLayout mAutoCompleteWorkRelativeLayout;
     @BindView(R2.id.cabs_autocomplete_recycler_view)
     RecyclerView mAutoCompleteRecylerView;
+    @BindView(R2.id.iv_google_label)
+    ImageView googleLabelImageView;
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
     private boolean showAutodetectLocation;
@@ -389,5 +391,15 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     public void onDestroyView() {
         super.onDestroyView();
         mPresenter.detachView();
+    }
+
+    @Override
+    public void hideGoogleLabel() {
+        googleLabelImageView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showGoogleLabel() {
+        googleLabelImageView.setVisibility(View.VISIBLE);
     }
 }

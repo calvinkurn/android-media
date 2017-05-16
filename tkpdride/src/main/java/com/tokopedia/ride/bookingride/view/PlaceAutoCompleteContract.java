@@ -65,6 +65,10 @@ public interface PlaceAutoCompleteContract {
         boolean isActiveGooglePlaceSource();
 
         RequestParams getUserAddressParam();
+
+        void hideGoogleLabel();
+
+        void showGoogleLabel();
     }
 
     interface Presenter extends CustomerPresenter<View> {
