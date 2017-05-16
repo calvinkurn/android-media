@@ -279,7 +279,6 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         this.catalogId = catalogId;
         if (catalogId <= 0) {
             catalogLabelView.setContent(catalogLabelView.getContext().getString(R.string.product_label_choose));
-            catalogLabelView.setVisibility(View.GONE);
         } else {
             catalogLabelView.setContent(name);
             catalogLabelView.setVisibility(View.VISIBLE);
@@ -288,6 +287,7 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
 
     public void hideAndClearCatalog() {
         setCatalog(-1, null);
+        catalogLabelView.setVisibility(View.GONE);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
