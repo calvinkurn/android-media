@@ -153,6 +153,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
         titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
+        viewAllCategory.setText("Lihat Produk "+headerModel.getCategoryName()+" Lainnya");
     }
 
     @Override
@@ -269,21 +270,27 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void skipIntermediaryPage() {
-        BrowseProductActivity.moveToWithoutAnimation(
-            getActivity(),
-                departmentId,
-            TopAdsApi.SRC_DIRECTORY,
-            BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                ((IntermediaryActivity) getActivity()).getCategoryName()
-        );
-        getActivity().overridePendingTransition(0,0);
-        getActivity().finish();
-
+        if (isAdded()) {
+            BrowseProductActivity.moveToWithoutAnimation(
+                    getActivity(),
+                    departmentId,
+                    TopAdsApi.SRC_DIRECTORY,
+                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                    ((IntermediaryActivity) getActivity()).getCategoryName()
+            );
+            getActivity().overridePendingTransition(0,0);
+            getActivity().finish();
+        }
     }
 
     @Override
     public void backToTop() {
         nestedScrollView.smoothScrollTo(0, 0);
+    }
+
+    @Override
+    public void updateDepartementId(String id) {
+        departmentId = id;
     }
 
     private void showErrorEmptyState() {

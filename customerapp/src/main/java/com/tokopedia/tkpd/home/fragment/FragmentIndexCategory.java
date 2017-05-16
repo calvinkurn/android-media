@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -42,7 +43,7 @@ import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -52,14 +53,12 @@ import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.core.network.entity.homeMenu.CategoryMenuModel;
 import com.tokopedia.core.network.entity.topPicks.Item;
 import com.tokopedia.core.network.entity.topPicks.Toppick;
-import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
@@ -131,6 +130,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     private TopPicksAdapter topPicksAdapter;
     private BrandsRecyclerViewAdapter brandsRecyclerViewAdapter;
     private BrandsPresenter brandsPresenter;
+    private SnackbarRetry messageSnackbar;
 
     private BroadcastReceiver stopBannerReceiver = new BroadcastReceiver() {
         @Override
@@ -152,6 +152,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         NestedScrollView wrapperScrollview;
         RecyclerView categoriesRecylerview;
         RecyclerView topPicksRecyclerView;
+        CardView cardBrandLayout;
         RecyclerView brandsRecyclerView;
         RelativeLayout rlBrands;
         TextView textViewAllBrands;
@@ -257,6 +258,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             public void OnError() {
                 if (holder.MainView.getParent() != null && holder.bannerContainer != null)
                     ((ViewGroup) holder.MainView.getParent()).removeView(holder.bannerContainer);
+                showGetHomeMenuNetworkError();
             }
         };
     }
@@ -320,14 +322,14 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         brandsPresenter = new BrandsPresenterImpl(new OnGetBrandsListener() {
             @Override
             public void onSuccess(Brands brands) {
-                holder.rlBrands.setVisibility(View.VISIBLE);
+                holder.cardBrandLayout.setVisibility(View.VISIBLE);
                 brandsRecyclerViewAdapter.setDataList(brands);
                 brandsRecyclerViewAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError() {
-                holder.rlBrands.setVisibility(View.GONE);
+                holder.cardBrandLayout.setVisibility(View.GONE);
             }
         });
         rechargeCategoryPresenter.fecthDataRechargeCategory();
@@ -413,6 +415,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         ((LinearLayout) holder.tabLayoutRecharge.getParent()).setVisibility(View.GONE);
         holder.tickerContainer = (RecyclerView) holder.MainView.findViewById(R.id.announcement_ticker);
         holder.wrapperScrollview = (NestedScrollView) holder.MainView.findViewById(R.id.category_scrollview);
+        holder.cardBrandLayout = (CardView) holder.MainView.findViewById(R.id.card_brand_layout);
         holder.rlBrands = (RelativeLayout) holder.MainView.findViewById(R.id.rl_title_layout);
         initCategoryRecyclerView();
         initTopPicks();
@@ -617,14 +620,20 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     }
 
     private void showGetHomeMenuNetworkError() {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                homeCatMenuPresenter.fetchHomeCategoryMenu(true);
-                topPicksPresenter.fetchTopPicks();
-                brandsPresenter.fetchBrands();
-            }
-        }).showRetrySnackbar();
+        if (messageSnackbar == null) {
+            messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                @Override
+                public void onRetryClicked() {
+                    rechargeCategoryPresenter.fecthDataRechargeCategory();
+                    getAnnouncement();
+                    getPromo();
+                    homeCatMenuPresenter.fetchHomeCategoryMenu(true);
+                    topPicksPresenter.fetchTopPicks();
+                    brandsPresenter.fetchBrands();
+                }
+            });
+        }
+        messageSnackbar.showRetrySnackbar();
     }
 
     @Override
@@ -662,10 +671,16 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
     public void setUserVisibleHint(boolean isVisibleToUser) {
         setLocalyticFlow();
         if (isVisibleToUser && getActivity() != null && isAdded()) {
+            if (messageSnackbar != null) {
+                messageSnackbar.resumeRetrySnackbar();
+            }
             ScreenTracking.screen(getScreenName());
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {
+            if (messageSnackbar != null) {
+                messageSnackbar.pauseRetrySnackbar();
+            }
             hideKeyboard();
         }
 
