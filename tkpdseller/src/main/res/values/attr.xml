@@ -5,7 +5,7 @@
         <attr name="date_picker_content" format="string"/>
         <attr name="date_picker_content_color" format="color"/>
     </declare-styleable>
-    <declare-styleable name="TopAdsLabelView">
+    <declare-styleable name="LabelView">
         <attr name="title" format="string"/>
         <attr name="content" format="string"/>
         <attr name="content_color" format="color"/>
@@ -20,7 +20,9 @@
             <flag name="italic" value="2" />
         </attr>
         <attr name="content_small" format="boolean"/>
+        <attr name="content_max_lines" format="integer" />
         <attr name="switch_enable" format="boolean"/>
+        <attr name="label_show_arrow" format="boolean"/>
     </declare-styleable>
     <declare-styleable name="loader_view">
         <attr name="width_weight" format="float" />
@@ -146,8 +148,41 @@
         <attr name="default_limit" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="DecimalInputView">
+        <attr name="decimal_max_length" format="integer"/>
+        <attr name="decimal_input_hint" format="string"/>
+        <attr name="decimal_input_text" format="string"/>
+        <attr name="decimal_input_enabled" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="CounterInputView">
+        <attr name="counter_max_length" format="integer"/>
+        <attr name="counter_hint" format="string"/>
+        <attr name="counter_text" format="string"/>
+        <attr name="counter_min" format="integer"/>
+        <attr name="counter_show_counter_button" format="boolean"/>
+        <attr name="counter_enabled" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="SpinnerTextView">
+        <attr name="spinner_hint" format="string"/>
+        <attr name="spinner_selection_index" format="integer"/>
+        <attr name="spinner_entries" format="reference"/>
+        <attr name="spinner_values" format="reference"/>
+        <attr name="spinner_enabled" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="SpinnerCounterInputView">
+        <attr name="spinner_decimal_max_length" format="integer"/>
+        <attr name="spinner_decimal_entries" format="reference"/>
+        <attr name="spinner_decimal_values" format="reference"/>
+        <attr name="spinner_decimal_selection_index" format="integer"/>
+        <attr name="spinner_decimal_spinner_hint" format="string"/>
+        <attr name="spinner_decimal_hint" format="string"/>
+        <attr name="spinner_decimal_min" format="integer"/>
+        <attr name="spinner_decimal_show_counter_button" format="boolean"/>
+        <attr name="spinner_decimal_enabled" format="boolean"/>
+        <attr name="spinner_decimal_spinner_width" format="dimension"/>
+    </declare-styleable>
+
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />
     </declare-styleable>
-
 </resources>

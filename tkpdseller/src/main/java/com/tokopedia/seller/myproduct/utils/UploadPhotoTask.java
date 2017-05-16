@@ -52,12 +52,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
     String userId;
     String deviceId;
 
-    public UploadPhotoTask(String userId, String deviceId, GenerateHostModel.GenerateHost generateHost, String path, String token) {
-        this(generateHost, path, token);
-        this.userId = userId;
-        this.deviceId = deviceId;
-    }
-
     @Deprecated
     public UploadPhotoTask(GenerateHostModel.GenerateHost generateHost, String path, String token) {
         this.path = path;
@@ -86,78 +80,6 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
         //[END] save to db for images
 
         return photo.getAbsolutePath();
-    }
-
-    public static File writeImageToTkpdPath(InputStream source) {
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = source.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            source.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
-    }
-
-    public static File writeImageToTkpdPath(File source) {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        try {
-
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-            dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-            inStream = new FileInputStream(source);
-            outStream = new FileOutputStream(dest);
-
-            byte[] buffer = new byte[1024];
-
-            int length;
-            //copy the file content in bytes
-            while ((length = inStream.read(buffer)) > 0) {
-
-                outStream.write(buffer, 0, length);
-
-            }
-
-            inStream.close();
-            outStream.close();
-
-            Log.d(TAG, "File is copied successful!");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
     }
 
     public static File writeImageToTkpdPath(byte[] buffer) {
@@ -253,31 +175,5 @@ public class UploadPhotoTask extends AsyncTask<byte[], String, String> {
                         }
                 );
 
-
-        //[START] Old ws-new
-        // MediaType.parse("application/octet-stream"), ba);
-//        RequestBody fbody = RequestBody.create(MediaType.parse("image/jpg"), file);
-//        RequestBody serverId = RequestBody.create(MediaType.parse("text/plain"), generateHost.getServerId());
-//        RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), token);
-//        Retrofit retrofit = RetrofitUtils.createRetrofit(generateHost.getUploadHost());
-//        retrofit
-//                .create(UploadImageProduct.class)
-//                .uploadProduct(
-//                        generateHost.getUploadHost(),
-//                        fbody,
-//                        serverId,
-//                        userId
-//                ).enqueue(new Callback<UploadProductImageData>() {
-//            @Override
-//            public void onResponse(Response<UploadProductImageData> response, Retrofit retrofit) {
-//                Log.d("MNORMANSYAH", "Hasil Upload Retrofit " + response.body() + "");
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t) {
-//                Log.e("MNORMANSYAH", "Hassil Upload Retrofit : " + t.getLocalizedMessage());
-//            }
-//        });
-        //[END] Old ws-new
     }
 }

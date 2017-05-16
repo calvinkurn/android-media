@@ -25,6 +25,7 @@ import okio.Buffer;
  * @author Angga.Prasetiyo on 27/11/2015.
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
+    private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     private final String authKey;
@@ -60,13 +61,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             showServerErrorSnackbar();
             sendErrorNetworkAnalytics(response);
-        } else if (isForbiddenRequest(response)
+        } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
         }
 
         return createNewResponse(response, bodyResponse);
     }
+
+
 
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         /* this can override for throw error */
@@ -82,14 +85,24 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         return MethodChecker.isTimezoneNotAutomatic();
     }
 
-    private boolean isForbiddenRequest(Response response) {
-        return response.code() == ERROR_FORBIDDEN_REQUEST;
+    private boolean isForbiddenRequest(String bodyResponse, int code) {
+
+        JSONObject json;
+        try {
+            json = new JSONObject(bodyResponse);
+            String status = json.optString("status", "OK");
+            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     protected void generateHmacAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
+        //   Log.d(TAG, "header: " + new PrettyPrintingMap<>(authHeaders).toString());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -100,7 +113,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 && originRequest.body() != null
                 && originRequest.body().contentType() != null)
             contentTypeHeader = originRequest.body().contentType().toString();
-
+        if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
             case "PATCH":
             case "DELETE":

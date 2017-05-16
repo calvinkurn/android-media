@@ -29,6 +29,8 @@ public class AttributesDigital implements Parcelable {
 
     private String smsState;
 
+    private boolean enableVoucher;
+
     private UserInputPriceDigital userInputPrice;
 
     public String getUserId() {
@@ -119,6 +121,17 @@ public class AttributesDigital implements Parcelable {
         this.smsState = smsState;
     }
 
+    public boolean isEnableVoucher() {
+        return enableVoucher;
+    }
+
+    public void setEnableVoucher(boolean enableVoucher) {
+        this.enableVoucher = enableVoucher;
+    }
+
+    public AttributesDigital() {
+    }
+
 
     @Override
     public int describeContents() {
@@ -137,10 +150,8 @@ public class AttributesDigital implements Parcelable {
         dest.writeByte(this.instantCheckout ? (byte) 1 : (byte) 0);
         dest.writeByte(this.needOtp ? (byte) 1 : (byte) 0);
         dest.writeString(this.smsState);
+        dest.writeByte(this.enableVoucher ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.userInputPrice, flags);
-    }
-
-    public AttributesDigital() {
     }
 
     protected AttributesDigital(Parcel in) {
@@ -154,19 +165,19 @@ public class AttributesDigital implements Parcelable {
         this.instantCheckout = in.readByte() != 0;
         this.needOtp = in.readByte() != 0;
         this.smsState = in.readString();
+        this.enableVoucher = in.readByte() != 0;
         this.userInputPrice = in.readParcelable(UserInputPriceDigital.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<AttributesDigital> CREATOR =
-            new Parcelable.Creator<AttributesDigital>() {
-                @Override
-                public AttributesDigital createFromParcel(Parcel source) {
-                    return new AttributesDigital(source);
-                }
+    public static final Creator<AttributesDigital> CREATOR = new Creator<AttributesDigital>() {
+        @Override
+        public AttributesDigital createFromParcel(Parcel source) {
+            return new AttributesDigital(source);
+        }
 
-                @Override
-                public AttributesDigital[] newArray(int size) {
-                    return new AttributesDigital[size];
-                }
-            };
+        @Override
+        public AttributesDigital[] newArray(int size) {
+            return new AttributesDigital[size];
+        }
+    };
 }

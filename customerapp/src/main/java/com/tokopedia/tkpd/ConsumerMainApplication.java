@@ -6,6 +6,8 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -13,6 +15,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
+import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -28,6 +31,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         generateConsumerAppBaseUrl();
+        initializeDatabase();
         super.onCreate();
 
         IntentFilter intentFilter = new IntentFilter(DeepLinkHandler.ACTION);
@@ -57,6 +61,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication {
 
         TkpdBaseURL.DIGITAL_API_DOMAIN = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
 
+    }
+
+    public void initializeDatabase() {
+        FlowManager.init(new FlowConfig.Builder(this)
+                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .build());
     }
 
 }

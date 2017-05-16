@@ -36,8 +36,6 @@ public interface InboxReputationDetailFragmentView {
 
     InboxReputationDetailAdapter getAdapter();
 
-    void setPullEnabled(boolean b);
-
     void clearData();
 
     boolean isRefreshing();
