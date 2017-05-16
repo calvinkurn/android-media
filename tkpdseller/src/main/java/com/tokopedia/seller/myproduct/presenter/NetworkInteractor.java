@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.seller.myproduct.model.EditPriceParam;
 
-import rx.subscriptions.CompositeSubscription;
-
 /**
  * Created by noiz354 on 5/18/16.
  * Modify by sebast on 5/31/16 for manage product API

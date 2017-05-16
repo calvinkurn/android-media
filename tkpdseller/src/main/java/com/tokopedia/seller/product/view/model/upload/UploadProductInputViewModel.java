@@ -1,12 +1,8 @@
 package com.tokopedia.seller.product.view.model.upload;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
-
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;

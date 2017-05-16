@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
 import com.tokopedia.seller.product.data.source.cloud.model.editproduct.EditProductServiceModel;
-import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
 
 import rx.functions.Func1;
 

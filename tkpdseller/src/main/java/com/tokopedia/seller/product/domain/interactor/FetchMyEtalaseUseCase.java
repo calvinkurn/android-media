@@ -6,9 +6,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.MyEtalaseRepository;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.domain.model.MyEtalaseItemDomainModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

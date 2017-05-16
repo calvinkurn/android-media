@@ -11,7 +11,6 @@ import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.data.repository.RegisterEmailRepositoryImpl;
 import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
-import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenterImpl;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;

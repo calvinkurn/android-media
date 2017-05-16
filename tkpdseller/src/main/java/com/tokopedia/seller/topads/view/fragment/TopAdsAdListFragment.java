@@ -25,13 +25,13 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;

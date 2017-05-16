@@ -8,15 +8,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.seller.lib.widget.LabelView;
 
 /**
  * Created by zulfikarrahman on 1/3/17.

@@ -1,12 +1,7 @@
 package com.tokopedia.seller.product.view.adapter.category;
 
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.RadioButton;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;

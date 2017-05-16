@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.seller.facade.FacadeShopTransaction;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core.R;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 
 import org.parceler.Parcels;
 

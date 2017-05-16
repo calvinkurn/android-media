@@ -177,6 +177,57 @@
     <string name="save_date">Simpan</string>
     <string name="market_insight_item_non_gm_text">Kata Kunci %s</string>
 
+
+    <string name="gm_home_title">Gold Merchant</string>
+    <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
+    <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
+
+    <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
+    <string name="gmsubscribe_feature_gold_badge_desc">Tampilan produk dan toko akan terlihat beda serta lebih terpercaya</string>
+    <string name="gmsubscribe_feature_topads">TopAds</string>
+    <string name="gmsubscribe_feature_topads_desc">Promosi produk dan toko jadi lebih efektif dan efisien</string>
+    <string name="gmsubscribe_feature_statistic">Statistik Toko</string>
+    <string name="gmsubscribe_feature_statistic_desc">Pantau perkembangan toko hingga detail penjualan jadi lebih mudah</string>
+    <string name="gmsubscribe_feature_ticket">Gold Ticket</string>
+    <string name="gmsubscribe_feature_ticket_desc">Tiket kendala yang Anda kirim jadi prioritas Tim Customer Care kami</string>
+    <string name="gmsubscribe_feature_cover">Sampul Toko</string>
+    <string name="gmsubscribe_feature_cover_desc">Jadikan halaman toko Anda lebih menarik dengan upload kreasi sampul foto Anda sendiri</string>
+
+    <string name="gmsubscribe_subfeature_title">Fitur-fitur Gold Merchant ini juga dapat\nmembantu memaksimalkan penjualanmu</string>
+    <string name="gmsubscribe_subfeature_etalase">Tambahan\n150 Etalase</string>
+    <string name="gmsubscribe_feature_admin">Gratis\n1 Admin Toko</string>
+    <string name="gmsubscribe_feature_cashback">Cashback TopPoints</string>
+    <string name="gmsubscribe_feature_video">Tambah\nVideo Produk</string>
+    <string name="gmsubscribe_feature_pantaupasar">Pantau\nPermintaan Pasar</string>
+    <string name="gmsubscribe_feature_kurs">Atur Harga\nKurs Dollar</string>
+
+    <string name="gmsubscribe_current_product_selector">Paket Berlangganan</string>
+    <string name="gmsubscribe_extend_product_selector">Paket Perpanjang Otomatis</string>
+    <string name="gmsubscribe_product_button_subscribe">Berlangganan</string>
+    <string name="gmsubscribe_product_button_change">Ubah</string>
+    <string name="gmsubscribe_product_button_activate">Aktifkan</string>
+
+    <string name="gmsubscribe_checkout_title">Gold Checkout</string>
+    <string name="gmsubscribe_continue_checkout">Berlangganan</string>
+    <string name="gmsubscribe_button_change">Ubah</string>
+
+    <string name="gmsubscribe_auto_subscribe_title">Aktifkan Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_subscribe_subtitle">Keanggotaan Gold Merchant Anda dapat diperpanjang secara otomatis menggunakan Saldo Tokopedia</string>
+
+    <string name="gmsubscribe_auto_package_title">Paket Perpanjangan Otomatis</string>
+    <string name="gmsubscribe_auto_package_price">Harga</string>
+    <string name="gmsubscribe_auto_package_next_subscribe">Tanggal Tagihan Berikutnya</string>
+    <string name="gmsubscribe_auto_package_payment_method">Metode Pembayaran</string>
+    <string name="gmsubscribe_change_auto">Ubah</string>
+    <string name="gmsubscribe_voucher_code_title">Gunakan Voucher Tokopedia</string>
+    <string name="gmsubscribe_voucher_hint">Kode Voucher</string>
+    <string name="gmsubscribe_voucher_code_check_button">Cek</string>
+    <string name="gm_subscribe_no_product_selected">Silahkan Pilih Produk Terlebih Dahulu</string>
+
+
+
+    <string name="positive_button_dialog">Ya</string>
+    <string name="negative_button_dialog">Tidak</string>
     <string name="title_shop_score">Performa Toko</string>
     <string name="description_shop_score_percent"> / 100</string>
     <string name="subtitle_first_shop_score_detail_summary">Perfoma Toko Anda</string>
@@ -244,6 +295,7 @@
     <string name="reputation_history_label_change_date">Ubah Tanggal</string>
     <string name="reputation_history_label_congrats_no_penalty">Anda tidak memiliki Penalti</string>
     <string name="reputation_history_label_improve_selling_get_badge">Tingkatkan terus penjualan &amp; pelayanan toko Anda untuk mendapatkan badge &amp; poin reputasi</string>
+    <string name="best_deal">BEST DEAL!</string>
 
     <!-- Product -->
     <string name="product_label_product_info">Info Produk</string>
@@ -424,8 +476,6 @@
     <string name="add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
-    <string name="positive_button_dialog">Ya</string>
-    <string name="negative_button_dialog">Tidak</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
 
 </resources>

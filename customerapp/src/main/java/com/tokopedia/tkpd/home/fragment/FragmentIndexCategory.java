@@ -44,7 +44,6 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;

@@ -1,18 +1,6 @@
 package com.tokopedia.session.activation.view.presenter;
 
-import android.os.Bundle;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.session.activation.data.factory.RegisterActivationFactory;
-import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
-import com.tokopedia.session.activation.data.mapper.ChangeEmailMapper;
-import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;
-import com.tokopedia.session.activation.data.repository.RegisterActivationRepositoryImpl;
-import com.tokopedia.session.activation.domain.RegisterActivationRepository;
 import com.tokopedia.session.activation.domain.interactor.ActivateUnicodeUseCase;
 import com.tokopedia.session.activation.domain.interactor.ResendActivationUseCase;
 import com.tokopedia.session.activation.view.subscriber.ActivateUnicodeSubscriber;
