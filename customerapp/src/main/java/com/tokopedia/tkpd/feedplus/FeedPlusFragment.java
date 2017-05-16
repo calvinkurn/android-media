@@ -1,0 +1,163 @@
+package com.tokopedia.tkpd.feedplus;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.ActivityModule;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.tkpd.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+/**
+ * @author by nisie on 5/15/17.
+ */
+
+public class FeedPlusFragment extends BaseDaggerFragment
+        implements FeedPlus.View,
+        SwipeRefreshLayout.OnRefreshListener {
+
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.swipe_refresh_layout)
+    SwipeToRefresh swipeToRefresh;
+
+    @Inject
+    FeedPlusPresenter presenter;
+
+    private Unbinder unbinder;
+    private EndlessRecyclerviewListener recyclerviewScrollListener;
+    private LinearLayoutManager layoutManager;
+    private FeedPlusAdapter adapter;
+
+    @Override
+    protected String getScreenName() {
+        return AppScreen.SCREEN_HOME_PRODUCT_FEED;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+                .appModule(new AppModule(getContext()))
+                .activityModule(new ActivityModule(getActivity()))
+                .build();
+
+        DaggerFeedPlusComponent daggerFeedPlusComponent = (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
+                .appComponent(daggerAppComponent)
+                .build();
+
+        daggerFeedPlusComponent.inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initVar();
+    }
+
+    private void initVar() {
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        recyclerviewScrollListener = onRecyclerViewListener();
+        FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl();
+        adapter = new FeedPlusAdapter(typeFactory);
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
+        unbinder = ButterKnife.bind(this, parentView);
+        prepareView();
+        presenter.attachView(this);
+        return parentView;
+
+    }
+
+    private void prepareView() {
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(recyclerviewScrollListener);
+        swipeToRefresh.setOnRefreshListener(this);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        List<Visitable> list = new ArrayList<>();
+        list.add(new ProductCardViewModel("Nisie 1"));
+        list.add(new ProductCardViewModel("Nisie 2"));
+        list.add(new ProductCardViewModel("Nisie 3"));
+
+        adapter.addList(list);
+        adapter.notifyDataSetChanged();
+    }
+
+
+    private EndlessRecyclerviewListener onRecyclerViewListener() {
+        return new EndlessRecyclerviewListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+
+            }
+        };
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        presenter.detachView();
+    }
+
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        try {
+//            if (isVisibleToUser && isAdded() && getActivity() != null) {
+//                if (isAdapterNotEmpty()) {
+//                    validateMessageError();
+//                } else {
+//                    favoritePresenter.loadInitialData();
+//                }
+//                ScreenTracking.screen(getScreenName());
+//
+//            } else {
+//                if (messageSnackbar != null && messageSnackbar.isShown()) {
+//                    messageSnackbar.hideRetrySnackbar();
+//                }
+//            }
+//        } catch (NullPointerException e) {
+//            e.printStackTrace();
+//            onCreate(new Bundle());
+//        }
+//    }
+}

@@ -47,6 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.feedplus.FeedPlusFragment;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
@@ -351,7 +352,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 }
 
                 if (getPageTitle(position).equals(content.get(1))) {
-                    return new FragmentProductFeed();
+//                    return new FragmentProductFeed();
+                    return new FeedPlusFragment();
                 }
 
                 if (getPageTitle(position).equals(content.get(2))) {
