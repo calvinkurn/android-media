@@ -1,5 +1,7 @@
 package com.tokopedia.ride.bookingride.view;
 
+import android.util.Log;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -10,14 +12,21 @@ import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
+import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by alvarisi on 3/14/17.
@@ -104,8 +113,10 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideErrorMessage();
                         getView().showProductList();
                         getView().renderProductList(productsList);
-                        if (destination != null)
-                            actionGetFareProduct(source, destination, productEstimates);
+                        if (destination != null) {
+//                            actionGetFareProduct(source, destination, productEstimates);
+                            actionGetFareProduct2(source, destination, productEstimates);
+                        }
 
                         getMinimalProductEstimateAndRender(productEstimates);
                     }
@@ -142,7 +153,70 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     i
             );
         }
+
+
     }
+
+    private void actionGetFareProduct2(PlacePassViewModel source, PlacePassViewModel destination, List<ProductEstimate> productEstimates) {
+        List<Observable<RideProductViewModel>> observables = new ArrayList<>();
+        for (int i = 0; i < productEstimates.size(); i++) {
+
+            RequestParams requestParams = RequestParams.create();
+            requestParams.putString(GetFareEstimateUseCase.PARAM_START_LATITUDE, String.valueOf(source.getLatitude()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_START_LONGITUDE, String.valueOf(source.getLongitude()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_END_LATITUDE, String.valueOf(destination.getLatitude()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_END_LONGITUDE, String.valueOf(destination.getLongitude()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_PRODUCT_ID, String.valueOf(productEstimates.get(i).getProduct().getProductId()));
+            requestParams.putString(GetFareEstimateUseCase.PARAM_SEAT_COUNT, String.valueOf(1));
+
+
+            observables.add(Observable.zip(Observable.just(productEstimates.get(i)),
+                    getFareEstimateUseCase.createObservable(requestParams),
+                    new Func2<ProductEstimate, FareEstimate, RideProductViewModel>() {
+                        @Override
+                        public RideProductViewModel call(ProductEstimate productEstimate, FareEstimate fareEstimate) {
+                            return mProductViewModelMapper.transformRide(productEstimate, fareEstimate);
+                        }
+                    })
+                    .onErrorReturn(new Func1<Throwable, RideProductViewModel>() {
+                        @Override
+                        public RideProductViewModel call(Throwable throwable) {
+                            return null;
+                        }
+                    }));
+        }
+
+        Observable.merge(observables)
+                .filter(new Func1<RideProductViewModel, Boolean>() {
+                    @Override
+                    public Boolean call(RideProductViewModel rideProductViewModel) {
+                        return rideProductViewModel != null;
+                    }
+                })
+                .toList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<RideProductViewModel>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(List<RideProductViewModel> rideProductViewModels) {
+                        List<Visitable> visitables = new ArrayList<Visitable>();
+                        visitables.addAll(rideProductViewModels);
+                        getView().renderProductList(visitables);
+                    }
+                });
+
+    }
+
 
     @Override
     public void actionFareProductEstimate(final ProductEstimate productEstimate, PlacePassViewModel source, PlacePassViewModel destination, final String productId, final int position) {

@@ -46,10 +46,10 @@ public class RideProductAdapter extends RecyclerView.Adapter<AbstractViewHolder>
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
-        if(mVisitables!= null && mVisitables.get(position) != null) {
+//        if(mVisitables!= null && mVisitables.get(position) != null) {
             return mVisitables.get(position).type(typeFactory);
-        }
-        return 0;
+//        }
+//        return 0;
     }
 
 
