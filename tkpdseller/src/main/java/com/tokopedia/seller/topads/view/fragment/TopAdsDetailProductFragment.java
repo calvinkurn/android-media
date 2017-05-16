@@ -26,7 +26,9 @@ import com.tokopedia.seller.topads.view.activity.TopAdsGroupEditPromoActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupManagePromoActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailProductPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.LabelView;
+
+import org.parceler.Parcels;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -34,15 +36,16 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDetailProductPresenter> {
 
+    public static final String PRODUCT_AD_PARCELABLE = "PRODUCT_AD_PARCELABLE";
+
     public interface TopAdsDetailProductFragmentListener {
         void goToProductActivity(String productUrl);
     }
 
-    private TopAdsLabelView promoGroupLabelView;
+    private LabelView promoGroupLabelView;
 
     private ProductAd productAd;
     private TopAdsDetailProductFragmentListener listener;
-    private MenuItem manageGroupMenuItem;
 
     public static Fragment createInstance(ProductAd productAd, String adId) {
         Fragment fragment = new TopAdsDetailProductFragment();
@@ -64,7 +67,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initView(View view) {
         super.initView(view);
-        promoGroupLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_promo_group);
+        promoGroupLabelView = (LabelView) view.findViewById(R.id.label_view_promo_group);
         name.setTitle(getString(R.string.title_top_ads_product));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
         name.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +152,6 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
             promoGroupLabelView.setContent(getString(R.string.label_top_ads_empty_group));
             promoGroupLabelView.setContentColorValue(ContextCompat.getColor(getActivity(), android.R.color.tab_indicator_text));
         }
-        updateManageGroupMenu();
     }
 
     /**
@@ -185,8 +187,10 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
-        updateManageGroupMenu();
+        MenuItem manageGroupMenuItem = menu.findItem(R.id.menu_manage_group);
+        if (manageGroupMenuItem != null) {
+            manageGroupMenuItem.setVisible(!isHasGroupAd());
+        }
     }
 
     @Override
@@ -208,9 +212,16 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
-    private void updateManageGroupMenu() {
-        if (manageGroupMenuItem != null) {
-            manageGroupMenuItem.setVisible(!isHasGroupAd());
-        }
+    @Override
+    public void onSaveState(Bundle state) {
+        state.putParcelable(PRODUCT_AD_PARCELABLE, Parcels.wrap(productAd));
+        super.onSaveState(state);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        productAd = Parcels.unwrap(savedState.getParcelable(PRODUCT_AD_PARCELABLE));
+        onAdLoaded(productAd);
     }
 }

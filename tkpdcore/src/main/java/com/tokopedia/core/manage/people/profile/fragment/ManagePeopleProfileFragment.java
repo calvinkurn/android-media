@@ -15,6 +15,7 @@ import android.view.Window;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -303,27 +304,28 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_VERIFY_PHONE &&
-                resultCode == Activity.RESULT_OK &&
-                SessionHandler.isMsisdnVerified()) {
-            getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
-            renderData();
-        } else {
-            uploadDialog.onResult(
-                    requestCode,
-                    resultCode,
-                    data,
-                    new UploadImageDialog.UploadImageDialogListener() {
-                        @Override
-                        public void onSuccess(String data) {
-                            presenter.setOnUserFinishPickImage(data);
-                        }
+        if (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE) {
+            if (requestCode == REQUEST_VERIFY_PHONE &&
+                    SessionHandler.isMsisdnVerified()) {
+                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+                renderData();
+            } else {
+                uploadDialog.onResult(
+                        requestCode,
+                        resultCode,
+                        data,
+                        new UploadImageDialog.UploadImageDialogListener() {
+                            @Override
+                            public void onSuccess(String data) {
+                                presenter.setOnUserFinishPickImage(data);
+                            }
 
-                        @Override
-                        public void onFailed() {
-                            showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
-                        }
-                    });
+                            @Override
+                            public void onFailed() {
+                                showSnackBarView(getActivity().getString(R.string.error_gallery_valid));
+                            }
+                        });
+            }
         }
     }
 

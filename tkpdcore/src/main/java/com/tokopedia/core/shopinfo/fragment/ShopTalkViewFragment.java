@@ -69,7 +69,7 @@ public class ShopTalkViewFragment extends TalkViewFragment {
         productID = String.valueOf(bundle.getTalkProductId());
         shopID = bundle.getTalkShopId();
         headUserLabel = bundle.getTalkUserLabel();
-        isOwner = Integer.valueOf(bundle.getTalkOwn());
+        isOwner = bundle.getTalkOwn();
         isFollow = bundle.getTalkFollowStatus();
         totalComment = Integer.parseInt(bundle.getTalkTotalComment());
         readStatus = bundle.getTalkReadStatus();

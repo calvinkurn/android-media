@@ -1,6 +1,7 @@
 package com.tokopedia.seller.myproduct;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.SearchManager;
@@ -83,16 +84,15 @@ import com.tokopedia.core.util.RetryHandler;
 import com.tokopedia.core.util.RetryHandler.OnConnectionTimeout;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.myproduct.ManageProductPermissionsDispatcher;
 import com.tokopedia.seller.myproduct.adapter.ListViewManageProdAdapter;
-import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.seller.myproduct.model.ManageProductModel;
 import com.tokopedia.seller.myproduct.model.getProductList.ProductList;
 import com.tokopedia.seller.myproduct.presenter.ManageProductPresenterImpl;
 import com.tokopedia.seller.myproduct.presenter.ManageProductView;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractor;
 import com.tokopedia.seller.myproduct.presenter.NetworkInteractorImpl;
-import com.tokopedia.seller.myproduct.service.ProductService;
+import com.tokopedia.seller.myproduct.service.ProductServiceConstant;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -140,6 +140,7 @@ public class ManageProduct extends TkpdActivity implements
     public static final String SORT_MOST_BUY = "8";
     public static final String SORT_LOWEST_PRICE = "9";
     public static final String SORT_HIGHER_PRICE = "10";
+
     public static final String ACTION_ADD_PRODUCT = BuildConfig.APPLICATION_ID + ".ADD_PRODUCT";
     public CompositeSubscription compositeSubscription = new CompositeSubscription();
     SimpleListView lvListProd;
@@ -151,8 +152,9 @@ public class ManageProduct extends TkpdActivity implements
     EditText EtalaseName;
     View footerLV;
     ImageView blurImage;
-    FabSpeedDial fabAddProduct;
+
     ManageProductPresenterImpl manageProductPresenter;
+    FabSpeedDial fabAddProduct;
     private ArrayList<String> menuName = new ArrayList<String>();
     private ArrayList<String> EtalaseFilters = new ArrayList<String>();
     private ArrayList<String> EtalaseIdFilters = new ArrayList<String>();
@@ -246,7 +248,6 @@ public class ManageProduct extends TkpdActivity implements
         compositeSubscription = RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
         lvListProd = (SimpleListView) findViewById(R.id.prod_list);
         blurImage = (ImageView) findViewById(R.id.blur_image);
-        fabAddProduct = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
 
         checkLogin();
         if (this.isFinishing()) {
@@ -254,7 +255,7 @@ public class ManageProduct extends TkpdActivity implements
         }
 
         LocalBroadcastManager.getInstance(this).registerReceiver(onCompletedAddReceiver,
-                new IntentFilter(ProductService.ACTION_COMPLETED_ADD_PRODUCT));
+                new IntentFilter(ProductServiceConstant.ACTION_COMPLETED_ADD_PRODUCT));
         drawer.setDrawerPosition(TkpdState.DrawerPosition.MANAGE_PRODUCT);
 
         getOverflowMenu();
@@ -276,21 +277,15 @@ public class ManageProduct extends TkpdActivity implements
             @Override
             public boolean onMenuItemSelected(MenuItem menuItem) {
                 int id = menuItem.getItemId();
+
                 lvadapter.clearCheckdData();
                 lvListProd.clearChoices();
                 lvListProd.setItemChecked(-1, false);
-                if (id == R.id.action_instagram) {
-                    if(getApplication() instanceof TkpdCoreRouter)
-                        ((TkpdCoreRouter)getApplication()).startInstopedActivity(ManageProduct.this);
-
-                    // analytic below : https://phab.tokopedia.com/T18496
-                    UnifyTracking.eventClickInstoped();
-                } else if (id == R.id.action_gallery) {
+                if (id == R.id.action_gallery) {
                     ManageProductPermissionsDispatcher.onAddFromGalleryWithCheck(ManageProduct.this);
 
                 } else if (id == R.id.action_camera) {
                     ManageProductPermissionsDispatcher.onAddFromCameraWithCheck(ManageProduct.this);
-
                 }
                 return false;
             }
@@ -309,14 +304,6 @@ public class ManageProduct extends TkpdActivity implements
         SortDialog = SortMenu.create();
         blurImage = (ImageView) findViewById(R.id.blur_image);
 
-        EtalaseFilters.add(getString(R.string.title_all_products));
-        EtalaseFilters.add(getString(R.string.title_all_etalase));
-        EtalaseFilters.add(getString(R.string.title_warehouse));
-        EtalaseFilters.add(getString(R.string.title_under_review));
-        EtalaseIdFilters.add("null");
-        EtalaseIdFilters.add("etalase");
-        EtalaseIdFilters.add("warehouse");
-        EtalaseIdFilters.add("pending");
         CategoriesFilter.add(getString(R.string.title_all_categories));
         CategoriesIdFilter.add("null");
 
@@ -356,11 +343,13 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void onAddFromGallery() {
         GalleryActivity.moveToImageGalleryCamera(ManageProduct.this, 0, false, 5);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
     public void onAddFromCamera() {
         GalleryActivity.moveToImageGalleryCamera(this, 0, true, -1);
@@ -692,8 +681,7 @@ public class ManageProduct extends TkpdActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_product) {
             if (isProdManager == 1) {
-                ProductActivity.moveToAddProduct(this);
-
+                ProductAddActivity.start(this);
                 // analytic below : https://phab.tokopedia.com/T18496
                 UnifyTracking.eventClickAPManageProductTop();
             } else {
@@ -1463,13 +1451,6 @@ public class ManageProduct extends TkpdActivity implements
 
     }
 
-    private void deleteProd(String ID) {
-        List<String> items = Arrays.asList(ID.split("~"));
-        for (int i = 0; i < items.size(); i++) {
-            ProductCache.DeleteCache(items.get(i), this);
-        }
-    }
-
     private void TriggerLoadNewData() {
         if (!Refresh.isRefreshing()) {
             clearData();
@@ -1491,10 +1472,6 @@ public class ManageProduct extends TkpdActivity implements
         lvadapter.clearEditMode();
         lvadapter.clearDatas();
         mPaging.resetPage();
-    }
-
-    private void clearCache() {
-
     }
 
     @Override
@@ -1526,6 +1503,16 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     private void initEtalaseFilter(List<EtalaseDB> etalaseDBs) {
+        EtalaseFilters.clear();
+        EtalaseIdFilters.clear();
+        EtalaseFilters.add(getString(R.string.title_all_products));
+        EtalaseFilters.add(getString(R.string.title_all_etalase));
+        EtalaseFilters.add(getString(R.string.title_warehouse));
+        EtalaseFilters.add(getString(R.string.title_under_review));
+        EtalaseIdFilters.add("null");
+        EtalaseIdFilters.add("etalase");
+        EtalaseIdFilters.add("warehouse");
+        EtalaseIdFilters.add("pending");
         for (EtalaseDB etalaseDB :
                 etalaseDBs) {
             EtalaseFilters.add(String.valueOf(MethodChecker.fromHtml(etalaseDB.getEtalaseName())));
@@ -1553,26 +1540,14 @@ public class ManageProduct extends TkpdActivity implements
         ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
             @Override
             public void onSuccess(ArrayList<String> imageUrls) {
-                Intent intent = new Intent(ManageProduct.this, ProductActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(GalleryBrowser.IMAGE_URLS, Parcels.wrap(imageUrls));
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, -1);
-                intent.putExtras(bundle);
-
-                ManageProduct.this.startActivity(intent);
+                ProductAddActivity.start(ManageProduct.this,imageUrls);
             }
 
             @Override
             public void onSuccess(String path, int position) {
-                Intent intent = new Intent(ManageProduct.this, ProductActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, AddProductFragment.FRAGMENT_TAG);
-                intent.putExtra(IMAGE_GALLERY, path);
-                intent.putExtra(ProductActivity.ADD_PRODUCT_IMAGE_LOCATION, position);
-                intent.putExtras(bundle);
-
-                ManageProduct.this.startActivity(intent);
+                ArrayList<String> imageUrls = new ArrayList<>();
+                imageUrls.add(path);
+                ProductAddActivity.start(ManageProduct.this,imageUrls);
             }
 
             @Override
@@ -1600,6 +1575,12 @@ public class ManageProduct extends TkpdActivity implements
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(addProductReceiver);
+    }
+
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.add_product);
 
@@ -1614,37 +1595,6 @@ public class ManageProduct extends TkpdActivity implements
 
         return true;
     }
-
-    private void setToUI(ManageProductPresenterImpl.CacheManageProduct cacheManageProduct) {
-
-        if (mPaging.getPage() == 1) {
-            clearData();
-        }
-
-        PagingHandler.PagingHandlerModel pagingHandlerModel =
-                cacheManageProduct.pagingHandlerModel;
-        mPaging.setNewParameter(pagingHandlerModel);
-        if (mPaging.CheckNextPage()) {
-            lvListProd.addLoadingFooter();
-            loading = false;
-        } else {
-            lvListProd.removeLoading();
-            loading = true;
-        }
-        IsAllowShop = cacheManageProduct.IsAllowShop;
-
-        lvListProd.removeNoResult();// remove no result
-        if (checkCollectionNotNull(cacheManageProduct.productModels)) {
-            lvadapter.setData(new ArrayList<ManageProductModel>(cacheManageProduct.productModels));
-        } else {
-            lvListProd.addNoResult();
-        }
-
-        isProdManager = cacheManageProduct.isProdManager;
-        lvadapter.setProdManager(isProdManager);
-        invalidateOptionsMenu();
-    }
-
 
     private void SetToUI(ProductList.Data Result) {
         ArrayList<ManageProductModel> manageProductModels = new ArrayList<>();

@@ -7,7 +7,6 @@ import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.router.SessionRouter;
@@ -18,8 +17,6 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
-
 import java.util.Map;
 
 /**
@@ -140,6 +137,10 @@ public class TrackingUtils extends TrackingConfig {
         getLocaEngine().tagEvent(eventName, params, value);
     }
 
+    public static void eventLocaSetNotification(boolean notificationsDisabled){
+        getLocaEngine().setNotificationsDisabled(notificationsDisabled);
+    }
+
     public static void eventLocaUserAttributes(String loginID, String username, String email){
         getLocaEngine().tagUserAttributes(loginID, username, email);
     }
@@ -160,7 +161,7 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().sendEvent(dataLayers);
     }
 
-    public static String getClientID(){
+    public static String getClientID() {
         return getGTMEngine().getClientIDString();
     }
 

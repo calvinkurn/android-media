@@ -39,6 +39,7 @@ import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.service.HadesBroadcastReceiver;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.service.constant.HadesConstant;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -372,12 +373,16 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         return null;
     }
 
-    protected AppComponent getApplicationComponent() {
+    public AppComponent getApplicationComponent() {
         return ((MainApplication) getApplication())
                 .getApplicationComponent(getActivityModule());
     }
 
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
+    }
+
+    protected void setGoldMerchant(ShopModel shopModel) {
+        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 }

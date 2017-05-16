@@ -3,6 +3,7 @@ package com.tokopedia.core.shopinfo.models.shopmodel;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.var.Badge;
 
 import java.util.ArrayList;
@@ -10,6 +11,8 @@ import java.util.List;
 
 public class Info {
 
+    public static final String FREE_RETURNS = "Free Returns";
+    public static final String FREE_RETURNS_ACTIVE = "1";
     @SerializedName("shop_status_title")
     @Expose
     public String shopStatusTitle;
@@ -46,6 +49,9 @@ public class Info {
     @SerializedName("shop_is_gold")
     @Expose
     public int shopIsGold;
+    @SerializedName("shop_is_gold_badge")
+    @Expose
+    public boolean shopIsGoldBadge;
     @SerializedName("shop_open_since")
     @Expose
     public String shopOpenSince;
@@ -97,9 +103,19 @@ public class Info {
     @SerializedName("shop_domain")
     @Expose
     public String shopDomain;
+    @SerializedName("shop_is_free_returns")
+    @Expose
+    public String shopIsFreeReturns;
 
     @SerializedName("badges")
     @Expose
     public List<Badge> badges = new ArrayList<>();
+
+    public boolean isFreeReturns(){
+        if(StringUtils.isNotBlank(shopIsFreeReturns) && shopIsFreeReturns.equals(FREE_RETURNS_ACTIVE)){
+            return true;
+        }
+        return false;
+    }
 
 }

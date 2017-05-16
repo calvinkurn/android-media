@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -187,7 +188,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     @Override
     public void onShopDetailLoaded(@NonNull ShopModel shopModel) {
         ImageHandler.loadImageCircle2(getActivity(), shopIconImageView, shopModel.info.shopAvatar);
-        shopTitleTextView.setText(shopModel.info.shopName);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            shopTitleTextView.setText(Html.fromHtml(shopModel.info.shopName, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            shopTitleTextView.setText(Html.fromHtml(shopModel.info.shopName));
+        }
+
         hideLoading();
         onLoadDataSuccess();
     }

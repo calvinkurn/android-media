@@ -1,13 +1,16 @@
 package com.tokopedia.discovery.search.view.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -29,6 +32,8 @@ import butterknife.Unbinder;
  */
 
 public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchContract.View {
+    public static final int PAGER_POSITION_PRODUCT = 0;
+    public static final int PAGER_POSITION_SHOP = 1;
 
     private Unbinder unbinder;
     public static final String FRAGMENT_TAG = "SearchHistoryFragment";
@@ -43,6 +48,7 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     SearchPresenter presenter;
     private SearchPageAdapter pageAdapter;
     private String mSearch = "";
+    private String networkErrorMessage;
 
     public static SearchMainFragment newInstance() {
         
@@ -65,8 +71,13 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initResources();
         presenter = new SearchPresenter(getActivity());
         setRetainInstance(true);
+    }
+
+    private void initResources() {
+        networkErrorMessage = getString(R.string.msg_network_error);
     }
 
     @Nullable
@@ -85,6 +96,21 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
         viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(pageAdapter);
         tabLayout.setupWithViewPager(viewPager);
+    }
+
+    public void setCurrentTab(final int pos) {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (viewPager != null) {
+                    viewPager.setCurrentItem(pos);
+                }
+            }
+        });
+    }
+
+    public int getCurrentTab() {
+        return viewPager.getCurrentItem();
     }
 
     @Override
@@ -112,6 +138,11 @@ public class SearchMainFragment extends TkpdBaseV4Fragment implements SearchCont
                 resultFragment.addSearchResult(visitable);
             }
         }
+    }
+
+    @Override
+    public void showNetworkErrorMessage() {
+        SnackbarManager.make(getActivity(), networkErrorMessage, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

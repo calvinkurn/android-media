@@ -49,7 +49,7 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
             wishlistDomains.add(mappingWishlistResponse(wishlistResponse));
         }
         wishlist.setWishlists(wishlistDomains);
-        if (response.getPaging() != null) wishlist.setNextUrl(response.getPaging().getNextUrl());
+        if (response.getPaging() != null) wishlist.setPaging(response.getPaging());
         return wishlist;
     }
 

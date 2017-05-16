@@ -2,7 +2,6 @@ package com.tokopedia.core.gcm.base;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -24,7 +23,6 @@ import com.tokopedia.core.gcm.notification.dedicated.PurchaseDisputeNotification
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerEditNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ReputationSmileyToSellerNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterAdminSellerReplyNotification;
-import com.tokopedia.core.gcm.notification.dedicated.ResCenterBuyerAgreeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterNewNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerAgreeNotification;
 import com.tokopedia.core.gcm.notification.dedicated.ResCenterSellerReplyNotification;
@@ -36,11 +34,6 @@ import com.tokopedia.core.gcm.notification.dedicated.SellingInvalidResiNotificat
 import com.tokopedia.core.gcm.notification.dedicated.SellingOrderDeliveredNotification;
 import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotification;
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
-import com.tokopedia.core.gcm.notification.promotions.CartNotification;
-import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
-import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
-import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
-import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
 import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.var.TkpdState;
@@ -111,7 +104,7 @@ public abstract class BaseAppNotificationReceiverUIBackground {
 
     public abstract void notifyReceiverBackgroundMessage(Observable<Bundle> data);
 
-    protected Map<Integer, Visitable> getCommonDedicatiedObject(){
+    protected Map<Integer, Visitable> getCommonDedicatiedObject() {
         Map<Integer, Visitable> dedicatedNotification = new HashMap<>();
         dedicatedNotification.put(TkpdState.GCMServiceState.GCM_MESSAGE, new NewMessageNotification(mContext));
         return dedicatedNotification;

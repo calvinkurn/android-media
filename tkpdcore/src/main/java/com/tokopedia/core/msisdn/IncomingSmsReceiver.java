@@ -33,7 +33,7 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
             SmsMessage currentMessage;
             currentMessage = MethodChecker.createSmsFromPdu(intent);
 
-            if (isTokopediaOtpSms(currentMessage)) {
+            if (currentMessage != null && isTokopediaOtpSms(currentMessage)) {
 
                 String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
                 Pattern pattern = Pattern.compile(regexString);
@@ -49,10 +49,13 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
     }
 
     private boolean isTokopediaOtpSms(SmsMessage currentMessage) {
-        String senderNum = currentMessage.getDisplayOriginatingAddress();
-        String message = currentMessage.getDisplayMessageBody();
+        String senderNum = currentMessage.getDisplayOriginatingAddress() != null ?
+                currentMessage.getDisplayOriginatingAddress() : "";
+        String message = currentMessage.getDisplayMessageBody() != null ?
+                currentMessage.getDisplayMessageBody() : "";
 
-        return senderNum.equals("Tokopedia") || message.startsWith("Tokopedia");
+        return (senderNum != null && senderNum.equals("Tokopedia")) ||
+                (message != null && message.startsWith("Tokopedia"));
     }
 
     public void registerSmsReceiver(Context context) {

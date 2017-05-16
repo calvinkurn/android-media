@@ -18,16 +18,16 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.talk.model.model.InboxTalk;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.inbox.inboxtalk.InboxTalkFilterDialog;
 import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.inbox.inboxtalk.adapter.InboxTalkAdapter;
 import com.tokopedia.inbox.inboxtalk.listener.InboxTalkView;
-import com.tokopedia.core.talk.model.model.InboxTalk;
 import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenter;
 import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkPresenterImpl;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -252,7 +252,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
             refresh.finishRefresh();
             items.clear();
         }
-        refresh.setPullEnabled(true);
         items.addAll(list);
         if (!(getActivity() instanceof InboxTalkActivity))
             adapter.setEnableAction(false);
@@ -275,12 +274,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         if (page == 1) {
             refresh.finishRefresh();
             if (items.size() > 0) {
-                refresh.setPullEnabled(true);
                 removeLoadingFooter();
                 adapter.notifyDataSetChanged();
                 NetworkErrorHelper.showSnackbar(getActivity());
             } else {
-                refresh.setPullEnabled(false);
                 displayView(false);
                 if (error.length() <= 0) {
                     NetworkErrorHelper.showEmptyState(getActivity(), getView(), retryListener());
@@ -289,7 +286,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
                 }
             }
         } else {
-            refresh.setPullEnabled(false);
             removeLoadingFooter();
             snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), retrySnackbarListener());
             adapter.setEnableAction(false);
@@ -336,7 +332,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
 //        if (pagingHandler.getPage() == 1) {
 //            refresh.finishRefresh();
 //            items.clear();
@@ -351,7 +346,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void onCacheResponse(List<InboxTalk> list, int isUnread) {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
         items.addAll(list);
         adapter.notifyDataSetChanged();
         displayLoading(false);
@@ -365,7 +359,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     private void request() {
         floatingActionButton.setEnabled(false);
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.getInboxTalk(getActivity(), getParam());
     }
 
@@ -373,7 +366,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     private void firstRequest() {
         floatingActionButton.setEnabled(false);
         isRequest = true;
-        refresh.setPullEnabled(false);
         presenter.refreshInboxTalk(getActivity(), getParam());
     }
 
@@ -381,7 +373,6 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     public void cancelRequest() {
         floatingActionButton.setEnabled(true);
         isRequest = false;
-        refresh.setPullEnabled(true);
     }
 
     @Override

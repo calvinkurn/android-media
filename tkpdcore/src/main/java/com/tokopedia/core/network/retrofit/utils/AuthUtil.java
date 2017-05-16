@@ -3,6 +3,7 @@ package com.tokopedia.core.network.retrofit.utils;
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
+
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
@@ -37,6 +38,7 @@ public class AuthUtil {
     private static final String HEADER_DATE = "Date";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
+    private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     private static final String HEADER_DEVICE = "X-Device";
     private static final String HEADER_X_APP_VERSION = "X-APP-VERSION";
     private static final String HEADER_X_TKPD_APP_NAME = "X-Tkpd-App-Name";
@@ -50,23 +52,68 @@ public class AuthUtil {
     private static final String PARAM_HASH = "hash";
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
-
+    private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
 
 
     /**
      * default key is KEY_WSV$
      */
     public static class KEY {
-        public static String KEY_WSV4 = "web_service_v4";
-        public static String KEY_MOJITO = "mojito_api_v1";
-        public static String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_WSV4 = "web_service_v4";
+        public static final String KEY_MOJITO = "mojito_api_v1";
+        public static final String KEY_KEROPPI = "Keroppi";
+        public static final String KEY_HMAC_DIGITAL = "KEY_HMAC_DIGITAL";
     }
+
+    public static Map<String, String> generateHeadersWithXUserId(
+            String path, String strParam, String method, String authKey, String contentType
+    ) {
+        String date = generateDate(DATE_FORMAT);
+        String contentMD5 = generateContentMd5(strParam);
+        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
+
+        String authString = method
+                + "\n" + contentMD5
+                + "\n" + contentType
+                + "\n" + date
+                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
+                + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_X_TKPD_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
         return finalHeader;
     }
+
+    public static Map<String, String> generateHeaders(
+            String path, String strParam, String method, String authKey, String contentType
+    ) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentType != null ? contentType : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        return finalHeader;
+    }
+
 
     public static Map<String, String> generateHeaders(String path, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, "", method, CONTENT_TYPE_JSON, authKey, DATE_FORMAT);
@@ -79,6 +126,7 @@ public class AuthUtil {
                                                           String contentType, String authKey, String dateFormat) {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
+        String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
         String signature = calculateRFC2104HMAC(authString, authKey);
@@ -93,8 +141,12 @@ public class AuthUtil {
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
+
     public static Map<String, String> generateBothAuthHeadersAccount(String path, String strParam, String method,
                                                                      String contentType, String authKey, String dateFormat) {
 
@@ -248,6 +300,20 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        //     params.put(PARAM_X_TKPD_USER_ID, userId);
+        return params;
+    }
+
+    public static TKPDMapParam<String, Object> generateParamsNetwork2(Context context, TKPDMapParam<String, Object> params) {
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String userId = SessionHandler.getLoginID(context);
+        String hash = md5(userId + "~" + deviceId);
+
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(PARAM_HASH, hash);
+        params.put(PARAM_OS_TYPE, "1");
+        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
 
         return params;
     }
@@ -262,7 +328,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
+        //      params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
@@ -276,7 +342,7 @@ public class AuthUtil {
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
-
+        //      params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
 
@@ -337,5 +403,4 @@ public class AuthUtil {
             return "";
         }
     }
-
 }

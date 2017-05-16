@@ -9,6 +9,7 @@ import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.network.apiservices.etc.HomeService;
 import com.tokopedia.core.network.apiservices.etc.apis.home.FavoriteApi;
+import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -53,7 +54,7 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
     private final CompositeSubscription mCompositeSubscription;
     private final CacheHomeInteractorImpl cacheHome;
     private HomeService homeService;
-    MojitoService mojitoService;
+    MojitoAuthService mojitoAuthService;
     private FaveShopActService faveShopActService;
     private Context mContext;
 
@@ -61,7 +62,7 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
         mContext = context;
         mCompositeSubscription = new CompositeSubscription();
         homeService = new HomeService();
-        mojitoService = new MojitoService();
+        mojitoAuthService = new MojitoAuthService();
         cacheHome = new CacheHomeInteractorImpl();
         faveShopActService = new FaveShopActService();
     }
@@ -110,7 +111,7 @@ public class FavoriteInteractorImpl implements FavoriteInteractor {
             return;
         }
 
-        mCompositeSubscription.add(mojitoService.getApi().getWishlist(SessionHandler.getLoginID(mContext), 4, 1)
+        mCompositeSubscription.add(mojitoAuthService.getApi().getWishlist(SessionHandler.getLoginID(mContext), 4, 1)
                 .map(new Func1<Response<com.tokopedia.core.network.entity.wishlist.WishlistData>, WishlistData>() {
                     @Override
                     public WishlistData call(Response<com.tokopedia.core.network.entity.wishlist.WishlistData> response) {

@@ -383,7 +383,6 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(false);
         if (fab.isShown())
             fab.hide();
-        refreshHandler.setPullEnabled(false);
         adapter.setEnabled(false);
     }
 
@@ -392,7 +391,6 @@ public class InboxMessageFragment extends BasePresenterFragment<InboxMessageFrag
         if (getActivity() instanceof DrawerPresenterActivity)
             ((DrawerPresenterActivity) getActivity()).setDrawerEnabled(true);
         fab.show();
-        refreshHandler.setPullEnabled(true);
         if (presenter.hasActionListener()) {
             adapter.setEnabled(true);
         }

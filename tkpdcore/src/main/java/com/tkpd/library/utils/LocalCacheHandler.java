@@ -11,6 +11,11 @@ public class LocalCacheHandler {
     private Editor editor;
     private SharedPreferences sharedPrefs;
 
+    public LocalCacheHandler(SharedPreferences sharedPreferences) {
+        sharedPrefs = sharedPreferences;
+        editor = sharedPrefs.edit();
+    }
+
     public LocalCacheHandler(Context context, String name) {
         sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
         editor = sharedPrefs.edit();
@@ -197,8 +202,7 @@ public class LocalCacheHandler {
         int interval = getInt("expired_time");
         Long time = getLong("timestamp");
         Long curr_time = System.currentTimeMillis() / 1000;
-        if ((curr_time - time) > interval) return true;
-        return false;
+        return (curr_time - time) > interval;
     }
 
     public int getRemainingTime() {
@@ -210,12 +214,12 @@ public class LocalCacheHandler {
 
     public static void clearCache(Context context, String name) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        sharedPrefs.edit().clear().commit();
+        sharedPrefs.edit().clear().apply();
     }
 
     public static void clearSingleCacheKey(Context context, String prefName, String keyName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        sharedPrefs.edit().remove(keyName).commit();
+        sharedPrefs.edit().remove(keyName).apply();
     }
 
     public int getSingleArrayListInteger(String key, int index) {

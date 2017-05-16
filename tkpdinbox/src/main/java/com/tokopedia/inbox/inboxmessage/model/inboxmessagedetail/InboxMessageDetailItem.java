@@ -391,7 +391,7 @@ public class InboxMessageDetailItem implements Parcelable {
             id = new Locale("in", "ID");
             sdf = new SimpleDateFormat("dd MMMM yyyy, HH:mm z", id);
             SimpleDateFormat newSdf = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
-            String hour = newSdf.format(sdf.parse(getMessageReplyTimeFmt())) + " WIB";
+            String hour = newSdf.format(sdf.parse(getMessageReplyTimeFmt()));
             return hour;
         } catch (ParseException e) {
             return "";

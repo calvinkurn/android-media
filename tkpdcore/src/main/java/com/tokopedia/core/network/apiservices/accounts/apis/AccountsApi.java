@@ -61,12 +61,11 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.RESENT_ACTIVATION)
-    Observable<Response<TkpdResponse>> resentActivation(@FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> resentActivation(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.GENERATE_HOST)
     Observable<GeneratedHost> generateHost(@FieldMap Map<String, String> params);
-
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Truecaller.VERIFY_PHONE)
@@ -75,12 +74,45 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP)
     Observable<Response<TkpdResponse>> requestOtp(@Header(HEADER_USER_ID) String userId,
-                                                          @FieldMap Map<String, Object> params);
+                                                  @FieldMap Map<String, Object> params);
+
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.OTP.VALIDATE_OTP)
-    Observable<Response<TkpdResponse>> validateOtp( @FieldMap TKPDMapParam<String, Object> param);
+    Observable<Response<TkpdResponse>> validateOtp(@FieldMap TKPDMapParam<String, Object> param);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.VERIFY_PHONE_NUMBER)
     Observable<Response<TkpdResponse>> verifyPhoneNumber(@FieldMap TKPDMapParam<String, Object> param);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.GET_UPLOAD_HOST)
+    Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.VALIDATE_SIZE)
+    Observable<Response<TkpdResponse>> validateImage(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Image.SUBMIT_DETAIL)
+    Observable<Response<TkpdResponse>> submitImage(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.Ktp.CHECK_STATUS)
+    Observable<Response<TkpdResponse>> checkStatusKtp(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP_EMAIL)
+    Observable<Response<TkpdResponse>> requestOtpToEmail(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.DO_REGISTER)
+    Observable<Response<TkpdResponse>> registerEmail(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ACTIVATE_UNICODE)
+    Observable<Response<String>> activateWithUnicode(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.CHANGE_EMAIL)
+    Observable<Response<TkpdResponse>> changeEmail(@FieldMap Map<String, Object> params);
 }

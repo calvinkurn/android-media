@@ -47,6 +47,8 @@ import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 public class InstagramMediaFragment extends Fragment implements InstagramMediaFragmentView {
 
     public static final String INSTAGRAM_DATA = "INSTAGRAM_DATA";
+    public static final String MAX_SELECT_ITEM = "MAX_SELECT";
+    public static final int DEFAULT_MAX_ITEM_COUNT = 20;
     InstagramMedia instagramMedia;
     int LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE;
 
@@ -66,6 +68,8 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
     private TkpdProgressDialog progressDialog;
 
     SwipeToRefresh swipeToRefresh;
+
+    private int maxItemCount;
 
     @Override
     public int getFragmentId() {
@@ -104,10 +108,11 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         void onSuccess(SparseArray<InstagramMediaModel> selectedModel);
     }
 
-    public static InstagramMediaFragment createDialog(InstagramUserModel model) {
+    public static InstagramMediaFragment createDialog(InstagramUserModel model, int maxItemCount) {
         InstagramMediaFragment dialog = new InstagramMediaFragment();
         Bundle data = new Bundle();
         data.putParcelable(INSTAGRAM_DATA, Parcels.wrap(model));
+        data.putInt(MAX_SELECT_ITEM, maxItemCount);
         dialog.setArguments(data);
         return dialog;
     }
@@ -116,22 +121,17 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        instagramMedia = new InstagramMediaPresenterImpl(this);
-        instagramMedia.initIntagramMediaInstances(getActivity());
         handleArguments(getArguments());
+        instagramMedia = new InstagramMediaPresenterImpl(this);
+        instagramMedia.setModel(model);
+        instagramMedia.initIntagramMediaInstances(getActivity());
     }
 
     private void handleArguments(Bundle argument){
         if(checkNotNull(argument)){
             model = Parcels.unwrap(argument.getParcelable(INSTAGRAM_DATA));
-            instagramMedia.setModel(model);
+            maxItemCount = argument.getInt(MAX_SELECT_ITEM, -1);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        instagramMedia.initData();
     }
 
     @Nullable
@@ -143,6 +143,8 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         emptyImage = (ImageView) view.findViewById(R.id.no_result_image);
         prepareView();
         setListener();
+
+        instagramMedia.initData();
         return view;
     }
 
@@ -171,7 +173,7 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
 
     @Override
     public void updateTitleView(int itemCount, int maxItemCount){
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Produk", itemCount, maxItemCount));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Gambar", itemCount, maxItemCount));
     }
 
     @Override
@@ -191,6 +193,11 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         mediaRV.setVisibility(View.GONE);
         noResult.setVisibility(View.VISIBLE);
         ImageHandler.loadImageWithId(emptyImage, R.drawable.status_no_result);
+    }
+
+    @Override
+    public int getMaxItem() {
+        return maxItemCount < 0 ? DEFAULT_MAX_ITEM_COUNT : maxItemCount;
     }
 
     private MediaAdapter.OnItemToggledListener onItemToggledListener(){

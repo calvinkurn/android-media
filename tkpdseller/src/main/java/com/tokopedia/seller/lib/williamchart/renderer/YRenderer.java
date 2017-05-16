@@ -159,8 +159,10 @@ public class YRenderer extends AxisRenderer {
 		if (labelsPositioning == LabelPosition.OUTSIDE) {
 			float aux;
 			float maxLabelLength = 0;
+			String formatedLabel = "";
 			for (String label : labels)
-				if ((aux = style.getLabelsPaint().measureText(label)) > maxLabelLength)
+				formatedLabel = stringFormatRenderer != null ? stringFormatRenderer.formatString(label) : label;
+				if ((aux = style.getLabelsPaint().measureText(formatedLabel)) > maxLabelLength)
 					maxLabelLength = aux;
 			result += maxLabelLength + distLabelToAxis;
 		}

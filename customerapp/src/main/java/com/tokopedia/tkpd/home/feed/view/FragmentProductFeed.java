@@ -34,7 +34,6 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.instoped.InstagramAuth;
 import com.tokopedia.seller.instoped.InstopedActivity;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.adapter.DataFeedAdapter;
@@ -337,7 +336,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     }
 
 
-
     @Override
     public HistoryProductListItem getViewmodelHistory() {
         if (adapter != null && adapter.getData() != null && !adapter.getData().isEmpty()) {
@@ -456,9 +454,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 int id = menuItem.getItemId();
 
                 switch (id) {
-                    case R.id.action_instagram:
-                        onAddInstagram();
-                        break;
                     case R.id.action_gallery:
                         GalleryActivity.moveToImageGalleryCamera(getActivity(), 0, false, 5);
                         break;
@@ -478,7 +473,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     private void onAddInstagram() {
         Intent moveToProductActivity = new Intent(getActivity(), InstopedActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(ProductActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
+        bundle.putString(InstopedActivity.FRAGMENT_TO_SHOW, InstagramAuth.TAG);
         moveToProductActivity.putExtras(bundle);
         startActivity(moveToProductActivity);
     }

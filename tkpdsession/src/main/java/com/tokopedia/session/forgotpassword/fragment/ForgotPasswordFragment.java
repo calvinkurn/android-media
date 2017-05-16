@@ -84,7 +84,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     @Override
     protected void onFirstTimeLaunched() {
         if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
-            presenter.resetPassword();
+            onSuccessResetPassword();
         }
         if (getArguments().getBoolean(ARGS_REMOVE_FOOTER, false)) {
             registerButton.setVisibility(View.GONE);
@@ -160,7 +160,7 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
 
         registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
 
-        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
+//        SendButton.setBackgroundResource(R.drawable.bg_rounded_corners);
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {

@@ -50,6 +50,7 @@ public class SendMessagePresenterImpl implements SendMessagePresenter {
             networkInteractor.sendMessage(viewListener.getActivity(), getSendMessageParam(), new SendMessageRetrofitInteractor.SendMessageListener() {
                 @Override
                 public void onSuccess() {
+                    viewListener.finishLoading();
                     viewListener.setActionsEnabled(true);
                     CommonUtils.UniversalToast(viewListener.getActivity(), viewListener.getString(R.string.success_send_msg));
                     viewListener.getActivity().finish();

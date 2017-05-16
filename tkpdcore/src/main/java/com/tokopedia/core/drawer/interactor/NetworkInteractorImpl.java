@@ -141,7 +141,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        listener.onError("Terjadi Kesalahan Koneksi");
                     }
 
                     @Override
@@ -345,6 +345,12 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 return topCashItem != null && topCashItem.getData()!= null;
             }
         };
+    }
+
+    @Override
+    public void clearWalletCache() {
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+        cacheManager.delete(KEY_TOKOCASH_DATA);
     }
 
     private Subscriber<TopCashItem> fetchTokoCashSubscriber(final Context context,

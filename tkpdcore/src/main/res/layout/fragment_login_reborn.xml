@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/cards_ui_2"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:showIn="layout/activity_login2"
     tools:context="com.tokopedia.core.com.tokopedia.session.session.fragment.LoginFragment">
@@ -63,6 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
+                android:visibility="gone"
                 android:text="@string/action_remember_account"/>
 
             <TextView

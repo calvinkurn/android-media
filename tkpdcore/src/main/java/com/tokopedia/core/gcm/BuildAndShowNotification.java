@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -18,9 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -28,7 +25,6 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
 import java.util.List;
@@ -37,8 +33,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITLE;
-import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
  * @author by alvarisi on 1/11/17.
@@ -124,8 +118,21 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-        } else {
+        } else if(!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())){
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
+        } else {
+
+            mBuilder.setLargeIcon(
+                    BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+            );
+
+            NotificationManager mNotificationManager =
+                    (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notif = mBuilder.build();
+            if (configuration.isVibrate() && configuration.isBell()) {
+                notif.defaults |= Notification.DEFAULT_VIBRATE;
+            }
+            mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
         }
     }
 
@@ -176,6 +183,7 @@ public class BuildAndShowNotification {
         } else {
             homeIntent = HomeRouter.getHomeActivity(mContext);
         }
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         stackBuilder.addNextIntent(homeIntent);
 
         if (notificationPass.isAllowedBigStyle || isSingleNotification()) {
@@ -184,13 +192,7 @@ public class BuildAndShowNotification {
             bigStyle.bigText(notificationPass.description);
             mBuilder.setStyle(bigStyle);
             mBuilder.setTicker(notificationPass.ticker);
-            if (notificationPass.classParentStack != null) {
-                stackBuilder.addParentStack(notificationPass.classParentStack);
-            }
         } else {
-            if (notificationPass.classParentStack != null) {
-                stackBuilder.addParentStack(notificationPass.classParentStack);
-            }
             inboxStyle.setBigContentTitle(mContext.getString(R.string.title_new_notif_general));
             if (getUnOpenedNotification() != null) {
                 for (NotificationEntity entity : getUnOpenedNotification()) {
@@ -215,13 +217,14 @@ public class BuildAndShowNotification {
         }
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (configuration.isVibrate() && configuration.isBell()) {
             notif.defaults |= Notification.DEFAULT_VIBRATE;
         }
-        mNotificationManager.notify(100, notif);
+        mNotificationManager.notify(configuration.getNotificationId(), notif);
     }
 
     private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {

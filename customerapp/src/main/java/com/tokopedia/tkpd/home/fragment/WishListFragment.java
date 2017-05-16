@@ -12,16 +12,11 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
@@ -42,8 +37,6 @@ import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +74,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     TkpdProgressDialog progressDialog;
     Boolean isDeleteDialogShown;
     Boolean isLoadingMore = false;
-//    ItemDecorator itemDecorator;
 
     WishList wishList;
 
@@ -153,7 +145,20 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                wishList.refreshData(getActivity());
+                if(searchEditText.getQuery().length()>0){
+                    wishList.refreshDataOnSearch(searchEditText.getQuery());
+                } else {
+                    wishList.refreshData(getActivity());
+                }
+            }
+        });
+        searchEditText.findViewById(R.id.search_close_btn)
+                .setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchEditText.setQuery("",false);
+                searchEditText.setIconified(true);
+                wishList.fetchDataAfterClearSearch(getActivity());
             }
         });
     }
@@ -169,8 +174,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getLayoutManager().setAutoMeasureEnabled(true);
         recyclerView.setHasFixedSize(false);
-        recyclerView.setNestedScrollingEnabled(false);
         searchEditText.setOnQueryTextListener(this);
+        searchEditText.setSuggestionsAdapter(null);
+        searchEditText.setFocusable(false);
+        searchEditText.clearFocus();
+        searchEditText.requestFocusFromTouch();
         setAdapter();
     }
 
@@ -244,13 +252,17 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onSuccessDeleteWishlist() {
+    public void onSuccessDeleteWishlist(String searchTerm) {
         SnackbarManager.make(getActivity(),
                 MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
                 Snackbar.LENGTH_SHORT)
                 .show();
         displayPull(false);
-        wishList.refreshData(getActivity());
+        if(searchTerm.isEmpty()) {
+            wishList.refreshData(getActivity());
+        } else {
+            wishList.refreshDataOnSearch(searchTerm);
+        }
     }
 
     @Override
@@ -395,9 +407,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (newText.isEmpty()) {
-            wishList.refreshData(getActivity());
-        }
         return false;
     }
 

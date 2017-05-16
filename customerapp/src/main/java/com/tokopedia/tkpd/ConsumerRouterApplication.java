@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,23 +9,29 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
- * Created by normansyahputa on 12/15/16.
+ * @author normansyahputa on 12/15/16.
  */
 
-public class ConsumerRouterApplication extends MainApplication implements TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter {
+public class ConsumerRouterApplication extends MainApplication implements
+        TkpdCoreRouter, SellerModuleRouter, IConsumerModuleRouter, IDigitalModuleRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -62,6 +69,11 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     }
 
     @Override
+    public void startInstopedActivityForResult (Activity activity, int resultCode, int maxResult){
+        InstopedActivity.startInstopedActivityForResult(activity, resultCode,maxResult);
+    }
+
+    @Override
     public void removeInstopedToken() {
         InstagramMediaPresenterImpl.removeToken();
     }
@@ -79,7 +91,7 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductActivity.moveToEditFragment(context, isEdit, productId);
+        return ProductEditActivity.createInstance(context, productId);
     }
 
     @Override
@@ -99,6 +111,16 @@ public class ConsumerRouterApplication extends MainApplication implements TkpdCo
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onLogout(AppComponent appComponent) {
+        TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
+    public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
+        return CartDigitalActivity.newInstance(this, passData);
     }
 
     @Override

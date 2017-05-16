@@ -23,9 +23,9 @@ public class CloudWishlistDatasource {
         this.wishlistDataMapper = wishlistDataMapper;
     }
 
-    public Observable<DataWishlist> searchWishlist(String userId, String query) {
-        return mojitoService.getApi().searchWishlist(userId, query)
-                .debounce(150, TimeUnit.MICROSECONDS)
+    public Observable<DataWishlist> searchWishlist(String userId, String query, int page) {
+        return mojitoService.getApi().searchWishlist(userId, query, page, 10)
+                .debounce(150, TimeUnit.MILLISECONDS)
                 .map(wishlistDataMapper);
     }
 }

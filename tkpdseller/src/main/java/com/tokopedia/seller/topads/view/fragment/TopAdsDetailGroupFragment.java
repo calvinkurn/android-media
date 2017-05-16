@@ -13,11 +13,10 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsGroupAdInteractorImpl
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditGroupActivity;
-import com.tokopedia.seller.topads.view.activity.TopAdsDetailEditProductActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailGroupPresenterImpl;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.lib.widget.LabelView;
 
 /**
  * Created by zulfikarrahman on 1/3/17.
@@ -25,7 +24,8 @@ import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetailGroupPresenter> {
 
-    private TopAdsLabelView items;
+    public static final String GROUP_AD_PARCELABLE = "GROUP_AD_PARCELABLE";
+    private LabelView items;
 
     private GroupAd ad;
 
@@ -41,7 +41,7 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
     @Override
     protected void initView(View view) {
         super.initView(view);
-        items = (TopAdsLabelView) view.findViewById(R.id.items);
+        items = (LabelView) view.findViewById(R.id.items);
         name.setTitle(getString(R.string.label_top_ads_groups));
         name.setContentColorValue(ContextCompat.getColor(getActivity(), R.color.black_fifty_four_percent));
         items.setOnClickListener(new View.OnClickListener() {
@@ -124,5 +124,18 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailFragment<TopAdsDetail
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveState(Bundle state) {
+        super.onSaveState(state);
+        state.putParcelable(GROUP_AD_PARCELABLE, ad);
+    }
+
+    @Override
+    public void onRestoreState(Bundle savedState) {
+        super.onRestoreState(savedState);
+        ad = savedState.getParcelable(GROUP_AD_PARCELABLE);
+        onAdLoaded(ad);
     }
 }

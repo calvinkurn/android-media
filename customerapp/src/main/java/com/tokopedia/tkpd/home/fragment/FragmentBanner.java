@@ -17,11 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.facade.FacadePromo;
 
@@ -94,12 +97,17 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     public void onClick() {
         String url = promoItem.promoUrl;
         try {
+            UnifyTracking.eventSlideBannerClicked(url);
             Uri uri = Uri.parse(url);
             String host = uri.getHost();
             List<String> linkSegment = uri.getPathSegments();
             if (isBaseHost(host) && isShop(linkSegment)) {
                 String shopDomain = linkSegment.get(0);
                 getShopInfo(url, shopDomain);
+            } else if (isBaseHost(host) && isProduct(linkSegment)) {
+                DeepLinkChecker.openProduct(url, getActivity());
+            } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
+                DeepLinkChecker.openCategory(url, getActivity());
             } else {
                 openWebViewURL(url);
             }
@@ -114,18 +122,30 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
     }
 
     private boolean isShop(List<String> linkSegment) {
-        return (linkSegment.size() == 1
-                && !linkSegment.get(0).equals("pulsa")
-                && !linkSegment.get(0).equals("iklan")
-                && !linkSegment.get(0).equals("newemail.pl")
-                && !linkSegment.get(0).equals("search")
-                && !linkSegment.get(0).equals("hot")
-                && !linkSegment.get(0).equals("about")
-                && !linkSegment.get(0).equals("reset.pl")
-                && !linkSegment.get(0).equals("activation.pl")
-                && !linkSegment.get(0).equals("privacy.pl")
-                && !linkSegment.get(0).equals("terms.pl")
-                && !linkSegment.get(0).startsWith("invoice.pl"));
+        return linkSegment.size() == 1
+                && !isReservedLink(linkSegment.get(0));
+    }
+
+    private boolean isProduct(List<String> linkSegment) {
+        return linkSegment.size() == 2
+                && !isReservedLink(linkSegment.get(0));
+    }
+
+    private boolean isReservedLink(String link) {
+        return link.equals("pulsa")
+                || link.equals("iklan")
+                || link.equals("newemail.pl")
+                || link.equals("search")
+                || link.equals("hot")
+                || link.equals("about")
+                || link.equals("reset.pl")
+                || link.equals("activation.pl")
+                || link.equals("privacy.pl")
+                || link.equals("terms.pl")
+                || link.equals("p")
+                || link.equals("catalog")
+                || link.equals("toppicks")
+                || link.startsWith("invoice.pl");
     }
 
     public void getShopInfo(final String url, final String shopDomain) {

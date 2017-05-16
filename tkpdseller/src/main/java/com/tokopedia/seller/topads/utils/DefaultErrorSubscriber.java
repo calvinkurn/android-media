@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.utils;
 
+
+import android.support.v4.util.ArrayMap;
+
 import com.tkpd.library.utils.network.MessageErrorException;
 
 import java.net.UnknownHostException;
@@ -13,9 +16,30 @@ import rx.Subscriber;
 public class DefaultErrorSubscriber<T> extends Subscriber<T> {
 
     private ErrorNetworkListener errorNetworkListener;
+    private ArrayMap defaultDataTypes = new ArrayMap(2);
+    private String defaultErrorException;
 
     public DefaultErrorSubscriber(ErrorNetworkListener errorNetworkListener) {
         this.errorNetworkListener = errorNetworkListener;
+        defaultDataTypes.put(UnknownHostException.class, "Terjadi kesalahan koneksi. \nSilahkan coba lagi");
+        defaultDataTypes.put(MessageErrorException.class, "Terjadi kesalahan koneksi. \nSilahkan coba lagi");
+        defaultErrorException = "Kesalahan tidak diketahui";
+
+    }
+
+    public DefaultErrorSubscriber(ErrorNetworkListener errorNetworkListener, String defaultErrorException) {
+        this(errorNetworkListener);
+        this.defaultErrorException = defaultErrorException;
+    }
+
+    public DefaultErrorSubscriber(
+            ErrorNetworkListener errorNetworkListener,
+            ArrayMap<Class<?>, String> dataTypes,
+            String defaultErrorException
+    ) {
+        this(errorNetworkListener);
+        defaultDataTypes = dataTypes;
+        this.defaultErrorException = defaultErrorException;
     }
 
     @Override
@@ -27,11 +51,11 @@ public class DefaultErrorSubscriber<T> extends Subscriber<T> {
     public void onError(Throwable e) {
         final StringBuilder textMessage = new StringBuilder("");
         if (e instanceof UnknownHostException) {
-            textMessage.append("Tidak ada koneksi. \nSilahkan coba kembali");
+            textMessage.append(defaultDataTypes.get(UnknownHostException.class));
         } else if (e instanceof MessageErrorException) {
-            textMessage.append("Terjadi kesalahan koneksi. \nSilahkan coba kembali");
+            textMessage.append(defaultDataTypes.get(MessageErrorException.class));
         } else {
-            textMessage.append("Kesalahan tidak diketahui");
+            textMessage.append(defaultErrorException);
         }
 
         showMessageError(textMessage);

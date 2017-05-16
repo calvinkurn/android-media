@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
@@ -187,6 +189,17 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .into(imageview);
+    }
+
+    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+        Glide.with(context)
+                .load(url)
+                .asBitmap()
+                .fitCenter()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(simpleTarget);
     }
 
     public static void loadImage2(ImageView imageview, String url, int resId) {
@@ -370,8 +383,20 @@ public class ImageHandler {
                 .dontAnimate()
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
+                .centerCrop()
+                .into(imageView);
+    }
+
+    public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
+        BitmapTransformation transformation){
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
+                .transform(transformation)
                 .into(imageView);
     }
 
@@ -459,6 +484,14 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageFromFileFitCenter(Context context, ImageView imageView, File file) {
+
+        Glide.with(context)
+                .load(file)
+                .centerCrop()
+                .into(imageView);
+    }
+
     public static void LoadImageResize(Context context, ImageView imageView, String url, int width, int height) {
         Glide.with(context)
                 .load(url)
@@ -466,5 +499,4 @@ public class ImageHandler {
                 .fitCenter()
                 .into(imageView);
     }
-
 }

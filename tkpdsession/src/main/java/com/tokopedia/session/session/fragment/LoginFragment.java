@@ -46,7 +46,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -58,8 +57,9 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.session.presenter.*;
-import com.tokopedia.session.activation.activity.ActivationActivity;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
+import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -126,7 +126,6 @@ LoginFragment extends Fragment implements LoginView {
     @BindView(R2.id.remember_account)
     CheckBox rememberAccount;
 
-
     ArrayAdapter<String> autoCompleteAdapter;
     List<LoginProviderModel.ProvidersBean> listProvider;
     Snackbar snackbar;
@@ -180,10 +179,10 @@ LoginFragment extends Fragment implements LoginView {
         unbinder = ButterKnife.bind(this, rootView);
         forgotPass.setPaintFlags(forgotPass.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         setListener();
-        setRememberAccountState();
+//        setRememberAccountState();
 
         String temp = getArguments().getString("login");
-        if (temp != null) {
+        if (!TextUtils.isEmpty(temp)) {
             if (temp.equals(DownloadService.FACEBOOK)) {
                 onFacebookClick();
             } else if (temp.equals(DownloadService.GOOGLE)) {
@@ -193,9 +192,10 @@ LoginFragment extends Fragment implements LoginView {
                 String name = getArguments().getString("name");
                 loginProvideOnClick(url, name);
             }
+        }else {
+            setSmartLock(SmartLockActivity.RC_READ);
         }
         accountSignIn.setBackgroundResource(R.drawable.bg_rounded_corners);
-
         return rootView;
     }
 
@@ -364,8 +364,6 @@ LoginFragment extends Fragment implements LoginView {
                 }
             }
         });
-
-
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
@@ -526,9 +524,9 @@ LoginFragment extends Fragment implements LoginView {
     }
 
     @Override
-    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId) {
+    public void moveToFragmentSecurityQuestion(int security1, int security2, int userId, String email) {
         if (mContext != null) {// && !((AppCompatActivity)mContext).isFinishing()
-            ((SessionView) mContext).moveToFragmentSecurityQuestion(security1, security2, userId);
+            ((SessionView) mContext).moveToFragmentSecurityQuestion(security1, security2, userId, email);
         }
     }
 
@@ -716,6 +714,7 @@ LoginFragment extends Fragment implements LoginView {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
                 startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                getActivity().finish();
             }
         }
         switch (type) {
@@ -759,6 +758,7 @@ LoginFragment extends Fragment implements LoginView {
     public void setData(int type, Bundle data) {
         if (login != null)
             login.setData(type, data);
+
     }
 
     @Override
@@ -781,6 +781,19 @@ LoginFragment extends Fragment implements LoginView {
                     Bundle lbundle = new Bundle();
                     lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
                     startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                    getActivity().finish();
+
+                }
+                break;
+            case 200:
+                if(resultCode == Activity.RESULT_OK){
+                    mEmailView.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+                    mPasswordView.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+                    accountSignIn.performClick();
+                } else if(resultCode == SmartLockActivity.RC_SAVE){
+                    destroyActivity();
+                } else if(resultCode == SmartLockActivity.RC_SAVE_SECURITY_QUESTION){
+
                 }
                 break;
             default:
@@ -821,4 +834,32 @@ LoginFragment extends Fragment implements LoginView {
             mPasswordView.setText(login.getSavedAccountPassword());
         }
     }
+
+
+    @Override
+    public void setSmartLock(int state) {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if(state == SmartLockActivity.RC_SAVE){
+            bundle.putString(SmartLockActivity.USERNAME, mEmailView.getText().toString());
+            bundle.putString(SmartLockActivity.PASSWORD, mPasswordView.getText().toString());
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 200);
+    }
+
+    @Override
+    public void setSmartLock(int state, String username, String password) {
+        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(SmartLockActivity.STATE, state);
+        if(state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE){
+            bundle.putString(SmartLockActivity.USERNAME, username);
+            bundle.putString(SmartLockActivity.PASSWORD, password);
+        }
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 200);
+    }
+
 }
