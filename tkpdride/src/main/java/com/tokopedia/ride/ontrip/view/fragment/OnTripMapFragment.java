@@ -143,7 +143,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private Notification acceptedNotification;
     private Location source, destination;
 
-    private boolean isScreenBlocked;
+    private boolean isBackButtonHandleByFragment;
+    private boolean isBlackOverlayShow;
     private boolean isFindingUberNotificationShown = false;
     private boolean isAcceptedUberNotificationShown = false;
     private boolean isRouteAlreadyDrawed;
@@ -226,7 +227,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void setViewListener() {
+    public void setSourceAndDestinationTextByBookingParam() {
         if (confirmBookingViewModel != null) {
             tvSource.setText(confirmBookingViewModel.getSource().getTitle());
             tvDestination.setText(confirmBookingViewModel.getDestination().getTitle());
@@ -297,8 +298,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideLoadingWaitingResponse() {
-        processingLayout.setVisibility(View.GONE);
-        loaderLayout.setVisibility(View.GONE);
+        if (!isBlackOverlayShow) {
+            processingLayout.setVisibility(View.GONE);
+            loaderLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -389,7 +392,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void showCancelRequestButton() {
-        if (isScreenBlocked) {
+        if (isBackButtonHandleByFragment) {
             cancelButton.setVisibility(View.GONE);
         } else {
             cancelButton.setVisibility(View.VISIBLE);
@@ -795,7 +798,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isScreenBlocked = false;
+                isBackButtonHandleByFragment = false;
+                isBlackOverlayShow = false;
                 Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
                         R.anim.bottom_down);
                 contactPanelLayout.startAnimation(bottomDown);
@@ -828,7 +832,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isScreenBlocked = false;
+                isBackButtonHandleByFragment = false;
+                isBlackOverlayShow = false;
                 Animation bottomDown = AnimationUtils.loadAnimation(getActivity(),
                         R.anim.bottom_down);
                 cancelPanelLayout.startAnimation(bottomDown);
@@ -857,7 +862,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isScreenBlocked = true;
+                isBackButtonHandleByFragment = true;
+                isBlackOverlayShow = true;
                 Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
                         R.anim.bottom_up);
 
@@ -882,7 +888,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isScreenBlocked = true;
+                isBackButtonHandleByFragment = true;
+                isBlackOverlayShow = true;
                 Animation bottomUp = AnimationUtils.loadAnimation(getActivity(),
                         R.anim.bottom_up);
 
@@ -1003,22 +1010,24 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideRequestLoadingLayout() {
-        final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
-                "backgroundColor",
-                new ArgbEvaluator(),
-                0xBB000000,
-                0x00000000);
-        backgroundColorAnimator.setDuration(500);
-        backgroundColorAnimator.start();
+        if (!isBlackOverlayShow) {
+            final ObjectAnimator backgroundColorAnimator = ObjectAnimator.ofObject(blockTranslucentView,
+                    "backgroundColor",
+                    new ArgbEvaluator(),
+                    0xBB000000,
+                    0x00000000);
+            backgroundColorAnimator.setDuration(500);
+            backgroundColorAnimator.start();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (blockTranslucentView != null) {
-                    blockTranslucentView.setVisibility(View.GONE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (blockTranslucentView != null) {
+                        blockTranslucentView.setVisibility(View.GONE);
+                    }
                 }
-            }
-        }, 500);
+            }, 500);
+        }
     }
 
     @Override
@@ -1044,7 +1053,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return new OnTripActivity.BackButtonListener() {
             @Override
             public void onBackPressed() {
-                if (isScreenBlocked) {
+                if (isBackButtonHandleByFragment) {
                     hideContactPanel();
                     hideCancelPanel();
                 }
@@ -1052,7 +1061,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
             @Override
             public boolean canGoBack() {
-                return isScreenBlocked;
+                return isBackButtonHandleByFragment;
             }
 
             @Override

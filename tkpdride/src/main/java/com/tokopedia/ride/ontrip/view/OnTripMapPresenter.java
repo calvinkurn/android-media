@@ -115,7 +115,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             getView().setTitle(R.string.title_fetching_ride);
             getView().startPeriodicService(getView().getRequestId());
         } else {
-            getView().setViewListener();
+            getView().setSourceAndDestinationTextByBookingParam();
             if (getView().isSurge()) {
                 getView().openInterruptConfirmationWebView(getView().getSurgeConfirmationHref());
             } else {

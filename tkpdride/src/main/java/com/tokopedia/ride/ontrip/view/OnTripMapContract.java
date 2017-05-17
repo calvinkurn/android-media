@@ -117,7 +117,7 @@ public interface OnTripMapContract {
 
         boolean isAlreadyRequested();
 
-        void setViewListener();
+        void setSourceAndDestinationTextByBookingParam();
 
         void setRequestId(String requestId);
 
