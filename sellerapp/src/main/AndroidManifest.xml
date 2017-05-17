@@ -84,7 +84,7 @@
             />
 
         <activity
-            android:name=".deeplink.activity.DeepLinkActivity"
+            android:name=".deeplink.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait">
@@ -95,48 +95,28 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <data
-                    android:host="www.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
-                    android:host="www.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="tkpd"/>
-                <data
-                    android:host="tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-                <data
                     android:host="m.tokopedia.com"
-                    android:pathPattern=".*"
+                    android:pathPattern="/topads"
                     android:scheme="https"/>
                 <data
                     android:host="www.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/reset.pl"
+                    android:pathPattern="topads"
                     android:scheme="https"/>
                 <data
                     android:host="www.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="m.tokopedia.com"
-                    android:pathPrefix="/activation.pl"
-                    android:scheme="https"/>
-                <data
-                    android:host="tokopedia.onelink.me"
-                    android:scheme="https"/>
-                <data
-                    android:host="accounts.tokopedia.com"
-                    android:scheme="https" />
-                <data
-                    android:host="apps.tokopedia.com"
+                    android:pathPattern="/topads/manage"
                     android:scheme="http"/>
                 <data
-                    android:host="apps.tokopedia.com"
+                    android:host="www.tokopedia.com"
+                    android:pathPattern="/topads/manage"
+                    android:scheme="https"/>
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern="/topads/manage"
+                    android:scheme="http"/>
+                <data
+                    android:host="m.tokopedia.com"
+                    android:pathPattern="/topads/manage"
                     android:scheme="https"/>
             </intent-filter>
         </activity>
