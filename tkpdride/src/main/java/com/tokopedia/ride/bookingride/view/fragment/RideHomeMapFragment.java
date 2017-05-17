@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -99,7 +98,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @BindView(R2.id.layout_destination)
     RelativeLayout mDestinationLayout;
 
-    private PlacePassViewModel mSource, mDestination;
+    private PlacePassViewModel source, destination;
 
     boolean isAlreadySelectDestination;
     boolean isDisableSelectLocation;
@@ -151,6 +150,24 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mPresenter.initialize();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(EXTRA_SOURCE, source);
+        outState.putParcelable(EXTRA_DESTINATION, destination);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+        if (savedInstanceState != null){
+            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
+            destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
+        }
+    }
+
     private void setupToolbar() {
         if (mToolbar != null) {
             mToolbar.setTitle(getString(R.string.toolbar_title_booking));
@@ -161,9 +178,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setViewListener() {
-        if (isLaunchedWithLocation() && mSource != null && mDestination != null) {
-            setSourceLocationText(mSource.getTitle());
-            setDestinationLocationText(mDestination.getTitle());
+        if (isLaunchedWithLocation() && source != null && destination != null) {
+            setSourceLocationText(source.getTitle());
+            setDestinationLocationText(destination.getTitle());
             proccessToRenderRideProduct();
             hideMarkerCenter();
         }
@@ -245,6 +262,14 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         setMapViewListener();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mGoogleMap != null && source != null) {
+            moveMapToLocation(source.getLatitude(), source.getLongitude());
+        }
+    }
+
     private void setMapViewListener() {
         MapsInitializer.initialize(this.getActivity());
 
@@ -275,9 +300,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             }
         });
 
-        if (mSource != null && mDestination != null) {
-            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
-                    mDestination.getLatitude(), mDestination.getLongitude());
+        if (source != null && destination != null) {
+            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+                    destination.getLatitude(), destination.getLongitude());
+        } else if (source != null) {
+            moveMapToLocation(source.getLatitude(), source.getLongitude());
         }
     }
 
@@ -367,8 +394,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mToolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
 
         if (isLaunchedWithLocation()) {
-            mSource = getArguments().getParcelable(EXTRA_SOURCE);
-            mDestination = getArguments().getParcelable(EXTRA_DESTINATION);
+            source = getArguments().getParcelable(EXTRA_SOURCE);
+            destination = getArguments().getParcelable(EXTRA_DESTINATION);
             isAlreadySelectDestination = true;
         }
     }
@@ -384,16 +411,16 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     mPresenter.initialize();
                     break;
                 case PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE:
-                    mSource = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setSourceLocationText(String.valueOf(mSource.getTitle()));
+                    source = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    setSourceLocationText(String.valueOf(source.getTitle()));
                     proccessToRenderRideProduct();
                     if (!isAlreadySelectDestination) {
-                        moveMapToLocation(mSource.getLatitude(), mSource.getLongitude());
+                        moveMapToLocation(source.getLatitude(), source.getLongitude());
                     }
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
-                    mDestination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setDestinationLocationText(String.valueOf(mDestination.getTitle()));
+                    destination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    setDestinationLocationText(String.valueOf(destination.getTitle()));
                     proccessToRenderRideProduct();
                     isAlreadySelectDestination = true;
                     hideMarkerCenter();
@@ -404,10 +431,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private void proccessToRenderRideProduct() {
         startMarkerAnimation();
-        mListener.onSourceAndDestinationChanged(mSource, mDestination);
-        if (mSource != null && mDestination != null) {
-            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
-                    mDestination.getLatitude(), mDestination.getLongitude());
+        mListener.onSourceAndDestinationChanged(source, destination);
+        if (source != null && destination != null) {
+            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+                    destination.getLatitude(), destination.getLongitude());
         }
     }
 
@@ -418,23 +445,25 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void moveMapToLocation(double latitude, double longitude) {
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
+        if (mGoogleMap != null) {
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
+        }
     }
 
     @Override
     public void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress) {
-        mSource = new PlacePassViewModel();
-        mSource.setAddress(sourceAddress);
-        mSource.setTitle(sourceAddress);
-        mSource.setLatitude(latitude);
-        mSource.setLongitude(longitude);
+        source = new PlacePassViewModel();
+        source.setAddress(sourceAddress);
+        source.setTitle(sourceAddress);
+        source.setLatitude(latitude);
+        source.setLongitude(longitude);
         proccessToRenderRideProduct();
         setSourceLocationText(sourceAddress);
     }
 
     @Override
     public void setSourceLocation(PlacePassViewModel location) {
-        mSource = location;
+        source = location;
         proccessToRenderRideProduct();
         setSourceLocationText(location.getTitle());
     }
@@ -443,9 +472,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onResume() {
         mapView.onResume();
         super.onResume();
-        if (mSource != null && mDestination != null) {
-            mPresenter.getOverviewPolyline(mSource.getLatitude(), mSource.getLongitude(),
-                    mDestination.getLatitude(), mDestination.getLongitude());
+        if (source != null && destination != null) {
+            mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
+                    destination.getLatitude(), destination.getLongitude());
         }
     }
 
@@ -531,19 +560,19 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         //add markers on source and destination
         mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mSource.getLatitude(), mSource.getLongitude()))
+                .position(new LatLng(source.getLatitude(), source.getLongitude()))
                 .icon(getMarkerIcon(R.drawable.marker_green))
-                .title(mSource.getAddress()));
+                .title(source.getAddress()));
 
         mGoogleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()))
+                .position(new LatLng(destination.getLatitude(), destination.getLongitude()))
                 .icon(getMarkerIcon(R.drawable.marker_red))
-                .title(mDestination.getAddress()));
+                .title(destination.getAddress()));
 
         //zoom map to fit both source and dest
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        builder.include(new LatLng(mSource.getLatitude(), mSource.getLongitude()));
-        builder.include(new LatLng(mDestination.getLatitude(), mDestination.getLongitude()));
+        builder.include(new LatLng(source.getLatitude(), source.getLongitude()));
+        builder.include(new LatLng(destination.getLatitude(), destination.getLongitude()));
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_polyline_padding)));
     }
 
