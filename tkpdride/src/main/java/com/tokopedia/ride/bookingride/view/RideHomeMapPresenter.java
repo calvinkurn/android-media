@@ -239,8 +239,8 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
                         if (isViewAttached()) {
                             PlacePassViewModel placeVm = new PlacePassViewModel();
                             placeVm.setAddress(sourceAddress);
-                            placeVm.setLatitude(mCurrentLocation.getLatitude());
-                            placeVm.setLongitude(mCurrentLocation.getLongitude());
+                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
                             placeVm.setTitle(sourceAddress);
                             placeVm.setType(PlacePassViewModel.TYPE.OTHER);
                             getView().setSourceLocation(placeVm);
