@@ -33,10 +33,11 @@
                 android:text="Shop Name"
                 />
 
-            <com.tokopedia.seller.home.view.ReputationView
+            <LinearLayout
                 android:id="@+id/reputation_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 />
             
             <TextView
