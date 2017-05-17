@@ -18,6 +18,8 @@ public class TimeConverter {
     public static String generateTime(String postTime) {
         try {
             SimpleDateFormat sdfHour = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+            SimpleDateFormat sdfDay = new SimpleDateFormat("dd MMMM", Locale.ENGLISH);
+            SimpleDateFormat sdfYear = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", Locale.ENGLISH);
             Date postDate = sdf.parse(postTime);
@@ -34,12 +36,16 @@ public class TimeConverter {
             } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
                 return getDifference(currentTime, postDate) / SECONDS_IN_MINUTE + " Menit";
             } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
-                    && calCurrentTime.get(Calendar.DAY_OF_MONTH) > calPostDate.get(Calendar.DAY_OF_MONTH))
+                    && calCurrentTime.get(Calendar.DAY_OF_MONTH) > calPostDate.get(Calendar.DAY_OF_MONTH)) {
                 return "Kemarin pukul " + sdfHour.format(postDate);
-            else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24)
+            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24) {
                 return getDifference(currentTime, postDate) / MINUTES_IN_HOUR + " Jam";
-            else
-                return "HAHAHAHA";
+            } else if (getDifference(currentTime, postDate) / HOUR_IN_DAY > 1 &&
+                    calCurrentTime.get(Calendar.YEAR) == calPostDate.get(Calendar.YEAR))
+                return sdfDay.format(postDate) + " pukul " + sdfHour.format(postDate);
+            else {
+                return sdfYear.format(postDate);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             return "";
