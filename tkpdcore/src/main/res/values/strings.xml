@@ -1937,4 +1937,8 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
     <string name="notification_dialog_positive_button">Pengaturan</string>
     <string name="notification_dialog_negative_button">Batal</string>
+    <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
+
+    <string name="banner_official_store_title_text">Sudah Pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
 </resources>

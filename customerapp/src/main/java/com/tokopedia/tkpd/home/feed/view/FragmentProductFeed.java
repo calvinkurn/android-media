@@ -68,7 +68,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
     @BindView(R.id.empty_wishlist)
-    RelativeLayout emptyFeedView;
+    LinearLayout emptyFeedView;
     @BindView(R.id.empty_layout_history)
     RelativeLayout emptyHistoryView;
 
