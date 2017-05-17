@@ -64,14 +64,14 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached())
-                getView().hideAdsBadges();
+                    getView().hideAdsBadges();
             }
 
             @Override
             public void onNext(List<Promo> promo) {
                 if (isViewAttached()) {
                     if (promo.size() > 0)
-                    getView().showAdsBadges(promo.get(0).getOffer());
+                        getView().showAdsBadges(promo.get(0).getOffer());
                 }
             }
         });
@@ -226,9 +226,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().hideProgress();
                             getView().hideErrorMessage();
                             getView().showProductList();
-                            List<Visitable> visitables = new ArrayList<>();
-                            visitables.addAll(rideProductViewModels);
-                            getView().renderProductList(visitables);
+                            if (rideProductViewModels.size() > 0) {
+                                List<Visitable> visitables = new ArrayList<>();
+                                visitables.addAll(rideProductViewModels);
+                                getView().renderProductList(visitables);
+                            } else {
+                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
+                                        getView().getActivity().getString(R.string.btn_text_retry)
+                                );
+                            }
                         }
 
                     }

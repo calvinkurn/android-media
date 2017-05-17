@@ -20,6 +20,8 @@ public class GetRideRequestDetailUseCase extends UseCase<RideRequest> {
     public static final String PARAM_OS_TYPE = "os_type";
     public static final String PARAM_TIMESTAMP = "device_time";
     public static final String PARAM_REQUEST_ID = "request_id";
+    public static final String PARAM_APP_LATITUDE = "alat";
+    public static final String PARAM_APP_LONGITUDE = "along";
 
     private BookingRideRepository bookingRideRepository;
     public GetRideRequestDetailUseCase(ThreadExecutor threadExecutor,

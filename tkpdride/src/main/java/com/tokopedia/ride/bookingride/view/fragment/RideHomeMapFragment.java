@@ -67,7 +67,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private static final float DEFAUL_MAP_ZOOM = 16;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
-    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
+    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
 
     RideHomeMapContract.Presenter mPresenter;
 

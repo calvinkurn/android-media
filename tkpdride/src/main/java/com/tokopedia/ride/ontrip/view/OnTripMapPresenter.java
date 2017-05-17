@@ -194,6 +194,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     }
 
     private void createRideRequest(RequestParams requestParams) {
+        if (mCurrentLocation != null) {
+            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
+            requestParams.putObject(CreateRideRequestUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
+        }
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
@@ -467,7 +471,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
 
             //request the current ride details
-            getRideRequestUseCase.execute(getView().getCurrentRequestParams(getView().getRequestId()),
+            RequestParams requestParams = getView().getCurrentRequestParams(getView().getRequestId());
+            if (mCurrentLocation != null) {
+                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
+                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
+            }
+
+            getRideRequestUseCase.execute(requestParams,
                     new Subscriber<RideRequest>() {
                         @Override
                         public void onCompleted() {
