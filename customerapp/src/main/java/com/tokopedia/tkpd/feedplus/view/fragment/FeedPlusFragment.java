@@ -65,6 +65,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+
         DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
                 .appModule(new AppModule(getContext()))
                 .activityModule(new ActivityModule(getActivity()))
@@ -147,10 +148,79 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 "Rp 21.0000",
                 "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
 
+        ArrayList<ProductFeedViewModel> listProduct4 = new ArrayList<>();
+        listProduct4.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+        listProduct4.add(new ProductFeedViewModel(
+                "Produk2",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+        listProduct4.add(new ProductFeedViewModel(
+                "Produk3",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+        listProduct4.add(new ProductFeedViewModel(
+                "Produk4",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+
+        ArrayList<ProductFeedViewModel> listProduct5 = new ArrayList<>();
+        listProduct5.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+        listProduct5.add(new ProductFeedViewModel(
+                "Produk2",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+        listProduct5.add(new ProductFeedViewModel(
+                "Produk3",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+        listProduct5.add(new ProductFeedViewModel(
+                "Produk4",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+        listProduct5.add(new ProductFeedViewModel(
+                "Produk5",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+
+        ArrayList<ProductFeedViewModel> listProduct6 = new ArrayList<>();
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk2",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk3",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk4",
+                "Rp 21.0000",
+                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk5",
+                "Rp 11.0000",
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
+        listProduct6.add(new ProductFeedViewModel(
+                "Produk1",
+                "Rp 10.000",
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
+
         List<Visitable> list = new ArrayList<>();
         list.add(new ProductCardViewModel("Nisie 1", listProduct));
         list.add(new ProductCardViewModel("Nisie 2", listProduct2));
         list.add(new ProductCardViewModel("Nisie 3", listProduct3));
+        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
+        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
+        list.add(new ProductCardViewModel("Nisie 6", listProduct6));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();

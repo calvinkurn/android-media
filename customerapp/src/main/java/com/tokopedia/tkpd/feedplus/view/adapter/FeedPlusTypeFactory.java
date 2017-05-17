@@ -14,6 +14,6 @@ public interface FeedPlusTypeFactory  {
 
     int type(ProductCardViewModel viewModel);
 
-    AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
+    AbstractViewHolder createViewHolder(View view, int viewType);
 
 }

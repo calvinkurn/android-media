@@ -82,5 +82,9 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         return list;
     }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        
+        return super.getItemViewType(position);
+    }
 }
