@@ -92,6 +92,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         void actionChangeSeatCount(List<SeatViewModel> seatViewModels);
 
         void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel);
+
+        void actionBookingHeaderClicked();
     }
 
     public ConfirmBookingRideFragment() {
@@ -385,5 +387,10 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @OnClick(R2.id.confirm_booking_header)
+    public void actionBookingHeaderClicked(){
+        mListener.actionBookingHeaderClicked();
     }
 }

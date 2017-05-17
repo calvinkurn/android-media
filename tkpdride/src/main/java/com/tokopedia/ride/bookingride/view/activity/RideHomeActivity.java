@@ -677,4 +677,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public boolean isUserPhoneNumberVerified() {
         return SessionHandler.isMsisdnVerified();
     }
+
+    @Override
+    public void actionBookingHeaderClicked() {
+        mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+    }
 }
