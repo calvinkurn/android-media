@@ -112,6 +112,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         getView().hideCancelRequestButton();
 
         if (getView().isAlreadyRequested()) {
+            getView().setTitle(R.string.title_fetching_ride);
             getView().startPeriodicService(getView().getRequestId());
         } else {
             getView().setViewListener();
@@ -281,6 +282,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().clearSavedActiveProductName();
                 break;
             case RideStatus.PROCESSING:
+                getView().setTitle(R.string.title_requesting_ride);
                 getView().showFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
