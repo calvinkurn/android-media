@@ -63,6 +63,7 @@ public class ProductDraftDataManager {
                 .querySingle();
         if (productDraftDataBase != null){
             productDraftDataBase.setData(draftData);
+            productDraftDataBase.save();
         } else {
             throw new RuntimeException("Draft tidak ditemukan");
         }
