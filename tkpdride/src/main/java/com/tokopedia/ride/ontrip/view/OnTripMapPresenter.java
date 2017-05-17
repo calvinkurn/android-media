@@ -505,7 +505,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void startGetRequestDetailsPeriodicService(String requestId) {
-        handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+        handler.postDelayed(timedTask, 100);
     }
 
     @Override

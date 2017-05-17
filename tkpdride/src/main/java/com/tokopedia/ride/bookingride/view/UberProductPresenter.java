@@ -1,7 +1,5 @@
 package com.tokopedia.ride.bookingride.view;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -89,7 +87,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideProductList();
                     getView().hideProgress();
                     getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
@@ -107,15 +105,15 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
                     } else {
                         //check if currency code of any product is not IDR, show error message
-                        for (ProductEstimate pe : productEstimates) {
-                            if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
-                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
-                                return;
-                            }
-                        }
+//                        for (ProductEstimate pe : productEstimates) {
+//                            if (pe.getProduct().getPriceDetail() != null && !pe.getProduct().getPriceDetail().getCurrencyCode().equalsIgnoreCase(VALID_CURRENCY)) {
+//                                getView().showErrorMessage(getView().getActivity().getString(R.string.no_uber_valid_location), getView().getActivity().getString(R.string.btn_text_retry));
+//                                return;
+//                            }
+//                        }
                         if (destination != null) {
                             actionGetFareProduct2(source, destination, productEstimates);
-                        }else{
+                        } else {
                             getView().hideProgress();
                             getView().hideErrorMessage();
                             getView().showProductList();
@@ -209,7 +207,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().hideProgress();
                             getView().hideProductList();
                             getView().showErrorMessage(e.getMessage(), getView().getActivity().getString(R.string.btn_text_retry));
@@ -218,7 +216,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
                     @Override
                     public void onNext(List<RideProductViewModel> rideProductViewModels) {
-                        if (isViewAttached()){
+                        if (isViewAttached()) {
                             getView().hideProgress();
                             getView().hideErrorMessage();
                             getView().showProductList();
