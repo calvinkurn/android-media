@@ -5,6 +5,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
 
 /**
@@ -17,6 +19,8 @@ public interface FeedPlusTypeFactory  {
 
     int type(PromotedShopViewModel viewModel);
 
-    AbstractViewHolder createViewHolder(ViewGroup view, int viewType);
+    int type(PromoViewModel viewModel);
+
+    AbstractViewHolder createViewHolder(View view, int viewType);
 
 }

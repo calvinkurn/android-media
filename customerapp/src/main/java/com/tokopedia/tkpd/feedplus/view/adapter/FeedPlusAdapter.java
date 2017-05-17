@@ -28,7 +28,10 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return typeFactory.createViewHolder(parent, viewType);
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override

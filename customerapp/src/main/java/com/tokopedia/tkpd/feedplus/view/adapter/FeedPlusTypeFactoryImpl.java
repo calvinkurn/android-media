@@ -1,20 +1,16 @@
 package com.tokopedia.tkpd.feedplus.view.adapter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.feedplus.FeedPlus;
-import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.DoubleProductCardViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.EmptyFeedViewHolder;
-import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.SingleProductViewHolder;
-import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.TripleProductCardViewHolder;
-import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.OneProductViewHolder;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromoViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.ProductCardViewHolder;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.PromoViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
 
 /**
@@ -31,22 +27,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
     @Override
     public int type(ProductCardViewModel productCardViewModel) {
-        switch (productCardViewModel.getListProduct().size()) {
-            case 0:
-                return EmptyFeedViewHolder.LAYOUT;
-            case 1:
-                return SingleProductViewHolder.LAYOUT;
-            case 2:
-                return DoubleProductCardViewHolder.IDENTIFIER;
-            case 3:
-                return TripleProductCardViewHolder.LAYOUT;
-            case 4:
-                return DoubleProductCardViewHolder.IDENTIFIER;
-            case 5:
-                return EmptyFeedViewHolder.LAYOUT;
-            default:
-                return EmptyFeedViewHolder.LAYOUT;
-        }
+        return ProductCardViewHolder.LAYOUT;
     }
 
     @Override
@@ -55,32 +36,31 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public AbstractViewHolder createViewHolder(ViewGroup parent, int type) {
-        Context context = parent.getContext();
-        View view = parent;
+    public int type(PromoViewModel viewModel) {
+        return PromoViewHolder.LAYOUT;
+    }
+
+
+    @Override
+    public AbstractViewHolder createViewHolder(View view, int type) {
+
         AbstractViewHolder viewHolder;
-
-        if (type != DoubleProductCardViewHolder.IDENTIFIER)
-            view = LayoutInflater.from(context).inflate(type, parent, false);
-
         switch (type) {
             case EmptyFeedViewHolder.LAYOUT:
                 viewHolder = new EmptyFeedViewHolder(view);
                 break;
-            case SingleProductViewHolder.LAYOUT:
-                viewHolder = new SingleProductViewHolder(view, viewListener);
+            case ProductCardViewHolder.LAYOUT:
+                viewHolder = new ProductCardViewHolder(view, viewListener);
                 break;
-            case DoubleProductCardViewHolder.IDENTIFIER:
-                int layoutId = DoubleProductCardViewHolder.LAYOUT;
-                view = LayoutInflater.from(context).inflate(layoutId, parent, false);
-                viewHolder = new DoubleProductCardViewHolder(view, viewListener);
-                break;
-            case TripleProductCardViewHolder.LAYOUT:
-                viewHolder = new TripleProductCardViewHolder(view, viewListener);
-                break;
+
             case PromotedShopViewHolder.LAYOUT:
                 viewHolder = new PromotedShopViewHolder(view);
                 break;
+
+            case PromoViewHolder.LAYOUT:
+                viewHolder = new PromoViewHolder(view);
+                break;
+
             default:
                 viewHolder = super.createViewHolder(view, type);
                 break;

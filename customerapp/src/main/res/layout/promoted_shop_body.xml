@@ -4,8 +4,9 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.core.customwidget.SquareImageView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/image_thumbnail_size"
-        android:background="@color/tkpd_dark_gray"/>
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>

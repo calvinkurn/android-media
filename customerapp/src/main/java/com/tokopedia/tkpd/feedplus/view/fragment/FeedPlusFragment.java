@@ -31,6 +31,7 @@ import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.PromoViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
 
 import java.lang.reflect.Array;
@@ -72,6 +73,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+
         DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
                 .appModule(new AppModule(getContext()))
                 .activityModule(new ActivityModule(getActivity()))
@@ -124,50 +126,69 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ArrayList<ProductFeedViewModel> listProduct = new ArrayList<>();
-        listProduct.add(new ProductFeedViewModel(
+        ProductFeedViewModel prod1 = new ProductFeedViewModel(
                 "Produk1",
                 "Rp 10.000",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
-
-        ArrayList<ProductFeedViewModel> listProduct2 = new ArrayList<>();
-        listProduct2.add(new ProductFeedViewModel(
-                "Produk1",
-                "Rp 10.000",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
-        listProduct2.add(new ProductFeedViewModel(
+                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg");
+        ProductFeedViewModel prod2 = new ProductFeedViewModel(
                 "Produk2",
                 "Rp 11.0000",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
-
-        ArrayList<ProductFeedViewModel> listProduct3 = new ArrayList<>();
-        listProduct3.add(new ProductFeedViewModel(
-                "Produk1",
-                "Rp 10.000",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg"));
-        listProduct3.add(new ProductFeedViewModel(
-                "Produk2",
-                "Rp 11.0000",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg"));
-        listProduct3.add(new ProductFeedViewModel(
+                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
+        ProductFeedViewModel prod3 = new ProductFeedViewModel(
                 "Produk3",
                 "Rp 21.0000",
-                "http://www.metropolitan.id/wp-content/uploads/2016/04/kerbau.jpg"));
+                "http://img03.deviantart.net/ebe3/i/2007/294/e/c/kerbau_by_jin_concepts.jpg");
+        ProductFeedViewModel prod4 = new ProductFeedViewModel(
+                "Produk4",
+                "Rp 13.000",
+                "http://4.bp.blogspot.com/-THtQuGtlkH8/UwbV8vtw9gI/AAAAAAAACHI/d9m4DYOo-0s/s1600/Singa+Hewan+Karnivora.jpg");
 
-        List<Visitable> list = new ArrayList<>();
-        list.add(new ProductCardViewModel("Nisie 1", listProduct));
-        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
-        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
+        ProductFeedViewModel prod5 = new ProductFeedViewModel(
+                "Produk5",
+                "Rp 23.000",
+                "http://riesalam.com/wp-content/uploads/2015/06/Penyakit-akibat-tikus-di-rumah.jpg");
+
+        ProductFeedViewModel prod6 = new ProductFeedViewModel(
+                "Produk6",
+                "Rp 43.000",
+                "https://hellosehat.com/wp-content/uploads/2016/05/anjing-yang-aman-untuk-alergi.jpg");
+
+        ArrayList<ProductFeedViewModel> listProduct = new ArrayList<>();
+        listProduct.add(prod1);
+
+        ArrayList<ProductFeedViewModel> listProduct2 = new ArrayList<>();
+        listProduct2.add(prod1);
+        listProduct2.add(prod2);
+
+        ArrayList<ProductFeedViewModel> listProduct3 = new ArrayList<>();
+        listProduct3.add(prod1);
+        listProduct3.add(prod2);
+        listProduct3.add(prod3);
 
         ArrayList<ProductFeedViewModel> listProduct4 = new ArrayList<>();
         listProduct4.addAll(listProduct3);
-        listProduct4.add(new ProductFeedViewModel(
-                "Produk4",
-                "Rp 13.000",
-                "http://4.bp.blogspot.com/-THtQuGtlkH8/UwbV8vtw9gI/AAAAAAAACHI/d9m4DYOo-0s/s1600/Singa+Hewan+Karnivora.jpg"));
-        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
+        listProduct4.add(prod4);
 
-        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct));
+
+        ArrayList<ProductFeedViewModel> listProduct5 = new ArrayList<>();
+        listProduct5.addAll(listProduct4);
+        listProduct5.add(prod5);
+
+        ArrayList<ProductFeedViewModel> listProduct6 = new ArrayList<>();
+        listProduct6.addAll(listProduct5);
+        listProduct6.add(prod6);
+
+
+        List<Visitable> list = new ArrayList<>();
+
+        list.add(new ProductCardViewModel("Nisie 1", listProduct));
+        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
+        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
+        list.add(new PromoViewModel(listProduct6));
+        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
+        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
+        list.add(new ProductCardViewModel("Nisie 6", listProduct6));
+        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();
