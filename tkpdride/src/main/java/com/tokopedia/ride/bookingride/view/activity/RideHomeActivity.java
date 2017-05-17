@@ -495,7 +495,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void onBottomContainerChangeToBookingScreen() {
-        mSlidingUpPanelLayout.setPanelHeight((int) getResources().getDimension(R.dimen.sliding_panel_min_height));
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.disablePickLocation();
