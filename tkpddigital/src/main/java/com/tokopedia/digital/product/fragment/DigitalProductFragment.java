@@ -594,7 +594,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         navigateToActivity(DigitalWebActivity.newInstance(
                 getActivity(),
                 URLGenerator.generateURLSessionLogin(
-                        Uri.encode(bannerData.getImgUrl()), getActivity())
+                        Uri.encode(bannerData.getLink()), getActivity())
         ));
     }
 
