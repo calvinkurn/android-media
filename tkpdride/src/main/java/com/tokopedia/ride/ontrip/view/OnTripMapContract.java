@@ -154,6 +154,14 @@ public interface OnTripMapContract {
         void saveActiveRequestId(String requestId);
 
         void clearSavedActiveRequestId();
+
+        void saveActiveProductName();
+
+        void clearSavedActiveProductName();
+
+        String getActiveProductNameInCache();
+
+        void saveActiveProductName(String displayName);
     }
 
     interface Presenter extends CustomerPresenter<View> {

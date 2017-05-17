@@ -2,6 +2,7 @@ package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -24,6 +25,7 @@ import com.tokopedia.ride.history.domain.model.RideHistory;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -111,6 +113,12 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     public RideRequest call(RideRequestEntity rideRequestEntity) {
                         return rideRequestEntityMapper.transform(rideRequestEntity);
                     }
+                }).doOnNext(new Action1<RideRequest>() {
+                    @Override
+                    public void call(RideRequest rideRequest) {
+//                        RideConfiguration configuration = new RideConfiguration();
+//                        configuration.setActiveRequest(rideRequest);
+                    }
                 });
     }
 
@@ -128,6 +136,12 @@ public class BookingRideRepositoryData implements BookingRideRepository {
                     @Override
                     public RideRequest call(RideRequestEntity entity) {
                         return rideRequestEntityMapper.transform(entity);
+                    }
+                }).doOnNext(new Action1<RideRequest>() {
+                    @Override
+                    public void call(RideRequest rideRequest) {
+//                        RideConfiguration configuration = new RideConfiguration();
+//                        configuration.setActiveRequest(rideRequest);
                     }
                 });
     }

@@ -55,6 +55,7 @@ public class CompleteTripActivity extends BaseActivity {
     private void clearActiveRequest() {
         RideConfiguration configuration = new RideConfiguration(this);
         configuration.clearActiveRequestId();
+        configuration.clearActiveProductName();
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {

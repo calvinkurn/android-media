@@ -395,6 +395,8 @@ public class RidePushNotificationBuildAndShow {
     }
 
     private static void showRideCompleted(Context context, RideRequest rideRequest) {
+        RideConfiguration configuration = new RideConfiguration(context);
+        configuration.clearActiveProductName();
         DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
         driverAndVehicle.setDriver(rideRequest.getDriver());
         driverAndVehicle.setVehicle(rideRequest.getVehicle());

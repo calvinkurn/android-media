@@ -1137,4 +1137,30 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         RideConfiguration configuration = new RideConfiguration(getActivity());
         configuration.clearActiveRequestId();
     }
+
+    @Override
+    public void saveActiveProductName() {
+        if (confirmBookingViewModel != null) {
+            RideConfiguration configuration = new RideConfiguration(getActivity());
+            configuration.saveActiveProductName(confirmBookingViewModel.getProductDisplayName());
+        }
+    }
+
+    @Override
+    public void clearSavedActiveProductName() {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        configuration.clearActiveProductName();
+    }
+
+    @Override
+    public String getActiveProductNameInCache() {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        return configuration.getActiveProductName();
+    }
+
+    @Override
+    public void saveActiveProductName(String displayName) {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        configuration.saveActiveProductName(displayName);
+    }
 }

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -142,6 +143,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(Product product) {
                 if (isViewAttached()) {
+                    getView().saveActiveProductName(product.getDisplayName());
                     if (product.getDisplayName().equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))) {
                         getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
                     } else {
@@ -190,7 +192,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         });
     }
 
-    public void createRideRequest(RequestParams requestParams) {
+    private void createRideRequest(RequestParams requestParams) {
         createRideRequestUseCase.execute(requestParams, new Subscriber<RideRequest>() {
             @Override
             public void onCompleted() {
@@ -227,6 +229,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (isViewAttached()) {
                     activeRideRequest = rideRequest;
                     getView().setRequestId(rideRequest.getRequestId());
+                    getView().saveActiveProductName();
                     getView().onSuccessCreateRideRequest(rideRequest);
                     getView().startPeriodicService(rideRequest.getRequestId());
                     proccessGetCurrentRideRequest(rideRequest);
@@ -254,6 +257,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                     getView().onSuccessCancelRideRequest();
                     getView().clearActiveNotification();
                     getView().clearSavedActiveRequestId();
+                    getView().clearSavedActiveProductName();
                 }
             }
         });
@@ -274,6 +278,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideLoadingWaitingResponse();
                 getView().showNoDriverAvailableDialog();
                 getView().clearSavedActiveRequestId();
+                getView().clearSavedActiveProductName();
                 break;
             case RideStatus.PROCESSING:
                 getView().showFindingUberNotification();
@@ -321,6 +326,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideAcceptedNotification();
                 getView().renderDriverCanceledRequest(result);
                 getView().clearSavedActiveRequestId();
+                getView().clearSavedActiveProductName();
                 break;
             case RideStatus.RIDER_CANCELED:
                 getView().hideRequestLoadingLayout();
@@ -328,6 +334,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().hideAcceptedNotification();
                 getView().renderRiderCanceledRequest(result);
                 getView().clearSavedActiveRequestId();
+                getView().clearSavedActiveProductName();
                 break;
             case RideStatus.COMPLETED:
                 getView().hideRequestLoadingLayout();
@@ -472,6 +479,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                             if (isViewAttached()) {
                                 if (activeRideRequest == null) {
+                                    if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
+                                        if (getView()
+                                                .getActiveProductNameInCache()
+                                                .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
+                                                ) {
+                                            getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
+                                        } else {
+                                            getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
+                                        }
+                                    }
                                     actionGetProductDetailToDecideIcon(rideRequest);
                                 }
                                 activeRideRequest = rideRequest;

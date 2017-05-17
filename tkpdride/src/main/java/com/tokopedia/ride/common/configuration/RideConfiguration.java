@@ -22,13 +22,14 @@ public class RideConfiguration {
     private static final String RIDE_SOURCE = "RIDE_SOURCE";
     private static final String RIDE_DESTINATION = "RIDE_DESTINATION";
     private static final String KEY_REQUEST_ID = "request_id";
+    private static final String KEY_PRODUCT_NAME = "product_name";
     private static final String DEFAULT_EMPTY_VALUE = "";
 
     private static final String KEY_USER_STATE = "user_state";
 
     private static final int STATE_WAITING_FOR_DRIVER = 1;
 
-    GlobalCacheManager cacheManager;
+    private GlobalCacheManager cacheManager;
 
     private Context context;
 
@@ -56,9 +57,9 @@ public class RideConfiguration {
         return entity != null && source != null && destination != null;
     }
 
-    public void setActiveRequest(RideRequestEntity request) {
+    public void setActiveRequest(RideRequest request) {
         // initialize class you want to be converted from string
-        Type type = new TypeToken<RideRequestEntity>() {
+        Type type = new TypeToken<RideRequest>() {
         }.getType();
         // set value
         cacheManager.setKey(RIDE_CONFIGURATION);
@@ -135,5 +136,23 @@ public class RideConfiguration {
         LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
         cache.putString(KEY_REQUEST_ID, DEFAULT_EMPTY_VALUE);
         cache.applyEditor();
+    }
+
+    public void saveActiveProductName(String productName) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_PRODUCT_NAME, productName);
+        cache.applyEditor();
+    }
+
+
+    public void clearActiveProductName() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_PRODUCT_NAME, DEFAULT_EMPTY_VALUE);
+        cache.applyEditor();
+    }
+
+    public String getActiveProductName() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        return cache.getString(KEY_PRODUCT_NAME, DEFAULT_EMPTY_VALUE);
     }
 }
