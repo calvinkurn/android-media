@@ -1,8 +1,10 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
+import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
@@ -14,16 +16,15 @@ import rx.functions.Func1;
  */
 
 public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
-    private final String productId;
     private final NotificationManager notificationManager;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
-
-    public ProceedUploadProduct(String productId, NotificationManager notificationManager, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository) {
-        this.productId = productId;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
+    public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.notificationManager = notificationManager;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
@@ -39,11 +40,14 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .doOnNext(notificationManager.getUpdateNotification());
         } else if (domainModel.getProductStatus() == ProductStatus.EDIT){
             return Observable.just(domainModel)
-                    .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository))
+                    .flatMap(new DeleteImageEditProduct(uploadProductRepository, draftUpdate))
+                    .map(new ClearImageDeleted())
+                    .doOnNext(notificationManager.getUpdateNotification())
+                    .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository, draftUpdate))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareEditProduct(domainModel))
                     .flatMap(new EditProduct(uploadProductRepository))
-                    .flatMap(new DeleteImageEditProduct(domainModel, uploadProductRepository))
+                    .doOnNext(notificationManager.getUpdateNotification())
                     .map(new ToUploadProductModel(domainModel));
         } else {
             throw new RuntimeException("No product status available");
@@ -63,6 +67,19 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
             uploadProductDomainModel.setProductName(domainModel.getProductName());
             uploadProductDomainModel.setProductDesc(domainModel.getProductDescription());
             return uploadProductDomainModel;
+        }
+    }
+
+    private class ClearImageDeleted implements Func1<UploadProductInputDomainModel, UploadProductInputDomainModel> {
+        @Override
+        public UploadProductInputDomainModel call(UploadProductInputDomainModel domainModel) {
+            for (int i = domainModel.getProductPhotos().getPhotos().size() - 1; i >= 0; i --) {
+                ImageProductInputDomainModel imageDomainModel = domainModel.getProductPhotos().getPhotos().get(i);
+                if (imageDomainModel.getStatus() == ImageStatusTypeDef.ALREADY_DELETED) {
+                    domainModel.getProductPhotos().getPhotos().remove(i);
+                }
+            }
+            return domainModel;
         }
     }
 }

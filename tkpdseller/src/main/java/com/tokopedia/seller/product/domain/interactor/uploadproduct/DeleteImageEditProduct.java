@@ -1,59 +1,72 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 5/15/17.
  */
 
-class DeleteImageEditProduct implements Func1<Boolean, Observable<Boolean>> {
-    private final UploadProductInputDomainModel domainModel;
+class DeleteImageEditProduct implements Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>> {
     private final UploadProductRepository uploadProductRepository;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
-    public DeleteImageEditProduct(UploadProductInputDomainModel domainModel, UploadProductRepository uploadProductRepository) {
-        this.domainModel = domainModel;
+    public DeleteImageEditProduct(UploadProductRepository uploadProductRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.uploadProductRepository = uploadProductRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
-    public Observable<Boolean> call(Boolean aBoolean) {
+    public Observable<UploadProductInputDomainModel> call(UploadProductInputDomainModel domainModel) {
         return Observable.from(domainModel.getProductPhotos().getPhotos())
-                .flatMap(new EditProductSigleImage(uploadProductRepository, domainModel.getProductId()))
+                .flatMap(new DeleteProductSingleImage(uploadProductRepository, domainModel.getProductId()))
+                .doOnNext(new UpdateDraft(domainModel, draftUpdate))
                 .toList()
-                .map(new Func1<List<ImageProductInputDomainModel>, Boolean>() {
-                    @Override
-                    public Boolean call(List<ImageProductInputDomainModel> objects) {
-                        return true;
-                    }
-                });
+                .map(new InsertToModel(domainModel));
     }
 
-    private static class EditProductSigleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
+    private static class DeleteProductSingleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
         private final UploadProductRepository uploadProductRepository;
         private final String productId;
 
-        private EditProductSigleImage(UploadProductRepository uploadProductRepository, String productId) {
+        private DeleteProductSingleImage(UploadProductRepository uploadProductRepository, String productId) {
             this.uploadProductRepository = uploadProductRepository;
             this.productId = productId;
         }
 
         @Override
         public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel imageProductInputDomainModel) {
-            if (imageProductInputDomainModel.getUrl() != null &&
-                    imageProductInputDomainModel.getUrl().equals(ProductNetworkConstant.IMAGE_STATUS_DELETED)) {
+            if (imageProductInputDomainModel.getStatus() == ImageStatusTypeDef.WILL_BE_DELETED) {
                 return Observable
                         .just(imageProductInputDomainModel)
-                        .flatMap(new DeleteImage(uploadProductRepository, productId));
+                        .flatMap(new DeleteImage(uploadProductRepository, productId))
+                        .map(new UpdateModel(imageProductInputDomainModel));
             }
             return Observable.just(imageProductInputDomainModel);
+        }
+
+        private static class UpdateModel implements Func1<ImageProductInputDomainModel, ImageProductInputDomainModel> {
+            private final ImageProductInputDomainModel domainModel;
+
+            public UpdateModel(ImageProductInputDomainModel domainModel) {
+                this.domainModel = domainModel;
+            }
+
+            @Override
+            public ImageProductInputDomainModel call(ImageProductInputDomainModel imageProductInputDomainModel) {
+                domainModel.setStatus(ImageStatusTypeDef.ALREADY_DELETED);
+                return domainModel;
+            }
         }
     }
 
@@ -72,5 +85,35 @@ class DeleteImageEditProduct implements Func1<Boolean, Observable<Boolean>> {
             return uploadProductRepository.deleteProductPicture(domainModel.getPicId(), productId);
         }
 
+    }
+
+    private static class UpdateDraft implements Action1<ImageProductInputDomainModel> {
+        private final UploadProductInputDomainModel domainModel;
+        private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
+
+        public UpdateDraft(UploadProductInputDomainModel domainModel, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
+            this.domainModel = domainModel;
+            this.draftUpdate = draftUpdate;
+        }
+
+        @Override
+        public void call(ImageProductInputDomainModel imageProductInputDomainModel) {
+            draftUpdate.updateDraft(domainModel);
+        }
+    }
+
+    private class InsertToModel implements Func1<List<ImageProductInputDomainModel>, UploadProductInputDomainModel> {
+        private final UploadProductInputDomainModel domainModel;
+
+        public InsertToModel(UploadProductInputDomainModel domainModel) {
+            this.domainModel = domainModel;
+        }
+
+        @Override
+        public UploadProductInputDomainModel call(List<ImageProductInputDomainModel> imageProductInputDomainModels) {
+            ProductPhotoListDomainModel productPhotos = domainModel.getProductPhotos();
+            productPhotos.setPhotos(imageProductInputDomainModels);
+            return domainModel;
+        }
     }
 }
