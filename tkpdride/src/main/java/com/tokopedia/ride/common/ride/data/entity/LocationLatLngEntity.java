@@ -10,16 +10,20 @@ import com.google.gson.annotations.SerializedName;
 public class LocationLatLngEntity {
     @SerializedName("latitude")
     @Expose
-    double latitude;
+    private double latitude;
     @SerializedName("longitude")
     @Expose
-    double longitude;
+    private double longitude;
     @SerializedName("eta")
     @Expose
-    float eta;
+    private float eta;
     @SerializedName("address")
     @Expose
-    String address;
+    private String address;
+
+    @SerializedName("address_name")
+    @Expose
+    private String addressName;
 
     public LocationLatLngEntity() {
     }
@@ -46,5 +50,9 @@ public class LocationLatLngEntity {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getAddressName() {
+        return addressName;
     }
 }

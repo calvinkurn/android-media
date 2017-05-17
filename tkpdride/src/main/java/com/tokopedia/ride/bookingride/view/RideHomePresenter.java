@@ -6,6 +6,7 @@ import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.UnProcessableHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.ontrip.view.viewmodel.DriverVehicleAddressViewModel;
 
 import rx.Subscriber;
@@ -100,7 +101,12 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                     DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
                                     driverAndVehicle.setDriver(rideRequest.getDriver());
                                     driverAndVehicle.setVehicle(rideRequest.getVehicle());
-                                    driverAndVehicle.setAddress(rideRequest.getAddress());
+                                    RideRequestAddress rideRequestAddress = new RideRequestAddress();
+                                    rideRequestAddress.setStartAddressName(rideRequest.getPickup().getAddressName());
+                                    rideRequestAddress.setStartAddress(rideRequest.getPickup().getAddress());
+                                    rideRequestAddress.setEndAddressName(rideRequest.getDestination().getAddressName());
+                                    rideRequestAddress.setEndAddress(rideRequest.getDestination().getAddress());
+                                    driverAndVehicle.setAddress(rideRequestAddress);
                                     getView().navigateToCompleteTripScreen(rideRequest.getRequestId(), driverAndVehicle);
                                 } else {
                                     getView().inflateMapAndProductFragment();

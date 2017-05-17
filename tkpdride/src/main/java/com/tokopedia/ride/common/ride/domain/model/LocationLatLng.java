@@ -12,6 +12,7 @@ public class LocationLatLng implements Parcelable {
     private double longitude;
     private float eta;
     private String address;
+    private String addressName;
 
     public LocationLatLng() {
     }
@@ -21,6 +22,7 @@ public class LocationLatLng implements Parcelable {
         longitude = in.readDouble();
         eta = in.readFloat();
         address = in.readString();
+        addressName = in.readString();
     }
 
     public static final Creator<LocationLatLng> CREATOR = new Creator<LocationLatLng>() {
@@ -78,5 +80,14 @@ public class LocationLatLng implements Parcelable {
         parcel.writeDouble(longitude);
         parcel.writeFloat(eta);
         parcel.writeString(address);
+        parcel.writeString(addressName);
+    }
+
+    public String getAddressName() {
+        return addressName;
+    }
+
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
     }
 }

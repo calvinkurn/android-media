@@ -19,7 +19,6 @@ public class RideRequest implements Parcelable {
     private double surgeMultiplier;
     private boolean shared;
     private int eta;
-    private RideRequestAddress address;
 
     public RideRequest() {
     }
@@ -157,13 +156,5 @@ public class RideRequest implements Parcelable {
         parcel.writeDouble(surgeMultiplier);
         parcel.writeByte((byte) (shared ? 1 : 0));
         parcel.writeInt(eta);
-    }
-
-    public RideRequestAddress getAddress() {
-        return address;
-    }
-
-    public void setAddress(RideRequestAddress address) {
-        this.address = address;
     }
 }

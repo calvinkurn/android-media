@@ -30,6 +30,7 @@ import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.di.RidePushDependencyInjection;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -400,7 +401,12 @@ public class RidePushNotificationBuildAndShow {
         DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
         driverAndVehicle.setDriver(rideRequest.getDriver());
         driverAndVehicle.setVehicle(rideRequest.getVehicle());
-        driverAndVehicle.setAddress(rideRequest.getAddress());
+        RideRequestAddress rideRequestAddress = new RideRequestAddress();
+        rideRequestAddress.setStartAddressName(rideRequest.getPickup().getAddressName());
+        rideRequestAddress.setStartAddress(rideRequest.getPickup().getAddress());
+        rideRequestAddress.setEndAddressName(rideRequest.getDestination().getAddressName());
+        rideRequestAddress.setEndAddress(rideRequest.getDestination().getAddress());
+        driverAndVehicle.setAddress(rideRequestAddress);
 
         Intent intent = CompleteTripActivity.getCallingIntentFromPushNotification(
                 context,

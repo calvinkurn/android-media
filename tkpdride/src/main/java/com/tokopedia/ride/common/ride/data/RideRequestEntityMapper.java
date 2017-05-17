@@ -36,7 +36,6 @@ public class RideRequestEntityMapper {
             rideRequest.setDestination(transform(entity.getDestination()));
             rideRequest.setShared(entity.isShared());
             rideRequest.setEta(entity.getEta());
-            rideRequest.setAddress(transform(entity.getAddress()));
         }
         return rideRequest;
     }
@@ -61,6 +60,7 @@ public class RideRequestEntityMapper {
             location.setLongitude(entity.getLongitude());
             location.setLatitude(entity.getLatitude());
             location.setAddress(entity.getAddress());
+            location.setAddressName(entity.getAddressName());
         }
         return location;
     }
