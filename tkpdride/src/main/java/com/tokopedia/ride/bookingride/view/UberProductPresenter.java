@@ -50,6 +50,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     @Override
     public void initialize() {
 //        actionGetPromo();
+        getView().showProgress();
     }
 
     private void actionGetPromo() {
