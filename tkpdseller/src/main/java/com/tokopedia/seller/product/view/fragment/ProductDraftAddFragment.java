@@ -11,7 +11,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.utils.ViewUtils;
@@ -104,7 +104,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         productDetailViewHolder.setMinimumOrder(model.getProductMinOrder());
         productDetailViewHolder.setStockStatus(model.getProductUploadTo());
 
-        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE);
+        productDetailViewHolder.setStockManaged(model.getProductInvenageSwitch() == InvenageSwitchTypeDef.TYPE_ACTIVE);
         productDetailViewHolder.setTotalStock(model.getProductInvenageValue());
         if (model.getProductEtalaseId() > 0) {
             productDetailViewHolder.setEtalaseId(model.getProductEtalaseId());

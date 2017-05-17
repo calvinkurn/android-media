@@ -1,9 +1,6 @@
 package com.tokopedia.seller.product.view.model.upload;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import com.tokopedia.seller.product.constant.CurrencyTypeDef;
@@ -35,7 +32,7 @@ public class UploadProductInputViewModel {
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
-    @SwitchTypeDef
+    @InvenageSwitchTypeDef
     private int productInvenageSwitch;
     private int productInvenageValue;
     private int productWeight;
@@ -206,7 +203,7 @@ public class UploadProductInputViewModel {
         this.productUploadTo = productUploadTo;
     }
 
-    @SwitchTypeDef
+    @InvenageSwitchTypeDef
     public int getProductInvenageSwitch() {
         return productInvenageSwitch;
     }
