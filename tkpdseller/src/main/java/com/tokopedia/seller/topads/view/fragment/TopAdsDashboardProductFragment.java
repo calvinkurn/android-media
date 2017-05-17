@@ -8,6 +8,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.TotalAd;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
@@ -17,8 +18,9 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardProductPresente
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
-    LabelView groupSummaryLabelView;
-    LabelView itemSummaryLabelView;
+    private LabelView groupSummaryLabelView;
+    private LabelView itemSummaryLabelView;
+    private LabelView keywordLabelView;
 
     int totalProductAd;
 
@@ -44,6 +46,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         super.initView(view);
         groupSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_group_summary);
         itemSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_item_summary);
+        keywordLabelView = (LabelView) view.findViewById(R.id.label_view_keyword);
         groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +57,12 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
             @Override
             public void onClick(View view) {
                 onProductItemClicked();
+            }
+        });
+        keywordLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onKeywordLabelClicked();
             }
         });
     }
@@ -78,8 +87,10 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     public void onTotalAdLoaded(@NonNull TotalAd totalAd) {
         groupSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductGroupAd()));
         itemSummaryLabelView.setContent(String.valueOf(totalAd.getTotalProductAd()));
+        keywordLabelView.setContent(String.valueOf(totalAd.getTotalKeyword()));
         groupSummaryLabelView.setVisibleArrow(true);
         itemSummaryLabelView.setVisibleArrow(true);
+        keywordLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
         onLoadDataSuccess();
     }
@@ -90,7 +101,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         hideLoading();
     }
 
-    void onProductGroupClicked() {
+    private void onProductGroupClicked() {
         Intent intent = new Intent(getActivity(), TopAdsGroupAdListActivity.class);
         if (totalProductAd >= 0) {
             intent.putExtra(TopAdsExtraConstant.EXTRA_TOTAL_PRODUCT_ADS, totalProductAd);
@@ -98,8 +109,13 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
-    void onProductItemClicked() {
+    private void onProductItemClicked() {
         Intent intent = new Intent(getActivity(), TopAdsProductAdListActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
+    }
+
+    private void onKeywordLabelClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsKeywordListActivity.class);
         startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
     }
 
