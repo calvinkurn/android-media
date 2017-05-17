@@ -21,7 +21,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -93,7 +92,6 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
         implements IProductDigitalView, BannerAdapter.ActionListener,
         BaseDigitalProductView.ActionListener {
-    private static final String TAG = DigitalProductFragment.class.getSimpleName();
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
 
@@ -113,7 +111,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "https://pulsa.tokopedia.com/order-list/";
     private static final String URL_PRODUCT_LIST_DIGITAL =
             "https://pulsa.tokopedia.com/products/";
-    private static final String URL_SUBSCRIPTIONS_DIGITAL = "";
+    private static final String URL_SUBSCRIPTIONS_DIGITAL =
+            "https://pulsa.tokopedia.com/subscribe/";
 
 
     private Operator operatorSelectedState;
@@ -284,7 +283,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle1View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -299,7 +297,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle2View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -314,7 +311,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle3View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //  digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -529,9 +525,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d("STORELAST", "ondestroyview");
         if (digitalProductView != null && categoryDataState != null) {
-            Log.d("STORELAST", "prepare store last client number");
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
             presenter.processStoreLastInputClientNumberByCategory(
@@ -667,6 +661,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             ));
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
+            navigateToActivity(DigitalWebActivity.newInstance(
+                    getActivity(),
+                    URLGenerator.generateURLSessionLogin(
+                            Uri.encode(URL_SUBSCRIPTIONS_DIGITAL), getActivity())
+            ));
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             navigateToActivity(DigitalWebActivity.newInstance(

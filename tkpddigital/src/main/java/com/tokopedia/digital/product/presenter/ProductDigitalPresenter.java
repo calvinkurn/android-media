@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -82,11 +81,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
         );
         localCacheHandler.applyEditor();
-
-        Log.d("STORELAST", "category id = " + categoryId);
-        Log.d("STORELAST", "client number = " + lastClientNumber);
-        Log.d("STORELAST", "operator id = " + operatorId);
-        Log.d("STORELAST", "product id = " + productId);
     }
 
     @Override
@@ -102,11 +96,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
         };
         Cursor cursorPhone = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                contactWhere,
-                contactWhereParams,
-                null
+                ContactsContract.Data.CONTENT_URI, null, contactWhere, contactWhereParams, null
         );
 
         if (cursorPhone != null) {
