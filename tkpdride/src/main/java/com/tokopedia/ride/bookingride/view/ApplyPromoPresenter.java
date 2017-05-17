@@ -28,17 +28,17 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
 
     @Override
     public void actionApplyPromo() {
-        getView().showApplyPromoLoading();
+
         //getView().hideApplyPromoLayout();
         getView().disableApplyButton();
 
         if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
-            getView().setEmptyPromoError();
+//            getView().setEmptyPromoError();
             return;
         } else {
             getView().clearEmptyPromoError();
         }
-
+        getView().showApplyPromoLoading();
         getFareEstimateUseCase.execute(getView().getParams(), new Subscriber<FareEstimate>() {
             @Override
             public void onCompleted() {
