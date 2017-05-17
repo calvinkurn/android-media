@@ -70,8 +70,11 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
             @Override
             public void onNext(List<Promo> promo) {
                 if (isViewAttached()) {
-                    if (promo.size() > 0)
-                        getView().showAdsBadges(promo.get(0).getOffer());
+                    if (promo.size() > 0) {
+                        getView().showAdsBadges(promo.get(0).getCode().toUpperCase() + ": " + promo.get(0).getOffer());
+                    } else {
+                        getView().hideAdsBadges();
+                    }
                 }
             }
         });
