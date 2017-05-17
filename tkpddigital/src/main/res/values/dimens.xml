@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="digital_padding_28">28dp</dimen>
+    <dimen name="digital_padding_20">20dp</dimen>
     <dimen name="digital_padding_16">16dp</dimen>
     <dimen name="digital_padding_14">14dp</dimen>
     <dimen name="digital_padding_12">12dp</dimen>
