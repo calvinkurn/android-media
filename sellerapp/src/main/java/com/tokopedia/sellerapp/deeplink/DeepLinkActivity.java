@@ -9,7 +9,7 @@ import android.view.MenuItem;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.sellerapp.R;
@@ -21,8 +21,7 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkPresenterImpl;
  * Created by Herdi_WORK on 10.05.17.
  */
 
-public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements DeepLinkView, DeepLinkWebViewHandleListener {
-
+public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> implements DeepLinkView, DeepLinkWebViewHandleListener, FragmentGeneralWebView.OnFragmentInteractionListener {
     private Uri uriData;
     private Bundle extras;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
@@ -103,7 +102,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, HomeRouter.getHomeActivityClass());
+            Intent intent = new Intent(this, SellerRouter.getSellingActivityClass());
             this.startActivity(intent);
             this.finish();
         }
@@ -137,4 +136,18 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
+    @Override
+    public void onWebViewSuccessLoad() {
+
+    }
+
+    @Override
+    public void onWebViewErrorLoad() {
+
+    }
+
+    @Override
+    public void onWebViewProgressLoad() {
+
+    }
 }
