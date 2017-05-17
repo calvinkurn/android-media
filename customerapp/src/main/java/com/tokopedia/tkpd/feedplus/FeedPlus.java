@@ -11,6 +11,10 @@ public interface FeedPlus{
 
     public interface View extends CustomerView {
         void onShareButtonClicked();
+
+        void onGoToProductDetail();
+
+        void onGoToFeedDetail();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

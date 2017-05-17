@@ -73,7 +73,7 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
                 }
             }
         });
-        adapter = new FeedProductAdapter();
+        adapter = new FeedProductAdapter(itemView.getContext(), viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
