@@ -104,7 +104,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
                     viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_forbidden_auth));
 
                 }
-            }, Integer.parseInt(e.toString()));
+            }, Integer.parseInt(e.getLocalizedMessage()));
         } else {
             viewListener.onErrorGetOpportunity(viewListener.getString(R.string.default_request_error_unknown));
         }

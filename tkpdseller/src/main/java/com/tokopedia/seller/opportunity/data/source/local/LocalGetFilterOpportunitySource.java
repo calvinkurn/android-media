@@ -1,5 +1,8 @@
 package com.tokopedia.seller.opportunity.data.source.local;
 
+import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.FilterData;
 import com.tokopedia.core.network.entity.replacement.opportunitycategorydata.OpportunityCategoryData;
@@ -34,19 +37,19 @@ public class LocalGetFilterOpportunitySource {
                 .map(new Func1<String, OpportunityCategoryModel>() {
                     @Override
                     public OpportunityCategoryModel call(String key) {
-//                        CommonUtils.dumper("NISNIS GET FILTER CACHE");
-//                        if (getCache(key) != null)
-//                            return CacheUtil.convertStringToModel(getCache(key),
-//                                    new TypeToken<OpportunityCategoryModel>() {
-//                                    }.getType());
-//                        else throw new RuntimeException("NO CACHE");
+                        CommonUtils.dumper("NISNIS GET FILTER CACHE");
+                        if (getCache(key) != null)
+                            return CacheUtil.convertStringToModel(getCache(key),
+                                    new TypeToken<OpportunityCategoryModel>() {
+                                    }.getType());
+                        else throw new RuntimeException("NO CACHE");
 
-                        OpportunityCategoryModel categoryModel = new OpportunityCategoryModel();
-                        OpportunityCategoryData data = new OpportunityCategoryData();
-                        createFakeCategoryData(data);
-                        createFakeSortData(data);
-                        categoryModel.setOpportunityCategoryData(data);
-                        return categoryModel;
+//                        OpportunityCategoryModel categoryModel = new OpportunityCategoryModel();
+//                        OpportunityCategoryData data = new OpportunityCategoryData();
+//                        createFakeCategoryData(data);
+//                        createFakeSortData(data);
+//                        categoryModel.setOpportunityCategoryData(data);
+//                        return categoryModel;
                     }
                 });
     }
