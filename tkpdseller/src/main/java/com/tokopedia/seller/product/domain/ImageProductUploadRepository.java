@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.domain;
 
 import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductPictureInputDomainModel;
 import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 

@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.domain.interactor.categorypicker;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.CategoryRepository;

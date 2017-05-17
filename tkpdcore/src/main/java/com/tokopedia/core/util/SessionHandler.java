@@ -74,6 +74,7 @@ public class SessionHandler {
     private static final String DEFAULT_UUID_VALUE = "";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
+    private static final String USER_DATA = "USER_DATA";
 
     private Context context;
 
@@ -125,6 +126,7 @@ public class SessionHandler {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
+        editor.putString(USER_DATA,null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -141,6 +143,8 @@ public class SessionHandler {
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
+
+        TrackingUtils.eventMoEngageLogoutUser();
 
         clearFeedCache();
 

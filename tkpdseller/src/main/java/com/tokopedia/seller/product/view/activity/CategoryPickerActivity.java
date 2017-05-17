@@ -10,13 +10,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.CategoryPickerComponent;
-import com.tokopedia.seller.product.di.component.DaggerCategoryPickerComponent;
-import com.tokopedia.seller.product.di.module.CategoryPickerModule;
 import com.tokopedia.seller.product.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.view.listener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.product.view.model.CategoryViewModel;

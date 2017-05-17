@@ -10,13 +10,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.di.component.DaggerEtalasePickerComponent;
-import com.tokopedia.seller.product.di.component.EtalasePickerComponent;
-import com.tokopedia.seller.product.di.module.EtalasePickerModule;
 import com.tokopedia.seller.product.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.view.dialog.TextPickerDialogListener;
 import com.tokopedia.seller.product.view.fragment.EtalasePickerFragment;

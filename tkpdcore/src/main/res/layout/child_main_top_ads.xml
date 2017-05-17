@@ -3,4 +3,6 @@
     android:id="@+id/top_ads_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/top_ads_separator_height"
+    android:paddingBottom="@dimen/top_ads_separator_height"
     android:scrollbars="horizontal" />

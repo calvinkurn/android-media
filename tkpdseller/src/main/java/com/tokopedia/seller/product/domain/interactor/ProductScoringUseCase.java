@@ -9,7 +9,6 @@ import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProduct
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 4/17/17.
