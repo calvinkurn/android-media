@@ -91,6 +91,7 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
         presenter = ApplyPromoDependencyInjection.createPresenter(getActivity());
         presenter.attachView(this);
         presenter.getOnGoingPromo();
+        disableApplyButton();
         confirmBookingViewModel = getArguments().getParcelable(EXTRA_CONFIRM_BOOKING);
         if (confirmBookingViewModel != null && !TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             promoEditText.setText(String.valueOf(confirmBookingViewModel.getPromoCode()));
@@ -120,7 +121,9 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
                     } else {
                         promoEditText.setBackgroundDrawable(getResources().getDrawable(R.drawable.et_normal_bg));
                     }
+                    disableApplyButton();
                 } else {
+                    enableApplyButton();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         promoEditText.setBackground(getResources().getDrawable(R.drawable.et_selected_bg));
                     } else {
@@ -349,6 +352,24 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
             throw new RuntimeException(String.format("%s must implement OnFragmentInteractionListener",
                     getActivity().getClass().getSimpleName())
             );
+        }
+    }
+
+    @Override
+    public void enableApplyButton() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            submitPromoTextView.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        } else {
+            submitPromoTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        }
+    }
+
+    @Override
+    public void disableApplyButton() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            submitPromoTextView.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        } else {
+            submitPromoTextView.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
         }
     }
 }

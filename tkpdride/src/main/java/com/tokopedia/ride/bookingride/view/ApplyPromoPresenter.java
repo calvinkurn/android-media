@@ -30,6 +30,7 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
     public void actionApplyPromo() {
         getView().showApplyPromoLoading();
         //getView().hideApplyPromoLayout();
+        getView().disableApplyButton();
 
         if (TextUtils.isEmpty(getView().getPromo()) || getView().getPromo().length() == 0) {
             getView().setEmptyPromoError();
@@ -49,12 +50,14 @@ public class ApplyPromoPresenter extends BaseDaggerPresenter<ApplyPromoContract.
                 if (!isViewAttached()) return;
                 getView().showApplyPromoLayout();
                 getView().hideApplyPromoLoading();
+                getView().disableApplyButton();
                 getView().onFailedApplyPromo(e.getMessage());
             }
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
                 if (isViewAttached()) {
+                    getView().enableApplyButton();
                     getView().showApplyPromoLayout();
                     if (fareEstimate.isSuccess() && fareEstimate.getType().equalsIgnoreCase("")) {
                         getView().hideApplyPromoLoading();

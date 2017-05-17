@@ -48,6 +48,10 @@ public interface ApplyPromoContract {
         void renderPromoList(List<Promo> promos);
 
         void renderEmptyOnGoingPromo();
+
+        void enableApplyButton();
+
+        void disableApplyButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {

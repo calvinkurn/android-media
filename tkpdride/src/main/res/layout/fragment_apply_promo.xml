@@ -24,7 +24,7 @@
             android:id="@+id/et_promo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/et_normal_bg"
+            android:background="@drawable/et_selected_bg"
             android:drawableTint="@color/grey_700"
             android:hint="@string/hint_enter_promo_code"
             android:inputType="textCapCharacters"
