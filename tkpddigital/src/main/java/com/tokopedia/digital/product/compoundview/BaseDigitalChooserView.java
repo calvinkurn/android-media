@@ -67,7 +67,7 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
     }
 
     public interface ActionListener<Z> {
-        void onInitialDataDigitalChooserSelectedRendered(Z data);
+        //      void onInitialDataDigitalChooserSelectedRendered(Z data);
 
         void onUpdateDataDigitalChooserSelectedRendered(Z data);
 

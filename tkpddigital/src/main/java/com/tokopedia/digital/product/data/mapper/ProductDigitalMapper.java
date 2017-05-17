@@ -244,9 +244,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
     ) throws MapperDataException {
         return new OrderClientNumber.Builder()
                 .clientNumber(lastOrderData.getAttributes().getClientNumber())
-                .categoryId("")
-                .operatorId(String.valueOf(lastOrderData.getAttributes().getOperatorId()))
-                .productId(String.valueOf(lastOrderData.getAttributes().getProductId()))
+                .categoryId(lastOrderData.getAttributes().getCategoryId())
+                .operatorId(lastOrderData.getAttributes().getOperatorId())
+                .productId(lastOrderData.getAttributes().getProductId())
                 .build();
     }
 

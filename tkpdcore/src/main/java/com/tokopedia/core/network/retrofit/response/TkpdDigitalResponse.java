@@ -12,6 +12,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -215,6 +216,10 @@ public class TkpdDigitalResponse {
         @Expose
         private List<Error> errors = new ArrayList<>();
 
+        public void setErrors(List<Error> errors) {
+            this.errors = errors;
+        }
+
         public List<Error> getErrors() {
             return errors;
         }
@@ -230,13 +235,28 @@ public class TkpdDigitalResponse {
             return stringBuilder.toString().trim();
         }
 
-        public static DigitalErrorResponse factory(String errorBody) throws JsonSyntaxException {
-            return new Gson().fromJson(
-                    errorBody, DigitalErrorResponse.class
-            );
+        public static DigitalErrorResponse factory(String errorBody) {
+            try {
+                return new Gson().fromJson(errorBody, DigitalErrorResponse.class);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+                return DigitalErrorResponse.factoryDefault(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+            }
         }
 
-        public class Error {
+        private static DigitalErrorResponse factoryDefault(String messageErrorDefault) {
+            DigitalErrorResponse digitalErrorResponse = new DigitalErrorResponse();
+            List<DigitalErrorResponse.Error> errorList = new ArrayList<>();
+            DigitalErrorResponse.Error error = new Error();
+            error.setId("0");
+            error.setStatus("0");
+            error.setTitle(messageErrorDefault);
+            errorList.add(error);
+            digitalErrorResponse.setErrors(errorList);
+            return digitalErrorResponse;
+        }
+
+        public static class Error {
 
             @SerializedName("id")
             @Expose
@@ -258,6 +278,18 @@ public class TkpdDigitalResponse {
 
             public String getTitle() {
                 return title;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public void setStatus(String status) {
+                this.status = status;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
             }
         }
     }

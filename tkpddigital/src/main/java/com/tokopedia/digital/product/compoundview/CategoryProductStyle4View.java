@@ -76,10 +76,4 @@ public class CategoryProductStyle4View extends
 
     }
 
-    @Override
-    protected void onHistoryClientNumberRendered() {
-        //TODO Angga
-    }
-
-
 }

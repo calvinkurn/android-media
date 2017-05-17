@@ -258,8 +258,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     public void renderStateSelectedAllData() {
         digitalProductView.restoreStateData(
-                categoryDataState, operatorSelectedState, productSelectedState,
-                clientNumberState, isInstantCheckoutChecked
+                categoryDataState, historyClientNumberState, operatorSelectedState,
+                productSelectedState, clientNumberState, isInstantCheckoutChecked
         );
     }
 
@@ -279,8 +279,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle1View(getActivity());
         digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData);
-        digitalProductView.renderHistoryClientNumber(historyClientNumber);
+        digitalProductView.renderData(categoryData, historyClientNumber);
+        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -294,8 +294,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle2View(getActivity());
         digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData);
-        digitalProductView.renderHistoryClientNumber(historyClientNumber);
+        digitalProductView.renderData(categoryData, historyClientNumber);
+        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -309,20 +309,22 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle3View(getActivity());
         digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData);
-        digitalProductView.renderHistoryClientNumber(historyClientNumber);
+        digitalProductView.renderData(categoryData, historyClientNumber);
+        //  digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
     @Override
-    public void renderCategoryProductDataStyle4(CategoryData categoryData) {
+    public void renderCategoryProductDataStyle4(CategoryData categoryData,
+                                                HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
+        this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
         holderProductDetail.removeAllViews();
         if (digitalProductView == null)
             digitalProductView = new CategoryProductStyle4View(getActivity());
         digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData);
+        digitalProductView.renderData(categoryData, historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -592,7 +594,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         navigateToActivity(DigitalWebActivity.newInstance(
                 getActivity(),
                 URLGenerator.generateURLSessionLogin(
-                        Uri.encode(bannerData.getImgUrl()), getActivity())
+                        Uri.encode(bannerData.getLink()), getActivity())
         ));
     }
 

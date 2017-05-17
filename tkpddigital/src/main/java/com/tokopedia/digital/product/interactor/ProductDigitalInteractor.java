@@ -56,13 +56,13 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-//                        categoryRepository.getBanner(paramQueryBanner)
-//                                .onErrorReturn(new Func1<Throwable, List<BannerData>>() {
-//                                    @Override
-//                                    public List<BannerData> call(Throwable throwable) {
-//                                        return new ArrayList<>();
-//                                    }
-//                                }),
+                        /*categoryRepository.getBanner(paramQueryBanner)
+                                .onErrorReturn(new Func1<Throwable, List<BannerData>>() {
+                                    @Override
+                                    public List<BannerData> call(Throwable throwable) {
+                                        return new ArrayList<>();
+                                    }
+                                }),*/
                         Observable.just(new ArrayList<BannerData>()),
                         lastOrderNumberRepository.getRecentNumberOrderList(paramQueryLastNumber)
                                 .flatMap(getFunctionFilterRecentNumberByCategory(pathCategoryId))
@@ -164,15 +164,17 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                     CategoryData categoryData, List<BannerData> bannerDatas,
                     List<OrderClientNumber> orderClientNumbers, OrderClientNumber orderClientNumber
             ) {
+                List<BannerData> bannerDataList = new ArrayList<>();
+                for (BannerData bannerData : categoryData.getBannerDataListIncluded()) {
+                    bannerDataList.add(bannerData);
+                }
                 return new ProductDigitalData.Builder()
                         .historyClientNumber(new HistoryClientNumber.Builder()
                                 .lastOrderClientNumber(orderClientNumber)
                                 .recentClientNumberList(orderClientNumbers)
                                 .build())
                         .categoryData(categoryData)
-                        .bannerDataList(
-                                bannerDatas.isEmpty() ? categoryData.getBannerDataListIncluded()
-                                        : bannerDatas)
+                        .bannerDataList(bannerDataList)
                         .build();
             }
         };

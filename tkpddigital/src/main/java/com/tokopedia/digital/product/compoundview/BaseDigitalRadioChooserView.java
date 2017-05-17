@@ -64,8 +64,6 @@ public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
     public abstract void renderUpdateDataSelected(T data);
 
     public interface ActionListener<Z> {
-        void onInitialDataDigitalRadioChooserSelectedRendered(Z data);
-
         void onUpdateDataDigitalRadioChooserSelectedRendered(Z data);
 
     }

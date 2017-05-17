@@ -49,6 +49,7 @@
         android:layout_gravity="start"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/digital_padding_16"
         android:layout_weight="0.60"
         android:text="@string/label_instant_payment_digital"
         android:textColor="@color/checkbox_text"
