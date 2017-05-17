@@ -44,10 +44,10 @@
 
     <TextView
         android:id="@+id/item_shop_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:gravity="left"
+        android:gravity="center"
         android:layout_marginTop="9dp"
         android:scrollHorizontally="true"
         android:singleLine="true"

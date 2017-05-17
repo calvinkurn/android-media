@@ -194,6 +194,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 list_shop.setLayoutManager(gridLayoutManager);
                 break;
         }
+        list_shop.setAdapter(browseShopAdapter);
     }
 
     @Override

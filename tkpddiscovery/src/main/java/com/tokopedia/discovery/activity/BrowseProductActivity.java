@@ -561,9 +561,21 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     public void changeBottomBarGridIcon(int gridIconResId, int gridTitleResId) {
         gridIcon = gridIconResId;
         gridTitleRes = gridTitleResId;
-        if (isBottomBarItemReady(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION)) {
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setTitle(getString(gridTitleResId));
-            bottomNavigation.getItem(BOTTOM_BAR_GRID_TYPE_ITEM_POSITION).setDrawable(gridIconResId);
+
+        BrowseParentFragment parentFragment = (BrowseParentFragment)
+                fragmentManager.findFragmentById(R.id.container);
+        boolean isShopFragment = parentFragment.getActiveFragment() instanceof ShopFragment;
+
+        int viewTypeItemPosition;
+        if (isShopFragment) {
+            viewTypeItemPosition = 1;
+        } else {
+            viewTypeItemPosition = BOTTOM_BAR_GRID_TYPE_ITEM_POSITION;
+        }
+
+        if (isBottomBarItemReady(viewTypeItemPosition)) {
+            bottomNavigation.getItem(viewTypeItemPosition).setTitle(getString(gridTitleResId));
+            bottomNavigation.getItem(viewTypeItemPosition).setDrawable(gridIconResId);
             bottomNavigation.refresh();
         }
     }
