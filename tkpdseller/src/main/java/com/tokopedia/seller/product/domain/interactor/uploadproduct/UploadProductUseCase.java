@@ -67,7 +67,7 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         }
         return Observable.just(productId)
                 .flatMap(new GetProductModelObservable())
-                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository))
+                .flatMap(new UploadProduct(productId, listener, generateHostRepository, uploadProductRepository, imageProductUploadRepository, new ProductDraftUpdate(productDraftRepository, productId)))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository));
     }
 
@@ -93,6 +93,21 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         @Override
         public void call(AddProductDomainModel addProductDomainModel) {
             productDraftRepository.deleteDraft(productId);
+        }
+    }
+
+    public class ProductDraftUpdate {
+
+        private final ProductDraftRepository productDraftRepository;
+        private final long productId;
+
+        public ProductDraftUpdate(ProductDraftRepository productDraftRepository, long productId) {
+            this.productDraftRepository = productDraftRepository;
+            this.productId = productId;
+        }
+
+        public void updateDraft(UploadProductInputDomainModel domainModel) {
+            productDraftRepository.updateDraft(productId, domainModel);
         }
     }
 }

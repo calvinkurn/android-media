@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.data.source;
 
 import com.tokopedia.seller.product.data.source.db.ProductDraftDataManager;
+import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import javax.inject.Inject;
 
@@ -32,5 +33,9 @@ public class ProductDraftDataSource {
 
     public void deleteDraft(long productId) {
         productDraftDataManager.deleteDeraft(productId);
+    }
+
+    public void updateDraft(long productId, String draftDataBase) {
+        productDraftDataManager.updateDraft(productId, draftDataBase);
     }
 }

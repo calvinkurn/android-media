@@ -40,4 +40,10 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     public void deleteDraft(long productId) {
         productDraftDataSource.deleteDraft(productId);
     }
+
+    @Override
+    public void updateDraft(long productId, UploadProductInputDomainModel domainModel) {
+        String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
+        productDraftDataSource.updateDraft(productId, productDraft);
+    }
 }
