@@ -49,7 +49,6 @@ import com.tokopedia.core.home.customview.TokoCashHeaderView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Banner;
 import com.tokopedia.core.network.entity.home.Brand;
@@ -461,8 +460,11 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onCategoryClicked(CategoryItemModel categoryItemModel, int position) {
-        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null)
+        if (categoryItemModel != null && categoryItemModel.getRedirectValue() != null){
+            TrackingUtils.sendMoEngageClickMainCategoryIcon(categoryItemModel.getName());
             navigateToNextActivity(categoryItemModel.getRedirectValue(), categoryItemModel.getName());
+        }
+
     }
 
     @Override
@@ -689,6 +691,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
                 messageSnackbar.resumeRetrySnackbar();
             }
             ScreenTracking.screen(getScreenName());
+            TrackingUtils.sendMoEngageOpenHomeEvent();
             sendAppsFlyerData();
             holder.wrapperScrollview.smoothScrollTo(0, 0);
         } else {

@@ -19,6 +19,8 @@ public class TkpdBaseURL {
     public static String HADES_DOMAIN = "https://hades.tokopedia.com";
     public static String HADES_STAGING_DOMAIN = "https://hades-staging.tokopedia.com";
     public static String RECHARGE_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static String MERLIN_DOMAIN = "https://merlin.tokopedia.com/";
+    public static String GOOGLE_APIS = "https://www.googleapis.com";
     public static String RECHARGE_STAGING_DOMAIN = "https://pulsa-api-staging.tokopedia.com/";
     public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
     public static String ACCOUNTS_STAGING_DOMAIN = "https://accounts-staging.tokopedia.com/";
@@ -36,12 +38,15 @@ public class TkpdBaseURL {
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String MOBILE_DOMAIN = "https://m.tokopedia.com/";
     public static String BASE_CONTACT_US = WEB_DOMAIN + "contact-us";
+    public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
 
     public static class Product {
-        public static final String URL_PRODUCT = BASE_DOMAIN + "v4/product/";
-        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + "v4/action/product/";
+        public static final String V4_PRODUCT = "v4/product/";
+        public static final String URL_PRODUCT = BASE_DOMAIN + V4_PRODUCT;
+        public static final String V4_ACTION_PRODUCT = "v4/action/product/";
+        public static final String URL_PRODUCT_ACTION = BASE_DOMAIN + V4_ACTION_PRODUCT;
         public static final String URL_PROMO_ACTION = BASE_DOMAIN + "v4/action/promo/";
         public static final String URL_PROMO = BASE_DOMAIN + "v4/promo/";
         public static final String URL_REVIEW_ACTION = BASE_DOMAIN + "v4/action/review/";
@@ -244,12 +249,15 @@ public class TkpdBaseURL {
     }
 
     public static class Shop {
-        public static final String URL_MY_SHOP = BASE_DOMAIN + "v4/myshop/";
+        public static final String PATH_MY_SHOP = "v4/myshop/";
+        public static final String URL_MY_SHOP = BASE_DOMAIN + PATH_MY_SHOP;
         public static final String URL_MY_SHOP_ACTION = BASE_DOMAIN + "v4/action/myshop/";
         public static final String URL_MY_SHOP_ADDRESS = BASE_DOMAIN + "v4/myshop-address/";
         public static final String URL_MY_SHOP_ADDRESS_ACTION = BASE_DOMAIN + "v4/action/myshop-address/";
-        public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + "v4/myshop-etalase/";
-        public static final String URL_MY_SHOP_ETALASE_ACTION = BASE_DOMAIN + "v4/action/myshop-etalase/";
+        public static final String PATH_MY_SHOP_ETALASE = "v4/myshop-etalase/";
+        public static final String URL_MY_SHOP_ETALASE = BASE_DOMAIN + PATH_MY_SHOP_ETALASE;
+        public static final String PATH_ACTION_MY_SHOP_ETALASE = "v4/action/myshop-etalase/";
+        public static final String URL_MY_SHOP_ETALASE_ACTION = BASE_DOMAIN + PATH_ACTION_MY_SHOP_ETALASE;
         public static final String URL_MY_SHOP_INFO_ACTION = BASE_DOMAIN + "v4/action/myshop-info/";
         public static final String URL_MY_SHOP_INFO = BASE_DOMAIN + "v4/myshop-info/";
         public static final String URL_MY_SHOP_NOTE = BASE_DOMAIN + "v4/myshop-note/";
@@ -262,7 +270,8 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-shipment/";
         public static final String URL_NOTES = BASE_DOMAIN + "v4/notes/";
         public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
-        public static final String URL_SHOP = BASE_DOMAIN + "v4/shop/";
+        public static final String PATH_SHOP = "v4/shop/";
+        public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
         public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
 
         public static final String PATH_CHECK_DOMAIN = "check_domain.pl";
@@ -502,12 +511,14 @@ public class TkpdBaseURL {
     }
 
     public static class Upload {
-        public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + "v4/action/generate-host/";
+        public static final String V4_ACTION_GENERATE_HOST = "v4/action/generate-host/";
+        public static final String URL_GENERATE_HOST_ACTION = BASE_DOMAIN + V4_ACTION_GENERATE_HOST;
 
         public static final String PATH_GENERATE_HOST = "generate_host.pl";
         public static final String PATH_GENERATE_HOST_V2 = "v4/action/generate-host/generate_host.pl";
 
         public static final String URL_UPLOAD_IMAGE_ACTION = BASE_DOMAIN + "v4/action/upload-image-helper/";
+        public static final String PATH_UPLOAD_IMAGE_HELPER = "/web-service/v4/action/upload-image-helper/";
 
         public static final String PATH_CREATE_RESOLUTION_PICTURE = "create_resolution_picture.pl";
         public static final String PATH_ADD_PRODUCT_PICTURE = "add_product_picture.pl";
@@ -519,7 +530,8 @@ public class TkpdBaseURL {
     }
 
     public static class Ace {
-        public static final String URL_SEARCH = ACE_DOMAIN + "search/";
+        public static final String PATH_SEARCH = "search/";
+        public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
 
         public static final String PATH_CATALOG_SHOP_LIST = "catalog/product";
         public static final String PATH_SEARCH_SHOP = "shop";
@@ -530,6 +542,11 @@ public class TkpdBaseURL {
         public static final String PATH_HOTLIST_CATEGORY = "/hoth/hotlist/v1/category";
         public static final String PATH_UNIVERSE_SEARCH = "/universe/v3";
         public static final String PATH_DELETE_SEARCH = "/universe/v1?device=android&source=searchbar";
+
+    }
+
+    public static class Merlin {
+        public static final String PATH_CATEGORY_RECOMMENDATION = "v4/product/category/recommendation";
 
     }
 
@@ -558,6 +575,7 @@ public class TkpdBaseURL {
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";
         public static final String PATH_USER_WISHLIST = "/users";
         public static final String PATH_SEARCH_WISHLIST = PATH_USER_WISHLIST + "/{userId}/wishlist/search/v2";
+        public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
     }
 
 
@@ -625,6 +643,8 @@ public class TkpdBaseURL {
         public static final String RESENT_ACTIVATION = "/api/resend";
         public static final String GENERATE_HOST = "/api/upload-host";
         public static final String VERIFY_PHONE_NUMBER = "/api/msisdn/verify-msisdn";
+        public static final String ACTIVATE_UNICODE = "/token";
+        public static final String CHANGE_EMAIL = "/api/v1/activation/change-email";
 
 
         public class OTP {
@@ -653,6 +673,7 @@ public class TkpdBaseURL {
         public static final String GET_PRODUCT_VIDEO = "/v1/product/video/";
         public static final String GET_SHOP_SCORE_SUMMARY = "/v1/shopstats/shopscore/sum/";
         public static final String GET_SHOP_SCORE_DETAIL = "/v1/shopstats/shopscore/dtl/";
+        public static final String GET_GM_SUBSCRIBE_PRODUCT = "/v1/gold/product";
     }
 
     public static class FCM {
@@ -664,7 +685,6 @@ public class TkpdBaseURL {
         public static final String PATH_CREATE_STEP_1 = "ajax/create/step/1";
         public static final String PATH_CREATE_STEP_2 = "ajax/create/step/2";
         public static final String URL_HELP = MOBILE_DOMAIN + "bantuan/";
-        public static final String URL_CHANGE_NUMBER = "https://www.tokopedia.com/contact-us?solution_id=54";
     }
 
     public static class TopCash {
@@ -672,7 +692,11 @@ public class TkpdBaseURL {
         public static final String PATH_WALLET = "balance";
     }
 
-    public static class Truecaller {
+    public class TkpdCart {
+        public static final String CHECK_VOUCHER = "v1/voucher/verify";
+        public static final String CHECKOUT_ORDER = "v1/cart/order";
+    }
+    public static class Truecaller{
         public static final String VERIFY_PHONE = "/web-service/v4/truecaller/check";
     }
 
@@ -700,6 +724,7 @@ public class TkpdBaseURL {
         public static final String CHECK_VERSION = "/v1/categories_version";
         public static final String URL_HADES = HADES_DOMAIN;
         public static final String PATH_CATEGORIES = "/v1/categories/{catId}/detail";
+        public static final String FETCH_CATEGORIES = "/v1/categories?filter=type==tree";
     }
 
     public static class OfficialStore {

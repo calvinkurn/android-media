@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
@@ -79,6 +79,7 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(Response<TkpdResponse> response) {
                 if (response.isSuccessful()) {
+                    saveUserData(response.body().convertDataObj(ProfileData.class));
                     listener.onSuccess(parseToDrawerHeader(response.body()
                             .convertDataObj(ProfileData.class)));
                 } else {
@@ -91,6 +92,17 @@ public class NetworkInteractorImpl implements NetworkInteractor {
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
+    }
+
+    private void saveUserData(ProfileData userData){
+        try {
+
+            AnalyticsCacheHandler cacheHandler = new AnalyticsCacheHandler();
+            cacheHandler.setUserDataCache(userData);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void getDeposit(Context context, final DepositListener listener) {

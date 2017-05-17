@@ -9,8 +9,8 @@ import com.tokopedia.inbox.rescenter.edit.facade.NetworkParam;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.edit.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.edit.listener.BuyerEditSolutionListener;
-import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
+import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 
 import java.util.List;
 import java.util.Map;
@@ -85,22 +85,26 @@ public class BuyerEditSolutionImpl implements BuyerEditSolutionPresenter {
         if (solutionDataChoosen.getRefundType() != 0 &&
                 (listener.getSolutionSectionView().getRefundBox().getText().toString().isEmpty())) {
             listener.getSolutionSectionView().getRefundBox().setError(context.getString(R.string.error_field_required));
+            listener.getSolutionSectionView().getRefundBox().requestFocus();
             return false;
         }
 
         if (solutionDataChoosen.getRefundType() != 0
                 && (Integer.parseInt(listener.getSolutionSectionView().getRefundBox().getText().toString()) > solutionDataChoosen.getMaxRefund())) {
             listener.getSolutionSectionView().getRefundBox().setError(context.getString(R.string.error_max_refund_rescenter).replace("XYS", solutionDataChoosen.getMaxRefundIdr()));
+            listener.getSolutionSectionView().getRefundBox().requestFocus();
             return false;
         }
 
         if (listener.getMessageView().getMessageBox().getText().toString().isEmpty()) {
             listener.getMessageView().getMessageBox().setError(context.getString(R.string.error_field_required));
+            listener.getMessageView().getMessageBox().requestFocus();
             return false;
         }
 
         if (listener.getMessageView().getMessageBox().getText().toString().length() < 10) {
             listener.getMessageView().getMessageBox().setError(context.getString(R.string.error_min_10));
+            listener.getMessageView().getMessageBox().requestFocus();
             return false;
         }
 

@@ -3,22 +3,23 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.TotalAd;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardProductPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsProductAdListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsStatisticProductActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardProductFragmentListener;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardProductPresenterImpl;
 
 public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopAdsDashboardProductPresenterImpl> implements TopAdsDashboardProductFragmentListener {
 
     public static final int REQUEST_CODE_AD_STATUS = 2;
-    TopAdsLabelView groupSummaryLabelView;
-    TopAdsLabelView itemSummaryLabelView;
+    LabelView groupSummaryLabelView;
+    LabelView itemSummaryLabelView;
 
     int totalProductAd;
 
@@ -42,8 +43,8 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
     @Override
     protected void initView(View view) {
         super.initView(view);
-        groupSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_group_summary);
-        itemSummaryLabelView = (TopAdsLabelView) view.findViewById(R.id.label_view_item_summary);
+        groupSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_group_summary);
+        itemSummaryLabelView = (LabelView) view.findViewById(R.id.label_view_item_summary);
         groupSummaryLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,6 +83,21 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         itemSummaryLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
         onLoadDataSuccess();
+        showShowCase();
+    }
+
+    // use for show case in activity
+    public View getDepositView() {
+        return getView().findViewById(R.id.view_group_deposit);
+    }
+    public View getCalendarView() {
+        return getView().findViewById(R.id.layout_date);
+    }
+    public View getStatisticView() {
+        return getView().findViewById(R.id.view_group_statistic);
+    }
+    public ViewGroup getScrollView() {
+        return (ViewGroup) getView().findViewById(R.id.scrollView);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.NotificationModHandler;
 
 /**
  * @author ricoharisin
@@ -38,6 +39,7 @@ public class DialogForceLogout {
                         dialog.dismiss();
                         LoginManager.getInstance().logOut();
                         setIsDialogShown(context, false);
+                        NotificationModHandler.clearCacheAllNotification(context);
                     }
                 });
         dialog.setCancelable(false);
