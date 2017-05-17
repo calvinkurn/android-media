@@ -14,4 +14,10 @@
 
     <!--favorite page-->
     <string name="msg_empty_wishlist">Empty wishlist</string>
+
+
+    <!--Feed-->
+    <string name="inspiration_header">Inspired by your ,%1$s.</string>
+    <string name="official_store_header">Produk Terbaik Official Store.</string>
+    <string name="favorite">Favoritkan</string>
 </resources>
