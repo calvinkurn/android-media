@@ -543,33 +543,41 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onProductChooserStyle1Clicked(List<Product> productListData) {
+    public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
     @Override
-    public void onProductChooserStyle2Clicked(List<Product> productListData) {
+    public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
     @Override
-    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData) {
+    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceOperatorChooser(getActivity(), operatorListData),
+                DigitalChooserActivity.newInstanceOperatorChooser(
+                        getActivity(), operatorListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
     }
 
     @Override
-    public void onProductChooserStyle3Clicked(List<Product> productListData) {
+    public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }

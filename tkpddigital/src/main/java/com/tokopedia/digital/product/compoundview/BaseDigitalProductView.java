@@ -121,13 +121,21 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     public interface ActionListener {
         void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
 
-        void onProductChooserStyle1Clicked(List<Product> productListData);
+        void onProductChooserStyle1Clicked(
+                List<Product> productListData, String titleChooser
+        );
 
-        void onProductChooserStyle2Clicked(List<Product> productListData);
+        void onProductChooserStyle2Clicked(
+                List<Product> productListData, String titleChooser
+        );
 
-        void onOperatorChooserStyle3Clicked(List<Operator> operatorListData);
+        void onOperatorChooserStyle3Clicked(
+                List<Operator> operatorListData, String titleChooser
+        );
 
-        void onProductChooserStyle3Clicked(List<Product> productListData);
+        void onProductChooserStyle3Clicked(
+                List<Product> productListData, String titleChooser
+        );
 
         void onCannotBeCheckoutProduct(String messageError);
 

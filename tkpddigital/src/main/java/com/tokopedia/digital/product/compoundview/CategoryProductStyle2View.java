@@ -264,7 +264,9 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                actionListener.onProductChooserStyle1Clicked(data);
+                actionListener.onProductChooserStyle1Clicked(
+                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                );
             }
         };
     }

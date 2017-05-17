@@ -27,8 +27,8 @@ import butterknife.BindView;
 public class CategoryProductStyle1View extends
         BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
 
-    @BindView(R2.id.tv_title_category) //TODO Nabilla, tolong XML nya dirapihin
-            TextView tvTitle;
+    @BindView(R2.id.tv_title_category)
+    TextView tvTitle;
     @BindView(R2.id.holder_client_number)
     LinearLayout holderClientNumber;
     @BindView(R2.id.holder_chooser_product)
@@ -278,7 +278,9 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                actionListener.onProductChooserStyle1Clicked(data);
+                actionListener.onProductChooserStyle1Clicked(
+                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                );
             }
         };
     }

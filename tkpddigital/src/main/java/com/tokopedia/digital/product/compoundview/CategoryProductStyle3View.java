@@ -221,7 +221,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onDigitalChooserClicked(List<Operator> data) {
-                actionListener.onOperatorChooserStyle3Clicked(data);
+                actionListener.onOperatorChooserStyle3Clicked(data, "");
             }
         };
     }
@@ -270,7 +270,9 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
-                actionListener.onProductChooserStyle3Clicked(data);
+                actionListener.onProductChooserStyle3Clicked(
+                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                );
             }
         };
     }
