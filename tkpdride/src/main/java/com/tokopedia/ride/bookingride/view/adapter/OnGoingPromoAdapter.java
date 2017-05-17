@@ -48,12 +48,12 @@ public class OnGoingPromoAdapter extends RecyclerView.Adapter<OnGoingPromoAdapte
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.titleTextView.setText(promos.get(position).getOffer());
-        holder.promoTextView.setText(promos.get(position).getCode());
+        holder.promoTextView.setText(promos.get(position).getCode().toUpperCase());
         holder.promoTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (interactionListener != null) {
-                    interactionListener.onItemClicked(promos.get(holder.getAdapterPosition()).getCode());
+                    interactionListener.onItemClicked(promos.get(holder.getAdapterPosition()).getCode().toUpperCase());
                 }
             }
         });
