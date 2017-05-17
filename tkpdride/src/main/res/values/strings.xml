@@ -84,4 +84,6 @@
     <string name="ride_push_in_progress">Trip Started</string>
     <string name="ride_push_track_ride">Track Your Ride</string>
     <string name="title_fetching_ride">Fetching Ride Details</string>
+    <string name="ontrip_cancel_yes">Yes</string>
+    <string name="ontrip_cancel_no">No</string>
 </resources>

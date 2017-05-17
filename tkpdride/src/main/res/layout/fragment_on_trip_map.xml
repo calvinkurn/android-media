@@ -293,7 +293,7 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/button_rounded_grey"
                 android:gravity="center"
-                android:text="@string/yes"
+                android:text="@string/ontrip_cancel_yes"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -307,7 +307,7 @@
                 android:layout_marginRight="30dp"
                 android:background="@drawable/button_rounded_grey"
                 android:gravity="center"
-                android:text="@string/No"
+                android:text="@string/ontrip_cancel_no"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="14sp" />

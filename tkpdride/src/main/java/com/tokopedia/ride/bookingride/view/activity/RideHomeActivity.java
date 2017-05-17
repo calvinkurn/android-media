@@ -454,6 +454,17 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void actionAdsShowed() {
+        mSlidingPanelMinHeightInPx = mSlidingPanelMinHeightInPx * 2;
+        mSlidingUpPanelLayout.setPanelHeight(mSlidingPanelMinHeightInPx);
+    }
+
+    @Override
+    public void actionAdsHidden() {
+        mSlidingPanelMinHeightInPx = mSlidingPanelMinHeightInPx / 2;
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingViewModel rideProductViewModel) {
         onBottomContainerChangeToBookingScreen();
         //mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
@@ -484,6 +495,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     private void onBottomContainerChangeToBookingScreen() {
+        mSlidingUpPanelLayout.setPanelHeight((int) getResources().getDimension(R.dimen.sliding_panel_min_height));
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
             fragment.disablePickLocation();

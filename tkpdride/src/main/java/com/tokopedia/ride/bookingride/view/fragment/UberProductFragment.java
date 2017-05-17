@@ -89,6 +89,10 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void showEnterSourceLocationActiity();
 
         void actionProductListHeaderClick();
+
+        void actionAdsShowed();
+
+        void actionAdsHidden();
     }
 
     public static UberProductFragment newInstance() {
@@ -228,12 +232,14 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
     @Override
     public void showAdsBadges(String message) {
+        mInteractionListener.actionAdsShowed();
         mAdsContainerLinearLayout.setVisibility(View.VISIBLE);
         mAdsTitleTextView.setText(String.valueOf(message));
     }
 
     @Override
     public void hideAdsBadges() {
+        mInteractionListener.actionAdsHidden();
         mAdsContainerLinearLayout.setVisibility(View.GONE);
     }
 
