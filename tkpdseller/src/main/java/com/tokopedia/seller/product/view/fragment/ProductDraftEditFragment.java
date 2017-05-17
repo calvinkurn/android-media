@@ -55,12 +55,12 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         hideLoading();
         productId = model.getProductId();
         productPhotosBeforeEdit = model.getProductPhotos();
+
         if (model.getProductNameEditable() == 0){
             productInfoViewHolder.setNameEnabled(false);
         }
         super.onSuccessLoadProduct(model);
     }
-
 
     @Override
     protected void getCategoryRecommendation(String productName) {
@@ -117,6 +117,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
             }
         }
 
+        // No need to reselect primary picture. already set from getPhotos.
         productPhotos.setProductDefaultPicture(defaultImage);
         productPhotos.setPhotos(newPhotosList);
         return isChanging;

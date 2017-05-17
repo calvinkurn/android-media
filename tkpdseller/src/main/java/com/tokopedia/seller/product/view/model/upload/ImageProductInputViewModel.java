@@ -13,6 +13,7 @@ public class ImageProductInputViewModel {
     private String imageDescription;
     private String picId;
     private String url;
+    private boolean canDelete = true;
 
     private int imageResolution;
 
@@ -33,6 +34,14 @@ public class ImageProductInputViewModel {
             return "";
         }
         return imageDescription;
+    }
+
+    public boolean canDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 
     public void setPicId(String picId) {

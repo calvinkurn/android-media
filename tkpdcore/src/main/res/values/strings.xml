@@ -128,7 +128,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_search_etalase">Cari Etalase</string>
     <string name="hint_search_status">Cari Status</string>
     <string name="error_change_primary_image">Tidak Dapat Mengubah Gambar Utama</string>
-    <string name="error_delete_primary_image">Tidak Dapat Menghapus Gambar Utama</string>
+    <string name="error_delete_primary_image">Gambar Utama tidak dapat dihapus</string>
+    <string name="error_save_after_change_primary_image">Harap simpan produk terlebih dahulu setelah mengubah Gambar Utama</string>
     <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silahkan Coba Lagi</string>
     <string name="upload_product_waiting">Produk Anda Sedang Diunggah Silahkan Lihat Notifikasi</string>
     <string name="maximum_instoped_limit">Batas Maksimum Untuk Mengunggah Gambar Telah Tercapai</string>

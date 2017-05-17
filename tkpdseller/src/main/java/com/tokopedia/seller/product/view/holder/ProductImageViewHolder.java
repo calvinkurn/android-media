@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.utils.ScoringProductHelper;
 import com.tokopedia.seller.product.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.upload.ImageProductInputViewModel;
@@ -142,6 +141,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             imageViewModel.setImageDescription(selectModel.getDescription());
             imageViewModel.setImageResolution(selectModel.getMinResolution());
+            imageViewModel.setCanDelete(selectModel.allowDelete());
 
             if (selectModel.isPrimary()) {
                 productPhotos.setProductDefaultPicture(i);
@@ -152,7 +152,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
         return productPhotos;
     }
 
-    public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
+    public void setProductPhotos(ProductPhotoListViewModel productPhotos, boolean isEditMode) {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
         int defaultPicture = productPhotos.getProductDefaultPicture();
         for (int i = 0; i < productPhotos.getPhotos().size(); i++) {
@@ -169,7 +169,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPhoto.getImageDescription(),
-                    i == defaultPicture
+                    i == defaultPicture,
+                    isEditMode ? productPhoto.canDelete() : true
             );
             images.add(image);
         }

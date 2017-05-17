@@ -45,6 +45,7 @@ import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -52,6 +53,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
+import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -460,7 +462,17 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickRemoveImage(int positions) {
-                productImageViewHolder.getImagesSelectView().removeImage();
+                ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+                ImageSelectModel selectModel = imagesSelectView.getSelectedImage();
+                if ( selectModel.allowDelete() ) {
+                    imagesSelectView.removeImage();
+                } else { // not allow delete
+                    if (selectModel.isPrimary()) {
+                        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_delete_primary_image));
+                    } else {
+                        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_save_after_change_primary_image));
+                    }
+                }
             }
         });
     }

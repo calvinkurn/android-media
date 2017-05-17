@@ -19,27 +19,30 @@ public class ImageEditDialogFragment extends DialogFragment {
     public static final String IMAGE_PRODUCT_POSITION = "IMAGE_PRODUCT_POSITION";
 
     public static final String IMAGE_IS_PRIMARY = "IMAGE_IS_PRIMARY";
-    public static final String FRAGMENT_PRODUCT_POSITION = "FRAGMENT_PRODUCT_POSITION";
 
+    private int imageMenuRes[];
     private CharSequence imageMenu[];
     private OnImageEditListener mListener;
 
-    public static final int DELETE_IMAGE = 0;
-    public static final int CHANGE_IMAGE = 1;
-    public static final int ADD_DESCRIPTION = 2;
-    public static final int CHANGE_TO_PRIMARY = 3;
+    public static final int DELETE_IMAGE = R.string.title_img_delete;
+    public static final int CHANGE_IMAGE = R.string.action_edit;
+    public static final int ADD_DESCRIPTION = R.string.title_img_desc;
+    public static final int CHANGE_TO_PRIMARY = R.string.title_img_default;
 
-    public interface OnImageEditListener{
+    public interface OnImageEditListener {
         void clickEditImagePath(int position);
+
         void clickEditImageDesc(int position);
+
         void clickEditImagePrimary(int position);
+
         void clickRemoveImage(int positions);
     }
 
     public int position;
     public boolean isPrimary;
 
-    public static DialogFragment newInstance(int position, boolean isPrimary){
+    public static DialogFragment newInstance(int position, boolean isPrimary) {
         ImageEditDialogFragment f = new ImageEditDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
@@ -65,18 +68,22 @@ public class ImageEditDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         if (isPrimary) {
-            imageMenu = new CharSequence[]{
-                    getActivity().getString(R.string.title_img_delete),
-                    getActivity().getString(R.string.action_edit),
-                    getActivity().getString(R.string.title_img_desc)};
+            imageMenuRes = new int[]{
+                    DELETE_IMAGE,
+                    CHANGE_IMAGE,
+                    ADD_DESCRIPTION};
         } else {
-            imageMenu = new CharSequence[]{
-                    getActivity().getString(R.string.title_img_delete),
-                    getActivity().getString(R.string.action_edit),
-                    getActivity().getString(R.string.title_img_desc),
-                    getActivity().getString(R.string.title_img_default)};
+            imageMenuRes = new int[]{
+                    DELETE_IMAGE,
+                    CHANGE_IMAGE,
+                    ADD_DESCRIPTION,
+                    CHANGE_TO_PRIMARY};
         }
-        builder.setItems(imageMenu,getImageAddProductListener());
+        imageMenu = new CharSequence[imageMenuRes.length];
+        for (int i = 0, sizei = imageMenuRes.length; i < sizei; i++) {
+            imageMenu[i] = getActivity().getString(imageMenuRes[i]);
+        }
+        builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
     }
 
@@ -84,22 +91,16 @@ public class ImageEditDialogFragment extends DialogFragment {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(mListener != null){
-                    switch (which) {
-                        case DELETE_IMAGE:
-                            mListener.clickRemoveImage(position);
-                            break;
-                        case CHANGE_IMAGE:
-                            mListener.clickEditImagePath(position);
-                            break;
-                        case ADD_DESCRIPTION:
-                            mListener.clickEditImageDesc(position);
-                            break;
-                        case CHANGE_TO_PRIMARY:
-                            mListener.clickEditImagePrimary(position);
-                            break;
-                        default:
-                            break;
+                if (mListener != null) {
+                    int resClicked = imageMenuRes[which];
+                    if (resClicked == DELETE_IMAGE) {
+                        mListener.clickRemoveImage(position);
+                    } else if (resClicked == CHANGE_IMAGE) {
+                        mListener.clickEditImagePath(position);
+                    } else if (resClicked == ADD_DESCRIPTION) {
+                        mListener.clickEditImageDesc(position);
+                    } else if (resClicked == CHANGE_TO_PRIMARY) {
+                        mListener.clickEditImagePrimary(position);
                     }
                 }
             }
