@@ -277,6 +277,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void onProductNameChanged(String productName) {
         getCategoryRecommendation(productName);
+        productInfoViewHolder.hideAndClearCatalog();
         checkIfCatalogExist(productInfoViewHolder.getName(), productInfoViewHolder.getCategoryId());
         valueIndicatorScoreModel.setLengthProductName(productName.length());
         updateProductScoring();
