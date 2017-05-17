@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="@dimen/img_thumb_l">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="49dp"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="48dp"
+        android:layout_above="@+id/separator"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/operator_image"
-            android:layout_width="@dimen/img_thumb_m"
-            android:layout_height="@dimen/img_thumb_m"
+            android:layout_width="43dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
-            android:layout_gravity="center_vertical" />
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/icon_bca" />
+
         <TextView
             android:id="@+id/operator_name"
+            style="@style/TextTitleMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/small_dp"
-            android:textSize="@dimen/font_medium" />
+            tools:text="Operator" />
     </LinearLayout>
 
     <View
+        android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/digital_separator" />
 
-</LinearLayout>
+</RelativeLayout>
