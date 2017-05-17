@@ -704,6 +704,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 //            handlingAppearanceFormAndImageOperator();
 //        }
 
+
         String lastTypedClientNumber = getLastClientNumberTyped(String.valueOf(category.getId()));
         String defaultPhoneNumber = SessionHandler.getPhoneNumber();
 
@@ -824,7 +825,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         phoneNumber = validateTextPrefix(phoneNumber);
         rechargeEditText.setText(phoneNumber);
         rechargePresenter.saveLastInputToCache(LAST_INPUT_KEY + category.getId(), rechargeEditText.getText());
-        storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
         cacheHandlerPhoneBook.putString(KEY_PHONEBOOK + category.getId(), phoneNumber);
         cacheHandlerPhoneBook.applyEditor();
     }
@@ -989,6 +989,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
             );
         }
+
+        storeLastClientNumberTyped(String.valueOf(category.getId()), clientNumber);
     }
 
     private String generateATokenRechargeCheckout() {
@@ -1099,9 +1101,21 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void storeLastClientNumberTyped(String categoryId, String clientNumber) {
         if (localCacheHandlerLastClientNumber == null)
             localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET
+            );
         localCacheHandlerLastClientNumber.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
+                (selectedProduct != null ?
+                        String.valueOf(
+                                selectedProduct.getRelationships().getOperator().getData().getId()
+                        ) : "")
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
+                (selectedProduct != null ? String.valueOf(selectedProduct.getId()) : "")
         );
         localCacheHandlerLastClientNumber.applyEditor();
     }
@@ -1109,16 +1123,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private String getLastClientNumberTyped(String categoryId) {
         if (localCacheHandlerLastClientNumber == null)
             localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER_WIDGET);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, ""
         );
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (rechargeEditText != null)
-            storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
-    }
 }

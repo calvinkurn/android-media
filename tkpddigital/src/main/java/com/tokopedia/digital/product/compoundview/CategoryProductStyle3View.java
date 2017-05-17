@@ -100,6 +100,18 @@ public class CategoryProductStyle3View extends
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
         digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
         holderChooserOperator.addView(digitalOperatorChooserView);
+
+        if (hasLastOrderHistoryData()) {
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getOperatorId()
+                )) {
+                    digitalOperatorChooserView.renderUpdateDataSelected(operator);
+                    break;
+                }
+            }
+
+        }
     }
 
     @NonNull
@@ -129,6 +141,17 @@ public class CategoryProductStyle3View extends
         clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.enableImageOperator(operatorSelected.getImage());
+
+        if (hasLastOrderHistoryData()) {
+            if (operatorSelected != null && operatorSelected.getOperatorId().equalsIgnoreCase(
+                    historyClientNumber.getLastOrderClientNumber().getOperatorId())
+                    && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
+                    ) {
+                clientNumberInputView.setText(
+                        historyClientNumber.getLastOrderClientNumber().getClientNumber()
+                );
+            }
+        }
     }
 
     @NonNull
@@ -271,5 +294,7 @@ public class CategoryProductStyle3View extends
         }
     }
 
-
+    private boolean hasLastOrderHistoryData() {
+        return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;
+    }
 }

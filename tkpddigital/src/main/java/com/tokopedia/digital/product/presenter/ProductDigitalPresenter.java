@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -67,12 +68,25 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId) {
+    public void processStoreLastInputClientNumberByCategory(
+            String lastClientNumber, String categoryId, String operatorId, String productId
+    ) {
         LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
         localCacheHandler.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
         );
+        localCacheHandler.putString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
+        );
+        localCacheHandler.putString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
+        );
         localCacheHandler.applyEditor();
+
+        Log.d("STORELAST", "category id = " + categoryId);
+        Log.d("STORELAST", "client number = " + lastClientNumber);
+        Log.d("STORELAST", "operator id = " + operatorId);
+        Log.d("STORELAST", "product id = " + productId);
     }
 
     @Override
