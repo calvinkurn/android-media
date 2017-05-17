@@ -2,7 +2,6 @@ package com.tokopedia.seller.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputFilter;

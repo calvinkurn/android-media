@@ -3,7 +3,6 @@ package com.tokopedia.seller.product.data.source.cloud;
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.model.CategoryVersionServiceModel;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 
 import javax.inject.Inject;
 

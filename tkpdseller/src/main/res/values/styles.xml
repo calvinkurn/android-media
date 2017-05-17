@@ -193,6 +193,10 @@
         <item name="android:background">@color/white</item>
     </style>
 
+    <style name="LabelLayoutWithBorderBottom" parent="LabelLayout">
+        <item name="android:background">@drawable/border_background_bottom</item>
+    </style>
+
     <style name="LabelLayoutInnerExpandable" parent="LabelLayout">
         <item name="android:background">@color/white</item>
         <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
@@ -222,6 +226,20 @@
         <item name="android:maxHeight">3dip</item>
     </style>
 
+    <style name="GMSubscribeContentTextviewSmall" parent="TextView">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/gmsubscribe_autosubscribe_title_content</item>
+    </style>
+
+    <style name="GMSubscribeContentTextviewMedium" parent="TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/gmsubscribe_content_textview_color</item>
+    </style>
+
+    <style name="WhiteCheck">
+        <item name="colorAccent">@color/tkpd_main_green</item>
+    </style>
+
     <style name="TabBar">
         <item name="tabTextColor">@android:color/white</item>
         <item name="tabGravity">fill</item>
@@ -247,10 +265,8 @@
     <style name="TextInputLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset
-        </item> <!-- this is to cater the inner margin android textInputlayout have in default -->
+        <item name="android:layout_marginLeft">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:layout_marginRight">@dimen/top_ads_textinput_margin_offset</item>
-        <item name="android:layout_marginBottom">@dimen/top_ads_textinput_margin_offset</item>
         <item name="android:theme">@style/TextInputLayoutColorLine</item>
     </style>
 

@@ -20,7 +20,9 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.di.component.YoutubeVideoComponent;
 import com.tokopedia.seller.product.domain.interactor.YoutubeVideoUseCase;
@@ -33,6 +35,7 @@ import com.tokopedia.seller.product.view.model.AddUrlVideoModel;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenter;
 import com.tokopedia.seller.product.view.presenter.YoutubeAddVideoPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 
 import java.util.List;
 
@@ -107,6 +110,11 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             public void onEmptyContentItemTextClicked() {
                 youtubeAddVideoActView.openAddYoutubeDialog();
             }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                
+            }
         });
         addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
         addUrlVideoAdapter.setMaxRows(MAX_ROWS);
@@ -123,11 +131,6 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             }
 
             @Override
-            public void notifyFull() {
-                hideMenuButton();
-            }
-
-            @Override
             public void remove(int index) {
                 youtubeAddVideoActView.removeVideoIds(index);
                 setVideoSubtitle();
@@ -139,6 +142,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             }
         });
         addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
+        addUrlVideoAdapter.setRetryView(getRetryDataBinder(addUrlVideoAdapter));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
         addUrlVideoAdapter.showEmptyFull(true);
@@ -225,6 +229,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             setVideoSubtitle();
         } catch (IllegalArgumentException iae) {
             youtubeAddVideoActView.removeVideoIds(youtubeAddVideoActView.videoIds().size() - 1);
+            setVideoSubtitle();
             NetworkErrorHelper.showSnackbar(getActivity(), iae.getMessage());
         }
     }
@@ -236,7 +241,8 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     private void setVideoSubtitle() {
         if (youtubeAddVideoActView != null) {
-            setVideoSubtitle(youtubeAddVideoActView.videoIds().size(), MAX_ROWS);
+            int size = youtubeAddVideoActView.videoIds().size();
+            setVideoSubtitle(size, MAX_ROWS);
         }
     }
 
@@ -245,13 +251,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             showMenuButton();
             presenter.fetchYoutubeDescription(youtubeUrl);
         } else {
-            hideMenuButton();
+            showMaxRows();
         }
     }
 
-    public void hideMenuButton() {
-        menu.findItem(R.id.action_add_video).setEnabled(false);
-        menu.findItem(R.id.action_add_video).setVisible(false);
+    public void showMaxRows() {
+        showMessageErrorRaw(getString(R.string.couldn_t_add_videos));
     }
 
     public void showMenuButton() {
@@ -265,15 +270,29 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     @Override
     public void showMessageError(final String videoId) {
-        NetworkErrorHelper
-                .createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        if (videoId != null && !videoId.isEmpty())
-                            presenter.fetchYoutube(videoId);
-                    }
-                })
-                .showRetrySnackbar();
+        if (addUrlVideoAdapter.getVideoIds() == null || addUrlVideoAdapter.getVideoIds().size() <= 0) {
+            addUrlVideoAdapter.showRetryFull(true);
+        } else {
+            showMessageErrorRaw(getString(com.tokopedia.core.R.string.msg_network_error));
+        }
+    }
+
+    private RetryDataBinder getRetryDataBinder(DataBindAdapter dataBindAdapter) {
+        RetryDataBinder retryDataBinder = new TopAdsRetryDataBinder(dataBindAdapter);
+        retryDataBinder.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
+            @Override
+            public void onRetryCliked() {
+                hideLoading();
+                addUrlVideoAdapter.showLoadingFull(true);
+
+
+                List<String> strings = youtubeAddVideoActView.videoIds();
+                if (CommonUtils.checkCollectionNotNull(strings)) {
+                    presenter.fetchYoutube(strings);
+                }
+            }
+        });
+        return retryDataBinder;
     }
 
     @Override
@@ -291,7 +310,12 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     @Override
     public void showLoading() {
-        addUrlVideoAdapter.showLoadingFull(true);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                addUrlVideoAdapter.showLoadingFull(true);
+            }
+        });
     }
 
     @Override
@@ -302,6 +326,11 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                 addUrlVideoAdapter.showLoadingFull(false);
             }
         });
+    }
+
+    @Override
+    public void hideRetryFull() {
+        addUrlVideoAdapter.showRetryFull(false);
     }
 
     @Override
@@ -320,6 +349,10 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             getActivity().onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_add_video) {
+            if (addUrlVideoAdapter.getVideoIds().size() + 1 > MAX_ROWS) {
+                showMaxRows();
+                return true;
+            }
             youtubeAddVideoActView.openAddYoutubeDialog();
             return true;
         }

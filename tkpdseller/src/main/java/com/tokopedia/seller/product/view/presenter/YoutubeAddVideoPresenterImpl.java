@@ -15,7 +15,7 @@ import java.util.List;
 import rx.Subscriber;
 
 /**
- * @author normansyahputa on 4/17/17.
+ * @author normansyahputa on 4/17/17
  */
 public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
     private static final String TAG = "YoutubeAddVideoPresente";
@@ -38,26 +38,17 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
 
     @Override
     public void fetchYoutube(List<String> videoIds) {
-        List<RequestParams> requestParamses = new ArrayList<>();
-        for (String videoId : videoIds) {
-            requestParamses.add(generateParam(videoId));
+        if (videoIds != null) {
+            if (isViewAttached()) {
+                getView().showLoading();
+            }
+            List<RequestParams> requestParamses = new ArrayList<>();
+
+            for (String videoId : videoIds) {
+                requestParamses.add(generateParam(videoId));
+            }
+            youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds));
         }
-        youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds), new YoutubeVideoUseCase.YoutubeVideoUseCaseListener() {
-            @Override
-            public void onShowLoading() {
-                if (isViewAttached()) {
-                    getView().showLoading();
-                }
-            }
-
-            @Override
-            public void onHideLoading() {
-                if (isViewAttached()) {
-                    getView().hideLoading();
-                }
-            }
-        });
-
     }
 
     public void setYoutubeActView(YoutubeAddVideoActView youtubeActView) {
@@ -111,6 +102,8 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         public void onError(Throwable e) {
             Log.i(TAG, "error here : " + e);
             if (isViewAttached()) {
+                getView().hideLoading();
+                getView().hideRetryFull();
                 if (e instanceof YoutubeVideoLinkUtils.YoutubeException) {
                     showYoutubeException((YoutubeVideoLinkUtils.YoutubeException) e);
                     return;
@@ -128,6 +121,8 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         public void onNext(List<YoutubeVideoModel> youtubeVideoModels) {
             Log.i(TAG, "result here : " + youtubeVideoModels);
             if (isViewAttached()) {
+                getView().hideLoading();
+                getView().hideRetryFull();
                 getView().addAddUrlVideModels(convert(youtubeVideoModels));
             }
         }

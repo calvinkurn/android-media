@@ -238,6 +238,8 @@ public class BrowseProductModel {
             productItem.preorder = data.productPreOder;
             productItem.wholesale = data.productWholesale;
             productItem.setType(TkpdState.RecyclerView.VIEW_PRODUCT);
+            productItem.setRating(data.rate);
+            productItem.setReviewCount(data.productReviewCount);
             return productItem;
         }
 

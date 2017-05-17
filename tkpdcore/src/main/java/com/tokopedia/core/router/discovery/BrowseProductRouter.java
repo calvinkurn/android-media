@@ -35,9 +35,12 @@ public class BrowseProductRouter {
     public static final String VALUES_DYNAMIC_FILTER_HOT_PRODUCT = "hot_product";
 
     public final static String VALUES_DEFAULT_DEPARTMENT_ID = "0";
+    public final static String VALUES_DEFAULT_DEPARTMENT_NAME = "Kategori";
 
     private static final String BROWSE_PRODUCT_ACTIVITY
             = "com.tokopedia.discovery.activity.BrowseProductActivity";
+    private static final String INTERMEDIARY_ACTIVITY
+            = "com.tokopedia.discovery.intermediary.view.IntermediaryActivity";
     public static final int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
 
     public enum GridType {
@@ -51,6 +54,17 @@ public class BrowseProductRouter {
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, VALUES_DEFAULT_DEPARTMENT_ID);
         bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
         bundle.putString(AD_SRC, TopAdsApi.SRC_BROWSE_PRODUCT);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getIntermediaryIntent(Context context) {
+        Intent intent = RouterUtils.getActivityIntent(context, INTERMEDIARY_ACTIVITY);
+        Bundle bundle = new Bundle();
+        bundle.putString(BrowseProductRouter.DEPARTMENT_ID, VALUES_DEFAULT_DEPARTMENT_ID);
+        bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, VALUES_DEFAULT_DEPARTMENT_NAME);
+        bundle.putInt(FRAGMENT_ID, BrowseProductRouter.VALUES_HISTORY_FRAGMENT_ID);
+        bundle.putString(AD_SRC, TopAdsApi.SRC_DIRECTORY);
         intent.putExtras(bundle);
         return intent;
     }

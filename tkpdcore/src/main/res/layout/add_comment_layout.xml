@@ -1,5 +1,5 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/add_comment_area"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,9 +11,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_image_upload"
         android:layout_width="match_parent"
-        android:padding="@dimen/padding_vs"
         android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:padding="@dimen/padding_vs"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/attach_but"
@@ -23,7 +24,8 @@
         android:layout_alignParentStart="true"
         android:layout_below="@id/list_image_upload"
         android:padding="@dimen/padding_small"
-        android:src="@drawable/ic_action_attachment" />
+        android:src="@drawable/ic_action_attachment"
+        tools:visibility="invisible" />
 
     <ImageView
         android:id="@+id/send_but"
@@ -38,13 +40,13 @@
 
     <EditText
         android:id="@+id/new_comment"
-        android:layout_width="240dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_image_upload"
         android:layout_toEndOf="@id/attach_but"
         android:layout_toLeftOf="@+id/send_but"
         android:layout_toRightOf="@id/attach_but"
-        android:layout_toStartOf="@id/send_but"
+        android:layout_toStartOf="@+id/send_but"
         android:hint="@string/prompt_new_comment"
         android:inputType="textMultiLine"
         android:maxLines="3" />

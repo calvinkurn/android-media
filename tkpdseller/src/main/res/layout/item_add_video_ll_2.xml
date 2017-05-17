@@ -67,8 +67,8 @@
 
         <ImageView
             android:id="@+id/image_add_video_url_remove"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="16dp"
+            android:layout_height="18dp"
             app:srcCompat="@drawable/ic_delete" />
     </LinearLayout>
 

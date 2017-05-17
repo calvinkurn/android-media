@@ -10,28 +10,25 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.di.qualifier.GlobalAuth;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -41,7 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
-import com.tokopedia.discovery.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
@@ -68,7 +64,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
-import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_DIRECTORY_VALUE;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 /**
@@ -158,6 +153,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         titleHeader.setText(headerModel.getCategoryName().toUpperCase());
         titleHeader.setShadowLayer(24, 0, 0, com.tokopedia.core.R.color.checkbox_text);
         viewAllCategory.setVisibility(View.VISIBLE);
+        viewAllCategory.setText("Lihat Produk "+headerModel.getCategoryName()+" Lainnya");
     }
 
     @Override
@@ -269,21 +265,35 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void skipIntermediaryPage() {
-        BrowseProductActivity.moveToWithoutAnimation(
-            getActivity(),
-                departmentId,
-            TopAdsApi.SRC_DIRECTORY,
-            BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
-                ((IntermediaryActivity) getActivity()).getCategoryName()
-        );
-        getActivity().overridePendingTransition(0,0);
-        getActivity().finish();
-
+        if (isAdded()) {
+            BrowseProductActivity.moveToWithoutAnimation(
+                    getActivity(),
+                    departmentId,
+                    TopAdsApi.SRC_DIRECTORY,
+                    BrowseProductRouter.VALUES_DYNAMIC_FILTER_DIRECTORY,
+                    ((IntermediaryActivity) getActivity()).getCategoryName()
+            );
+            getActivity().overridePendingTransition(0,0);
+            getActivity().finish();
+        }
     }
 
     @Override
     public void backToTop() {
         nestedScrollView.smoothScrollTo(0, 0);
+    }
+
+    @Override
+    public void updateDepartementId(String id) {
+        departmentId = id;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!TextUtils.isEmpty(departmentId)) {
+            ScreenTracking.eventDiscoveryScreenAuth(departmentId);
+        }
     }
 
     private void showErrorEmptyState() {

@@ -1,9 +1,7 @@
 package com.tokopedia.seller.product.data.source.cloud.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.data.source.cloud.api.request.Data;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 
 import java.util.Map;

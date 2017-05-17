@@ -17,10 +17,10 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.inboxmessage.listener.SendMessageFragmentView;
 import com.tokopedia.inbox.inboxmessage.presenter.SendMessagePresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.SendMessagePresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
 
 import butterknife.BindView;
 

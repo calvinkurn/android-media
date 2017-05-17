@@ -3,56 +3,23 @@ package com.tokopedia.seller.myproduct.presenter;
 import android.content.Context;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
-import com.google.gson.GsonBuilder;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.model.CategoryDB;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.myproduct.api.Department;
-import com.tokopedia.core.myproduct.model.CatalogDataModel;
-import com.tokopedia.core.myproduct.model.DepartmentParentModel;
-import com.tokopedia.core.myproduct.model.ImageModel;
-import com.tokopedia.core.myproduct.model.MyShopInfoModel;
-import com.tokopedia.seller.myproduct.model.EditPriceParam;
-import com.tokopedia.seller.myproduct.model.GetShopNoteModel;
-import com.tokopedia.seller.myproduct.model.editProductForm.EditProductForm;
-import com.tokopedia.seller.myproduct.utils.UploadPhotoTask;
-import com.tokopedia.core.network.apiservices.ace.AceSearchService;
-import com.tokopedia.core.network.apiservices.etc.DepartmentService;
 import com.tokopedia.core.network.apiservices.product.ProductService;
-import com.tokopedia.core.network.apiservices.shop.MyShopNoteService;
 import com.tokopedia.core.network.apiservices.shop.ShopService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
-import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
-import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.myproduct.model.EditPriceParam;
 import com.tokopedia.seller.selling.network.apiservices.ProductActService;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Response;
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tkpd.library.utils.CommonUtils.checkErrorMessageEmpty;
 import static com.tkpd.library.utils.CommonUtils.checkNotNull;
 
 /**

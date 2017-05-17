@@ -5,7 +5,6 @@ import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
-import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.mapper.MyEtalaseDomainToView;
 
 import rx.Subscriber;

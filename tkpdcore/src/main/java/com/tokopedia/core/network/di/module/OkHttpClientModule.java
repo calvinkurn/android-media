@@ -5,6 +5,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
+import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
@@ -17,6 +18,7 @@ import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthIntercepto
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
@@ -147,6 +149,25 @@ public class OkHttpClientModule {
                                                   DebugInterceptor debugInterceptor) {
 
         return OkHttpFactory.create().buildDaggerClientNoAuthNoFingerPrint(tkpdBaseInterceptor,
+                okHttpRetryPolicy,
+                chuckInterceptor,
+                debugInterceptor);
+    }
+
+    @ApplicationScope
+    @Provides
+    public TkpdBearerWithAuthTypeJsonUtInterceptor provideTkpdBearerWithAuthTypeJsonUtInterceptor(){
+        return new TkpdBearerWithAuthTypeJsonUtInterceptor();
+    }
+
+    @BearerAuthTypeJsonUt
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientWithAuthTypeJsonUt(TkpdBearerWithAuthTypeJsonUtInterceptor tkpdBearerWithAuthTypeJsonUtInterceptor,
+                                                              OkHttpRetryPolicy okHttpRetryPolicy,
+                                                              ChuckInterceptor chuckInterceptor,
+                                                              DebugInterceptor debugInterceptor) {
+        return OkHttpFactory.create().buildDaggerClientBearerWithClientDefaultAuth(tkpdBearerWithAuthTypeJsonUtInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor);

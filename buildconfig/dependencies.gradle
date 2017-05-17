@@ -84,8 +84,10 @@ ext {
     ]
 
     analyticsDependencies = [
-            localytics: "com.localytics.android:library:4.2.1",
-            appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar"
+            localytics : "com.localytics.android:library:4.2.1",
+            appsflyer : "com.appsflyer:af-android-sdk:4.6.1@aar",
+            moengage : "com.moengage:moe-android-sdk:7.7.00",
+            moengageFCM : "com.moengage:moe-push-firebase:1.1.01"
     ]
 
     deeplinkDispatchDependencies = [
@@ -151,7 +153,8 @@ ext {
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9"
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
+            showcase : "com.tokopedia.tkpdlib:showcase-stepper:0.5.10"
     ]
 
 }

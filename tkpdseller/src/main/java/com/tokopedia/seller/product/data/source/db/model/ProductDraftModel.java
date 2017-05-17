@@ -87,6 +87,8 @@ public class ProductDraftModel {
     @SerializedName("product_status")
     private int productStatus;
     private String productId;
+    private int productChangeWholesale;
+    private int productChangeCatalog;
 
     @SerializedName("product_name_editable")
     private int productNameEditable;
@@ -306,5 +308,21 @@ public class ProductDraftModel {
 
     public String getProductEtalaseName() {
         return productEtalaseName;
+    }
+
+    public void setProductChangeWholesale(int productChangeWholesale) {
+        this.productChangeWholesale = productChangeWholesale;
+    }
+
+    public void setProductChangeCatalog(int productChangeCatalog) {
+        this.productChangeCatalog = productChangeCatalog;
+    }
+
+    public int getProductChangeWholesale() {
+        return productChangeWholesale;
+    }
+
+    public int getProductChangeCatalog() {
+        return productChangeCatalog;
     }
 }

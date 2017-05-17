@@ -6,8 +6,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.domain.CategoryRepository;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 import rx.functions.Func1;
 

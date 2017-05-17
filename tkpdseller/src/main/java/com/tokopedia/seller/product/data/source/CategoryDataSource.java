@@ -2,13 +2,10 @@ package com.tokopedia.seller.product.data.source;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.product.data.mapper.CategoryDataToDomainMapper;
 import com.tokopedia.seller.product.data.mapper.CategoryServiceToDbMapper;
 import com.tokopedia.seller.product.data.source.cloud.CategoryCloud;
 import com.tokopedia.seller.product.data.source.db.CategoryDataManager;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
-import com.tokopedia.seller.product.domain.model.CategoryDomainModel;
 
 import java.util.List;
 

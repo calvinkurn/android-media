@@ -37,22 +37,22 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.model.SellingStatusTxModel;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
 
 import org.parceler.Parcels;
@@ -296,7 +296,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), rootView, onRefreshListener());
-        setRefreshPullEnable(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_transaction, null);

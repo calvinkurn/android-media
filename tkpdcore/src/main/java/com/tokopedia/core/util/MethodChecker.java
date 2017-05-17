@@ -1,13 +1,11 @@
 package com.tokopedia.core.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
 import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -122,17 +120,11 @@ public class MethodChecker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
            return android.provider.Settings.Global.getInt(
                     MainApplication.getAppContext().getContentResolver(),
-                    android.provider.Settings.Global.AUTO_TIME, 0) == 0 &&
-                    android.provider.Settings.Global.getInt(
-                            MainApplication.getAppContext().getContentResolver(),
-                            Settings.Global.AUTO_TIME_ZONE, 0) == 0;
+                    android.provider.Settings.Global.AUTO_TIME, 0) == 0;
         } else {
             return android.provider.Settings.System.getInt(
                     MainApplication.getAppContext().getContentResolver(),
-                    android.provider.Settings.System.AUTO_TIME, 0) == 0 &&
-                    android.provider.Settings.System.getInt(
-                            MainApplication.getAppContext().getContentResolver(),
-                            Settings.System.AUTO_TIME_ZONE, 0) == 0;
+                    android.provider.Settings.System.AUTO_TIME, 0) == 0;
         }
     }
 }

@@ -103,7 +103,6 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
         fragmentListener.setNoResultView(false);
         fragmentListener.setLoadingView(true);
         fragmentListener.setFilterView(false);
-        fragmentListener.setRefreshEnable(false);
     }
 
     @Override
@@ -138,7 +137,6 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
     @Override
     public void setOnRequestSuccess() {
         fragmentListener.setFilterView(true);
-        fragmentListener.setRefreshEnable(true);
     }
 
     @Override
@@ -199,7 +197,6 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
     public void setOnStartActionSetDefaultAddress(String addressID) {
         this.setAllowConnection(false);
         fragmentListener.setFilterView(false);
-        fragmentListener.setRefreshEnable(false);
         fragmentListener.setRefreshView(true);
         activityListener.startServiceSetDefaultAddress(addressID);
     }
@@ -221,7 +218,6 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
     public void setOnStartActionDeleteAddress(String addressId) {
         this.setAllowConnection(false);
         fragmentListener.setFilterView(false);
-        fragmentListener.setRefreshEnable(false);
         fragmentListener.setRefreshView(true);
         activityListener.startServiceDeleteAddress(addressId);
     }

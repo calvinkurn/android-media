@@ -3,9 +3,6 @@ package com.tokopedia.seller.product.view.holder;
 import android.os.Bundle;
 import android.util.Pair;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by nathan on 4/21/17.
  */
