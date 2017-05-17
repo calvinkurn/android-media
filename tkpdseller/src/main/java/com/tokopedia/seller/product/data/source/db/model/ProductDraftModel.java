@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 
 import java.util.List;
