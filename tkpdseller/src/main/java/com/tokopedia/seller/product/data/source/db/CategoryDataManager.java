@@ -5,11 +5,9 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.seller.database.TkpdSellerDatabase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase;
 import com.tokopedia.seller.product.data.source.db.model.CategoryDataBase_Table;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 
 import java.util.List;
 

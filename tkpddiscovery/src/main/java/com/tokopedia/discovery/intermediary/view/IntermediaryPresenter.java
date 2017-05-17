@@ -3,7 +3,6 @@ package com.tokopedia.discovery.intermediary.view;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
@@ -52,8 +51,11 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 getView().renderTopAds();
                 getView().renderCategoryChildren(domainModel.getChildCategoryModelList());
                 getView().renderCuratedProducts(domainModel.getCuratedSectionModelList());
-                getView().renderHotList(domainModel.getHotListModelList());
+                if (domainModel.getHotListModelList().size()>0) {
+                    getView().renderHotList(domainModel.getHotListModelList());
+                }
                 getView().renderHeader(domainModel.getHeaderModel());
+                getView().updateDepartementId(domainModel.getDepartementId());
                 getView().backToTop();
             } else {
                 getView().skipIntermediaryPage();

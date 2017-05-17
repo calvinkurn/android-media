@@ -10,6 +10,7 @@ import java.util.List;
 public class IntermediaryCategoryDomainModel {
 
     boolean isIntermediary = false;
+    String departementId = "0";
     HeaderModel headerModel;
     List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();
     List<CuratedSectionModel> curatedSectionModelList = new ArrayList<>();
@@ -53,5 +54,13 @@ public class IntermediaryCategoryDomainModel {
 
     public void setIntermediary(boolean intermediary) {
         isIntermediary = intermediary;
+    }
+
+    public String getDepartementId() {
+        return departementId;
+    }
+
+    public void setDepartementId(String departementId) {
+        this.departementId = departementId;
     }
 }

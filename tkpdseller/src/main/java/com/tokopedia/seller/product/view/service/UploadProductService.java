@@ -13,7 +13,6 @@ import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
-import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;

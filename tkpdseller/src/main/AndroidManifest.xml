@@ -182,6 +182,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
+            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
+            android:label="@string/title_activity_statistic"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
+            android:label="@string/gm_home_title"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.activity.GmProductActivity"
+            android:label="@string/gmsubscribe_current_product_selector"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
+            android:label="@string/gmsubscribe_checkout_title"
+            android:screenOrientation="portrait"/>
             android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"

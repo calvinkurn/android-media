@@ -21,6 +21,10 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.ToolTipUtils;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 import com.tokopedia.inbox.inboxmessage.adapter.InboxMessageDetailAdapter;
 import com.tokopedia.inbox.inboxmessage.listener.InboxMessageDetailFragmentView;
@@ -29,10 +33,6 @@ import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDet
 import com.tokopedia.inbox.inboxmessage.model.inboxmessagedetail.InboxMessageDetailItem;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenter;
 import com.tokopedia.inbox.inboxmessage.presenter.InboxMessageDetailFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.ToolTipUtils;
 
 import butterknife.BindView;
 
@@ -352,7 +352,6 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
         replyEditText.setEnabled(isEnabled);
         attachmentButton.setEnabled(isEnabled);
         sendButton.setEnabled(isEnabled);
-        refreshHandler.setPullEnabled(isEnabled);
         mainList.setEnabled(isEnabled);
         if (isEnabled) {
             header.setVisibility(View.VISIBLE);

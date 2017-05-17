@@ -303,7 +303,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 } else {
                     verifyButton.setEnabled(false);
                     MethodChecker.setBackground(verifyButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
             }
@@ -336,11 +336,11 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     @Override
     public void onSuccessRequestOtp(String status) {
-        setViewEnabled(true);
         finishProgressDialog();
         SnackbarManager.make(getActivity(), status, Snackbar.LENGTH_LONG).show();
         inputOtpView.setVisibility(View.VISIBLE);
         changePhoneNumberButton.setVisibility(View.GONE);
+        setViewEnabled(true);
         startTimer();
     }
 
@@ -415,7 +415,8 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     public void setViewEnabled(boolean isEnabled) {
         requestOtpButton.setEnabled(isEnabled);
         requestOtpCallButton.setEnabled(isEnabled);
-        verifyButton.setEnabled(isEnabled);
+        if (inputOtpView.getVisibility() == View.VISIBLE)
+            verifyButton.setEnabled(isEnabled);
         skipButton.setEnabled(isEnabled);
     }
 

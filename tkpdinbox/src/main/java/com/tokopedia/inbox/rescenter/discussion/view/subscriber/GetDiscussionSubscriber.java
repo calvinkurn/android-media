@@ -5,8 +5,8 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.Attachment;
-import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionItemData;
+import com.tokopedia.inbox.rescenter.discussion.domain.model.getdiscussion.DiscussionModel;
 import com.tokopedia.inbox.rescenter.discussion.view.listener.ResCenterDiscussionView;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.DiscussionItemViewModel;
@@ -111,7 +111,7 @@ public class GetDiscussionSubscriber extends Subscriber<DiscussionModel> {
             AttachmentViewModel attachment = new AttachmentViewModel();
             attachment.setUrl(item.getUrl());
             attachment.setImgThumb(item.getImageThumb());
-            attachment.setImgLarge(item.getImageThumb());
+            attachment.setImgLarge(item.getUrl());
             list.add(attachment);
         }
         return list;
