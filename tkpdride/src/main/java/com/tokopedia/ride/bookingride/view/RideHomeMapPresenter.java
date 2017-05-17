@@ -360,7 +360,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         if (!getView().isAlreadySelectDestination()) {
             setSourceAsCurrentLocation();
         } else {
-            getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            if (mCurrentLocation != null) {
+                getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            }
         }
     }
 
