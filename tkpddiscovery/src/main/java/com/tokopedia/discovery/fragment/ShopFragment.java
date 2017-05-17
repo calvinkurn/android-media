@@ -1,10 +1,14 @@
 package com.tokopedia.discovery.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -47,7 +52,31 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     List<RecyclerViewItem> browseShopModelList = new ArrayList<>();
     private BrowseShopAdapter browseShopAdapter;
     private GridLayoutManager gridLayoutManager;
+    private LinearLayoutManager linearLayoutManager;
     private static final String TAG = ShopFragment.class.getSimpleName();
+    private BrowseProductRouter.GridType gridType;
+
+    private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
+            changeLayoutType(gridType);
+            int lastItemPosition = getLastItemPosition();
+            browseShopAdapter.notifyItemChanged(browseShopAdapter.getItemCount());
+            list_shop.scrollToPosition(lastItemPosition);
+        }
+    };
+
+    private int getLastItemPosition() {
+        switch (gridType) {
+            case GRID_1:
+                return linearLayoutManager.findFirstVisibleItemPosition();
+            case GRID_2:
+            case GRID_3:
+            default:
+                return gridLayoutManager.findFirstVisibleItemPosition();
+        }
+    }
 
     public static ShopFragment newInstance(int index) {
         Bundle args = new Bundle();
@@ -143,6 +172,28 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 }
             }
         });
+        changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
+    }
+
+    private void changeLayoutType(BrowseProductRouter.GridType gridType) {
+        this.gridType = gridType;
+        switch (gridType) {
+            case GRID_1:
+                linearLayoutManager = new LinearLayoutManager(getActivity());
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(linearLayoutManager);
+                break;
+            case GRID_2:
+                gridLayoutManager.setSpanCount(2);
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(gridLayoutManager);
+                break;
+            case GRID_3:
+                gridLayoutManager.setSpanCount(1);
+                browseShopAdapter.setViewType(gridType);
+                list_shop.setLayoutManager(gridLayoutManager);
+                break;
+        }
     }
 
     @Override
@@ -152,6 +203,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         }
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
         browseShopAdapter.setIsLoading(true);
+        linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(),
                 ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation));
 
@@ -260,5 +312,17 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
         ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(changeGridReceiver, new IntentFilter(BrowseProductActivity.CHANGE_GRID_ACTION_INTENT));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(changeGridReceiver);
     }
 }

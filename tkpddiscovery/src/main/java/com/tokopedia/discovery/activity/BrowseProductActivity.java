@@ -411,6 +411,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
     private List<AHBottomNavigationItem> getBottomItemsShop() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
         items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
+        items.add(new AHBottomNavigationItem(getString(gridTitleRes), gridIcon));
         return items;
     }
 

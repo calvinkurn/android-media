@@ -286,44 +286,14 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 }
                 break;
             case 1:
-                openFilterPageIfNeeded(filterAttribute, source, activeTab);
+                if (isShopFragment) {
+                    switchGridType();
+                } else {
+                    openFilterPageIfNeeded(filterAttribute, source, activeTab);
+                }
                 break;
             case 2:
-                int gridIcon;
-                int gridTitleResId;
-                switch (gridType) {
-                    case GRID_1:
-                        gridType = GRID_2;
-                        gridIcon = R.drawable.ic_grid_default;
-                        gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_DEFAULT);
-                        break;
-                    case GRID_2:
-                        gridType = GRID_3;
-                        gridIcon = R.drawable.ic_grid_box;
-                        gridTitleResId = R.string.grid;
-                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_BOX);
-                        break;
-                    case GRID_3:
-                        gridType = GRID_1;
-                        gridIcon = R.drawable.ic_list;
-                        gridTitleResId = R.string.list;
-                        UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_LIST);
-                        break;
-                    default:
-                        gridIcon = R.drawable.ic_grid_default;
-                        gridTitleResId = R.string.grid;
-                }
-
-                isCustomGridType = true;
-
-                if (isFromCategory()) {
-                    saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
-                }
-
-                browseView.sendChangeGridBroadcast(gridType);
-                browseView.changeBottomBarGridIcon(gridIcon, gridTitleResId);
-                break;
+                switchGridType();
             case 3:
                 String shareUrl = browseView.getShareUrl();
                 if (StringUtils.isNotBlank(shareUrl)) {
@@ -343,6 +313,43 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 break;
         }
         return true;
+    }
+
+    private void switchGridType() {
+        int gridIcon;
+        int gridTitleResId;
+        switch (gridType) {
+            case GRID_1:
+                gridType = GRID_2;
+                gridIcon = R.drawable.ic_grid_default;
+                gridTitleResId = R.string.grid;
+                UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_DEFAULT);
+                break;
+            case GRID_2:
+                gridType = GRID_3;
+                gridIcon = R.drawable.ic_grid_box;
+                gridTitleResId = R.string.grid;
+                UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_GRID_BOX);
+                break;
+            case GRID_3:
+                gridType = GRID_1;
+                gridIcon = R.drawable.ic_list;
+                gridTitleResId = R.string.list;
+                UnifyTracking.eventDisplayCategory(browseModel.getParentDepartement(),LAYOUT_LIST);
+                break;
+            default:
+                gridIcon = R.drawable.ic_grid_default;
+                gridTitleResId = R.string.grid;
+        }
+
+        isCustomGridType = true;
+
+        if (isFromCategory()) {
+            saveLastGridConfig(browseModel.getParentDepartement(), gridType.toString());
+        }
+
+        browseView.sendChangeGridBroadcast(gridType);
+        browseView.changeBottomBarGridIcon(gridIcon, gridTitleResId);
     }
 
     private void fetchDynamicAttribute(final int activeTab,

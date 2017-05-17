@@ -24,6 +24,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
@@ -41,6 +42,7 @@ import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_T
 public class BrowseShopAdapter extends ProductAdapter {
 
 
+    private BrowseProductRouter.GridType gridType;
 
     public BrowseShopAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
@@ -67,9 +69,25 @@ public class BrowseShopAdapter extends ProductAdapter {
         }
     }
 
-    public static ShopViewHolder createViewShop(ViewGroup parent) {
-        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false);
+    public ShopViewHolder createViewShop(ViewGroup parent) {
+        int layoutResId;
+        switch (gridType) {
+            case GRID_1:
+                layoutResId = R.layout.layout_item_shop_list;
+                break;
+            case GRID_2:
+            case GRID_3:
+            default:
+                layoutResId = R.layout.layout_item_shop;
+                break;
+        }
+
+        View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
         return new ShopViewHolder(itemLayoutView);
+    }
+
+    public void setViewType(BrowseProductRouter.GridType gridType) {
+        this.gridType = gridType;
     }
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder{
