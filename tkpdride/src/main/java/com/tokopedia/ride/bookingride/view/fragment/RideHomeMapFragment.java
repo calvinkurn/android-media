@@ -455,8 +455,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         source = new PlacePassViewModel();
         source.setAddress(sourceAddress);
         source.setTitle(sourceAddress);
-        source.setLatitude(latitude);
-        source.setLongitude(longitude);
+        source.setAndFormatLatitude(latitude);
+        source.setAndFormatLongitude(longitude);
         proccessToRenderRideProduct();
         setSourceLocationText(sourceAddress);
     }

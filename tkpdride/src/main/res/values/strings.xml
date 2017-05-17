@@ -63,8 +63,8 @@
     <string name="contact_driver">Contact Driver</string>
     <string name="uber_moto_display_name">uberMotor</string>
     <string name="apply_promo_promo_code">Promo Code :</string>
-    <string name="apply_promo_read_promo_details">Read promo details</string>
-    <string name="apply_promo_code_here">here</string>
+    <string name="apply_promo_read_promo_details">Read offer details</string>
+    <string name="apply_promo_code_here">Here</string>
     <string name="minute">" minute"</string>
     <string name="minutes">" minutes"</string>
     <string name="uber_signup_tnc"><![CDATA[(T&C)]]></string>
@@ -86,4 +86,8 @@
     <string name="title_fetching_ride">Fetching Ride Details</string>
     <string name="ontrip_cancel_yes">Yes</string>
     <string name="ontrip_cancel_no">No</string>
+    <string name="confirm_remove_promo">Are you sure to remove promo code ?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+    <string name="choose_below_offer">Choose from Offers below</string>
 </resources>

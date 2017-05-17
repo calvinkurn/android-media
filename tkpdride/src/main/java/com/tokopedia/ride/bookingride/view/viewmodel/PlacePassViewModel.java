@@ -3,6 +3,8 @@ package com.tokopedia.ride.bookingride.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by alvarisi on 3/15/17.
  */
@@ -46,16 +48,16 @@ public class PlacePassViewModel implements Parcelable {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setAndFormatLatitude(double latitude) {
+        this.latitude = Double.parseDouble(new DecimalFormat("#.######").format(latitude));
     }
 
     public double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    public void setAndFormatLongitude(double longitude) {
+        this.longitude = Double.parseDouble(new DecimalFormat("#.######").format(longitude));
     }
 
     public TYPE getType() {

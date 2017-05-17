@@ -6,7 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.ride.R;
@@ -92,14 +92,14 @@ public class OnGoingPromoAdapter extends RecyclerView.Adapter<OnGoingPromoAdapte
         TextView titleTextView;
         TextView promoTextView;
         TextView linkTextView;
-        LinearLayout containerLayout;
+        RelativeLayout containerLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.tv_title);
             promoTextView = (TextView) itemView.findViewById(R.id.tv_promo_code);
             linkTextView = (TextView) itemView.findViewById(R.id.tv_link);
-            containerLayout = (LinearLayout) itemView.findViewById(R.id.container);
+            containerLayout = (RelativeLayout) itemView.findViewById(R.id.container);
         }
     }
 }

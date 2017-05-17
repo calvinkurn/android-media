@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    android:background="@drawable/bg_square"
+    android:background="?android:selectableItemBackground"
     android:orientation="vertical"
-    android:id="@+id/container"
-    android:padding="10dp">
+    android:paddingTop="12dp">
+
+    <ImageView
+        android:id="@+id/promo_image"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/shape_bg_circle_grey"
+        android:padding="8dp"
+        android:src="@drawable/crux_cabs_promo_ad_ic" />
 
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        tools:text="PROMO DETAIL yang sangat panjang sekali yaaaa" />
+        android:layout_toRightOf="@id/promo_image"
+        android:textColor="@color/black"
+        tools:text="Loading.." />
 
     <LinearLayout
+        android:id="@+id/ll_promo_code_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_title"
         android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/promo_image"
         android:orientation="horizontal">
 
         <TextView
@@ -42,9 +55,12 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_offer_terms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/ll_promo_code_row"
         android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/promo_image"
         android:orientation="horizontal">
 
         <TextView
@@ -63,4 +79,13 @@
             android:textColor="@color/tkpd_main_green"
             android:textSize="12sp" />
     </LinearLayout>
-</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/layout_offer_terms"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/grey_300" />
+</RelativeLayout>

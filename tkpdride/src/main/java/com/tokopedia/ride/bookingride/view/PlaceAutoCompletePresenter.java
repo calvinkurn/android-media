@@ -478,8 +478,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             if (places.getStatus().isSuccess() && places.getCount() > 0) {
                                 final Place myPlace = places.get(0);
                                 PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                                placePassViewModel.setLatitude(myPlace.getLatLng().latitude);
-                                placePassViewModel.setLongitude(myPlace.getLatLng().longitude);
+                                placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
+                                placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
                                 placePassViewModel.setTitle((String) myPlace.getName());
                                 placePassViewModel.setPlaceId(myPlace.getId());
                                 placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
@@ -494,8 +494,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                     });
         } else {
             PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-            placePassViewModel.setLatitude(adress.getLatitude());
-            placePassViewModel.setLongitude(adress.getLongitude());
+            placePassViewModel.setAndFormatLatitude(adress.getLatitude());
+            placePassViewModel.setAndFormatLongitude(adress.getLongitude());
             placePassViewModel.setTitle(adress.getTitle());
             placePassViewModel.setPlaceId(adress.getAddressId());
             placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
@@ -540,8 +540,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                 public void onNext(String currentAddress) {
                     if (isViewAttached() && !isUnsubscribed()) {
                         PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-                        placePassViewModel.setLatitude(mCurrentLocation.getLatitude());
-                        placePassViewModel.setLongitude(mCurrentLocation.getLongitude());
+                        placePassViewModel.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                        placePassViewModel.setAndFormatLongitude(mCurrentLocation.getLongitude());
                         placePassViewModel.setTitle(currentAddress);
                         //placePassViewModel.setPlaceId(mCurrentLocation);
                         placePassViewModel.setType(PlacePassViewModel.TYPE.OTHER);
@@ -558,8 +558,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionHomeLocation() {
         PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-//        placePassViewModel.setLatitude(myPlace.getLatLng().latitude);
-//        placePassViewModel.setLongitude(myPlace.getLatLng().longitude);
+//        placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
+//        placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
         placePassViewModel.setTitle("Home");
 //        placePassViewModel.setPlaceId(myPlace.getId());
         placePassViewModel.setType(PlacePassViewModel.TYPE.HOME);
@@ -570,8 +570,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     @Override
     public void actionWorkLocation() {
         PlacePassViewModel placePassViewModel = new PlacePassViewModel();
-//        placePassViewModel.setLatitude(myPlace.getLatLng().latitude);
-//        placePassViewModel.setLongitude(myPlace.getLatLng().longitude);
+//        placePassViewModel.setAndFormatLatitude(myPlace.getLatLng().latitude);
+//        placePassViewModel.setAndFormatLongitude(myPlace.getLatLng().longitude);
         placePassViewModel.setTitle("Work");
 //        placePassViewModel.setPlaceId(myPlace.getId());
         placePassViewModel.setType(PlacePassViewModel.TYPE.WORK);

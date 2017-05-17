@@ -357,6 +357,10 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void enableApplyButton() {
+        if (submitPromoTextView == null) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             submitPromoTextView.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
         } else {
@@ -366,6 +370,10 @@ public class ApplyPromoFragment extends BaseFragment implements ApplyPromoContra
 
     @Override
     public void disableApplyButton() {
+        if (submitPromoTextView == null) {
+            return;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             submitPromoTextView.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
         } else {
