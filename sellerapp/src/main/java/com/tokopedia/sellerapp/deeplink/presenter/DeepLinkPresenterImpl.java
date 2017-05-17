@@ -32,6 +32,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
+    private static final int TOPADS = 12;
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -50,6 +51,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         int type = getDeepLinkType(uriData);
         CommonUtils.dumper("FCM wvlogin deeplink type " + type);
         switch (type) {
+            case TOPADS:
+                screenName = AppScreen.SCREEN_TOPADS;
+                break;
             case OTHER:
                 prepareOpenWebView(uriData);
                 screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -91,8 +95,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private int getDeepLinkType(Uri uriData) {
+        List<String> linkSegment = uriData.getPathSegments();
+
         try {
-            if (isExcludedHostUrl(uriData))
+            if (isTopAds(linkSegment))
+                return TOPADS;
+            else if (isExcludedHostUrl(uriData))
                 return OTHER;
             else if (isExcludedUrl(uriData))
                 return OTHER;
@@ -101,6 +109,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             e.printStackTrace();
             return OTHER;
         }
+    }
+
+    private boolean isTopAds(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
     }
 
     @Override
@@ -117,6 +129,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public boolean isLandingPageWebView(Uri uri) {
         int type = getDeepLinkType(uri);
         switch (type) {
+            case TOPADS :
+                return false;
             case OTHER:
                 return true;
             default:
