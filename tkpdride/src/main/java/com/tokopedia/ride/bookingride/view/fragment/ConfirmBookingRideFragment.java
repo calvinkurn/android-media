@@ -2,6 +2,8 @@ package com.tokopedia.ride.bookingride.view.fragment;
 
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -29,7 +31,6 @@ import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
-import com.tokopedia.ride.common.configuration.RideConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,8 @@ import butterknife.OnClick;
 public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmBookingContract.View {
     public static final int WALLET_WEB_VIEW_REQUEST_CODE = 1012;
     private static final int APPLY_PROMO_ACTIVITY_REQUEST_CODE = 1013;
+    private static final int REQUEST_CODE_REMOVE_PROMO = 104;
+
     public static String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     @BindView(R2.id.cabAppIcon)
     ImageView productIconImageView;
@@ -307,10 +310,15 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @OnClick(R2.id.iv_promo_desc_close)
     public void actionRemoveAppliedPromo() {
-        confirmBookingViewModel.setPromoCode("");
-        confirmBookingViewModel.setPromoDescription("");
-        mPromoResultLayout.setVisibility(View.GONE);
-        mApplyPromoLayout.setVisibility(View.VISIBLE);
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag("remove_product_fragment");
+        if (previousDialog != null) {
+            fragmentTransaction.remove(previousDialog);
+        }
+        fragmentTransaction.addToBackStack(null);
+        DialogFragment dialogFragment = RemovePromoDialogFragment.newInstance();
+        dialogFragment.setTargetFragment(this, REQUEST_CODE_REMOVE_PROMO);
+        dialogFragment.show(getFragmentManager().beginTransaction(), "remove_product_fragment");
     }
 
     @Override
@@ -373,6 +381,13 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
                     mApplyPromoLayout.setVisibility(View.GONE);
                     mPromoResultTextView.setText(confirmBookingViewModel.getPromoDescription());
                 }
+            }
+        } else if (requestCode == REQUEST_CODE_REMOVE_PROMO) {
+            if (resultCode == Activity.RESULT_OK) {
+                confirmBookingViewModel.setPromoCode("");
+                confirmBookingViewModel.setPromoDescription("");
+                mPromoResultLayout.setVisibility(View.GONE);
+                mApplyPromoLayout.setVisibility(View.VISIBLE);
             }
         }
     }
