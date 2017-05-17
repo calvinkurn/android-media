@@ -1,0 +1,53 @@
+package com.tokopedia.tkpd.feedplus.view.util;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+/**
+ * @author by nisie on 5/17/17.
+ */
+
+public class TimeConverter {
+    private static final long SECONDS_IN_MINUTE = 60;
+    private static final long MINUTES_IN_HOUR = 60 * 60;
+    private static final long HOUR_IN_DAY = 60 * 60 * 24;
+
+    public static String generateTime(String postTime) {
+        try {
+            SimpleDateFormat sdfHour = new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ", Locale.ENGLISH);
+            Date postDate = sdf.parse(postTime);
+            Date currentTime = new Date();
+
+            Calendar calPostDate = Calendar.getInstance();
+            calPostDate.setTime(postDate);
+
+            Calendar calCurrentTime = Calendar.getInstance();
+            calCurrentTime.setTime(currentTime);
+
+            if (getDifference(currentTime, postDate) < 60) {
+                return "Saat ini";
+            } else if (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < 60) {
+                return getDifference(currentTime, postDate) / SECONDS_IN_MINUTE + " Menit";
+            } else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24
+                    && calCurrentTime.get(Calendar.DAY_OF_MONTH) > calPostDate.get(Calendar.DAY_OF_MONTH))
+                return "Kemarin pukul " + sdfHour.format(postDate);
+            else if (getDifference(currentTime, postDate) / MINUTES_IN_HOUR < 24)
+                return getDifference(currentTime, postDate) / MINUTES_IN_HOUR + " Jam";
+            else
+                return "HAHAHAHA";
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+    }
+
+    private static long getDifference(Date currentTime, Date postDate) {
+        return (currentTime.getTime() - postDate.getTime()) / 1000;
+    }
+}

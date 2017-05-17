@@ -14,6 +14,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.feedplus.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedProductAdapter;
+import com.tokopedia.tkpd.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 import butterknife.BindView;
@@ -110,7 +111,7 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(productCardViewModel.getPostTime());
+        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
 
     }
 
