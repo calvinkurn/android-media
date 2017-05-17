@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/digital_padding_10"
+    android:paddingTop="@dimen/digital_padding_16"
     tools:background="@color/green_200">
 
     <LinearLayout
@@ -89,14 +89,22 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <Button
-            android:id="@+id/btn_contact_picker"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="25dp"
-            android:layout_gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
-            android:layout_weight="0.08" />
+            android:layout_weight="0.08">
+            <Button
+                android:id="@+id/btn_contact_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/img_thumb_bit_small"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_marginEnd="2dp"
+                android:layout_marginRight="2dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
