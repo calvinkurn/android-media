@@ -101,7 +101,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
-    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.21462d, 106.84513d);
+    private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
     private static final float DEFAUL_MAP_ZOOM = 16;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
 
