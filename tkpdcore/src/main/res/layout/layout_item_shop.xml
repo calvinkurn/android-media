@@ -76,17 +76,17 @@
         android:layout_marginTop="9dp">
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="41dp" />
+            android:layout_width="@dimen/shop_item_preview_width"
+            android:layout_height="@dimen/shop_item_preview_height" />
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="41dp"
+            android:layout_width="@dimen/shop_item_preview_width"
+            android:layout_height="@dimen/shop_item_preview_height"
             android:layout_marginLeft="12dp"/>
 
         <ImageView
-            android:layout_width="36dp"
-            android:layout_height="41dp"
+            android:layout_width="@dimen/shop_item_preview_width"
+            android:layout_height="@dimen/shop_item_preview_height"
             android:layout_marginLeft="12dp"/>
 
     </LinearLayout>
