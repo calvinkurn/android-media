@@ -199,6 +199,8 @@ public class RideProductDependencyInjection {
     }
 
 
+
+
     public static UberProductContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));

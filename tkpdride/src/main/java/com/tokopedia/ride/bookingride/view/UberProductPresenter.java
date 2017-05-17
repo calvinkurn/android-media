@@ -49,12 +49,12 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
     @Override
     public void initialize() {
-//        actionGetPromo();
+        actionGetPromo();
         getView().showProgress();
     }
 
     private void actionGetPromo() {
-        getPromoUseCase.execute(RequestParams.EMPTY, new Subscriber<List<Promo>>() {
+        getPromoUseCase.execute(getView().getPromoParams(), new Subscriber<List<Promo>>() {
             @Override
             public void onCompleted() {
 
@@ -62,12 +62,17 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
 
             @Override
             public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached())
                 getView().hideAdsBadges();
             }
 
             @Override
             public void onNext(List<Promo> promo) {
-                getView().showAdsBadges("");
+                if (isViewAttached()) {
+                    if (promo.size() > 0)
+                    getView().showAdsBadges(promo.get(0).getOffer());
+                }
             }
         });
     }

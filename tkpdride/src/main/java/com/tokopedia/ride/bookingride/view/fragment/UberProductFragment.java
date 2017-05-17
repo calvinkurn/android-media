@@ -16,10 +16,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.RideProductDependencyInjection;
+import com.tokopedia.ride.bookingride.domain.GetPromoUseCase;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductItemClickListener;
@@ -30,10 +34,13 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -304,5 +311,19 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @OnClick(R2.id.layout_cab_booking_header)
     public void actionProductListHeaderClicked(){
         mInteractionListener.actionProductListHeaderClick();
+    }
+
+    @Override
+    public RequestParams getPromoParams() {
+        String deviceId = GCMHandler.getRegistrationId(getActivity());
+        String userId = SessionHandler.getLoginID(getActivity());
+        String hash = md5(userId + "~" + deviceId);
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetPromoUseCase.PARAM_USER_ID, userId);
+        requestParams.putString(GetPromoUseCase.PARAM_DEVICE_ID, deviceId);
+        requestParams.putString(GetPromoUseCase.PARAM_HASH, hash);
+        requestParams.putString(GetPromoUseCase.PARAM_OS_TYPE, "1");
+        requestParams.putString(GetPromoUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+        return requestParams;
     }
 }
