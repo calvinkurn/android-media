@@ -51,8 +51,8 @@
         android:layout_marginTop="9dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textColor="@color/href_link"
-        android:textSize="@dimen/fontvs"
+        android:textColor="@color/black_70"
+        android:textSize="13sp"
         android:textStyle="bold" />
 
     <com.tokopedia.seller.home.view.ReputationView
@@ -66,6 +66,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:drawableLeft="@drawable/ic_place_black_24dp"
+        android:textSize="11sp"
+        android:textColor="@color/black_36"
         android:text="Jakarta"
         />
 

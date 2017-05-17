@@ -28,6 +28,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="@color/black_54"
                 android:text="Shop Name"
                 />
 
@@ -41,9 +43,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/ic_place_black_24dp"
+                android:textSize="11sp"
+                android:textColor="@color/black_36"
                 android:text="Jakarta"
                 />
-
 
         </LinearLayout>
 
