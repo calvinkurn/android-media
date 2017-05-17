@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+
 /**
  * @author sebastianuskh on 4/13/17.
  */
@@ -15,6 +17,8 @@ public class ImageProductInputViewModel {
     private String url;
 
     private int imageResolution;
+    @ImageStatusTypeDef
+    private int status;
 
     public String getImagePath() {
         return imagePath;
@@ -59,4 +63,12 @@ public class ImageProductInputViewModel {
         return imageResolution;
     }
 
+    public void setStatus(@ImageStatusTypeDef int status) {
+        this.status = status;
+    }
+
+    @ImageStatusTypeDef
+    public int getStatus() {
+        return status;
+    }
 }

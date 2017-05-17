@@ -14,16 +14,15 @@ import rx.functions.Func1;
  */
 
 public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel, Observable<AddProductDomainModel>> {
-    private final String productId;
     private final NotificationManager notificationManager;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
-
-    public ProceedUploadProduct(String productId, NotificationManager notificationManager, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository) {
-        this.productId = productId;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
+    public ProceedUploadProduct(NotificationManager notificationManager, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.notificationManager = notificationManager;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
@@ -39,11 +38,13 @@ public class ProceedUploadProduct implements Func1<UploadProductInputDomainModel
                     .doOnNext(notificationManager.getUpdateNotification());
         } else if (domainModel.getProductStatus() == ProductStatus.EDIT){
             return Observable.just(domainModel)
-                    .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository))
+                    .flatMap(new UploadImageEditProduct(uploadProductRepository, imageProductUploadRepository, draftUpdate))
                     .doOnNext(notificationManager.getUpdateNotification())
                     .map(new PrepareEditProduct(domainModel))
                     .flatMap(new EditProduct(uploadProductRepository))
-                    .flatMap(new DeleteImageEditProduct(domainModel, uploadProductRepository))
+                    .doOnNext(notificationManager.getUpdateNotification())
+                    .flatMap(new DeleteImageEditProduct(domainModel, uploadProductRepository, draftUpdate))
+                    .doOnNext(notificationManager.getUpdateNotification())
                     .map(new ToUploadProductModel(domainModel));
         } else {
             throw new RuntimeException("No product status available");

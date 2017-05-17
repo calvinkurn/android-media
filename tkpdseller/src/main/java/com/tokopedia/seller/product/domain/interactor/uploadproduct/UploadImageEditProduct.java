@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
@@ -11,6 +12,7 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -23,10 +25,12 @@ public class UploadImageEditProduct implements Func1<UploadProductInputDomainMod
     private int serverId;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
-    public UploadImageEditProduct(UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository) {
+    public UploadImageEditProduct(UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
@@ -36,13 +40,14 @@ public class UploadImageEditProduct implements Func1<UploadProductInputDomainMod
         productId = domainModel.getProductId();
         return Observable.from(domainModel.getProductPhotos().getPhotos())
                 .flatMap(new EditProductSigleImage())
+                .doOnNext(new UpdateDraft(domainModel, draftUpdate))
                 .toList();
     }
 
     private class EditProductSigleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
         @Override
         public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel domainModel) {
-            if (StringUtils.isNotBlank(domainModel.getImagePath())){
+            if (domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_UPLOADED){
                 return Observable
                         .just(domainModel)
                         .flatMap(new UploadNewImage());
@@ -81,9 +86,25 @@ public class UploadImageEditProduct implements Func1<UploadProductInputDomainMod
                 @Override
                 public ImageProductInputDomainModel call(EditImageProductDomainModel domainModel) {
                     this.domainModel.setPicId(domainModel.getPicId());
+                    this.domainModel.setStatus(ImageStatusTypeDef.ALREADY_UPLOADED);
                     return this.domainModel;
                 }
             }
+        }
+    }
+
+    private static class UpdateDraft implements Action1<ImageProductInputDomainModel> {
+        private final UploadProductInputDomainModel domainModel;
+        private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
+
+        public UpdateDraft(UploadProductInputDomainModel domainModel, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
+            this.domainModel = domainModel;
+            this.draftUpdate = draftUpdate;
+        }
+
+        @Override
+        public void call(ImageProductInputDomainModel imageProductInputDomainModel) {
+            draftUpdate.updateDraft(domainModel);
         }
     }
 }
