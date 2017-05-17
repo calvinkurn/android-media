@@ -77,7 +77,6 @@
             android:layout_marginTop="@dimen/margin_small"
             app:cardCornerRadius="0dip"
             app:cardElevation="0dip"
-            app:contentPadding="@dimen/padding_vs"
             android:visibility="gone">
 
             <RelativeLayout
@@ -91,7 +90,9 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="@dimen/margin_vvvs">
+                    android:layout_marginLeft="@dimen/padding_vs"
+                    android:layout_marginStart="@dimen/padding_vs"
+                    android:layout_marginTop="@dimen/padding_vs">
 
                     <TextView
                         android:id="@id/tv_title"

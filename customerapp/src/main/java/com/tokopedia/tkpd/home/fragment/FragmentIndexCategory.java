@@ -865,8 +865,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        int widthOfHomeMenuView = (width / 5);
-        return widthOfHomeMenuView;
+        return width / 5;
     }
 
     @Override
