@@ -4,6 +4,7 @@ import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.constant.ProductNetworkConstant;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
+import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 
 import java.util.List;
@@ -16,29 +17,22 @@ import rx.functions.Func1;
  * @author sebastianuskh on 5/15/17.
  */
 
-class DeleteImageEditProduct implements Func1<Boolean, Observable<Boolean>> {
-    private final UploadProductInputDomainModel domainModel;
+class DeleteImageEditProduct implements Func1<UploadProductInputDomainModel, Observable<UploadProductInputDomainModel>> {
     private final UploadProductRepository uploadProductRepository;
     private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
-    public DeleteImageEditProduct(UploadProductInputDomainModel domainModel, UploadProductRepository uploadProductRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
-        this.domainModel = domainModel;
+    public DeleteImageEditProduct(UploadProductRepository uploadProductRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.uploadProductRepository = uploadProductRepository;
         this.draftUpdate = draftUpdate;
     }
 
     @Override
-    public Observable<Boolean> call(Boolean aBoolean) {
+    public Observable<UploadProductInputDomainModel> call(UploadProductInputDomainModel domainModel) {
         return Observable.from(domainModel.getProductPhotos().getPhotos())
                 .flatMap(new DeleteProductSingleImage(uploadProductRepository, domainModel.getProductId()))
                 .doOnNext(new UpdateDraft(domainModel, draftUpdate))
                 .toList()
-                .map(new Func1<List<ImageProductInputDomainModel>, Boolean>() {
-                    @Override
-                    public Boolean call(List<ImageProductInputDomainModel> objects) {
-                        return true;
-                    }
-                });
+                .map(new InsertToModel(domainModel));
     }
 
     private static class DeleteProductSingleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
@@ -105,6 +99,21 @@ class DeleteImageEditProduct implements Func1<Boolean, Observable<Boolean>> {
         @Override
         public void call(ImageProductInputDomainModel imageProductInputDomainModel) {
             draftUpdate.updateDraft(domainModel);
+        }
+    }
+
+    private class InsertToModel implements Func1<List<ImageProductInputDomainModel>, UploadProductInputDomainModel> {
+        private final UploadProductInputDomainModel domainModel;
+
+        public InsertToModel(UploadProductInputDomainModel domainModel) {
+            this.domainModel = domainModel;
+        }
+
+        @Override
+        public UploadProductInputDomainModel call(List<ImageProductInputDomainModel> imageProductInputDomainModels) {
+            ProductPhotoListDomainModel productPhotos = domainModel.getProductPhotos();
+            productPhotos.setPhotos(imageProductInputDomainModels);
+            return domainModel;
         }
     }
 }
