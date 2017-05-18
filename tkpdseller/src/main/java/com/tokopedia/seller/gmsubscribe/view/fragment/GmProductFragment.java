@@ -245,6 +245,11 @@ public abstract class GmProductFragment
         adapter.clearDatas();
     }
 
+    @Override
+    public void setVisibilitySelectButton(boolean isView) {
+        buttonSelectProduct.setVisibility(isView ? View.VISIBLE : View.GONE);
+    }
+
     protected abstract String getTitle();
 
     protected abstract void getPackage();
