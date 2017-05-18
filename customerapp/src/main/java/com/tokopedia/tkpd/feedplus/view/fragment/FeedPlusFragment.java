@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.feedplus.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 
@@ -22,6 +25,8 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.feedplus.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.feedplus.view.util.ShareBottomDialog;
+import com.tokopedia.tkpd.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
@@ -65,6 +70,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
+    private ShareBottomDialog shareBottomDialog;
+    private CallbackManager callbackManager;
 
     @Override
     protected String getScreenName() {
@@ -97,6 +104,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
     }
 
@@ -233,7 +242,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShareButtonClicked() {
+        if (shareBottomDialog == null) {
+            shareBottomDialog = new ShareBottomDialog(
+                    FeedPlusFragment.this,
+                    callbackManager);
+        }
 
+        shareBottomDialog.setShareModel(new ShareModel("https://www.tokopedia.com/",
+                "Tokopedia",
+                "",
+                ""));
+        shareBottomDialog.show();
     }
 
     @Override
@@ -267,4 +286,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 //            onCreate(new Bundle());
 //        }
 //    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
 }
