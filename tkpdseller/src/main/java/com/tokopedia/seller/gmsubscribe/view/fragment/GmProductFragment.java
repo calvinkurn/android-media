@@ -15,7 +15,6 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.di.GmProductDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
@@ -45,10 +44,8 @@ public abstract class GmProductFragment
     public static final String RETURN_TYPE = "RETURN_TYPE";
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
     private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
-    @BindView(R2.id.recyclerview_package_chooser)
     RecyclerView recyclerView;
 
-    @BindView(R2.id.button_select_product)
     Button buttonSelectProduct;
     private CompositeSubscription subscriber;
     private String stringButton;
@@ -70,7 +67,6 @@ public abstract class GmProductFragment
         return fragment;
     }
 
-    @OnClick(R2.id.button_select_product)
     void confirmSelection() {
         Log.d(TAG, "Selected data now is : " + currentSelectedProductId);
         if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
@@ -148,6 +144,14 @@ public abstract class GmProductFragment
 
     @Override
     protected void initView(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerview_package_chooser);
+        buttonSelectProduct = (Button) view.findViewById(R.id.button_select_product);
+        buttonSelectProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                confirmSelection();
+            }
+        });
         presenter.attachView(this);
         buttonSelectProduct.setText(stringButton);
         adapter = new GmProductAdapter(this);

@@ -10,11 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.view.viewmodel.GmProductViewModel;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by sebastianuskh on 11/23/16.
@@ -24,33 +20,32 @@ public class GmProductViewHolder extends RecyclerView.ViewHolder {
 
     private final Context mContext;
 
-    @BindView(R2.id.title_package)
     TextView titlePackage;
 
-    @BindView(R2.id.promo_package)
     TextView promoPackage;
 
-    @BindView(R2.id.description_package)
     TextView descriptionPackage;
 
-    @BindView(R2.id.description_free_days)
     TextView descriptionFreeDays;
 
-    @BindView(R2.id.price_package)
     TextView pricePackage;
 
-    @BindView(R2.id.last_price_package)
     TextView lastPricePakcage;
 
-    @BindView(R2.id.icon_check)
     ImageView iconCheck;
 
-    @BindView(R2.id.layout_view)
     RelativeLayout layoutView;
 
     public GmProductViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
+        titlePackage = (TextView) itemView.findViewById(R.id.title_package);
+        promoPackage = (TextView) itemView.findViewById(R.id.promo_package);
+        descriptionPackage = (TextView) itemView.findViewById(R.id.description_package);
+        descriptionFreeDays = (TextView) itemView.findViewById(R.id.description_free_days);
+        pricePackage = (TextView)itemView.findViewById(R.id.price_package);
+        lastPricePakcage = (TextView) itemView.findViewById(R.id.last_price_package);
+        iconCheck = (ImageView) itemView.findViewById(R.id.icon_check);
+        layoutView = (RelativeLayout) itemView.findViewById(R.id.layout_view);
         mContext = itemView.getContext();
     }
 
