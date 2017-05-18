@@ -9,5 +9,5 @@ import dagger.Component;
 @TopAdsKeywordScope
 @Component(modules = TopAdsModule.class, dependencies = AppComponent.class)
 public interface TopAdsKeywordComponent {
-    // void inject(TestActivity activity);
+
 }

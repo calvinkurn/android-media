@@ -48,7 +48,7 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity {
 
     private void retrieveFromIntent (){
         Intent intent = getIntent();
-        if (intent == null){
+        if (!intent.hasExtra(EXTRA_GROUP_NAME) ){
             // TODO remove this, just for test
             groupName = "Group Test";
             keywordName = "Broad Match";

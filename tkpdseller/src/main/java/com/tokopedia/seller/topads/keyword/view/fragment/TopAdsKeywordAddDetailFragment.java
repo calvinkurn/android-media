@@ -84,15 +84,20 @@ public class TopAdsKeywordAddDetailFragment extends Fragment {
         editTextKeyword = textInputKeyword.getEditText();
 
         textViewKeywordCurrentMax = (TextView) v.findViewById(R.id.text_keyword_current_and_max);
-        textViewKeywordCurrentMax.setText(getString(R.string.top_ads_total_keywords_current_and_max,
-                                                        getLocalKeyWordSize() +getServerKeyWordSize(),
-                                                        maxKeywordInGroup));
+        setCurrentMaxKeyword();
+
         textViewTotalKeyworGroup = (TextView) v.findViewById(R.id.text_keyword_group);
         textViewTotalKeyworGroup.setText(getString(R.string.top_ads_keywords_in_groups, getServerKeyWordSize()));
 
         buttonSave = v.findViewById(R.id.button_save);
         buttonSave.setEnabled(false);
         return v;
+    }
+
+    private void setCurrentMaxKeyword(){
+        textViewKeywordCurrentMax.setText(getString(R.string.top_ads_total_keywords_current_and_max,
+                getLocalKeyWordSize() +getServerKeyWordSize(),
+                maxKeywordInGroup));
     }
 
     private int getLocalKeyWordSize(){
