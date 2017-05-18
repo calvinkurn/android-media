@@ -203,7 +203,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.ProductDuplicateActivity"
-            android:label="@string/title_activity_duplicate_product"
+            android:label="@string/title_activity_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity

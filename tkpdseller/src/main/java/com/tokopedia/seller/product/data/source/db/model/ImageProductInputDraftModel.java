@@ -1,5 +1,7 @@
 package com.tokopedia.seller.product.data.source.db.model;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+
 /**
  * @author sebastianuskh on 4/13/17.
  */
@@ -10,6 +12,8 @@ public class ImageProductInputDraftModel {
     private String imagePath;
     private String picId;
     private String picObj;
+    @ImageStatusTypeDef
+    private int status;
 
     public String getUrl() {
         return url;
@@ -49,5 +53,14 @@ public class ImageProductInputDraftModel {
 
     public void setPicObj(String picObj) {
         this.picObj = picObj;
+    }
+
+    public void setStatus(@ImageStatusTypeDef int status) {
+        this.status = status;
+    }
+
+    @ImageStatusTypeDef
+    public int getStatus() {
+        return status;
     }
 }

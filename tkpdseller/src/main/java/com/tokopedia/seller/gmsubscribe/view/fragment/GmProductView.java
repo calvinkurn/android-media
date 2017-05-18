@@ -21,4 +21,6 @@ public interface GmProductView extends CustomerView {
     void dismissProgressDialog();
 
     void clearPackage();
+
+    void setVisibilitySelectButton(boolean isView);
 }

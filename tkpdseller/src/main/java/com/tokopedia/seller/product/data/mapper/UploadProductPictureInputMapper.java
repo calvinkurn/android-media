@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.data.mapper;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.data.source.cloud.model.AddProductPictureInputServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoListServiceModel;
 import com.tokopedia.seller.product.data.source.cloud.model.ProductPhotoServiceModel;
@@ -39,11 +40,15 @@ public class UploadProductPictureInputMapper {
     private static List<ProductPhotoServiceModel> mapPhotos(List<ImageProductInputDomainModel> photos) {
         List<ProductPhotoServiceModel> serviceModelList = new ArrayList<>();
         for (ImageProductInputDomainModel domainModel : photos){
-            ProductPhotoServiceModel serviceModel = new ProductPhotoServiceModel();
-            serviceModel.setUrl(domainModel.getUrl());
-            serviceModel.setPicureId(domainModel.getPicId());
-            serviceModel.setDescription(domainModel.getDescription());
-            serviceModelList.add(serviceModel);
+            if (domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_DELETED ||
+                    domainModel.getStatus() == ImageStatusTypeDef.ALREADY_DELETED ||
+                    domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_UPLOADED) {
+                ProductPhotoServiceModel serviceModel = new ProductPhotoServiceModel();
+                serviceModel.setUrl(domainModel.getUrl());
+                serviceModel.setPicureId(domainModel.getPicId());
+                serviceModel.setDescription(domainModel.getDescription());
+                serviceModelList.add(serviceModel);
+            }
         }
         return serviceModelList;
     }

@@ -2,6 +2,8 @@ package com.tokopedia.seller.product.view.model.upload;
 
 import android.text.TextUtils;
 
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
+
 /**
  * @author sebastianuskh on 4/13/17.
  */
@@ -11,8 +13,11 @@ public class ImageProductInputViewModel {
     private String imageDescription;
     private String picId;
     private String url;
+    private boolean canDelete = true;
 
     private int imageResolution;
+    @ImageStatusTypeDef
+    private int status;
 
     public String getImagePath() {
         return imagePath;
@@ -31,6 +36,14 @@ public class ImageProductInputViewModel {
             return "";
         }
         return imageDescription;
+    }
+
+    public boolean canDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(boolean canDelete) {
+        this.canDelete = canDelete;
     }
 
     public void setPicId(String picId) {
@@ -57,4 +70,12 @@ public class ImageProductInputViewModel {
         return imageResolution;
     }
 
+    public void setStatus(@ImageStatusTypeDef int status) {
+        this.status = status;
+    }
+
+    @ImageStatusTypeDef
+    public int getStatus() {
+        return status;
+    }
 }
