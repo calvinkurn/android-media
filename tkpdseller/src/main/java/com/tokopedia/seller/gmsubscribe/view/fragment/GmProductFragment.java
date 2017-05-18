@@ -16,7 +16,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.R2;
-import com.tokopedia.seller.gmsubscribe.di.GmProductDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
@@ -239,6 +238,11 @@ public abstract class GmProductFragment
     @Override
     public void clearPackage() {
         adapter.clearDatas();
+    }
+
+    @Override
+    public void setVisibilitySelectButton(boolean isView) {
+        buttonSelectProduct.setVisibility(isView ? View.VISIBLE : View.GONE);
     }
 
     protected abstract String getTitle();

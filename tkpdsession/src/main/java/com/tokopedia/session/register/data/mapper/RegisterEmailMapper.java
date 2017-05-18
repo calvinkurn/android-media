@@ -27,7 +27,9 @@ public class RegisterEmailMapper implements Func1<Response<TkpdResponse>, Regist
         if (response.isSuccessful()) {
             if (!response.body().isNullData()) {
                 RegisterEmailData data = response.body().convertDataObj(RegisterEmailData.class);
-                if (data.getIsSuccess() == 1 || data.getAction() != 0) {
+                if (data.getIsSuccess() == 0){
+                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                }else if (data.getIsSuccess() == 1 || data.getAction() != 0) {
                     model.setSuccess(true);
                     model.setRegisterEmailData(data);
                 } else if (response.body().getErrorMessages().size() > 0)

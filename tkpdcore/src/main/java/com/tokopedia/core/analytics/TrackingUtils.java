@@ -79,8 +79,6 @@ public class TrackingUtils extends TrackingConfig {
 
         AccountsParameter accountsParameter = bundle.getParcelable(AppEventTracking.ACCOUNTS_KEY);
 
-        CommonUtils.dumper("MoEngage called login events "+bundle+" data "+accountsParameter.getInfoModel().getBday());
-
         CustomerWrapper wrapper = new CustomerWrapper.Builder()
                 .setCustomerId(
                         bundle.getString(com.tokopedia.core.analytics.AppEventTracking.USER_ID_KEY,
@@ -94,13 +92,13 @@ public class TrackingUtils extends TrackingConfig {
                         bundle.getString(com.tokopedia.core.analytics.AppEventTracking.EMAIL_KEY,
                                 com.tokopedia.core.analytics.AppEventTracking.DEFAULT_CHANNEL)
                 )
-                .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel().getPhone()))
-                .setGoldMerchant(accountsParameter.getAccountsModel().getShopIsGold() == 1)
-                .setShopName(accountsParameter.getAccountsModel().getShopName())
-                .setShopId(String.valueOf(accountsParameter.getAccountsModel().getShopId()))
-                .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel().getShopName()))
-                .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel().getFullName()," "))
-                .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel().getBday(),"T")))
+                .setPhoneNumber(normalizePhoneNumber(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getPhone():""))
+                .setGoldMerchant(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopIsGold() == 1:false)
+                .setShopName(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():"")
+                .setShopId(String.valueOf(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopId():""))
+                .setSeller(!TextUtils.isEmpty(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getShopName():""))
+                .setFirstName(extractFirstSegment(accountsParameter.getAccountsModel()!=null?accountsParameter.getAccountsModel().getFullName():""," "))
+                .setDateOfBirth(DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,DateFormatUtils.FORMAT_DD_MM_YYYY,extractFirstSegment(accountsParameter.getInfoModel()!=null?accountsParameter.getInfoModel().getBday():"","T")))
                 .setMethod(label)
                 .build();
 

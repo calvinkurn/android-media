@@ -534,5 +534,6 @@
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
+    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
 
 </resources>
