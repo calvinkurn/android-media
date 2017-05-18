@@ -1,13 +1,15 @@
 package com.tokopedia.seller.topads.keyword.view.data.source.cloud.api;
 
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
+import com.tokopedia.seller.topads.keyword.view.data.model.KeywordDashBoard;
 
 import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -18,4 +20,8 @@ public interface KeywordApi {
 
     @POST("v2/promo/keyword?keyword_id=29543")
     Observable<Response<DataResponse<String>>> getPromo(@FieldMap Map<String, String> params);
+
+    @GET("/v1.1/dashboard/keyword")
+    Observable<Response<KeywordDashBoard>> getDashboardKeyword(@QueryMap Map<String, String> param);
+
 }

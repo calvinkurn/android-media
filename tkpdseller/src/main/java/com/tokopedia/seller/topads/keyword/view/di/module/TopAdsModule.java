@@ -1,8 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.di.module;
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.seller.topads.keyword.view.data.repository.TopAdsKeywordRepositoryImpl;
+import com.tokopedia.seller.topads.keyword.view.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.seller.topads.keyword.view.data.source.cloud.api.KeywordApi;
 import com.tokopedia.seller.topads.keyword.view.di.scope.TopAdsKeywordScope;
+import com.tokopedia.seller.topads.keyword.view.domain.TopAdsKeywordRepository;
+import com.tokopedia.seller.topads.keyword.view.domain.interactor.KeywordDashboardUseCase;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,6 +25,21 @@ public class TopAdsModule {
     @Provides
     KeywordApi provideKeywordApi(@TopAdsQualifier Retrofit retrofit){
         return retrofit.create(KeywordApi.class);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    TopAdsKeywordRepository provideTopAdsKeywordRepository
+            (KeywordDashboardDataSouce keywordDashboardDataSouce) {
+        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    TopAdsKeywordListPresenterImpl provideTopAdsKeywordListPresenter(
+            KeywordDashboardUseCase keywordDashboardUseCase
+    ) {
+        return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase);
     }
 
 }
