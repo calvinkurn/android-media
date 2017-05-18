@@ -27,35 +27,24 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private static final int TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE =
             R.layout.view_holder_item_operator_name_image;
-    private static final int TYPE_HOLDER_OPERATOR_NAME =
-            R.layout.view_holder_item_operator_name;
 
     private Fragment hostFragment;
     private List<Operator> operatorList;
     private DigitalChooserOperatorFragment.ActionListener actionListener;
-    private String operatorStyleView;
 
     public OperatorChooserAdapter(Fragment hostFragment,
                                   List<Operator> operatorList,
-                                  String operatorStyleView,
                                   DigitalChooserOperatorFragment
                                           .ActionListener operatorActionListener) {
         this.hostFragment = hostFragment;
         this.operatorList = operatorList;
-        this.operatorStyleView = operatorStyleView;
         actionListener = operatorActionListener;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE) {
-            return new ItemNameAndImageHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false));
-        } else if(viewType == TYPE_HOLDER_OPERATOR_NAME) {
-            return new ItemNameHolder(LayoutInflater.from(
-                    hostFragment.getActivity()).inflate(viewType, parent, false));
-        }
-        return null;
+        return new ItemNameAndImageHolder(LayoutInflater.from(
+                hostFragment.getActivity()).inflate(viewType, parent, false));
     }
 
     @Override
@@ -66,9 +55,6 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ItemNameAndImageHolder itemNameAndImageHolder = (ItemNameAndImageHolder) holder;
             ImageHandler.LoadImage(itemNameAndImageHolder.operatorImage, operator.getImage());
             itemNameAndImageHolder.operatorName.setText(operator.getName());
-        } else if(type == TYPE_HOLDER_OPERATOR_NAME) {
-            ItemNameHolder itemNameHolder = (ItemNameHolder) holder;
-            itemNameHolder.operatorTitle.setText(operator.getName());
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -87,17 +73,6 @@ public class OperatorChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public int getItemViewType(int position) {
         return TYPE_HOLDER_OPERATOR_NAME_AND_IMAGE;
-        //return TYPE_HOLDER_OPERATOR_NAME;
-    }
-
-    static class ItemNameHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.operator_title)
-        TextView operatorTitle;
-
-        ItemNameHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
     }
 
     static class ItemNameAndImageHolder extends RecyclerView.ViewHolder {

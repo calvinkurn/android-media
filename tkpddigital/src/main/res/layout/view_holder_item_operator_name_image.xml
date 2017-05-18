@@ -19,6 +19,7 @@
             android:id="@+id/operator_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/small_dp"
             android:textSize="@dimen/font_medium" />

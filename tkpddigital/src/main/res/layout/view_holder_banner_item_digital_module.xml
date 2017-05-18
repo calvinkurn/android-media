@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/tv_desc_banner"
-            style="@style/TextSubTitleSmall"
+            style="@style/TextSubTitleMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
@@ -36,15 +36,21 @@
                 style="@style/TextSubTitleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kode Voucher:" />
+                android:text="@string/title_voucher_code" />
 
             <TextView
                 android:id="@+id/tv_voucher_code"
-                style="@style/TextSubTitleSmall"
+                style="@style/TextSubTitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="@dimen/padding_vs"
                 android:paddingEnd="@dimen/padding_vs"
+                android:paddingLeft="@dimen/padding_vs"
                 android:paddingStart="@dimen/padding_vs"
+                android:layout_marginEnd="@dimen/padding_vvs"
+                android:layout_marginRight="@dimen/padding_vvs"
+                android:layout_marginStart="@dimen/padding_vvs"
+                android:layout_marginLeft="@dimen/padding_vvs"
                 android:textColor="@color/tkpd_main_green"
                 tools:text="ANGGAKEREN" />
 

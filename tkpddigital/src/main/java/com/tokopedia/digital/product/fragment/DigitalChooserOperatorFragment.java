@@ -113,7 +113,6 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     protected void initialVar() {
         operatorChooserAdapter = new OperatorChooserAdapter(this, operatorListData,
-                "1",
                 actionListener);
     }
 

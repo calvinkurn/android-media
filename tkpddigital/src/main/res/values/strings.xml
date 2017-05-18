@@ -40,4 +40,5 @@
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
 
     <string name="label_instant_payment_digital">Bayar Instan</string>
+    <string name="title_voucher_code">Kode Voucher: </string>
 </resources>

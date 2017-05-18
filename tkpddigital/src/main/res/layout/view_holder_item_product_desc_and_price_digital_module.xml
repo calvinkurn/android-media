@@ -3,14 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/padding_small"
-    android:orientation="vertical">
+    android:paddingTop="@dimen/padding_small"
+    android:orientation="vertical"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/title_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rp 1"
+        android:textColor="@color/black"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms" />
 
