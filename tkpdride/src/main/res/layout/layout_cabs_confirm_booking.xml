@@ -68,7 +68,7 @@
         android:background="#e3e3e3"
         android:visibility="visible" />
 
-    <include layout="@layout/crux_cabs_confirm_buttons_pool_layout" />
+    <include layout="@layout/cabs_confirm_buttons_layout" />
 
     <View
         android:layout_width="match_parent"
