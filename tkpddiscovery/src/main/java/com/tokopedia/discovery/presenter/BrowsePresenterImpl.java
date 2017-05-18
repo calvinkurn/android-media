@@ -294,6 +294,7 @@ public class BrowsePresenterImpl implements BrowsePresenter {
                 break;
             case 2:
                 switchGridType();
+                break;
             case 3:
                 String shareUrl = browseView.getShareUrl();
                 if (StringUtils.isNotBlank(shareUrl)) {
