@@ -13,6 +13,8 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 
@@ -52,6 +54,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         CommonUtils.dumper("FCM wvlogin deeplink type " + type);
         switch (type) {
             case TOPADS:
+                openTopAds(uriData);
                 screenName = AppScreen.SCREEN_TOPADS;
                 break;
             case OTHER:
@@ -227,6 +230,22 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
         }
         return false;
+    }
+
+    private void openTopAds(Uri uriData) {
+
+        String type = uriData.getQueryParameter("type");
+
+        if(type.equals("view")){
+            Fragment fragment = TopAdsDashboardProductFragment.createInstance();
+            viewListener.inflateFragment(fragment, "TOPADS_INFO");
+        } else if (type.equals("create")){
+            Fragment fragment = TopAdsGroupNewPromoFragment.createInstance();
+            viewListener.inflateFragment(fragment, "TOPADS_ADD");
+        }
+
+        CommonUtils.dumper("TOPADS segment "+uriData.getQuery());
+
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
