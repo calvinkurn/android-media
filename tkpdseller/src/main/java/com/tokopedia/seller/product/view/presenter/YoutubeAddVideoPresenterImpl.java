@@ -41,6 +41,10 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
         if (isViewAttached()) {
             getView().showLoading();
         }
+
+        if (videoIds == null || videoIds.size() <= 0)
+            return;
+
         List<RequestParams> requestParamses = new ArrayList<>();
         for (String videoId : videoIds) {
             requestParamses.add(generateParam(videoId));
