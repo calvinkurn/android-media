@@ -28,7 +28,7 @@ public class AddEtalaseDialog extends TextPickerDialog {
 
     @Override
     protected void onTextSubmited(String text) {
-        if(text.isEmpty()){
+        if(text.trim().isEmpty()){
             textInputLayout.setError(getString(R.string.etalase_picker_add_etalase_name_empty));
         } else {
             super.onTextSubmited(text);
