@@ -17,7 +17,7 @@ import com.tokopedia.core.util.RouterUtils;
 public class ProductDetailRouter {
     private final static String PRODUCT_DETAIL_INFO_ACTIVITY
             = "com.tokopedia.tkpdpdp.ProductInfoActivity";
-    private static final String PRODUCT_DETAIL_FRAGMENT
+    public static final String PRODUCT_DETAIL_FRAGMENT
             = "com.tokopedia.tkpdpdp.fragment.ProductDetailFragment";
     public static final String EXTRA_PRODUCT_PASS = "EXTRA_PRODUCT_PASS";
     public static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";

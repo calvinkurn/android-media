@@ -4,17 +4,20 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer.DrawerVariable;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
-import com.tokopedia.discovery.PdpRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -26,6 +29,10 @@ import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
+
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -49,6 +56,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public void gotToProductDetail(Context context) {
+        Intent intent = ProductInfoActivity.createInstance(context);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void goToProductDetail(Context context, String productUrl) {
         Intent intent = ProductInfoActivity.createInstance(context, productUrl);
         context.startActivity(intent);
@@ -59,6 +72,37 @@ public class ConsumerRouterApplication extends MainApplication implements
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         context.startActivity(intent);
     }
+
+    @Override
+    public void goToProductDetail(Context context, ShareData shareData) {
+        Intent intent = ProductInfoActivity.createInstance(context, shareData);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SHARE_DATA, shareData);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToAddProductDetail(Context context) {
+        Intent intent = ProductInfoActivity.createInstance(context);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ProductInfoActivity.IS_ADDING_PRODUCT, true);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public Fragment getProductDetailInstanceDeeplink(Context context,
+                                                     @NonNull ProductPass productPass) {
+        Fragment fragment = Fragment.instantiate(
+                context, ProductDetailRouter.PRODUCT_DETAIL_FRAGMENT);
+        Bundle args = new Bundle();
+        args.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
+        args.putBoolean(ARG_FROM_DEEPLINK, true);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public Fragment getRechargeCategoryFragment() {

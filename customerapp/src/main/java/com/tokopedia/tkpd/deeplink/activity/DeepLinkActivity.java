@@ -26,7 +26,7 @@ import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.service.HadesService;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
@@ -126,9 +126,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
-        Intent intent
-                = ProductDetailRouter.createInstanceProductDetailInfoActivity(this, productPass);
-        startActivity(intent);
+        if (getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getApplication()).goToProductDetail(this, productPass);
+        }
     }
 
     @Override

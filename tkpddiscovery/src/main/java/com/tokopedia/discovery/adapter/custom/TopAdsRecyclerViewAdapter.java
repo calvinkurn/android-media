@@ -27,7 +27,7 @@ import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
-import com.tokopedia.discovery.PdpRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 
 import java.util.List;
 

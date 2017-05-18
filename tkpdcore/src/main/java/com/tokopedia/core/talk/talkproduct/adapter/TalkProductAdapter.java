@@ -23,9 +23,11 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
@@ -273,10 +275,9 @@ public class TalkProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View v) {
                 ProductPass productPass = new ProductPass();
                 productPass.setProductId(productID);
-                Intent intent = ProductDetailRouter
-                        .createInstanceProductDetailInfoActivity(context, productPass);
-
-                context.startActivity(intent);
+                ((PdpRouter) ((BaseActivity) context)
+                        .getApplication())
+                        .goToProductDetail(context, productPass);
             }
         };
     }
