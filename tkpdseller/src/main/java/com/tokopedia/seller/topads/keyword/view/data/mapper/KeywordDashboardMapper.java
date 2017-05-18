@@ -1,61 +1,31 @@
 package com.tokopedia.seller.topads.keyword.view.data.mapper;
 
-import com.tokopedia.seller.topads.keyword.view.data.model.KeywordDashBoard;
+import com.tokopedia.seller.topads.data.model.data.Page;
+import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.view.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
-import okhttp3.ResponseBody;
-import retrofit2.Response;
 import rx.functions.Func1;
 
 /**
  * @author normansyahputa on 5/18/17.
  */
 
-public class KeywordDashboardMapper implements Func1<Response<KeywordDashBoard>, KeywordDashboardDomain> {
+public class KeywordDashboardMapper implements Func1<PageDataResponse<List<Datum>>, KeywordDashboardDomain> {
 
     @Inject
     public KeywordDashboardMapper() {
     }
 
-    @Override
-    public KeywordDashboardDomain call(Response<KeywordDashBoard> keywordDashBoardResponse) {
 
-
-        ResponseBody responseBody = keywordDashBoardResponse.errorBody();
-        if (responseBody != null)
-            throw new RuntimeException(responseBody.toString());
-
-        KeywordDashBoard body = keywordDashBoardResponse.body();
-        if (body != null) {
-            if (body.getErrors() != null && body.getErrors().size() > 0) {
-                throw new RuntimeException(body.getErrors().get(0).getDetail());
-            }
-
-            KeywordDashboardDomain keywordDashboardDomain =
-                    new KeywordDashboardDomain();
-
-            ArrayList<KeywordDashboardDomain.Datum> data = new ArrayList<>();
-            for (KeywordDashBoard.Datum datum : body.getData()) {
-                data.add(convertToDomain(datum));
-            }
-
-            keywordDashboardDomain.setData(data);
-
-            keywordDashboardDomain.setPage(convertToDomain(body.getPage()));
-
-
-            return keywordDashboardDomain;
-        }
-
-        return null;
-    }
-
-    private KeywordDashboardDomain.Page_ convertToDomain(KeywordDashBoard.Page_ page) {
-        KeywordDashboardDomain.Page_ res = new KeywordDashboardDomain.Page_();
+    private com.tokopedia.seller.topads.keyword.view.domain.model.Page convertToDomain(Page page) {
+        com.tokopedia.seller.topads.keyword.view.domain.model.Page res =
+                new com.tokopedia.seller.topads.keyword.view.domain.model.Page();
 
         res.setCurrent(page.getCurrent());
         res.setMax(page.getMax());
@@ -67,8 +37,9 @@ public class KeywordDashboardMapper implements Func1<Response<KeywordDashBoard>,
     }
 
 
-    private KeywordDashboardDomain.Datum convertToDomain(KeywordDashBoard.Datum datum) {
-        KeywordDashboardDomain.Datum res = new KeywordDashboardDomain.Datum();
+    private com.tokopedia.seller.topads.keyword.view.domain.model.Datum convertToDomain(Datum datum) {
+        com.tokopedia.seller.topads.keyword.view.domain.model.Datum res =
+                new com.tokopedia.seller.topads.keyword.view.domain.model.Datum();
         res.setKeywordId(datum.getKeywordId());//1
         res.setKeywordTag(datum.getKeywordTag());//2
         res.setGroupId(datum.getGroupId());//3
@@ -93,4 +64,23 @@ public class KeywordDashboardMapper implements Func1<Response<KeywordDashBoard>,
     }
 
 
+    @Override
+    public KeywordDashboardDomain call(PageDataResponse<List<Datum>> listPageDataResponse) {
+
+        KeywordDashboardDomain keywordDashboardDomain =
+                new KeywordDashboardDomain();
+
+        ArrayList<com.tokopedia.seller.topads.keyword.view.domain.model.Datum> data
+                = new ArrayList<>();
+        for (Datum datum : listPageDataResponse.getData()) {
+            data.add(convertToDomain(datum));
+        }
+
+        keywordDashboardDomain.setData(data);
+
+        keywordDashboardDomain.setPage(convertToDomain(listPageDataResponse.getPage()));
+
+
+        return keywordDashboardDomain;
+    }
 }

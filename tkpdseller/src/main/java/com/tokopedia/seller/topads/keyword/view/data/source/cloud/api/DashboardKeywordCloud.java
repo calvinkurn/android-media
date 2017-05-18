@@ -1,11 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.data.source.cloud.api;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.keyword.view.data.model.KeywordDashBoard;
+import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.view.data.model.cloud.Datum;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 
 /**
@@ -21,7 +23,7 @@ public class DashboardKeywordCloud {
         this.keywordApi = keywordApi;
     }
 
-    public Observable<Response<KeywordDashBoard>> getDashboardKeyword(RequestParams requestParams) {
+    public Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(RequestParams requestParams) {
         return keywordApi.getDashboardKeyword(requestParams.getParamsAllValueInString());
     }
 }

@@ -1,8 +1,10 @@
 package com.tokopedia.seller.topads.keyword.view.data.source.cloud.api;
 
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
-import com.tokopedia.seller.topads.keyword.view.data.model.KeywordDashBoard;
+import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.view.data.model.cloud.Datum;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -22,6 +24,6 @@ public interface KeywordApi {
     Observable<Response<DataResponse<String>>> getPromo(@FieldMap Map<String, String> params);
 
     @GET("/v1.1/dashboard/keyword")
-    Observable<Response<KeywordDashBoard>> getDashboardKeyword(@QueryMap Map<String, String> param);
+    Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(@QueryMap Map<String, String> param);
 
 }
