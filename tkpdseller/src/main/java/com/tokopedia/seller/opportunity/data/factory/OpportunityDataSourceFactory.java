@@ -15,16 +15,21 @@ import com.tokopedia.seller.opportunity.data.source.local.LocalGetFilterOpportun
  */
 public class OpportunityDataSourceFactory {
     private final Context context;
-    private OpportunityService opportunityService;
-    private OpportunityListMapper listMapper;
-    private OpportunityFilterMapper filterMapper;
-    private GlobalCacheManager globalCacheManager;
+    private final OpportunityService opportunityService;
+    private final OpportunityListMapper listMapper;
+    private final OpportunityFilterMapper filterMapper;
+    private final GlobalCacheManager globalCacheManager;
 
-    public OpportunityDataSourceFactory(Context context) {
+    public OpportunityDataSourceFactory(Context context,
+                                        OpportunityService opportunityService,
+                                        OpportunityListMapper listMapper,
+                                        OpportunityFilterMapper filterMapper,
+                                        GlobalCacheManager globalCacheManager) {
         this.context = context;
-        this.listMapper = new OpportunityListMapper();
-        this.opportunityService = new OpportunityService();
-        this.globalCacheManager = new GlobalCacheManager();
+        this.listMapper = listMapper;
+        this.filterMapper = filterMapper;
+        this.opportunityService = opportunityService;
+        this.globalCacheManager = globalCacheManager;
     }
 
     public CloudGetListOpportunitySource createCloudDataListSource() {

@@ -168,6 +168,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     private void resetOpportunityList() {
         pagingHandler.resetPage();
+        adapter.getList().clear();
+        adapter.notifyDataSetChanged();
         presenter.getOpportunity();
     }
 
@@ -395,11 +397,13 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         } else if (requestCode == REQUEST_SORT && resultCode == Activity.RESULT_OK) {
             CommonUtils.dumper("NISNIS Sort " + data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE));
             String paramSort = data.getExtras().getString(OpportunitySortFragment.SELECTED_VALUE);
+            String keySort = data.getExtras().getString(OpportunitySortFragment.SELECTED_KEY);
+
 
             ArrayList<SortingTypeViewModel> listSort = data.getExtras().getParcelableArrayList(OpportunitySortFragment.ARGS_LIST_SORT);
             filterData.setListSortingType(listSort);
 
-            presenter.getPass().setSort(paramSort);
+            presenter.getPass().setSort(keySort,paramSort);
             resetOpportunityList();
 
         } else if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {

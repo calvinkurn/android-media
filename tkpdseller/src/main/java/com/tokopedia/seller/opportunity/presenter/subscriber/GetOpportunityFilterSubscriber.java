@@ -155,7 +155,8 @@ public class GetOpportunityFilterSubscriber extends Subscriber<OpportunityCatego
             viewModel.setParent(optionItem.getParent());
             viewModel.setValue(optionItem.getValue());
             viewModel.setTreeLevel(optionItem.getTree());
-            viewModel.setListChild(mappingListOption(optionItem.getListChild()));
+            if (optionItem.getListChild() != null)
+                viewModel.setListChild(mappingListOption(optionItem.getListChild()));
             list.add(viewModel);
         }
         return list;

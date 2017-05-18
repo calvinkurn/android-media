@@ -7,6 +7,7 @@ package com.tokopedia.seller.opportunity.adapter.viewmodel;
 public class SimpleCheckListItemModel {
     String title;
     String value;
+    String key;
     boolean isSelected;
 
     public SimpleCheckListItemModel() {
@@ -34,5 +35,13 @@ public class SimpleCheckListItemModel {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

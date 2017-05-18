@@ -1,7 +1,6 @@
 package com.tokopedia.seller.opportunity.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -17,8 +16,6 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.adapter.OpportunitySortAdapter;
 import com.tokopedia.seller.opportunity.adapter.viewmodel.SimpleCheckListItemModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterRadioButtonFragment;
-import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
     public static final String ARGS_LIST_SORT = "ARGS_LIST_SORT";
     public static final String SELECTED_VALUE = "SELECTED_VALUE";
+    public static final String SELECTED_KEY = "SELECTED_KEY";
 
     OpportunitySortAdapter adapter;
     List<SortingTypeViewModel> listSort;
@@ -138,6 +136,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
             itemModel.setSelected(sortingTypeViewModel.isSelected());
             itemModel.setTitle(sortingTypeViewModel.getName());
             itemModel.setValue(String.valueOf(sortingTypeViewModel.getValue()));
+            itemModel.setKey(sortingTypeViewModel.getKey());
             listData.add(itemModel);
         }
 
@@ -148,7 +147,7 @@ public class OpportunitySortFragment extends BasePresenterFragment {
         return new OpportunitySortAdapter.SimpleCheckListListener() {
             @Override
 
-            public void onItemSelected(int position, String value) {
+            public void onItemSelected(int position, String value, String key) {
 
                 for (int i = 0; i < listSort.size(); i++) {
                     if (i != position)
@@ -160,6 +159,8 @@ public class OpportunitySortFragment extends BasePresenterFragment {
 
                 Intent intent = new Intent();
                 intent.putExtra(SELECTED_VALUE, value);
+                intent.putExtra(SELECTED_KEY, key);
+
                 listSort.get(position).setSelected(true);
                 intent.putParcelableArrayListExtra(ARGS_LIST_SORT, new ArrayList<>(listSort));
                 getActivity().setResult(Activity.RESULT_OK, intent);

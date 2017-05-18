@@ -12,6 +12,7 @@ public class GetOpportunityListParam {
     private String page;
     private String query;
     private String sort;
+    private String keySort;
     private ArrayList<FilterPass> listFilter;
 
     public String getPage() {
@@ -34,7 +35,8 @@ public class GetOpportunityListParam {
         return sort;
     }
 
-    public void setSort(String sort) {
+    public void setSort(String keySort, String sort) {
+        this.keySort = keySort;
         this.sort = sort;
     }
 
@@ -44,5 +46,13 @@ public class GetOpportunityListParam {
 
     public void setListFilter(ArrayList<FilterPass> listFilter) {
         this.listFilter = listFilter;
+    }
+
+    public String getKeySort() {
+        return keySort;
+    }
+
+    public void setKeySort(String keySort) {
+        this.keySort = keySort;
     }
 }

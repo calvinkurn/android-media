@@ -3,8 +3,13 @@ package com.tokopedia.seller.opportunity.presenter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
 import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
@@ -25,6 +30,7 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     private GetOpportunityUseCase getOpportunityUseCase;
     private GetOpportunityFilterUseCase getFilterUseCase;
     private GetOpportunityListParam opportunityParam;
+    private SessionHandler sessionHandler;
 
     public OpportunityListPresenterImpl(OpportunityListView viewListener) {
         this.viewListener = viewListener;
@@ -32,7 +38,11 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
         ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
                 new ActionReplacementSourceFactory(viewListener.getActivity()),
-                new OpportunityDataSourceFactory(viewListener.getActivity())
+                new OpportunityDataSourceFactory(viewListener.getActivity(),
+                        new OpportunityService(),
+                        new OpportunityListMapper(),
+                        new OpportunityFilterMapper(),
+                        new GlobalCacheManager())
         );
 
         this.getOpportunityUseCase = new GetOpportunityUseCase(
@@ -40,6 +50,8 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
 
         this.getFilterUseCase = new GetOpportunityFilterUseCase(
                 new JobExecutor(), new UIThread(), repository);
+
+        this.sessionHandler = new SessionHandler(viewListener.getActivity());
 
     }
 
@@ -56,8 +68,8 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
         param.putString(GetOpportunityUseCase.PER_PAGE, GetOpportunityUseCase.DEFAULT_PER_PAGE);
         if (opportunityParam.getQuery() != null)
             param.putString(GetOpportunityUseCase.QUERY, opportunityParam.getQuery());
-        if (opportunityParam.getSort() != null)
-            param.putString(GetOpportunityUseCase.ORDER_BY, opportunityParam.getSort());
+        if (opportunityParam.getSort() != null && opportunityParam.getKeySort() != null)
+            param.putString(opportunityParam.getKeySort(), opportunityParam.getSort());
         if (opportunityParam.getListFilter() != null && opportunityParam.getListFilter().size() > 0) {
             for (FilterPass filterPass : opportunityParam.getListFilter()) {
                 param.putString(filterPass.getKey(), filterPass.getValue());
@@ -80,8 +92,14 @@ public class OpportunityListPresenterImpl implements OpportunityListPresenter {
     @Override
     public void getFilter() {
         if (needsToRefresh())
-            getFilterUseCase.execute(RequestParams.EMPTY,
+            getFilterUseCase.execute(getOpportunityFilterParam(),
                     new GetOpportunityFilterSubscriber(viewListener));
+    }
+
+    private RequestParams getOpportunityFilterParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(GetOpportunityFilterUseCase.SHOP_ID, sessionHandler.getShopID());
+        return params;
     }
 
     private boolean needsToRefresh() {

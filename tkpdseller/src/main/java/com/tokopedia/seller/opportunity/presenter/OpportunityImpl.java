@@ -5,13 +5,17 @@ import android.content.Context;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
 import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
@@ -32,9 +36,16 @@ public class OpportunityImpl implements OpportunityPresenter {
 
     public OpportunityImpl(Context context, OpportunityView view) {
         this.view = view;
+
+        OpportunityService opportunityService = new OpportunityService();
+
         ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
                 new ActionReplacementSourceFactory(context),
-                new OpportunityDataSourceFactory(context)
+                new OpportunityDataSourceFactory(context,
+                        opportunityService,
+                        new OpportunityListMapper(),
+                        new OpportunityFilterMapper(),
+                        new GlobalCacheManager())
         );
         this.acceptReplacementUseCase = new AcceptReplacementUseCase(
                 new JobExecutor(), new UIThread(), repository
