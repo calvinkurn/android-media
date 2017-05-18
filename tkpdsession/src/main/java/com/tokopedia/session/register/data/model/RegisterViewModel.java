@@ -1,7 +1,5 @@
 package com.tokopedia.session.register.data.model;
 
-import static android.R.attr.autoVerify;
-
 /**
  * Created by nisie on 1/30/17.
  */

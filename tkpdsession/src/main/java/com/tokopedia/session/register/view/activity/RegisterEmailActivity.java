@@ -9,16 +9,13 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
-
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 
 /**
@@ -78,6 +75,7 @@ public class RegisterEmailActivity extends BasePresenterActivity {
             toolbar.setElevation(10);
         }
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);

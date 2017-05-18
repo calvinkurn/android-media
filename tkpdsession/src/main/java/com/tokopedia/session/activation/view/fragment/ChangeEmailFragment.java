@@ -14,7 +14,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.di.ChangeEmailDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.ChangeEmailPresenter;
-import com.tokopedia.session.activation.view.presenter.ChangeEmailPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.ChangeEmailView;
 
 import static android.app.Activity.RESULT_OK;

@@ -19,13 +19,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 
 import com.facebook.login.LoginManager;
@@ -289,6 +289,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             toolbar.setElevation(10);
         }
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);

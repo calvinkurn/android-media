@@ -1,5 +1,8 @@
 package com.tokopedia.discovery.fragment;
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,13 +28,16 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Child;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
+import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -50,6 +57,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.product.fragment.ProductDetailFragment.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.core.product.fragment.ProductDetailFragment.WISHLIST_STATUS_UPDATED_POSITION;
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID;
 
 /**
@@ -61,6 +70,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     public static final String TAG = "BrowseProductFragment";
     public static final String INDEX = "FRAGMENT_INDEX";
+    public static final int GOTO_PRODUCT_DETAIL = 123;
     // this value for main colum recyclerview
     private static final int LANDSCAPE_COLUMN_MAIN = 3;
     private static final int PORTRAIT_COLUMN_MAIN = 2;
@@ -81,6 +91,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
     private boolean isHasCategoryHeader = false;
+    private ProgressDialog loading;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
@@ -154,6 +165,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public View onCreateView(View parentView, Bundle savedInstanceState) {
+        loading = new ProgressDialog(getActivity());
+        loading.setCancelable(false);
+        loading.setMessage(getResources().getString(R.string.title_loading));
+
         return parentView;
     }
 
@@ -161,7 +176,11 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
-        ScreenTracking.eventDiscoveryScreenAuth();
+        if(!TextUtils.isEmpty(((BrowseProductActivity) getActivity())
+                .getBrowseProductActivityModel().getDepartmentId())) {
+            ScreenTracking.eventDiscoveryScreenAuth(((BrowseProductActivity) getActivity())
+                    .getBrowseProductActivityModel().getDepartmentId());
+        }
     }
 
     @Override
@@ -171,7 +190,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        productAdapter.addAll(true, false, new ArrayList<RecyclerViewItem>(model));
+        productAdapter.addAll(false, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
         if(productAdapter.checkHasNext()){
@@ -205,6 +224,73 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public BrowseProductModel getDataModel() {
         return ((FragmentDiscoveryPresenterImpl) presenter).getBrowseProductModel();
+    }
+
+    @Override
+    public String getUserId() {
+        return SessionHandler.getLoginID(getActivity());
+    }
+
+    @Override
+    public void onWishlistButtonClick(ProductItem data, int position) {
+        presenter.onWishlistButtonClick(data, position, getActivity());
+    }
+
+    @Override
+    public void finishLoadingWishList() {
+        loading.dismiss();
+    }
+
+    @Override
+    public void loadingWishList() {
+        loading.show();
+    }
+
+    @Override
+    public void updateWishListStatus(boolean isWishlist, int position) {
+        productAdapter.updateWishlistStatus(isWishlist, position);
+    }
+
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        startActivity(intent);
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        CommonUtils.UniversalToast(getActivity(), message);
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+        dialog.show();
+    }
+
+    @Override
+    public void closeView() {
+        this.getActivity().finish();
+    }
+
+    @Override
+    public void showWishListRetry(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
+            int position = data.getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST, false);
+            if (productAdapter != null && position != -1) {
+                productAdapter.updateWishlistStatus(isWishlist, position);
+            }
+        }
     }
 
     @Override
@@ -254,7 +340,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         if (productAdapter != null) {
             return;
         }
-        productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>());
+        productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -309,7 +395,9 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
                     presenter.loadMore(getActivity());
                 }
-                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()){
+                if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
+                        && productAdapter.getPagingHandlerModel() != null
+                        && productAdapter.getPagingHandlerModel().getUriNext().isEmpty()){
                     ((BrowseProductActivity) getActivity()).showBottomBar();
                 }
             }

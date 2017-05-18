@@ -2,9 +2,7 @@ package com.tokopedia.seller.product.data.source.cloud;
 
 import com.tokopedia.seller.product.data.source.cloud.api.HadesCategoryApi;
 import com.tokopedia.seller.product.data.source.cloud.model.categorydata.CategoryServiceModel;
-import com.tokopedia.seller.product.di.scope.CategoryPickerScope;
 import com.tokopedia.seller.shopscore.data.common.GetData;
-
 
 import javax.inject.Inject;
 

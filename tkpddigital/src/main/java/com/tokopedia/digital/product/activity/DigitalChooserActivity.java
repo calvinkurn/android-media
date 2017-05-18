@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
@@ -29,6 +30,8 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     private static final String EXTRA_LIST_DATA_OPERATOR = "EXTRA_LIST_DATA_OPERATOR";
     private static final String EXTRA_OPERATOR_STYLE_VIEW = "EXTRA_OPERATOR_STYLE_VIEW";
 
+    private static final String EXTRA_TITLE_CHOOSER = "EXTRA_TITLE_CHOOSER";
+
     public static final String EXTRA_CALLBACK_PRODUCT_DATA = "EXTRA_CALLBACK_PRODUCT_DATA";
     public static final String EXTRA_CALLBACK_OPERATOR_DATA = "EXTRA_CALLBACK_OPERATOR_DATA";
 
@@ -38,23 +41,26 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     private String operatorStyleView;
     private String productStyleView;
+    private String titleChooser;
 
 
     public static Intent newInstanceProductChooser(
-            Activity activity, List<Product> productListData
+            Activity activity, List<Product> productListData, String titleChooser
     ) {
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_LIST_DATA_PRODUCT,
                 (ArrayList<? extends Parcelable>) productListData);
+        intent.putExtra(EXTRA_TITLE_CHOOSER, titleChooser);
         return intent;
     }
 
     public static Intent newInstanceOperatorChooser(
-            Activity activity, List<Operator> operatorListData
+            Activity activity, List<Operator> operatorListData, String titleChooser
     ) {
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_LIST_DATA_OPERATOR,
                 (ArrayList<? extends Parcelable>) operatorListData);
+        intent.putExtra(EXTRA_TITLE_CHOOSER, titleChooser);
         return intent;
     }
 
@@ -69,6 +75,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         this.productListData = extras.getParcelableArrayList(EXTRA_LIST_DATA_PRODUCT);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
         this.operatorStyleView = extras.getString(EXTRA_OPERATOR_STYLE_VIEW);
+        this.titleChooser = extras.getString(EXTRA_TITLE_CHOOSER);
     }
 
     @Override
@@ -98,12 +105,11 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
                         )).commit();
             }
         }
-
     }
 
     @Override
     protected void setViewListener() {
-
+        if (!TextUtils.isEmpty(titleChooser)) toolbar.setTitle(titleChooser);
     }
 
     @Override

@@ -1,18 +1,15 @@
 package com.tokopedia.core.network.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
+import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
+import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
@@ -25,7 +22,6 @@ import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
-import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -126,4 +122,21 @@ public class NetModule {
                                               Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ResCenterV2.BASE_RESOLUTION).client(okHttpClient).build();
     }
+
+    @GoldMerchantQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideGoldMerchantRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
+                                                Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.GOLD_MERCHANT_DOMAIN).client(okHttpClient).build();
+    }
+
+    @CartQualifier
+    @ApplicationScope
+    @Provides
+    public Retrofit provideCartRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
+                                        Retrofit.Builder retrofitBuilder){
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN).client(okHttpClient).build();
+    }
+
 }

@@ -28,7 +28,6 @@ import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.session.activation.view.di.RegisterActivationDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
-import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenterImpl;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.register.RegisterConstant;

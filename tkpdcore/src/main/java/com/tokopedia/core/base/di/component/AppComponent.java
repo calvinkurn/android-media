@@ -11,7 +11,9 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
+import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
@@ -60,6 +62,12 @@ public interface AppComponent {
 
     @ResolutionQualifier
     Retrofit resolutionRetrofit();
+
+    @GoldMerchantQualifier
+    Retrofit goldMerchantRetrofit();
+
+    @CartQualifier
+    Retrofit cartRetrofit();
 
     Retrofit.Builder retrofitBuilder();
 

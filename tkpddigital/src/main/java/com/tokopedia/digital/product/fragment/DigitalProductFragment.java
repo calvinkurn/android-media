@@ -92,6 +92,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalProductFragment extends BasePresenterFragment<IProductDigitalPresenter>
         implements IProductDigitalView, BannerAdapter.ActionListener,
         BaseDigitalProductView.ActionListener {
+
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
@@ -110,7 +111,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "https://pulsa.tokopedia.com/order-list/";
     private static final String URL_PRODUCT_LIST_DIGITAL =
             "https://pulsa.tokopedia.com/products/";
-    private static final String URL_SUBSCRIPTIONS_DIGITAL = "";
+    private static final String URL_SUBSCRIPTIONS_DIGITAL =
+            "https://pulsa.tokopedia.com/subscribe/";
+
 
     private Operator operatorSelectedState;
     private Product productSelectedState;
@@ -280,7 +283,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle1View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -295,7 +297,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle2View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //    digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -310,7 +311,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             digitalProductView = new CategoryProductStyle3View(getActivity());
         digitalProductView.setActionListener(this);
         digitalProductView.renderData(categoryData, historyClientNumber);
-        //  digitalProductView.renderHistoryClientNumber(historyClientNumber);
         holderProductDetail.addView(digitalProductView);
     }
 
@@ -525,10 +525,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (digitalProductView != null && categoryDataState != null)
+        if (digitalProductView != null && categoryDataState != null) {
+            Operator selectedOperator = digitalProductView.getSelectedOperator();
+            Product selectedProduct = digitalProductView.getSelectedProduct();
             presenter.processStoreLastInputClientNumberByCategory(
-                    digitalProductView.getClientNumber(), categoryDataState.getCategoryId()
+                    digitalProductView.getClientNumber(),
+                    categoryDataState.getCategoryId(),
+                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+                    selectedProduct != null ? selectedProduct.getProductId() : ""
             );
+        }
     }
 
     @Override
@@ -537,33 +543,41 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onProductChooserStyle1Clicked(List<Product> productListData) {
+    public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
     @Override
-    public void onProductChooserStyle2Clicked(List<Product> productListData) {
+    public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
     @Override
-    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData) {
+    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceOperatorChooser(getActivity(), operatorListData),
+                DigitalChooserActivity.newInstanceOperatorChooser(
+                        getActivity(), operatorListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
     }
 
     @Override
-    public void onProductChooserStyle3Clicked(List<Product> productListData) {
+    public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
         startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(getActivity(), productListData),
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), productListData, titleChooser
+                ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
@@ -655,6 +669,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             ));
             return true;
         } else if (item.getItemId() == R.id.action_menu_subscription_digital) {
+            navigateToActivity(DigitalWebActivity.newInstance(
+                    getActivity(),
+                    URLGenerator.generateURLSessionLogin(
+                            Uri.encode(URL_SUBSCRIPTIONS_DIGITAL), getActivity())
+            ));
             return true;
         } else if (item.getItemId() == R.id.action_menu_transaction_list_digital) {
             navigateToActivity(DigitalWebActivity.newInstance(

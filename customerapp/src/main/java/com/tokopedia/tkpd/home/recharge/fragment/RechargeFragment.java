@@ -155,6 +155,10 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     //endregion
 
+    private String lastClientNumberTyped = "";
+    private String lastOperatorSelected = "";
+    private String lastProductSelected = "";
+
     public static RechargeFragment newInstance(Category category, int position) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         Bundle bundle = new Bundle();
@@ -230,8 +234,14 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         initListener();
         CategoryAttributes categoryAttributes = category.getAttributes();
+
+        lastClientNumberTyped = getLastClientNumberTyped(String.valueOf(category.getId()));
+        lastOperatorSelected = getLastOperatorSelected(String.valueOf(category.getId()));
+        lastProductSelected = getLastProductSelected(String.valueOf(category.getId()));
+
         rechargePresenter.fetchRecentNumbers(category.getId());
         hideProgressFetchData();
         setRechargeEditTextCallback();
@@ -483,6 +493,13 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     spnNominal.setSelection(i);
                 }
             }
+        } else {
+            for (int i = 0; i < productList.size(); i++) {
+                if (String.valueOf(productList.get(i).getId())
+                        .equalsIgnoreCase(lastProductSelected)) {
+                    spnNominal.setSelection(i);
+                }
+            }
         }
     }
 
@@ -497,6 +514,17 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                             category.getId(), String.valueOf(selectedOperator.operatorId));
                 }
             }
+        } else {
+            if (radioGroup != null)
+                for (int i = 0; i < operators.size(); i++) {
+                    if (String.valueOf(operators.get(i).operatorId)
+                            .equalsIgnoreCase(lastOperatorSelected)) {
+                        radioGroup.check(radioGroup.getChildAt(i).getId());
+                        selectedOperator = operators.get(radGroup.getChildAt(i).getId());
+                        rechargePresenter.validateWithOperator(
+                                category.getId(), String.valueOf(selectedOperator.operatorId));
+                    }
+                }
         }
     }
 
@@ -704,7 +732,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 //            handlingAppearanceFormAndImageOperator();
 //        }
 
-        String lastTypedClientNumber = getLastClientNumberTyped(String.valueOf(category.getId()));
+
         String defaultPhoneNumber = SessionHandler.getPhoneNumber();
 
         if (SessionHandler.isV4Login(getActivity())
@@ -712,22 +740,25 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             renderLastOrder();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
-                && !TextUtils.isEmpty(lastTypedClientNumber)) {
-            rechargeEditText.setText(lastTypedClientNumber);
+                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+            rechargeEditText.setText(lastClientNumberTyped);
             //   showFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         } else if (SessionHandler.isV4Login(getActivity())
                 && !rechargePresenter.isAlreadyHaveLastOrderDataOnCacheByCategoryId(category.getId())
-                && TextUtils.isEmpty(lastTypedClientNumber)
+                && TextUtils.isEmpty(lastClientNumberTyped)
                 && (category.getId() == 1 || category.getId() == 2)
                 && !TextUtils.isEmpty(defaultPhoneNumber)) {
             rechargeEditText.setText(defaultPhoneNumber);
             //   showFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         } else if (!SessionHandler.isV4Login(getActivity())
-                && !TextUtils.isEmpty(lastTypedClientNumber)) {
-            rechargeEditText.setText(lastTypedClientNumber);
+                && !TextUtils.isEmpty(lastClientNumberTyped)) {
+            rechargeEditText.setText(lastClientNumberTyped);
             //    showFormAndImageOperator();
+            handlingAppearanceFormAndImageOperator();
         }
-        handlingAppearanceFormAndImageOperator();
+
 
     }
 
@@ -824,7 +855,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         phoneNumber = validateTextPrefix(phoneNumber);
         rechargeEditText.setText(phoneNumber);
         rechargePresenter.saveLastInputToCache(LAST_INPUT_KEY + category.getId(), rechargeEditText.getText());
-        storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
         cacheHandlerPhoneBook.putString(KEY_PHONEBOOK + category.getId(), phoneNumber);
         cacheHandlerPhoneBook.applyEditor();
     }
@@ -989,6 +1019,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                     IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
             );
         }
+
+        storeLastClientNumberTyped(String.valueOf(category.getId()), clientNumber);
     }
 
     private String generateATokenRechargeCheckout() {
@@ -1099,9 +1131,21 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void storeLastClientNumberTyped(String categoryId, String clientNumber) {
         if (localCacheHandlerLastClientNumber == null)
             localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
+            );
         localCacheHandlerLastClientNumber.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
+                (selectedProduct != null ?
+                        String.valueOf(
+                                selectedProduct.getRelationships().getOperator().getData().getId()
+                        ) : "")
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
+                (selectedProduct != null ? String.valueOf(selectedProduct.getId()) : "")
         );
         localCacheHandlerLastClientNumber.applyEditor();
     }
@@ -1115,10 +1159,22 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         );
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (rechargeEditText != null)
-            storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
+    private String getLastOperatorSelected(String categoryId) {
+        if (localCacheHandlerLastClientNumber == null)
+            localCacheHandlerLastClientNumber = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        return localCacheHandlerLastClientNumber.getString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, ""
+        );
     }
+
+    private String getLastProductSelected(String categoryId) {
+        if (localCacheHandlerLastClientNumber == null)
+            localCacheHandlerLastClientNumber = new LocalCacheHandler(
+                    getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        return localCacheHandlerLastClientNumber.getString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, ""
+        );
+    }
+
 }

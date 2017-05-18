@@ -6,9 +6,6 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.model.CategoryLevelViewModel;
-import com.tokopedia.seller.product.view.model.CategoryViewModel;
-
-import java.util.List;
 
 /**
  * @author sebastianuskh on 4/6/17.

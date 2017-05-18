@@ -67,10 +67,18 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
     }
 
     @Override
-    public void processStoreLastInputClientNumberByCategory(String lastClientNumber, String categoryId) {
+    public void processStoreLastInputClientNumberByCategory(
+            String lastClientNumber, String categoryId, String operatorId, String productId
+    ) {
         LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
         localCacheHandler.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
+        );
+        localCacheHandler.putString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
+        );
+        localCacheHandler.putString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
         );
         localCacheHandler.applyEditor();
     }
@@ -88,11 +96,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
         };
         Cursor cursorPhone = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI,
-                null,
-                contactWhere,
-                contactWhereParams,
-                null
+                ContactsContract.Data.CONTENT_URI, null, contactWhere, contactWhereParams, null
         );
 
         if (cursorPhone != null) {

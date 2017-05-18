@@ -33,10 +33,11 @@
     <string name="label_btn_buy_digital">BELI</string>
     <string name="message_error_digital_product_not_selected">Anda belum memilih produk</string>
     <string name="message_error_digital_operator_not_selected">Anda belum memilih operator</string>
+    <string name="message_error_digital_client_number_not_filled">Anda belum mengisi</string>
     <string name="message_error_digital_category_style_not_supported">Produk belum didukung, Silahkan memilih produk lainnya</string>
     <string name="title_menu_product_list_digital">Daftar Produk</string>
     <string name="title_menu_transaction_list_digital">Daftar Transaksi</string>
-    <string name="title_menu_subsciption_digital">Subcriptions</string>
+    <string name="title_menu_subsciption_digital">Langganan</string>
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
 
     <string name="label_instant_payment_digital">Bayar Instan</string>

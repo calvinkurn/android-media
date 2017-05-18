@@ -1,7 +1,6 @@
 package com.tokopedia.seller.myproduct.model;
 
 import com.tokopedia.core.myproduct.model.GetEtalaseModel;
-import com.tokopedia.core.myproduct.model.TextDeleteModel;
 
 import org.parceler.Parcel;
 

@@ -1,6 +1,5 @@
 package com.tokopedia.core.base.di.module;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 

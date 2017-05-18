@@ -141,6 +141,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     public void addBannerDataListAndTitle(List<BannerData> bannerDataList, String title) {
+        if (bannerDataList.isEmpty()) return;
         dataList.add(new BannerTitle(title));
         for (int i = 0; i < bannerDataList.size(); i++) {
             BannerData bannerData = bannerDataList.get(i);

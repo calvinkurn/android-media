@@ -4,33 +4,17 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.data.exception.UploadProductException;
 import com.tokopedia.seller.product.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.ProductDraftRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.listener.AddProductNotificationListener;
-import com.tokopedia.seller.product.domain.mapper.AddProductDomainMapper;
 import com.tokopedia.seller.product.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductPictureDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductSubmitInputDomainModel;
-import com.tokopedia.seller.product.domain.model.AddProductValidationDomainModel;
-import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
-import com.tokopedia.seller.product.domain.model.GenerateHostDomainModel;
-import com.tokopedia.seller.product.domain.model.ImageProcessDomainModel;
-import com.tokopedia.seller.product.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**

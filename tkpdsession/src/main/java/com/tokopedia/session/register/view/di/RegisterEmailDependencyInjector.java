@@ -5,13 +5,13 @@ import android.os.Bundle;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
 import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.data.repository.RegisterEmailRepositoryImpl;
 import com.tokopedia.session.register.domain.interactor.RegisterEmailUseCase;
-import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenterImpl;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
@@ -24,10 +24,8 @@ public class RegisterEmailDependencyInjector {
     public static RegisterEmailPresenter getPresenter(RegisterEmailViewListener viewListener) {
 
         Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
-        String authKey = sessionHandler.getAccessToken(viewListener.getActivity());
-        authKey = sessionHandler.getTokenType(viewListener.getActivity()) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
+        bundle.putBoolean(AccountsService.USING_HMAC, true);
+        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
 
         AccountsService accountsService = new AccountsService(bundle);
         RegisterEmailRepositoryImpl registerEmailRepository = new RegisterEmailRepositoryImpl(

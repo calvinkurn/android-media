@@ -85,6 +85,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         return new Func1<Throwable, List<OrderClientNumber>>() {
             @Override
             public List<OrderClientNumber> call(Throwable throwable) {
+                throwable.printStackTrace();
                 return new ArrayList<>();
             }
         };
@@ -96,20 +97,31 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         return new Func1<Throwable, OrderClientNumber>() {
             @Override
             public OrderClientNumber call(Throwable throwable) {
-                String lastInputNumber = localCacheHandler.getString(
-                        TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + pathCategoryId, ""
-                );
-                if (lastInputNumber.isEmpty() && (
-                        pathCategoryId.equalsIgnoreCase("1")
-                                || pathCategoryId.equalsIgnoreCase("2")
-                )) {
-                    lastInputNumber = SessionHandler.getPhoneNumber();
-                }
+                throwable.printStackTrace();
                 OrderClientNumber orderClientNumber = new OrderClientNumber();
                 orderClientNumber.setCategoryId(pathCategoryId);
-                orderClientNumber.setClientNumber(lastInputNumber);
-                orderClientNumber.setOperatorId("");
-                orderClientNumber.setProductId("");
+
+                String lastClientNumberOrder = localCacheHandler.getString(
+                        TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + pathCategoryId, ""
+                );
+                String lastOperatorSelected = localCacheHandler.getString(
+                        TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + pathCategoryId, ""
+                );
+                String lastProductSelected = localCacheHandler.getString(
+                        TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + pathCategoryId, ""
+                );
+                orderClientNumber.setOperatorId(lastOperatorSelected);
+                orderClientNumber.setProductId(lastProductSelected);
+                if (!lastClientNumberOrder.isEmpty()) {
+                    orderClientNumber.setClientNumber(lastClientNumberOrder);
+                } else {
+                    if (pathCategoryId.equalsIgnoreCase("1")
+                            || pathCategoryId.equalsIgnoreCase("2")) {
+                        orderClientNumber.setClientNumber(SessionHandler.getPhoneNumber());
+                    } else {
+                        orderClientNumber.setClientNumber("");
+                    }
+                }
                 return orderClientNumber;
             }
         };
@@ -125,11 +137,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
                 if (orderClientNumber.getCategoryId().equalsIgnoreCase(pathCategoryId)) {
                     return orderClientNumber;
                 } else {
-                    orderClientNumber.setCategoryId(pathCategoryId);
-                    orderClientNumber.setOperatorId("");
-                    orderClientNumber.setProductId("");
-                    orderClientNumber.setClientNumber("");
-                    return orderClientNumber;
+                    throw new RuntimeException("last order not match with category id !!");
                 }
             }
         };

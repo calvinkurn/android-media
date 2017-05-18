@@ -107,6 +107,11 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
             public void onEmptyContentItemTextClicked() {
                 youtubeAddVideoActView.openAddYoutubeDialog();
             }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                
+            }
         });
         addUrlVideoAdapter.setEmptyView(emptyAddUrlVideoDataBinder);
         addUrlVideoAdapter.setMaxRows(MAX_ROWS);

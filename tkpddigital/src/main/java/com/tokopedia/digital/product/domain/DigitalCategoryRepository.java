@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.network.apiservices.digital.DigitalEndpointService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.data.entity.ResponseBanner;
+import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
