@@ -16,13 +16,14 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
+import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
 import com.tokopedia.core.home.adapter.ViewHolderEmptyFeed;
 import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
@@ -129,7 +130,8 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
     }
 
     private void bindEmptyFeedModel(ViewHolderEmptyFeed holder, int position) {
-       holder.checkFavoriteShopButton.setOnClickListener(onFindFavoriteClicked());
+        holder.checkFavoriteShopButton.setOnClickListener(onFindFavoriteClicked());
+        holder.officialStoreLinkContainer.setOnClickListener(onOfficialStoreLinkClicked());
     }
 
     private void bindProductFeedViewHolder(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
@@ -212,6 +214,7 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
         if (data.size() == 1) {
             holder.emptyLayout.setVisibility(View.VISIBLE);
             holder.findFavoriteShop.setOnClickListener(onFindFavoriteClicked());
+            holder.officialStoreLinkContainer.setOnClickListener(onOfficialStoreLinkClicked());
         } else {
             holder.emptyLayout.setVisibility(View.GONE);
         }
@@ -263,6 +266,16 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 ParentIndexHome.ChangeTabListener listener = ((ParentIndexHome) context).GetFavoriteListener();
                 listener.onChangeTab(FAVORITE_TAB);
+            }
+        };
+    }
+
+    private View.OnClickListener onOfficialStoreLinkClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(BrandsWebViewActivity.newInstance(context,
+                        TkpdBaseURL.OfficialStore.URL_WEBVIEW));
             }
         };
     }

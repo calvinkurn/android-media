@@ -3,6 +3,7 @@ package com.tokopedia.discovery.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.session.base.BaseImpl;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
@@ -28,4 +29,6 @@ public abstract class FragmentDiscoveryPresenter extends BaseImpl<FragmentBrowse
     public abstract void sendGTMNoResult(Context context);
 
     public abstract void getCategoryHeader(String categoryId);
+
+    public abstract void onWishlistButtonClick(ProductItem data, int itemPosition, Context context);
 }

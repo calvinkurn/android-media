@@ -19,6 +19,8 @@ import com.tkpd.library.ui.floatbutton.ListenerFabClick;
 import com.tkpd.library.ui.floatbutton.SimpleMenuListenerAdapter;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -83,7 +85,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
     @BindView(R.id.main_content)
     LinearLayout mainContentLinearLayout;
     @BindView(R.id.empty_wishlist)
-    RelativeLayout emptyFeedView;
+    LinearLayout emptyFeedView;
     @BindView(R.id.empty_layout_history)
     RelativeLayout emptyHistoryView;
 
@@ -201,6 +203,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
 
     @Override
     public void showFeedDataFromCache(List<RecyclerViewItem> dataFeedList) {
+        TrackingUtils.sendMoEngageOpenFeedEvent(dataFeedList.size());
         final int historyDataPosition = 0;
         if(dataFeedList.get(historyDataPosition) instanceof HistoryProductListItem){
             topAdsRecyclerAdapter.setHasHeader(true);

@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,14 +23,18 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.customadapter.ListViewHotProductParent;
+import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
 import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
+import com.tokopedia.core.home.GetUserInfoListener;
+import com.tokopedia.core.interfaces.IndexHomeInterafaces;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SessionRouter;
@@ -61,7 +66,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by alvarisi on 6/15/2016, tab selection tracking.
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
-public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener, HasComponent {
+public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,GetUserInfoListener, HasComponent {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -84,6 +89,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     protected LocalCacheHandler cache;
     protected Boolean needToRefresh;
     protected int viewPagerIndex;
+
+    private AnalyticsCacheHandler cacheHandler;
     List<String> content;
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
@@ -128,7 +135,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onCreate(Bundle arg0) {
-
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
@@ -209,6 +215,29 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
 
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
+
+        cacheHandler = new AnalyticsCacheHandler();
+
+        if(TextUtils.isEmpty(cacheHandler.isUserDataCached())){
+            if(SessionHandler.isV4Login(this))
+                drawer.getUserInfo();
+        }else {
+            setMoengageUserAttributes();
+        }
+    }
+
+    private void setMoengageUserAttributes(){
+        cacheHandler.getUserDataCache(new AnalyticsCacheHandler.GetUserDataListener() {
+            @Override
+            public void onSuccessGetUserData(ProfileData result) {
+                TrackingUtils.setMoEUserAttributes(result);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void initCreate() {
@@ -382,7 +411,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onResume() {
-        Log.d(TAG, messageTAG + "onResume");
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {
             indicator.removeAllTabs();
@@ -513,6 +541,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             UnifyTracking.eventHomeTab(label);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onGetUserInfo() {
+        setMoengageUserAttributes();
     }
 
 

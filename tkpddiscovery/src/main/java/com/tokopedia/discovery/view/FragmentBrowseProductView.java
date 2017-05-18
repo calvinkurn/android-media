@@ -1,7 +1,10 @@
 package com.tokopedia.discovery.view;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.presenter.BaseView;
@@ -36,6 +39,17 @@ public interface FragmentBrowseProductView extends BaseView {
     void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel);
     void addCategoryHeader(Data category);
     BrowseProductModel getDataModel();
+    String getUserId();
+    void onWishlistButtonClick(ProductItem data, int position);
+    void finishLoadingWishList();
+    void loadingWishList();
+    void updateWishListStatus(boolean isWishlist, int position);
+    void navigateToActivityRequest(Intent intent, int requestCode);
+    void navigateToActivity(Intent intent);
+    void showToastMessage(String message);
+    void showDialog(Dialog dialog);
+    void closeView();
+    void showWishListRetry(String errorMessage);
     void displayTopAds();
 
 }

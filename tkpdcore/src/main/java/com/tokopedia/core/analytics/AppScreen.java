@@ -115,7 +115,7 @@ public final class AppScreen {
     public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
-    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category";
+    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
