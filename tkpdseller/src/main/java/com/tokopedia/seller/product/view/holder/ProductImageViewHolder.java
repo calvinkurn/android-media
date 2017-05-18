@@ -30,7 +30,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     public interface Listener {
         void onAddImagePickerClicked(int position);
 
-        void onImagePickerItemClicked(int position, boolean isPrimary);
+        void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete);
 
         void onResolutionImageCheckFailed(String uri);
 
@@ -65,7 +65,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
                 if (listener != null) {
-                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary());
+                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary(), imageSelectModel.allowDelete());
                 }
             }
         });

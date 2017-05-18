@@ -427,9 +427,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onImagePickerItemClicked(int position, boolean isPrimary) {
+    public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary);
+        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary,allowDelete);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
@@ -463,16 +463,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
             @Override
             public void clickRemoveImage(int positions) {
                 ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
-                ImageSelectModel selectModel = imagesSelectView.getSelectedImage();
-                if ( selectModel.allowDelete() ) {
-                    imagesSelectView.removeImage();
-                } else { // not allow delete
-                    if (selectModel.isPrimary()) {
-                        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_delete_primary_image));
-                    } else {
-                        CommonUtils.UniversalToast(getActivity(), getString(R.string.error_save_after_change_primary_image));
-                    }
-                }
+                imagesSelectView.removeImage();
             }
         });
     }
