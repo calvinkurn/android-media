@@ -20,4 +20,7 @@
     <string name="inspiration_header">Inspired by your ,%1$s.</string>
     <string name="official_store_header">Produk Terbaik Official Store.</string>
     <string name="favorite">Favoritkan</string>
+    <string name="period">Periode: ,%1$s"</string>
+    <string name="title_code">Kode</string>
+    <string name="title_copy">Copy</string>
 </resources>

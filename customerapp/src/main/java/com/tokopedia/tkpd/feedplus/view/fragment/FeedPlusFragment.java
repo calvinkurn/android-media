@@ -198,7 +198,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new ProductCardViewModel("Nisie 1", listProduct));
 //        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
 //        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
-//        list.add(new PromoViewModel(listProduct6));
+        list.add(new PromoViewModel(listProduct8));
 //        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
 //        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
 //        list.add(new ProductCardViewModel("Nisie 6", listProduct6));

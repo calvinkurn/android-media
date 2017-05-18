@@ -20,11 +20,9 @@ import java.util.ArrayList;
 
 public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapter.ViewHolder>{
 
-    private int width;
     ArrayList<ProductFeedViewModel> list;
 
-    public PromotedShopAdapter(int width) {
-        this.width = width;
+    public PromotedShopAdapter() {
     }
 
     @Override
@@ -36,16 +34,6 @@ public class PromotedShopAdapter extends RecyclerView.Adapter<PromotedShopAdapte
 
     @Override
     public void onBindViewHolder(PromotedShopAdapter.ViewHolder holder, int position) {
-        int widthPixels = Resources.getSystem().getDisplayMetrics().widthPixels;
-        width = widthPixels;
-        int x;
-        if(position==0){
-            x = width * 2/3;
-        }else {
-            x = width /3;
-        }
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(x, x);
-        holder.imageView.setLayoutParams(layoutParams);
         ImageHandler.LoadImage(holder.imageView, list.get(position).getImageSource());
     }
 

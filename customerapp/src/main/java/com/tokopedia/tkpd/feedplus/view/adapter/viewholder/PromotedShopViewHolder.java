@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.feedplus.view.SpannedGridLayoutManager;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.feedplus.view.adapter.PromotedShopAdapter;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
@@ -46,15 +47,32 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
     public PromotedShopViewHolder(View itemView) {
         super(itemView);
 
-        gridLayoutManager = new GridLayoutManager(itemView.getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                return getSpan(position);
-            }
-        });
-        recyclerView.setLayoutManager(gridLayoutManager);
-        adapter = new PromotedShopAdapter(recyclerView.getWidth());
+//        gridLayoutManager = new GridLayoutManager(itemView.getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
+//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+//            @Override
+//            public int getSpanSize(int position) {
+//                return getSpan(position);
+//            }
+//        });
+
+        SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                new SpannedGridLayoutManager.GridSpanLookup() {
+                    @Override
+                    public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                        // Conditions for 2x2 items
+                        if (position % 6 == 0 || position % 6 == 4) {
+                            return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                        } else {
+                            return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                        }
+                    }
+                },
+                3, // number of columns
+                1f // how big is default item
+        );
+
+        recyclerView.setLayoutManager(manager);
+        adapter = new PromotedShopAdapter();
         recyclerView.setAdapter(adapter);
     }
 
