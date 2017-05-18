@@ -5,7 +5,9 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -24,6 +26,7 @@ import java.util.List;
 
 public class RouteMapAnimator {
     private final float POLYLINE_WIDTH_IN_PX = 10;
+    private final float POLYLINE_WIDTH_IN_DP = 3;
 
     private static RouteMapAnimator mapAnimator;
 
@@ -73,11 +76,12 @@ public class RouteMapAnimator {
         if (foregroundPolyline != null) foregroundPolyline.remove();
         if (backgroundPolyline != null) backgroundPolyline.remove();
 
+        float width = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
 
-        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(width).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         backgroundPolyline = googleMap.addPolyline(optionsBackground);
 
-        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(width).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         foregroundPolyline = googleMap.addPolyline(optionsForeground);
 
         final ValueAnimator percentageCompletion = ValueAnimator.ofInt(0, 100);
@@ -219,5 +223,11 @@ public class RouteMapAnimator {
         List<LatLng> foregroundPoints = foregroundPolyline.getPoints();
         foregroundPoints.add(endLatLng);
         foregroundPolyline.setPoints(foregroundPoints);
+    }
+
+    public static float convertDpToPixel(float dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
     }
 }
