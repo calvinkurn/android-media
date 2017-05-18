@@ -38,6 +38,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -549,7 +550,24 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     @Override
     public void renderRiderCanceledRequest(RideRequest result) {
         Toast.makeText(getActivity(), "Rider Canceled Request", Toast.LENGTH_SHORT).show();
-        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
+        PlacePassViewModel source = new PlacePassViewModel();
+        source.setType(PlacePassViewModel.TYPE.OTHER);
+        source.setTitle(result.getPickup().getAddressName());
+        source.setAddress(result.getPickup().getAddress());
+        source.setAndFormatLatitude(result.getPickup().getLatitude());
+        source.setAndFormatLongitude(result.getPickup().getLongitude());
+
+        PlacePassViewModel destination = new PlacePassViewModel();
+        destination.setType(PlacePassViewModel.TYPE.OTHER);
+        destination.setTitle(result.getDestination().getAddressName());
+        destination.setAddress(result.getDestination().getAddress());
+        destination.setAndFormatLatitude(result.getDestination().getLatitude());
+        destination.setAndFormatLongitude(result.getDestination().getLongitude());
+
+        Intent intent = getActivity().getIntent();
+        intent.putExtra(OnTripActivity.EXTRA_PLACE_SOURCE, source);
+        intent.putExtra(OnTripActivity.EXTRA_PLACE_DESTINATION, destination);
+        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE, intent);
         getActivity().finish();
     }
 
