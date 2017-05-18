@@ -6,10 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
@@ -66,26 +64,37 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final int type = getItemViewType(position);
         final Product product = productList.get(position);
         if (type == TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM) {
-            ItemDescAndPriceHolder itemDescAndPriceHolder = (ItemDescAndPriceHolder) holder;
-            itemDescAndPriceHolder.tvTitlePrice.setText(product.getDesc());
-            itemDescAndPriceHolder.tvPrice.setText(product.getPrice());
+            setViewPriceDescription((ItemDescAndPriceHolder) holder, product);
         } else if (type == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
-            ItemPriceAdmin itemPriceAdmin = (ItemPriceAdmin) holder;
-            itemPriceAdmin.tvProductPrice.setText(product.getDesc());
-            itemPriceAdmin.tvProductDescription.setText(product.getDetail());
-            itemPriceAdmin.tvProductTotalPrice.setText(product.getPrice());
+            setViewPriceAdditionalFee((ItemPriceAdmin) holder, product);
         } else if (type == TYPE_HOLDER_PRODUCT_PROMO) {
-            ItemHolderPromoProduct itemHolderPromoProduct = (ItemHolderPromoProduct) holder;
-            itemHolderPromoProduct.tvProductPromoTitle.setText(product.getDesc());
-            itemHolderPromoProduct.tvProductPromoDescription.setText(product.getPromo()
-                    .getBonusText());
-            itemHolderPromoProduct.tvPromoProductPrice.setText(product.getPromo().getNewPrice());
-            itemHolderPromoProduct.tvProductPromoOldPrice.setText(product.getPrice());
-            itemHolderPromoProduct.tvProductPromoOldPrice
-                    .setPaintFlags(itemHolderPromoProduct.tvProductPromoOldPrice.getPaintFlags()
-                            | Paint.STRIKE_THRU_TEXT_FLAG);
+            setViewPromo((ItemHolderPromoProduct) holder, product);
         }
         setProductAvailability(holder, product);
+    }
+
+    private void setViewPriceDescription(ItemDescAndPriceHolder holder, Product product) {
+        holder.tvTitlePrice.setText(product.getDesc());
+        holder.tvPrice.setText(product.getPrice());
+    }
+
+    private void setViewPriceAdditionalFee(ItemPriceAdmin holder, Product product) {
+        holder.tvProductPrice.setText(product.getDesc());
+        holder.tvProductDescription.setText(product.getDetail());
+        holder.tvProductTotalPrice.setText(product.getPrice());
+    }
+
+    private void setViewPromo(ItemHolderPromoProduct holder, Product product) {
+        holder.tvProductPromoTitle.setText(product.getDesc());
+        if (product.getPromo().getBonusText().isEmpty())
+            holder.tvProductPromoDescription.setVisibility(View.GONE);
+        holder.tvProductPromoDescription.setText(product.getPromo()
+                .getBonusText());
+        holder.tvPromoProductPrice.setText(product.getPromo().getNewPrice());
+        holder.tvProductPromoOldPrice.setText(product.getPrice());
+        holder.tvProductPromoOldPrice
+                .setPaintFlags(holder.tvProductPromoOldPrice.getPaintFlags()
+                        | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     @Override

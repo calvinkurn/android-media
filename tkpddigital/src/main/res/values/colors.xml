@@ -7,4 +7,6 @@
     <color name="digital_item_title">#b3000000</color>
     <color name="digital_item_sub_title">#8a000000</color>
     <color name="price_new_promo">#ff5722</color>
+    <color name="digital_voucher_copied_color">#42b549</color>
+    <color name="digital_operator_search_bar_color">#f9f9f9</color>
 </resources>

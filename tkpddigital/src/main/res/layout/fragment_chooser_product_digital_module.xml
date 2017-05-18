@@ -18,7 +18,7 @@
         android:paddingStart="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
         android:paddingEnd="@dimen/padding_med"
-        android:background="#f9f9f9"
+        android:background="@color/digital_operator_search_bar_color"
         />
 
     <android.support.v7.widget.RecyclerView
