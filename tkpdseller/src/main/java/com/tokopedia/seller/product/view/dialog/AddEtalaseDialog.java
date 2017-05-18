@@ -30,6 +30,8 @@ public class AddEtalaseDialog extends TextPickerDialog {
     protected void onTextSubmited(String text) {
         if(text.trim().isEmpty()){
             textInputLayout.setError(getString(R.string.etalase_picker_add_etalase_name_empty));
+        } else if (text.trim().length() < 3) {
+            textInputLayout.setError(getString(R.string.etalase_picker_add_etalase_name_too_short));
         } else {
             super.onTextSubmited(text);
         }
