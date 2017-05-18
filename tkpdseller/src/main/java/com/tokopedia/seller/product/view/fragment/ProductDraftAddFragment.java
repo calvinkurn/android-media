@@ -16,6 +16,7 @@ import com.tokopedia.seller.product.di.component.DaggerProductDraftComponent;
 import com.tokopedia.seller.product.di.module.ProductDraftModule;
 import com.tokopedia.seller.product.utils.ViewUtils;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.presenter.ProductDraftPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductDraftView;
 
@@ -91,7 +92,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         if (model.getProductCatalogId() > 0) {
             productInfoViewHolder.setCatalog(model.getProductCatalogId(), model.getProductCatalogName());
         }
-        productImageViewHolder.setProductPhotos(model.getProductPhotos());
+        productImageViewHolder.setProductPhotos(model.getProductPhotos(), getStatusUpload() == ProductStatus.EDIT);
 
         productDetailViewHolder.setPriceUnit(model.getProductPriceCurrency());
         productDetailViewHolder.setPriceValue(model.getProductPrice());

@@ -89,6 +89,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
         ProductPhotoListDomainModel domainModel = new ProductPhotoListDomainModel();
         domainModel.setProductDefaultPicture(draftModel.getProductDefaultPicture());
         domainModel.setPhotos(mapPhotosDraftToDomain(draftModel.getPhotos()));
+        domainModel.setOriginalProductDefaultPicture(draftModel.getOriProductDefaultPicture());
         return domainModel;
     }
 
@@ -162,6 +163,7 @@ public class ProductDraftMapper implements Func1<String, UploadProductInputDomai
     private static ProductPhotoListDraftModel mapProductPhoto(ProductPhotoListDomainModel productPhotos) {
         ProductPhotoListDraftModel draftModel = new ProductPhotoListDraftModel();
         draftModel.setProductDefaultPicture(productPhotos.getProductDefaultPicture());
+        draftModel.setOriProductDefaultPicture(productPhotos.getOriginalProductDefaultPicture());
         draftModel.setPhotos(mapPhotosDomainToDraft(productPhotos.getPhotos()));
         return draftModel;
     }

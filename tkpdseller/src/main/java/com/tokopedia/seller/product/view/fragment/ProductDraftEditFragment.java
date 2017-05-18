@@ -67,7 +67,6 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
         super.onSuccessLoadProduct(model);
     }
 
-
     @Override
     protected void getCategoryRecommendation(String productName) {
         // Do nothing
@@ -152,6 +151,7 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
             }
         }
 
+        // No need to reselect primary picture. already set from getPhotos.
         productPhotos.setProductDefaultPicture(defaultImage);
         productPhotos.setPhotos(newPhotosList);
         return isChanging;

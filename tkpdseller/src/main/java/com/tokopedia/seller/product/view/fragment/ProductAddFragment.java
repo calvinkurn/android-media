@@ -45,6 +45,7 @@ import com.tokopedia.seller.product.view.holder.ProductScoreViewHolder;
 import com.tokopedia.seller.product.view.listener.ProductAddView;
 import com.tokopedia.seller.product.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.view.mapper.AnalyticsMapper;
+import com.tokopedia.seller.product.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -52,6 +53,7 @@ import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewMode
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.product.view.presenter.ProductAddPresenter;
+import com.tokopedia.seller.product.view.widget.ImagesSelectView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -425,9 +427,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onImagePickerItemClicked(int position, boolean isPrimary) {
+    public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary);
+        DialogFragment dialogFragment = ImageEditDialogFragment.newInstance(position, isPrimary,allowDelete);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         ((ImageEditDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
             @Override
@@ -460,7 +462,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
             @Override
             public void clickRemoveImage(int positions) {
-                productImageViewHolder.getImagesSelectView().removeImage();
+                ImagesSelectView imagesSelectView = productImageViewHolder.getImagesSelectView();
+                imagesSelectView.removeImage();
             }
         });
     }
