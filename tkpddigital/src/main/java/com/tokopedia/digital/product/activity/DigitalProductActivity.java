@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -24,6 +25,9 @@ import com.tokopedia.digital.product.fragment.DigitalProductFragment;
 public class DigitalProductActivity extends BasePresenterActivity
         implements DigitalProductFragment.ActionListener {
     public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
+    private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
+
+    private String titleToolbar;
     private DigitalCategoryDetailPassData passData;
 
     public static Intent newInstance(Context context, DigitalCategoryDetailPassData passData) {
@@ -98,9 +102,32 @@ public class DigitalProductActivity extends BasePresenterActivity
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_STATE_TITLE_TOOLBAR, titleToolbar);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
+        invalidateTitleToolBar();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateTitleToolBar();
+    }
 
     @Override
     public void updateTitleToolbar(String title) {
-        toolbar.setTitle(title);
+        this.titleToolbar = title;
+        invalidateTitleToolBar();
+    }
+
+    private void invalidateTitleToolBar() {
+        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 }

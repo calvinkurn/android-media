@@ -35,13 +35,15 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     public static final String EXTRA_CALLBACK_PRODUCT_DATA = "EXTRA_CALLBACK_PRODUCT_DATA";
     public static final String EXTRA_CALLBACK_OPERATOR_DATA = "EXTRA_CALLBACK_OPERATOR_DATA";
 
+    private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
+
 
     private List<Operator> operatorListData;
     private List<Product> productListData;
 
     private String operatorStyleView;
     private String productStyleView;
-    private String titleChooser;
+    private String titleToolbar;
 
 
     public static Intent newInstanceProductChooser(
@@ -75,7 +77,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         this.productListData = extras.getParcelableArrayList(EXTRA_LIST_DATA_PRODUCT);
         this.productStyleView = extras.getString(EXTRA_PRODUCT_STYLE_VIEW);
         this.operatorStyleView = extras.getString(EXTRA_OPERATOR_STYLE_VIEW);
-        this.titleChooser = extras.getString(EXTRA_TITLE_CHOOSER);
+        if (titleToolbar == null) titleToolbar = extras.getString(EXTRA_TITLE_CHOOSER);
     }
 
     @Override
@@ -109,7 +111,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
 
     @Override
     protected void setViewListener() {
-        if (!TextUtils.isEmpty(titleChooser)) toolbar.setTitle(titleChooser);
+
     }
 
     @Override
@@ -146,5 +148,27 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        invalidateTitleToolBar();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_STATE_TITLE_TOOLBAR, titleToolbar);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        this.titleToolbar = savedInstanceState.getString(EXTRA_STATE_TITLE_TOOLBAR);
+        invalidateTitleToolBar();
+    }
+
+    private void invalidateTitleToolBar() {
+        if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
+    }
 
 }

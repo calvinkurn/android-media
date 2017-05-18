@@ -24,11 +24,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.activity.DigitalChooserActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.activity.DigitalWebActivity"
-            android:label="@string/app_name"
             android:screenOrientation="portrait" />
     </application>
 
