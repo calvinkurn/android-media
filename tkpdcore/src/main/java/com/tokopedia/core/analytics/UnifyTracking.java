@@ -1613,7 +1613,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickTruecaller() {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.OTP,
+                AppEventTracking.Event.CLICK_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.TRUECALLER_ATTEMPT
@@ -1622,7 +1622,7 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventClickTruecallerConfirm() {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.OTP,
+                AppEventTracking.Event.CLICK_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.TRUECALLER_CONFIRM

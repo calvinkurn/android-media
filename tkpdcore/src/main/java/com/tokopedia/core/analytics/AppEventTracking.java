@@ -116,6 +116,7 @@ public interface AppEventTracking {
         String EVENT_OTP = "OTPSuccess";
         String CLICK_VIEW_ALL_OS = "clickOS";
         String IMPRESSION_OTP = "impressionOtp";
+        String CLICK_OTP = "clickOtp";
     }
 
     interface Category {
