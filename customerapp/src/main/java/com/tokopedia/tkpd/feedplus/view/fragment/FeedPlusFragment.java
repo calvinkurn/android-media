@@ -22,24 +22,19 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusAdapter;
-import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
-import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactoryImpl;
-import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
-import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
-import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
-import com.tokopedia.tkpd.feedplus.view.viewmodel.PromoViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -261,7 +256,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToFeedDetail() {
+    public void onGoToFeedDetail(ProductCardViewModel productCardViewModel) {
+        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), productCardViewModel);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onGoToShopDetail() {
 
     }
 

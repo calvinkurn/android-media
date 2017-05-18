@@ -12,14 +12,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 
 import butterknife.BindView;
-
-import static com.google.ads.conversiontracking.h.a.a;
 
 /**
  * @author by nisie on 5/16/17.
@@ -61,13 +59,14 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter.getList().size() == 1) {
+                if (adapter.getData().getListProduct().size() == 1) {
                     return 6;
-                } else if (adapter.getList().size() % 3 == 0 || adapter.getList().size() > 6) {
+                } else if (adapter.getData().getListProduct().size() % 3 == 0
+                        || adapter.getData().getListProduct().size() > 6) {
                     return 2;
-                } else if (adapter.getList().size() % 2 == 0) {
+                } else if (adapter.getData().getListProduct().size() % 2 == 0) {
                     return 3;
-                } else if (adapter.getList().size() == 5) {
+                } else if (adapter.getData().getListProduct().size() == 5) {
                     return getSpanSizeFor5Item(position);
                 } else {
                     return 0;
@@ -96,11 +95,11 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
     @Override
     public void bind(ProductCardViewModel productCardViewModel) {
         setHeader(productCardViewModel);
-        adapter.setList(productCardViewModel.getListProduct());
+        adapter.setData(productCardViewModel);
         setFooter(productCardViewModel);
     }
 
-    public void setHeader(ProductCardViewModel productCardViewModel) {
+    public void setHeader(final ProductCardViewModel productCardViewModel) {
         String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
                 + productCardViewModel.getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
@@ -112,6 +111,19 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
             goldMerchantBadge.setVisibility(View.GONE);
 
         time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
+
+        shopAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToShopDetail();
+            }
+        });
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToFeedDetail(productCardViewModel);
+            }
+        });
 
     }
 

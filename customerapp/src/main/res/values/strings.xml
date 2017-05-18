@@ -20,4 +20,7 @@
     <string name="inspiration_header">Inspired by your ,%1$s.</string>
     <string name="official_store_header">Produk Terbaik Official Store.</string>
     <string name="favorite">Favoritkan</string>
+    <string name="title_detail_feed">Detail Feed</string>
+    <string name="see_shop">Lihat Toko</string>
+    <string name="wholesale">Grosir</string>
 </resources>

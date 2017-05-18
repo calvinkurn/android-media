@@ -1,25 +1,24 @@
 package com.tokopedia.tkpd.feedplus.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.tkpd.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.FeedPlusDetail;
 
 import javax.inject.Inject;
 
 /**
- * @author by nisie on 5/15/17.
+ * @author by nisie on 5/18/17.
  */
 
-public class FeedPlusPresenter
-        extends BaseDaggerPresenter<FeedPlus.View>
-        implements FeedPlus.Presenter {
+public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.View>
+        implements FeedPlusDetail.Presenter  {
 
     @Inject
-    FeedPlusPresenter() {
+    FeedPlusDetailPresenter() {
 
     }
 
     @Override
-    public void attachView(FeedPlus.View view) {
+    public void attachView(FeedPlusDetail.View view) {
         super.attachView(view);
     }
 
@@ -27,6 +26,4 @@ public class FeedPlusPresenter
     public void detachView() {
         super.detachView();
     }
-
-
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus.view.adapter.viewholder;
+package com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;

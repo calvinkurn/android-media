@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.feedplus.view.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
 
