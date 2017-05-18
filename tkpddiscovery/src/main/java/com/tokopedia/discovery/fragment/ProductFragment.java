@@ -91,10 +91,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private static final int LANDSCAPE_COLUMN_MAIN = 3;
     private static final int PORTRAIT_COLUMN_MAIN = 2;
 
-    private static final int PORTRAIT_COLUMN_HEADER = 2;
-    private static final int PORTRAIT_COLUMN_FOOTER = 2;
-    private static final int PORTRAIT_COLUMN = 1;
-
     @BindView(R2.id.fragmentv2list)
     RecyclerView mRecyclerView;
 
@@ -207,6 +203,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void onCallProductServiceResult(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(true, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -303,11 +300,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public int getTopAdsPaging() {
-        return productAdapter.getTopAddsCounter();
-    }
-
-    @Override
     public void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.hideLoading();
         productAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
@@ -320,6 +312,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void setHotlistData(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.hideLoading();
         topAdsRecyclerAdapter.setHasHeader(true);
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity) getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -340,7 +333,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
 
     @Override
     public void displayTopAds() {
-        productAdapter.setSearchNotFound();
+        //TODO implement on next
+//        productAdapter.setSearchNotFound();
     }
 
     @Override
@@ -364,7 +358,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                         || topAdsRecyclerAdapter.isLoading(position)
                         || productAdapter.isHotListBanner(position)
                         || productAdapter.isCategoryHeader(position)
-                        || productAdapter.isEmptySearch(position)) {
+                        || productAdapter.isEmptySearch(position)
+                        || productAdapter.isEmpty()) {
                     return spanCount;
                 } else {
                     return 1;
@@ -379,13 +374,13 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.PRODUCT)
+                .topAdsParams(populatedNetworkParams())
                 .build();
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), productAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setAdsInfoClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsParams(populatedNetworkParams());
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override

@@ -20,6 +20,7 @@ public class Config {
     private String clientId;
     private Endpoint endpoint;
     private boolean withPreferedCategory;
+    private TopAdsParams topAdsParams;
 
     public Config(Builder builder) {
         this.baseUrl = builder.baseUrl;
@@ -29,6 +30,7 @@ public class Config {
         this.clientId = builder.clientId;
         this.withPreferedCategory = builder.withPreferedCategory;
         this.endpoint = builder.endpoint;
+        this.topAdsParams = builder.topAdsParams;
     }
 
     public boolean isWithPreferedCategory() {
@@ -59,6 +61,10 @@ public class Config {
         return clientId;
     }
 
+    public TopAdsParams getTopAdsParams() {
+        return topAdsParams;
+    }
+
     public static class Builder {
 
         private String baseUrl;
@@ -68,6 +74,7 @@ public class Config {
         private String clientId;
         private Endpoint endpoint;
         private boolean withPreferedCategory;
+        private TopAdsParams topAdsParams = new TopAdsParams();
 
         public Builder() {
             baseUrl = TOPADS_URL;
@@ -95,7 +102,10 @@ public class Config {
             return this;
         }
 
-
+        public Builder topAdsParams(TopAdsParams topAdsParams){
+            this.topAdsParams = topAdsParams;
+            return this;
+        }
 
         public Config build() {
             return new Config(this);

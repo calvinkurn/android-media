@@ -166,12 +166,12 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.SHOP)
+                .topAdsParams(populatedNetworkParams())
                 .build();
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseShopAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-//        topAdsRecyclerAdapter.setTopAdsParams(populatedNetworkParams());
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -208,13 +208,16 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     }
 
     // to determine size of grid columns
-    GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
+    private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
+
                 if (topAdsRecyclerAdapter.isTopAdsViewHolder(position)
                         || topAdsRecyclerAdapter.isLoading(position)
-                        || browseShopAdapter.isEmptySearch(position)) {
+                        || browseShopAdapter.isEmptySearch(position)
+                        || browseShopAdapter.isLoading()
+                        || browseShopAdapter.isEmpty()) {
                     return 2;
                 } else {
                     return 1;
@@ -225,15 +228,27 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public void setLoading(boolean isLoading) {
-        if (browseShopAdapter != null) browseShopAdapter.setIsLoading(isLoading);
+        browseShopAdapter.setIsLoading(isLoading);
+//        if (isLoading) {
+//            topAdsRecyclerAdapter.showLoading();
+//        } else {
+//            topAdsRecyclerAdapter.hideLoading();
+//        }
     }
 
     @Override
-    public void onCallProductServiceLoadMore(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        topAdsRecyclerAdapter.hideLoading();
+    public void setShopData(List<ShopModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         browseShopAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseShopAdapter.setPagingHandlerModel(pagingHandlerModel);
         browseShopAdapter.incrementPage();
+        Log.d(TAG, "Data size " + browseShopAdapter.getItemCount());
+    }
+
+    @Override
+    public void setEmptyState() {
+        browseShopAdapter.setSearchNotFound();
+        browseShopAdapter.notifyItemInserted(0);
     }
 
     @Override
@@ -257,7 +272,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
 
     @Override
     public int getDataSize() {
-        if (browseShopAdapter != null){
+        if (browseShopAdapter != null) {
             if (browseShopAdapter.getData() != null) {
                 return browseShopAdapter.getData().size();
             } else {

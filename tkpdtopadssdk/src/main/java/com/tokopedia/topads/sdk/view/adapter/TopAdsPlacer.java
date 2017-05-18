@@ -37,16 +37,15 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private TopAdsListener topAdsListener;
     private TopAdsItemClickListener adsItemClickListener;
     private DataObserver observer;
-    private TopAdsParams adsParams;
     private List<Item> items = new ArrayList<>();
     private int mPage = 1;
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
+    private boolean shouldLoadAds = true; //default load ads
 
     public TopAdsPlacer(
             Context context, TopAdsAdapterTypeFactory typeFactory, DataObserver observer) {
         presenter = new TopAdsPresenter(context);
-        adsParams = new TopAdsParams();
         this.observer = observer;
         typeFactory.setItemClickListener(this);
         initPresenter();
@@ -68,18 +67,30 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         this.topAdsListener = topAdsListener;
     }
 
+    public void setShouldLoadAds(boolean shouldLoadAds) {
+        this.shouldLoadAds = shouldLoadAds;
+    }
+
     public void onChanged() {
         observerType = ObserverType.CHANGE;
         if (hasHeader)
             headerPlaced = false;
-        loadTopAds();
+        if (shouldLoadAds) {
+            loadTopAds();
+        } else {
+            renderItemWithoutAds(ajustedPositionStart, ajustedItemCount);
+        }
     }
 
     public void onItemRangeInserted(final int positionStart, final int itemCount) {
         ajustedPositionStart = positionStart;
         ajustedItemCount = itemCount;
         observerType = ObserverType.ITEM_RANGE_INSERTED;
-        loadTopAds();
+        if (shouldLoadAds) {
+            loadTopAds();
+        } else {
+            renderItemWithoutAds(ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
+        }
     }
 
     @Override
@@ -90,11 +101,6 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     @Override
     public void setMaxItems(int items) {
         presenter.setMaxItems(items);
-    }
-
-    @Override
-    public void setTopAdsParams(TopAdsParams adsParams) {
-        this.adsParams = adsParams;
     }
 
     public void setHasHeader(boolean hasHeader) {
@@ -140,8 +146,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void loadTopAds() {
-        adsParams.getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
-        presenter.setParams(adsParams);
+        presenter.getTopAdsParam().getParam().put(TopAdsParams.KEY_PAGE, String.valueOf(mPage));
         presenter.loadTopAds();
     }
 
@@ -150,10 +155,10 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         switch (observerType) {
             case ObserverType.CHANGE:
                 reset();
-                renderItems(list, ajustedPositionStart, ajustedItemCount);
+                renderItemsWithAds(list, ajustedPositionStart, ajustedItemCount);
                 break;
             case ObserverType.ITEM_RANGE_INSERTED:
-                renderItems(list, ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
+                renderItemsWithAds(list, ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
                 break;
         }
         observer.onStreamLoaded(observerType);
@@ -162,7 +167,20 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         }
     }
 
-    private void renderItems(List<Item> list, int positionStart, int itemCount) {
+    private void renderItemWithoutAds(int positionStart, int itemCount){
+        ArrayList<Item> arrayList = new ArrayList<>();
+        for (int i = positionStart; i < itemCount; i++) {
+            ClientViewModel model = new ClientViewModel();
+            model.setPosition(i);
+            Log.d(TAG, "add new item pos " + i);
+            arrayList.add(model);
+        }
+        ajustedPositionStart = getItemCount();
+        ajustedItemCount = arrayList.size();
+        items.addAll(arrayList);
+    }
+
+    private void renderItemsWithAds(List<Item> list, int positionStart, int itemCount) {
         ArrayList<Item> arrayList = new ArrayList<>();
         Log.d(TAG, "start " + positionStart + " item count " + itemCount);
         for (int i = positionStart; i < itemCount; i++) {
@@ -184,8 +202,8 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void notifyAdsErrorLoaded(int errorCode, String message) {
-        Log.e(TAG, "Ads failed to load error message "+message);
-        renderItems(Collections.<Item>emptyList(), ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
+        Log.e(TAG, "Ads failed to load error message " + message);
+        renderItemsWithAds(Collections.<Item>emptyList(), ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
         observer.onStreamLoaded(observerType);
         if (topAdsListener != null) {
             topAdsListener.onTopAdsFailToLoad(errorCode, message);

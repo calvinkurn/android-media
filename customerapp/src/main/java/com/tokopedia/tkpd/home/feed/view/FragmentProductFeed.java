@@ -380,6 +380,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .withPreferedCategory()
                 .setEndpoint(Endpoint.PRODUCT)
+                .topAdsParams(generateTopAdsParams())
                 .build();
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
@@ -387,7 +388,6 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
         topAdsRecyclerAdapter.setSpanSizeLookup(getSpanSizeLookup());
         topAdsRecyclerAdapter.setHasHeader(true);
         topAdsRecyclerAdapter.setConfig(config);
-        topAdsRecyclerAdapter.setTopAdsParams(generateTopAdsParams());
     }
 
     @Override

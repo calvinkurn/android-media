@@ -235,12 +235,12 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
                 .setEndpoint(Endpoint.PRODUCT)
+                .topAdsParams(populatedNetworkParams())
                 .build();
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), browseCatalogAdapter);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
-        topAdsRecyclerAdapter.setTopAdsParams(populatedNetworkParams());
         topAdsRecyclerAdapter.setConfig(config);
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -248,7 +248,6 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
                 presenter.loadMore(getActivity());
             }
         });
-        list_catalog.setLayoutManager(gridLayoutManager);
         list_catalog.setAdapter(topAdsRecyclerAdapter);
         changeLayoutType(((BrowseProductActivity) getActivity()).getGridType());
     }
@@ -297,6 +296,7 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     @Override
     public void notifyChangeData(List<CatalogModel> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.hideLoading();
+        topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         browseCatalogAdapter.addAll(true, new ArrayList<RecyclerViewItem>(model));
         browseCatalogAdapter.setPagingHandlerModel(pagingHandlerModel);
         browseCatalogAdapter.setGridView(((BrowseProductActivity) getActivity()).getGridType());
@@ -339,6 +339,15 @@ public class CatalogFragment extends BaseFragment<Catalog> implements CatalogVie
     public BrowseCatalogModel getDataModel() {
         Log.d(TAG, "presenter " + presenter);
         return ((CatalogImpl) presenter).getCatalogModel();
+    }
+
+    @Override
+    public void setLoading(boolean isLoading) {
+        if(isLoading){
+            topAdsRecyclerAdapter.showLoading();
+        } else {
+            topAdsRecyclerAdapter.hideLoading();
+        }
     }
 
     @Override

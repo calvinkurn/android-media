@@ -9,7 +9,9 @@ package com.tokopedia.discovery.adapter.browseparent;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +19,28 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SquareImageView;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.List;
 
@@ -41,6 +55,8 @@ import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_T
 public class BrowseShopAdapter extends ProductAdapter {
 
 
+    PagingHandler.PagingHandlerModel pagingHandlerModel;
+    int page = 1;
 
     public BrowseShopAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
@@ -48,13 +64,131 @@ public class BrowseShopAdapter extends ProductAdapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("SHOP_ADAPTER", "viewType "+viewType);
         switch (viewType){
             case SHOP_MODEL_TYPE:
                 return createViewShop(parent);
+            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                return createEmptySearch(parent);
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
     }
+
+//    public void addAll(boolean reload, List<RecyclerViewItem> datas) {
+//        addAll(false, reload, datas);
+//    }
+//
+//    public void addAll(boolean withClear, boolean reload, List<RecyclerViewItem> datas) {
+//        int positionStart = getItemCount();
+//        int itemCount = datas.size();
+//        if (withClear) {
+//            this.data.clear();
+//            resetPaging();
+//            positionStart = 0;
+//        }
+//        this.data.addAll(datas);
+//        if (reload)
+//            notifyItemRangeInserted(positionStart, itemCount);
+//    }
+//
+//    public void addAll(List<RecyclerViewItem> datas){
+//        this.data.addAll(datas);
+//    }
+//
+//    public void resetPaging() {
+//        page = 1;
+//    }
+//
+//    public boolean checkHasNext() {
+//        return pagingHandlerModel.getStartIndex() != -1;
+//    }
+//
+//    public PagingHandler.PagingHandlerModel getPagingHandlerModel() {
+//        return pagingHandlerModel;
+//    }
+//
+//    public void setPagingHandlerModel(PagingHandler.PagingHandlerModel pagingHandlerModel) {
+//        this.pagingHandlerModel = pagingHandlerModel;
+//    }
+//
+//    public int getPage() {
+//        return page;
+//    }
+//
+//    public void setPage(int page) {
+//        this.page = page;
+//    }
+//
+//    public void incrementPage() {
+//        this.page++;
+//    }
+//
+//    public boolean isEmptySearch(int position) {
+//        if (checkDataSize(position))
+//            return data.get(position).getType() == TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
+//        return false;
+//    }
+
+//    public void setSearchNotFound() {
+//        data.add(new EmptySearchItem());
+//    }
+//
+//    public static class EmptySearchItem extends RecyclerViewItem {
+//        public EmptySearchItem() {
+//            setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
+//        }
+//    }
+//
+//    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_empty_state, parent, false);
+//        return new TopAdsEmptyStateViewHolder(view);
+//    }
+//
+//    public static class TopAdsEmptyStateViewHolder extends RecyclerView.ViewHolder implements
+//            TopAdsItemClickListener {
+//        @BindView(R2.id.topads)
+//        TopAdsView topAdsView;
+//        private Context context;
+//
+//        public TopAdsEmptyStateViewHolder(View itemView) {
+//            super(itemView);
+//            context = itemView.getContext();
+//            ButterKnife.bind(this, itemView);
+//            Config topAdsconfig = new Config.Builder()
+//                    .setSessionId(GCMHandler.getRegistrationId(context))
+//                    .setUserId(SessionHandler.getLoginID(context))
+//                    .setEndpoint(Endpoint.SHOP)
+//                    .withPreferedCategory()
+//                    .build();
+//            topAdsView.setConfig(topAdsconfig);
+//            topAdsView.setAdsItemClickListener(this);
+//        }
+//
+//        public void loadTopAds(){
+//            topAdsView.loadTopAds();
+//        }
+//
+//        @Override
+//        public void onProductItemClicked(Product product) {
+//            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
+//                    product.getId());
+//            context.startActivity(intent);
+//        }
+//
+//        @Override
+//        public void onShopItemClicked(Shop shop) {
+//            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+//            Intent intent = new Intent(context, ShopInfoActivity.class);
+//            intent.putExtras(bundle);
+//            context.startActivity(intent);
+//        }
+//
+//        @Override
+//        public void onAddFavorite(Data data) {
+//
+//        }
+//    }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -62,10 +196,27 @@ public class BrowseShopAdapter extends ProductAdapter {
             case SHOP_MODEL_TYPE:
                 ((ShopViewHolder)holder).bindData(context, getData().get(position), position);
                 break;
+//            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+//                ((TopAdsEmptyStateViewHolder) holder).loadTopAds();
+//                break;
             default:
                 super.onBindViewHolder(holder, position);
         }
     }
+
+//    @Override
+//    public int getItemViewType(int position) {
+//        if (checkDataSize(position)) {
+//            RecyclerViewItem recyclerViewItem = data.get(position);
+//            return isInType(recyclerViewItem);
+//        } else {
+//            return super.getItemViewType(position);
+//        }
+//    }
+
+//    private boolean checkDataSize(int position) {
+//        return data != null && data.size() > 0 && position > -1 && position < data.size();
+//    }
 
     public static ShopViewHolder createViewShop(ViewGroup parent) {
         View itemLayoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_item_shop, parent, false);
@@ -138,14 +289,14 @@ public class BrowseShopAdapter extends ProductAdapter {
         }
     }
 
-    @Override
     protected int isInType(RecyclerViewItem recyclerViewItem) {
         switch (recyclerViewItem.getType()){
             case SHOP_MODEL_TYPE:
-                return recyclerViewItem.getType();
+//            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+//                return recyclerViewItem.getType();
+            default:
+                return -1;
         }
-
-        return super.isInType(recyclerViewItem);
     }
 
 

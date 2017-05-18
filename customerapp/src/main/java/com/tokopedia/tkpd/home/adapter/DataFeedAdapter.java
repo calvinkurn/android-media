@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
 import com.tokopedia.core.home.adapter.ProductFeedAdapter;
@@ -32,7 +33,6 @@ import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.SimpleHomeActivity;

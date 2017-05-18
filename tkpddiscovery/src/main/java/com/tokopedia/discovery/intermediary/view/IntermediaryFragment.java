@@ -160,21 +160,20 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderTopAds() {
+        TopAdsParams params = new TopAdsParams();
+        params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
+        params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
+        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
+
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(getActivity()))
+                .topAdsParams(params)
                 .build();
 
         topAdsView.setAdsItemClickListener(this);
         topAdsView.setAdsListener(this);
         topAdsView.setConfig(config);
-
-        TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
-        params.getParam().put(TopAdsParams.KEY_SRC,SRC_INTERMEDIARY_VALUE);
-        params.getParam().put(TopAdsParams.KEY_EP,DEFAULT_KEY_EP);
-        params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID,departmentId);
-        topAdsView.setTopAdsParams(params);
         topAdsView.loadTopAds();
     }
 

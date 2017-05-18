@@ -137,11 +137,6 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void setTopAdsParams(TopAdsParams adsParams) {
-        presenter.setParams(adsParams);
-    }
-
-    @Override
     public void loadTopAds() {
         adsHeader.setVisibility(GONE);
         presenter.loadTopAds();

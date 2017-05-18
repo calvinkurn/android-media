@@ -22,6 +22,8 @@ public interface AdsPresenter <V extends AdsView>{
 
     void setParams(TopAdsParams adsParams);
 
+    TopAdsParams getTopAdsParam();
+
     void setMaxItems(int items);
 
     void setEndpoinParam(String ep);

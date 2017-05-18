@@ -53,6 +53,7 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
 
     public void setConfig(Config config) {
         this.config = config;
+        this.adsParams = config.getTopAdsParams();
     }
 
     @Override
@@ -110,6 +111,11 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     public void openShopTopAds(String click_url, final Shop shop) {
         openTopAdsUseCase.execute(click_url, adsView);
         adsView.notifyShopClickListener(shop);
+    }
+
+    @Override
+    public TopAdsParams getTopAdsParam() {
+        return adsParams;
     }
 
     @Override

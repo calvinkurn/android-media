@@ -132,10 +132,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         placer.setTopAdsListener(topAdsListener);
     }
 
-    public void setTopAdsParams(TopAdsParams adsParams) {
-        placer.setTopAdsParams(adsParams);
-    }
-
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -275,6 +271,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             notifyItemRemoved(placer.getItemCount());
             loadMore = false;
         }
+    }
+
+    public void shouldLoadAds(boolean loadAds){
+        placer.setShouldLoadAds(loadAds);
     }
 
     public interface OnLoadListener {

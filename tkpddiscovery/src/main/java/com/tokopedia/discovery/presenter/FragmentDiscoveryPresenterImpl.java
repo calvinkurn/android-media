@@ -336,7 +336,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                 item.setProductAlreadyWishlist(false);
                             }
                         }
-                        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+                        view.onCallProductServiceResult(totalProduct, productItems, pagingHandlerModel);
                     }
                 });
     }
