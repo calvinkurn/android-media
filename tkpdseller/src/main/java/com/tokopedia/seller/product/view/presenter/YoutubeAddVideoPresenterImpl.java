@@ -38,17 +38,19 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
 
     @Override
     public void fetchYoutube(List<String> videoIds) {
-        if (videoIds != null) {
-            if (isViewAttached()) {
-                getView().showLoading();
-            }
-            List<RequestParams> requestParamses = new ArrayList<>();
 
-            for (String videoId : videoIds) {
-                requestParamses.add(generateParam(videoId));
-            }
-            youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds));
+        if (videoIds == null || videoIds.size() <= 0)
+            return;
+      
+        if (isViewAttached()) {
+            getView().showLoading();
         }
+
+        List<RequestParams> requestParamses = new ArrayList<>();
+        for (String videoId : videoIds) {
+            requestParamses.add(generateParam(videoId));
+        }
+        youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds));
     }
 
     public void setYoutubeActView(YoutubeAddVideoActView youtubeActView) {
