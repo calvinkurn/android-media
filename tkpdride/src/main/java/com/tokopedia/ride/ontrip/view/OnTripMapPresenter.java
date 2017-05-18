@@ -429,6 +429,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void actionShareEta() {
+        getView().showShareEtaProgress();
+
         getRideRequestMapUseCase.execute(getView().getShareEtaParam(), new Subscriber<String>() {
             @Override
             public void onCompleted() {
@@ -439,6 +441,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
+                    getView().hideShareEtaProgress();
                     getView().showFailedShare();
                 }
             }
@@ -446,6 +449,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
             @Override
             public void onNext(String shareUrl) {
                 if (isViewAttached()) {
+                    getView().hideShareEtaProgress();
                     getView().showShareDialog(shareUrl);
                 }
             }

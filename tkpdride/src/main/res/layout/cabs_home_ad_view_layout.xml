@@ -18,9 +18,9 @@
         android:id="@+id/crux_cabs_ad_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:layout_weight="1.0"
         android:ellipsize="marquee"
         android:maxLines="2"
@@ -34,7 +34,6 @@
         android:id="@+id/crux_cabs_ad_cross"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="5dp"
-        android:padding="10dp"
+        android:layout_marginRight="12dp"
         android:src="@drawable/crux_cabs_cross_white" />
 </LinearLayout>

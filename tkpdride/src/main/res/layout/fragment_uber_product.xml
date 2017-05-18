@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <include
-            layout="@layout/crux_cabs_home_ad_layout"
+            layout="@layout/cabs_home_ad_view_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -55,9 +55,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="4dp"
                     android:gravity="left"
-                    android:paddingBottom="@dimen/fifteen_dp"
+                    android:paddingBottom="@dimen/twelve_dp"
                     android:paddingLeft="@dimen/fifteen_dp"
-                    android:paddingTop="@dimen/fifteen_dp"
+                    android:paddingTop="@dimen/twelve_dp"
                     android:text="All Cabs"
                     android:textColor="@color/shop_sub_cat"
                     android:textSize="@dimen/twelve_dp" />
@@ -68,8 +68,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:drawablePadding="@dimen/five_dp"
-                    android:paddingBottom="@dimen/fifteen_dp"
-                    android:paddingTop="@dimen/fifteen_dp"
+                    android:paddingBottom="@dimen/twelve_dp"
+                    android:paddingTop="@dimen/twelve_dp"
                     android:text="Time"
                     android:textColor="@color/shop_sub_cat"
                     android:textSize="@dimen/twelve_dp" />
@@ -81,7 +81,9 @@
                     android:layout_alignParentRight="true"
                     android:drawablePadding="@dimen/five_dp"
                     android:gravity="right"
-                    android:padding="@dimen/fifteen_dp"
+                    android:paddingBottom="@dimen/twelve_dp"
+                    android:paddingRight="@dimen/fifteen_dp"
+                    android:paddingTop="@dimen/twelve_dp"
                     android:text="Fare"
                     android:textColor="@color/shop_sub_cat"
                     android:textSize="@dimen/twelve_dp" />

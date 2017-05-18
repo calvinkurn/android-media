@@ -164,6 +164,10 @@ public interface OnTripMapContract {
         String getActiveProductNameInCache();
 
         void saveActiveProductName(String displayName);
+
+        void showShareEtaProgress();
+
+        void hideShareEtaProgress();
     }
 
     interface Presenter extends CustomerPresenter<View> {

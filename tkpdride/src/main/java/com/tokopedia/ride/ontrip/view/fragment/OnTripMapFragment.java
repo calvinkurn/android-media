@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,7 +39,6 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -151,6 +151,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private boolean isAcceptedUberNotificationShown = false;
     private boolean isRouteAlreadyDrawed;
     private int markerId;
+    private ProgressDialog mProgressDialog;
 
     public static OnTripMapFragment newInstance(Bundle bundle) {
         OnTripMapFragment fragment = new OnTripMapFragment();
@@ -804,7 +805,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void showShareDialog(String shareUrl) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.RIDE_TYPE)
-                .setName(getString(R.string.share_ride_description))
+                .setName(getString(R.string.share_ride_title))
                 .setTextContent(getString(R.string.share_ride_description))
                 .setUri(shareUrl)
                 .build();
@@ -1196,5 +1197,19 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void saveActiveProductName(String displayName) {
         RideConfiguration configuration = new RideConfiguration(getActivity());
         configuration.saveActiveProductName(displayName);
+    }
+
+    @Override
+    public void showShareEtaProgress() {
+        mProgressDialog = new ProgressDialog(getActivity());
+        mProgressDialog.setMessage(getString(R.string.loading));
+        mProgressDialog.show();
+    }
+
+    @Override
+    public void hideShareEtaProgress() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 }

@@ -455,13 +455,13 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
     @Override
     public void actionAdsShowed() {
-        mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx * 1.5);
-        mSlidingUpPanelLayout.setPanelHeight(mSlidingPanelMinHeightInPx);
+        //mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx * 1.5);
+        //mSlidingUpPanelLayout.setPanelHeight(mSlidingPanelMinHeightInPx);
     }
 
     @Override
     public void actionAdsHidden() {
-        mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx / 1.5);
+        //mSlidingPanelMinHeightInPx = (int) (mSlidingPanelMinHeightInPx / 1.5);
     }
 
     @Override
