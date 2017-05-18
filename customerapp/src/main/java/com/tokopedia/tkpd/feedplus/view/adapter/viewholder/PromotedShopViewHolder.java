@@ -47,14 +47,6 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
     public PromotedShopViewHolder(View itemView) {
         super(itemView);
 
-//        gridLayoutManager = new GridLayoutManager(itemView.getContext(), 2, LinearLayoutManager.HORIZONTAL, false);
-//        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-//            @Override
-//            public int getSpanSize(int position) {
-//                return getSpan(position);
-//            }
-//        });
-
         SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
                 new SpannedGridLayoutManager.GridSpanLookup() {
                     @Override
@@ -74,14 +66,6 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
         recyclerView.setLayoutManager(manager);
         adapter = new PromotedShopAdapter();
         recyclerView.setAdapter(adapter);
-    }
-
-    private int getSpan(int position) {
-        if(position == 0){
-            return 2;
-        }else {
-            return 1;
-        }
     }
 
     @Override
