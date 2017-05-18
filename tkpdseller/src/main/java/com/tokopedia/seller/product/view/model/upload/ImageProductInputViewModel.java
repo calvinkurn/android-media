@@ -1,7 +1,5 @@
 package com.tokopedia.seller.product.view.model.upload;
 
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.product.constant.ImageStatusTypeDef;

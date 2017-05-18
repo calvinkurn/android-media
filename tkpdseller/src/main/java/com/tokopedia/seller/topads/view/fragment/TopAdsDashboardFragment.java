@@ -34,6 +34,8 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         void onLoadDataSuccess();
 
         void onCreditAdded();
+
+        void startShowCase();
     }
 
     SwipeToRefresh swipeToRefresh;
@@ -213,6 +215,12 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     protected void onLoadDataSuccess() {
         if (callback != null) {
             callback.onLoadDataSuccess();
+        }
+    }
+
+    protected void showShowCase() {
+        if (callback != null) {
+            callback.startShowCase();
         }
     }
 

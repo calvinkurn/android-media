@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentTransaction;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.fragment.ProductDuplicateFragment;
 import com.tokopedia.seller.product.view.fragment.ProductEditFragment;
 
 /**

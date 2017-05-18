@@ -1,7 +1,6 @@
 package com.tokopedia.seller.product.utils;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 

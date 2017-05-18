@@ -114,7 +114,7 @@ public class DialogLogoutFragment extends DialogFragment {
                                         NotificationModHandler notif = new NotificationModHandler(activity);
                                         notif.dismissAllActivedNotifications();
 
-                                        NotificationModHandler.clearCacheAllNotification();
+                                        NotificationModHandler.clearCacheAllNotification(getActivity());
                                         SessionHandler.onLogoutListener logout = (SessionHandler.onLogoutListener) activity;
                                         if (logout != null)
                                             logout.onLogout(true);

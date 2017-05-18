@@ -1,11 +1,6 @@
 
 package com.tokopedia.seller.product.view.model.scoringproduct;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
-
 public class TotalScoringProductView {
     private String valueScoreProduct;
     private int countScoreProduct;

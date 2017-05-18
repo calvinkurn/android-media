@@ -27,6 +27,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.inbox.rescenter.create.customdialog.BaseUploadImageDialog;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.customadapter.AttachmentAdapter;
@@ -40,8 +42,6 @@ import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPass
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterImpl;
 import com.tokopedia.inbox.rescenter.edit.presenter.SellerEditResCenterPresenter;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
-import com.tokopedia.core.util.AppUtils;
-import com.tokopedia.core.util.RequestPermissionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,11 @@ public class SellerEditResCenterFormFragment extends BasePresenterFragment<Selle
         passData = savedState.getParcelable(ARGS_PARAM_PASS_DATA);
         setLoading(false);
         setMainView(true);
-        presenter.renderView(passData.getFormData());
+        if (passData.getFormData() == null) {
+            presenter.setOnLaunching(getActivity());
+        } else {
+            presenter.renderView(passData.getFormData());
+        }
     }
 
     @Override

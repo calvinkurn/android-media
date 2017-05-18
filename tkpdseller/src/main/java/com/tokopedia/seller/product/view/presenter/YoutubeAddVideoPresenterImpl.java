@@ -15,7 +15,7 @@ import java.util.List;
 import rx.Subscriber;
 
 /**
- * @author normansyahputa on 4/17/17.
+ * @author normansyahputa on 4/17/17
  */
 public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
     private static final String TAG = "YoutubeAddVideoPresente";
@@ -38,19 +38,19 @@ public class YoutubeAddVideoPresenterImpl extends YoutubeAddVideoPresenter {
 
     @Override
     public void fetchYoutube(List<String> videoIds) {
-        if (isViewAttached()) {
-            getView().showLoading();
-        }
 
         if (videoIds == null || videoIds.size() <= 0)
             return;
+      
+        if (isViewAttached()) {
+            getView().showLoading();
+        }
 
         List<RequestParams> requestParamses = new ArrayList<>();
         for (String videoId : videoIds) {
             requestParamses.add(generateParam(videoId));
         }
         youtubeVideoUseCase.executeList(requestParamses, new DefaultListSubscriber(videoIds));
-
     }
 
     public void setYoutubeActView(YoutubeAddVideoActView youtubeActView) {

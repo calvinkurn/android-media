@@ -13,6 +13,10 @@ public class Campaign extends BaseGTMModel {
 
     }
 
+    public Campaign(Campaign campaign){
+        this.campaignMap.putAll(campaign.getCampaign());
+    }
+
     public void setUtmSource(String utmSource) {
         this.campaignMap.put("utm_source", utmSource);
     }

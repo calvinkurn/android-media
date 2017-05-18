@@ -15,22 +15,21 @@ import android.widget.AdapterView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 
+import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
-import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.presenter.NewOrder;
 import com.tokopedia.seller.selling.presenter.NewOrderImpl;
 import com.tokopedia.seller.selling.presenter.NewOrderView;
-import com.tokopedia.core.R;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
-
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
+import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
 
 import java.util.List;
 
@@ -174,7 +173,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
 
     public void initView() {
         refresh = new RefreshHandler(getActivity(), mainView, onRefreshListener());
-        setRefreshPullEnable(true);
         list.setLayoutManager(new LinearLayoutManager(getActivity()));
         list.setAdapter(adapter);
         filterLayout = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_order, null);
