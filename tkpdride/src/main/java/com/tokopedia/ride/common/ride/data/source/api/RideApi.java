@@ -57,7 +57,7 @@ public interface RideApi {
     Observable<List<PromoEntity>> getPromo(@QueryMap TKPDMapParam<String, Object> param);
 
     @GET(RideUrl.REQUEST_MAP)
-    Observable<RideRequestMapEntity> getRideMap(@Path("request_id") String requestId, @QueryMap TKPDMapParam<String, Object> parameters);
+    Observable<RideRequestMapEntity> getRideMap(@QueryMap TKPDMapParam<String, Object> parameters);
 
     @GET(RideUrl.TRANSACTIONS_ALL)
     Observable<List<RideHistoryEntity>> getHistories(@QueryMap TKPDMapParam<String, Object> parameters);

@@ -40,7 +40,7 @@ public interface BookingRideDataStore {
 
     Observable<List<PromoEntity>> getPromo(TKPDMapParam<String, Object> param);
 
-    Observable<RideRequestMapEntity> getRideMap(String requestId, TKPDMapParam<String, Object> parameters);
+    Observable<RideRequestMapEntity> getRideMap(TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideHistoryEntity>> getHistories(TKPDMapParam<String, Object> parameters);
 

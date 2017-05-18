@@ -184,9 +184,9 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     }
 
     @Override
-    public Observable<String> getRideMap(String requestId, TKPDMapParam<String, Object> parameters) {
+    public Observable<String> getRideMap(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
-                .getRideMap(requestId, parameters)
+                .getRideMap(parameters)
                 .map(new Func1<RideRequestMapEntity, String>() {
                     @Override
                     public String call(RideRequestMapEntity rideRequestMapEntity) {

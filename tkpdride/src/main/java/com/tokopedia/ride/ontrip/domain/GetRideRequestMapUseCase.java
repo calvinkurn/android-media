@@ -26,6 +26,6 @@ public class GetRideRequestMapUseCase extends UseCase<String> {
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
         String requestId = requestParams.getString(PARAM_REQUEST_ID, "");
-        return bookingRideRepository.getRideMap(requestId, requestParams.getParameters());
+        return bookingRideRepository.getRideMap(requestParams.getParameters());
     }
 }
