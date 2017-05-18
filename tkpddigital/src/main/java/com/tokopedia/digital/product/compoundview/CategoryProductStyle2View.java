@@ -279,7 +279,19 @@ public class CategoryProductStyle2View extends
                 PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
                 boolean canBeCheckout = false;
 
-                if (productSelected == null) {
+                if (operatorSelected == null) {
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(R.string.message_error_digital_operator_not_selected)
+                    );
+                } else if (!operatorSelected.getClientNumberList().isEmpty()
+                        && clientNumberInputView.getText().isEmpty()) {
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(
+                                    R.string.message_error_digital_client_number_not_filled
+                            ) + " " + operatorSelected.getClientNumberList().get(0).getText()
+                                    .toLowerCase()
+                    );
+                } else if (productSelected == null) {
                     actionListener.onCannotBeCheckoutProduct(
                             context.getString(R.string.message_error_digital_product_not_selected)
                     );

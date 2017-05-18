@@ -191,8 +191,14 @@ public class CategoryProductStyle1View extends
             public void onClick(View v) {
                 PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
                 boolean canBeCheckout = false;
-
-                if (productSelected == null) {
+                if (!data.getClientNumberList().isEmpty()
+                        && clientNumberInputView.getText().isEmpty()) {
+                    actionListener.onCannotBeCheckoutProduct(
+                            context.getString(
+                                    R.string.message_error_digital_client_number_not_filled
+                            ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
+                    );
+                } else if (productSelected == null) {
                     actionListener.onCannotBeCheckoutProduct(
                             context.getString(R.string.message_error_digital_product_not_selected)
                     );
