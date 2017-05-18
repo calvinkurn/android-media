@@ -45,7 +45,7 @@
                 android:layout_marginEnd="26dp"
                 android:layout_marginRight="26dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/crux_cabs_mylocation_button"
+                android:src="@drawable/cabs_mylocation_button"
                 android:visibility="visible" />
 
             <FrameLayout

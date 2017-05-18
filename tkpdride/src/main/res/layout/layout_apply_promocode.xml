@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/crux_cabs_promo_ad_ic"
+        android:src="@drawable/cabs_promo_ad_ic"
         android:tint="@color/grey_700" />
 
     <TextView
@@ -46,7 +46,7 @@
     <!--android:layout_width="24dp"-->
     <!--android:layout_height="24dp"-->
     <!--android:layout_marginRight="20dp"-->
-    <!--android:src="@drawable/crux_cabs_cross_white"-->
+    <!--android:src="@drawable/cabs_cross_white"-->
     <!--android:tint="@color/grey_900"-->
     <!--android:visibility="visible" />-->
 </LinearLayout>

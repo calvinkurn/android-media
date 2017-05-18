@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="13dp"
-        android:src="@drawable/crux_cabs_promo_ad_ic" />
+        android:src="@drawable/cabs_promo_ad_ic" />
 
     <TextView
         android:id="@+id/crux_cabs_ad_title"
@@ -35,5 +35,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="12dp"
-        android:src="@drawable/crux_cabs_cross_white" />
+        android:src="@drawable/cabs_cross_white" />
 </LinearLayout>

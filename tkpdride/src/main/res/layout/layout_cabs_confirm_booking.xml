@@ -31,7 +31,7 @@
             android:layout_gravity="left|center_vertical"
             android:background="@drawable/shape_bg_cab_img"
             android:padding="6dp"
-            android:src="@drawable/crux_cabs_uber_ic"
+            android:src="@drawable/cabs_uber_ic"
             android:visibility="visible" />
 
         <TextView

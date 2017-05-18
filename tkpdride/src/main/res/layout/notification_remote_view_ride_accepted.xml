@@ -36,7 +36,7 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:src="@drawable/crux_cabs_uber_ic" />
+                android:src="@drawable/cabs_uber_ic" />
 
             <TextView
                 android:id="@+id/tv_cab_name"

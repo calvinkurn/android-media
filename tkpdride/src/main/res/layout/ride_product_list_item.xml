@@ -16,7 +16,7 @@
         android:layout_marginRight="@dimen/fifteen_dp"
         android:background="@drawable/shape_bg_cab_img"
         android:padding="6dp"
-        android:src="@drawable/crux_cabs_uber_ic" />
+        android:src="@drawable/cabs_uber_ic" />
 
     <TextView
         android:id="@+id/tv_cab_name"

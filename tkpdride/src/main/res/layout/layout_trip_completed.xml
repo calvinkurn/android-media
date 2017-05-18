@@ -91,7 +91,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/crux_cabs_uber_ic" />
+                    android:src="@drawable/cabs_uber_ic" />
 
                 <TextView
                     android:id="@+id/tv_vehicle_license_number"
@@ -131,7 +131,7 @@
                 android:layout_height="35dp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20.5dp"
-                android:src="@drawable/crux_cabs_src_dest_line" />
+                android:src="@drawable/cabs_src_dest_line" />
 
             <RelativeLayout
                 android:id="@+id/crux_cabs_source_container"
@@ -144,7 +144,7 @@
                     android:layout_height="13dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/crux_cabs_source_ic" />
+                    android:src="@drawable/cabs_source_ic" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_source"
@@ -182,7 +182,7 @@
                     android:layout_height="13dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
-                    android:src="@drawable/crux_cabs_dest_ic" />
+                    android:src="@drawable/cabs_dest_ic" />
 
                 <TextView
                     android:id="@+id/tv_destination"

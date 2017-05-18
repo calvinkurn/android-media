@@ -145,7 +145,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         Glide.with(getActivity()).load(driverVehicleAddressViewModel.getVehicle().getPictureUrl())
                 .asBitmap()
                 .centerCrop()
-                .error(R.drawable.crux_cabs_uber_ic)
+                .error(R.drawable.cabs_uber_ic)
                 .into(new BitmapImageViewTarget(vehiclePictImageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
