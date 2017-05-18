@@ -32,6 +32,11 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     private static final String ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW =
             "ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW";
 
+    private static final String EXTRA_STATE_OPERATOR_LIST_DATA =
+            "EXTRA_STATE_OPERATOR_LIST_DATA";
+    private static final String EXTRA_STATE_OPERATOR_STYLE_VIEW =
+            "EXTRA_STATE_OPERATOR_STYLE_VIEW";
+
     @BindView(R2.id.rv_list_chooser)
     RecyclerView rvOperatorList;
     @BindView(R2.id.field_search)
@@ -64,12 +69,15 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelableArrayList(EXTRA_STATE_OPERATOR_LIST_DATA,
+                (ArrayList<? extends Parcelable>) operatorListData);
+        state.putString(EXTRA_STATE_OPERATOR_STYLE_VIEW, operatorStyleView);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        operatorListData = savedState.getParcelableArrayList(EXTRA_STATE_OPERATOR_LIST_DATA);
+        operatorStyleView = savedState.getString(EXTRA_STATE_OPERATOR_STYLE_VIEW);
     }
 
     @Override
@@ -89,7 +97,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        operatorListData = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
+        this.operatorListData = arguments.getParcelableArrayList(ARG_PARAM_EXTRA_OPERATOR_LIST_DATA);
         this.operatorStyleView = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_STYLE_VIEW);
     }
 
@@ -131,7 +139,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     private void fiterData(String query) {
         List<Operator> searchOperatorList = new ArrayList<>();
         for (int i = 0; i < operatorListData.size(); i++) {
-            if(operatorListData.get(i).getName().toLowerCase()
+            if (operatorListData.get(i).getName().toLowerCase()
                     .contains(query.toLowerCase())) {
                 searchOperatorList.add(operatorListData.get(i));
             }
@@ -141,8 +149,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     }
 
     private void checkEmptyQuery(String query) {
-        if(query.isEmpty())
-        operatorChooserAdapter.setSearchResultData(operatorListData);
+        if (query.isEmpty())
+            operatorChooserAdapter.setSearchResultData(operatorListData);
     }
 
     private TextWatcher onSearchTextChange() {

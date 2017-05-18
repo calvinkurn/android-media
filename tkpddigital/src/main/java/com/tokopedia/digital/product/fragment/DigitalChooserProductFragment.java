@@ -30,6 +30,12 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
     private static final String ARG_PARAM_EXTRA_PRODUCT_STYLE_VIEW =
             "ARG_PARAM_EXTRA_PRODUCT_STYLE_VIEW";
 
+    private static final String EXTRA_STATE_PRODUCT_LIST_DATA =
+            "EXTRA_STATE_PRODUCT_LIST_DATA";
+    private static final String EXTRA_STATE_PRODUCT_STYLE_VIEW =
+            "EXTRA_STATE_PRODUCT_STYLE_VIEW";
+
+
     @BindView(R2.id.rv_list_chooser)
     RecyclerView rvProductList;
 
@@ -38,7 +44,7 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
 
     private ProductChooserAdapter productChooserAdapter;
 
-    ActionListener actionListener;
+    private ActionListener actionListener;
 
     public static Fragment newInstance(List<Product> operatorListData, String productStyleView) {
         Bundle bundle = new Bundle();
@@ -63,12 +69,15 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelableArrayList(EXTRA_STATE_PRODUCT_LIST_DATA,
+                (ArrayList<? extends Parcelable>) productListData);
+        state.putString(EXTRA_STATE_PRODUCT_STYLE_VIEW, productStyleView);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        productListData = savedState.getParcelableArrayList(EXTRA_STATE_PRODUCT_LIST_DATA);
+        productStyleView = savedState.getString(EXTRA_STATE_PRODUCT_STYLE_VIEW);
     }
 
     @Override
