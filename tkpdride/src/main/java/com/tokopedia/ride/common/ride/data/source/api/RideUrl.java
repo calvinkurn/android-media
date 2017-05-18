@@ -19,7 +19,7 @@ public interface RideUrl {
     String RECEIPT_DETAIL = "/uber/request/receipt";
     String PROMO = "/uber/offers";
     String PROMO_APPLY = "/uber/promo/apply";
-    String REQUEST_MAP = "/requests/{request_id}/map";
+    String REQUEST_MAP = "/uber/request/map";
     String TRANSACTIONS_ALL = "/uber/request/history";
     String TRANSACTION = "/uber/request/history";
     String REQUEST_CURRENT = "/uber/request/current";

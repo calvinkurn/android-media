@@ -50,7 +50,7 @@ public class RouteMapAnimator {
     }
 
 
-    public void animateRoute(GoogleMap googleMap, List<LatLng> bangaloreRoute) {
+    public void animateRoute(GoogleMap googleMap, List<LatLng> latLngList) {
         if (firstRunAnimSet == null) {
             firstRunAnimSet = new AnimatorSet();
         } else {
@@ -74,10 +74,10 @@ public class RouteMapAnimator {
         if (backgroundPolyline != null) backgroundPolyline.remove();
 
 
-        PolylineOptions optionsBackground = new PolylineOptions().add(bangaloreRoute.get(0)).color(GREY).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         backgroundPolyline = googleMap.addPolyline(optionsBackground);
 
-        optionsForeground = new PolylineOptions().add(bangaloreRoute.get(0)).color(Color.BLACK).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(POLYLINE_WIDTH_IN_PX).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
         foregroundPolyline = googleMap.addPolyline(optionsForeground);
 
         final ValueAnimator percentageCompletion = ValueAnimator.ofInt(0, 100);
@@ -133,7 +133,7 @@ public class RouteMapAnimator {
 
         });
 
-        ObjectAnimator foregroundRouteAnimator = ObjectAnimator.ofObject(this, "routeIncreaseForward", new RouteEvaluator(), bangaloreRoute.toArray());
+        ObjectAnimator foregroundRouteAnimator = ObjectAnimator.ofObject(this, "routeIncreaseForward", new RouteEvaluator(), latLngList.toArray());
         foregroundRouteAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         foregroundRouteAnimator.addListener(new Animator.AnimatorListener() {
             @Override

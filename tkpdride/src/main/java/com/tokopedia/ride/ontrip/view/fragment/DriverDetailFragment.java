@@ -148,11 +148,11 @@ public class DriverDetailFragment extends BaseFragment {
             driverEtaTextView.setVisibility(View.GONE);
         }
 
-        if (getArguments().getBoolean(EXTRA_SHARED)) {
+//        if (getArguments().getBoolean(EXTRA_SHARED)) {
             shareRideLayout.setVisibility(View.VISIBLE);
-        } else {
-            shareRideLayout.setVisibility(View.GONE);
-        }
+//        } else {
+//            shareRideLayout.setVisibility(View.GONE);
+//        }
 
         Glide.with(getActivity()).load(driver.getPictureUrl())
                 .asBitmap()

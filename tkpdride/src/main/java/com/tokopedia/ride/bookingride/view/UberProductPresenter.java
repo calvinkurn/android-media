@@ -228,12 +228,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         if (isViewAttached()) {
                             getView().hideProgress();
                             getView().hideErrorMessage();
-                            getView().showProductList();
                             if (rideProductViewModels.size() > 0) {
+                                getView().showProductList();
                                 List<Visitable> visitables = new ArrayList<>();
                                 visitables.addAll(rideProductViewModels);
                                 getView().renderProductList(visitables);
                             } else {
+                                getView().hideProductList();
                                 getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
                                         getView().getActivity().getString(R.string.btn_text_retry)
                                 );
