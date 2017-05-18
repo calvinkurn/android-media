@@ -405,9 +405,9 @@ public class ShopCreateFragment extends BaseFragment<ShopCreatePresenter> implem
         Display display = wm.getDefaultDisplay();
         display.getSize(size);
         int imageWidth = (int) (size.x - 4) / 3;
-        shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
         View view = super.onCreateView(parentView, savedInstanceState);
         initView(view);
+        shopAvatar.setLayoutParams(new FrameLayout.LayoutParams(imageWidth, imageWidth));
         return view;
     }
 
