@@ -5,5 +5,6 @@
     <stroke android:color="@color/font_top_ads_black_54"
         android:width="1dp"/>
     <corners android:radius="2dp"/>
+    <solid android:color="@android:color/transparent" />
 
 </shape>

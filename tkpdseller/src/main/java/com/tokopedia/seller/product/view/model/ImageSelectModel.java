@@ -12,7 +12,7 @@ import java.net.URI;
  * Created by m.normansyah on 03/12/2015.
  */
 
-public class ImageSelectModel implements Parcelable {
+public class ImageSelectModel implements Parcelable{
     // this is for url / path from sdcard
     private String uri;
     private String description;
@@ -20,22 +20,24 @@ public class ImageSelectModel implements Parcelable {
     private int width;
     private int height;
     private boolean isValidURL;
+    private boolean allowDelete;
 
     public ImageSelectModel(String uri) {
-        this(uri, null, false);
-    }
-
-    public ImageSelectModel(String uri,
-                            @Nullable String description) {
-        this(uri, description, false);
+        this(uri, null, false, true);
     }
 
     public ImageSelectModel(String uri,
                             @Nullable String description,
-                            boolean isPrimary) {
+                            boolean isPrimary,
+                            boolean allowDelete) {
         setUri(uri);
         this.description = description;
         this.isPrimary = isPrimary;
+        this.allowDelete = allowDelete;
+    }
+
+    public boolean allowDelete() {
+        return allowDelete;
     }
 
     public String getUri() {
@@ -122,6 +124,7 @@ public class ImageSelectModel implements Parcelable {
         dest.writeInt(this.width);
         dest.writeInt(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.allowDelete ? (byte) 1 : (byte) 0);
     }
 
     protected ImageSelectModel(Parcel in) {
@@ -131,9 +134,10 @@ public class ImageSelectModel implements Parcelable {
         this.width = in.readInt();
         this.height = in.readInt();
         this.isValidURL = in.readByte() != 0;
+        this.allowDelete = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<ImageSelectModel> CREATOR = new Parcelable.Creator<ImageSelectModel>() {
+    public static final Creator<ImageSelectModel> CREATOR = new Creator<ImageSelectModel>() {
         @Override
         public ImageSelectModel createFromParcel(Parcel source) {
             return new ImageSelectModel(source);

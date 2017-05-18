@@ -137,12 +137,10 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
             }
         } else {
             // prevent addition if size will exceed the limit.
-            if (listener != null)
-                if (addUrlVideoModels.size() == maxRows) {
-                    listener.notifyFull();
-                } else {
-                    listener.notifyNonEmpty();
-                }
+            if (listener != null) {
+                listener.notifyNonEmpty();
+            }
+
             notifyItemInserted(addUrlVideoModels.size() - 1);
         }
     }
@@ -151,8 +149,6 @@ public class AddUrlVideoAdapter extends BaseLinearRecyclerViewAdapter {
         void notifyEmpty();
 
         void notifyNonEmpty();
-
-        void notifyFull();
 
         void remove(int index);
 
