@@ -55,13 +55,14 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     private LinearLayoutManager linearLayoutManager;
     private static final String TAG = ShopFragment.class.getSimpleName();
     private BrowseProductRouter.GridType gridType;
+    private int spanCount = 2;
 
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             BrowseProductRouter.GridType gridType = (BrowseProductRouter.GridType) intent.getSerializableExtra(BrowseProductActivity.GRID_TYPE_EXTRA);
-            changeLayoutType(gridType);
             int lastItemPosition = getLastItemPosition();
+            changeLayoutType(gridType);
             browseShopAdapter.notifyItemChanged(browseShopAdapter.getItemCount());
             list_shop.scrollToPosition(lastItemPosition);
         }
@@ -179,17 +180,20 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         this.gridType = gridType;
         switch (gridType) {
             case GRID_1:
+                spanCount = 1;
                 linearLayoutManager = new LinearLayoutManager(getActivity());
                 browseShopAdapter.setViewType(gridType);
                 list_shop.setLayoutManager(linearLayoutManager);
                 break;
             case GRID_2:
-                gridLayoutManager.setSpanCount(2);
+                spanCount = 2;
+                gridLayoutManager.setSpanCount(spanCount);
                 browseShopAdapter.setViewType(gridType);
                 list_shop.setLayoutManager(gridLayoutManager);
                 break;
             case GRID_3:
-                gridLayoutManager.setSpanCount(1);
+                spanCount = 1;
+                gridLayoutManager.setSpanCount(spanCount);
                 browseShopAdapter.setViewType(gridType);
                 list_shop.setLayoutManager(gridLayoutManager);
                 break;
@@ -205,8 +209,8 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
         browseShopAdapter.setIsLoading(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
-        gridLayoutManager = new GridLayoutManager(getActivity(),
-                ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation));
+        spanCount = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
+        gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
 
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }
@@ -230,7 +234,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
                 if (position == browseShopAdapter.getData().size()) {
                     // productFeedPresenter.getData().size()
                     // header column
-                    return footerColumnSize;
+                    return spanCount;
                 } else if (position == 0) {
 //                    return headerColumnSize;
                     return regularColumnSize;
