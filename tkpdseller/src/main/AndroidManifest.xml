@@ -134,6 +134,14 @@
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordAddDetailActivity"
+            android:label="@string/title_activity_add_product"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">tkpdseller</string>
 
     <string name="title_activity_gmstat">Statistik</string>
@@ -478,5 +478,9 @@
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
+    <string name="add_keyword">Tambah Kata Kunci</string>
+    <string name="save_keyword">Simpan</string>
+    <string name="top_ads_total_keywords_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
+    <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
 
 </resources>
