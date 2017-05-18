@@ -1,7 +1,7 @@
 package com.tokopedia.digital.product.data.mapper;
 
 import com.tokopedia.digital.exception.MapperDataException;
-import com.tokopedia.digital.product.data.entity.ResponseBanner;
+import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;

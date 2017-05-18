@@ -85,6 +85,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
         return new Func1<Throwable, List<OrderClientNumber>>() {
             @Override
             public List<OrderClientNumber> call(Throwable throwable) {
+                throwable.printStackTrace();
                 return new ArrayList<>();
             }
         };

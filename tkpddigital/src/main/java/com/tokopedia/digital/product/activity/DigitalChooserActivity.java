@@ -105,12 +105,11 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
                         )).commit();
             }
         }
-        if (!TextUtils.isEmpty(titleChooser)) toolbar.setTitle(titleChooser);
     }
 
     @Override
     protected void setViewListener() {
-
+        if (!TextUtils.isEmpty(titleChooser)) toolbar.setTitle(titleChooser);
     }
 
     @Override
