@@ -390,10 +390,15 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
             }
         });
 
-        spinnerAgency.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerAgency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 onAgencySelect(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
