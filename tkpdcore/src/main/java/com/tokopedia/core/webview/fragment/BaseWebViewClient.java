@@ -22,7 +22,7 @@ public class BaseWebViewClient extends WebViewClient {
 
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        return false;
+        return callback.onOverrideUrl(url);
     }
 
     @Override
@@ -43,6 +43,6 @@ public class BaseWebViewClient extends WebViewClient {
     }
 
     public interface WebViewCallback extends BaseCallbackListener<String, String, SslError> {
-
+        boolean onOverrideUrl(String url);
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.core.base.di.module;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
@@ -14,9 +14,9 @@ import dagger.Provides;
  */
 @Module
 public class ActivityModule {
-    private final Activity context;
+    private final ContextWrapper context;
 
-    public ActivityModule(Activity context) {
+    public ActivityModule(ContextWrapper context) {
         this.context = context;
     }
     @ApplicationScope

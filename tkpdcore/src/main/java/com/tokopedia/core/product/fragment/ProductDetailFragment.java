@@ -81,6 +81,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
     public static final int REQUEST_CODE_LOGIN = 561;
+    public static final int STATUS_IN_WISHLIST = 1;
+    public static final int STATUS_NOT_WISHLIST = 0;
+    public static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+    public static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
 
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
@@ -438,6 +442,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
+                getActivity().getIntent().getIntExtra(WISHLIST_STATUS_UPDATED_POSITION, -1));
+        resultIntent.putExtra(WIHSLIST_STATUS_IS_WISHLIST, status == STATUS_IN_WISHLIST);
+        getActivity().setResult(Activity.RESULT_CANCELED, resultIntent);
     }
 
     @Override
@@ -477,7 +487,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showWishListRetry(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity());
+        NetworkErrorHelper.showSnackbar(getActivity(),errorMessage);
     }
 
     @Override

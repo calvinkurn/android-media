@@ -24,19 +24,14 @@ import com.tokopedia.seller.selling.orderReject.model.ModelEditDescription;
 
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/6/2016.
  */
 public class EditVarianDialog extends DialogFragment {
 
-    @BindView(R2.id.description)
     EditText descTxt;
-    @BindView(R2.id.title)
     TextView titleTxt;
-    @BindView(R2.id.checkbox)
     CheckBox checkBox;
 
     public static final String TITLE = "title";
@@ -92,7 +87,9 @@ public class EditVarianDialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
-        ButterKnife.bind(this, view);
+        descTxt = (EditText) view.findViewById(R.id.description);
+        titleTxt = (TextView) view.findViewById(R.id.title);
+        checkBox = (CheckBox) view.findViewById(R.id.checkbox);
         Dialog dialog = builder.create();
         return dialog;
     }

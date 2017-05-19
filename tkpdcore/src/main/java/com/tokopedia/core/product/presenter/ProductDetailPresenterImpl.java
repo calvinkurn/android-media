@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.appindexing.Action;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.PreviewProductImage;
@@ -43,6 +41,7 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -74,10 +73,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import static com.raizlabs.android.dbflow.config.FlowLog.Level.D;
-import static twitter4j.internal.json.z_T4JInternalParseUtil.getInt;
 
 /**
  * ProductDetailPresenterImpl
@@ -278,6 +273,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         pdt.addProduct(product.getProduct());
 
         UnifyTracking.eventPDPDetail(pdt);
+        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
     }
 
     @Override
@@ -662,7 +658,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess() {
                         viewListener.finishLoadingWishList();
                         viewListener.showDialog(createSuccessWishListDialog(context));
-                        viewListener.updateWishListStatus(1);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_IN_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -684,7 +680,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
-                        viewListener.updateWishListStatus(0);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -825,6 +821,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {

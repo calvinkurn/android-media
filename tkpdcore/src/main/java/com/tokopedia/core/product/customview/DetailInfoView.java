@@ -3,7 +3,6 @@ package com.tokopedia.core.product.customview;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableRow;

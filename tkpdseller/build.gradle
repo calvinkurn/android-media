@@ -2,15 +2,11 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-    }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
@@ -105,9 +101,6 @@ dependencies {
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
 
@@ -117,9 +110,24 @@ dependencies {
 
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
-    compile 'com.shootr:KMNumbers:1.0.0'
-    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile rootProject.ext.miscDependencies.chips
+    compile rootProject.ext.miscDependencies.kmNumber
+    compile rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    compile (rootProject.ext.tkpdLibDependencies.expandableOption){
+        exclude group: "com.android.support"
+    }
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
+    compile (rootProject.ext.tkpdLibDependencies.showcase){
+        exclude group: "com.android.support"
+    }
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

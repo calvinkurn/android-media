@@ -10,6 +10,7 @@ import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.data.model.data.ProductAd;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailNewProductActivity;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsProductAdListPresenterImpl;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
@@ -20,7 +21,7 @@ import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBind
  * Created by zulfikarrahman on 12/16/16.
  */
 
-public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProductAdListPresenter> {
+public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProductAdListPresenter> implements TopAdsEmptyAdDataBinder.Callback {
 
     private long groupId;
     private GroupAd groupAd;
@@ -58,7 +59,9 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     protected TopAdsEmptyAdDataBinder getEmptyViewBinder() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_product_title_promo_text));
-        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_empty_text));
+        emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_product_promo_content_text));
+        emptyGroupAdsDataBinder.setEmptyButtonItemText(getString(R.string.menu_top_ads_add_promo_product));
+        emptyGroupAdsDataBinder.setCallback(this);
         return emptyGroupAdsDataBinder;
     }
 
@@ -93,4 +96,16 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
             searchAd();
         }
     }
+
+    @Override
+    public void onEmptyContentItemTextClicked() {
+        // no op
+    }
+
+    @Override
+    public void onEmptyButtonClicked() {
+        Intent intent = new Intent(getActivity(), TopAdsDetailNewProductActivity.class);
+        this.startActivityForResult(intent, REQUEST_CODE_AD_ADD);
+    }
+
 }

@@ -7,14 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.tokopedia.seller.facade.FacadeShopTransaction;
+import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
-import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
+import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.facade.FacadeShopTransaction;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
-import com.tokopedia.core.util.ValidationTextUtil;
-import com.tokopedia.core.R;
+import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.FragmentSellingNewOrder;
 
 import org.parceler.Parcels;
 
@@ -103,7 +103,6 @@ public class NewOrderImpl extends NewOrder {
     }
 
     public void getOrderList() {
-        view.setRefreshPullEnable(false);
         view.disableFilter();
         isLoading = true;
         requestGetNewOrder();
@@ -239,7 +238,6 @@ public class NewOrderImpl extends NewOrder {
                 modelNewOrder = model;
                 listDatas.addAll(modelNewOrder.DataList);
                 view.notifyDataSetChanged(listDatas);
-                view.setRefreshPullEnable(true);
                 view.showFab();
             }
 
@@ -251,7 +249,6 @@ public class NewOrderImpl extends NewOrder {
                     view.addEmptyView();
                 }
                 view.getPaging().setHasNext(false);
-                view.setRefreshPullEnable(true);
                 view.showFab();
                 view.removeRetry();
             }
@@ -271,7 +268,6 @@ public class NewOrderImpl extends NewOrder {
                     NetworkErrorHelper.showSnackbar((Activity) context);
                 }
 
-                view.setRefreshPullEnable(true);
             }
 
             @Override
