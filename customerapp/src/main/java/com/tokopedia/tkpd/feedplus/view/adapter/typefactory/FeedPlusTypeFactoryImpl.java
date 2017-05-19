@@ -4,11 +4,15 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.EmptyFeedViewHolder;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
 import com.tokopedia.tkpd.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromoViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.ProductCardViewHolder;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromoViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.PromotedShopViewModel;
@@ -40,6 +44,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         return PromoViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(OfficialStoreViewModel officialStoreViewModel) {
+        return OfficialStoreViewHolder.LAYOUT;
+    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -59,6 +68,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
             case PromoViewHolder.LAYOUT:
                 viewHolder = new PromoViewHolder(view);
+                break;
+
+            case OfficialStoreViewHolder.LAYOUT:
+                viewHolder = new OfficialStoreViewHolder(view, viewListener);
                 break;
 
             default:

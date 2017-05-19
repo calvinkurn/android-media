@@ -53,9 +53,10 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         }
     }
 
+    protected ArrayList<ProductFeedViewModel> list;
     private ProductCardViewModel productCardViewModel;
     private final FeedPlus.View viewListener;
-    private final Context context;
+    protected final Context context;
 
     public FeedProductAdapter(Context context, FeedPlus.View viewListener) {
         this.context = context;
@@ -65,7 +66,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_feed_product_item, parent, false);
+                .inflate(R.layout.list_feed_product_item_blurred, parent, false);
         return new ViewHolder(view);
     }
 
