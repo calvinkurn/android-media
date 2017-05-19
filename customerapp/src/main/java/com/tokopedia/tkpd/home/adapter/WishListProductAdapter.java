@@ -38,18 +38,32 @@ import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsView;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Nisie on 16/06/15.
  */
-public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
+public class WishListProductAdapter extends BaseRecyclerViewAdapter {
 
-    private static final String TAG = GridLayoutProductAdapter.class.getSimpleName();
+    private static final String TAG = WishListProductAdapter.class.getSimpleName();
     private List<RecyclerViewItem> data;
     private Context context;
     private WishListView wishlistView;
+    private OnWishlistActionButtonClicked actionButtonClicked;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -86,17 +100,29 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         }
     }
 
-    public GridLayoutProductAdapter(Context context, List<RecyclerViewItem> data) {
+    public WishListProductAdapter(Context context, List<RecyclerViewItem> data) {
         super(context, data);
         this.context = context;
         this.data = data;
 
     }
 
+    public void setActionButtonClicked(OnWishlistActionButtonClicked actionButtonClicked) {
+        this.actionButtonClicked = actionButtonClicked;
+    }
+
     public void setWishlistView(WishListView view) {
         wishlistView = view;
     }
 
+
+    public void setSearchNotFound() {
+        data.add(new EmptySearchItem());
+    }
+
+    public void setEmptyState() {
+        data.add(new EmptyStateItem());
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -108,11 +134,103 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 return createProductView(viewGroup);
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 return createProductView(viewGroup);
+            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+                return createEmptySearch(viewGroup);
+            case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
+                return createEmptyState(viewGroup);
             default:
                 return super.onCreateViewHolder(viewGroup, viewType);
         }
     }
 
+    public static class EmptyStateItem extends RecyclerViewItem {
+        public EmptyStateItem() {
+            setType(TkpdState.RecyclerView.VIEW_EMPTY_STATE);
+        }
+    }
+
+    public static class EmptySearchItem extends RecyclerViewItem {
+        public EmptySearchItem() {
+            setType(TkpdState.RecyclerView.VIEW_EMPTY_SEARCH);
+        }
+    }
+
+    public RecyclerView.ViewHolder createEmptyState(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_empty_state, null);
+        return new EmptyViewHolder(view, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (actionButtonClicked != null) {
+                    actionButtonClicked.findProduct();
+                }
+            }
+        });
+    }
+
+    public RecyclerView.ViewHolder createEmptySearch(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.layout_wishlist_empty_search, null);
+        return new EmptyViewHolder(view, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (actionButtonClicked != null) {
+                    actionButtonClicked.showAllWishlist();
+                }
+            }
+        });
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder implements
+            TopAdsItemClickListener {
+        @BindView(R.id.topads)
+        TopAdsView topAdsView;
+        @BindView(R.id.action_btn)
+        Button actionBtn;
+        private Context context;
+
+        public EmptyViewHolder(View itemView, View.OnClickListener clickListener) {
+            super(itemView);
+            context = itemView.getContext();
+            ButterKnife.bind(this, itemView);
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SRC, "wishlist");
+            Config topAdsconfig = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(context))
+                    .setUserId(SessionHandler.getLoginID(context))
+                    .withPreferedCategory()
+                    .setEndpoint(Endpoint.PRODUCT)
+                    .topAdsParams(params)
+                    .build();
+            topAdsView.setConfig(topAdsconfig);
+            topAdsView.setAdsItemClickListener(this);
+            actionBtn.setOnClickListener(clickListener);
+        }
+
+        public void loadTopAds() {
+            topAdsView.loadTopAds();
+        }
+
+        @Override
+        public void onProductItemClicked(Product product) {
+            Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(context,
+                    product.getId());
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onShopItemClicked(Shop shop) {
+            Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+            Intent intent = new Intent(context, ShopInfoActivity.class);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        }
+
+        @Override
+        public void onAddFavorite(Data data) {
+
+        }
+    }
 
     private ViewHolder createProductView(ViewGroup viewGroup) {
         View itemLayoutView = LayoutInflater.from(viewGroup.getContext())
@@ -132,6 +250,10 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 break;
             case TkpdState.RecyclerView.VIEW_WISHLIST:
                 bindWishlistViewHolder((ViewHolder) viewHolder, position);
+                break;
+            case TkpdState.RecyclerView.VIEW_EMPTY_SEARCH:
+            case TkpdState.RecyclerView.VIEW_EMPTY_STATE:
+                ((EmptyViewHolder) viewHolder).loadTopAds();
                 break;
             default:
                 super.onBindViewHolder(viewHolder, position);
@@ -363,6 +485,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
         if (isRightMostProduct(position)) {
             return TkpdState.RecyclerView.VIEW_PRODUCT_RIGHT;
         }
+        if (data.get(position) instanceof EmptySearchItem) {
+            return TkpdState.RecyclerView.VIEW_EMPTY_SEARCH;
+        }
+        if (data.get(position) instanceof EmptyStateItem) {
+            return TkpdState.RecyclerView.VIEW_EMPTY_STATE;
+        }
         return TkpdState.RecyclerView.VIEW_PRODUCT;
     }
 
@@ -418,6 +546,12 @@ public class GridLayoutProductAdapter extends BaseRecyclerViewAdapter {
                 .setProductName(recentView.getProductName())
                 .setProductImage(recentView.getProductImage())
                 .build();
+    }
+
+    public interface OnWishlistActionButtonClicked {
+        void showAllWishlist();
+
+        void findProduct();
     }
 
 }

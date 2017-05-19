@@ -33,7 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.adapter.GridLayoutProductAdapter;
+import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
@@ -55,7 +55,7 @@ import butterknife.Unbinder;
  */
 public class WishListFragment extends TkpdBaseV4Fragment implements WishListView,
         SearchView.OnQueryTextListener, TopAdsItemClickListener,
-        GridLayoutProductAdapter.OnWishlistActionButtonClicked {
+        WishListProductAdapter.OnWishlistActionButtonClicked {
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private Unbinder unbinder;
@@ -78,7 +78,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     SearchView searchEditText;
 
     GridLayoutManager layoutManager;
-    GridLayoutProductAdapter adapter;
+    WishListProductAdapter adapter;
     TkpdProgressDialog progressDialog;
     Boolean isDeleteDialogShown;
     Boolean isLoadingMore = false;
@@ -357,7 +357,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void initAdapterWithData(List<RecyclerViewItem> data) {
-        adapter = new GridLayoutProductAdapter(getActivity(), data);
+        adapter = new WishListProductAdapter(getActivity(), data);
         adapter.setWishlistView(this);
         adapter.setActionButtonClicked(this);
     }

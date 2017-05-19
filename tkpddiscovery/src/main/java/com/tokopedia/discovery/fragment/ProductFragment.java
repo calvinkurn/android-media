@@ -17,6 +17,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -102,7 +103,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private LinearLayoutManager linearLayoutManager;
     private BrowseProductRouter.GridType gridType = BrowseProductRouter.GridType.GRID_2;
     int spanCount = 2;
-    private boolean isHasCategoryHeader = false;
     private TopAdsRecyclerAdapter topAdsRecyclerAdapter;
     private ProgressDialog loading;
 
@@ -189,7 +189,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
-        if(!TextUtils.isEmpty(((BrowseProductActivity) getActivity())
+        if (!TextUtils.isEmpty(((BrowseProductActivity) getActivity())
                 .getBrowseProductActivityModel().getDepartmentId())) {
             ScreenTracking.eventDiscoveryScreenAuth(((BrowseProductActivity) getActivity())
                     .getBrowseProductActivityModel().getDepartmentId());
@@ -385,10 +385,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
             public void onLoad(int page, int totalCount) {
-                presenter.loadMore(getActivity());
-                if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
-                        productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
-                    ((BrowseProductActivity) getActivity()).showBottomBar();
+                if (productAdapter.getPagingHandlerModel() != null) {
+                    presenter.loadMore(getActivity());
+                    if (gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1 &&
+                            productAdapter.getPagingHandlerModel().getUriNext().isEmpty()) {
+                        ((BrowseProductActivity) getActivity()).showBottomBar();
+                    }
                 }
             }
         });
@@ -553,12 +555,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     public void addHotListHeader(ProductAdapter.HotListBannerModel hotListBannerModel) {
         topAdsRecyclerAdapter.setHasHeader(true);
         productAdapter.addHotListHeader(hotListBannerModel);
+        Log.d(TAG, "addHotListHeader");
     }
 
     @Override
     public void addCategoryHeader(Data categoryHeader) {
         topAdsRecyclerAdapter.setHasHeader(true);
-        isHasCategoryHeader = true;
         if (getActivity() != null && getActivity() instanceof BrowseProductActivity) {
             BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
             if (categoryHeader.getIsRevamp() != null && categoryHeader.getIsRevamp()) {
@@ -572,7 +574,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             }
             backToTop();
         }
-        productAdapter.notifyDataSetChanged();
+        Log.d(TAG, "addCategoryHeader");
     }
 
     private int calcColumnSize(int orientation) {
