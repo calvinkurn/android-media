@@ -616,7 +616,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public void onItemClicked(SeatViewModel seatViewModel) {
         hideBlockTranslucentLayout();
         hideSeatPanelLayout();
-        seatPanelLayout.setVisibility(View.GONE);
         ConfirmBookingRideFragment productFragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
         if (productFragment != null) {
             productFragment.updateSeatCount(seatViewModel.getSeat());
