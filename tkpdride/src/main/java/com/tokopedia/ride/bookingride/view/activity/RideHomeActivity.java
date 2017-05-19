@@ -29,7 +29,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -100,8 +100,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     FrameLayout blockTranslucentFrameLayout;
     @BindView(R2.id.seat_pannel)
     RelativeLayout seatPanelLayout;
-    @BindView(R2.id.progress_bar)
-    ProgressBar progressBar;
+    @BindView(R2.id.progress_bar_main_layout)
+    LinearLayout progressBar;
     @BindView(R2.id.main_layout)
     RelativeLayout mainLayout;
     Toolbar mToolbar;
@@ -616,7 +616,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public void onItemClicked(SeatViewModel seatViewModel) {
         hideBlockTranslucentLayout();
         hideSeatPanelLayout();
-        seatPanelLayout.setVisibility(View.GONE);
         ConfirmBookingRideFragment productFragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
         if (productFragment != null) {
             productFragment.updateSeatCount(seatViewModel.getSeat());

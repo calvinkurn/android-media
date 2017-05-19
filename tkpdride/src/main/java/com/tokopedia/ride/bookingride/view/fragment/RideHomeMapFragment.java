@@ -69,7 +69,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1007;
     public static final int REQUEST_CHECK_LOCATION_SETTINGS = 1008;
 
-    private static final float DEFAUL_MAP_ZOOM = 16;
+    private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
 
