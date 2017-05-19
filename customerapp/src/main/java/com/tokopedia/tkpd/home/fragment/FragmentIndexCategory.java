@@ -775,7 +775,7 @@ FragmentIndexCategory extends TkpdBaseV4Fragment implements
             TabLayout.Tab tab = holder.tabLayoutRecharge.newTab();
             tab.setText(category.getAttributes().getName());
             holder.tabLayoutRecharge.addTab(tab);
-            if (category.getAttributes().getIsNew()) {
+            if (category.getAttributes().isNew()) {
                 newRechargePositions.add(i);
 
             }
