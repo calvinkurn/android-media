@@ -23,12 +23,6 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
-def getTkpdPayment() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
-}
-
-
 publishing {
     publications {
         aar(MavenPublication) {
@@ -106,15 +100,19 @@ dependencies {
 
     compile getTkpdCore()
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-all:1.10.19'
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.butterKnifeDependencies.butterKnife
     apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
 }

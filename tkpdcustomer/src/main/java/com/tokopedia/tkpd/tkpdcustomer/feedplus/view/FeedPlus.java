@@ -1,0 +1,25 @@
+package com.tokopedia.tkpd.tkpdcustomer.feedplus.view;
+
+import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdcustomer.feedplus.view.viewmodel.ProductCardViewModel;
+
+/**
+ * @author by nisie on 5/15/17.
+ */
+
+public interface FeedPlus{
+
+    public interface View extends CustomerView {
+        void onShareButtonClicked();
+
+        void onGoToProductDetail();
+
+        void onGoToFeedDetail(ProductCardViewModel productCardViewModel);
+
+        void onGoToShopDetail();
+    }
+
+    public interface Presenter extends CustomerPresenter<View>{
+    }
+}
