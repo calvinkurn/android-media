@@ -134,6 +134,11 @@
             android:screenOrientation="portrait"
             android:label="@string/label_gold_merchant"/>
 
+        <activity
+            android:name=".feedplus.view.activity.FeedPlusDetailActivity"
+            android:label="@string/title_detail_feed"
+            android:screenOrientation="portrait"/>
+
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"

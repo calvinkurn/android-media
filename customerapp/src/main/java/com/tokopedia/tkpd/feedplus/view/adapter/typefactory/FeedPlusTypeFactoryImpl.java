@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus.view.adapter;
+package com.tokopedia.tkpd.feedplus.view.adapter.typefactory;
 
 import android.view.View;
 
@@ -7,6 +7,8 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.feedplus.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.EmptyFeedViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
+import com.tokopedia.tkpd.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromoViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
 import com.tokopedia.tkpd.feedplus.view.adapter.viewholder.productcard.ProductCardViewHolder;

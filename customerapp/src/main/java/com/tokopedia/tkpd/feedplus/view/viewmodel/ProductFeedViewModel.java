@@ -1,10 +1,13 @@
 package com.tokopedia.tkpd.feedplus.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author by nisie on 5/16/17.
  */
 
-public class ProductFeedViewModel {
+public class ProductFeedViewModel implements Parcelable{
 
     private String name;
     private String price;
@@ -35,6 +38,25 @@ public class ProductFeedViewModel {
         this.shopName = shopName;
         this.isFavorited = isFavorited;
     }
+
+    protected ProductFeedViewModel(Parcel in) {
+        name = in.readString();
+        price = in.readString();
+        imageSource = in.readString();
+        url = in.readString();
+    }
+
+    public static final Creator<ProductFeedViewModel> CREATOR = new Creator<ProductFeedViewModel>() {
+        @Override
+        public ProductFeedViewModel createFromParcel(Parcel in) {
+            return new ProductFeedViewModel(in);
+        }
+
+        @Override
+        public ProductFeedViewModel[] newArray(int size) {
+            return new ProductFeedViewModel[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -90,5 +112,18 @@ public class ProductFeedViewModel {
 
     public void setFavorited(boolean favorited) {
         isFavorited = favorited;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(price);
+        dest.writeString(imageSource);
+        dest.writeString(url);
     }
 }

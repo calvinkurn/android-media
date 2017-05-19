@@ -1,16 +1,18 @@
 package com.tokopedia.tkpd.feedplus.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.tkpd.feedplus.view.adapter.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author by nisie on 5/15/17.
  */
 
-public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
+public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory>, Parcelable {
 
     private String shopName;
     private String shopAvatar;
@@ -18,6 +20,9 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
     private String actionText;
     private boolean isGoldMerchant;
     private String postTime;
+
+    public ProductCardViewModel() {
+    }
 
     public ProductCardViewModel(String s, ArrayList<ProductFeedViewModel> listProduct) {
         this.shopName = s;
@@ -27,6 +32,27 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
         this.isGoldMerchant = true;
         this.postTime = "2017-05-17T15:10:53+07:00";
     }
+
+    protected ProductCardViewModel(Parcel in) {
+        shopName = in.readString();
+        shopAvatar = in.readString();
+        listProduct = in.createTypedArrayList(ProductFeedViewModel.CREATOR);
+        actionText = in.readString();
+        isGoldMerchant = in.readByte() != 0;
+        postTime = in.readString();
+    }
+
+    public static final Creator<ProductCardViewModel> CREATOR = new Creator<ProductCardViewModel>() {
+        @Override
+        public ProductCardViewModel createFromParcel(Parcel in) {
+            return new ProductCardViewModel(in);
+        }
+
+        @Override
+        public ProductCardViewModel[] newArray(int size) {
+            return new ProductCardViewModel[size];
+        }
+    };
 
     @Override
     public int type(FeedPlusTypeFactory typeFactory) {
@@ -80,5 +106,20 @@ public class ProductCardViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public void setPostTime(String postTime) {
         this.postTime = postTime;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(shopName);
+        dest.writeString(shopAvatar);
+        dest.writeTypedList(listProduct);
+        dest.writeString(actionText);
+        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
+        dest.writeString(postTime);
     }
 }

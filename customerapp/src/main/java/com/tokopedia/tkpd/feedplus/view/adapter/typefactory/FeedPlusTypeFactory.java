@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.feedplus.view.adapter;
+package com.tokopedia.tkpd.feedplus.view.adapter.typefactory;
 
 import android.view.View;
 import android.view.ViewGroup;

@@ -14,7 +14,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.feedplus.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductFeedViewModel;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     }
 
     protected ArrayList<ProductFeedViewModel> list;
+    private ProductCardViewModel productCardViewModel;
     private final FeedPlus.View viewListener;
     protected final Context context;
 
@@ -60,6 +62,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
         this.context = context;
         this.viewListener = viewListener;
     }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -69,6 +72,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        ArrayList<ProductFeedViewModel> list = productCardViewModel.getListProduct();
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
@@ -81,7 +85,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToFeedDetail();
+                    viewListener.onGoToFeedDetail(productCardViewModel);
                 }
             });
         } else {
@@ -114,19 +118,19 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public int getItemCount() {
-        if (list.size() > 6)
+        if (productCardViewModel.getListProduct().size() > 6)
             return 6;
         else
-            return list.size();
+            return productCardViewModel.getListProduct().size();
     }
 
-    public void setList(ArrayList<ProductFeedViewModel> list) {
-        this.list = list;
+    public void setData(ProductCardViewModel productCardViewModel) {
+        this.productCardViewModel = productCardViewModel;
         notifyDataSetChanged();
     }
 
-    public ArrayList<ProductFeedViewModel> getList() {
-        return list;
+    public ProductCardViewModel getData() {
+        return productCardViewModel;
     }
 
     @Override

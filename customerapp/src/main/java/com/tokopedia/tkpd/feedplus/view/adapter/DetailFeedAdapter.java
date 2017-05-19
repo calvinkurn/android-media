@@ -8,21 +8,22 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactory;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.FeedDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author by nisie on 5/15/17.
+ * @author by nisie on 5/18/17.
  */
 
-public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
-    private final FeedPlusTypeFactory typeFactory;
+    private final FeedPlusDetailTypeFactory typeFactory;
 
-    public FeedPlusAdapter(FeedPlusTypeFactory typeFactory) {
+    public DetailFeedAdapter(FeedPlusDetailTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
     }
@@ -41,27 +42,17 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
-    }
-
-    @Override
     public int getItemCount() {
         return list.size();
     }
 
-    public void setList(List<Visitable> list) {
-        this.list = list;
-        notifyDataSetChanged();
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position).type(typeFactory);
     }
 
-    public void addList(List<Visitable> list) {
-        this.list.addAll(list);
-        notifyItemInserted(list.size());
-    }
-
-    public void clearData() {
-        this.list.clear();
+    public void addList(ArrayList<FeedDetailViewModel> listProduct) {
+        this.list.addAll(listProduct);
         notifyDataSetChanged();
     }
 }
