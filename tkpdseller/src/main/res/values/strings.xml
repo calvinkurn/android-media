@@ -483,5 +483,9 @@
     <string name="save_keyword">Simpan</string>
     <string name="top_ads_total_keywords_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
     <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
+    <string name="error_keyword_must_only_letter_or_digit">Kata kunci hanya boleh huruf dan angka.</string>
+    <string name="error_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
+    <string name="error_keyword_has_existed">Kata Kunci telah ada.</string>
+    <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
 
 </resources>

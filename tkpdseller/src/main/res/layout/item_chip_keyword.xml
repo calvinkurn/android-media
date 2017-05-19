@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:background="@drawable/rounded"
+    tools:layout_marginLeft="16dp"
+    tools:layout_marginTop="16dp">
+
+    <TextView
+        android:id="@+id/textview_keyword_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:maxWidth="@dimen/max_width_keyword"
+        android:tag="text"
+        android:textColor="@android:color/black"
+        android:textSize="13sp"
+        tools:text="Trevor Hansen" />
+
+    <ImageButton
+        android:id="@+id/image_view_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/textview_keyword_item"
+        android:layout_toRightOf="@+id/textview_keyword_item"
+        android:background="@null"
+        android:src="@drawable/vector_cancel_24dp" />
+
+</RelativeLayout>

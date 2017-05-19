@@ -138,7 +138,7 @@
             android:label="@string/title_top_ads_keyword_add_detail"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"
-            android:exported="true">
+            android:windowSoftInputMode="adjustPan">
         </activity>
 
         <activity
