@@ -263,6 +263,7 @@ public class FragmentProductFeed extends BaseDaggerFragment implements FeedContr
             adapter.updateHistoryAdapter(dataFeedList.get(historyDataPosition));
             topAdsRecyclerAdapter.reset();
             adapter.setData(dataFeedList);
+            topAdsRecyclerAdapter.hideLoading();
         }
     }
 
