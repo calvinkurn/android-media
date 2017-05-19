@@ -28,7 +28,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -176,15 +175,7 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
 
     @Override
     public void initGoogleMap() {
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                GoogleMapFragment.this.googleMap = googleMap;
-                setToolbarMap();
-                setMyLocButton();
-            }
-        });
-        //googleMap = mapView.getMap();
+        googleMap = mapView.getMap();
     }
 
     @Override
@@ -263,7 +254,8 @@ public class GoogleMapFragment extends BasePresenterFragment<GoogleMapPresenter>
     @Override
     public void initMapView() {
         initGoogleMap();
-
+        setToolbarMap();
+        setMyLocButton();
         MapsInitializer.initialize(getActivity());
     }
 

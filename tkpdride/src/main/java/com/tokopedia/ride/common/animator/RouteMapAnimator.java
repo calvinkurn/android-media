@@ -16,7 +16,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.RoundCap;
 
 import java.util.List;
 
@@ -78,10 +77,10 @@ public class RouteMapAnimator {
 
         float width = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
 
-        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(width).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(width).geodesic(true);
         backgroundPolyline = googleMap.addPolyline(optionsBackground);
 
-        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(width).geodesic(true).startCap(new RoundCap()).endCap(new RoundCap());
+        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(width).geodesic(true);
         foregroundPolyline = googleMap.addPolyline(optionsForeground);
 
         final ValueAnimator percentageCompletion = ValueAnimator.ofInt(0, 100);

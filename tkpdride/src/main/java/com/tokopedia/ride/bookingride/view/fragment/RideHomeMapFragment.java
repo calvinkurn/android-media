@@ -6,6 +6,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Animatable;
@@ -16,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -24,7 +26,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -46,6 +47,7 @@ import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideDependencyInjection;
 import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
+import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
@@ -57,7 +59,7 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
-public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback {
+public class RideHomeMapFragment extends BaseFragment implements RideHomeMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
     public static final String EXTRA_IS_ALREADY_HAVE_LOC = "EXTRA_IS_ALREADY_HAVE_LOC";
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
     private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
@@ -99,6 +101,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     RelativeLayout mSourceLayout;
     @BindView(R2.id.layout_destination)
     RelativeLayout mDestinationLayout;
+    @BindView(R2.id.tw_map_wrapper)
+    TouchableWrapperLayout mapWrapperLayout;
 
     private PlacePassViewModel source, destination;
 
@@ -180,6 +184,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setViewListener() {
+        mapWrapperLayout.setListener(this);
         if (isLaunchedWithLocation() && source != null && destination != null) {
             setSourceLocationText(source.getTitle());
             setDestinationLocationText(destination.getTitle());
@@ -285,22 +290,29 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAUL_MAP_ZOOM));
-
-        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
-            @Override
-            public void onCameraMoveStarted(int i) {
-                if (i == REASON_GESTURE) {
-                    mPresenter.onMapMoveCameraStarted();
-                }
-            }
-        });
-
-        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
-            @Override
-            public void onCameraIdle() {
-                mPresenter.onMapMoveCameraIdle();
-            }
-        });
+//        mGoogleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+//            @Override
+//            public void onCameraChange(CameraPosition cameraPosition) {
+//
+//            }
+//        });
+//        mapView.se
+//
+//        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+//            @Override
+//            public void onCameraMoveStarted(int i) {
+//                if (i == REASON_GESTURE) {
+//                    mPresenter.onMapMoveCameraStarted();
+//                }
+//            }
+//        });
+//
+//        mGoogleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+//            @Override
+//            public void onCameraIdle() {
+//                mPresenter.onMapMoveCameraIdle();
+//            }
+//        });
 
         if (source != null && destination != null) {
             mPresenter.getOverviewPolyline(source.getLatitude(), source.getLongitude(),
@@ -374,6 +386,16 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
      */
     public void handleLocationAlertResult(int resultCode) {
         mPresenter.handleEnableLocationDialogResult(resultCode);
+    }
+
+    @Override
+    public void onLayoutDrag() {
+        mPresenter.onMapMoveCameraStarted();
+    }
+
+    @Override
+    public void onLayoutIdle() {
+        mPresenter.onMapMoveCameraIdle();
     }
 
     public interface OnFragmentInteractionListener {
@@ -648,5 +670,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void onDestroyView() {
         super.onDestroyView();
         mPresenter.detachView();
+    }
+
+    public static float convertDpToPixel(float dp){
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
     }
 }

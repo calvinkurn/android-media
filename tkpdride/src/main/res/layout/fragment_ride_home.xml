@@ -20,12 +20,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="0dp">
-
-
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/mapview"
+                <com.tokopedia.ride.bookingride.view.TouchableWrapperLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:id="@+id/tw_map_wrapper"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/mapview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </com.tokopedia.ride.bookingride.view.TouchableWrapperLayout>
 
                 <ImageView
                     android:id="@+id/iv_android_center_marker"
