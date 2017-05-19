@@ -35,12 +35,13 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .putExtra(EXTRA_CATEGORY_PASS_DATA, passData);
     }
 
+    @SuppressWarnings("unused")
     @DeepLink({Constants.Applinks.DIGITAL, Constants.Applinks.DIGITAL_PRODUCT})
     public static TaskStackBuilder getCallingApplinksTaskStask(Context context, Bundle extras) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
-        Intent homeIntent = null;
+        Intent homeIntent;
         if (GlobalConfig.isSellerApp()) {
             homeIntent = SellerAppRouter.getSellerHomeActivity(context);
         } else {

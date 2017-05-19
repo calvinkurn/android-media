@@ -17,6 +17,7 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
     protected List<T> dataList;
     protected T dataSelected;
     protected ActionListener<T> actionListener;
+    protected Context context;
 
     public BaseDigitalChooserView(Context context) {
         super(context);
@@ -34,6 +35,7 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
     }
 
     private void initialView(Context context, AttributeSet attrs, int defStyleAttr) {
+        this.context = context;
         LayoutInflater.from(context).inflate(getHolderLayoutId(), this, true);
         ButterKnife.bind(this);
         initialViewListener();
@@ -67,7 +69,6 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
     }
 
     public interface ActionListener<Z> {
-        //      void onInitialDataDigitalChooserSelectedRendered(Z data);
 
         void onUpdateDataDigitalChooserSelectedRendered(Z data);
 
