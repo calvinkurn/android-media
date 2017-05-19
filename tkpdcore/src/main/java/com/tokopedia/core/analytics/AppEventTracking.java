@@ -115,6 +115,8 @@ public interface AppEventTracking {
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
         String CLICK_VIEW_ALL_OS = "clickOS";
+        String IMPRESSION_OTP = "impressionOtp";
+        String CLICK_OTP = "clickOtp";
     }
 
     interface Category {
@@ -236,6 +238,7 @@ public interface AppEventTracking {
         String CLICK_BELI_INSTANT_SALDO_WIDGET = CLICK_BELI_INSTANT_SALDO + " from Widget";
         String CLICK_LANJUT_CHECKOUT = "Click Lanjut - Checkout Page";
         String VIEW_CHECKOUT_PAGE = "View Checkout Page";
+        String IMPRESSION = "Impression";
     }
 
     interface EventLabel {
@@ -389,6 +392,9 @@ public interface AppEventTracking {
         String TOPADS_SUCCESS_TOPUP = "Top Ads Topup Success";
         String SAVE_PASSWORD = "Save Password";
         String NEVER = "Never";
+        String TRUECALLER = "Truecaller";
+        String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
+        String TRUECALLER_CONFIRM = "Truecaller - Confirm";
     }
 
     interface SOCIAL_MEDIA {
