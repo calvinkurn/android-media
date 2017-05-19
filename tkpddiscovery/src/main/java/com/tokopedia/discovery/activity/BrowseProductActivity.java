@@ -638,6 +638,7 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
 
     private void renderNewCategoryLevel(String departementId, String name, boolean isBack) {
         if (departementId!=null) {
+            getBrowseProductActivityModel().setQ("");
             String toolbarTitle;
             if (name!=null) {
                 toolbarTitle = name;
@@ -662,7 +663,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
                 child.getId(), child.getName(), getIntent().getStringExtra(EXTRA_TITLE));
         getIntent().putExtra(EXTRA_TITLE,child.getName());
         renderNewCategoryLevel(child.getId(),child.getName(),false);
-
     }
 
     @Override
