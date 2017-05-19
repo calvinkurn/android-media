@@ -21,6 +21,7 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.activity.FeedPlusDetailActivity;
