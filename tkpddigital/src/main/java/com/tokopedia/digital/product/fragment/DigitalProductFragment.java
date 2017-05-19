@@ -104,6 +104,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
     private static final String EXTRA_STATE_HISTORY_CLIENT_NUMBER =
             "EXTRA_STATE_HISTORY_CLIENT_NUMBER";
+    private static final String EXTRA_STATE_VOUCHER_CODE_COPIED =
+            "EXTRA_STATE_VOUCHER_CODE_COPIED";
 
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
@@ -121,6 +123,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private CategoryData categoryDataState;
     private List<BannerData> bannerDataListState;
     private HistoryClientNumber historyClientNumberState;
+    private String voucherCodeCopiedState;
 
     private boolean isInstantCheckoutChecked;
 
@@ -183,6 +186,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 EXTRA_STATE_BANNER_LIST_DATA, (ArrayList<? extends Parcelable>) bannerDataListState
         );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
+        state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
     }
 
     @Override
@@ -194,6 +198,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         categoryDataState = savedState.getParcelable(EXTRA_STATE_CATEGORY_DATA);
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
+        voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
 
         presenter.processStateDataToReRender();
     }
@@ -594,6 +599,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
+        this.voucherCodeCopiedState = voucherCode;
         ClipboardManager clipboard = (ClipboardManager)
                 getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
@@ -605,6 +611,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
+        if (!TextUtils.isEmpty(bannerData.getLink())) return;
         navigateToActivity(DigitalWebActivity.newInstance(
                 getActivity(),
                 URLGenerator.generateURLSessionLogin(
