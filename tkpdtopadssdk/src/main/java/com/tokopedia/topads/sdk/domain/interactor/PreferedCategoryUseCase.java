@@ -112,7 +112,7 @@ public class PreferedCategoryUseCase extends UseCase<TopAdsParams, AdsView> {
 
     private int getRandomId(List<Integer> ids) {
         if (ids.size() > 0) {
-            return random.nextInt(ids.size());
+            return ids.get(random.nextInt(ids.size()));
         } else {
             return 0;
         }
