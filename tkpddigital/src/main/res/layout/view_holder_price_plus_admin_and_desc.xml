@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/padding_small"
@@ -10,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_ms"
-        android:textColor="@color/black"
         android:layout_marginStart="@dimen/margin_ms"/>
 
     <TextView
         android:id="@+id/product_plain_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/product_price_no_addition"
         android:layout_marginTop="@dimen/padding_vs"
         android:layout_marginBottom="@dimen/padding_vs"
         android:layout_marginLeft="@dimen/margin_ms"
@@ -28,14 +28,39 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
+        android:layout_marginBottom="@dimen/padding_vs"
+        android:layout_below="@id/product_plain_description"
         android:textColor="@color/black" />
 
     <View
+        android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/padding_vs"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"
+        android:layout_below="@id/product_total_price"
         android:background="@color/digital_separator" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/empty_stock_notification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/separator"
+        android:text="@string/title_empty_stock"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingStart="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_vvs"
+        android:paddingBottom="@dimen/padding_vvs"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:background="@color/grey_400"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -42,4 +42,6 @@
 
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="title_voucher_code">Kode Voucher: </string>
+    <string name="title_empty_stock">Stok Kosong </string>
+    <string name="button_copy">salin </string>
 </resources>

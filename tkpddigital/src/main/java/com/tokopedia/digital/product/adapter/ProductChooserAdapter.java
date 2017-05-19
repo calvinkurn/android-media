@@ -63,14 +63,18 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final int type = getItemViewType(position);
         final Product product = productList.get(position);
+        TextView emptyStockLabel = null;
         if (type == TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM) {
             setViewPriceDescription((ItemDescAndPriceHolder) holder, product);
+            emptyStockLabel = ((ItemDescAndPriceHolder) holder).emptyStockNotification;
         } else if (type == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
             setViewPriceAdditionalFee((ItemPriceAdmin) holder, product);
+            emptyStockLabel = ((ItemPriceAdmin) holder).emptyStockNotification;
         } else if (type == TYPE_HOLDER_PRODUCT_PROMO) {
             setViewPromo((ItemHolderPromoProduct) holder, product);
+            emptyStockLabel = ((ItemHolderPromoProduct) holder).emptyStockNotification;
         }
-        setProductAvailability(holder, product);
+        setProductAvailability(holder, product, emptyStockLabel);
     }
 
     private void setViewPriceDescription(ItemDescAndPriceHolder holder, Product product) {
@@ -116,7 +120,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvTitlePrice;
         @BindView(R2.id.tv_price)
         TextView tvPrice;
-
+        @BindView(R2.id.empty_stock_notification)
+        TextView emptyStockNotification;
         ItemDescAndPriceHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -130,7 +135,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvProductDescription;
         @BindView(R2.id.product_total_price)
         TextView tvProductTotalPrice;
-
+        @BindView(R2.id.empty_stock_notification)
+        TextView emptyStockNotification;
         ItemPriceAdmin(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -146,7 +152,8 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvPromoProductPrice;
         @BindView(R2.id.product_promo_old_price)
         TextView tvProductPromoOldPrice;
-
+        @BindView(R2.id.empty_stock_notification)
+        TextView emptyStockNotification;
         ItemHolderPromoProduct(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -158,12 +165,26 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     private void setProductAvailability(final RecyclerView.ViewHolder holder,
-                                        final Product product) {
+                                        final Product product,
+                                        final TextView emptyStockLabel) {
         if(product.getStatus() == 3) {
-            for(int i = 0; i < ((ViewGroup)mainAdapterView).getChildCount(); i++) {
-                ((ViewGroup) mainAdapterView).getChildAt(i).setEnabled(false);
+            for (int i = 0; i < ((ViewGroup)mainAdapterView).getChildCount(); i++) {
+                View adapterElement = ((ViewGroup) mainAdapterView).getChildAt(i);
+                adapterElement.setEnabled(false);
+                if (adapterElement instanceof TextView) {
+                    disableTextView((TextView) adapterElement);
+                } else if(adapterElement instanceof ViewGroup) {
+                    for (int j = 0; j < ((ViewGroup) adapterElement).getChildCount(); j++) {
+                        if (((ViewGroup) adapterElement).getChildAt(j) instanceof TextView) {
+                            disableTextView(((TextView) ((ViewGroup) adapterElement)
+                                    .getChildAt(j)));
+                        }
+                    }
+                }
             }
-
+            emptyStockLabel.setVisibility(View.VISIBLE);
+            emptyStockLabel.setTextColor(hostFragment
+                    .getResources().getColor(R.color.white));
         } else {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -171,6 +192,11 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     actionListener.onProductItemSelected(product);
                 }
             });
+            emptyStockLabel.setVisibility(View.GONE);
         }
+    }
+
+    private void disableTextView(TextView textViewToDisable) {
+        textViewToDisable.setTextColor(hostFragment.getResources().getColor(R.color.grey));
     }
 }

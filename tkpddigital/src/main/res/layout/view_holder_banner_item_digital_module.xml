@@ -13,7 +13,7 @@
         android:layout_marginBottom="@dimen/digital_padding_4"
         android:layout_marginLeft="@dimen/digital_padding_8"
         android:layout_marginRight="@dimen/digital_padding_8"
-        android:layout_marginTop="@dimen/digital_padding_4"
+        android:layout_marginTop="@dimen/digital_padding_6"
         android:orientation="vertical"
         android:padding="@dimen/digital_padding_14"
         tools:background="@drawable/digital_bg_banner_selected">
@@ -60,11 +60,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/digital_white_grey_button_rounded"
-                android:padding="3dp"
+                android:padding="@dimen/padding_vvs"
                 android:paddingEnd="@dimen/padding_small"
                 android:paddingStart="@dimen/padding_small"
-                android:text="salin"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:text="@string/button_copy" />
         </LinearLayout>
     </LinearLayout>
 

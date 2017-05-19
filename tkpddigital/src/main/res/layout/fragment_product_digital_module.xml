@@ -27,7 +27,8 @@
                 android:id="@+id/rv_banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_vvvs" />
+                android:padding="@dimen/padding_vvvs"
+                android:layout_marginBottom="@dimen/digital_padding_16"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

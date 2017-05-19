@@ -109,7 +109,11 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment {
     @Override
     protected void initView(View view) {
         rvOperatorList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        if (operatorListData.size() > 10) fieldSearch.addTextChangedListener(onSearchTextChange());
+        if (operatorListData.size() > 10) {
+            fieldSearch.addTextChangedListener(onSearchTextChange());
+            fieldSearch.clearFocus();
+            rvOperatorList.requestFocus();
+        }
         else fieldSearch.setVisibility(View.GONE);
     }
 
