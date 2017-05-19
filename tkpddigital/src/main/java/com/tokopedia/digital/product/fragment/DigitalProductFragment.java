@@ -544,6 +544,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+        preCheckoutProduct.setVoucherCodeCopied(voucherCodeCopiedState);
         presenter.processAddToCartProduct(preCheckoutProduct);
     }
 
