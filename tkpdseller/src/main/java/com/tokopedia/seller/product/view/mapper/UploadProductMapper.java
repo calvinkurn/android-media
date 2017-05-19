@@ -144,10 +144,12 @@ public class UploadProductMapper {
         viewModel.setPhotos(mapPhotosListDomainToView(productPhotos.getPhotos()));
         //disallow primary image to delete.
         int originalProductDefaultPic = productPhotos.getOriginalProductDefaultPicture();
-        if (originalProductDefaultPic > -1) {
-            viewModel.getPhotos().get(originalProductDefaultPic).setCanDelete(false);
-        } else {
-            viewModel.getPhotos().get(productPhotos.getProductDefaultPicture()).setCanDelete(false);
+        if (!viewModel.getPhotos().isEmpty()) {
+            if (originalProductDefaultPic > -1) {
+                viewModel.getPhotos().get(originalProductDefaultPic).setCanDelete(false);
+            } else {
+                viewModel.getPhotos().get(productPhotos.getProductDefaultPicture()).setCanDelete(false);
+            }
         }
         return viewModel;
     }

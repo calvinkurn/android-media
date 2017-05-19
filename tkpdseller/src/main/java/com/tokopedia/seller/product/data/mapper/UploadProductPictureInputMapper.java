@@ -40,7 +40,8 @@ public class UploadProductPictureInputMapper {
     private static List<ProductPhotoServiceModel> mapPhotos(List<ImageProductInputDomainModel> photos) {
         List<ProductPhotoServiceModel> serviceModelList = new ArrayList<>();
         for (ImageProductInputDomainModel domainModel : photos){
-            if (domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_DELETED ||
+            if (domainModel.getStatus() == ImageStatusTypeDef.DEFAULT ||
+                    domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_DELETED ||
                     domainModel.getStatus() == ImageStatusTypeDef.ALREADY_DELETED ||
                     domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_UPLOADED) {
                 ProductPhotoServiceModel serviceModel = new ProductPhotoServiceModel();
