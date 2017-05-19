@@ -135,7 +135,7 @@
             android:label="@string/label_gold_merchant"/>
 
         <activity
-            android:name=".tkpdcustomer.feedplus.view.activity.FeedPlusDetailActivity"
+            android:name=".tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity"
             android:label="@string/title_detail_feed"
             android:screenOrientation="portrait"/>
 

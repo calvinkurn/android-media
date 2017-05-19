@@ -47,7 +47,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.fragment.AddProductFragment;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.tkpdcustomer.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
