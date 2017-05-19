@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.feedplus.view.presenter.FeedPlusPresenter;
+import com.tokopedia.tkpd.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.feedplus.view.viewmodel.ProductCardViewModel;
@@ -183,7 +184,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listProduct4.addAll(listProduct3);
         listProduct4.add(prod4);
 
-
         ArrayList<ProductFeedViewModel> listProduct5 = new ArrayList<>();
         listProduct5.addAll(listProduct4);
         listProduct5.add(prod5);
@@ -200,12 +200,20 @@ public class FeedPlusFragment extends BaseDaggerFragment
         List<Visitable> list = new ArrayList<>();
 
         list.add(new ProductCardViewModel("Nisie 1", listProduct));
-//        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
-//        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
-//        list.add(new PromoViewModel(listProduct6));
-//        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
-//        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
-//        list.add(new ProductCardViewModel("Nisie 6", listProduct6));
+        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
+        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
+        list.add(new PromoViewModel(listProduct8));
+
+        ArrayList<ProductFeedViewModel> listOfficialStore = new ArrayList<>();
+        listOfficialStore.add(new ProductFeedViewModel(prod1,"https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocky", true));
+        listOfficialStore.add(new ProductFeedViewModel(prod2,"https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rock", true));
+        listOfficialStore.add(new ProductFeedViewModel(prod3,"https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocy", false));
+        listOfficialStore.add(new ProductFeedViewModel(prod4,"https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rcky", false));
+        list.add(new OfficialStoreViewModel("https://ecs7.tokopedia.net/img/mobile/banner-4.png",listOfficialStore));
+
+        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
+        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
+        list.add(new ProductCardViewModel("Nisie 6", listProduct6));
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
         list.add(new ProductCardViewModel("Nisie 8", listProduct8));
 
