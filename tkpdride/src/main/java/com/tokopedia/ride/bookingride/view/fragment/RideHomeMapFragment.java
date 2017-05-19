@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
@@ -162,7 +164,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         super.onViewStateRestored(savedInstanceState);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
             source = savedInstanceState.getParcelable(EXTRA_SOURCE);
             destination = savedInstanceState.getParcelable(EXTRA_DESTINATION);
         }
@@ -419,11 +421,16 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                     }
                     break;
                 case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
-                    destination = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    setDestinationLocationText(String.valueOf(destination.getTitle()));
-                    proccessToRenderRideProduct();
-                    isAlreadySelectDestination = true;
-                    hideMarkerCenter();
+                    PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
+                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
+                    } else {
+                        destination = destinationTemp;
+                        setDestinationLocationText(String.valueOf(destination.getTitle()));
+                        proccessToRenderRideProduct();
+                        isAlreadySelectDestination = true;
+                        hideMarkerCenter();
+                    }
                     break;
             }
         }

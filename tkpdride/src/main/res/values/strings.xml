@@ -92,4 +92,5 @@
     <string name="dialog_no">No</string>
     <string name="choose_below_offer">Choose from Offers below</string>
     <string name="loading">loading ...</string>
+    <string name="ride_home_map_dest_same_source_error">Destination not allowed to be same with Pickup</string>
 </resources>
