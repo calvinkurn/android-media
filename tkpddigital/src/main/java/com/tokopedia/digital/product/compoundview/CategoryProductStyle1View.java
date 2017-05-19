@@ -15,8 +15,10 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -159,6 +161,17 @@ public class CategoryProductStyle1View extends
             lastClientNumberHistory = historyClientNumber.getLastOrderClientNumber().getClientNumber();
         if (!TextUtils.isEmpty(lastClientNumberHistory)) {
             clientNumberInputView.setText(lastClientNumberHistory);
+        }
+
+        if (hasLastOrderHistoryData()) {
+            if (!data.getClientNumberList().isEmpty()) {
+                List<String> recentClientNumberString = new ArrayList<>();
+                for (OrderClientNumber orderClientNumber
+                        : historyClientNumber.getRecentClientNumberList()) {
+                    recentClientNumberString.add(orderClientNumber.getClientNumber());
+                }
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(recentClientNumberString);
+            }
         }
     }
 

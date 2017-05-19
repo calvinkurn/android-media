@@ -172,6 +172,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 .idemPotencyKey(generateATokenRechargeCheckout())
                 .utmSource("android")
                 .utmMedium("widget")
+                .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
                 .build();
 
         if (view.isUserLoggedIn()) {

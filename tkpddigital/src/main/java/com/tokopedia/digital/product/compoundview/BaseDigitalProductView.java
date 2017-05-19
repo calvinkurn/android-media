@@ -151,6 +151,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         private String categoryName;
         private boolean instantCheckout;
         private boolean promo;
+        private String voucherCodeCopied;
 
         public String getClientNumber() {
             return clientNumber;
@@ -194,6 +195,14 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         public void setInstantCheckout(boolean instantCheckout) {
             this.instantCheckout = instantCheckout;
+        }
+
+        public String getVoucherCodeCopied() {
+            return voucherCodeCopied == null ? "" : voucherCodeCopied;
+        }
+
+        public void setVoucherCodeCopied(String voucherCodeCopied) {
+            this.voucherCodeCopied = voucherCodeCopied;
         }
 
         public void setPromo(boolean promo) {
