@@ -101,17 +101,17 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
     }
 
     public void setHeader(final ProductCardViewModel productCardViewModel) {
-        String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
-                + productCardViewModel.getActionText();
+        String titleText = "<b>" + productCardViewModel.getHeader().getShopName() + "</b> "
+                + productCardViewModel.getHeader().getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getShopAvatar());
+        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getHeader().getShopAvatar());
 
-        if (productCardViewModel.isGoldMerchant())
+        if (productCardViewModel.getHeader().isGoldMerchant())
             goldMerchantBadge.setVisibility(View.VISIBLE);
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
+        time.setText(TimeConverter.generateTime(productCardViewModel.getHeader().getPostTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override

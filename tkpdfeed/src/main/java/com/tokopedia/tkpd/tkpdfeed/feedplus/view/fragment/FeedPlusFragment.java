@@ -77,12 +77,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+        DaggerAppComponent daggerAppComponent =
+                (DaggerAppComponent) DaggerAppComponent.builder()
                 .appModule(new AppModule(getContext()))
                 .activityModule(new ActivityModule(getActivity()))
                 .build();
 
-        DaggerFeedPlusComponent daggerFeedPlusComponent = (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
+        DaggerFeedPlusComponent daggerFeedPlusComponent =
+                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
                 .appComponent(daggerAppComponent)
                 .build();
 
