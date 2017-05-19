@@ -131,13 +131,15 @@
         <item name="android:maxHeight">52dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/font_medium</item>
-        <item name="android:background">@drawable/bg_button_green</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:layout_marginTop">8dp</item>
     </style>
 
+    <style name="Button.Submit.Orange">
+        <item name="android:background">@drawable/bg_button_orange</item>
+    </style>
     <style name="Button.Submit.Green">
         <item name="android:background">@drawable/bg_button_green</item>
         <item name="android:textColor">@color/text_submit_button</item>
