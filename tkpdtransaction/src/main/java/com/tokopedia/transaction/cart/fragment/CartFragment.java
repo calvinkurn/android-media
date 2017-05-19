@@ -23,7 +23,9 @@ import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -40,6 +42,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -48,7 +52,12 @@ import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
@@ -74,6 +83,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
+import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
 
 /**
@@ -385,12 +397,42 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         nsvContainer.setVisibility(View.GONE);
         pbMainLoading.setVisibility(View.GONE);
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
-        NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(), getString(R.string.label_title_empty_cart),
-                getString(R.string.label_sub_title_empty_cart),
-                getString(R.string.label_btn_action_empty_cart), R.drawable.status_no_result,
-                getRetryEmptyCartClickListener()
-        );
+
+        View rootview = getView();
+        try {
+            rootview.findViewById(com.tokopedia.core.R.id.main_retry).setVisibility(View.VISIBLE);
+        } catch (NullPointerException e) {
+            View emptyState = LayoutInflater.from(context).
+                    inflate(R.layout.layout_empty_shopping_chart, (ViewGroup) rootview);
+            Button shop = (Button) emptyState.findViewById(R.id.shoping);
+            shop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    getRetryEmptyCartClickListener();
+                }
+            });
+            TopAdsParams params = new TopAdsParams();
+            params.getParam().put(TopAdsParams.KEY_SRC, "empty_cart");
+
+            Config config = new Config.Builder()
+                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                    .setUserId(SessionHandler.getLoginID(getActivity()))
+                    .setEndpoint(Endpoint.PRODUCT)
+                    .topAdsParams(params)
+                    .build();
+
+            TopAdsView topAdsView = (TopAdsView) emptyState.findViewById(R.id.topads);
+            topAdsView.setConfig(config);
+            topAdsView.loadTopAds();
+        }
+
+
+//        NetworkErrorHelper.showEmptyState(
+//                getActivity(), getView(), getString(R.string.label_title_empty_cart),
+//                getString(R.string.label_sub_title_empty_cart),
+//                getString(R.string.label_btn_action_empty_cart), R.drawable.status_no_result,
+//                getRetryEmptyCartClickListener()
+//        );
     }
 
 
@@ -891,7 +933,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             convertedAmount = 0;
         }
         if (convertedAmount > 1) {
-            return noun+"s";
+            return noun + "s";
         }
         return noun;
     }
