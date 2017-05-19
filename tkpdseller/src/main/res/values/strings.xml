@@ -288,6 +288,10 @@
     <string name="next">Selanjutnya</string>
     <string name="error_no_browser">\"Tidak ada aplikasi untuk membuka link\"</string>
 
+    <!-- Top Ads Keyword -->
+    <string name="top_ads_title_keyword_add_keyword">Tambah Kata Kunci</string>
+    <string name="top_ads_keyword_total_keyword_in_group">Kata kunci dalam grup (%1s)</string>
+
     <!-- reputation history -->
     <string name="your_shop_reputation">Reputasi Toko Anda</string>
     <string name="reputation_point_calculation">Perhitungan Poin Reputasi</string>
