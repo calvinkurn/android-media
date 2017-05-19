@@ -60,4 +60,5 @@
     <dimen name="item_space">10dp</dimen>
 
     <dimen name="spinner_decimal_spinner_width">80dp</dimen>
+    <dimen name="max_width_keyword">300dp</dimen>
 </resources>

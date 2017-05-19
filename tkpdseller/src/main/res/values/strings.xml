@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">tkpdseller</string>
 
     <string name="title_activity_gmstat">Statistik</string>
@@ -57,6 +57,7 @@
     <string name="title_top_ads_manage_promo_product">Atur Grup</string>
     <string name="title_top_ads_add_promo_product">Tambah Promo Produk</string>
     <string name="title_top_ads_edit_promo_product">Ubah Promo Produk</string>
+    <string name="title_top_ads_keyword_add_detail">Tambah Kata Kunci</string>
 
     <string name="label_top_ads_impression">Tampil</string>
     <string name="label_top_ads_click">Klik</string>
@@ -478,5 +479,13 @@
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
+    <string name="add_keyword">Tambah Kata Kunci</string>
+    <string name="save_keyword">Simpan</string>
+    <string name="top_ads_total_keywords_current_and_max">Total Kata Kunci (%1$d/%2$d)</string>
+    <string name="top_ads_keywords_in_groups">Kata Kunci dalam grup (%1$d)</string>
+    <string name="error_keyword_must_only_letter_or_digit">Kata kunci hanya boleh huruf dan angka.</string>
+    <string name="error_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
+    <string name="error_keyword_has_existed">Kata Kunci telah ada.</string>
+    <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
 
 </resources>

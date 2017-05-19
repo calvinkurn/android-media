@@ -11,5 +11,4 @@ import dagger.Component;
 @Component(modules = TopAdsModule.class, dependencies = AppComponent.class)
 public interface TopAdsKeywordComponent {
     void inject(TopAdsKeywordListFragment topAdsKeywordListFragment);
-    // void inject(TestActivity activity);
 }
