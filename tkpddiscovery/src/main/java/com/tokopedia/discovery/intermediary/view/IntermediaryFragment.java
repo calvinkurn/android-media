@@ -10,6 +10,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -284,6 +286,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void updateDepartementId(String id) {
         departmentId = id;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
     }
 
     private void showErrorEmptyState() {

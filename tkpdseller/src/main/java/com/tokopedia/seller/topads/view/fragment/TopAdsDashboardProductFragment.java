@@ -3,6 +3,7 @@ package com.tokopedia.seller.topads.view.fragment;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.LabelView;
@@ -93,6 +94,21 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         keywordLabelView.setVisibleArrow(true);
         totalProductAd = totalAd.getTotalProductAd();
         onLoadDataSuccess();
+        showShowCase();
+    }
+
+    // use for show case in activity
+    public View getDepositView() {
+        return getView().findViewById(R.id.view_group_deposit);
+    }
+    public View getCalendarView() {
+        return getView().findViewById(R.id.layout_date);
+    }
+    public View getStatisticView() {
+        return getView().findViewById(R.id.view_group_statistic);
+    }
+    public ViewGroup getScrollView() {
+        return (ViewGroup) getView().findViewById(R.id.scrollView);
     }
 
     @Override

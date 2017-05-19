@@ -135,7 +135,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_search_etalase">Cari Etalase</string>
     <string name="hint_search_status">Cari Status</string>
     <string name="error_change_primary_image">Tidak Dapat Mengubah Gambar Utama</string>
-    <string name="error_delete_primary_image">Tidak Dapat Menghapus Gambar Utama</string>
+    <string name="error_delete_primary_image">Gambar Utama tidak dapat dihapus</string>
     <string name="error_failed_add_product">Anda Gagal Menambah Produk, Silahkan Coba Lagi</string>
     <string name="upload_product_waiting">Produk Anda Sedang Diunggah Silahkan Lihat Notifikasi</string>
     <string name="maximum_instoped_limit">Batas Maksimum Untuk Mengunggah Gambar Telah Tercapai</string>
@@ -176,6 +176,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_img_delete">Hapus</string>
     <string name="title_dollar">US$</string>
     <string name="title_rupiah">Rp</string>
+    <string name="title_rupiah_empty">Rp - </string>
     <string name="error_image_resolution">Ukuran minimal gambar adalah 300x300 pixel</string>
     <string name="dialog_delete_product">Apakah Anda ingin menghapus produk ini?</string>
     <string name="dialog_cancel_add_product">Perubahan yang anda lakukan tidak akan tersimpan. Lanjutkan?</string>
@@ -1008,6 +1009,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_edit">Ubah</string>
     <string name="title_my_review">ULASAN SAYA</string>
     <string name="title_skip">Lewatkan</string>
+    <string name="title_skip_2">Lewati</string>
     <string name="hint_review">Tulis ulasan Anda</string>
     <string name="error_review_message_empty">Ulasan harus diisi</string>
     <string name="error_review_response_message_empty">Balasan harus diisi</string>
@@ -1434,6 +1436,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_loyalty_points">TopPoints terpakai</string>
     <string name="loyalty_points_info">TopPoints</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="toko_cash_top_up">Topup</string>
     <string name="toko_cash_activation">Aktivasi</string>
     <string name="msg_lucky_merchant">Anda berhasil menjadi Lucky Merchant</string>
     <string name="msg_lucky_merchant_detail">Kesempatan mendapatkan pesanan lebih banyak setiap harinya</string>
@@ -1936,4 +1939,8 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_content_seller_app">Kami mendeteksi aplikasi utama Tokopedia pada device anda. Untuk menghindari notifikasi ganda, kami sarankan untuk mengatur notifikasi apa yang ingin anda terima melalui Pengaturan</string>
     <string name="notification_dialog_positive_button">Pengaturan</string>
     <string name="notification_dialog_negative_button">Batal</string>
+    <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
+
+    <string name="banner_official_store_title_text">Sudah Pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
 </resources>

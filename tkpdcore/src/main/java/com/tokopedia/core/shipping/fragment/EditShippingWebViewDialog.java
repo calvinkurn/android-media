@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -38,12 +39,24 @@ public class EditShippingWebViewDialog extends DialogFragment{
             super.onPageFinished(view, url);
             if(editButtonClicked){
                 Intent intent = new Intent();
-                intent.putExtra(EditShippingViewListener.EDIT_SHIPPING_RESULT_KEY, url.replaceAll(".*</html>", ""));
+                String resultShippingResultKey;
+                if (android.os.Build.VERSION.SDK_INT <= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    resultShippingResultKey = replaceTagHtml(url);
+                }else{
+                    resultShippingResultKey = url.replaceAll(".*</html>", "");
+                }
+                intent.putExtra(EditShippingViewListener.EDIT_SHIPPING_RESULT_KEY, resultShippingResultKey);
                 intent.putExtra(EditShippingViewListener.MODIFIED_COURIER_INDEX_KEY, courierIndex);
                 getTargetFragment().onActivityResult(EditShippingViewListener
                         .ADDITIONAL_OPTION_REQUEST_CODE, Activity.RESULT_OK, intent);
                 dismiss();
             }
+        }
+
+        private String replaceTagHtml(String url){
+            String htmlTag = "</html>";
+            int indexTagHtml = url.indexOf(htmlTag);
+            return url.substring(indexTagHtml + htmlTag.length());
         }
 
         @Override

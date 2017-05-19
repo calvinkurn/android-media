@@ -2,9 +2,13 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -23,14 +27,11 @@ import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-
 /**
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implements PeopleTxCenterView {
     public static final String TYPE = "type";
-    @BindView(R2.id.menu_list)
     ListView TitleMenuListView;
 
     private RefreshHandler Refresh;
@@ -84,6 +85,14 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     public void initHandlerAndAdapter() {
         ListViewPeopleTransactionSummaryAdapter = new ListViewPeopleTransactionSummary(getActivity(), MenuName, MenuCount, MenuDesc);
         cache = new LocalCacheHandler(getActivity(), TkpdCache.NOTIFICATION_DATA);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        TitleMenuListView = (ListView) view.findViewById(R.id.menu_list);
+        return view;
     }
 
     @Override
