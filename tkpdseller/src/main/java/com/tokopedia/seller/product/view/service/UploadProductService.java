@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.util.GlobalConfig;
@@ -142,6 +143,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void sendFailedBroadcast(Throwable error) {
+        Crashlytics.logException(error);
         String errorMessage = ViewUtils.getGeneralErrorMessage(getApplicationContext(), error);
         UnifyTracking.eventAddProductErrorServer(errorMessage);
         Intent result = new Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT);
