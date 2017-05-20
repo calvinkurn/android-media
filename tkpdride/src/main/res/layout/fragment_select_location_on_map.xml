@@ -1,0 +1,62 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp">
+
+            <com.tokopedia.ride.bookingride.view.TouchableWrapperLayout
+                android:id="@+id/tw_map_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.tokopedia.ride.bookingride.view.TouchableWrapperLayout>
+
+            <ImageView
+                android:id="@+id/iv_android_center_marker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/marker_red"
+                android:visibility="visible" />
+
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/layout_src_destination"
+            layout="@layout/view_source_destination_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/btn_done"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/shape_bg_rounded_white_rectangle"
+            android:gravity="center"
+            android:text="DONE"
+            android:textColor="@color/black_full"
+            android:textSize="18dp" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

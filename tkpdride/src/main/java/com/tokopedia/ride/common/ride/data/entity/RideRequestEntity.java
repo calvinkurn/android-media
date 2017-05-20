@@ -74,6 +74,9 @@ public class RideRequestEntity {
     @SerializedName("eta")
     @Expose
     int eta;
+    @SerializedName("payment")
+    @Expose
+    PaymentEntity payment;
 
     public RideRequestEntity() {
     }
@@ -128,5 +131,9 @@ public class RideRequestEntity {
 
     public RideRequestAddressEntity getAddress() {
         return address;
+    }
+
+    public PaymentEntity getPayment() {
+        return payment;
     }
 }

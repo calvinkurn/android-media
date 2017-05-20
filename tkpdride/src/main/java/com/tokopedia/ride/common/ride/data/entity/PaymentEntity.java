@@ -20,6 +20,10 @@ public class PaymentEntity {
     @Expose
     private String totalAmount;
 
+    @SerializedName("receipt_ready")
+    @Expose
+    private boolean receiptReady;
+
     public PaymentEntity() {
     }
 
@@ -33,5 +37,9 @@ public class PaymentEntity {
 
     public String getPreAuthAmount() {
         return preAuthAmount;
+    }
+
+    public boolean isReceiptReady() {
+        return receiptReady;
     }
 }

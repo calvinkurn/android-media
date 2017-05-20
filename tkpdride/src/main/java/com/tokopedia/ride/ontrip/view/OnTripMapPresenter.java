@@ -302,7 +302,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showAcceptedNotification(result);
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
-                updatePolylineIfResetedByUiLifecycle(result);
+                //updatePolylineIfResetedByUiLifecycle(result);
+                getOverViewPolyLine();
                 break;
             case RideStatus.ARRIVING:
                 getView().saveActiveRequestId(result.getRequestId());
@@ -344,13 +345,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().clearSavedActiveProductName();
                 break;
             case RideStatus.COMPLETED:
-                getView().hideRequestLoadingLayout();
-                getView().hideFindingUberNotification();
-                getView().hideAcceptedNotification();
-                getView().renderCompletedRequest(result);
+                CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed");
+                if (result.getPayment() != null && result.getPayment().isReceiptReady()) {
+                    CommonUtils.dumper("proccessGetCurrentRideRequest## Ride Completed ReceiptReady");
+                    getView().hideRequestLoadingLayout();
+                    getView().hideFindingUberNotification();
+                    getView().hideAcceptedNotification();
+                    getView().renderCompletedRequest(result);
+                }
                 break;
             default:
-
         }
     }
 
@@ -368,8 +372,11 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     @Override
     public void getOverViewPolyLine() {
-        if (getView().getPolyLineParam() != null) {
-            getOverviewPolylineUseCase.execute(getView().getPolyLineParam(), new Subscriber<List<String>>() {
+        Location currentLocationTemp = (activeRideRequest != null && activeRideRequest.getStatus().equalsIgnoreCase(RideStatus.IN_PROGRESS)) ? mCurrentLocation : null;
+        RequestParams polylineRequestParams = getView().getPolyLineParam(currentLocationTemp);
+
+        if (polylineRequestParams != null) {
+            getOverviewPolylineUseCase.execute(polylineRequestParams, new Subscriber<List<String>>() {
                 @Override
                 public void onCompleted() {
 

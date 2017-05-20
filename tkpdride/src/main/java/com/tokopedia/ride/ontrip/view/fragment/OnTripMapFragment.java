@@ -358,7 +358,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public RequestParams getPolyLineParam() {
+    public RequestParams getPolyLineParam(android.location.Location currentLocation) {
         if (source == null || destination == null) {
             return null;
         } else {
@@ -372,6 +372,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     destination.getLongitude()
             ));
             requestParams.putString("sensor", "false");
+
+            if (currentLocation != null) {
+                requestParams.putString("waypoints", String.format("%s,%s",
+                        destination.getLatitude(),
+                        destination.getLongitude()
+                ));
+            }
+
             return requestParams;
         }
     }

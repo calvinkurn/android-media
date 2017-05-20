@@ -3,6 +3,8 @@ package com.tokopedia.ride.common.ride.domain.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.ride.history.domain.model.Payment;
+
 /**
  * Created by alvarisi on 3/24/17.
  */
@@ -19,6 +21,7 @@ public class RideRequest implements Parcelable {
     private double surgeMultiplier;
     private boolean shared;
     private int eta;
+    private Payment payment;
 
     public RideRequest() {
     }
@@ -35,6 +38,7 @@ public class RideRequest implements Parcelable {
         surgeMultiplier = in.readDouble();
         shared = in.readByte() != 0;
         eta = in.readInt();
+        payment = in.readParcelable(Driver.class.getClassLoader());
     }
 
     public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
@@ -138,6 +142,14 @@ public class RideRequest implements Parcelable {
         this.eta = eta;
     }
 
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -156,5 +168,6 @@ public class RideRequest implements Parcelable {
         parcel.writeDouble(surgeMultiplier);
         parcel.writeByte((byte) (shared ? 1 : 0));
         parcel.writeInt(eta);
+        parcel.writeParcelable(payment, i);
     }
 }

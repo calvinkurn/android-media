@@ -2,6 +2,7 @@ package com.tokopedia.ride.ontrip.view;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -123,7 +124,7 @@ public interface OnTripMapContract {
 
         void setMapViewListener();
 
-        RequestParams getPolyLineParam();
+        RequestParams getPolyLineParam(Location currentLocation);
 
         void renderSourceMarker(double latitude, double longitude);
 

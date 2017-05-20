@@ -15,12 +15,9 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -57,6 +54,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         ItemClickListener {
     private static final String TAG = "addressautocomplete";
     private static final String SHOW_AUTO_DETECT_LOCATION = "SHOW_AUTO_DETECT_LOCATION";
+    private static final String SHOW_SELECT_LOCATION_ON_MAP = "SHOW_SELECT_LOCATION_ON_MAP";
 
     private PlaceAutoCompleteAdapter mAdapter;
     private PlaceAutoCompleteContract.Presenter mPresenter;
@@ -72,6 +70,8 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     ImageView mBackIconImageView;
     @BindView(R2.id.crux_cabs_auto_detect_container)
     RelativeLayout mAutoDetectLocationRelativeLayout;
+    @BindView(R2.id.set_location_on_map_container)
+    RelativeLayout mSelectLocationOnMapRelativeLayout;
     @BindView(R2.id.cabs_autocomplete_home_box)
     RelativeLayout mAutoCompleteHomeRelativeLayout;
     @BindView(R2.id.cabs_autocomplete_work_box)
@@ -85,15 +85,19 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
 
     OnFragmentInteractionListener mOnFragmentInteractionListener;
     private boolean showAutodetectLocation;
+    private boolean showSelectLocationOnMap;
 
     public interface OnFragmentInteractionListener {
         void onLocationSelected(PlacePassViewModel placeId);
+
+        void onSelectLocationOnMapSelected();
     }
 
-    public static Fragment newInstance(boolean showAutoDetectLocation) {
+    public static Fragment newInstance(boolean showAutoDetectLocation, boolean showSelectLocationOnMap) {
         PlaceAutocompleteFragment fragment = new PlaceAutocompleteFragment();
         Bundle arguments = new Bundle();
         arguments.putBoolean(SHOW_AUTO_DETECT_LOCATION, showAutoDetectLocation);
+        arguments.putBoolean(SHOW_SELECT_LOCATION_ON_MAP, showSelectLocationOnMap);
         fragment.setArguments(arguments);
         return fragment;
     }
@@ -108,6 +112,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         peopleAddressPaging.setPage(1);
 
         showAutodetectLocation = getArguments().getBoolean(SHOW_AUTO_DETECT_LOCATION, true);
+        showSelectLocationOnMap = getArguments().getBoolean(SHOW_SELECT_LOCATION_ON_MAP, false);
     }
 
     @Override
@@ -118,6 +123,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mPresenter.initialize();
 
         mAutoDetectLocationRelativeLayout.setVisibility(showAutodetectLocation ? View.VISIBLE : View.GONE);
+        mSelectLocationOnMapRelativeLayout.setVisibility(showSelectLocationOnMap ? View.VISIBLE : View.GONE);
 
         mAutocompleteEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -309,6 +315,11 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
         mPresenter.actionAutoDetectLocation();
     }
 
+    @OnClick(R2.id.set_location_on_map_container)
+    public void actionSelectLocationOnMapClicked() {
+        mOnFragmentInteractionListener.onSelectLocationOnMapSelected();
+    }
+
     @OnClick(R2.id.cabs_autocomplete_home_box)
     public void actionHomeButtonClicked() {
         mPresenter.actionHomeLocation();
@@ -417,7 +428,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
     }
 
     @OnClick(R2.id.iv_cross)
-    public void actionClearIconClicked(){
+    public void actionClearIconClicked() {
         mAutocompleteEditText.setText("");
         hideClearButton();
     }

@@ -135,10 +135,49 @@
             </RelativeLayout>
 
             <RelativeLayout
+                android:id="@+id/set_location_on_map_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/crux_cabs_auto_detect_container"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="0dp"
+                android:background="@android:color/white"
+                android:foreground="?attr/selectableItemBackground"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/set_location_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:src="@drawable/marker_red" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/set_location_icon"
+                    android:singleLine="true"
+                    android:text="@string/set_location_on_map"
+                    android:textColor="@color/grey_800" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/cabs_autocomplete_home_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/crux_cabs_auto_detect_container"
+                android:layout_below="@id/set_location_on_map_container"
                 android:layout_marginBottom="5dp"
                 android:background="@color/white"
                 android:padding="10dp"

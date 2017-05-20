@@ -142,8 +142,10 @@ public class RidePushNotificationBuildAndShow {
                     case RideStatus.RIDER_CANCELED:
                         break;
                     case RideStatus.COMPLETED:
-                        cancelActiveNotification(mContext);
-                        showRideCompleted(mContext, rideRequest);
+                        if (rideRequest.getPayment() != null && rideRequest.getPayment().isReceiptReady()) {
+                            cancelActiveNotification(mContext);
+                            showRideCompleted(mContext, rideRequest);
+                        }
                         break;
                 }
             }
@@ -163,7 +165,7 @@ public class RidePushNotificationBuildAndShow {
         remoteView.setTextViewText(R.id.tv_driver_star, String.format("%s star", rideRequest.getDriver().getRating()));
         remoteView.setTextViewText(R.id.tv_eta, String.format(String.format("%s will pick you up in %s minutes.",
                 rideRequest.getDriver().getName(),
-                String.valueOf(rideRequest.getEta()))));
+                String.valueOf(rideRequest.getPickup().getEta()))));
         Glide
                 .with(context)
                 .load(rideRequest.getVehicle().getPictureUrl())
@@ -219,7 +221,7 @@ public class RidePushNotificationBuildAndShow {
                                                                   .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                                                                           rideRequest.getDriver().getName(),
                                                                           rideRequest.getDriver().getRating(),
-                                                                          String.valueOf(rideRequest.getEta()))
+                                                                          String.valueOf(rideRequest.getPickup().getEta()))
                                                                   )
                                                                   .setCustomBigContentView(remoteView);
 
@@ -257,7 +259,7 @@ public class RidePushNotificationBuildAndShow {
                                                           .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                                                                   rideRequest.getDriver().getName(),
                                                                   rideRequest.getDriver().getRating(),
-                                                                  String.valueOf(rideRequest.getEta()))
+                                                                  String.valueOf(rideRequest.getPickup().getEta()))
                                                           )
                                                           .setCustomBigContentView(remoteView);
 
@@ -300,7 +302,7 @@ public class RidePushNotificationBuildAndShow {
                 .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                         rideRequest.getDriver().getName(),
                         rideRequest.getDriver().getRating(),
-                        String.valueOf(rideRequest.getEta()))
+                        String.valueOf(rideRequest.getPickup().getEta()))
                 )
                 .setCustomBigContentView(remoteView);
 

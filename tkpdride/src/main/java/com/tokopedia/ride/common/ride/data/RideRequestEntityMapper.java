@@ -3,6 +3,7 @@ package com.tokopedia.ride.common.ride.data;
 import com.tokopedia.ride.common.ride.data.entity.DriverEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationLatLngEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestAddressEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.VehicleEntity;
@@ -12,6 +13,7 @@ import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
+import com.tokopedia.ride.history.domain.model.Payment;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -36,6 +38,7 @@ public class RideRequestEntityMapper {
             rideRequest.setDestination(transform(entity.getDestination()));
             rideRequest.setShared(entity.isShared());
             rideRequest.setEta(entity.getEta());
+            rideRequest.setPayment(transform(entity.getPayment()));
         }
         return rideRequest;
     }
@@ -99,5 +102,16 @@ public class RideRequestEntityMapper {
             driver.setSmsNumber(entity.getSmsNumber());
         }
         return driver;
+    }
+
+    public Payment transform(PaymentEntity entity) {
+        Payment payment = null;
+        if (entity != null) {
+            payment = new Payment();
+            payment.setCurrency(entity.getCurrencyCode());
+            payment.setTotalAmount(entity.getTotalAmount());
+            payment.setReceiptReady(entity.isReceiptReady());
+        }
+        return payment;
     }
 }

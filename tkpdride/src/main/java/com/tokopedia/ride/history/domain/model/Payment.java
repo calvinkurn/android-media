@@ -9,7 +9,8 @@ import android.os.Parcelable;
 
 public class Payment implements Parcelable {
     private String currency;
-    private String value;
+    private String totalAmount;
+    private boolean receiptReady;
 
     public String getCurrency() {
         return currency;
@@ -19,12 +20,20 @@ public class Payment implements Parcelable {
         this.currency = currency;
     }
 
-    public String getValue() {
-        return value;
+    public String getTotalAmount() {
+        return totalAmount;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setTotalAmount(String value) {
+        this.totalAmount = value;
+    }
+
+    public boolean isReceiptReady() {
+        return receiptReady;
+    }
+
+    public void setReceiptReady(boolean receiptReady) {
+        this.receiptReady = receiptReady;
     }
 
     public Payment() {
@@ -33,7 +42,8 @@ public class Payment implements Parcelable {
 
     protected Payment(Parcel in) {
         currency = in.readString();
-        value = in.readString();
+        totalAmount = in.readString();
+        receiptReady = in.readByte() != 0;
     }
 
     @Override
@@ -44,7 +54,8 @@ public class Payment implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(currency);
-        dest.writeString(value);
+        dest.writeString(totalAmount);
+        dest.writeByte((byte) (receiptReady ? 1 : 0));
     }
 
     @SuppressWarnings("unused")

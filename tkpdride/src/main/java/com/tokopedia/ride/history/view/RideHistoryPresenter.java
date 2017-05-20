@@ -70,7 +70,7 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setStatus(rideHistory.getStatus());
                         viewModel.setFare(String.format("%s %s",
                                 rideHistory.getPayment().getCurrency(),
-                                rideHistory.getPayment().getValue())
+                                rideHistory.getPayment().getTotalAmount())
                         );
                         viewModel.setRequestTime(rideHistory.getRequestTime());
                         viewModel.setRequestId(rideHistory.getRequestId());
