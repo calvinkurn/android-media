@@ -29,7 +29,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import java.util.ArrayList;
 
@@ -75,7 +75,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ProductCardViewModel productCardViewModel;
+    private ActivityCardViewModel activityCardViewModel;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
         FeedPlusDetailFragment fragment = new FeedPlusDetailFragment();
@@ -112,11 +112,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
-            productCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            activityCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
         else if (getArguments() != null)
-            productCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
+            activityCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
         else
-            productCardViewModel = new ProductCardViewModel();
+            activityCardViewModel = new ActivityCardViewModel();
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
@@ -181,17 +181,17 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
         adapter.addList(listProduct);
 
-        String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
-                + productCardViewModel.getActionText();
+        String titleText = "<b>" + activityCardViewModel.getShopName() + "</b> "
+                + activityCardViewModel.getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getShopAvatar());
+        ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getShopAvatar());
 
-        if (productCardViewModel.isGoldMerchant())
+        if (activityCardViewModel.isGoldMerchant())
             goldMerchantBadge.setVisibility(View.VISIBLE);
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
+        time.setText(TimeConverter.generateTime(activityCardViewModel.getPostTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,7 +215,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_DATA, productCardViewModel);
+        outState.putParcelable(ARGS_DATA, activityCardViewModel);
     }
 
     @Override

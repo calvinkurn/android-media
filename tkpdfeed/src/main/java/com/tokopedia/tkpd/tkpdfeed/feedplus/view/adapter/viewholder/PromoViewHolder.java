@@ -6,12 +6,16 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.PromoAdapter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 
 import butterknife.BindView;
 
@@ -19,7 +23,7 @@ import butterknife.BindView;
  * Created by stevenfredian on 5/16/17.
  */
 
-public class PromoViewHolder extends AbstractViewHolder<PromoViewModel>{
+public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.promo_layout;
@@ -27,11 +31,21 @@ public class PromoViewHolder extends AbstractViewHolder<PromoViewModel>{
     @BindView(R2.id.product_list)
     RecyclerView recyclerView;
 
+    @BindView(R2.id.shop_name)
+    TextView promoterName;
+
+    @BindView(R2.id.shop_desc)
+    TextView promoterDesc;
+
+    @BindView(R2.id.user_ava)
+    ImageView promoterAva;
+
     private PromoAdapter adapter;
+    private FeedPlus.View viewListener;
 
-    private PromoViewModel promoViewModel;
+    private PromoCardViewModel promoViewModel;
 
-    public PromoViewHolder(View itemView) {
+    public PromoViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
 
 
@@ -39,13 +53,18 @@ public class PromoViewHolder extends AbstractViewHolder<PromoViewModel>{
                 , LinearLayoutManager.HORIZONTAL, false));
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
-        adapter = new PromoAdapter();
+        adapter = new PromoAdapter(viewListener);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void bind(PromoViewModel promoViewModel) {
+    public void bind(PromoCardViewModel promoViewModel) {
         this.promoViewModel = promoViewModel;
         adapter.setList(promoViewModel.getListProduct());
+        if (promoViewModel.getAvatarUrl() != null) {
+            ImageHandler.loadImage2(promoterAva, promoViewModel.getAvatarUrl(), R.drawable.label_user);
+            promoterName.setText(promoViewModel.getPromoterName());
+            promoterDesc.setText(promoViewModel.getPromoterDesc());
+        }
     }
 }

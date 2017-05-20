@@ -16,7 +16,7 @@ import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import butterknife.BindView;
 
@@ -24,7 +24,7 @@ import butterknife.BindView;
  * @author by nisie on 5/16/17.
  */
 
-public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewModel> {
+public class ProductCardViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_product_multi;
 
@@ -94,24 +94,24 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
     }
 
     @Override
-    public void bind(ProductCardViewModel productCardViewModel) {
-        setHeader(productCardViewModel);
-        adapter.setData(productCardViewModel);
-        setFooter(productCardViewModel);
+    public void bind(ActivityCardViewModel activityCardViewModel) {
+        setHeader(activityCardViewModel);
+        adapter.setData(activityCardViewModel);
+        setFooter(activityCardViewModel);
     }
 
-    public void setHeader(final ProductCardViewModel productCardViewModel) {
-        String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
-                + productCardViewModel.getActionText();
+    public void setHeader(final ActivityCardViewModel activityCardViewModel) {
+        String titleText = "<b>" + activityCardViewModel.getShopName() + "</b> "
+                + activityCardViewModel.getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getShopAvatar());
+        ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getShopAvatar());
 
-        if (productCardViewModel.isGoldMerchant())
+        if (activityCardViewModel.isGoldMerchant())
             goldMerchantBadge.setVisibility(View.VISIBLE);
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
+        time.setText(TimeConverter.generateTime(activityCardViewModel.getPostTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,13 +122,13 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToFeedDetail(productCardViewModel);
+                viewListener.onGoToFeedDetail(activityCardViewModel);
             }
         });
 
     }
 
-    public void setFooter(ProductCardViewModel footer) {
+    public void setFooter(ActivityCardViewModel footer) {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

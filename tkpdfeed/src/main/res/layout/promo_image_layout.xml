@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/margin_vvs">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/margin_vvs"
+    android:orientation="vertical"
+    tools:background="@color/red_500">
 
     <ImageView
         android:id="@+id/product_image"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:adjustViewBounds="true"
         android:contentDescription="@string/image_product_desc"
         android:gravity="center"
         android:scaleType="centerCrop" />
@@ -18,19 +19,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small"
-        tools:background="@color/white">
+        android:paddingTop="@dimen/padding_small">
+
         <TextView
             android:id="@id/desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/promote_2"/>
+            android:text="@string/promote_2" />
 
         <TextView
             android:id="@id/date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/period"/>
+            android:text="@string/period" />
 
         <Space
             android:layout_width="wrap_content"
@@ -39,44 +40,52 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/padding_vvs"
+            android:paddingLeft="@dimen/padding_vvs"
+            android:paddingBottom="@dimen/padding_small">
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@id/confirmation_code"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="center"
-                android:padding="@dimen/padding_vvs"
-                tools:background="@color/yellow_50"
-                android:text="@string/title_code"/>
+                android:padding="@dimen/padding_vs"
+                android:text="@string/title_code"
+                tools:background="@color/yellow_50" />
 
-            <Space
-                android:layout_width="@dimen/margin_small"
-                android:layout_height="wrap_content" />
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="6"
+                android:id="@+id/promo_link"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/saldo"
+                android:padding="@dimen/padding_vs"
                 android:background="@drawable/dotted_border"
+                android:layout_weight="8"
                 android:gravity="center"
-                android:padding="@dimen/padding_vvs"
-                android:textStyle="bold"
-                android:text="@string/saldo"/>
+                android:textStyle="bold"/>
 
-            <Space
-                android:layout_width="@dimen/margin_small"
-                android:layout_height="wrap_content" />
+            <android.support.v4.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"/>
 
             <TextView
-                android:layout_width="0dp"
+                android:id="@id/copy_but"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:background="@color/green_500"
-                android:textColor="@color/white"
-                android:padding="@dimen/padding_vvs"
                 android:gravity="center"
-                android:text="@string/title_copy"/>
+                android:padding="@dimen/padding_vs"
+                android:text="@string/title_copy"
+                android:layout_weight="1"
+                android:textColor="@color/white" />
+
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
