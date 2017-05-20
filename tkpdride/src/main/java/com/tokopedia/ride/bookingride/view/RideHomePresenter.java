@@ -95,7 +95,9 @@ public class RideHomePresenter extends BaseDaggerPresenter<RideHomeContract.View
                                 break;
                             case RideStatus.COMPLETED:
                                 // if user didnt see last trip thanks page
-                                if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())) {
+                                if (getView().getLastRequestId().equalsIgnoreCase(rideRequest.getRequestId())
+                                        && rideRequest.getPayment() != null
+                                        && rideRequest.getPayment().isReceiptReady()) {
                                     DriverVehicleAddressViewModel driverAndVehicle = new DriverVehicleAddressViewModel();
                                     driverAndVehicle.setDriver(rideRequest.getDriver());
                                     driverAndVehicle.setVehicle(rideRequest.getVehicle());
