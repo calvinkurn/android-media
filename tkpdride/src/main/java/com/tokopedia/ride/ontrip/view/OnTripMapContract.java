@@ -2,7 +2,6 @@ package com.tokopedia.ride.ontrip.view;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.location.Location;
 import android.widget.RemoteViews;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -28,6 +27,8 @@ public interface OnTripMapContract {
 
 //        boolean isWaitingResponse();
 
+        void reDrawDriverMarker(RideRequest result);
+
         void hideRideRequestStatus();
 
         void showRequestRideStatus(String message);
@@ -43,6 +44,8 @@ public interface OnTripMapContract {
         void showMessage(String message);
 
         void moveToCurrentLocation(double latitude, double longitude);
+
+        RequestParams getPolyLineParam(double driverlat, double driverLon);
 
         RequestParams getCancelParams();
 
@@ -124,7 +127,7 @@ public interface OnTripMapContract {
 
         void setMapViewListener();
 
-        RequestParams getPolyLineParam(Location currentLocation);
+        void renderTripRouteWithoutAnimation(List<List<LatLng>> routes);
 
         void renderSourceMarker(double latitude, double longitude);
 
@@ -186,9 +189,9 @@ public interface OnTripMapContract {
 
         void proccessGetCurrentRideRequest(RideRequest result);
 
-        void getOverViewPolyLine();
-
         void getDriverBitmap(RemoteViews remoteView, String imgUrl);
+
+        void getOverViewPolyLine(boolean animate, boolean zoomToFit);
 
         void actionShareEta();
 

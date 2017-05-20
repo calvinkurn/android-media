@@ -358,7 +358,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public RequestParams getPolyLineParam(android.location.Location currentLocation) {
+    public RequestParams getPolyLineParam(double driverlat, double driverLon) {
         if (source == null || destination == null) {
             return null;
         } else {
@@ -373,10 +373,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             ));
             requestParams.putString("sensor", "false");
 
-            if (currentLocation != null) {
+            if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString("waypoints", String.format("%s,%s",
-                        destination.getLatitude(),
-                        destination.getLongitude()
+                        driverlat,
+                        driverLon
                 ));
             }
 
@@ -662,6 +662,17 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public void renderTripRouteWithoutAnimation(List<List<LatLng>> routes) {
+        mGoogleMap.clear();
+
+        for (List<LatLng> route : routes) {
+            if (route.size() > 1) {
+                RouteMapAnimator.getInstance().renderRouteWithoutAnimation(mGoogleMap, route);
+            }
+        }
+    }
+
+    @Override
     public void renderSourceMarker(double latitude, double longitude) {
         mGoogleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(latitude, longitude))
@@ -692,7 +703,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
 
-    private void reDrawDriverMarker(RideRequest result) {
+    @Override
+    public void reDrawDriverMarker(RideRequest result) {
         if (mDriverMarker != null) {
             mDriverMarker.remove();
         }

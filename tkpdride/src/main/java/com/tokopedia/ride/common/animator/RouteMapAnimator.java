@@ -24,8 +24,7 @@ import java.util.List;
  */
 
 public class RouteMapAnimator {
-    private final float POLYLINE_WIDTH_IN_PX = 10;
-    private final float POLYLINE_WIDTH_IN_DP = 3;
+    public static final float POLYLINE_WIDTH_IN_DP = 2.5f;
 
     private static RouteMapAnimator mapAnimator;
 
@@ -40,10 +39,13 @@ public class RouteMapAnimator {
     private AnimatorSet secondLoopRunAnimSet;
 
     static final int GREY = Color.parseColor("#FFA7A6A6");
+    static final int BLACK = Color.parseColor("#FF000000");
+
+    private float pathWidth;
 
 
     private RouteMapAnimator() {
-
+        pathWidth = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
     }
 
     public static RouteMapAnimator getInstance() {
@@ -51,8 +53,28 @@ public class RouteMapAnimator {
         return mapAnimator;
     }
 
+    public void renderRouteWithoutAnimation(GoogleMap googleMap, List<LatLng> latLngList) {
+        if (googleMap == null) {
+            return;
+        }
+
+        if (pathWidth == 0) {
+            pathWidth = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
+        }
+
+        googleMap.addPolyline(new PolylineOptions()
+                .addAll(latLngList)
+                .width(pathWidth)
+                .color(BLACK)
+                .geodesic(true));
+    }
+
 
     public void animateRoute(GoogleMap googleMap, List<LatLng> latLngList) {
+        if (pathWidth == 0) {
+            pathWidth = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
+        }
+
         if (firstRunAnimSet == null) {
             firstRunAnimSet = new AnimatorSet();
         } else {
@@ -75,12 +97,12 @@ public class RouteMapAnimator {
         if (foregroundPolyline != null) foregroundPolyline.remove();
         if (backgroundPolyline != null) backgroundPolyline.remove();
 
-        float width = convertDpToPixel(POLYLINE_WIDTH_IN_DP);
 
-        PolylineOptions optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(width).geodesic(true);
+        PolylineOptions
+                optionsBackground = new PolylineOptions().add(latLngList.get(0)).color(GREY).width(pathWidth).geodesic(true);
         backgroundPolyline = googleMap.addPolyline(optionsBackground);
 
-        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(Color.BLACK).width(width).geodesic(true);
+        optionsForeground = new PolylineOptions().add(latLngList.get(0)).color(BLACK).width(pathWidth).geodesic(true);
         foregroundPolyline = googleMap.addPolyline(optionsForeground);
 
         final ValueAnimator percentageCompletion = ValueAnimator.ofInt(0, 100);
@@ -108,7 +130,7 @@ public class RouteMapAnimator {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                foregroundPolyline.setColor(Color.BLACK);
+                foregroundPolyline.setColor(BLACK);
                 foregroundPolyline.setPoints(backgroundPolyline.getPoints());
             }
 
@@ -124,7 +146,7 @@ public class RouteMapAnimator {
         });
 
 
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), GREY, Color.BLACK);
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), GREY, BLACK);
         colorAnimation.setInterpolator(new AccelerateInterpolator());
         colorAnimation.setDuration(1200); // milliseconds
 
@@ -224,7 +246,7 @@ public class RouteMapAnimator {
         foregroundPolyline.setPoints(foregroundPoints);
     }
 
-    public static float convertDpToPixel(float dp){
+    public static float convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);
