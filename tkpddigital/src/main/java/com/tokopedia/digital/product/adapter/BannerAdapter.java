@@ -79,7 +79,7 @@ public class BannerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             } else {
                 bannerItemHolder.mainContainer.setBackgroundDrawable(
                         hostFragment.getResources().getDrawable(
-                                R.drawable.digital_bg_banner_normal
+                                R.drawable.digital_bg_banner_item
                         )
                 );
                 bannerItemHolder.tvVoucherCode.setTextColor(hostFragment

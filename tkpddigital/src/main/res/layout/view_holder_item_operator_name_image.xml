@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="49dp"
-    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:background="@drawable/digital_bg_chooser_operator_product_item"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_above="@+id/separator"
+        android:layout_height="wrap_content"
+        android:minHeight="60dp"
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:id="@+id/operator_image"
-            android:layout_width="43dp"
-            android:layout_height="28dp"
+            android:layout_width="50dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
@@ -28,9 +28,9 @@
             style="@style/TextTitleMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
             android:layout_gravity="center_vertical"
             android:padding="@dimen/small_dp"
+            android:textColor="@color/black"
             tools:text="Operator" />
     </LinearLayout>
 
@@ -38,7 +38,6 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
         android:background="@color/digital_separator" />
 
-</RelativeLayout>
+</LinearLayout>
