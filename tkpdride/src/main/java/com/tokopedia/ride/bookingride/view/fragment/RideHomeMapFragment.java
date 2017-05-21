@@ -103,6 +103,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     RelativeLayout mDestinationLayout;
     @BindView(R2.id.tw_map_wrapper)
     TouchableWrapperLayout mapWrapperLayout;
+    @BindView((R2.id.destination_clear))
+    ImageView mDestinationClearIcon;
 
     private PlacePassViewModel source, destination;
 
@@ -537,10 +539,28 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             return;
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
-        intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE , source);
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, mDestinationLayout);
 
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
+    }
+
+    @OnClick(R2.id.destination_clear)
+    public void actionDestinationClearIconClicked() {
+        enablePickLocation();
+        destination = null;
+        isAlreadySelectDestination = true;
+
+        //update map
+        if (mGoogleMap != null) {
+            mGoogleMap.clear();
+            moveMapToLocation(source.getLatitude(), source.getLongitude());
+        }
+        showMarkerCenter();
+
+        setDestinationLocationText("");
+        proccessToRenderRideProduct();
+
     }
 
     private void startActivityForResultWithClipReveal(Intent intent, int requestCode, View view) {
@@ -561,7 +581,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void setDestinationLocationText(String address) {
-        tvDestination.setText(address);
+        if (address != null && address.length() > 0) {
+            tvDestination.setText(address);
+            mDestinationClearIcon.setVisibility(View.VISIBLE);
+        } else {
+            tvDestination.setText("");
+            mDestinationClearIcon.setVisibility(View.GONE);
+        }
     }
 
     private void startMarkerAnimation() {
@@ -628,6 +654,15 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     @Override
+    public void showMarkerCenter() {
+        mMarkerTimeBackgroundImage.setVisibility(View.VISIBLE);
+        mMarkerTimeTextView.setVisibility(View.VISIBLE);
+        mMarkerTimeLayout.setVisibility(View.VISIBLE);
+        mMarkerImageView.setVisibility(View.VISIBLE);
+        mMarkerCenterCrossImage.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showEnterDestError() {
         Animation shake = AnimationUtils.loadAnimation(getActivityContext(), R.anim.shake);
         shake.setAnimationListener(new Animation.AnimationListener() {
@@ -674,7 +709,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         mPresenter.detachView();
     }
 
-    public static float convertDpToPixel(float dp){
+    public static float convertDpToPixel(float dp) {
         DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
         float px = dp * (metrics.densityDpi / 160f);
         return Math.round(px);

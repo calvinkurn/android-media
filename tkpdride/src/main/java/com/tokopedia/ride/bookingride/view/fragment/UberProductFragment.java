@@ -315,7 +315,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     }
 
     @OnClick(R2.id.layout_cab_booking_header)
-    public void actionProductListHeaderClicked(){
+    public void actionProductListHeaderClicked() {
         mInteractionListener.actionProductListHeaderClick();
     }
 

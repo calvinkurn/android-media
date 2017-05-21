@@ -50,6 +50,8 @@ public interface RideHomeMapContract {
 
         void hideMarkerCenter();
 
+        void showMarkerCenter();
+
         void showEnterDestError();
 
         boolean isAlreadySelectDestination();
