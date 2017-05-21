@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -511,10 +510,15 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             reDrawDriverMarker(result);
         }
 
-        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
-        if (bottomFragment instanceof DriverDetailFragment) {
-            ((DriverDetailFragment) bottomFragment).setStatus(getString(R.string.title_trip_in_progress));
-        }
+//        Fragment bottomFragment = getFragmentManager().findFragmentById(R.id.bottom_container);
+//        if (bottomFragment instanceof DriverDetailFragment) {
+//            String eta = getString(R.string.title_trip_in_progress);
+//            int duration = (int) result.getDestination().getEta();
+//            if (duration > 0) {
+//                eta = "ETA " + (duration > 1 ? duration + getString(R.string.minutes) : duration + getString(R.string.minute));
+//            }
+//            ((DriverDetailFragment) bottomFragment).setStatus(eta);
+//        }
 
         setTitle(R.string.title_trip_in_progress);
     }

@@ -325,7 +325,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
-                //updatePolylineIfResetedByUiLifecycle(result);
+                if (!getView().isAlreadyRouteDrawed()) {
+                    getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
+                    getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
+                }
                 getOverViewPolyLine(false, false);
                 break;
             case RideStatus.DRIVER_CANCELED:

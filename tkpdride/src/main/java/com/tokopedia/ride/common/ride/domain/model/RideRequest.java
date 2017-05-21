@@ -20,7 +20,6 @@ public class RideRequest implements Parcelable {
     private LocationLatLng destination;
     private double surgeMultiplier;
     private boolean shared;
-    private int eta;
     private Payment payment;
 
     public RideRequest() {
@@ -37,7 +36,6 @@ public class RideRequest implements Parcelable {
         destination = in.readParcelable(LocationLatLng.class.getClassLoader());
         surgeMultiplier = in.readDouble();
         shared = in.readByte() != 0;
-        eta = in.readInt();
         payment = in.readParcelable(Driver.class.getClassLoader());
     }
 
@@ -134,14 +132,6 @@ public class RideRequest implements Parcelable {
         this.shared = shared;
     }
 
-    public int getEta() {
-        return eta;
-    }
-
-    public void setEta(int eta) {
-        this.eta = eta;
-    }
-
     public Payment getPayment() {
         return payment;
     }
@@ -167,7 +157,6 @@ public class RideRequest implements Parcelable {
         parcel.writeParcelable(destination, i);
         parcel.writeDouble(surgeMultiplier);
         parcel.writeByte((byte) (shared ? 1 : 0));
-        parcel.writeInt(eta);
         parcel.writeParcelable(payment, i);
     }
 }

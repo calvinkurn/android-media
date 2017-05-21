@@ -2,11 +2,8 @@ package com.tokopedia.ride.ontrip.view.fragment;
 
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -24,6 +21,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
+import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
@@ -34,6 +32,7 @@ public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_PARENT_TAG = "EXTRA_PARENT_TAG";
     private static final String EXTRA_DRIVER = "EXTRA_DRIVER";
     private static final String EXTRA_VEHICLE = "EXTRA_VEHICLE";
+    private static final String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
     private static final String EXTRA_STATUS = "EXTRA_STATUS";
     private static final String EXTRA_SHARED = "EXTRA_SHARED";
@@ -63,8 +62,10 @@ public class DriverDetailFragment extends BaseFragment {
 
     private Driver driver;
     private Vehicle vehicle;
+    private LocationLatLng destination;
     private int eta;
     private String status;
+
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
 
@@ -77,6 +78,7 @@ public class DriverDetailFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_DRIVER, rideRequest.getDriver());
         bundle.putParcelable(EXTRA_VEHICLE, rideRequest.getVehicle());
+        bundle.putParcelable(EXTRA_DESTINATION, rideRequest.getDestination());
         bundle.putFloat(EXTRA_TIME_EST, rideRequest.getPickup().getEta());
         bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
         bundle.putString(EXTRA_PARENT_TAG, tag);
@@ -125,6 +127,7 @@ public class DriverDetailFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         driver = getArguments().getParcelable(EXTRA_DRIVER);
         vehicle = getArguments().getParcelable(EXTRA_VEHICLE);
+        destination = getArguments().getParcelable(EXTRA_DESTINATION);
         eta = (int) getArguments().getFloat(EXTRA_TIME_EST);
         status = getArguments().getString(EXTRA_STATUS);
         renderUi();
@@ -142,14 +145,15 @@ public class DriverDetailFragment extends BaseFragment {
         } else if (status != null && status.equalsIgnoreCase("in_progress")) {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.VISIBLE);
-            driverEtaTextView.setText(getResources().getString(R.string.en_route));
+            int duration = (int) destination.getEta();
+            driverEtaTextView.setText("ETA " + (duration > 1 ? duration + getString(R.string.mins) : duration + getString(R.string.min)));
         } else {
             cancelRideLayout.setVisibility(View.GONE);
             driverEtaTextView.setVisibility(View.GONE);
         }
 
 //        if (getArguments().getBoolean(EXTRA_SHARED)) {
-            shareRideLayout.setVisibility(View.VISIBLE);
+        shareRideLayout.setVisibility(View.VISIBLE);
 //        } else {
 //            shareRideLayout.setVisibility(View.GONE);
 //        }

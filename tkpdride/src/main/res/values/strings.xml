@@ -68,6 +68,8 @@
     <string name="apply_promo_code_here">Here</string>
     <string name="minute">" minute"</string>
     <string name="minutes">" minutes"</string>
+    <string name="min">" min"</string>
+    <string name="mins">" mins"</string>
     <string name="uber_signup_tnc"><![CDATA[(T&C)]]></string>
     <string name="ride_home_toolbar">Tokopedia</string>
     <string name="complete_trip_your_fare">Your Fare</string>
