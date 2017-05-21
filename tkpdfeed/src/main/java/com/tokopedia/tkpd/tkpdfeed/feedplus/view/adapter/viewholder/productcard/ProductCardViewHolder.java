@@ -12,13 +12,10 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
-
-import butterknife.BindView;
 
 /**
  * @author by nisie on 5/16/17.
@@ -28,22 +25,11 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_product_multi;
 
-    @BindView(R2.id.title)
     TextView title;
-
-    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-
-    @BindView(R2.id.gold_merchant)
     ImageView goldMerchantBadge;
-
-    @BindView(R2.id.time)
     TextView time;
-
-    @BindView(R2.id.share_button)
     View shareButton;
-
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
 
     private FeedProductAdapter adapter;
@@ -51,6 +37,14 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
 
     public ProductCardViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
+
+        title = (TextView) itemView.findViewById(R.id.title);
+        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
+        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        time = (TextView) itemView.findViewById(R.id.time);
+        shareButton = itemView.findViewById(R.id.share_button);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),

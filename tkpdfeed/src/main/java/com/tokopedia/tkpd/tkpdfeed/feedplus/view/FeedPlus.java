@@ -18,6 +18,8 @@ public interface FeedPlus{
         void onGoToFeedDetail(ProductCardViewModel productCardViewModel);
 
         void onGoToShopDetail();
+
+        void onGoToBlogWebView(String url);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

@@ -23,6 +23,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
@@ -31,6 +32,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
@@ -133,6 +135,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        BlogViewModel imageBlog = new BlogViewModel("https://islamkajian.files.wordpress.com/2015/03/kuda.jpg", "Test Blog");
+        BlogViewModel videoBlog = new BlogViewModel("http://techslides.com/demos/sample-videos/small.mp4");
+
         ProductFeedViewModel prod1 = new ProductFeedViewModel(
                 "Produk1",
                 "Rp 10.000",
@@ -200,6 +205,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listProduct8.add(prod8);
 
         List<Visitable> list = new ArrayList<>();
+
+        list.add(imageBlog);
+        list.add(videoBlog);
 
         list.add(new ProductCardViewModel("Nisie 1", listProduct));
         list.add(new ProductCardViewModel("Nisie 2", listProduct2));
@@ -274,6 +282,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToShopDetail() {
 
+    }
+
+    @Override
+    public void onGoToBlogWebView(String url) {
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), url);
+        startActivity(intent);
     }
 
 //    @Override

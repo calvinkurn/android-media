@@ -19,18 +19,14 @@ import butterknife.BindView;
  * Created by stevenfredian on 5/16/17.
  */
 
-public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewModel>{
+public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.promoted_shop_layout;
 
-    @BindView(R2.id.shop_name)
     TextView shopName;
-
-    @BindView(R2.id.gold_merchant)
     View goldMerchant;
 
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
 
     private GridLayoutManager gridLayoutManager;
@@ -41,6 +37,11 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
 
     public PromotedShopViewHolder(View itemView) {
         super(itemView);
+
+        shopName = (TextView) itemView.findViewById(R.id.shop_name);
+        goldMerchant = itemView.findViewById(R.id.gold_merchant);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+
 
         SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
                 new SpannedGridLayoutManager.GridSpanLookup() {

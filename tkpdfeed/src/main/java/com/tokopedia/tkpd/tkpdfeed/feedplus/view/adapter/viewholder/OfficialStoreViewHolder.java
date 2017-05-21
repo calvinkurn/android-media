@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
@@ -20,24 +21,24 @@ import butterknife.BindView;
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreViewModel>{
+public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.official_store_layout;
     private final FeedPlus.View viewListener;
 
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.official_store_image)
     ImageView imageView;
 
     private OfficialStoreAdapter adapter;
-
     private OfficialStoreViewModel officialStoreViewModel;
+
 
     public OfficialStoreViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+        imageView = (ImageView) itemView.findViewById(R.id.official_store_image);
+
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),

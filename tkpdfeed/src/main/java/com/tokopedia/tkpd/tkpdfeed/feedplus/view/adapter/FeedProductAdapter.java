@@ -33,24 +33,23 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.title)
         public TextView productName;
 
-        @BindView(R2.id.price)
         public TextView productPrice;
 
-        @BindView(R2.id.product_image)
         public ImageView productImage;
 
-        @BindView(R2.id.black_screen)
         public FrameLayout blackScreen;
 
-        @BindView(R2.id.extra_product)
         public TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
-            ButterKnife.bind(this, itemLayoutView);
+            productName = (TextView) itemView.findViewById(R.id.title);
+            productPrice = (TextView) itemView.findViewById(R.id.price);
+            extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
+            blackScreen = (FrameLayout) itemView.findViewById(R.id.black_screen);
+            productImage = (ImageView) itemView.findViewById(R.id.product_image);
         }
     }
 

@@ -6,10 +6,13 @@ import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromoViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.ProductCardViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
@@ -47,6 +50,14 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         return OfficialStoreViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(BlogViewModel viewModel) {
+        if (!viewModel.getImageUrl().equals(""))
+            return ImageBlogViewHolder.LAYOUT;
+        else
+            return VideoBlogViewHolder.LAYOUT;
+    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -63,6 +74,10 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromoViewHolder(view);
         else if (type == OfficialStoreViewHolder.LAYOUT)
             viewHolder = new OfficialStoreViewHolder(view, viewListener);
+        else if (type == ImageBlogViewHolder.LAYOUT)
+            viewHolder = new ImageBlogViewHolder(view, viewListener);
+        else if (type == VideoBlogViewHolder.LAYOUT)
+            viewHolder = new VideoBlogViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
 
