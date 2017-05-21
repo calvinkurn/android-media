@@ -14,11 +14,19 @@
         android:textStyle="bold"
         tools:text="Seputar Tokopdeia" />
 
-    <ImageView
-        android:id="@+id/image"
+    <com.volokh.danylo.video_player_manager.ui.VideoPlayerView
+        android:id="@+id/video_player"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:src="@drawable/onboarding_notification_animation" />
+        android:layout_height="300dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/video_cover"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop" />
+
 
     <TextView
         android:id="@+id/content"

@@ -52,7 +52,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
 
     @Override
     public int type(BlogViewModel viewModel) {
-        if (!viewModel.getImageUrl().equals(""))
+        if (viewModel.getVideoUrl().equals(""))
             return ImageBlogViewHolder.LAYOUT;
         else
             return VideoBlogViewHolder.LAYOUT;

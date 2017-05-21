@@ -33,7 +33,7 @@ public class BlogViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public BlogViewModel(String videoUrl) {
         this.title = "Video post";
-        this.imageUrl = "";
+        this.imageUrl = "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg";
         this.videoUrl = videoUrl;
         this.url = "https://tokopedia.com";
         this.content = "Ini isinya video loh";
