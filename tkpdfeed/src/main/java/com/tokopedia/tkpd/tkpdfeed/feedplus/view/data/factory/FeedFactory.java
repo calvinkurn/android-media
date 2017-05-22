@@ -15,20 +15,17 @@ public class FeedFactory {
     private ApolloClient apolloClient;
     private Context context;
     private FeedListMapper feedListMapper;
-    private String cursor;
 
-    private FeedFactory(Context context,
-                        ApolloClient apolloClient,
-                        FeedListMapper feedListMapper,
-                        String cursor) {
+    public FeedFactory(Context context,
+                       ApolloClient apolloClient,
+                       FeedListMapper feedListMapper) {
 
         this.apolloClient = apolloClient;
         this.context = context;
         this.feedListMapper = feedListMapper;
-        this.cursor = cursor;
     }
 
     public CloudFeedDataSource createCloudFeedDataSource() {
-        return new CloudFeedDataSource(context, apolloClient, feedListMapper, cursor);
+        return new CloudFeedDataSource(context, apolloClient, feedListMapper);
     }
 }
