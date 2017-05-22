@@ -49,7 +49,7 @@
             android:layout_marginStart="4dp"
             android:textColor="@color/tkpd_main_green"
             android:textSize="14sp"
-            android:textStyle="bold"
+            android:textStyle="normal"
             tools:text="UBER20" />
 
     </LinearLayout>
@@ -64,20 +64,13 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/apply_promo_read_promo_details"
-            android:textSize="12sp" />
-
-        <TextView
             android:id="@+id/tv_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginStart="4dp"
-            android:text="@string/apply_promo_code_here"
-            android:textColor="@color/tkpd_main_green"
+            android:text="@string/apply_promo_read_promo_details"
+            android:textColor="@color/blue_link"
             android:textSize="12sp" />
+
     </LinearLayout>
 
     <View

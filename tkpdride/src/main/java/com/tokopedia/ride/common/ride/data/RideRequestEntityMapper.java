@@ -38,6 +38,7 @@ public class RideRequestEntityMapper {
             rideRequest.setDestination(transform(entity.getDestination()));
             rideRequest.setShared(entity.isShared());
             rideRequest.setPayment(transform(entity.getPayment()));
+            rideRequest.setPollWait(entity.getPollWait());
         }
         return rideRequest;
     }

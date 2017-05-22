@@ -77,6 +77,9 @@ public class RideRequestEntity {
     @SerializedName("payment")
     @Expose
     PaymentEntity payment;
+    @SerializedName("poll_wait")
+    @Expose
+    int pollWait;
 
     public RideRequestEntity() {
     }
@@ -135,5 +138,9 @@ public class RideRequestEntity {
 
     public PaymentEntity getPayment() {
         return payment;
+    }
+
+    public int getPollWait() {
+        return pollWait;
     }
 }

@@ -21,6 +21,7 @@ public class RideRequest implements Parcelable {
     private double surgeMultiplier;
     private boolean shared;
     private Payment payment;
+    private int pollWait;
 
     public RideRequest() {
     }
@@ -37,6 +38,7 @@ public class RideRequest implements Parcelable {
         surgeMultiplier = in.readDouble();
         shared = in.readByte() != 0;
         payment = in.readParcelable(Driver.class.getClassLoader());
+        pollWait = in.readInt();
     }
 
     public static final Creator<RideRequest> CREATOR = new Creator<RideRequest>() {
@@ -140,6 +142,14 @@ public class RideRequest implements Parcelable {
         this.payment = payment;
     }
 
+    public int getPollWait() {
+        return pollWait;
+    }
+
+    public void setPollWait(int pollWait) {
+        this.pollWait = pollWait;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -158,5 +168,6 @@ public class RideRequest implements Parcelable {
         parcel.writeDouble(surgeMultiplier);
         parcel.writeByte((byte) (shared ? 1 : 0));
         parcel.writeParcelable(payment, i);
+        parcel.writeInt(pollWait);
     }
 }

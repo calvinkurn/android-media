@@ -70,7 +70,7 @@ import rx.schedulers.Schedulers;
 public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.View>
         implements OnTripMapContract.Presenter {
 
-    private static final long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
+    private static long CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = 4000;
 
     private CreateRideRequestUseCase createRideRequestUseCase;
     private CancelRideRequestUseCase cancelRideRequestUseCase;
@@ -548,6 +548,13 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 activeRideRequest = rideRequest;
 
                                 proccessGetCurrentRideRequest(rideRequest);
+
+                                //update poll wait
+                                if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
+                                    CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
+                                    CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
+                                }
+
                                 handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
                             }
                         }
