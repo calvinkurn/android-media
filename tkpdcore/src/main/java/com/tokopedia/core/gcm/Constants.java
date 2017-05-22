@@ -50,6 +50,7 @@ public interface Constants {
         String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
         String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
         String SHOP_INFO =  "tokopedia://shop/{shop_id}/info";
+        String PRODUCT_INFO =  "tokopedia://product/{product_id}";
 
     }
 
