@@ -9,36 +9,18 @@ import java.util.ArrayList;
  * Created by stevenfredian on 5/16/17.
  */
 
-public class PromoViewModel implements Visitable<FeedPlusTypeFactory>{
+public class PromoViewModel{
 
-    private String shopName;
-    private boolean isGoldMerchant;
     private String description;
-    private ArrayList<ProductFeedViewModel> listProduct;
+    private String period;
+    private String promoCode;
+    private String imageUrl;
 
-    public PromoViewModel(ArrayList<ProductFeedViewModel> listProduct) {
-        this.listProduct = listProduct;
-    }
-
-    @Override
-    public int type(FeedPlusTypeFactory favoriteTypeFactory) {
-        return favoriteTypeFactory.type(this);
-    }
-
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
-    }
-
-    public boolean isGoldMerchant() {
-        return isGoldMerchant;
-    }
-
-    public void setGoldMerchant(boolean goldMerchant) {
-        isGoldMerchant = goldMerchant;
+    public PromoViewModel(String description, String period, String promoCode, String imageUrl) {
+        this.description = description;
+        this.period = period;
+        this.promoCode = promoCode;
+        this.imageUrl = imageUrl;
     }
 
     public String getDescription() {
@@ -49,11 +31,27 @@ public class PromoViewModel implements Visitable<FeedPlusTypeFactory>{
         this.description = description;
     }
 
-    public ArrayList<ProductFeedViewModel> getListProduct() {
-        return listProduct;
+    public String getPeriod() {
+        return period;
     }
 
-    public void setListProduct(ArrayList<ProductFeedViewModel> listProduct) {
-        this.listProduct = listProduct;
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getPromoCode() {
+        return promoCode;
+    }
+
+    public void setPromoCode(String promoCode) {
+        this.promoCode = promoCode;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

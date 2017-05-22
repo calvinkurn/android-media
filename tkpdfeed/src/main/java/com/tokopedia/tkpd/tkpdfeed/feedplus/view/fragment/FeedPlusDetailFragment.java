@@ -30,7 +30,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresent
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ProductCardViewModel productCardViewModel;
+    private ActivityCardViewModel activityCardViewModel;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
 
@@ -106,11 +106,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
-            productCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            activityCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
         else if (getArguments() != null)
-            productCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
+            activityCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
         else
-            productCardViewModel = new ProductCardViewModel();
+            activityCardViewModel = new ActivityCardViewModel();
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
@@ -170,7 +170,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
 
         ArrayList<Visitable> listProduct = new ArrayList<>();
-        listProduct.add(productCardViewModel.getHeader());
+        listProduct.add(activityCardViewModel.getHeader());
         listProduct.add(prod1);
         listProduct.add(prod2);
         listProduct.add(prod3);
@@ -228,7 +228,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_DATA, productCardViewModel);
+        outState.putParcelable(ARGS_DATA, activityCardViewModel);
     }
 
 
