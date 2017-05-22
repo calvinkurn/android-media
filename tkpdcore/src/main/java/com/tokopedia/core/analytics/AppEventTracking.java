@@ -436,6 +436,20 @@ public interface AppEventTracking {
         String SEARCH_AUTOCOMPLETE          = "autocomplete";
         String SEARCH_HOTLIST               = "hotlist";
         String SEARCH_AUTOCOMPLETE_IN_CAT   = "in_category";
+
+        String UTM_SOURCE   = "utm_source";
+        String UTM_MEDIUM   = "utm_medium";
+        String UTM_CAMPAIGN = "utm_campaign";
+        String UTM_CONTENT  = "utm_content";
+        String UTM_TERM     = "utm_term";
+        String UTM_GCLID    = "gclid";
+
+        String UTM_SOURCE_APPEND   = "&"+UTM_SOURCE+"=";
+        String UTM_MEDIUM_APPEND   = "&"+UTM_MEDIUM+"=";
+        String UTM_CAMPAIGN_APPEND = "&"+UTM_CAMPAIGN+"=";
+        String UTM_CONTENT_APPEND  = "&"+UTM_CONTENT+"=";
+        String UTM_TERM_APPEND     = "&"+UTM_TERM+"=";
+        String UTM_GCLID_APPEND    = "&"+UTM_GCLID+"=";
     }
 
     interface MOENGAGE {
