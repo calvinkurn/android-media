@@ -40,6 +40,7 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.model.ProductModel;
+import com.tokopedia.discovery.model.ProductModelMapper;
 import com.tokopedia.discovery.util.PagingHandlerUtil;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
@@ -240,20 +241,19 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
 
         switch (TAG) {
             case ProductFragment.TAG:
-                if ( !isAfterRotate && view.setupRecyclerView()) {
+                if (!isAfterRotate && view.setupRecyclerView()) {
                     if (context != null && context instanceof BrowseView) {
                         browseProductModel = ((BrowseView) context).getDataForBrowseProduct();
 
                         Log.d(TAG, getMessageTAG() + browseProductModel);
                         if (browseProductModel == null || browseProductModel.result.products == null)
                             return;
-
                         Pair<List<ProductItem>, PagingHandler.PagingHandlerModel> listPagingHandlerModelPair = parseBrowseProductModel(browseProductModel);
                         HotListBannerModel hotListBannerModel = browseProductModel.hotListBannerModel;
                         if (hotListBannerModel != null) {
                             view.addHotListHeader(new ProductAdapter.HotListBannerModel(hotListBannerModel, browseProductModel.result.hashtag));
                             view.setHotlistData(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
-                        } else if(browseProductModel!=null
+                        } else if (browseProductModel != null
                                 && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
@@ -335,6 +335,9 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                             } else {
                                 item.setProductAlreadyWishlist(false);
                             }
+                        }
+                        if (browseProductModel.getCategoryData() != null) {
+                            view.addCategoryHeader(browseProductModel.getCategoryData());
                         }
                         view.onCallProductServiceResult(totalProduct, productItems, pagingHandlerModel);
                     }

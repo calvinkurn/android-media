@@ -13,6 +13,7 @@ import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
@@ -20,9 +21,11 @@ import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
+import com.tokopedia.core.network.entity.home.TopAdsData;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -34,7 +37,10 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
+import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.model.ErrorContainer;
+import com.tokopedia.discovery.model.NetworkParam;
+import com.tokopedia.discovery.model.ProductModelMapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +51,9 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -134,59 +142,21 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     }
 
     @Override
-    public void getCategoryHeader(String categoryId, final int level) {
-        getCompositeSubscription().add(hadesService.getApi().getCategories(categoryId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .unsubscribeOn(Schedulers.io())
-                .subscribe(
-                        new Subscriber<Response<CategoryHadesModel>>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Pair<String, ErrorContainer> pair = new Pair<>(
-                                        DiscoveryListener.ERRORCONTAINER,
-                                        new ErrorContainer(e)
-                                );
-                                discoveryListener.onFailed(DiscoveryListener.CATEGORY_HEADER, pair);
-                            }
-
-                            @Override
-                            public void onNext(Response<CategoryHadesModel> categoriesHadesModel) {
-                                Pair<String, CategoryHadesModel.CategoriesHadesContainer> pair =
-                                        new Pair<>(
-                                                DiscoveryListener.CATEGORYHEADER,
-                                                new CategoryHadesModel.CategoriesHadesContainer(
-                                                        categoriesHadesModel.body()
-                                                )
-                                        );
-                                discoveryListener.onSuccess(DiscoveryListener.CATEGORY_HEADER, pair);
-                                storeCacheCategoryHeader(level, categoriesHadesModel.body());
-                            }
-                        }
-                ));
-    }
-
-    @Override
-    public void storeCacheCategoryHeader(int level, CategoryHadesModel categoriesHadesModel) {
+    public void storeCacheCategoryHeader(int level, Data categoriesHadesModel) {
         new GlobalCacheManager()
-                .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level)
+                .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level)
                 .setValue(gson.toJson(categoriesHadesModel))
                 .store();
     }
 
     @Override
-    public CategoryHadesModel getCategoryHeaderCache(int level) {
-        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level, CategoryHadesModel.class);
+    public Data getCategoryHeaderCache(int level) {
+        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level, Data.class);
     }
 
     @Override
     public Observable<Map<String, Boolean>> checkProductsInWishlist(String userId,
-                                                       List<ProductItem> productItemList) {
+                                                                    List<ProductItem> productItemList) {
 
         StringBuilder productIds = new StringBuilder();
 
@@ -207,6 +177,62 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                             resultMap.put(id, true);
                         }
                         return resultMap;
+                    }
+                });
+    }
+
+    @Override
+    public void getProductWithCategory(HashMap<String, String> data, String categoryId, final int level) {
+        Log.d(TAG, "getProduct2 data " + data.toString());
+        if (discoveryListener == null)
+            throw new RuntimeException("please supply Discovery Listener !!!");
+
+        getCompositeSubscription().add(getProductObservable(data)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .doOnNext(new Action1<BrowseProductModel>() {
+                    @Override
+                    public void call(BrowseProductModel productModel) {
+                        storeCacheCategoryHeader(level, productModel.getCategoryData());
+                    }
+                })
+                .subscribe(new Subscriber<BrowseProductModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Pair<String, ErrorContainer> pair = new Pair<String, ErrorContainer>(
+                                DiscoveryListener.ERRORCONTAINER,
+                                new ErrorContainer(e)
+                        );
+                        discoveryListener.onFailed(DiscoveryListener.BROWSE_PRODUCT, pair);
+                    }
+
+                    @Override
+                    public void onNext(BrowseProductModel productModel) {
+                        Pair<String, BrowseProductModel.BrowseProductContainer>
+                                pair = new Pair<String, BrowseProductModel.BrowseProductContainer>(DiscoveryListener.BROWSEPRODUCT, new BrowseProductModel.BrowseProductContainer(productModel)
+                        );
+                        discoveryListener.onSuccess(DiscoveryListener.BROWSE_PRODUCT, pair);
+                    }
+                })
+        );
+    }
+
+    public Observable<BrowseProductModel> getProductObservable(HashMap<String, String> data) {
+        Map<String, String> param = MapNulRemover.removeNull(data);
+        return Observable.zip(hadesService.getApi().getCategories(data.get(BrowseApi.SC)),
+                discoveryService.getApi().browseProducts(param), new Func2<Response<CategoryHadesModel>, Response<BrowseProductModel>, BrowseProductModel>() {
+                    @Override
+                    public BrowseProductModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
+                                                   Response<BrowseProductModel> browseProductModelResponse) {
+                        BrowseProductModel productModel = browseProductModelResponse.body();
+                        productModel.setCategoryData(categoryHadesModelResponse.body().getData());
+                        return productModel;
                     }
                 });
     }

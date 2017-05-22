@@ -2,6 +2,7 @@ package com.tokopedia.discovery.interactor;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.entity.categoriesHades.Data;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
 import com.tokopedia.discovery.adapter.ProductAdapter;
@@ -18,13 +19,13 @@ import rx.Observable;
  */
 public interface DiscoveryInteractor {
     void getProducts(HashMap<String, String> data);
+    void getProductWithCategory(HashMap<String, String> data, String categoryId, int level);
     void getCatalogs(HashMap<String, String> data);
     void getShops(HashMap<String, String> data);
     void getDynamicAttribute(Context context, String source, String depId);
     void setDiscoveryListener(DiscoveryListener discoveryListener);
     void getHotListBanner(HashMap<String, String> data);
-    void getCategoryHeader(String categoryId, int level);
-    void storeCacheCategoryHeader(int level, CategoryHadesModel categoriesHadesModel);
-    CategoryHadesModel getCategoryHeaderCache(int level);
+    void storeCacheCategoryHeader(int level, Data categoriesHadesModel);
+    Data getCategoryHeaderCache(int level);
     Observable<Map<String, Boolean>> checkProductsInWishlist(String userId, List<ProductItem> productItemList);
 }

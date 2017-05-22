@@ -171,10 +171,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         browsePresenter.sendHotlist(selected, keyword);
     }
 
-    public void sendCategory(String departementId) {
-        browsePresenter.sendCategory(departementId);
-    }
-
     @Override
     public boolean onMenuItemActionExpand(MenuItem item) {
         return false;
@@ -539,16 +535,6 @@ public class BrowseProductActivity extends TActivity implements DiscoverySearchV
         browsePresenter.onRenderUpperCategoryLevel(simpleCategory.getId());
         getIntent().putExtra(EXTRA_TITLE, simpleCategory.getName());
         renderNewCategoryLevel(simpleCategory.getId(), simpleCategory.getName(),true);
-    }
-
-    @Override
-    public void renderCategoriesHeader(Data categoryHeader) {
-        BrowseParentFragment parentFragment = (BrowseParentFragment)
-                fragmentManager.findFragmentById(R.id.container);
-
-        if (parentFragment != null) {
-            parentFragment.renderCategories(categoryHeader);
-        }
     }
 
     @Override
