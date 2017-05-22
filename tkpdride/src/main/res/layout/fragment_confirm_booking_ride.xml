@@ -6,56 +6,63 @@
     android:orientation="vertical"
     tools:context="com.tokopedia.ride.bookingride.view.fragment.ConfirmBookingRideFragment">
 
-
-    <include
-        layout="@layout/layout_apply_promocode"
+    <LinearLayout
+        android:id="@+id/layout_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" />
+        android:orientation="vertical">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/promo_result_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/material_card"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:layout_marginLeft="20dp"
-            android:tint="@color/colorGreen"
-            app:srcCompat="@drawable/ic_thumb_up_black_24dp" />
-
-        <TextView
-            android:id="@+id/tv_promo_desc"
-            android:layout_width="0dp"
+        <include
+            layout="@layout/layout_apply_promocode"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_weight="1.0"
-            android:text="Loading..."
-            android:textColor="@color/black"
-            android:textSize="14sp" />
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
 
-        <ImageView
-            android:id="@+id/iv_promo_desc_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/cabs_cross_white"
-            android:tint="@color/grey_900"
-            android:visibility="visible" />
+        <LinearLayout
+            android:id="@+id/promo_result_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/material_card"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginLeft="20dp"
+                android:tint="@color/colorGreen"
+                app:srcCompat="@drawable/ic_thumb_up_black_24dp" />
+
+            <TextView
+                android:id="@+id/tv_promo_desc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_weight="1.0"
+                android:text="Loading..."
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:id="@+id/iv_promo_desc_close"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/cabs_cross_white"
+                android:tint="@color/grey_900"
+                android:visibility="visible" />
+        </LinearLayout>
     </LinearLayout>
+
 
     <include layout="@layout/layout_cabs_confirm_booking" />
 

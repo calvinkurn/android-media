@@ -30,6 +30,9 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
     @Override
     public void actionGetFareAndEstimate() {
+        getView().showProgress();
+        getView().hideConfirmLayout();
+        getView().hidePromoLayout();
         RequestParams requestParams = getView().getParam();
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
             @Override
@@ -40,24 +43,32 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                getView().showErrorMessage(e.getMessage());
+                if (isViewAttached()) {
+                    getView().showErrorMessage(e.getMessage());
+                    getView().goToProductList();
+                }
             }
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
+                if (isViewAttached()){
+                    getView().hideProgress();
+                    getView().showConfirmLayout();
+                    getView().showPromoLayout();
+                    float surgeMultiplier = 0;
+                    String display = "";
+                    String surgeConfirmationHref = null;
+                    if (fareEstimate.getEstimate() != null) {
+                        surgeMultiplier = fareEstimate.getEstimate().getSurgeMultiplier();
+                        display = fareEstimate.getEstimate().getDisplay();
+                        surgeConfirmationHref = fareEstimate.getEstimate().getSurgeConfirmationHref();
+                    } else {
+                        display = fareEstimate.getFare().getDisplay();
+                    }
 
-                float surgeMultiplier = 0;
-                String display = "";
-                String surgeConfirmationHref = null;
-                if (fareEstimate.getEstimate() != null) {
-                    surgeMultiplier = fareEstimate.getEstimate().getSurgeMultiplier();
-                    display = fareEstimate.getEstimate().getDisplay();
-                    surgeConfirmationHref = fareEstimate.getEstimate().getSurgeConfirmationHref();
-                } else {
-                    display = fareEstimate.getFare().getDisplay();
+                    getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref);
                 }
 
-                getView().renderFareEstimate(fareEstimate.getFare().getFareId(), display, fareEstimate.getFare().getValue(), surgeMultiplier, surgeConfirmationHref);
             }
         });
     }

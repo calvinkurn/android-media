@@ -43,6 +43,16 @@ public interface ConfirmBookingContract {
         void showErrorMessage(String message);
 
         void hideErrorMessage();
+
+        void goToProductList();
+
+        void showConfirmLayout();
+
+        void showPromoLayout();
+
+        void hideConfirmLayout();
+
+        void hidePromoLayout();
     }
 
     interface Presenter extends CustomerPresenter<View> {

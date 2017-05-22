@@ -31,6 +31,7 @@ import com.tokopedia.ride.bookingride.view.activity.ApplyPromoActivity;
 import com.tokopedia.ride.bookingride.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.SeatViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +68,6 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     LinearLayout tokoCashTopupLayout;
     @BindView(R2.id.tv_tokocash_label)
     TextView tokoCashLabelTextView;
-    @BindView(R2.id.confirm_progress_bar)
-    ProgressBar progressBar;
     @BindView(R2.id.iv_seat_arrow_down)
     ImageView seatArrowDownImageView;
 
@@ -86,6 +85,12 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     TextView mPromoResultTextView;
     @BindView(R2.id.promo_info_layout)
     LinearLayout mApplyPromoLayout;
+    @BindView(R2.id.layout_promo)
+    LinearLayout promoLayout;
+    @BindView(R2.id.layout_progress_view)
+    View progressLayout;
+    @BindView(R2.id.confirm_page_container)
+    LinearLayout confirmPageContainer;
 
     ConfirmBookingContract.Presenter presenter;
     OnFragmentInteractionListener mListener;
@@ -330,12 +335,12 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @Override
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        progressLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        progressLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -365,6 +370,31 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void hideErrorMessage() {
         errortextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void goToProductList() {
+
+    }
+
+    @Override
+    public void showConfirmLayout() {
+        confirmPageContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPromoLayout() {
+        promoLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideConfirmLayout() {
+        confirmPageContainer.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hidePromoLayout() {
+        promoLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -404,8 +434,14 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         presenter.detachView();
     }
 
+    public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
+        confirmBookingViewModel.setSource(source);
+        confirmBookingViewModel.setDestination(destination);
+        presenter.actionGetFareAndEstimate();
+    }
+
     @OnClick(R2.id.confirm_booking_header)
-    public void actionBookingHeaderClicked(){
+    public void actionBookingHeaderClicked() {
         mListener.actionBookingHeaderClicked();
     }
 }

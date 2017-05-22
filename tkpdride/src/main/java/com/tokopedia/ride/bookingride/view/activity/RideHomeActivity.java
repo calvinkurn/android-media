@@ -326,6 +326,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             if (productFragment != null) {
                 productFragment.updateProductList(source, destination);
             }
+        } else if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment && destination != null) {
+            ConfirmBookingRideFragment confirmBookingRideFragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+            if (confirmBookingRideFragment != null) {
+                confirmBookingRideFragment.updateLocations(source, destination);
+            }
         } else {
             UberProductFragment productFragment = UberProductFragment.newInstance(source, destination);
             replaceFragment(R.id.bottom_container, productFragment);
@@ -497,11 +502,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     private void onBottomContainerChangeToBookingScreen() {
         RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
         if (fragment != null) {
-            fragment.disablePickLocation();
+//            fragment.disablePickLocation();
         } else {
             fragment = RideHomeMapFragment.newInstance();
             addFragment(R.id.top_container, fragment);
-            fragment.disablePickLocation();
+//            fragment.disablePickLocation();
         }
     }
 
