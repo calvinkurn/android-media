@@ -49,5 +49,6 @@
     <string name="failed_upload_image">Gagal mengunggah gambar</string>
     <string name="action_input_address">Masukan Alamat Pengiriman</string>
     <string name="template_product_detail_trouble">%1$s (%2$d produk)</string>
+    <string name="title_help">Bantuan</string>
 
 </resources>
