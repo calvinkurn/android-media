@@ -23,7 +23,7 @@ public interface KeywordApi {
     @POST("v2/promo/keyword?keyword_id=29543")
     Observable<Response<DataResponse<String>>> getPromo(@FieldMap Map<String, String> params);
 
-    @GET("/v1.1/dashboard/keyword")
+    @GET("/v1.1/dashboard/keywords")
     Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(@QueryMap Map<String, String> param);
 
 }

@@ -266,6 +266,7 @@
     <string name="top_ads_detail_edit_default_currency_value">0</string>
     <string name="top_ads_detail_edit_default_max_price_currency_value">50</string>
     <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
+    <string name="top_ads_per_click_detail">%1s Per Klik</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
@@ -487,5 +488,7 @@
     <string name="error_keyword_cannot_more_than_5">Kata kunci tidak boleh lebih dari 5 kata.</string>
     <string name="error_keyword_has_existed">Kata Kunci telah ada.</string>
     <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
+    <string name="key_word">Kata Kunci</string>
+    <string name="negative">Negatif</string>
 
 </resources>
