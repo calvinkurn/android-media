@@ -103,9 +103,10 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String IS_CAMERA_OPEN = "IS_CAMERA_OPEN";
     public static final String TOKOPEDIA = "Tokopedia";
 
-    public static final int RESULT_CODE	= 323;
+    public static final int RESULT_CODE = 323;
     public static final int DEF_WIDTH_CMPR = 2048;
     public static final int DEF_QLTY_COMPRESS = 70;
+    public static final int WIDTH_DOWNLOAD = 2048;
 
     String FRAGMENT;
     int position;
@@ -522,7 +523,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         if (checkNotNull(callback))
             return startSupportActionMode(callback);
         else
-            return null;    }
+            return null;
+    }
 
     @Override
     public ModalMultiSelectorCallback getMultiSelectorCallback(String FRAGMENT_TAG) {
@@ -539,7 +541,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onInstagramClicked() {
-        if(getApplication() instanceof TkpdCoreRouter) {
+        if (getApplication() instanceof TkpdCoreRouter) {
             ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(GalleryActivity.this,
                     INSTAGRAM_SELECT_REQUEST_CODE, maxSelection);
         }
@@ -596,8 +598,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE){
-            switch (resultCode){
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            switch (resultCode) {
                 case RESULT_CANCELED:
                     forceOpenCamera = false;
                     finish();
@@ -627,9 +629,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     }
                     break;
             }
-        }
-        else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE){
-            switch (resultCode){
+        } else if (requestCode == INSTAGRAM_SELECT_REQUEST_CODE) {
+            switch (resultCode) {
                 case RESULT_OK:
                     SparseArray<InstagramMediaModel> instagramMediaModelSparseArray
                             = Parcels.unwrap(data.getParcelableExtra(PRODUCT_SOC_MED_DATA));
@@ -651,12 +652,12 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    private Observable<List<File>> downloadImages(final List<String> urls){
+    private Observable<List<File>> downloadImages(final List<String> urls) {
         return Observable.from(urls)
                 .flatMap(new Func1<String, Observable<File>>() {
                     @Override
                     public Observable<File> call(String url) {
-                        return downloadObservable(url).first();
+                        return downloadObservable(url);
                     }
                 }).toList();
     }
@@ -669,7 +670,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                     public File call(String url) {
                         FutureTarget<File> future = Glide.with(GalleryActivity.this)
                                 .load(url)
-                                .downloadOnly(4096, 2160);
+                                .downloadOnly(WIDTH_DOWNLOAD, WIDTH_DOWNLOAD);
                         try {
                             File cacheFile = future.get();
                             String cacheFilePath = cacheFile.getAbsolutePath();
@@ -707,6 +708,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             @Override
                             public void onCompleted() {
                             }
+
                             @Override
                             public void onError(Throwable e) {
                                 if (progressDialog != null && progressDialog.isProgress()) {
@@ -715,6 +717,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 CommonUtils.UniversalToast(GalleryActivity.this,
                                         ErrorHandler.getErrorMessage(e, GalleryActivity.this));
                             }
+
                             @Override
                             public void onNext(List<File> files) {
                                 if (progressDialog != null && progressDialog.isProgress()) {
@@ -734,7 +737,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 );
     }
 
-    private List<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data){
+    private List<InstagramMediaModel> fromSparseArray(SparseArray<InstagramMediaModel> data) {
         List<InstagramMediaModel> modelList = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
             InstagramMediaModel rawData = data.get(
@@ -760,31 +763,31 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(this,Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(this,listPermission);
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -793,7 +796,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(this,listPermission);
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 
     @Override
