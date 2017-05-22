@@ -44,6 +44,7 @@ import com.tokopedia.core.myproduct.model.FolderModel;
 import com.tokopedia.core.myproduct.model.ImageModel;
 import com.tokopedia.core.myproduct.presenter.ImageGallery;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryImpl;
 import com.tokopedia.core.newgallery.presenter.ImageGalleryView;
 import com.tokopedia.core.util.MethodChecker;
@@ -347,9 +348,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 int id = menuItem.getItemId();
 
                 if (id == R.id.action_instagram) {
-                    if(getApplication() instanceof TkpdCoreRouter)
-                        ((TkpdCoreRouter)getApplication()).startInstopedActivityForResult(GalleryActivity.this,
-                                INSTAGRAM_SELECT_REQUEST_CODE, maxSelection);
+                    GalleryActivityPermissionsDispatcher.onInstagramClickedWithCheck(GalleryActivity.this);
                 } else if (id == R.id.action_camera) {
                     onCameraClicked();
                 }
@@ -538,6 +537,14 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         return null;
     }
 
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void onInstagramClicked() {
+        if(getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) getApplication()).startInstopedActivityForResult(GalleryActivity.this,
+                    INSTAGRAM_SELECT_REQUEST_CODE, maxSelection);
+        }
+    }
+
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onFabClicked() {
         switch (FRAGMENT) {
@@ -702,6 +709,11 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                             }
                             @Override
                             public void onError(Throwable e) {
+                                if (progressDialog != null && progressDialog.isProgress()) {
+                                    progressDialog.dismiss();
+                                }
+                                CommonUtils.UniversalToast(GalleryActivity.this,
+                                        ErrorHandler.getErrorMessage(e, GalleryActivity.this));
                             }
                             @Override
                             public void onNext(List<File> files) {
