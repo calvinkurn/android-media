@@ -63,7 +63,6 @@
         android:textSize="@dimen/fontvvvs"
         android:layout_marginLeft="@dimen/product_grid_padding"
         android:layout_marginRight="@dimen/product_grid_padding"
-        android:text="123123123"
         android:visibility="gone"/>
 
     <TextView
@@ -88,8 +87,6 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textSize="@dimen/fontvvvs"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginStart="@dimen/margin_vs"
         android:layout_toEndOf="@id/price"
         android:layout_toRightOf="@id/price"
         android:layout_below="@id/text_original_price"
@@ -97,7 +94,8 @@
         android:gravity="center_vertical"
         android:background="@drawable/bg_rounded_corners_red"
         android:padding="@dimen/margin_vvvs"
-        android:visibility="gone"/>
+        android:text="10%OFF"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:id="@+id/rating_review_container"

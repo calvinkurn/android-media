@@ -55,7 +55,7 @@
 
                 <TextView
                     android:id="@+id/price"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center_vertical"
@@ -64,23 +64,17 @@
                     style="@style/MediumText"
                     android:textColor="@color/orange_red"
                     android:textSize="13sp" />
-
-                <FrameLayout
-                    android:id="@+id/frame_discount"
+                <TextView
+                    android:id="@+id/text_discount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/fontvvvs"
+                    android:padding="@dimen/margin_vvvs"
                     android:layout_marginLeft="@dimen/margin_vs"
                     android:layout_marginStart="@dimen/margin_vs"
+                    android:textColor="@color/white"
                     android:background="@drawable/bg_rounded_corners_red"
-                    android:padding="@dimen/margin_vvvs"
-                    android:visibility="gone">
-                    <TextView
-                        android:id="@+id/text_discount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/fontvvvs" />
-                </FrameLayout>
+                    android:visibility="gone"/>
 
             </LinearLayout>
 

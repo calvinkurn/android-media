@@ -58,8 +58,6 @@ public class ProductListDelegate {
         public LinearLayout badgesContainer;
         @BindView(R2.id.text_original_price)
         public TextView textOriginalPrice;
-        @BindView(R2.id.frame_discount)
-        public FrameLayout frameDiscount;
         @BindView(R2.id.text_discount)
         public TextView textDiscount;
         @BindString(R2.string.label_discount)
@@ -115,10 +113,10 @@ public class ProductListDelegate {
                     String.format(vholder.discount,item.shopProductCampaign.getPercentageAmount())
             );
             vholder.textOriginalPrice.setVisibility(View.VISIBLE);
-            vholder.frameDiscount.setVisibility(View.VISIBLE);
+            vholder.textDiscount.setVisibility(View.VISIBLE);
         } else {
             vholder.textOriginalPrice.setVisibility(View.GONE);
-            vholder.frameDiscount.setVisibility(View.GONE);
+            vholder.textDiscount.setVisibility(View.GONE);
         }
     }
 
