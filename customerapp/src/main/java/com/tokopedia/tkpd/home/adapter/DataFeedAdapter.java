@@ -262,9 +262,9 @@ public class DataFeedAdapter extends ProductAdapter {
             @Override
             public void onClick(View view) {
                 if (SessionHandler.isV4Login(context)) {
-                    UnifyTracking.eventViewAllOSLogin();
+                    UnifyTracking.eventBannerEmptyFeedOSLogin();
                 } else {
-                    UnifyTracking.eventViewAllOSNonLogin();
+                    UnifyTracking.eventBannerEmptyFeedOSNonLogin();
                 }
                 context.startActivity(BrandsWebViewActivity.newInstance(context,
                         TkpdBaseURL.OfficialStore.URL_WEBVIEW));
