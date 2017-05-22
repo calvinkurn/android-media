@@ -462,13 +462,13 @@ public interface AppEventTracking {
         String PRODUCTS_NUMBER = "number_of_products";
         String SUBCATEGORY = "subcategory_name";
         String SUBCATEGORY_ID = "subcategory_id";
-        String CATEGORY = "Category";
-        String PRODUCT_ID = "Product_id";
-        String PRODUCT_NAME = "Product_name";
-        String PRODUCT_URL = "Product_url";
-        String PRODUCT_PRICE = "Product_price";
-        String BRAND_NAME = "Brand_name";
-        String BRAND_ID = "Brand_id";
+        String CATEGORY = "category";
+        String PRODUCT_ID = "product_id";
+        String PRODUCT_NAME = "product_name";
+        String PRODUCT_URL = "product_url";
+        String PRODUCT_PRICE = "product_price";
+        String BRAND_NAME = "brand_name";
+        String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
 
@@ -479,7 +479,7 @@ public interface AppEventTracking {
         String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
         String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
         String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
 
 
