@@ -465,7 +465,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     hideFormAndImageOperator();
-                    rechargeEditText.setEmptyString();
+                    setInitialClientNumberAfterOperatorSelection();
                     selectedOperator = operatorList.get(i);
                     setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
                     selectedOperatorId = String.valueOf((selectedOperator.operatorId));
@@ -481,11 +481,45 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
                 }
             });
+
+            if (SessionHandler.isV4Login(getActivity()) && lastOrder != null
+                    && lastOrder.getData().getAttributes().getCategory_id() == category.getId()) {
+                for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+                    RechargeOperatorModel model = operators.get(i);
+                    if (String.valueOf(model.operatorId)
+                            .equalsIgnoreCase(
+                                    String.valueOf(lastOrder.getData().getAttributes().getOperator_id()
+                                    ))) {
+                        spnOperator.setSelection(i);
+                    }
+                }
+            } else {
+                for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+                    RechargeOperatorModel model = operators.get(i);
+                    if (String.valueOf(model.operatorId).equalsIgnoreCase(lastOperatorSelected)) {
+                        spnOperator.setSelection(i);
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void setInitialClientNumberAfterOperatorSelection() {
+        if (SessionHandler.isV4Login(getActivity()) && lastOrder != null
+                && lastOrder.getData().getAttributes().getCategory_id() == category.getId()
+                && !TextUtils.isEmpty(lastOrder.getData().getAttributes().getClient_number())) {
+            rechargeEditText.setText(lastOrder.getData().getAttributes().getClient_number());
+        } else if (!lastClientNumberTyped.isEmpty()) {
+            rechargeEditText.setText(lastClientNumberTyped);
+        } else {
+            rechargeEditText.setEmptyString();
         }
     }
 
     private void setSpnNominalSelectionBasedLastOrder(List<Product> productList) {
-        if (lastOrder != null && lastOrder.getData() != null
+        if (SessionHandler.isV4Login(getActivity())
+                && lastOrder != null && lastOrder.getData() != null
                 && lastOrder.getData().getAttributes() != null) {
             int lastProductId = lastOrder.getData().getAttributes().getProduct_id();
             for (int i = 0; i < productList.size(); i++) {
@@ -667,6 +701,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private void setUpForNotUsingTextEdit() {
         tlpLabelTextView.setVisibility(View.GONE);
         rechargeEditText.setVisibility(View.GONE);
+        rechargeEditText.setEmptyString();
         this.rechargePresenter.validateWithOperator(
                 category.getId(),
                 selectedOperatorId);
@@ -699,7 +734,7 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 hideFormAndImageOperator();
-                rechargeEditText.setEmptyString();
+                setInitialClientNumberAfterOperatorSelection();
                 selectedProduct = null;
                 selectedOperator = operators.get(i);
                 setInputTypeEditTextRecharge(selectedOperator.allowAlphanumeric);
@@ -708,6 +743,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 rechargePresenter.updateMinLenghAndOperator(selectedOperatorId);
             }
         });
+
+
     }
 
     private void setTextToEditTextOrSetVisibilityForm() {
