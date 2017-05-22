@@ -55,6 +55,10 @@ public interface Constants {
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
         String CART = "tokopedia://cart";
+        String SELLER_NEW_ORDER = "tokopedia://seller/neworder";
+        String SELLER_SHIPMENT = "tokopedia://seller/shipment";
+        String SELLER_STATUS =  "tokopedia://seller/status";
+        String SELLER_HISTORY = "tokopedia://seller/history";
     }
 
     interface Settings {
