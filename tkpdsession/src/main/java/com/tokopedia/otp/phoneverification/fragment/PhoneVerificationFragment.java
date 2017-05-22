@@ -303,7 +303,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
                 } else {
                     verifyButton.setEnabled(false);
                     MethodChecker.setBackground(verifyButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
                     verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
                 }
             }

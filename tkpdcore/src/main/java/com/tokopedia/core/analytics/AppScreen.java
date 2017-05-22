@@ -136,7 +136,7 @@ public final class AppScreen {
     public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_SEARCH = "Browse Produk - From Search";
-    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category";
+    public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_SEARCH_PAGE = "Search page";
     public static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
@@ -216,18 +216,19 @@ public final class AppScreen {
     public static final String SCREEN_SHARE = "Share Screen";
     public static final String SCREEN_GALLERY_BROWSE = "Browse Gallery Screen";
     public static final String SCREEN_GM_SUBSCRIBE = "Gold Merchant Subscribe";
+    public static final String SCREEN_GM_SUBSCRIBE_CHECKOUT = "Gold Merchant Subscribe Checkout Page";
+    public static final String SCREEN_GM_SUBSCRIBE_PAYMENT = "Gold Merchant Subscribe Payment Page";
+    public static final String SCREEN_GM_SUBSCRIBE_PRODUCT = "Gold Merchant Product Subscribe Page";
     public static final String SCREEN_SELLER_HOME = "Seller Home";
     public static final String SCREEN_SELLER_REP_HISTORY = "Reputation History";
     public static final String SCREEN_SELLER_SHOP_SCORE = "Shop Score";
     public static final String SCREEN_PHONE_VERIFICATION = "Phone Verification Screen";
     public static final String SCREEN_OTP_SQ = "Security Question Screen";
     public static final String GOLD_MERCHANT_REDIRECT = "Gold Merchant Redirect Page";
-
     public static final String SCREEN_INBOX_MAIN = "Inbox Page";
     public static final String SCREEN_INBOX_SENT = "Inbox - Sent Page";
     public static final String SCREEN_INBOX_ARCHIVE = "Inbox - Archive Page";
     public static final String SCREEN_INBOX_TRASH = "Inbox - Trash Page";
-
     public static final String SCREEN_LOCA_NEWORDER = "Transaction - New Order Page";
     public static final String SCREEN_LOCA_TXCENTER = "Transaction List - Selling Page";
     public static final String SCREEN_LOCA_TXSTATUS = "Transaction - Sell page";

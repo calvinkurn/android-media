@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -72,6 +73,7 @@ public class FragmentIndexFavoriteV2 extends TkpdBaseV4Fragment implements Favor
     @Override
     public void initAdapter(List<RecyclerViewItem> data) {
         adapter = new FavoriteRecyclerViewAdapter(getActivity(), data);
+        TrackingUtils.sendMoEngageOpenFavoriteEvent(data.size());
         // passing presenter for adapter
         ((FavoriteRecyclerViewAdapter) adapter).setFavorite(favorite);
     }

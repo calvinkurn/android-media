@@ -34,7 +34,9 @@
 
     </ScrollView>
 
-    <include android:id="@+id/layout_top_ads_next_bottom"
-        layout="@layout/include_top_ads_button_next_bottom" />
+    <Button
+        android:id="@+id/button_next"
+        android:text="@string/title_save"
+        style="@style/Button.Submit.Green" />
 
 </LinearLayout>

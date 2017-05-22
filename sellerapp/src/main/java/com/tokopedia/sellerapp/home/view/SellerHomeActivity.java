@@ -56,6 +56,7 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
+import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -75,13 +76,13 @@ import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.home.view.ReputationView;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
-import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
@@ -251,7 +252,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     @OnClick(R.id.gold_merchant_announcement)
     public void goToGoldMerchant(){
 //        Toast.makeText(this, "Please implement !!!", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, GMSubscribeActivity.class));
+        startActivity(new Intent(this, GmSubscribeHomeActivity.class));
     }
 
     @OnClick(R.id.seller_home_reputation_view)
@@ -971,7 +972,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         shopController.init(this);
         sendToGTM();
         sendToLocalytics();
-
+        NotificationModHandler.showDialogNotificationIfNotShowing(this);
     }
 
     @Override

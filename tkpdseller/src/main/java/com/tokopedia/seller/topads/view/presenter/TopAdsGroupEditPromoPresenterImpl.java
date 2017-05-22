@@ -1,8 +1,5 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import android.view.View;
-
-import com.tkpd.library.utils.ViewHelper;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
