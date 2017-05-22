@@ -134,6 +134,14 @@
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordAddDetailActivity"
+            android:label="@string/title_top_ads_keyword_add_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+
+        <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
@@ -185,10 +193,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
-            android:name=".topads.view.activity.TopAdsStatisticShopActivity"
-            android:label="@string/title_activity_statistic"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".gmsubscribe.view.activity.GmSubscribeHomeActivity"
             android:label="@string/gm_home_title"
             android:screenOrientation="portrait"/>
@@ -200,7 +204,7 @@
             android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait"/>
-            android:name=".product.view.activity.ProductDraftEditActivity"
+        <activity android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
