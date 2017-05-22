@@ -9,6 +9,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopProductCampaign {
 
+    @SerializedName("product_id")
+    @Expose
+    private String productId;
+
     @SerializedName("percentage_amount")
     @Expose
     private int percentageAmount;
@@ -24,6 +28,14 @@ public class ShopProductCampaign {
     @SerializedName("original_price")
     @Expose
     private String originalPrice;
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
 
     public int getPercentageAmount() {
         return percentageAmount;

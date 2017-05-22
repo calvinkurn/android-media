@@ -19,6 +19,14 @@
         android:textStyle="bold"
         tools:ignore="HardcodedText" />
 
+    <TextView
+        android:id="@+id/text_original_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/warm_grey"
+        android:textSize="@dimen/fontvvvs"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,6 +47,19 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:visibility="gone">
+
+            <TextView
+                android:id="@+id/text_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="1dp"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:background="@drawable/label_bright_red"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/label_cashback"
@@ -105,4 +126,39 @@
                 android:textSize="@dimen/fonts"
                 tools:ignore="HardcodedText" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_discount_timer_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_title_discount_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_discount_timer" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:background="@drawable/bg_stroke_rounded_corners"
+            android:paddingBottom="@dimen/margin_vs"
+            android:paddingLeft="@dimen/margin_ms"
+            android:paddingRight="@dimen/margin_ms"
+            android:paddingTop="@dimen/margin_vs">
+
+            <TextView
+                android:id="@+id/text_discount_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -75,7 +75,7 @@ public class GetShopProductCampaignRetrofit {
 
             }
 
-            @Overridecd
+            @Override
             public void onError(Throwable e) {
                 productsCampaignListener.onSuccess(productModel);
             }

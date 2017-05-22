@@ -14,9 +14,10 @@ import java.util.Map;
  */
 
 public class ShopProductCampaignResponse {
+
     @SerializedName("data")
     @Expose
-    private java.util.List<Map<String, ShopProductCampaign>> data;
+    private java.util.List<ShopProductCampaign> data;
 
     @SerializedName("message")
     @Expose
@@ -26,11 +27,11 @@ public class ShopProductCampaignResponse {
     @Expose
     private String processTime;
 
-    public List<Map<String, ShopProductCampaign>> getData() {
+    public List<ShopProductCampaign> getData() {
         return data;
     }
 
-    public void setData(List<Map<String, ShopProductCampaign>> data) {
+    public void setData(List<ShopProductCampaign> data) {
         this.data = data;
     }
 
