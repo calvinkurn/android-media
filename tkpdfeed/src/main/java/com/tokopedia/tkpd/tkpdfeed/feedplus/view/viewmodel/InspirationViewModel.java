@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
 import java.util.ArrayList;
@@ -9,12 +8,12 @@ import java.util.ArrayList;
  * Created by stevenfredian on 5/18/17.
  */
 
-public class OfficialStoreViewModel extends ProductCardViewModel {
+public class InspirationViewModel extends ProductCardViewModel {
 
-    private String officialStoreHeaderImageUrl;
+    private String inspired;
 
-    public OfficialStoreViewModel(String url, ArrayList<ProductFeedViewModel> listProduct) {
-        this.officialStoreHeaderImageUrl = url;
+    public InspirationViewModel(String title, ArrayList<ProductFeedViewModel> listProduct) {
+        this.inspired = title;
         this.listProduct = listProduct;
     }
 
@@ -31,11 +30,11 @@ public class OfficialStoreViewModel extends ProductCardViewModel {
         this.listProduct = listProduct;
     }
 
-    public String getOfficialStoreHeaderImageUrl() {
-        return officialStoreHeaderImageUrl;
+    public String getInspired() {
+        return inspired;
     }
 
-    public void setOfficialStoreHeaderImageUrl(String officialStoreHeaderImageUrl) {
-        this.officialStoreHeaderImageUrl = officialStoreHeaderImageUrl;
+    public void setInspired(String inspired) {
+        this.inspired = inspired;
     }
 }

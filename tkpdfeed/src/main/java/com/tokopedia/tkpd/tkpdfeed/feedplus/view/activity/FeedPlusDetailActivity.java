@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 /**
  * @author by nisie on 5/18/17.
  */
@@ -71,9 +71,9 @@ public class FeedPlusDetailActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent getIntent(FragmentActivity activity, ProductCardViewModel productCardViewModel) {
+    public static Intent getIntent(FragmentActivity activity, ActivityCardViewModel activityCardViewModel) {
         Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
-        intent.putExtra(EXTRA_DATA, productCardViewModel);
+        intent.putExtra(EXTRA_DATA, activityCardViewModel);
         return intent;
     }
 }

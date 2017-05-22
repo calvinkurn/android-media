@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import butterknife.BindView;
 
@@ -16,7 +16,7 @@ import butterknife.BindView;
  * @author by nisie on 5/15/17.
  */
 
-public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel> {
+public class EmptyFeedViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_product_empty;
@@ -24,7 +24,7 @@ public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel
     @BindView(R2.id.author_name)
     TextView authorName;
 
-    private ProductCardViewModel productCardViewModel;
+    private ActivityCardViewModel activityCardViewModel;
     private Context context;
 
     public EmptyFeedViewHolder(View itemView) {
@@ -33,9 +33,9 @@ public class EmptyFeedViewHolder extends AbstractViewHolder<ProductCardViewModel
     }
 
     @Override
-    public void bind(ProductCardViewModel productCardViewModel) {
-        this.productCardViewModel = productCardViewModel;
-        authorName.setText(productCardViewModel.getShopName());
+    public void bind(ActivityCardViewModel activityCardViewModel) {
+        this.activityCardViewModel = activityCardViewModel;
+        authorName.setText(activityCardViewModel.getShopName());
     }
 
 
