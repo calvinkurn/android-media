@@ -53,6 +53,8 @@ public interface ConfirmBookingContract {
         void hideConfirmLayout();
 
         void hidePromoLayout();
+
+        void showToastMessage(String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

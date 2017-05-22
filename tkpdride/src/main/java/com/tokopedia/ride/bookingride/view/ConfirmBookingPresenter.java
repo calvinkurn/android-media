@@ -44,14 +44,14 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showErrorMessage(e.getMessage());
+                    getView().showToastMessage(e.getMessage());
                     getView().goToProductList();
                 }
             }
 
             @Override
             public void onNext(FareEstimate fareEstimate) {
-                if (isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideProgress();
                     getView().showConfirmLayout();
                     getView().showPromoLayout();

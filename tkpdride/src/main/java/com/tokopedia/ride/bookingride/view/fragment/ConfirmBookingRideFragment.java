@@ -14,7 +14,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -397,6 +396,11 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     @Override
     public void hidePromoLayout() {
         promoLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showToastMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
