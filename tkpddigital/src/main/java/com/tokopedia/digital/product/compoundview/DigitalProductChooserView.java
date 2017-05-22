@@ -78,7 +78,9 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     @Override
     public void renderInitDataList(List<Product> dataList) {
         this.dataList = dataList;
-        if (this.dataSelected == null) this.dataSelected = dataList.get(0);
+        if (!dataList.isEmpty() && (this.dataSelected == null
+                || this.dataSelected.getProductId().equalsIgnoreCase(dataList.get(0).getProductId())))
+            this.dataSelected = dataList.get(0);
         invalidateContentView();
         actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
