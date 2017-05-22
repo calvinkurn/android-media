@@ -51,6 +51,9 @@ public interface Constants {
         String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
         String SHOP_INFO =  "tokopedia://shop/{shop_id}/info";
         String PRODUCT_INFO =  "tokopedia://product/{product_id}";
+        String PURCHASE_VERIFICATION =  "tokopedia://buyer/payment";
+        String PURCHASE_ORDER =  "tokopedia://buyer/order";
+        String PURCHASE_SHIPPING_CONFIRM =  "tokopedia://buyer/shipping-confirm";
 
     }
 
