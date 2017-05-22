@@ -338,18 +338,18 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private Campaign convertUrlCampaign(Uri uri) {
         Map<String, String> maps = splitQuery(uri);
         Campaign campaign = new Campaign();
-        campaign.setUtmSource(maps.get("utm_source") != null ?
-                maps.get("utm_source") : "");
-        campaign.setUtmMedium(maps.get("utm_medium") != null ?
-                maps.get("utm_medium") : "");
-        campaign.setUtmCampaign(maps.get("utm_campaign") != null ?
-                maps.get("utm_campaign") : "");
-        campaign.setUtmContent(maps.get("utm_content") != null ?
-                maps.get("utm_content") : "");
-        campaign.setUtmTerm(maps.get("utm_term") != null ?
-                maps.get("utm_term") : "");
-        campaign.setGclid(maps.get("gclid") != null ?
-                maps.get("gclid") : "");
+        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+        campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
+                maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
         return campaign;
     }
 
