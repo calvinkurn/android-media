@@ -58,21 +58,20 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void setMoEUserAttributes(ProfileData profileData){
+        if(profileData!=null) {
+            CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
+                    .setFullName(profileData.getUserInfo().getUserName())
+                    .setEmailAddress(profileData.getUserInfo().getUserEmail())
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
+                    .setCustomerId(profileData.getUserInfo().getUserId())
+                    .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
+                    .setSeller(profileData.getShopInfo() != null)
+                    .setShopName(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopName() : "")
+                    .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName(), " "))
+                    .build();
 
-        CommonUtils.dumper("MoEngage called app launch events "+profileData.getUserInfo().getUserBirth());
-
-        CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
-                .setFullName(profileData.getUserInfo().getUserName())
-                .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()))
-                .setCustomerId(profileData.getUserInfo().getUserId())
-                .setShopId(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopId():"")
-                .setSeller(profileData.getShopInfo()!=null)
-                .setShopName(profileData.getShopInfo()!=null?profileData.getShopInfo().getShopName():"")
-                .setFirstName(extractFirstSegment(profileData.getUserInfo().getUserName()," "))
-                .build();
-
-        getMoEngine().setUserData(customerWrapper);
+            getMoEngine().setUserData(customerWrapper);
+        }
     }
 
     public static void setMoEUserAttributes(Bundle bundle, String label){
