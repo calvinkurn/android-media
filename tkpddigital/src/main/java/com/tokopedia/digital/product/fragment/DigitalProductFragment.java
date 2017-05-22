@@ -612,7 +612,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onBannerItemClicked(BannerData bannerData) {
-        if (!TextUtils.isEmpty(bannerData.getLink())) return;
+        if (TextUtils.isEmpty(bannerData.getLink())) return;
         navigateToActivity(DigitalWebActivity.newInstance(
                 getActivity(),
                 URLGenerator.generateURLSessionLogin(
