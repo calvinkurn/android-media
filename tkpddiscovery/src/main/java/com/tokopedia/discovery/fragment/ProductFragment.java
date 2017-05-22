@@ -420,7 +420,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
+                if (!productAdapter.isEmpty() && isLoading() && isReachingLastItem()) {
                     presenter.loadMore(getActivity());
                 }
                 if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
@@ -432,6 +432,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         });
         changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
         return true;
+    }
+
+    private boolean isReachingLastItem() {
+        return gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1;
     }
 
     @Override
