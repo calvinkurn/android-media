@@ -420,7 +420,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!productAdapter.isEmpty() && isLoading() && isReachingLastItem()) {
+                if (!productAdapter.isEmpty() && productAdapter.getPagingHandlerModel() != null
+                        && isLoading() && isReachingLastItem()) {
                     presenter.loadMore(getActivity());
                 }
                 if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
