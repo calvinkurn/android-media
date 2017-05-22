@@ -57,7 +57,7 @@ public interface MojitoApi {
     );
 
     @GET(TkpdBaseURL.Mojito.PATH_V1_BRAND_CAMPAIGN_PRODUCT)
-    Observable<Response<ShopProductCampaignResponse>> getProductsCampaign(
+    Observable<Response<ShopProductCampaignResponse>> getProductCampaigns(
             @Query("pid") String ids
     );
 }

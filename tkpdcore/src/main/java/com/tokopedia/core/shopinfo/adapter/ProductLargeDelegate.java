@@ -59,8 +59,6 @@ public class ProductLargeDelegate {
         public View location;
         @BindView(R2.id.text_original_price)
         public TextView textOriginalPrice;
-        @BindView(R2.id.frame_discount)
-        public FrameLayout frameDiscount;
         @BindView(R2.id.text_discount)
         public TextView textDiscount;
         @BindString(R2.string.label_discount)
@@ -104,9 +102,9 @@ public class ProductLargeDelegate {
         vholder.shopName.setVisibility(View.GONE);
         vholder.location.setVisibility(View.GONE);
 
-        if (item.shopProductCampaign != null && item.shopProductCampaign.getDiscountedPrice() != null) {
+        if (item.shopProductCampaign != null) {
             vholder.price.setTextColor(ContextCompat.getColor(context, R.color.bright_red));
-            vholder.textOriginalPrice.setText(item.shopProductCampaign.getDiscountedPrice());
+            vholder.textOriginalPrice.setText(item.shopProductCampaign.getOriginalPrice());
             vholder.textOriginalPrice.setPaintFlags(
                     vholder.textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
@@ -114,10 +112,10 @@ public class ProductLargeDelegate {
                 String.format(vholder.discount,item.shopProductCampaign.getPercentageAmount())
             );
             vholder.textOriginalPrice.setVisibility(View.VISIBLE);
-            vholder.frameDiscount.setVisibility(View.VISIBLE);
+            vholder.textDiscount.setVisibility(View.VISIBLE);
         } else {
             vholder.textOriginalPrice.setVisibility(View.GONE);
-            vholder.frameDiscount.setVisibility(View.GONE);
+            vholder.textDiscount.setVisibility(View.GONE);
         }
     }
 

@@ -1927,11 +1927,12 @@ di Tokopedia Sekarang!</string>
     <string name="action_remember_account">Ingat saya</string>
     <string name="label_buyer_trouble">Kendala Pembeli</string>
 
-    <!--START : Marketing Campaign Official Store -->
+    <!-- Marketing Campaign Official Store START-->
     <string name="title_discount_timer">Promo berakhir dalam:</string>
     <string name="label_discount_timer">%1$02dd : %2$02dh : %3$02dm : %4$02ds</string>
     <string name="label_discount">%1$d%%OFF</string>
-    <!--END : Marketing Campaign Official Store -->
+    <string name="label_price_with_idr">Rp %1$s</string>
+    <!-- Marketing Campaign Official Store END-->
 
     <!-- String related to Official Store START -->
     <string name="os_home_title_product">Produk</string>

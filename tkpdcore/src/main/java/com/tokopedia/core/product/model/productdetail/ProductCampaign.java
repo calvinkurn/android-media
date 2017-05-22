@@ -11,25 +11,28 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ProductCampaign implements Parcelable {
-    @SerializedName("percentage")
+    @SerializedName("percentage_amount")
     @Expose
-    private int percentage;
+    private int percentageAmount;
+
     @SerializedName("discounted_price")
     @Expose
     private String discountedPrice;
-    @SerializedName("expired_time")
+
+    @SerializedName("end_date")
     @Expose
-    private String expiredTime;
+    private String endDate;
+
     @SerializedName("original_price")
     @Expose
     private String originalPrice;
 
-    public int getPercentage() {
-        return percentage;
+    public int getPercentageAmount() {
+        return percentageAmount;
     }
 
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
+    public void setPercentageAmount(int percentageAmount) {
+        this.percentageAmount = percentageAmount;
     }
 
     public String getDiscountedPrice() {
@@ -40,12 +43,12 @@ public class ProductCampaign implements Parcelable {
         this.discountedPrice = discountedPrice;
     }
 
-    public String getExpiredTime() {
-        return expiredTime;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setExpiredTime(String expiredTime) {
-        this.expiredTime = expiredTime;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getOriginalPrice() {
@@ -63,9 +66,9 @@ public class ProductCampaign implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.percentage);
+        dest.writeInt(this.percentageAmount);
         dest.writeString(this.discountedPrice);
-        dest.writeString(this.expiredTime);
+        dest.writeString(this.endDate);
         dest.writeString(this.originalPrice);
     }
 
@@ -73,9 +76,9 @@ public class ProductCampaign implements Parcelable {
     }
 
     protected ProductCampaign(Parcel in) {
-        this.percentage = in.readInt();
+        this.percentageAmount = in.readInt();
         this.discountedPrice = in.readString();
-        this.expiredTime = in.readString();
+        this.endDate = in.readString();
         this.originalPrice = in.readString();
     }
 

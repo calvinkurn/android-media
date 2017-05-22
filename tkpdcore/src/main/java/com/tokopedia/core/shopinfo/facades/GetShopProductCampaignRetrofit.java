@@ -2,14 +2,12 @@ package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
 
-import com.google.gson.JsonObject;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaign;
 import com.tokopedia.core.shopinfo.models.productmodel.ShopProductCampaignResponse;
 import com.tokopedia.core.shopinfo.models.productmodel.ProductModel;
 
-import java.util.List;
+import java.util.Iterator;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -51,14 +49,29 @@ public class GetShopProductCampaignRetrofit {
     }
 
 
-    public void getProductsCampaign(ProductModel model, List<String> ids) {
+    public void getProductsCampaign(ProductModel model) {
         this.productModel = model;
+
         Observable<Response<ShopProductCampaignResponse>> observable = mojitoService.getApi()
-                .getProductsCampaign(StringUtils.convertListToStringDelimiter(ids, ","));
+                .getProductCampaigns(getIds(model));
         onGetProductsCampaignSubs = observable
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onGetProductCampaign());
+    }
+
+    private String getIds(ProductModel model) {
+        StringBuilder builder = new StringBuilder();
+        String delimiter = ",";
+        Iterator<com.tokopedia.core.shopinfo.models.productmodel.List> it = model.list.iterator();
+        while (it.hasNext()) {
+            builder.append(it.next().productId);
+            if (it.hasNext()) {
+                builder.append(delimiter);
+            }
+        }
+
+        return builder.toString();
     }
 
     public void unsubscribeGetProductsCampaign() {
@@ -84,7 +97,16 @@ public class GetShopProductCampaignRetrofit {
             public void onNext(Response<ShopProductCampaignResponse> tkpdResponse) {
                 if(tkpdResponse.isSuccessful()) {
                     ShopProductCampaignResponse response = tkpdResponse.body();
-                    // TODO: 16/05/17 process the response
+                    if(response.getData() != null && response.getData().size() > 0) {
+                        for(ShopProductCampaign productCampaign : response.getData()) {
+                            for(com.tokopedia.core.shopinfo.models.productmodel.List list : productModel.list) {
+                                if(list.productId == productCampaign.getProductId()) {
+                                    list.shopProductCampaign = productCampaign;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
 
                 productsCampaignListener.onSuccess(productModel);

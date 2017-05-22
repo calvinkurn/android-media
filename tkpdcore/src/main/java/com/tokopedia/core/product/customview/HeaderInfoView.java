@@ -30,7 +30,7 @@ import butterknife.BindView;
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = HeaderInfoView.class.getSimpleName();
-    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd hh:mm:ss";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
     @BindView(R2.id.tv_name)
     TextView tvName;
@@ -60,6 +60,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public String discount;
     @BindString(R2.string.label_discount_timer)
     String labelPromotionTimer;
+    @BindString(R2.string.label_price_with_idr)
+    String labelPriceWithIdr;
 
 
     public HeaderInfoView(Context context) {
@@ -116,27 +118,25 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(ProductCampaign data) {
-        if(data != null &&
-                data.getOriginalPrice() != null) {
+    public void renderProductCampaign(final ProductCampaign data) {
+        if(data != null && data.getOriginalPrice() != null) {
             cashbackHolder.setVisibility(VISIBLE);
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            textOriginalPrice.setText("Rp "+data.getOriginalPrice());
+            textOriginalPrice.setText(String.format(labelPriceWithIdr, data.getOriginalPrice()));
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
-            textDiscount.setText(String.format(discount,data.getPercentage()));
+            textDiscount.setText(String.format(discount,data.getPercentageAmount()));
 
             try {
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
                 long now = new Date().getTime();
-                long end = sf.parse(data.getExpiredTime()).getTime();
+                long end = sf.parse(data.getEndDate()).getTime();
                 long delta = end - now;
 
-                linearDiscountTimerHolder.setVisibility(VISIBLE);
                 new CountDownTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
@@ -154,8 +154,12 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     @Override
                     public void onFinish() {
                         linearDiscountTimerHolder.setVisibility(GONE);
+                        textDiscount.setVisibility(GONE);
+                        tvPrice.setText(data.getOriginalPrice());
                     }
                 }.start();
+
+                linearDiscountTimerHolder.setVisibility(VISIBLE);
             } catch (ParseException ex) {
                 ex.printStackTrace();
             }

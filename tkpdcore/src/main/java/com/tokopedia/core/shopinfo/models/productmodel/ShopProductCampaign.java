@@ -11,7 +11,7 @@ public class ShopProductCampaign {
 
     @SerializedName("product_id")
     @Expose
-    private String productId;
+    private int productId;
 
     @SerializedName("percentage_amount")
     @Expose
@@ -29,11 +29,11 @@ public class ShopProductCampaign {
     @Expose
     private String originalPrice;
 
-    public String getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(String productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 

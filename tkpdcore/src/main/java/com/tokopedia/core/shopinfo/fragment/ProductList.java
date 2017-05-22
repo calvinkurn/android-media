@@ -607,12 +607,8 @@ public class ProductList extends V2BaseFragment {
     }
 
     private void getProductCampaign(ProductModel model) {
-        List<String> ids = new ArrayList<>();
-        for(int i = 0; i < model.list.size(); i++) {
-            ids.add(model.list.get(i).productId+"");
-        }
         facadeShopProdCampaign.unsubscribeGetProductsCampaign();
-        facadeShopProdCampaign.getProductsCampaign(model, ids);
+        facadeShopProdCampaign.getProductsCampaign(model);
     }
 
     private void renderProductList(ProductModel model) {

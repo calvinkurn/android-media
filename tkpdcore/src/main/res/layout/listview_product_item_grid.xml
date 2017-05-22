@@ -61,6 +61,9 @@
         android:layout_below="@id/title"
         android:textColor="@color/warm_grey"
         android:textSize="@dimen/fontvvvs"
+        android:layout_marginLeft="@dimen/product_grid_padding"
+        android:layout_marginRight="@dimen/product_grid_padding"
+        android:text="123123123"
         android:visibility="gone"/>
 
     <TextView
@@ -79,27 +82,22 @@
         android:textColor="@color/orange_red"
         android:textSize="13sp" />
 
-    <FrameLayout
-        android:id="@+id/frame_discount"
+    <TextView
+        android:id="@+id/text_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fontvvvs"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"
         android:layout_toEndOf="@id/price"
         android:layout_toRightOf="@id/price"
         android:layout_below="@id/text_original_price"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
         android:background="@drawable/bg_rounded_corners_red"
         android:padding="@dimen/margin_vvvs"
-        android:visibility="gone">
-
-        <TextView
-            android:id="@+id/text_discount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:textSize="@dimen/fontvvvs"/>
-
-    </FrameLayout>
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/rating_review_container"
