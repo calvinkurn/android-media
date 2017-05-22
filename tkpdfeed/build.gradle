@@ -1,6 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
@@ -118,4 +119,6 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile 'com.apollographql.apollo:apollo-rx-support:0.3.0'
+
+    compile rootProject.ext.miscDependencies.videoPlayerManager
 }

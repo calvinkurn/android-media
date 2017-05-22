@@ -5,8 +5,10 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
 /**
  * @author by nisie on 5/18/17.
@@ -27,12 +29,19 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(ProductCardHeaderViewModel viewModel) {
+        return FeedDetailHeaderViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
 
         if (type == FeedDetailViewHolder.LAYOUT)
             viewHolder = new FeedDetailViewHolder(view, viewListener);
+        else if (type == FeedDetailHeaderViewHolder.LAYOUT)
+            viewHolder = new FeedDetailHeaderViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
 

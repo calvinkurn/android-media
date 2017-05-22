@@ -5,15 +5,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.InspirationAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.OfficialStoreAdapter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 
 import butterknife.BindView;
@@ -21,24 +21,24 @@ import butterknife.BindView;
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreViewModel> {
+public class InspirationViewHolder extends AbstractViewHolder<InspirationViewModel>{
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.official_store_layout;
+    public static final int LAYOUT = R.layout.inspiration_layout;
     private final FeedPlus.View viewListener;
 
+    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
-    ImageView imageView;
 
-    private OfficialStoreAdapter adapter;
-    private OfficialStoreViewModel officialStoreViewModel;
+    @BindView(R2.id.title)
+    TextView textView;
 
+    private InspirationAdapter adapter;
 
-    public OfficialStoreViewHolder(View itemView, FeedPlus.View viewListener) {
+    private InspirationViewModel inspirationViewModel;
+
+    public InspirationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
-        imageView = (ImageView) itemView.findViewById(R.id.official_store_image);
-
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -59,16 +59,16 @@ public class OfficialStoreViewHolder extends AbstractViewHolder<OfficialStoreVie
                 }
             }
         });
-        adapter = new OfficialStoreAdapter(itemView.getContext(), viewListener);
+        adapter = new InspirationAdapter(itemView.getContext(), viewListener);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    public void bind(OfficialStoreViewModel officialStoreViewModel) {
-        this.officialStoreViewModel = officialStoreViewModel;
-        adapter.setList(officialStoreViewModel.getListProduct());
-        ImageHandler.LoadImage(imageView, officialStoreViewModel.getOfficialStoreHeaderImageUrl());
+    public void bind(InspirationViewModel inspirationViewModel) {
+        this.inspirationViewModel = inspirationViewModel;
+        adapter.setList(inspirationViewModel.getListProduct());
+        textView.setText(inspirationViewModel.getInspired());
     }
 
 }

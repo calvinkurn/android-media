@@ -12,38 +12,24 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedProductAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
-
-import butterknife.BindView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 /**
  * @author by nisie on 5/16/17.
  */
 
-public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewModel> {
+public class ProductCardViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_product_multi;
 
-    @BindView(R2.id.title)
     TextView title;
-
-    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-
-    @BindView(R2.id.gold_merchant)
     ImageView goldMerchantBadge;
-
-    @BindView(R2.id.time)
     TextView time;
-
-    @BindView(R2.id.share_button)
     View shareButton;
-
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
 
     private FeedProductAdapter adapter;
@@ -51,6 +37,14 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
 
     public ProductCardViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
+
+        title = (TextView) itemView.findViewById(R.id.title);
+        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
+        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        time = (TextView) itemView.findViewById(R.id.time);
+        shareButton = itemView.findViewById(R.id.share_button);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -94,24 +88,24 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
     }
 
     @Override
-    public void bind(ProductCardViewModel productCardViewModel) {
-        setHeader(productCardViewModel);
-        adapter.setData(productCardViewModel);
-        setFooter(productCardViewModel);
+    public void bind(ActivityCardViewModel activityCardViewModel) {
+        setHeader(activityCardViewModel);
+        adapter.setData(activityCardViewModel);
+        setFooter(activityCardViewModel);
     }
 
-    public void setHeader(final ProductCardViewModel productCardViewModel) {
-        String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
-                + productCardViewModel.getActionText();
+    public void setHeader(final ActivityCardViewModel activityCardViewModel) {
+        String titleText = "<b>" + activityCardViewModel.getHeader().getShopName() + "</b> "
+                + activityCardViewModel.getHeader().getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getShopAvatar());
+        ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
-        if (productCardViewModel.isGoldMerchant())
+        if (activityCardViewModel.getHeader().isGoldMerchant())
             goldMerchantBadge.setVisibility(View.VISIBLE);
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
+        time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getPostTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,13 +116,13 @@ public class ProductCardViewHolder extends AbstractViewHolder<ProductCardViewMod
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToFeedDetail(productCardViewModel);
+                viewListener.onGoToFeedDetail(activityCardViewModel);
             }
         });
 
     }
 
-    public void setFooter(ProductCardViewModel footer) {
+    public void setFooter(ActivityCardViewModel footer) {
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

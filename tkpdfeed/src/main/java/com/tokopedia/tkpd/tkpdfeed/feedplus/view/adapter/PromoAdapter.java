@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
 
 import java.util.ArrayList;
 
@@ -20,7 +22,13 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static final int VIEW_MORE = 234;
     private static final int VIEW_LAYOUT = 344;
-    private ArrayList<ProductFeedViewModel> list;
+    private ArrayList<PromoViewModel> list;
+
+    private FeedPlus.View viewListener;
+
+    public PromoAdapter(FeedPlus.View viewListener) {
+        this.viewListener = viewListener;
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,8 +51,17 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if(getItemViewType(position) == VIEW_MORE) {
 
         }else {
-            LayoutViewHolder temp = (LayoutViewHolder) holder;
-            ImageHandler.LoadImage(temp.imageView, list.get(position).getImageSource());
+            final LayoutViewHolder temp = (LayoutViewHolder) holder;
+            ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());
+            temp.period.setText(temp.period.getContext().getString(R.string.period, list.get(position).getPeriod()));
+            temp.description.setText(list.get(position).getDescription());
+            temp.promoCode.setText(list.get(position).getPromoCode());
+            temp.copyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewListener.onCopyClicked(temp.promoCode.getText().toString());
+                }
+            });
         }
     }
 
@@ -53,18 +70,18 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         return list.size();
     }
 
-    public void setList(ArrayList<ProductFeedViewModel> list) {
+    public void setList(ArrayList<PromoViewModel> list) {
         this.list = list;
         notifyDataSetChanged();
     }
 
-    public ArrayList<ProductFeedViewModel> getList() {
+    public ArrayList<PromoViewModel> getList() {
         return list;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position == getItemCount()-1){
+        if(list.size()>1 && position == getItemCount()-1){
             return VIEW_MORE;
         }else{
             return VIEW_LAYOUT;
@@ -73,11 +90,19 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     public class LayoutViewHolder extends RecyclerView.ViewHolder{
 
-        public ImageView imageView;
+        private View copyButton;
+        private TextView period;
+        private TextView description;
+        private TextView promoCode;
+        private ImageView imageView;
 
         public LayoutViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.product_image);
+            description = (TextView) itemView.findViewById(R.id.desc);
+            period = (TextView) itemView.findViewById(R.id.date);
+            promoCode = (TextView) itemView.findViewById(R.id.promo_link);
+            copyButton = itemView.findViewById(R.id.copy_but);
         }
     }
 

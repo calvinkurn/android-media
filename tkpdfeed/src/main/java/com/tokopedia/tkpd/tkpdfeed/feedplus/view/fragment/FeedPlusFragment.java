@@ -12,17 +12,20 @@ import android.view.ViewGroup;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.R2;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.adapter.Visitable;
+
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
+import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
@@ -31,9 +34,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
@@ -77,12 +83,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
+        DaggerAppComponent daggerAppComponent =
+                (DaggerAppComponent) DaggerAppComponent.builder()
                 .appModule(new AppModule(getContext()))
                 .activityModule(new ActivityModule(getActivity()))
                 .build();
 
-        DaggerFeedPlusComponent daggerFeedPlusComponent = (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
+        DaggerFeedPlusComponent daggerFeedPlusComponent =
+                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
                 .appComponent(daggerAppComponent)
                 .build();
 
@@ -130,6 +138,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        BlogViewModel imageBlog = new BlogViewModel("https://islamkajian.files.wordpress.com/2015/03/kuda.jpg", "Test Blog");
+        BlogViewModel videoBlog = new BlogViewModel("http://techslides.com/demos/sample-videos/small.mp4");
 
         ProductFeedViewModel prod1 = new ProductFeedViewModel(
                 "Produk1",
@@ -197,25 +208,41 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listProduct8.add(prod7);
         listProduct8.add(prod8);
 
-        List<Visitable> list = new ArrayList<>();
+        ArrayList<PromoViewModel> listPromo = new ArrayList<>();
+        listPromo.add(new PromoViewModel("Hemat Air","30 Juni", "AIRMURAH", prod2.getImageSource()));
+        listPromo.add(new PromoViewModel("Hemat Gas","1 Juni - 3 Juli", "GASANGIN", prod6.getImageSource()));
+        listPromo.add(new PromoViewModel("Hemat Listrik","6 Agustus", "LISTRIKWEK", prod1.getImageSource()));
+        listPromo.add(new PromoViewModel("Bayar BPJS","7 Januari - 8 Maret", "BAYARBPJS", prod4.getImageSource()));
 
-        list.add(new ProductCardViewModel("Nisie 1", listProduct));
-        list.add(new ProductCardViewModel("Nisie 2", listProduct2));
-        list.add(new ProductCardViewModel("Nisie 3", listProduct3));
-        list.add(new PromoViewModel(listProduct8));
+        List<Visitable> list = new ArrayList<>();
+        list.add(imageBlog);
+        list.add(videoBlog);
+
+        list.add(new ActivityCardViewModel("Nisie 1", listProduct));
+        list.add(new ActivityCardViewModel("Nisie 2", listProduct2));
+        list.add(new ActivityCardViewModel("Nisie 3", listProduct3));
+        list.add(new PromoCardViewModel(listPromo));
 
         ArrayList<ProductFeedViewModel> listOfficialStore = new ArrayList<>();
         listOfficialStore.add(new ProductFeedViewModel(prod1, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocky", true));
         listOfficialStore.add(new ProductFeedViewModel(prod2, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rock", true));
         listOfficialStore.add(new ProductFeedViewModel(prod3, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocy", false));
         listOfficialStore.add(new ProductFeedViewModel(prod4, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rcky", false));
-        list.add(new OfficialStoreViewModel("https://ecs7.tokopedia.net/img/mobile/banner-4.png", listOfficialStore));
 
-        list.add(new ProductCardViewModel("Nisie 4", listProduct4));
-        list.add(new ProductCardViewModel("Nisie 5", listProduct5));
-        list.add(new ProductCardViewModel("Nisie 6", listProduct6));
+        ArrayList<ProductFeedViewModel> listInspiration = new ArrayList<>();
+        listInspiration.addAll(listOfficialStore);
+
+//        list.add(new ActivityCardViewModel("Nisie 1", listProduct));
+//        list.add(new ActivityCardViewModel("Nisie 2", listProduct2));
+//        list.add(new ActivityCardViewModel("Nisie 3", listProduct3));
+        list.add(new PromoCardViewModel(listPromo));
+        list.add(new InspirationViewModel("your history", listInspiration));
+        list.add(new OfficialStoreViewModel("https://ecs7.tokopedia.net/img/mobile/banner-4.png", listOfficialStore));
+//        list.add(new ActivityCardViewModel("Nisie 4", listProduct4));
+//        list.add(new ActivityCardViewModel("Nisie 5", listProduct5));
+        list.add(new ActivityCardViewModel("Nisie 6", listProduct6));
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
-        list.add(new ProductCardViewModel("Nisie 8", listProduct8));
+        list.add(new ActivityCardViewModel("Nisie 8", listProduct8));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();
@@ -264,14 +291,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToFeedDetail(ProductCardViewModel productCardViewModel) {
-        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), productCardViewModel);
+    public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
+        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), activityCardViewModel);
         startActivity(intent);
     }
 
     @Override
     public void onGoToShopDetail() {
 
+    }
+
+    @Override
+    public void onCopyClicked(String s) {
+        ClipboardHandler.CopyToClipboard(getActivity(), s);
+    }
+
+    @Override
+    public void onGoToBlogWebView(String url) {
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), url);
+        startActivity(intent);
     }
 
 //    @Override

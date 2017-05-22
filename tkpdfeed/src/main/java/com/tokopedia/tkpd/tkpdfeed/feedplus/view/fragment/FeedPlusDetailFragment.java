@@ -7,17 +7,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
@@ -27,9 +27,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDet
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import java.util.ArrayList;
 
@@ -47,17 +48,6 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         implements FeedPlusDetail.View {
 
     private static final String ARGS_DATA = "ARGS_DATA";
-    @BindView(R2.id.title)
-    TextView title;
-
-    @BindView(R2.id.shop_avatar)
-    ImageView shopAvatar;
-
-    @BindView(R2.id.gold_merchant)
-    ImageView goldMerchantBadge;
-
-    @BindView(R2.id.time)
-    TextView time;
 
     @BindView(R2.id.detail_list)
     RecyclerView recyclerView;
@@ -75,7 +65,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ProductCardViewModel productCardViewModel;
+    private ActivityCardViewModel activityCardViewModel;
+    private ShareBottomDialog shareBottomDialog;
+    private CallbackManager callbackManager;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
         FeedPlusDetailFragment fragment = new FeedPlusDetailFragment();
@@ -91,12 +83,14 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
 
-        DaggerAppComponent daggerAppComponent = (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
+        DaggerAppComponent daggerAppComponent =
+                (DaggerAppComponent) DaggerAppComponent.builder()
+                        .appModule(new AppModule(getContext()))
+                        .activityModule(new ActivityModule(getActivity()))
+                        .build();
 
-        DaggerFeedPlusComponent daggerFeedPlusComponent = (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
+        DaggerFeedPlusComponent daggerFeedPlusComponent =
+                (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
                 .appComponent(daggerAppComponent)
                 .build();
 
@@ -112,16 +106,18 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
-            productCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            activityCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
         else if (getArguments() != null)
-            productCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
+            activityCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
         else
-            productCardViewModel = new ProductCardViewModel();
+            activityCardViewModel = new ActivityCardViewModel();
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusDetailTypeFactory typeFactory = new FeedPlusDetailTypeFactoryImpl(this);
         adapter = new DetailFeedAdapter(typeFactory);
+        FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
     }
 
@@ -173,35 +169,52 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                 "Produk4",
                 "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
 
-        ArrayList<FeedDetailViewModel> listProduct = new ArrayList<>();
+        ArrayList<Visitable> listProduct = new ArrayList<>();
+        listProduct.add(activityCardViewModel.getHeader());
         listProduct.add(prod1);
         listProduct.add(prod2);
         listProduct.add(prod3);
         listProduct.add(prod4);
 
         adapter.addList(listProduct);
+        adapter.notifyDataSetChanged();
 
-        String titleText = "<b>" + productCardViewModel.getShopName() + "</b> "
-                + productCardViewModel.getActionText();
-        title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardViewModel.getShopAvatar());
-
-        if (productCardViewModel.isGoldMerchant())
-            goldMerchantBadge.setVisibility(View.VISIBLE);
-        else
-            goldMerchantBadge.setVisibility(View.GONE);
-
-        time.setText(TimeConverter.generateTime(productCardViewModel.getPostTime()));
-
-        shopAvatar.setOnClickListener(new View.OnClickListener() {
+        shareButton.setOnClickListener(onShareClicked());
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onGoToShopDetail();
             }
         });
+
     }
 
-    private void onGoToShopDetail() {
+    private View.OnClickListener onShareClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (shareBottomDialog == null) {
+                    shareBottomDialog = new ShareBottomDialog(
+                            FeedPlusDetailFragment.this,
+                            callbackManager);
+                }
+
+                shareBottomDialog.setShareModel(new ShareModel("https://www.tokopedia.com/",
+                        "Tokopedia",
+                        "",
+                        ""));
+                shareBottomDialog.show();
+            }
+        };
+    }
+
+    @Override
+    public void onWishlistClicked() {
+
+    }
+
+    @Override
+    public void onGoToShopDetail() {
 
     }
 
@@ -215,11 +228,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_DATA, productCardViewModel);
+        outState.putParcelable(ARGS_DATA, activityCardViewModel);
     }
 
-    @Override
-    public void onWishlistClicked() {
 
-    }
 }

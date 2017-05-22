@@ -12,6 +12,9 @@ public interface FeedPlusDetail {
     public interface View extends CustomerView {
 
         void onWishlistClicked();
+
+        void onGoToShopDetail();
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

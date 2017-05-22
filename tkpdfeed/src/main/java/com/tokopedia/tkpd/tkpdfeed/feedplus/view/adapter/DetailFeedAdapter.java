@@ -10,6 +10,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
 
     private List<Visitable> list;
     private final FeedPlusDetailTypeFactory typeFactory;
+    private ProductCardHeaderViewModel header;
 
     public DetailFeedAdapter(FeedPlusDetailTypeFactory typeFactory) {
         this.list = new ArrayList<>();
@@ -51,8 +53,7 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         return list.get(position).type(typeFactory);
     }
 
-    public void addList(ArrayList<FeedDetailViewModel> listProduct) {
-        this.list.addAll(listProduct);
-        notifyDataSetChanged();
+    public void addList(ArrayList<Visitable> list) {
+        this.list.addAll(list);
     }
 }

@@ -109,7 +109,8 @@ ext {
             daggerCompiler    : "com.google.dagger:dagger-compiler:2.5",
             smoothAppBarLayout: "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller        : "true.caller.sdk:truecaller:0.5",
-            chips             : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar'
+            chips             : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
+            videoPlayerManager: 'com.github.danylovolokh:video-player-manager:0.2.0'
     ]
 
     testDependencies = [

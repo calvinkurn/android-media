@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 /**
  * @author by nisie on 5/15/17.
@@ -15,9 +15,13 @@ public interface FeedPlus{
 
         void onGoToProductDetail();
 
-        void onGoToFeedDetail(ProductCardViewModel productCardViewModel);
+        void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel);
 
         void onGoToShopDetail();
+
+        void onCopyClicked(String s);
+
+        void onGoToBlogWebView(String url);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

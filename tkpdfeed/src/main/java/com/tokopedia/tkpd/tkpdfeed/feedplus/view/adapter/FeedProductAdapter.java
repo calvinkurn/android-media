@@ -16,7 +16,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 
 import java.util.ArrayList;
@@ -33,29 +33,28 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.title)
         public TextView productName;
 
-        @BindView(R2.id.price)
         public TextView productPrice;
 
-        @BindView(R2.id.product_image)
         public ImageView productImage;
 
-        @BindView(R2.id.black_screen)
         public FrameLayout blackScreen;
 
-        @BindView(R2.id.extra_product)
         public TextView extraProduct;
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
-            ButterKnife.bind(this, itemLayoutView);
+            productName = (TextView) itemView.findViewById(R.id.title);
+            productPrice = (TextView) itemView.findViewById(R.id.price);
+            extraProduct = (TextView) itemView.findViewById(R.id.extra_product);
+            blackScreen = (FrameLayout) itemView.findViewById(R.id.black_screen);
+            productImage = (ImageView) itemView.findViewById(R.id.product_image);
         }
     }
 
     protected ArrayList<ProductFeedViewModel> list;
-    private ProductCardViewModel productCardViewModel;
+    private ActivityCardViewModel activityCardViewModel;
     private final FeedPlus.View viewListener;
     protected final Context context;
 
@@ -73,7 +72,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ArrayList<ProductFeedViewModel> list = productCardViewModel.getListProduct();
+        ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
@@ -86,7 +85,7 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(productCardViewModel);
+                    viewListener.onGoToFeedDetail(activityCardViewModel);
                 }
             });
         } else {
@@ -119,19 +118,19 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
 
     @Override
     public int getItemCount() {
-        if (productCardViewModel.getListProduct().size() > 6)
+        if (activityCardViewModel.getListProduct().size() > 6)
             return 6;
         else
-            return productCardViewModel.getListProduct().size();
+            return activityCardViewModel.getListProduct().size();
     }
 
-    public void setData(ProductCardViewModel productCardViewModel) {
-        this.productCardViewModel = productCardViewModel;
+    public void setData(ActivityCardViewModel activityCardViewModel) {
+        this.activityCardViewModel = activityCardViewModel;
         notifyDataSetChanged();
     }
 
-    public ProductCardViewModel getData() {
-        return productCardViewModel;
+    public ActivityCardViewModel getData() {
+        return activityCardViewModel;
     }
 
     @Override

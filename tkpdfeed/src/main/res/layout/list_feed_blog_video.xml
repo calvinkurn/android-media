@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_small"
+        android:textStyle="bold"
+        tools:text="Seputar Tokopdeia" />
+
+    <com.volokh.danylo.video_player_manager.ui.VideoPlayerView
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/video_cover"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:scaleType="centerCrop" />
+
+
+    <TextView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/ic_chevron_right"
+        android:padding="@dimen/padding_small"
+        android:textColor="@color/green_500"
+        tools:text="Seputar Tokopdeia kini giliran jakarta yang punya halaman khusus awdalwjdalkwjdlakjlsdkjalksdlakjsldkjalsdjlaksjdlakjsdlakjsldjk" />
+</LinearLayout>
