@@ -70,7 +70,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     FeedPlusPresenter presenter;
 
     private Unbinder unbinder;
-    private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
@@ -105,7 +104,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void initVar() {
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
@@ -128,9 +126,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(recyclerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
 
     }

@@ -1,3 +1,11 @@
+apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
+apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+apply plugin: 'maven'
+apply plugin: 'com.apollographql.android'
+
 buildscript {
     repositories {
         mavenCentral()
@@ -5,15 +13,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
+        classpath 'com.apollographql.apollo:gradle-plugin:0.3.0'
     }
 }
-
-apply plugin: 'com.android.library'
-apply plugin: 'android-apt'
-apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.jfrog.artifactory'
-apply plugin: 'maven-publish'
-apply plugin: 'maven'
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
@@ -118,4 +120,8 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.videoPlayerManager
+
+    compile rootProject.ext.apolloDependencies.apolloRx2Support
+    compile rootProject.ext.apolloDependencies.apolloRuntime
+    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
 }
