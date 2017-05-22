@@ -458,10 +458,10 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
-        String LOGIN_STATUS = "Logged_in_Status";
-        String PRODUCTS_NUMBER = "Number_of_Products";
-        String SUBCATEGORY = "SubCategory_name";
-        String SUBCATEGORY_ID = "SubCategory_id";
+        String LOGIN_STATUS = "logged_in_status";
+        String PRODUCTS_NUMBER = "number_of_products";
+        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY_ID = "subcategory_id";
         String CATEGORY = "Category";
         String PRODUCT_ID = "Product_id";
         String PRODUCT_NAME = "Product_name";
@@ -476,11 +476,11 @@ public interface AppEventTracking {
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
         String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
+        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
         String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
 
 
         String REG_START = "Registration_Start";

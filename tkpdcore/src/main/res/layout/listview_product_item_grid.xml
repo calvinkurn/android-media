@@ -115,6 +115,7 @@
             android:id="@+id/rating"
             android:layout_width="68dp"
             android:layout_height="12dp"
+            android:visibility="gone"
             />
 
         <TextView
@@ -123,6 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
             android:textSize="11sp"
+            android:visibility="gone"
             />
 
     </LinearLayout>

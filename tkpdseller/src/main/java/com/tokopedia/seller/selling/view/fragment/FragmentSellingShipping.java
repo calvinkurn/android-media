@@ -128,7 +128,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             super.onCreateActionMode(actionMode, menu);
             FragmentSellingShipping.this.actionMode = actionMode;
-            disableFilter();
+            hideFab();
             actionMode.setTitle("1");
             getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
             refresh.setPullEnabled(false);
@@ -151,6 +151,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public void onDestroyActionMode(ActionMode actionMode) {
             super.onDestroyActionMode(actionMode);
             enableFilter();
+            showFab();
             refresh.setPullEnabled(true);
             multiSelector.clearSelections();
             presenter.updateListDataChecked(false);
@@ -307,6 +308,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        if(actionMode != null && !isVisibleToUser){
+            actionMode.finish();
+        }
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
