@@ -274,23 +274,23 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Map<String, String> maps = splitQuery(afUri);
         for (Map.Entry<String, String> imap : maps.entrySet()) {
             switch (imap.getKey()) {
-                case "utm_source":
-                    newUri += "&utm_source=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_SOURCE:
+                    newUri += AppEventTracking.GTM.UTM_SOURCE_APPEND + imap.getValue();
                     break;
-                case "utm_medium":
-                    newUri += "&utm_medium=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_MEDIUM:
+                    newUri += AppEventTracking.GTM.UTM_MEDIUM_APPEND + imap.getValue();
                     break;
-                case "utm_term":
-                    newUri += "&utm_term=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_TERM:
+                    newUri += AppEventTracking.GTM.UTM_TERM_APPEND + imap.getValue();
                     break;
-                case "utm_content":
-                    newUri += "&utm_content=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_CONTENT:
+                    newUri += AppEventTracking.GTM.UTM_CONTENT_APPEND + imap.getValue();
                     break;
-                case "utm_campaign":
-                    newUri += "&utm_campaign=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_CAMPAIGN:
+                    newUri += AppEventTracking.GTM.UTM_CAMPAIGN_APPEND + imap.getValue();
                     break;
-                case "gclid":
-                    newUri += "&gclid=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_GCLID:
+                    newUri += AppEventTracking.GTM.UTM_GCLID_APPEND + imap.getValue();
                     break;
             }
         }
