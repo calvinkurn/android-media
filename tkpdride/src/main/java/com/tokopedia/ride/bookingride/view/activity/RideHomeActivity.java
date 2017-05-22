@@ -697,4 +697,19 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     public void actionBookingHeaderClicked() {
         mSlidingUpPanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
     }
+
+    @Override
+    public void actionBackToProductList() {
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof ConfirmBookingRideFragment) {
+            getFragmentManager().popBackStack();
+
+            onBottomContainerChangeToProductListScreen();
+
+            ConfirmBookingRideFragment fragment = (ConfirmBookingRideFragment) getFragmentManager().findFragmentById(R.id.bottom_container);
+            ConfirmBookingViewModel viewModel = fragment.getActiveConfirmBooking();
+            UberProductFragment productFragment = UberProductFragment.newInstance(viewModel.getSource(),
+                    viewModel.getDestination());
+            replaceFragment(R.id.bottom_container, productFragment);
+        }
+    }
 }

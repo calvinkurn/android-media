@@ -102,6 +102,8 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
         void actionRequestRide(ConfirmBookingViewModel confirmBookingViewModel);
 
         void actionBookingHeaderClicked();
+
+        void actionBackToProductList();
     }
 
     public ConfirmBookingRideFragment() {
@@ -374,7 +376,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     @Override
     public void goToProductList() {
-
+        mListener.actionBackToProductList();
     }
 
     @Override

@@ -69,6 +69,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.HomeCatMenuView;
 import com.tokopedia.tkpd.home.OnGetBrandsListener;
@@ -882,8 +883,9 @@ public class FragmentIndexCategory extends TkpdBaseV4Fragment implements
 
     @Override
     public void onApplinkClicked(CategoryItemModel categoryItemModel) {
-        Intent intent = new Intent(getActivity(), DeeplinkHandlerActivity.class);
+        Intent intent = new Intent();
         intent.setData(Uri.parse(categoryItemModel.getApplinks()));
-        startActivity(intent);
+        DeepLinkDelegate delegate = DeeplinkHandlerActivity.getDeeplinkDelegateInstance();
+        delegate.dispatchFrom(getActivity(), intent);
     }
 }
