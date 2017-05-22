@@ -125,5 +125,6 @@ public class ApplinkBuildAndShowNotification {
         ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        buildAndShow.process(context, intent);
     }
 }
