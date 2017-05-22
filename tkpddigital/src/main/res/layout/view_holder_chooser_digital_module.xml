@@ -5,7 +5,7 @@
               android:layout_height="wrap_content"
               android:orientation="vertical"
               android:paddingTop="@dimen/digital_padding_16"
-              tools:background="@color/green_200">
+              tools:background="@color/grey_100">
 
     <TextView
         android:id="@+id/tv_label_chooser"
@@ -28,8 +28,10 @@
 
         <TextView
             android:id="@+id/tv_operator_product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/iv_arrow"
+            android:layout_toStartOf="@+id/iv_arrow"
             android:padding="@dimen/padding_vs"
             android:textColor="@color/digital_voucher"
             android:textSize="@dimen/font_medium"
@@ -42,6 +44,7 @@
             android:background="@color/grey"/>
 
         <ImageView
+            android:id="@+id/iv_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -50,7 +53,8 @@
             android:layout_marginEnd="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
             android:src="@drawable/page_2"
-            android:tint="@color/grey"/>
+            android:tint="@color/grey"
+            tools:ignore="ContentDescription"/>
 
     </RelativeLayout>
 

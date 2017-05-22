@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/main_container"
@@ -21,14 +21,14 @@
                 android:id="@+id/holder_product_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/padding_vvvs"
-                android:layout_marginBottom="@dimen/digital_padding_16"/>
+                android:layout_marginBottom="@dimen/digital_padding_16"
+                android:padding="@dimen/padding_vvvs"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
@@ -41,7 +41,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
 
 
 </android.support.design.widget.CoordinatorLayout>

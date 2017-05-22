@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
 
     <LinearLayout
@@ -16,14 +16,15 @@
         android:layout_marginTop="@dimen/digital_padding_6"
         android:orientation="vertical"
         android:padding="@dimen/digital_padding_14"
-        tools:background="@drawable/digital_bg_banner_selected">
+        tools:background="@drawable/digital_bg_banner_selected"
+        tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/tv_desc_banner"
             style="@style/TextSubTitleMedium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!" />
+            tools:text="Beli voucher game lebih hemat, diskon langsung sebesar Rp5.000. Banyak pilihan!"/>
 
         <LinearLayout
             android:id="@+id/holder_voucher"
@@ -36,23 +37,23 @@
                 style="@style/TextSubTitleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_voucher_code" />
+                android:text="@string/title_voucher_code"/>
 
             <TextView
                 android:id="@+id/tv_voucher_code"
                 style="@style/TextSubTitleMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingRight="@dimen/padding_vs"
-                android:paddingEnd="@dimen/padding_vs"
-                android:paddingLeft="@dimen/padding_vs"
-                android:paddingStart="@dimen/padding_vs"
                 android:layout_marginEnd="@dimen/padding_vvs"
+                android:layout_marginLeft="@dimen/padding_vvs"
                 android:layout_marginRight="@dimen/padding_vvs"
                 android:layout_marginStart="@dimen/padding_vvs"
-                android:layout_marginLeft="@dimen/padding_vvs"
+                android:paddingEnd="@dimen/padding_vs"
+                android:paddingLeft="@dimen/padding_vs"
+                android:paddingRight="@dimen/padding_vs"
+                android:paddingStart="@dimen/padding_vs"
                 android:textColor="@color/tkpd_main_green"
-                tools:text="ANGGAKEREN" />
+                tools:text="ANGGAKEREN"/>
 
             <TextView
                 android:id="@+id/btn_copy"
@@ -63,7 +64,7 @@
                 android:padding="@dimen/padding_vvs"
                 android:paddingEnd="@dimen/padding_small"
                 android:paddingStart="@dimen/padding_small"
-                android:text="@string/button_copy" />
+                android:text="@string/button_copy"/>
         </LinearLayout>
     </LinearLayout>
 
