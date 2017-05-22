@@ -404,8 +404,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, networkParam.source);
         params.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, networkParam.sc);
-        if (networkParam.q != null) {
-            params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.q);
+        if (networkParam.keyword != null) {
+            params.getParam().put(TopAdsParams.KEY_QUERY, networkParam.keyword);
         }
         if (networkParam.h != null) {
             params.getParam().put(TopAdsParams.KEY_HOTLIST_ID, networkParam.h);

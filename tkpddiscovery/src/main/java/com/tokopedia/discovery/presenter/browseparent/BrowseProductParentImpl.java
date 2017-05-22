@@ -128,6 +128,7 @@ public class BrowseProductParentImpl extends BrowseProductParent implements Disc
             view.setSource(browseProductActivityModel.getSource());
             Log.d(TAG, "BROWSE_PRODUCT_ACTIVITY_MODEL " + browseProductActivityModel.toString());
             p = new NetworkParam.Product();
+            p.keyword = browseProductActivityModel.getQ();
             switch (browseProductActivityModel.getSource()) {
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_CATALOG:
                 case BrowseProductRouter.VALUES_DYNAMIC_FILTER_SEARCH_PRODUCT:

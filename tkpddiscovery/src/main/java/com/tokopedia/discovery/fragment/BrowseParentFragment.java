@@ -244,9 +244,14 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
     public void redirectUrl(BrowseProductModel productModel) {
         String uri = productModel.result.redirect_url;
         if (uri.contains("/hot/")) {
-            Uri myurl = Uri.parse(uri);
-            uri = myurl.getPathSegments().get(1);
-            ((BrowseProductActivity) getActivity()).sendHotlist(uri, "");
+            if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {
+                BrowseProductActivity browseProductActivity = (BrowseProductActivity) getActivity();
+                browseProductActivity.resetBrowseProductActivityModel();
+                BrowseProductActivityModel model = browseProductActivity.getBrowseProductActivityModel();
+                Uri myurl = Uri.parse(uri);
+                uri = myurl.getPathSegments().get(1);
+                browseProductActivity.sendHotlist(uri, model.getQ());
+            }
         }
         if (uri.contains("/p/")) {
             if (getActivity() !=null && getActivity() instanceof BrowseProductActivity) {

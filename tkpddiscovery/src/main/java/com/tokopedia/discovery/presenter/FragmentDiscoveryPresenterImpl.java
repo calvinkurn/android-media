@@ -470,31 +470,4 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         }
     }
 
-    private ProductItem convertToProductItem(TopAdsResponse.Data data) {
-        ProductItem product = new ProductItem();
-        product.setId(data.product.id);
-        product.setPrice(data.product.priceFormat);
-        product.setName(data.product.name);
-        product.setShopId(Integer.parseInt(data.shop.id));
-        product.setImgUri(data.product.image.mUrl);
-        product.setShop(data.shop.name);
-        product.setIsGold(data.shop.goldShop ? "1" : "0");
-        product.setLuckyShop(data.shop.luckyShop);
-        product.setWholesale(data.product.wholesalePrice.size() > 0 ? "1" : "0");
-        product.setPreorder((data.product.preorder) ? "1" : "0");
-        product.setIsTopAds(true);
-        product.setShopLocation(data.shop.location);
-        product.setBadges(data.shop.badges);
-        product.setLabels(data.product.labels);
-        TopAds ads = new TopAds();
-        ads.setId(data.id);
-        ads.setAdRefKey(data.adRefKey);
-        ads.setProductClickUrl(data.productClickUrl);
-        ads.setRedirect(data.redirect);
-        ads.setShopClickUrl(data.shopClickUrl);
-        ads.setStickerId(data.stickerId);
-        ads.setStickerImage(data.stickerId);
-        product.setTopAds(ads);
-        return product;
-    }
 }
