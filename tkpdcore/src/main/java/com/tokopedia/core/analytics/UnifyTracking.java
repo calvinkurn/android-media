@@ -1517,21 +1517,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBannerEmptyFeedOSNonLogin() {
+    public static void eventBannerEmptyFeedOS() {
         sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
-                AppEventTracking.Category.FEED,
+                AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
+                AppEventTracking.Category.PRODUCT_FEED,
                 AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OS_MICROSITE_NON_LOGIN
-        ).getEvent());
-    }
-
-    public static void eventBannerEmptyFeedOSLogin() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.CLICK_VIEW_ALL_OS,
-                AppEventTracking.Category.FEED,
-                AppEventTracking.Action.CLICK,
-                AppEventTracking.EventLabel.OS_MICROSITE_LOGIN
+                AppEventTracking.EventLabel.VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED
         ).getEvent());
     }
 
