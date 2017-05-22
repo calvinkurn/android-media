@@ -1,10 +1,14 @@
 package com.tokopedia.seller.topads.keyword.view.domain.model;
 
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+
 /**
  * Created by normansyahputa on 5/18/17.
  */
 
-public class Datum {
+public class Datum extends TypeBasedModel {
+    public static final int TYPE = 292912;
+
     private int keywordId;// 1
     private String keywordTag;// 2
     private int groupId;// 3
@@ -24,6 +28,10 @@ public class Datum {
     private String labelEdit; // 17
     private String labelPerClick; // 18
     private String labelOf; // 19
+
+    public Datum() {
+        super(TYPE);
+    }
 
     public int getKeywordId() {
         return keywordId;

@@ -10,12 +10,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,11 +21,11 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -42,16 +37,17 @@ import java.util.List;
  *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> extends TopAdsDatePickerFragment<T> implements
-        TopAdsListPromoViewListener, SearchView.OnQueryTextListener, TopAdsAdListAdapter.Callback {
+public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsDatePickerFragment<T> implements
+        TopAdsListViewListener, TopAdsAdListAdapter.Callback {
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
-    private static final int START_PAGE = 1;
-    protected T presenter;
-    protected String keyword;
+    protected static final int START_PAGE = 1;
+
+
     protected int status;
     protected int page;
     protected int totalItem;
+
     protected TopAdsAdListAdapter adapter;
     private RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
@@ -74,12 +70,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         return new TopAdsDatePickerPresenterImpl(getActivity());
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        initialPresenter();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,7 +77,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_list;
+        return R.layout.fragment_top_ads_list_without_fab;
     }
 
     @Override
@@ -140,7 +130,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
             }
         });
-        adapter = new TopAdsAdListAdapter();
+        adapter = initializeTopAdsAdapter();
         adapter.setCallback(this);
         adapter.setEmptyView(getEmptyViewBinder());
         TopAdsRetryDataBinder topAdsRetryDataBinder = new TopAdsRetryDataBinder(adapter);
@@ -155,7 +145,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
-    private void updateEmptyViewNoResult() {
+    protected TopAdsAdListAdapter initializeTopAdsAdapter() {
+        return new TopAdsAdListAdapter();
+    }
+
+    protected void updateEmptyViewNoResult() {
         TopAdsEmptyAdDataBinder emptyGroupAdsDataBinder = new TopAdsEmptyAdDataBinder(adapter);
         emptyGroupAdsDataBinder.setEmptyTitleText(getString(R.string.top_ads_empty_promo_not_found_title_empty_text));
         emptyGroupAdsDataBinder.setEmptyContentText(getString(R.string.top_ads_empty_promo_not_found_content_empty_text));
@@ -179,7 +173,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         searchAd();
     }
 
-    private void searchAd(int page) {
+    protected void searchAd(int page) {
         this.page = page;
         searchAd();
     }
@@ -205,6 +199,11 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+
     }
 
     @Override
@@ -267,45 +266,5 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (TextUtils.isEmpty(newText)) {
-            onQueryTextSubmit(newText);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        keyword = query;
-        searchAd(START_PAGE);
-        updateEmptyViewNoResult();
-        return true;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(final Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_top_ads_list, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setOnQueryTextListener(this);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_date) {
-            openDatePicker();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.unSubscribe();
     }
 }

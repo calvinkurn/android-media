@@ -265,6 +265,7 @@
     <string name="top_ads_detail_edit_default_currency_value">0</string>
     <string name="top_ads_detail_edit_default_max_price_currency_value">50</string>
     <string name="top_ads_detail_edit_default_lifetime_currency_value">5000</string>
+    <string name="top_ads_per_click_detail">%1s Per Klik</string>
 
     <string name="error_top_ads_click_budget_max">Biaya maksimal maksimum %1s</string>
     <string name="error_top_ads_click_budget_minimum">Biaya minimal Rp %1s</string>
@@ -478,5 +479,7 @@
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
+    <string name="key_word">Kata Kunci</string>
+    <string name="negative">Negatif</string>
 
 </resources>

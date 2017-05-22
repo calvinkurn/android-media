@@ -30,6 +30,6 @@ public class KeywordDashboardUseCase extends UseCase<KeywordDashboardDomain> {
 
     @Override
     public Observable<KeywordDashboardDomain> createObservable(RequestParams requestParams) {
-        return null;
+        return topAdsKeywordRepository.getDashboardKeyword(requestParams);
     }
 }
