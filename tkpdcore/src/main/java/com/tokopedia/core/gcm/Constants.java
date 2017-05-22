@@ -1,7 +1,7 @@
 package com.tokopedia.core.gcm;
 
 /**
- * @author  by alvarisi on 12/20/16.
+ * @author by alvarisi on 12/20/16.
  */
 
 public interface Constants {
@@ -39,7 +39,7 @@ public interface Constants {
     String ACTION_BC_RESET_APPLINK = "com.tokopedia.tkpd.APPLINK_ACTION";
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
-    interface Applinks{
+    interface Applinks {
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
@@ -49,25 +49,25 @@ public interface Constants {
         String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
         String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
         String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
-        String SHOP_INFO =  "tokopedia://shop/{shop_id}/info";
-        String PRODUCT_INFO =  "tokopedia://product/{product_id}";
-        String PURCHASE_VERIFICATION =  "tokopedia://buyer/payment";
-        String PURCHASE_ORDER =  "tokopedia://buyer/order";
-        String PURCHASE_SHIPPING_CONFIRM =  "tokopedia://buyer/shipping-confirm";
-
+        String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
+        String PRODUCT_INFO = "tokopedia://product/{product_id}";
+        String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
+        String PURCHASE_ORDER = "tokopedia://buyer/order";
+        String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
+        String CART = "tokopedia://cart";
     }
 
-    interface Settings{
-        String NOTIFICATION_RINGTONE    = "notifications_new_message_ringtone";
-        String NOTIFICATION_VIBRATE     = "notifications_new_message_vibrate";
-        String NOTIFICATION_PROMO       = "notification_receive_promo";
-        String NOTIFICATION_PM          = "notification_receive_pm";
-        String NOTIFICATION_TALK        = "notification_receive_talk";
-        String NOTIFICATION_REVIEW      = "notification_receive_review";
-        String NOTIFICATION_REP         = "notification_receive_reputation";
-        String NOTIFICATION_SALES       = "notification_sales";
-        String NOTIFICATION_PURCHASE    = "notification_purchase";
-        String NOTIFICATION_RESCENTER   = "notification_receive_rescenter";
+    interface Settings {
+        String NOTIFICATION_RINGTONE = "notifications_new_message_ringtone";
+        String NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
+        String NOTIFICATION_PROMO = "notification_receive_promo";
+        String NOTIFICATION_PM = "notification_receive_pm";
+        String NOTIFICATION_TALK = "notification_receive_talk";
+        String NOTIFICATION_REVIEW = "notification_receive_review";
+        String NOTIFICATION_REP = "notification_receive_reputation";
+        String NOTIFICATION_SALES = "notification_sales";
+        String NOTIFICATION_PURCHASE = "notification_purchase";
+        String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
 
     }
 }
