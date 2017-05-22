@@ -77,7 +77,7 @@ public class TopAdsKeywordListActivity extends TActivity implements HasComponent
         getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -101,8 +101,10 @@ public class TopAdsKeywordListActivity extends TActivity implements HasComponent
     @Override
     public boolean onQueryTextChange(String newText) {
         if (getTopAdsBaseKeywordListFragment() != null) {
-            if (TextUtils.isEmpty(newText)) {
+            if (!TextUtils.isEmpty(newText)) {
                 onQueryTextSubmit(newText);
+            } else {
+                onQueryTextSubmit(null);
             }
         }
         return true;

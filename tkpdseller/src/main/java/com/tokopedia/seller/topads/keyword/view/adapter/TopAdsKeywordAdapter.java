@@ -68,7 +68,13 @@ public class TopAdsKeywordAdapter extends TopAdsAdListAdapter {
     @Override
     public int getItemViewType(int position) {
         if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
-            return super.getItemViewType(position);
+            if (isLoading()) {
+                return VIEW_LOADING;
+            } else if (isRetry()) {
+                return VIEW_RETRY;
+            } else {
+                return VIEW_EMPTY;
+            }
         } else {
             return data.get(position).getType();
         }

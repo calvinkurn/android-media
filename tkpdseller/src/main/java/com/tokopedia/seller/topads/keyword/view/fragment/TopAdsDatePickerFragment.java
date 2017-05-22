@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
@@ -17,12 +17,14 @@ import java.util.Date;
  * @author normansyahputa on 5/17/17.
  *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment}
  */
-public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment {
+public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment implements
+        DatePickerResultListener.DatePickerResult {
     public static final String START_DATE = "start_date";
     public static final String END_DATE = "end_date";
     private static final int REQUEST_CODE_DATE = 5;
     protected Date startDate;
     protected Date endDate;
+    protected DatePickerResultListener datePickerResultListener;
 
     @Nullable
     protected TopAdsDatePickerPresenter datePickerPresenter;
@@ -40,6 +42,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment {
 
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
+        datePickerResultListener = new DatePickerResultListener(this);
     }
 
     @Override
@@ -84,22 +87,34 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        loadDateFromPresenter();
-        if (requestCode == REQUEST_CODE_DATE && intent != null) {
-            long startDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_START_DATE, -1);
-            long endDateTime = intent.getLongExtra(DatePickerConstant.EXTRA_END_DATE, -1);
-            int selectionDatePickerType = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, 0);
-            int selectionDatePeriodIndex = intent.getIntExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, 0);
-            if (startDateTime > 0 && endDateTime > 0) {
-                datePickerPresenter.saveDate(new Date(startDateTime), new Date(endDateTime));
-                datePickerPresenter.saveSelectionDatePicker(selectionDatePickerType, selectionDatePeriodIndex);
-            }
+
+        if (datePickerResultListener != null) {
+            datePickerResultListener.onActivityResult(requestCode, resultCode, intent);
         }
     }
+
+    @Override
+    public void onDateChoosen(long sDate, long eDate, int lastSelection, int selectionType) {
+        loadDateFromPresenter();
+        datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
+        datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
+
+        fetchData();
+    }
+
+    /**
+     * fetch data after select date.
+     */
+    protected abstract void fetchData();
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);
         startActivityForResult(intent, REQUEST_CODE_DATE);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        datePickerResultListener = null;
+    }
 }

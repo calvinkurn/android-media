@@ -38,11 +38,19 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     }
 
     @Override
+    protected void fetchData() {
+        TopAdsKeywordListPresenterImpl.BaseKeywordParam baseKeywordParam
+                = topAdsKeywordListPresenter.generateParam(getActivity(), keyword, page, false,
+                startDate.getTime(), endDate.getTime());
+        topAdsKeywordListPresenter.fetchNegativeKeyword(
+                baseKeywordParam
+        );
+    }
+
+    @Override
     protected void searchAd() {
         super.searchAd();
-        topAdsKeywordListPresenter.fetchNegativeKeyword(
-                topAdsKeywordListPresenter.generateParam(getActivity(), keyword, page, false)
-        );
+        fetchData();
     }
 
     @Override

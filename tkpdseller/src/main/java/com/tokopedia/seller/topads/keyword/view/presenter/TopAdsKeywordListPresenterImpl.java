@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.gmstat.utils.GoldMerchantDateUtils;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.view.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
@@ -20,6 +21,7 @@ import rx.Subscriber;
 
 public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter implements TopAdsAdListPresenter<GroupAd> {
 
+    public static final String KEYWORD_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "TopAdsKeywordListPresen";
     private KeywordDashboardUseCase keywordDashboardUseCase;
 
@@ -57,6 +59,12 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter i
         }
     }
 
+    public String formatDate(long date) {
+        return GoldMerchantDateUtils.getDateFormatForInput(
+                date, KEYWORD_DATE_FORMAT
+        );
+    }
+
     public void fetchNegativeKeyword(BaseKeywordParam baseKeywordParam) {
         keywordDashboardUseCase.execute(generateParam(baseKeywordParam), new Subscriber<KeywordDashboardDomain>() {
             @Override
@@ -84,15 +92,24 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter i
 
     private RequestParams generateParam(BaseKeywordParam baseKeywordParam) {
         RequestParams requestParams = RequestParams.create();
-//        requestParams.putString("keyword_id", Long.toString(baseKeywordParam.keywordId));
         requestParams.putString("shop_id", baseKeywordParam.shopId);
-//        requestParams.putString("keyword_tag", baseKeywordParam.keywordTag);
+        if (baseKeywordParam.keywordTag != null) {
+            requestParams.putString("keyword", baseKeywordParam.keywordTag);
+        }
+        if (baseKeywordParam.startDateDesc != null) {
+            requestParams.putString("start_date", baseKeywordParam.startDateDesc);
+        }
+        if (baseKeywordParam.endDateDesc != null) {
+            requestParams.putString("end_date", baseKeywordParam.endDateDesc);
+        }
+        requestParams.putString("page", Integer.toString(baseKeywordParam.page));
+        requestParams.putString("is_positive", Integer.toString(baseKeywordParam.isPositive()));
+
+//        requestParams.putString("keyword_id", Long.toString(baseKeywordParam.keywordId));
 //        requestParams.putString("group_id", Long.toString(baseKeywordParam.groupId));
 //        requestParams.putString("keyword_status", Integer.toString(baseKeywordParam.keywordStatus));
-        requestParams.putString("page", Integer.toString(baseKeywordParam.page));
 //        requestParams.putString("keyword_type_id", Integer.toString(baseKeywordParam.keywordTypeId));
 //        requestParams.putString("sorting", Integer.toString(baseKeywordParam.sortingParam));
-        requestParams.putString("is_positive", Integer.toString(baseKeywordParam.isPositive()));
         return requestParams;
     }
 
@@ -104,7 +121,9 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter i
         return new KeywordNegativeParam();
     }
 
-    public BaseKeywordParam generateParam(Context context, String query, int page, boolean isPositive) {
+    public BaseKeywordParam generateParam(
+            Context context, String query, int page, boolean isPositive
+    ) {
         BaseKeywordParam baseKeywordParam = isPositive ? generateKeywordPositiveParam() : generateKeywordNegativeParam();
         baseKeywordParam.shopId = SessionHandler.getShopID(context);
         if (query != null)
@@ -114,7 +133,25 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter i
         return baseKeywordParam;
     }
 
+    public BaseKeywordParam generateParam(
+            Context context, String query, int page, boolean isPositive, long startDate, long endDate
+    ) {
+        BaseKeywordParam baseKeywordParam = generateParam(context, query, page, isPositive);
+        baseKeywordParam.startDate = startDate;
+        baseKeywordParam.endDate = endDate;
+
+        baseKeywordParam.startDateDesc = formatDate(startDate);
+        baseKeywordParam.endDateDesc = formatDate(endDate);
+
+        return baseKeywordParam;
+    }
+
     public static class BaseKeywordParam {
+        long startDate;
+        long endDate;
+        String startDateDesc;
+        String endDateDesc;
+
         String shopId;
         String keywordTag;
         int page;
