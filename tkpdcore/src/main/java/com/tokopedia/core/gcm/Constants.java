@@ -44,6 +44,13 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+        String SHOP = "tokopedia://shop/{shop_id}";
+        String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
+        String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+        String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
+        String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
+        String SHOP_INFO =  "tokopedia://shop/{shop_id}/info";
+
     }
 
     interface Settings{
