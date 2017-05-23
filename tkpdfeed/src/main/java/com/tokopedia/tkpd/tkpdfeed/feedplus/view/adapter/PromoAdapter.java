@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 return new ViewMoreViewHolder(view);
             default:
                 view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.promo_image_layout, parent, false);
+                        .inflate(R.layout.promo_item_layout, parent, false);
                 return new LayoutViewHolder(view);
 
         }
@@ -52,8 +53,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         }else {
             final LayoutViewHolder temp = (LayoutViewHolder) holder;
+            if(getItemCount()==1){
+                temp.container.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+            }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());
-            temp.period.setText(temp.period.getContext().getString(R.string.period, list.get(position).getPeriod()));
+            temp.period.setText(list.get(position).getPeriod());
             temp.description.setText(list.get(position).getDescription());
             temp.promoCode.setText(list.get(position).getPromoCode());
             temp.copyButton.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +94,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     public class LayoutViewHolder extends RecyclerView.ViewHolder{
 
+        private CardView container;
         private View copyButton;
         private TextView period;
         private TextView description;
@@ -98,6 +103,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
         public LayoutViewHolder(View itemView) {
             super(itemView);
+            container = (CardView) itemView.findViewById(R.id.container);
             imageView = (ImageView) itemView.findViewById(R.id.product_image);
             description = (TextView) itemView.findViewById(R.id.desc);
             period = (TextView) itemView.findViewById(R.id.date);

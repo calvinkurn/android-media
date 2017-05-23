@@ -1,45 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/header"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/padding_small">
 
     <ImageView
         android:id="@+id/shop_avatar"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_width="@dimen/feed_user_ava"
+        android:layout_height="@dimen/feed_user_ava"
         android:background="@drawable/cards_ui_2"
         tools:src="@drawable/ic_check_green_24dp" />
 
-    <ImageView
-        android:id="@+id/gold_merchant"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/shop_avatar"
-        android:layout_toEndOf="@id/shop_avatar"
-        android:layout_toRightOf="@id/shop_avatar"
-        android:src="@drawable/ic_shop_gold" />
+        android:layout_toRightOf="@id/user_ava"
+        android:layout_toEndOf="@id/user_ava"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small"
+        android:layout_below="@id/head">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/gold_merchant"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_toEndOf="@id/gold_merchant"
-        android:layout_toRightOf="@id/gold_merchant"
-        tools:text="MaroonVape supwpaiwiajjfawioi \nubah 1 produk " />
+        <TextView
+            android:id="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Shop shop"
+            android:textSize="@dimen/text_size_14"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/gold_merchant"
+            android:layout_toEndOf="@+id/gold_merchant" />
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_toRightOf="@id/shop_avatar"
-        android:textSize="@dimen/fontvs"
-        tools:text="4 hours ago" />
-</RelativeLayout>
+        <ImageView
+            android:id="@id/gold_merchant"
+            android:layout_width="@dimen/feed_gold_badge"
+            android:layout_height="@dimen/feed_gold_badge"
+            android:background="@drawable/ic_gold"
+            android:layout_marginRight="@dimen/margin_vvs"
+            android:layout_alignBottom="@id/title"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jual obat - obatan"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/title"
+            android:layout_marginTop="@dimen/feed_margin_s"
+            android:textSize="@dimen/text_size_13"
+            android:id="@+id/time" />
+
+
+    </RelativeLayout>
+</LinearLayout>

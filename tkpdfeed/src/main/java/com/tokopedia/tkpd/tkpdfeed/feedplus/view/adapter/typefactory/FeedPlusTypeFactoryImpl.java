@@ -4,9 +4,11 @@ import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.database.recharge.product.Promo;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromotedProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.ImageBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.blog.VideoBlogViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
@@ -18,6 +20,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 /**
@@ -65,6 +68,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             return VideoBlogViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(PromotedProductViewModel promotedProductViewModel) {
+        return PromotedProductViewHolder.LAYOUT;
+    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -76,7 +84,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         else if (type == ProductCardViewHolder.LAYOUT)
             viewHolder = new ProductCardViewHolder(view, viewListener);
         else if (type == PromotedShopViewHolder.LAYOUT)
-            viewHolder = new PromotedShopViewHolder(view);
+            viewHolder = new PromotedShopViewHolder(view, viewListener);
         else if (type == PromoViewHolder.LAYOUT)
             viewHolder = new PromoViewHolder(view, viewListener);
         else if (type == OfficialStoreViewHolder.LAYOUT)
@@ -87,6 +95,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new ImageBlogViewHolder(view, viewListener);
         else if (type == VideoBlogViewHolder.LAYOUT)
             viewHolder = new VideoBlogViewHolder(view, viewListener);
+        else if (type == PromotedProductViewHolder.LAYOUT)
+            viewHolder = new PromotedProductViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
 

@@ -14,13 +14,19 @@ public class PromotedShopViewModel implements Visitable<FeedPlusTypeFactory>{
     private String shopName;
     private boolean isGoldMerchant;
     private String description;
+    private boolean isFavorited;
     private ArrayList<ProductFeedViewModel> listProduct;
 
     public PromotedShopViewModel(String shopName, boolean isGoldMerchant, String description, ArrayList<ProductFeedViewModel> listProduct) {
+        this(shopName, isGoldMerchant, description, listProduct, false);
+    }
+
+    public PromotedShopViewModel(String shopName, boolean isGoldMerchant, String description, ArrayList<ProductFeedViewModel> listProduct, boolean isFavorited) {
         this.shopName = shopName;
         this.isGoldMerchant = isGoldMerchant;
         this.description = description;
         this.listProduct = listProduct;
+        this.isFavorited = isFavorited;
     }
 
     @Override
@@ -58,5 +64,13 @@ public class PromotedShopViewModel implements Visitable<FeedPlusTypeFactory>{
 
     public void setListProduct(ArrayList<ProductFeedViewModel> listProduct) {
         this.listProduct = listProduct;
+    }
+
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        isFavorited = favorited;
     }
 }
