@@ -244,7 +244,7 @@ public class CategoryProductStyle3View extends
         return new ClientNumberInputView.ActionListener() {
             @Override
             public void onButtonContactPickerClicked() {
-
+                actionListener.onButtonContactPickerClicked();
             }
 
             @Override
