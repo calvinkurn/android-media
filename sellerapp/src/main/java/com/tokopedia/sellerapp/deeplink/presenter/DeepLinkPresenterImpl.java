@@ -14,6 +14,7 @@ import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
+import com.tokopedia.seller.topads.view.fragment.TopAdsDetailProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
@@ -35,6 +36,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
+    public static final String PARAM_AD_ID = "ad_id";
+    public static final String PARAM_ITEM_ID = "item_id";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -237,7 +240,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String type = uriData.getQueryParameter("type");
 
         if(type.equals("view")){
-            Fragment fragment = TopAdsDashboardProductFragment.createInstance();
+            String adId = uriData.getQueryParameter(PARAM_AD_ID);
+            Fragment fragment = TopAdsDetailProductFragment.createInstance(null, adId);
             viewListener.inflateFragment(fragment, "TOPADS_INFO");
         } else if (type.equals("create")){
             Fragment fragment = TopAdsGroupNewPromoFragment.createInstance();
