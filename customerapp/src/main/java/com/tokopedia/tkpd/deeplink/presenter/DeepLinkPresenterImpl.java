@@ -274,23 +274,23 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Map<String, String> maps = splitQuery(afUri);
         for (Map.Entry<String, String> imap : maps.entrySet()) {
             switch (imap.getKey()) {
-                case "utm_source":
-                    newUri += "&utm_source=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_SOURCE:
+                    newUri += AppEventTracking.GTM.UTM_SOURCE_APPEND + imap.getValue();
                     break;
-                case "utm_medium":
-                    newUri += "&utm_medium=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_MEDIUM:
+                    newUri += AppEventTracking.GTM.UTM_MEDIUM_APPEND + imap.getValue();
                     break;
-                case "utm_term":
-                    newUri += "&utm_term=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_TERM:
+                    newUri += AppEventTracking.GTM.UTM_TERM_APPEND + imap.getValue();
                     break;
-                case "utm_content":
-                    newUri += "&utm_content=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_CONTENT:
+                    newUri += AppEventTracking.GTM.UTM_CONTENT_APPEND + imap.getValue();
                     break;
-                case "utm_campaign":
-                    newUri += "&utm_campaign=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_CAMPAIGN:
+                    newUri += AppEventTracking.GTM.UTM_CAMPAIGN_APPEND + imap.getValue();
                     break;
-                case "gclid":
-                    newUri += "&gclid=" + imap.getValue();
+                case AppEventTracking.GTM.UTM_GCLID:
+                    newUri += AppEventTracking.GTM.UTM_GCLID_APPEND + imap.getValue();
                     break;
             }
         }
@@ -330,26 +330,26 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isValidCampaignUrl(Uri uri) {
         Map<String, String> maps = splitQuery(uri);
-        return maps.containsKey("utm_source") &&
-                maps.containsKey("utm_medium") &&
-                maps.containsKey("utm_campaign");
+        return maps.containsKey(AppEventTracking.GTM.UTM_SOURCE) &&
+                maps.containsKey(AppEventTracking.GTM.UTM_MEDIUM) &&
+                maps.containsKey(AppEventTracking.GTM.UTM_CAMPAIGN);
     }
 
     private Campaign convertUrlCampaign(Uri uri) {
         Map<String, String> maps = splitQuery(uri);
         Campaign campaign = new Campaign();
-        campaign.setUtmSource(maps.get("utm_source") != null ?
-                maps.get("utm_source") : "");
-        campaign.setUtmMedium(maps.get("utm_medium") != null ?
-                maps.get("utm_medium") : "");
-        campaign.setUtmCampaign(maps.get("utm_campaign") != null ?
-                maps.get("utm_campaign") : "");
-        campaign.setUtmContent(maps.get("utm_content") != null ?
-                maps.get("utm_content") : "");
-        campaign.setUtmTerm(maps.get("utm_term") != null ?
-                maps.get("utm_term") : "");
-        campaign.setGclid(maps.get("gclid") != null ?
-                maps.get("gclid") : "");
+        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+        campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
+                maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
         return campaign;
     }
 
