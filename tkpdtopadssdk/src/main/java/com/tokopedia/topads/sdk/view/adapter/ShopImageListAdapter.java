@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,18 +25,20 @@ public class ShopImageListAdapter extends RecyclerView.Adapter<ShopImageListAdap
     private Context context;
     private View.OnClickListener onClickListener;
     private ImageLoader imageLoader;
+    private int layoutViewHolder;
 
-    public ShopImageListAdapter(Context context, ImageLoader imageLoader, List<ImageProduct> imageProducts, View.OnClickListener onClickListener) {
+    public ShopImageListAdapter(Context context, ImageLoader imageLoader, List<ImageProduct> imageProducts, View.OnClickListener onClickListener, int layoutViewHolder) {
         this.imageProducts = imageProducts;
         this.context = context;
         this.onClickListener = onClickListener;
         this.imageLoader = imageLoader;
+        this.layoutViewHolder = layoutViewHolder;
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.layout_shop_product_image, parent, false);
+        View view = inflater.inflate(layoutViewHolder, parent, false);
         view.setOnClickListener(onClickListener);
         return new ViewHolder(view);
     }

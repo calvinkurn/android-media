@@ -3,8 +3,10 @@ package com.tokopedia.topads.sdk.data;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ProductListViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
@@ -40,7 +42,19 @@ public class ModelConverter {
         return viewModel;
     }
 
-    public static void convertList(List<Item> list, int displayMode){
+    public static ShopFeedViewModel convertToShopFeedViewModel(Data data) {
+        ShopFeedViewModel viewModel = new ShopFeedViewModel();
+        viewModel.setData(data);
+        return viewModel;
+    }
+
+    public static ProductFeedViewModel convertToProductFeedViewModel(Data data) {
+        ProductFeedViewModel viewModel = new ProductFeedViewModel();
+        viewModel.setData(data);
+        return viewModel;
+    }
+
+    public static void convertList(List<Item> list, DisplayMode displayMode){
         for (int i = 0; i < list.size(); i++) {
             Item visitable = list.get(i);
             if (displayMode == DisplayMode.GRID && visitable instanceof ProductListViewModel) {

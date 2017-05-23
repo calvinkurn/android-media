@@ -13,6 +13,7 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.PreferedCategoryListener;
 import com.tokopedia.topads.sdk.utils.CacheHandler;
 import com.tokopedia.topads.sdk.view.AdsView;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -62,11 +63,15 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     @Override
-    public void setDisplayMode(int displayMode) {
-        adsUseCase.setDisplayMode(displayMode);
+    public void setDisplayMode(DisplayMode displayMode) {
+        if(config.getDisplayMode() != null){
+            adsUseCase.setDisplayMode(config.getDisplayMode());
+        } else {
+            adsUseCase.setDisplayMode(displayMode);
+        }
     }
 
-    public int getDisplayMode(){
+    public DisplayMode getDisplayMode(){
         return adsUseCase.getDisplayMode();
     }
 
@@ -90,6 +95,9 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         Log.d(TAG, "Load TopAds");
         if(config.getEndpoint()!=null) {
             setEndpoinParam(config.getEndpoint().getDescription());
+        }
+        if(config.getDisplayMode() == DisplayMode.FEED){
+            setMaxItems(4);
         }
         if(config.isWithPreferedCategory()){
             getPreferedCategory();

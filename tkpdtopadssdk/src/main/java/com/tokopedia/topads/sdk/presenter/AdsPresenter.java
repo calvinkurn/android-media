@@ -5,6 +5,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.view.AdsView;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -34,7 +35,7 @@ public interface AdsPresenter <V extends AdsView>{
 
     void openShopTopAds(String click_url, Shop shop);
 
-    void setDisplayMode(int displayMode);
+    void setDisplayMode(DisplayMode displayMode);
 
     void getPreferedCategory();
 

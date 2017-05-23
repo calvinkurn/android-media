@@ -43,7 +43,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private TypedArray styledAttributes;
-    private int displayMode = DisplayMode.GRID; // Default Display Mode
+    private DisplayMode displayMode = DisplayMode.GRID; // Default Display Mode
     private TopAdsItemClickListener adsItemClickListener;
     private DividerItemDecoration itemDecoration;
     private RelativeLayout contentLayout;
@@ -143,14 +143,14 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
     }
 
     @Override
-    public void setDisplayMode(int displayMode) {
+    public void setDisplayMode(DisplayMode displayMode) {
         switch (displayMode) {
-            case DisplayMode.GRID:
+            case GRID:
                 itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT,
                         GridLayoutManager.VERTICAL, false));
                 break;
-            case DisplayMode.LIST:
+            case LIST:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;

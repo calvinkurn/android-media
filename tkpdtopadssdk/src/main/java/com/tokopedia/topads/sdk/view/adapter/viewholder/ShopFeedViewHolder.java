@@ -25,18 +25,18 @@ import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopGridViewModel;
-
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
 /**
  * @author by errysuprayogi on 3/30/17.
  */
 
-public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> implements View.OnClickListener {
+public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> implements View.OnClickListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads_shop_grid;
-    private static final String TAG = ShopGridViewHolder.class.getSimpleName();
+    public static final int LAYOUT = R.layout.layout_ads_shop_feed;
+    private static final String TAG = ShopFeedViewHolder.class.getSimpleName();
 
 
     private LocalAdsClickListener itemClickListener;
@@ -46,13 +46,13 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
     private TextView favTxt;
     private RecyclerView shopListImage;
     private LinearLayout favBtn;
-    private LinearLayout root;
+    private LinearLayout container;
     private Data data;
     private Context context;
     private SnapHelper snapHelper;
     private ImageLoader imageLoader;
 
-    public ShopGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
+    public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
         super(itemView);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
@@ -63,8 +63,8 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
         favTxt = (TextView) itemView.findViewById(R.id.fav_text);
-        root = (LinearLayout) itemView.findViewById(R.id.root);
-        root.setOnClickListener(this);
+        container = (LinearLayout) itemView.findViewById(R.id.container);
+        container.setOnClickListener(this);
         favBtn.setOnClickListener(this);
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(shopListImage);
@@ -73,31 +73,32 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (itemClickListener != null) {
+        if(itemClickListener!=null) {
             if (id == R.id.fav_btn) {
                 itemClickListener.onAddFavorite(getAdapterPosition(), data);
                 data.setFavorit(true);
                 setFavorite(data.isFavorit());
-            } else if (id == R.id.root) {
+            } else if (id == R.id.container){
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }
         }
     }
 
     @Override
-    public void bind(ShopGridViewModel element) {
+    public void bind(ShopFeedViewModel element) {
         data = element.getData();
         Shop shop = data.getShop();
-        if (shop != null) {
+        if(shop!=null){
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
                     shopImage);
-            if (shop.getImageProduct() != null) {
+            if(shop.getImageProduct()!=null){
                 ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader,
-                        shop.getImageProduct(), this, R.layout.layout_shop_product_image_small);
+                        shop.getImageProduct(), this, R.layout.layout_shop_product_image_big);
                 shopListImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                 shopListImage.setHasFixedSize(true);
                 shopListImage.setAdapter(imageListAdapter);
             }
+
             Spanned title;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 title = Html.fromHtml(shop.getName(), Html.FROM_HTML_MODE_LEGACY);
@@ -107,9 +108,9 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
                 shopSubtitle.setText(Html.fromHtml(shop.getTagline()));
             }
 
-            if (shop.isGoldShopBadge()) {
+            if(shop.isGoldShopBadge()){
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_gold));
-            } else if (shop.isShop_is_official()) {
+            } else if(shop.isShop_is_official()) {
                 shopTitle.setText(spannedBadgeString(title, R.drawable.ic_official));
             } else {
                 shopTitle.setText(title);
@@ -134,8 +135,8 @@ public class ShopGridViewHolder extends AbstractViewHolder<ShopGridViewModel> im
         }
     }
 
-    private Spanned spannedBadgeString(Spanned text, int drawable) {
-        SpannableString spannableString = new SpannableString("  " + text);
+    private Spanned spannedBadgeString(Spanned text, int drawable){
+        SpannableString spannableString = new SpannableString("  "+text);
         Drawable image;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image = context.getResources().getDrawable(drawable, null);

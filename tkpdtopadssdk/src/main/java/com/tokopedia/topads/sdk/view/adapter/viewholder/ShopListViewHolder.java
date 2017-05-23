@@ -27,8 +27,6 @@ import com.tokopedia.topads.sdk.utils.ImageLoader;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
 
-import org.w3c.dom.Text;
-
 /**
  * @author by errysuprayogi on 3/30/17.
  */
@@ -47,7 +45,7 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
     private TextView favTxt;
     private RecyclerView shopListImage;
     private LinearLayout favBtn;
-    private LinearLayout root;
+    private LinearLayout container;
     private Data data;
     private Context context;
     private SnapHelper snapHelper;
@@ -64,8 +62,8 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
         shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
         favTxt = (TextView) itemView.findViewById(R.id.fav_text);
-        root = (LinearLayout) itemView.findViewById(R.id.root);
-        root.setOnClickListener(this);
+        container = (LinearLayout) itemView.findViewById(R.id.container);
+        container.setOnClickListener(this);
         favBtn.setOnClickListener(this);
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(shopListImage);
@@ -79,7 +77,7 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
                 itemClickListener.onAddFavorite(getAdapterPosition(), data);
                 data.setFavorit(true);
                 setFavorite(data.isFavorit());
-            } else if (id == R.id.root){
+            } else if (id == R.id.container){
                 itemClickListener.onShopItemClicked(getAdapterPosition(), data);
             }
         }
@@ -93,7 +91,8 @@ public class ShopListViewHolder extends AbstractViewHolder<ShopListViewModel> im
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
                     shopImage);
             if(shop.getImageProduct()!=null){
-                ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader, shop.getImageProduct(), this);
+                ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader,
+                        shop.getImageProduct(), this, R.layout.layout_shop_product_image_small);
                 shopListImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
                 shopListImage.setHasFixedSize(true);
                 shopListImage.setAdapter(imageListAdapter);

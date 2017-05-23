@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.base;
 
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 
 /**
  * Created by errysuprayogi on 3/27/17.
@@ -21,6 +22,7 @@ public class Config {
     private Endpoint endpoint;
     private boolean withPreferedCategory;
     private TopAdsParams topAdsParams;
+    private DisplayMode displayMode;
 
     public Config(Builder builder) {
         this.baseUrl = builder.baseUrl;
@@ -31,6 +33,7 @@ public class Config {
         this.withPreferedCategory = builder.withPreferedCategory;
         this.endpoint = builder.endpoint;
         this.topAdsParams = builder.topAdsParams;
+        this.displayMode = builder.displayMode;
     }
 
     public boolean isWithPreferedCategory() {
@@ -61,6 +64,10 @@ public class Config {
         return clientId;
     }
 
+    public DisplayMode getDisplayMode() {
+        return displayMode;
+    }
+
     public TopAdsParams getTopAdsParams() {
         return topAdsParams;
     }
@@ -74,6 +81,7 @@ public class Config {
         private String clientId;
         private Endpoint endpoint;
         private boolean withPreferedCategory;
+        private DisplayMode displayMode;
         private TopAdsParams topAdsParams = new TopAdsParams();
 
         public Builder() {
@@ -99,6 +107,11 @@ public class Config {
 
         public Builder withPreferedCategory() {
             this.withPreferedCategory = true;
+            return this;
+        }
+
+        public Builder displayMode(DisplayMode displayMode){
+            this.displayMode = displayMode;
             return this;
         }
 

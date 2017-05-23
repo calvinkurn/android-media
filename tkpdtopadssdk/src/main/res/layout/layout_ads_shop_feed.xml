@@ -64,23 +64,21 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center"
-        android:orientation="horizontal">
-
+        android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/image_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
 
         <LinearLayout
             android:id="@+id/fav_btn"
             style="@style/FavButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginTop="@dimen/margin_small"
             android:orientation="horizontal"
             android:padding="10dp">
 

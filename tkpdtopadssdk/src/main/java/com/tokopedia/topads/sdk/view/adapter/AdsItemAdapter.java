@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.data.ModelConverter;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.AdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 
@@ -61,7 +62,7 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         return list.size();
     }
 
-    public void switchDisplayMode(final int displayMode) {
+    public void switchDisplayMode(final DisplayMode displayMode) {
         ModelConverter.convertList(list, displayMode);
     }
 

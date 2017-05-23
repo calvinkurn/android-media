@@ -17,7 +17,7 @@ public interface AdsView {
 
     void setMaxItems(int items);
 
-    void setDisplayMode(int displayMode);
+    void setDisplayMode(DisplayMode displayMode);
 
     void loadTopAds();
 

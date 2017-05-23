@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.TopAdsPresenter;
 import com.tokopedia.topads.sdk.view.AdsView;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.adapter.factory.TopAdsAdapterTypeFactory;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ClientViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.TopAdsViewModel;
@@ -108,7 +109,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     @Override
-    public void setDisplayMode(int displayMode) {
+    public void setDisplayMode(DisplayMode displayMode) {
         presenter.setDisplayMode(displayMode);
         for (Item visitable : items) {
             if (visitable instanceof TopAdsViewModel) {
@@ -118,7 +119,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         }
     }
 
-    public int getDisplayMode() {
+    public DisplayMode getDisplayMode() {
         return presenter.getDisplayMode();
     }
 
