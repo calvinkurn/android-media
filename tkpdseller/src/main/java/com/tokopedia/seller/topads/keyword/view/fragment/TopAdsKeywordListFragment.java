@@ -17,6 +17,7 @@ import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.view.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -69,8 +70,8 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     protected void fetchData() {
         bindDate(); // set ui after date changed.
 
-        TopAdsKeywordListPresenterImpl.BaseKeywordParam baseKeywordParam
-                = topAdsKeywordListPresenter.generateParam(getActivity(), keyword, page, true,
+        BaseKeywordParam baseKeywordParam
+                = topAdsKeywordListPresenter.generateParam(keyword, page, true,
                 startDate.getTime(), endDate.getTime());
         topAdsKeywordListPresenter.fetchNegativeKeyword(
                 baseKeywordParam
