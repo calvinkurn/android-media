@@ -191,7 +191,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceResult2(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         productAdapter.addAll(false, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -211,9 +211,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
             }
 
-            if (totalProduct > 0)
-                browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
-                        .format(totalProduct.longValue()).replace(',', '.'));
             productAdapter.incrementPage();
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
@@ -281,6 +278,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     @Override
     public void showWishListRetry(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity());
+    }
+
+    @Override
+    public void updateTotalProduct(Long totalProduct) {
+        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+        if (totalProduct > 0) {
+            browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
+                    .format(totalProduct.longValue()).replace(',', '.'));
+        } else {
+            browseModel.setTotalDataCategory("0");
+        }
     }
 
     @Override
