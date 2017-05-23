@@ -66,6 +66,8 @@ import com.tokopedia.core.network.apiservices.shop.ShopService;
 import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.apiservices.user.InboxResCenterService;
 import com.tokopedia.core.network.apiservices.user.NotificationService;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -83,6 +85,7 @@ import com.tokopedia.seller.shopscore.view.activity.ShopScoreDetailActivity;
 import com.tokopedia.seller.util.ShopNetworkController;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
+import com.tokopedia.sellerapp.home.api.TickerApiSeller;
 import com.tokopedia.sellerapp.home.boommenu.BoomMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.SquareMenuButton;
 import com.tokopedia.sellerapp.home.boommenu.Types.BoomType;
@@ -100,6 +103,7 @@ import com.tokopedia.sellerapp.home.model.rescenter.ResCenterInboxData;
 import com.tokopedia.sellerapp.home.utils.CollapsingToolbarLayoutCust;
 import com.tokopedia.sellerapp.home.utils.DepositNetworkController;
 import com.tokopedia.sellerapp.home.utils.InboxResCenterNetworkController;
+import com.tokopedia.sellerapp.home.utils.MojitoController;
 import com.tokopedia.sellerapp.home.utils.NotifNetworkController;
 import com.tokopedia.sellerapp.home.utils.ShopController;
 import com.tokopedia.sellerapp.home.utils.ShopTransactionController;
@@ -344,8 +348,11 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         MyShopOrderService myShopOrderService = new MyShopOrderService();
         ShopTransactionController shopTransactionController
                 = new ShopTransactionController(myShopOrderService, this, gson);
+        TickerApiSeller tickerApiSeller = RetrofitUtils.createRetrofit(TkpdBaseURL.MOJITO_DOMAIN).create(TickerApiSeller.class);
+        MojitoController mojitoController = new MojitoController(this, tickerApiSeller, gson);
         shopController = new ShopController(gcmHandler, shopNetworkController, notifNetworkController,
-                inboxResCenterNetworkController, depositNetworkController, shopTransactionController
+                inboxResCenterNetworkController, depositNetworkController, shopTransactionController,
+                mojitoController
                 , gson);
         shopController.subscribe();
 
@@ -399,14 +406,34 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         ShopNetworkController.ShopInfoParam shopInfoParam = new ShopNetworkController.ShopInfoParam();
         shopInfoParam.shopId = this.shopId;
 
+        shopController.getShopInfo(gcmId, userId, shopInfoParam, getShopInfo());
+
+        shopController.getNotif(gcmId, userId, getNotif(gcmId, userId));
+
+        shopController.getResCenter(userId, gcmId, getResCenter());
+
+        shopController.getDeposit(userId, gcmId, getDeposit());
+
+        shopController.getTicker(getTicker());
+
         // get all this using this
-        shopController.getData(userId, gcmId, shopInfoParam, getShopInfo(),
-                getNotif(gcmId, userId), getResCenter(), getDeposit(), getTicker()
-        );
+//        shopController.getData(userId, gcmId, shopInfoParam, getShopInfo(),
+//                getNotif(gcmId, userId), getResCenter(), getDeposit(), getTicker()
+//        );
     }
 
-    protected ShopController.ListenerGetTicker getTicker(){
-        return new ShopController.ListenerGetTicker() {
+    protected MojitoController.ListenerGetTicker getTicker() {
+        return new MojitoController.ListenerGetTicker() {
+            @Override
+            public void onError(Throwable e) {
+                onError();
+            }
+
+            @Override
+            public void onFailure() {
+
+            }
+
             @Override
             public void onSuccess(Ticker.Tickers[] tickers) {
                 if (tickers != null && tickers.length > 0) {
