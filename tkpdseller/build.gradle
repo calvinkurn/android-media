@@ -2,15 +2,11 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath 'com.jakewharton:butterknife-gradle-plugin:8.4.0'
-    }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'com.jakewharton.butterknife'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 
@@ -108,9 +104,6 @@ dependencies {
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    compile rootProject.ext.butterKnifeDependencies.butterKnife
-    apt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
@@ -124,7 +117,6 @@ dependencies {
     compile rootProject.ext.miscDependencies.rxJavaComputation
     compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.chips
-    compile rootProject.ext.miscDependencies.kmNumber
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
