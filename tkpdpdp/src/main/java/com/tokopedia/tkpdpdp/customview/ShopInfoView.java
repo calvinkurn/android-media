@@ -13,8 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -25,11 +23,10 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 
 /**
@@ -37,30 +34,18 @@ import butterknife.BindView;
  */
 public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @BindView(R2.id.iv_ava)
-    ImageView ivShopAva;
-    @BindView(R2.id.iv_gold)
-    ImageView ivGoldShop;
-    @BindView(R2.id.iv_official)
-    ImageView ivOfficialStore;
-    @BindView(R2.id.iv_lucky)
-    ImageView ivLuckyShop;
-    @BindView(R2.id.tv_name)
-    TextView tvShopName;
-    @BindView(R2.id.tv_location)
-    TextView tvShopLoc;
-    @BindView(R2.id.iv_fav)
-    ImageView ivBtnFav;
-    @BindView(R2.id.iv_message)
-    ImageView ivShopMessage;
-    @BindView(R2.id.l_rating)
-    LinearLayout llRating;
-    @BindView(R2.id.l_medal)
-    LinearLayout llReputationMedal;
-    @BindView(R2.id.tv_reputation)
-    TextView tvReputationPoint;
-    @BindView(R2.id.l_other)
-    LinearLayout layoutOther;
+    private ImageView ivShopAva;
+    private ImageView ivGoldShop;
+    private ImageView ivOfficialStore;
+    private ImageView ivLuckyShop;
+    private TextView tvShopName;
+    private TextView tvShopLoc;
+    private ImageView ivBtnFav;
+    private ImageView ivShopMessage;
+    private LinearLayout llRating;
+    private LinearLayout llReputationMedal;
+    private TextView tvReputationPoint;
+    private LinearLayout layoutOther;
     private boolean isShopFavorite = false;
 
     public ShopInfoView(Context context) {
@@ -90,6 +75,25 @@ public class ShopInfoView extends BaseView<ProductDetailData, ProductDetailView>
     protected void setViewListener() {
         ivGoldShop.setVisibility(GONE);
         setVisibility(GONE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        ivShopAva = (ImageView) findViewById(R.id.iv_ava);
+        ivGoldShop = (ImageView) findViewById(R.id.iv_gold_shop);
+        ivOfficialStore = (ImageView) findViewById(R.id.iv_official);
+        ivLuckyShop = (ImageView) findViewById(R.id.iv_lucky);
+        tvShopName = (TextView) findViewById(R.id.tv_name);
+        tvShopLoc = (TextView) findViewById(R.id.tv_location);
+        ivBtnFav = (ImageView) findViewById(R.id.iv_fav);
+        ivShopMessage = (ImageView) findViewById(R.id.iv_message);
+        llRating = (LinearLayout) findViewById(R.id.l_rating);
+        llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
+        tvReputationPoint = (TextView) findViewById(R.id.tv_reputation);
+        layoutOther = (LinearLayout) findViewById(R.id.l_other);
+
+
     }
 
     @SuppressLint("DefaultLocale")

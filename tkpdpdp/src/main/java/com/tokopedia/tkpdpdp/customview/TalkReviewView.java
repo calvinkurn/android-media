@@ -8,13 +8,10 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 29/10/2015.
@@ -22,14 +19,10 @@ import butterknife.BindView;
 public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = TalkReviewView.class.getSimpleName();
 
-    @BindView(R2.id.l_talk)
-    LinearLayout llTalk;
-    @BindView(R2.id.tv_talk)
-    TextView tvTalk;
-    @BindView(R2.id.l_review)
-    LinearLayout llReview;
-    @BindView(R2.id.tv_review)
-    TextView tvReview;
+    private LinearLayout llTalk;
+    private TextView tvTalk;
+    private LinearLayout llReview;
+    private TextView tvReview;
 
     public TalkReviewView(Context context) {
         super(context);
@@ -58,6 +51,16 @@ public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void setViewListener() {
         setVisibility(INVISIBLE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        llTalk = (LinearLayout) findViewById(R.id.l_talk);
+        tvTalk = (TextView) findViewById(R.id.tv_talk);
+        llReview = (LinearLayout) findViewById(R.id.l_review);
+        tvReview = (TextView) findViewById(R.id.tv_review);
+
     }
 
     @Override

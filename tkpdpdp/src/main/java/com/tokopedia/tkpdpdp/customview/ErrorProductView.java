@@ -3,15 +3,13 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -19,10 +17,8 @@ import butterknife.BindView;
 public class ErrorProductView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ErrorProductView.class.getSimpleName();
 
-    @BindView(R2.id.tv_title)
-    TextView tvTitle;
-    @BindView(R2.id.tv_sub_title)
-    TextView tvSubTitle;
+    private TextView tvTitle;
+    private TextView tvSubTitle;
 
     public ErrorProductView(Context context) {
         super(context);
@@ -35,6 +31,8 @@ public class ErrorProductView extends BaseView<ProductDetailData, ProductDetailV
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
+        tvTitle = (TextView) findViewById(R.id.tv_error_tilte_product);
+        tvSubTitle = (TextView) findViewById(R.id.tv_error_subtilte_product);
     }
 
     @Override
@@ -49,7 +47,7 @@ public class ErrorProductView extends BaseView<ProductDetailData, ProductDetailV
 
     @Override
     protected void setViewListener() {
-        setVisibility(GONE);
+        setVisibility(View.GONE);
     }
 
     @Override

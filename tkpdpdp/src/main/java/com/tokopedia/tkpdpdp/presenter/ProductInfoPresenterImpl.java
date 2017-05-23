@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.database.model.CategoryDB;
@@ -20,6 +19,7 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 
@@ -42,7 +42,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
 
         boolean isAddingProduct = bundle.getBoolean(ProductInfoActivity.IS_ADDING_PRODUCT);
 
-        ShareData shareDa = bundle.getParcelable(ProductDetailRouter.SHARE_DATA);
+        ShareData shareDa = bundle.getParcelable(ProductInfoActivity.SHARE_DATA);
         // [variable for add product before share]
         if(isAddingProduct){
             viewListener.inflateFragment(ProductShareFragment.newInstance(isAddingProduct), ProductShareFragment.TAG);
@@ -74,6 +74,7 @@ public class ProductInfoPresenterImpl implements ProductInfoPresenter {
             String dep_id = dep.getDepartmentId()+"";
             Intent moveIntent = BrowseProductRouter.getDefaultBrowseIntent(context);
             moveIntent.putExtra("d_id", dep_id);
+
             viewListener.navigateToActivity(moveIntent);
         }
     }

@@ -1,6 +1,5 @@
 package com.tokopedia.core.product.interactor;
 
-
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;

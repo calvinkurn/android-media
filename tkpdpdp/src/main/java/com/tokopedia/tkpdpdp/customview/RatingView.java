@@ -8,13 +8,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 23/10/2015.
@@ -22,14 +19,10 @@ import butterknife.BindView;
 public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = RatingView.class.getSimpleName();
 
-    @BindView(R2.id.tv_quality)
-    TextView tvQualityRate;
-    @BindView(R2.id.tv_accuracy)
-    TextView tvAccuracyRate;
-    @BindView(R2.id.iv_quality)
-    ImageView ivQualityRate;
-    @BindView(R2.id.iv_accuracy)
-    ImageView ivAccuracyRate;
+    private TextView tvQualityRate;
+    private TextView tvAccuracyRate;
+    private ImageView ivQualityRate;
+    private ImageView ivAccuracyRate;
 
     public RatingView(Context context) {
         super(context);
@@ -57,6 +50,17 @@ public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
     @Override
     protected void setViewListener() {
         setVisibility(INVISIBLE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvQualityRate = (TextView) findViewById(R.id.tv_quality);
+        tvAccuracyRate = (TextView) findViewById(R.id.tv_accuracy);
+        ivQualityRate = (ImageView) findViewById(R.id.iv_quality);
+        ivAccuracyRate = (ImageView) findViewById(R.id.iv_accuracy);
+
+
     }
 
     @Override

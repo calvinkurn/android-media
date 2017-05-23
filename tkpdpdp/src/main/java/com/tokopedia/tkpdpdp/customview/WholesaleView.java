@@ -3,14 +3,15 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
+import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.List;
@@ -55,6 +56,11 @@ public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView
     }
 
     @Override
+    protected void initView(Context context) {
+        super.initView(context);
+    }
+
+    @Override
     protected void setViewListener() {
         setVisibility(GONE);
         for (TableRow tableRow : rowWholesale) {
@@ -77,7 +83,7 @@ public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView
                         data.getWholesalePrice().get(i).getWholesaleMax()));
             }
             wholesalePrice.get(i).setText(wholesalePrices.get(i).getWholesalePrice());
-            rowWholesale.get(i).setVisibility(VISIBLE);
+            rowWholesale.get(i).setVisibility(View.VISIBLE);
         }
     }
 }

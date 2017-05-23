@@ -3,25 +3,21 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by ANGGA on 10/29/2015.
  */
 public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @BindView(R2.id.tv_title)
-    TextView tvTitle;
-    @BindView(R2.id.tv_sub_title)
-    TextView tvSubTitle;
+    private TextView tvTitle;
+    private TextView tvSubTitle;
 
     public ErrorShopView(Context context) {
         super(context);
@@ -34,6 +30,8 @@ public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     public void setListener(ProductDetailView listener) {
         this.listener = listener;
+        tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvSubTitle = (TextView) findViewById(R.id.tv_sub_title);
     }
 
     @Override
@@ -55,7 +53,7 @@ public class ErrorShopView extends BaseView<ProductDetailData, ProductDetailView
     public void renderData(@NonNull ProductDetailData data) {
         switch (data.getShopInfo().getShopStatus()) {
             case 1:
-                setVisibility(GONE);
+                setVisibility(View.GONE);
                 break;
             case 2:
             case 3:

@@ -8,20 +8,17 @@ import android.view.View;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.BindViews;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -29,30 +26,18 @@ import butterknife.BindViews;
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = DetailInfoView.class.getSimpleName();
 
-    @BindViews({R2.id.tv_category_1, R2.id.tv_category_2, R2.id.tv_category_3})
-    List<TextView> tvCategories;
-    @BindView(R2.id.tv_weight)
-    TextView tvWeight;
-    @BindView(R2.id.tv_minimum)
-    TextView tvMinOrder;
-    @BindView(R2.id.tv_insurance)
-    TextView tvInsurance;
-    @BindView(R2.id.tv_catalog)
-    TextView tvCatalog;
-    @BindView(R2.id.tv_etalase)
-    TextView tvEtalase;
-    @BindView(R2.id.tv_condition)
-    TextView tvCondition;
-    @BindView(R2.id.tv_returnable)
-    TextView tvReturnable;
-    @BindView(R2.id.tr_catalog)
-    TableRow catalogView;
-    @BindView(R2.id.tv_preorder)
-    TextView tvPreOrder;
-    @BindView(R2.id.tr_returnable)
-    TableRow returnableView;
-    @BindView(R2.id.tr_preorder)
-    TableRow preOrderView;
+    private List<TextView> tvCategories;
+    private TextView tvWeight;
+    private TextView tvMinOrder;
+    private TextView tvInsurance;
+    private TextView tvCatalog;
+    private TextView tvEtalase;
+    private TextView tvCondition;
+    private TextView tvReturnable;
+    private TableRow catalogView;
+    private TextView tvPreOrder;
+    private TableRow returnableView;
+    private TableRow preOrderView;
 
     public DetailInfoView(Context context) {
         super(context);
@@ -146,23 +131,43 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvCategories = new ArrayList<>();
+        tvCategories.add((TextView) findViewById(R.id.tv_category_1));
+        tvCategories.add((TextView) findViewById(R.id.tv_category_2));
+        tvCategories.add((TextView) findViewById(R.id.tv_category_3));
+        tvWeight = (TextView) findViewById(R.id.tv_weight);
+        tvMinOrder = (TextView) findViewById(R.id.tv_minimum);
+        tvInsurance = (TextView) findViewById(R.id.tv_insurance);
+        tvCatalog = (TextView) findViewById(R.id.tv_catalog);
+        tvEtalase = (TextView) findViewById(R.id.tv_etalase);
+        tvCondition = (TextView) findViewById(R.id.tv_condition);
+        tvReturnable = (TextView) findViewById(R.id.tv_returnable);
+        catalogView = (TableRow) findViewById(R.id.tr_catalog);
+        tvPreOrder = (TextView) findViewById(R.id.tv_preorder);
+        returnableView = (TableRow) findViewById(R.id.tr_returnable);
+        preOrderView = (TableRow) findViewById(R.id.tr_preorder);
+    }
+
     private void showReturnable(int returnableState, int shopHasTerms) {
         if (shopHasTerms != 0) {
             switch (returnableState) {
                 case 1:
                     tvReturnable.setText(getContext().getString(R.string.title_yes));
-                    returnableView.setVisibility(VISIBLE);
+                    returnableView.setVisibility(View.VISIBLE);
                     break;
                 case 2:
-                    tvReturnable.setText(getContext().getString(R.string.title_no));
+                    tvReturnable.setText(getContext().getString(com.tokopedia.core.R.string.title_no));
                     break;
                 default:
-                    returnableView.setVisibility(GONE);
-                    tvReturnable.setText(getContext().getString(R.string.return_no_policy));
+                    returnableView.setVisibility(View.GONE);
+                    tvReturnable.setText(getContext().getString(com.tokopedia.core.R.string.return_no_policy));
                     break;
             }
         } else {
-            returnableView.setVisibility(GONE);
+            returnableView.setVisibility(View.GONE);
         }
 
     }
@@ -179,7 +184,6 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putString(BrowseProductRouter.DEPARTMENT_ID, data.getDepartmentId());
-            bundle.putString(BrowseProductRouter.DEPARTMENT_NAME, data.getDepartmentName());
             bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
             bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
             bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);

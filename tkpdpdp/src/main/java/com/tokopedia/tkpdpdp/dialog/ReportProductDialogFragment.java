@@ -1,8 +1,6 @@
 package com.tokopedia.tkpdpdp.dialog;
 
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,19 +25,18 @@ import android.widget.TextView;
 
 import com.google.gson.GsonBuilder;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.report.ReportProductPass;
+import com.tokopedia.core.product.model.report.ReportProductPass;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.session.model.network.ReportType;
 import com.tokopedia.core.session.model.network.ReportTypeModel;
+import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.util.ArrayList;
@@ -49,7 +46,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
-
 
 /**
  * Created by stevenfredian on 7/4/16.
@@ -87,7 +83,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     private Bundle recentBundle;
     private CacheInteractor cacheInteractor;
     private RetrofitInteractor retrofitInteractor;
-    private ReportFragmentListener interactionListener;
 
     public static ReportProductDialogFragment createInstance(ProductDetailData productData, Bundle recentBundle) {
         ReportProductDialogFragment fragment = new ReportProductDialogFragment();
@@ -104,7 +99,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN
                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        View view = inflater.inflate(R.layout.dialog_report_product, container);
+        View view = inflater.inflate(com.tokopedia.core.R.layout.dialog_report_product, container);
         ButterKnife.bind(this, view);
         setContent();
         return view;
@@ -128,29 +123,6 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         super.onResume();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof ReportFragmentListener) {
-            interactionListener = (ReportFragmentListener) context;
-        }else {
-            throw new RuntimeException(
-                    String.format("%s must implement DetailFragmentInteractionListener", getActivity().getClass().getSimpleName())
-            );
-        }
-    }
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (activity instanceof ReportFragmentListener) {
-            interactionListener = (ReportFragmentListener) activity;
-        }else {
-            throw new RuntimeException(
-                    String.format("%s must implement DetailFragmentInteractionListener", getActivity().getClass().getSimpleName())
-            );
-        }
-    }
-
     @OnClick(R2.id.cancel_but)
     public void dismissDialog() {
         dismiss();
@@ -170,7 +142,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             return true;
         } else {
             wrapper.setErrorEnabled(true);
-            wrapper.setError(getString(R.string.empty_desc));
+            wrapper.setError(getString(com.tokopedia.core.R.string.empty_desc));
             return false;
         }
     }
@@ -195,7 +167,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
     }
 
     private void setRedirect(String item, boolean status, String link) {
-        String string = getResources().getString(R.string.redirect_report_product);
+        String string = getResources().getString(com.tokopedia.core.R.string.redirect_report_product);
 
         String caseReplace = "kasus";
         SpannableString stringNoResult = new SpannableString(string.replace(caseReplace, item));
@@ -227,7 +199,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             @Override
             public void updateDrawState(TextPaint ds) {
                 ds.setUnderlineText(false);
-                ds.setColor(ContextCompat.getColor(getActivity(), R.color.blue_link));
+                ds.setColor(ContextCompat.getColor(getActivity(), com.tokopedia.core.R.color.blue_link));
             }
         };
     }
@@ -253,7 +225,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
         pass.setDesc(reportDesc.getText().toString());
         Bundle bundle = new Bundle();
         bundle.putParcelable(ReportProductPass.TAG, pass);
-        interactionListener.onReportProductSubmited(bundle);
+        ((ProductInfoActivity) getActivity()).doReport(bundle);
         listener.setRecentBundle(bundle);
     }
 
@@ -304,7 +276,7 @@ public class ReportProductDialogFragment extends DialogFragment implements Repor
             reportTypeValue.add(reportType.getReportId());
         }
         this.reportTypeList = reportTypeList;
-        reportTypeName = new ArrayAdapter<>(getActivity(), R.layout.spinner_item, reportNameList);
+        reportTypeName = new ArrayAdapter<>(getActivity(), com.tokopedia.core.R.layout.spinner_item, reportNameList);
         reportTypeSpinner.setAdapter(reportTypeName);
         if (recentBundle != null) {
             ReportProductPass pass = (ReportProductPass) recentBundle.get(ReportProductPass.TAG);

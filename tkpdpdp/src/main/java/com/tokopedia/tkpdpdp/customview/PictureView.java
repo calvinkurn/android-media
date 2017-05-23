@@ -8,22 +8,21 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-import com.tkpd.library.viewpagerindicator.LinePageIndicator;
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
+import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.adapter.ImagePagerAdapter;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 29/10/2015.
@@ -31,10 +30,11 @@ import butterknife.BindView;
 public class PictureView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = PictureView.class.getSimpleName();
 
-    @BindView(R2.id.view_pager)
-    ViewPager vpImage;
-    @BindView(R2.id.indicator)
-    LinePageIndicator indicator;
+    private ViewPager vpImage;
+    private CirclePageIndicator indicator;
+    private LinearLayout errorProductContainer;
+    private TextView errorProductTitle;
+    private TextView errorProductSubitle;
 
     private ImagePagerAdapter imagePagerAdapter;
 
@@ -69,6 +69,17 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     }
 
     @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        vpImage = (ViewPager) findViewById(R.id.view_pager_product);
+        indicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        errorProductContainer = (LinearLayout) findViewById(R.id.error_product_container);
+        errorProductTitle = (TextView) findViewById(R.id.error_product_title);
+        errorProductSubitle = (TextView) findViewById(R.id.error_product_subtitle);
+
+    }
+
+    @Override
     public void renderData(@NonNull final ProductDetailData data) {
         imagePagerAdapter = new ImagePagerAdapter(getContext(), new ArrayList<ProductImage>());
         vpImage.setAdapter(imagePagerAdapter);
@@ -89,6 +100,23 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             imagePagerAdapter.addAll(productImageList);
             indicator.notifyDataSetChanged();
             imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
+        }
+        if (data.getInfo().getProductStatus().equals("-1")) {
+            if (data.getInfo().getProductStatusMessage() != null && data.getInfo().getProductStatusTitle() != null) {
+//                tvTitle.setText(data.getInfo().getProductStatusTitle());
+//                tvSubTitle.setText(data.getInfo().getProductStatusMessage());
+//                setVisibility(VISIBLE);
+            }
+            listener.onProductStatusError();
+        } else if (data.getInfo().getProductStatus().equals("3") &
+                data.getShopInfo().getShopStatus() == 1) {
+            errorProductContainer.setVisibility(VISIBLE);
+            errorProductTitle.setText(data.getInfo().getProductStatusTitle());
+            errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
+        } else if (!data.getInfo().getProductStatus().equals("1")) {
+            listener.onProductStatusError();
+        } else {
+            setVisibility(GONE);
         }
     }
 

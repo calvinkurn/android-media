@@ -7,16 +7,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 02/11/2015.
@@ -24,8 +21,7 @@ import butterknife.BindView;
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ButtonBuyView.class.getSimpleName();
 
-    @BindView(R2.id.tv_buy)
-    TextView tvBuy;
+    private TextView tvBuy;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -53,6 +49,13 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     protected void setViewListener() {
         setVisibility(GONE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvBuy = (TextView) findViewById(R.id.tv_buy);
+
     }
 
     @Override

@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Comparator;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
@@ -119,5 +121,14 @@ public class ProductWholesalePrice implements Parcelable {
             productWholesalePrice.setWholesaleMax(wholesaleMax);
             return productWholesalePrice;
         }
+    }
+
+    public static class WholesaleComparator implements Comparator<ProductWholesalePrice> {
+
+        @Override
+        public int compare(ProductWholesalePrice o1, ProductWholesalePrice o2) {
+            return o1.wholesalePrice.compareTo(o2.wholesalePrice);
+        }
+
     }
 }

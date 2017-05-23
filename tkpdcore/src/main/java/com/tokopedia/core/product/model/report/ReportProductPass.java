@@ -1,4 +1,4 @@
-package com.tokopedia.core.product.report;
+package com.tokopedia.core.product.model.report;
 
 import android.os.Parcel;
 import android.os.Parcelable;

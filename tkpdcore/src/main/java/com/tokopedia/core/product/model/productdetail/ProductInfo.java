@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
@@ -86,8 +89,20 @@ public class ProductInfo implements Parcelable {
     @Expose
     private ReturnInfo returnInfo;
 
+    @SerializedName("product_installments")
+    @Expose
+    private List<ProductInstallment> productInstallments = null;
+
 
     public ProductInfo() {
+    }
+
+    public List<ProductInstallment> getProductInstallments() {
+        return productInstallments;
+    }
+
+    public void setProductInstallments(List<ProductInstallment> productInstallments) {
+        this.productInstallments = productInstallments;
     }
 
     public String getProductWeightUnit() {
@@ -305,6 +320,12 @@ public class ProductInfo implements Parcelable {
         productCatalogName = in.readString();
         productCatalogUrl = in.readString();
         returnInfo = (ReturnInfo) in.readValue(ReturnInfo.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            productInstallments = new ArrayList<ProductInstallment>();
+            in.readList(productInstallments, ProductInstallment.class.getClassLoader());
+        } else {
+            productInstallments = null;
+        }
     }
 
     @Override
@@ -351,6 +372,12 @@ public class ProductInfo implements Parcelable {
         dest.writeString(productCatalogName);
         dest.writeString(productCatalogUrl);
         dest.writeValue(returnInfo);
+        if (productInstallments == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(productInstallments);
+        }
     }
 
     @SuppressWarnings("unused")

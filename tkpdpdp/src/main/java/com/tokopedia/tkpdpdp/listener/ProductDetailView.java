@@ -117,6 +117,12 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductRatingClicked(@NonNull Bundle bundle);
 
+    void onCourierClicked(@NonNull Bundle bundle);
+
+    void onWholesaleClicked(@NonNull Bundle bundle);
+
+    void onInstallmentClicked(@NonNull Bundle bundle);
+
     /**
      * Pada saat ada error pada toko
      */
@@ -200,11 +206,6 @@ public interface ProductDetailView extends ViewListener {
      * @param statFave status favorite
      */
     void onShopFavoriteUpdated(int statFave);
-
-    /**
-     * refresh icon love pada shop info
-     */
-    void refreshFaveShopStatus();
 
     /**
      * Pada saat tombol favorite toko diklik

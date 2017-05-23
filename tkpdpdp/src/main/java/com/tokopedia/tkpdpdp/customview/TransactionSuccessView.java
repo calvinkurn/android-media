@@ -5,22 +5,18 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by alvarisi on 9/8/16.
  */
 public class TransactionSuccessView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @BindView(R2.id.tv_success)
-    TextView tvSuccessRate;
+    private TextView tvSuccessRate;
 
     public TransactionSuccessView(Context context) {
         super(context);
@@ -48,6 +44,12 @@ public class TransactionSuccessView extends BaseView<ProductDetailData, ProductD
     @Override
     protected void setViewListener() {
         setVisibility(INVISIBLE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvSuccessRate = (TextView) findViewById(R.id.tv_success);
     }
 
     @Override

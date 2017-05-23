@@ -13,11 +13,10 @@ import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
-import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -28,17 +27,23 @@ import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductInfoPresenterImpl;
 
-public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresenter> implements
+public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductInfoPresenter> implements
         ProductInfoView,
         DetailFragmentInteractionListener,
-        ReportFragmentListener,
         ProductInfoResultReceiver.Receiver {
+    public static final String SHARE_DATA = "SHARE_DATA";
     public static final String IS_ADDING_PRODUCT = "IS_ADDING_PRODUCT";
 
     private Uri uriData;
     private Bundle bundleData;
 
     ProductInfoResultReceiver mReceiver;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_product_info_fragmented);
+    }
 
     @Override
     public String getScreenName() {
@@ -64,7 +69,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     public static Intent createInstance(Context context, @NonNull ShareData shareData) {
         Intent intent = new Intent(context, ProductInfoActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(ProductDetailRouter.SHARE_DATA, shareData);
+        bundle.putParcelable(SHARE_DATA, shareData);
         intent.putExtras(bundle);
         return intent;
     }
@@ -103,11 +108,6 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
     @Override
     protected void initialPresenter() {
         presenter = new ProductInfoPresenterImpl(this);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_product_info_fragmented;
     }
 
     @Override
@@ -223,7 +223,7 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
         }
     }
 
-    private void doReport(Bundle bundle) {
+    public void doReport(Bundle bundle) {
         ProductInfoIntentService.startAction(this, bundle, mReceiver);
     }
 
@@ -248,10 +248,5 @@ public class ProductInfoActivity extends BasePresenterActivity<ProductInfoPresen
 
     private void onReceiveResultSuccess(Fragment fragment, Bundle resultData, int resultCode) {
         ((ProductDetailFragment) fragment).onSuccessAction(resultData, resultCode);
-    }
-
-    @Override
-    public void onReportProductSubmited(Bundle bundle) {
-        doReport(bundle);
     }
 }

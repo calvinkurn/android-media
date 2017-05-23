@@ -5,10 +5,10 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
@@ -56,7 +56,7 @@ public class NewShopView extends BaseView<ProductDetailData, ProductDetailView> 
                     setVisibility(View.VISIBLE);
                     break;
                 default:
-                    setVisibility(GONE);
+                    setVisibility(View.GONE);
                     break;
             }
         } else {

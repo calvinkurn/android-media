@@ -7,15 +7,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -24,10 +21,8 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
     private static final String TAG = DescriptionView.class.getSimpleName();
 
     private boolean isExpand = false;
-    @BindView(R2.id.tv_desc)
-    DescriptionTextView tvDesc;
-    @BindView(R2.id.iv_toggle)
-    ImageView ivToggle;
+    private DescriptionTextView tvDesc;
+    private ImageView ivToggle;
 
     public DescriptionView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,6 +45,13 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
     @Override
     protected void parseAttribute(Context context, AttributeSet attrs) {
 
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvDesc = (DescriptionTextView) findViewById(R.id.tv_desc);
+        ivToggle = (ImageView) findViewById(R.id.iv_toggle);
     }
 
     @Override

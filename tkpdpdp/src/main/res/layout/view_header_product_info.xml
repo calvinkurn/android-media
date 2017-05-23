@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@android:color/background_light"
     android:padding="@dimen/padding_small">
 
     <TextView
@@ -11,98 +12,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:maxLines="2"
         android:paddingBottom="@dimen/margin_vs"
+        android:layout_marginRight="80dp"
         android:text="Product Name"
-        android:textColor="#333333"
-        android:textSize="@dimen/fontm"
-        android:textStyle="bold"
+        android:textColor="#b3000000"
+        android:textAllCaps="true"
+        android:textSize="@dimen/text_size_xlarge"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rp 0,00,-"
+        android:textColor="@color/price_pdp"
+        android:textSize="@dimen/font_large"
         tools:ignore="HardcodedText" />
 
     <LinearLayout
+        android:id="@+id/cashback_holder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone">
 
         <TextView
-            android:id="@id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rp 0,00,-"
-            android:textColor="@color/tkpd_prod_price"
-            android:textSize="@dimen/fonts"
-            tools:ignore="HardcodedText" />
+            android:padding="1dp"
+            android:textColor="@color/warm_grey"
+            android:text="@string/cashbak_info"
+            android:textSize="@dimen/fontvs" />
 
-        <LinearLayout
-            android:id="@+id/cashback_holder"
-            android:layout_width="0dp"
+        <ImageView
+            android:layout_width="@dimen/margin_med"
+            android:layout_height="@dimen/margin_med"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_logo_toppoint" />
+
+        <TextView
+            android:id="@+id/label_cashback"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:visibility="gone">
+            android:padding="1dp"
+            android:textColor="@color/tkpd_main_green"
+            android:text="@string/cashbak_info"
+            android:textSize="@dimen/fontvs" />
 
-            <TextView
-                android:id="@+id/label_cashback"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="1dp"
-                android:textColor="@color/white"
-                android:gravity="center"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginStart="@dimen/margin_small"
-                android:background="@drawable/label_dark_green"
-                android:textSize="@dimen/fontvs"/>
 
-        </LinearLayout>
-            <TextView
-                android:id="@+id/title_viewed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="end"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginLeft="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginStart="@dimen/margin_small"
-                android:text="@string/title_viewed"
-                android:textColor="@color/time_color"
-                android:textSize="@dimen/fonts"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@id/tv_viewed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:text="0"
-                android:textColor="#333333"
-                android:textSize="@dimen/fonts"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/title_sold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="end"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:text="@string/title_terjual"
-                android:textColor="@color/time_color"
-                android:textSize="@dimen/fonts"
-                android:visibility="gone"/>
-
-            <TextView
-                android:id="@id/tv_brought"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:text="0"
-                android:textColor="#333333"
-                android:textSize="@dimen/fonts"
-                tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

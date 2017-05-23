@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context=".product.activity.ProductInfoActivity"
+    tools:context=".ProductInfoActivity"
     tools:ignore="MergeRootFrame" />
 

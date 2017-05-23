@@ -19,7 +19,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.PaymentTracking;
@@ -29,6 +28,10 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.product.facade.NetworkParam;
+import com.tokopedia.core.product.interactor.CacheInteractor;
+import com.tokopedia.core.product.interactor.CacheInteractorImpl;
+import com.tokopedia.core.product.interactor.RetrofitInteractor;
+import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -54,12 +57,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
-import com.tokopedia.tkpdpdp.interactor.CacheInteractor;
-import com.tokopedia.tkpdpdp.interactor.CacheInteractorImpl;
-import com.tokopedia.tkpdpdp.interactor.RetrofitInteractor;
-import com.tokopedia.tkpdpdp.interactor.RetrofitInteractorImpl;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.text.DateFormat;
@@ -78,6 +78,7 @@ import java.util.Map;
 public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     public static final String TAG = ProductDetailPresenterImpl.class.getSimpleName();
+    public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String PRODUCT_NAME = "CACHE_PRODUCT_NAME";
     private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private ProductDetailView viewListener;
@@ -164,13 +165,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle) {
         Intent intent = BrowseProductRouter.getDefaultBrowseIntent(context);
-        intent.putExtras(bundle);
-        viewListener.navigateToActivity(intent);
-    }
-
-    @Override
-    public void processToIntermediary(@NonNull Context context, @NonNull Bundle bundle) {
-        Intent intent = BrowseProductRouter.getIntermediaryIntent(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivity(intent);
     }
@@ -274,11 +268,31 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void requestProductDetail(@NonNull final Context context,
                                      @NonNull final ProductPass productPass,
-                                     final int type) {
-
+                                     final int type,
+                                     final boolean forceNetwork) {
         if (type == ProductDetailFragment.INIT_REQUEST) viewListener.showProgressLoading();
+        if (forceNetwork) {
+            getProductDetailFromNetwork(context, productPass);
+        } else {
+            getProductDetailFromCache(productPass,
+                    new CacheInteractor.GetProductDetailCacheListener() {
+                        @Override
+                        public void onSuccess(ProductDetailData productDetailData) {
+                            viewListener.onProductDetailLoaded(productDetailData);
+                            viewListener.hideProgressLoading();
+                            viewListener.refreshMenu();
+                            requestOtherProducts(context,
+                                    NetworkParam.paramOtherProducts(productDetailData));
+                            setGoldMerchantFeatures(context, productDetailData);
+                        }
 
-        getProductDetailFromNetwork(context, productPass);
+                        @Override
+                        public void onError(Throwable e) {
+                            getProductDetailFromNetwork(context, productPass);
+                            e.printStackTrace();
+                        }
+                    });
+        }
     }
 
     @Override
@@ -305,7 +319,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     new RetrofitInteractor.FaveListener() {
                         @Override
                         public void onSuccess(boolean status) {
-                            if (status) viewListener.refreshFaveShopStatus();
+                            if (status) viewListener.onShopFavoriteUpdated(1);
                         }
 
                         @Override
@@ -358,7 +372,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onSuccessToWarehouse();
                             requestProductDetail(context, ProductPass.Builder.aProductPass()
                                             .setProductId(productId).build(),
-                                    ProductDetailFragment.RE_REQUEST);
+                                    ProductDetailFragment.RE_REQUEST, true);
                         }
                     }
 
@@ -372,7 +386,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void requestPromoteProduct(@NonNull final Context context,
                                       @NonNull final ProductDetailData product) {
-        cacheHandler = new LocalCacheHandler(context, SessionHandler.CACHE_PROMOTION_PRODUCT);
+        cacheHandler = new LocalCacheHandler(context, CACHE_PROMOTION_PRODUCT);
 
         if (cacheHandler.isExpired()) {
             viewListener.showProgressLoading();
@@ -487,30 +501,40 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void prepareOptionMenu(Menu menu, Context context, ProductDetailData productData) {
-        MenuItem wishList = menu.findItem(R.id.action_wishlist);
+        MenuItem menuShare = menu.findItem(R.id.action_share);
+        MenuItem menuCart = menu.findItem(R.id.action_cart);
         MenuItem report = menu.findItem(R.id.action_report);
         boolean isSellerApp = GlobalConfig.isSellerApp();
         if (productData != null) {
-            wishList.setIcon(getWishListIcon(productData.getInfo().getProductAlreadyWishlist()));
             if (!productData.getShopInfo().getShopId().equals(SessionHandler.getShopID(context))) {
                 if (isSellerApp) {
-                    wishList.setVisible(false);
-                    wishList.setEnabled(false);
+                    menuShare.setVisible(false);
+                    menuShare.setEnabled(false);
+                    menuCart.setVisible(false);
+                    menuCart.setEnabled(false);
                 } else {
-                    wishList.setVisible(true);
-                    wishList.setEnabled(true);
+                    menuShare.setVisible(true);
+                    menuShare.setEnabled(true);
+                    if (SessionHandler.isV4Login(context)) {
+                        menuCart.setVisible(true);
+                        menuCart.setEnabled(true);
+                    }
                 }
                 report.setVisible(true);
                 report.setEnabled(true);
             } else {
-                wishList.setVisible(false);
-                wishList.setEnabled(false);
+                menuShare.setVisible(false);
+                menuShare.setEnabled(false);
+                menuCart.setVisible(false);
+                menuCart.setEnabled(false);
                 report.setVisible(false);
                 report.setEnabled(false);
             }
         } else {
-            wishList.setVisible(false);
-            wishList.setEnabled(false);
+            menuShare.setVisible(false);
+            menuShare.setEnabled(false);
+            menuCart.setVisible(false);
+            menuCart.setEnabled(false);
             report.setVisible(false);
             report.setEnabled(false);
         }
@@ -622,7 +646,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                                     ProductPass.Builder.aProductPass()
                                                             .setProductId(productId)
                                                             .build(),
-                                                    ProductDetailFragment.RE_REQUEST);
+                                                    ProductDetailFragment.RE_REQUEST, true);
                                         }
                                     }
 
@@ -654,7 +678,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.showDialog(createSuccessWishListDialog(context));
                         viewListener.updateWishListStatus(1);
                         cacheInteractor.deleteProductDetail(productId);
-                        viewListener.refreshMenu();
                     }
 
                     @Override
@@ -676,7 +699,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 .getString(R.string.msg_remove_wishlist));
                         viewListener.updateWishListStatus(0);
                         cacheInteractor.deleteProductDetail(productId);
-                        viewListener.refreshMenu();
                     }
 
                     @Override
@@ -723,28 +745,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     public void getProductDetailFromCache(@NonNull final ProductPass productPass,
-                                          final Context context) {
-
-        cacheInteractor.getProductDetailCache(productPass.getProductId(),
-                new CacheInteractor.GetProductDetailCacheListener() {
-                    @Override
-                    public void onSuccess(ProductDetailData productDetailData) {
-                        viewListener.onProductDetailLoaded(productDetailData);
-                        viewListener.hideProgressLoading();
-                        viewListener.refreshMenu();
-                        requestOtherProducts(context,
-                                NetworkParam.paramOtherProducts(productDetailData));
-                        setGoldMerchantFeatures(context, productDetailData);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        viewListener.showProductDetailRetry();
-                        viewListener.hideProgressLoading();
-                        e.printStackTrace();
-                    }
-                }
-        );
+                                          @NonNull CacheInteractor.GetProductDetailCacheListener listener) {
+        cacheInteractor.getProductDetailCache(productPass.getProductId(), listener);
     }
 
     public void getProductDetailFromNetwork(@NonNull final Context context,
@@ -764,12 +766,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onTimeout() {
-                        getProductDetailFromCache(productPass, context);
+                        viewListener.showProductDetailRetry();
+                        viewListener.hideProgressLoading();
                     }
 
                     @Override
                     public void onError(String error) {
-                        getProductDetailFromCache(productPass, context);
+                        viewListener.showProductDetailRetry();
+                        viewListener.hideProgressLoading();
                     }
 
                     @Override

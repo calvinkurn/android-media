@@ -12,15 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/margin_vs"
-            android:text="@string/title_desc"
-            android:textColor="#333333"
-            android:textSize="@dimen/fontm"
-            android:textStyle="bold" />
-
         <com.tokopedia.tkpdpdp.customview.DescriptionTextView
             android:id="@id/tv_desc"
             android:layout_width="match_parent"

@@ -5,58 +5,68 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
-import com.tokopedia.core.product.listener.FragmentDetailParent;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.AppIndexHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.tkpdpdp.CourierActivity;
+import com.tokopedia.tkpdpdp.InstallmentActivity;
+import com.tokopedia.tkpdpdp.R;
+import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.customview.ButtonBuyView;
-import com.tokopedia.tkpdpdp.customview.ButtonShareView;
-import com.tokopedia.tkpdpdp.customview.DescriptionView;
 import com.tokopedia.tkpdpdp.customview.DetailInfoView;
-import com.tokopedia.tkpdpdp.customview.ErrorProductView;
 import com.tokopedia.tkpdpdp.customview.ErrorShopView;
-import com.tokopedia.tkpdpdp.customview.FreeReturnView;
 import com.tokopedia.tkpdpdp.customview.HeaderInfoView;
 import com.tokopedia.tkpdpdp.customview.LastUpdateView;
 import com.tokopedia.tkpdpdp.customview.ManageView;
 import com.tokopedia.tkpdpdp.customview.NewShopView;
+import com.tokopedia.tkpdpdp.customview.OtherProductsView;
 import com.tokopedia.tkpdpdp.customview.PictureView;
-import com.tokopedia.tkpdpdp.customview.RatingView;
-import com.tokopedia.tkpdpdp.customview.ShopInfoView;
-import com.tokopedia.tkpdpdp.customview.TalkReviewView;
-import com.tokopedia.tkpdpdp.customview.TransactionSuccessView;
-import com.tokopedia.tkpdpdp.customview.VideoLayout;
-import com.tokopedia.tkpdpdp.customview.WholesaleView;
+import com.tokopedia.tkpdpdp.customview.PriceSimulationView;
+import com.tokopedia.tkpdpdp.customview.RatingTalkCourierView;
+import com.tokopedia.tkpdpdp.customview.ShopInfoViewV2;
+import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
+import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
@@ -72,16 +82,14 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-
 /**
  * ProductDetailFragment
  * Created by Angga.Prasetiyo on 22/10/2015.
+ * Edited by alifa, rohmadi, henry for v2
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPresenter>
-        implements ProductDetailView, FragmentDetailParent {
+        implements ProductDetailView {
     public static final int REQUEST_CODE_SHOP_INFO = 998;
     public static final int REQUEST_CODE_TALK_PRODUCT = 1;
     public static final int REQUEST_CODE_EDIT_PRODUCT = 2;
@@ -90,51 +98,36 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
+    private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
+    private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     private static final String TAG = ProductDetailFragment.class.getSimpleName();
 
-    @BindView(R2.id.tv_ticker_gtm)
-    TextView tvTickerGTM;
-    @BindView(R2.id.view_header)
-    HeaderInfoView headerInfoView;
-    @BindView(R2.id.view_detail)
-    DetailInfoView detailInfoView;
-    @BindView(R2.id.view_picture)
-    PictureView pictureView;
-    @BindView(R2.id.view_desc)
-    DescriptionView descriptionView;
-    @BindView(R2.id.view_talk_review)
-    TalkReviewView talkReviewView;
-    @BindView(R2.id.view_manage)
-    ManageView manageView;
-    @BindView(R2.id.view_shop_info)
-    ShopInfoView shopInfoView;
-    @BindView(R2.id.view_wholesale)
-    WholesaleView wholesaleView;
-    @BindView(R2.id.view_share)
-    ButtonShareView buttonShareView;
-    @BindView(R2.id.view_rating)
-    RatingView ratingView;
-    @BindView(R2.id.view_error_product)
-    ErrorProductView errorProductView;
-    @BindView(R2.id.view_error_shop)
-    ErrorShopView errorShopView;
-    @BindView(R2.id.view_new_shop)
-    NewShopView newShopView;
-    @BindView(R2.id.view_buy)
-    ButtonBuyView buttonBuyView;
-    @BindView(R2.id.view_last_update)
-    LastUpdateView lastUpdateView;
-    @BindView(R2.id.view_progress)
-    ProgressBar progressBar;
-    @BindView(R2.id.view_free_return)
-    FreeReturnView freeReturnView;
-    @BindView(R2.id.view_transaction_success)
-    TransactionSuccessView transactionSuccess;
-    @BindView(R2.id.video_layout)
-    VideoLayout videoLayout;
+
+    private HeaderInfoView headerInfoView;
+    private DetailInfoView detailInfoView;
+    private PictureView pictureView;
+    private ManageView manageView;
+    private ShopInfoViewV2 shopInfoView;
+    private OtherProductsView otherProductsView;
+    private RatingTalkCourierView ratingTalkCourierView;
+    private ErrorShopView errorShopView;
+    private NewShopView newShopView;
+    private ButtonBuyView buttonBuyView;
+    private LastUpdateView lastUpdateView;
+    private ProgressBar progressBar;
+
+    Toolbar toolbar;
+    AppBarLayout appBarLayout;
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    TransactionDetailView transactionDetailView;
+    PriceSimulationView priceSimulationView;
+    FloatingActionButton fabWishlist;
+
+    private TextView tvTickerGTM;
+    private VideoDescriptionLayout videoDescriptionLayout;
 
     private ProductPass productPass;
     private ProductDetailData productData;
@@ -145,6 +138,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private DetailFragmentInteractionListener interactionListener;
     private DeepLinkWebViewHandleListener webViewHandleListener;
+    private Menu menu;
 
     ReportProductDialogFragment fragment;
 
@@ -172,7 +166,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected boolean getOptionsMenuEnable() {
-        return true;
+        return false;
     }
 
     @Override
@@ -192,33 +186,79 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_product_info_main_v2;
+        return R.layout.fragment_product_detail_page;
     }
 
     @Override
     protected void initView(View view) {
+        tvTickerGTM = (TextView) view.findViewById(R.id.tv_ticker_gtm);
+        videoDescriptionLayout = (VideoDescriptionLayout) view.findViewById(R.id.video_layout);
+        headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
+        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        pictureView = (PictureView) view.findViewById(R.id.view_picture);
+        manageView = (ManageView) view.findViewById(R.id.view_manage);
+        shopInfoView = (ShopInfoViewV2) view.findViewById(R.id.view_shop_info);
+        otherProductsView = (OtherProductsView) view.findViewById(R.id.view_other_products);
+        ratingTalkCourierView = (RatingTalkCourierView) view.findViewById(R.id.view_rating);
 
+        errorShopView = (ErrorShopView) view.findViewById(R.id.view_error_shop);
+        newShopView = (NewShopView) view.findViewById(R.id.view_new_shop);
+        buttonBuyView = (ButtonBuyView) view.findViewById(R.id.view_buy);
+        lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
+        progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
+
+        toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
+
+        collapsingToolbarLayout
+                = (CollapsingToolbarLayout) view.findViewById(R.id.collapsing_toolbar);
+        transactionDetailView
+                = (TransactionDetailView) view.findViewById(R.id.view_transaction_detail);
+        priceSimulationView
+                = (PriceSimulationView) view.findViewById(R.id.view_price_simulation);
+        fabWishlist = (FloatingActionButton) view.findViewById(R.id.fab_detail);
+
+        collapsingToolbarLayout.setTitle("");
+        toolbar.setTitle("");
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        appBarLayout.addOnOffsetChangedListener(onAppbarOffsetChange());
+        initStatusBarDark();
+        setHasOptionsMenu(true);
+        initToolbarTransparant();
     }
 
     @Override
     protected void setViewListener() {
-        errorProductView.setListener(this);
+        //errorProductView.setListener(this);
         errorShopView.setListener(this);
         headerInfoView.setListener(this);
         pictureView.setListener(this);
-        buttonShareView.setListener(this);
+        //buttonShareView.setListener(this);
         buttonBuyView.setListener(this);
-        talkReviewView.setListener(this);
+        //talkReviewView.setListener(this);
         manageView.setListener(this);
-        ratingView.setListener(this);
+        ratingTalkCourierView.setListener(this);
         detailInfoView.setListener(this);
-        descriptionView.setListener(this);
-        wholesaleView.setListener(this);
+        //descriptionView.setListener(this);
+        //wholesaleView.setListener(this);
         lastUpdateView.setListener(this);
-        shopInfoView.setListener(this);
+        otherProductsView.setListener(this);
         newShopView.setListener(this);
-        freeReturnView.setListener(this);
-        transactionSuccess.setListener(this);
+        shopInfoView.setListener(this);
+        videoDescriptionLayout.setListener(this);
+        //freeReturnView.setListener(this);
+        //transactionSuccess.setListener(this);
+        transactionDetailView.setListener(this);
+        priceSimulationView.setListener(this);
+        fabWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (productData != null) {
+                    presenter.processWishList(context, productData);
+                }
+            }
+        });
     }
 
     @Override
@@ -239,7 +279,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductDepartmentClicked(@NonNull Bundle bundle) {
-        presenter.processToIntermediary(context, bundle);
+        presenter.processToBrowseProduct(context, bundle);
     }
 
     @Override
@@ -313,6 +353,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void onCourierClicked(@NonNull Bundle bundle) {
+        Intent intent = new Intent(context, CourierActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onWholesaleClicked(@NonNull Bundle bundle) {
+        Intent intent = new Intent(context, WholesaleActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onInstallmentClicked(@NonNull Bundle bundle) {
+        Intent intent = new Intent(context, InstallmentActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
     public void onProductShopInfoError() {
         buttonBuyView.setVisibility(View.GONE);
     }
@@ -347,29 +408,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
         this.productData = successResult;
-        this.errorProductView.renderData(successResult);
+        //this.errorProductView.renderData(successResult);
         this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
         this.manageView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
-        this.talkReviewView.renderData(successResult);
-        this.ratingView.renderData(successResult);
-        this.freeReturnView.renderData(successResult);
-        this.transactionSuccess.renderData(successResult);
+        //this.talkReviewView.renderVideoData(successResult);
+        this.ratingTalkCourierView.renderData(successResult);
+        //this.freeReturnView.renderVideoData(successResult);
+        //this.transactionSuccess.renderVideoData(successResult);
+        this.transactionDetailView.renderData(successResult);
         this.detailInfoView.renderData(successResult);
-        this.descriptionView.renderData(successResult);
-        this.wholesaleView.renderData(successResult);
+        //this.descriptionView.renderData(successResult);
+        //this.wholesaleView.renderData(successResult);
         this.lastUpdateView.renderData(successResult);
         this.shopInfoView.renderData(successResult);
+        this.otherProductsView.renderData(successResult);
         this.newShopView.renderData(successResult);
-        this.buttonShareView.renderData(successResult);
+        //this.buttonShareView.renderVideoData(successResult);
+        this.videoDescriptionLayout.renderData(successResult);
+        this.priceSimulationView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
         this.presenter.sendLocalytics(context, successResult);
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
+        this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
     }
 
     @Override
@@ -380,7 +446,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onOtherProductLoaded(List<ProductOther> productOthers) {
         this.productOthers = productOthers;
-        shopInfoView.renderOtherProduct(productOthers);
+        otherProductsView.renderOtherProduct(productOthers);
     }
 
     @Override
@@ -390,22 +456,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductHasEdited() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
     }
 
     @Override
     public void onProductTalkUpdated() {
-        presenter.requestProductDetail(context, productPass, RE_REQUEST);
+        presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
     }
 
     @Override
     public void onShopFavoriteUpdated(int statFave) {
         shopInfoView.updateFavoriteStatus(statFave);
-    }
-
-    @Override
-    public void refreshFaveShopStatus() {
-        shopInfoView.reverseFavoriteStatus();
     }
 
     @Override
@@ -441,12 +502,16 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
+        if (status == 1) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_faved));
+        } else {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
+        }
     }
 
     @Override
     public void loadVideo(VideoData data) {
-        videoLayout.setVisibility(View.VISIBLE);
-        this.videoLayout.renderData(data);
+        this.videoDescriptionLayout.renderVideoData(data);
         videoData = data;
     }
 
@@ -490,9 +555,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onNullData() {
-        Boolean isFromDeeplink = getArguments().getBoolean(ProductDetailRouter.ARG_FROM_DEEPLINK, false);
+        Boolean isFromDeeplink = getArguments().getBoolean(ARG_FROM_DEEPLINK, false);
         if (isFromDeeplink) {
-            ProductPass pass = (ProductPass) getArguments().get(ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA);
+            ProductPass pass = (ProductPass) getArguments().get(ARG_PARAM_PRODUCT_PASS_DATA);
             webViewHandleListener = (DeepLinkWebViewHandleListener) getActivity();
             webViewHandleListener.catchToWebView(pass != null ? pass.getProductUri() : "");
         } else {
@@ -583,8 +648,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.product_info, menu);
+        inflater.inflate(R.menu.product_detail, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        this.menu = menu;
     }
 
     @Override
@@ -606,7 +672,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         } else {
             Log.d(TAG, "productData == null");
             presenter.processDataPass(productPass);
-            presenter.requestProductDetail(context, productPass, INIT_REQUEST);
+            presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
         }
     }
 
@@ -629,8 +695,28 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         if (item.getItemId() == android.R.id.home) {
             getActivity().onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_wishlist) {
-            presenter.processWishList(context, productData);
+        } else if (item.getItemId() == R.id.action_share) {
+            if (productData != null) {
+                ShareData shareData = ShareData.Builder.aShareData()
+                        .setName(productData.getInfo().getProductName())
+                        .setDescription(productData.getInfo().getProductDescription())
+                        .setImgUri(productData.getProductImages().get(0).getImageSrc())
+                        .setPrice(productData.getInfo().getProductPrice())
+                        .setUri(productData.getInfo().getProductUrl())
+                        .setType(ShareData.PRODUCT_TYPE)
+                        .build();
+                onProductShareClicked(shareData);
+            }
+            return true;
+        } else if (item.getItemId() == R.id.action_cart) {
+            if (!SessionHandler.isV4Login(getActivity())) {
+                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
+                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                startActivity(intent);
+            } else {
+                startActivity(TransactionCartRouter.createInstanceCartActivity(getActivity()));
+            }
             return true;
         } else if (item.getItemId() == R.id.action_report) {
             presenter.reportProduct(context);
@@ -659,8 +745,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 presenter.processResultTalk(resultCode, data);
                 break;
             case REQUEST_CODE_LOGIN:
-                videoLayout.refreshVideo();
-                presenter.requestProductDetail(context, productPass, RE_REQUEST);
+                videoDescriptionLayout.refreshVideo();
+                presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
             default:
                 break;
@@ -682,7 +768,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         presenter.stopIndexingApp(appIndexHandler);
     }
 
-    @Override
     public void onSuccessAction(Bundle resultData, int resultCode) {
         if (fragment != null) fragment.dismiss();
         recentBundle = null;
@@ -691,7 +776,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 Snackbar.LENGTH_LONG).show();
     }
 
-    @Override
     public void onErrorAction(Bundle resultData, int resultCode) {
         if (fragment != null) {
             recentBundle = resultData.getBundle(ProductInfoIntentService.EXTRA_BUNDLE);
@@ -733,7 +817,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.requestProductDetail(context, productPass, INIT_REQUEST);
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
             }
         };
     }
@@ -754,8 +838,83 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void destroyVideoLayout() {
-        if (videoLayout != null && videoLayout.isShown()) {
-            videoLayout.destroyVideoLayoutProcess();
+        if (videoDescriptionLayout != null && videoDescriptionLayout.isShown()) {
+            videoDescriptionLayout.destroyVideoLayoutProcess();
+        }
+    }
+
+    private AppBarLayout.OnOffsetChangedListener onAppbarOffsetChange() {
+        return new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    initStatusBarLight();
+                    initToolbarLight();
+                    isShow = true;
+                } else if (isShow) {
+                    initStatusBarDark();
+                    initToolbarTransparant();
+                    isShow = false;
+                }
+            }
+        };
+    }
+
+    private void initToolbarLight() {
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
+        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
+        if (menu != null && menu.size() > 2) {
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_black));
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_black));
+        }
+        toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_black));
+
+    }
+
+    private void initToolbarTransparant() {
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
+        if (menu != null && menu.size() > 1) {
+            menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_white));
+            menu.getItem(1).setIcon(getResources().getDrawable(R.drawable.ic_icon_cart_green_white));
+            toolbar.setOverflowIcon(getResources().getDrawable(R.drawable.ic_more_vert_white));
+        }
+    }
+
+    private void initStatusBarDark() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    View decor = getActivity().getWindow().getDecorView();
+                    decor.setSystemUiVisibility(0);
+
+                }
+            }
+        }
+    }
+
+    private void initStatusBarLight() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                getActivity().getWindow().setStatusBarColor(getResources().getColor(R.color.white));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    View decor = getActivity().getWindow().getDecorView();
+                    decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+
+                }
+            }
         }
     }
 

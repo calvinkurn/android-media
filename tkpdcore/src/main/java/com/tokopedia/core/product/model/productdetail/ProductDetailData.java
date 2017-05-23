@@ -46,6 +46,7 @@ public class ProductDetailData implements Parcelable{
     public ProductDetailData() {
     }
 
+
     public ProductInfo getInfo() {
         return info;
     }

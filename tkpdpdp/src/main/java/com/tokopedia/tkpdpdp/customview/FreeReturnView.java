@@ -15,29 +15,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 7/18/16.
  */
 public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailView> {
 
-    @BindView(R2.id.layout_free_return)
-    LinearLayout layoutFreeReturn;
-    @BindView(R2.id.image_free_return)
-    ImageView imageFreeReturn;
-    @BindView(R2.id.text_free_return)
-    TextView textFreeReturn;
+    private LinearLayout layoutFreeReturn;
+    private ImageView imageFreeReturn;
+    private TextView textFreeReturn;
 
     public FreeReturnView(Context context) {
         super(context);
@@ -66,6 +60,15 @@ public class FreeReturnView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void setViewListener() {
         setVisibility(INVISIBLE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        layoutFreeReturn = (LinearLayout) findViewById(R.id.layout_free_return);
+        imageFreeReturn = (ImageView) findViewById(R.id.image_free_return);
+        textFreeReturn = (TextView) findViewById(R.id.text_free_return);
+
     }
 
     @Override

@@ -8,17 +8,14 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.BuildConfig;
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.facade.NetworkParam;
+import com.tokopedia.core.product.interactor.RetrofitInteractor;
+import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.prototype.ProductCache;
-import com.tokopedia.tkpdpdp.interactor.RetrofitInteractor;
-import com.tokopedia.tkpdpdp.interactor.RetrofitInteractorImpl;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 26/10/2015.
@@ -26,14 +23,10 @@ import butterknife.BindView;
 public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = ManageView.class.getSimpleName();
 
-    @BindView(R2.id.tv_promote)
-    TextView tvPromote;
-    @BindView(R2.id.tv_edit)
-    TextView tvEdit;
-    @BindView(R2.id.tv_sold_out)
-    TextView tvSoldOut;
-    @BindView(R2.id.tv_to_etalase)
-    TextView tvToEtalase;
+    private TextView tvPromote;
+    private TextView tvEdit;
+    private TextView tvSoldOut;
+    private TextView tvToEtalase;
     private ProductDetailData data;
 
     public ManageView(Context context) {
@@ -65,6 +58,16 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
     }
 
     @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvPromote = (TextView) findViewById(R.id.tv_promote);
+        tvEdit = (TextView) findViewById(R.id.tv_edit);
+        tvSoldOut = (TextView) findViewById(R.id.tv_sold_out);
+        tvToEtalase = (TextView) findViewById(R.id.tv_to_etalase);
+
+    }
+
+    @Override
     public void renderData(@NonNull final ProductDetailData data) {
         switch (data.getInfo().getProductStatus()) {
             case "1":
@@ -79,7 +82,7 @@ public class ManageView extends BaseView<ProductDetailData, ProductDetailView> {
         }
         tvPromote.setVisibility(data.getShopInfo().getShopStatus() != 1 ? GONE : VISIBLE);
         setVisibility(data.getShopInfo().getShopIsOwner() == 1
-                || data.getShopInfo().getShopIsAllowManage() == 1 ? VISIBLE : GONE);
+                || data.getShopInfo().getShopIsAllowManage() == 1 ? View.VISIBLE : GONE);
         tvPromote.setOnClickListener(new PromoteClick(data));
         tvEdit.setOnClickListener(new EditClick(data));
         tvToEtalase.setOnClickListener(new ToEtalaseClick(data));

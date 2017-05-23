@@ -5,14 +5,11 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-
-import butterknife.BindView;
 
 /**
  * Created by Angga.Prasetiyo on 02/11/2015.
@@ -20,8 +17,7 @@ import butterknife.BindView;
 public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailView> {
     private static final String TAG = LastUpdateView.class.getSimpleName();
 
-    @BindView(R2.id.tv_last_update)
-    TextView tvLastUpdate;
+    private TextView tvLastUpdate;
 
     public LastUpdateView(Context context) {
         super(context);
@@ -49,6 +45,12 @@ public class LastUpdateView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     protected void setViewListener() {
         setVisibility(GONE);
+    }
+
+    @Override
+    protected void initView(Context context) {
+        super.initView(context);
+        tvLastUpdate = (TextView) findViewById(R.id.tv_last_update);
     }
 
     @Override

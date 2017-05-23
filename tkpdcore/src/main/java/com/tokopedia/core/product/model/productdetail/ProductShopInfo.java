@@ -7,6 +7,8 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.util.MethodChecker;
 
+import java.util.ArrayList;
+
 /**
  * Created by Angga.Prasetiyo on 28/10/2015.
  */
@@ -106,6 +108,9 @@ public class ProductShopInfo implements Parcelable{
     @SerializedName("shop_status_title")
     @Expose
     private String shopStatusTitle;
+    @SerializedName("shop_shipments")
+    @Expose
+    private ArrayList<ShopShipment> shopShipments;
 
     public ProductShopInfo() {
     }
@@ -350,6 +355,14 @@ public class ProductShopInfo implements Parcelable{
         this.shopIsAllowManage = shopIsAllowManage;
     }
 
+    public ArrayList<ShopShipment> getShopShipments() {
+        return shopShipments;
+    }
+
+    public void setShopShipments(ArrayList<ShopShipment> shopShipments) {
+        this.shopShipments = shopShipments;
+    }
+
     public String getShopDomain() {
         return shopDomain;
     }
@@ -390,6 +403,12 @@ public class ProductShopInfo implements Parcelable{
         shopDomain = in.readString();
         shopStatusMessage = in.readString();
         shopStatusTitle = in.readString();
+        if (in.readByte() == 0x01) {
+            shopShipments = new ArrayList<>();
+            in.readList(shopShipments, ShopShipment.class.getClassLoader());
+        } else {
+            shopShipments = null;
+        }
     }
 
     @Override
@@ -490,6 +509,12 @@ public class ProductShopInfo implements Parcelable{
         dest.writeString(shopDomain);
         dest.writeString(shopStatusMessage);
         dest.writeString(shopStatusTitle);
+        if (shopShipments == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(shopShipments);
+        }
     }
 
     @SuppressWarnings("unused")

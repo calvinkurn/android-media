@@ -100,12 +100,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <com.tokopedia.tkpdpdp.customview.TransactionDetailView
+                android:id="@+id/view_transaction_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
             <com.tokopedia.tkpdpdp.customview.DetailInfoView
                 android:id="@id/view_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpdpdp.customview.VideoLayout
+            <com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout
                 android:id="@+id/video_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -126,7 +130,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.tokopedia.tkpdpdp.customview.ShopInfoView
+            <com.tokopedia.tkpdpdp.customview.PriceSimulationView
+                android:id="@+id/view_price_simulation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
                 android:id="@id/view_shop_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
