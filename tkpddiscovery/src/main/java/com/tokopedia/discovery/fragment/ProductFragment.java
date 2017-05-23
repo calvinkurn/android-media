@@ -93,6 +93,12 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     private boolean isHasCategoryHeader = false;
     private ProgressDialog loading;
 
+    private ProductFragmentListener mListener;
+
+    public interface ProductFragmentListener {
+        String getDepartmentId();
+    }
+
     private BroadcastReceiver changeGridReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -176,11 +182,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     protected void initPresenter() {
         presenter = new FragmentDiscoveryPresenterImpl(this);
         presenter.setTAG(TAG);
-        if(!TextUtils.isEmpty(((BrowseProductActivity) getActivity())
-                .getBrowseProductActivityModel().getDepartmentId())) {
-            ScreenTracking.eventDiscoveryScreenAuth(((BrowseProductActivity) getActivity())
-                    .getBrowseProductActivityModel().getDepartmentId());
-        }
+        ScreenTracking.eventDiscoveryScreenAuth(mListener.getDepartmentId());
     }
 
     @Override
@@ -341,10 +343,36 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
+        productAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof ProductFragmentListener) {
+            mListener = (ProductFragmentListener) context;
+        } else {
+            throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof ProductFragmentListener) {
+            mListener = (ProductFragmentListener) activity;
+        } else {
+            throw new RuntimeException("Please implement ProductFragmentListener in the Activity");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     // to determine size of grid columns
@@ -392,7 +420,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
+                if (!productAdapter.isEmpty() && productAdapter.getPagingHandlerModel() != null
+                        && isLoading() && isReachingLastItem()) {
                     presenter.loadMore(getActivity());
                 }
                 if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
@@ -404,6 +433,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         });
         changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
         return true;
+    }
+
+    private boolean isReachingLastItem() {
+        return gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1;
     }
 
     @Override

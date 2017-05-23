@@ -1610,4 +1610,31 @@ public class UnifyTracking extends TrackingUtils {
                 el
         ).getEvent());
     }
+
+    public static void eventClickTruecaller() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_ATTEMPT
+        ).getEvent());
+    }
+
+    public static void eventClickTruecallerConfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.TRUECALLER_CONFIRM
+        ).getEvent());
+    }
+
+    public static void eventTruecallerImpression() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.IMPRESSION_OTP,
+                AppEventTracking.Category.SECURITY_QUESTION,
+                AppEventTracking.Action.IMPRESSION,
+                AppEventTracking.EventLabel.TRUECALLER
+        ).getEvent());
+    }
 }

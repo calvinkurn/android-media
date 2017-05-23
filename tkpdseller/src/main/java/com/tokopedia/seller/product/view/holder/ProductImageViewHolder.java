@@ -30,7 +30,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
     public interface Listener {
         void onAddImagePickerClicked(int position);
 
-        void onImagePickerItemClicked(int position, boolean isPrimary);
+        void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete);
 
         void onResolutionImageCheckFailed(String uri);
 
@@ -65,7 +65,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
                 if (listener != null) {
-                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary());
+                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary(), imageSelectModel.allowDelete());
                 }
             }
         });
@@ -141,6 +141,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
             imageViewModel.setImageDescription(selectModel.getDescription());
             imageViewModel.setImageResolution(selectModel.getMinResolution());
+            imageViewModel.setCanDelete(selectModel.allowDelete());
 
             if (selectModel.isPrimary()) {
                 productPhotos.setProductDefaultPicture(i);
@@ -151,7 +152,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
         return productPhotos;
     }
 
-    public void setProductPhotos(ProductPhotoListViewModel productPhotos) {
+    public void setProductPhotos(ProductPhotoListViewModel productPhotos, boolean isEditMode) {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
         int defaultPicture = productPhotos.getProductDefaultPicture();
         for (int i = 0; i < productPhotos.getPhotos().size(); i++) {
@@ -168,7 +169,8 @@ public class ProductImageViewHolder extends ProductViewHolder {
             ImageSelectModel image = new ImageSelectModel(
                     url,
                     productPhoto.getImageDescription(),
-                    i == defaultPicture
+                    i == defaultPicture,
+                    isEditMode ? productPhoto.canDelete() : true
             );
             images.add(image);
         }

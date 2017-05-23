@@ -27,8 +27,6 @@ import com.tokopedia.seller.selling.orderReject.model.ModelEditPrice;
 
 import org.parceler.Parcels;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/6/2016.
@@ -36,17 +34,11 @@ import butterknife.ButterKnife;
 public class EditPriceDialog extends DialogFragment {
 
 
-    @BindView(R2.id.title)
     TextView titleTxt;
-    @BindView(R2.id.checkbox)
     CheckBox checkBox;
-    @BindView(R2.id.priceSpiner)
     Spinner priceSpiner;
-    @BindView(R2.id.weightSpiner)
     Spinner weightSpiner;
-    @BindView(R2.id.price)
     EditText price;
-    @BindView(R2.id.weight)
     EditText weight;
 
     public static final String TITLE = "title";
@@ -91,7 +83,13 @@ public class EditPriceDialog extends DialogFragment {
             }
         });
 
-        ButterKnife.bind(this, view);
+        titleTxt = (TextView) view.findViewById(R.id.title);
+        checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+        priceSpiner = (Spinner) view.findViewById(R.id.priceSpiner);
+        weightSpiner = (Spinner) view.findViewById(R.id.weightSpiner);
+        price = (EditText) view.findViewById(R.id.price);
+        weight = (EditText) view.findViewById(R.id.weight);
+
         final AlertDialog d = builder.create();
         d.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override

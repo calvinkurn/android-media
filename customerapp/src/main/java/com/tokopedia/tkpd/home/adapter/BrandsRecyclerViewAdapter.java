@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.adapter;
 
 import android.annotation.SuppressLint;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,6 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
                 parent.getContext()).inflate(R.layout.item_brands_category, null
         );
@@ -45,8 +45,8 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     @Override
     public void onBindViewHolder(final ItemRowHolder holder, int position) {
-        holder.llWrapper.getLayoutParams().width = homeMenuWidth;
-        holder.llWrapper.getLayoutParams().height = homeMenuWidth;
+        holder.cardWrapper.getLayoutParams().width = homeMenuWidth;
+        holder.cardWrapper.getLayoutParams().height = homeMenuWidth;
         if(position<brands.getData().size()){
             final Brand singleBrand = brands.getData().get(position);
             ImageHandler.LoadImage(holder.ivBrands,singleBrand.getLogoUrl());
@@ -70,12 +70,12 @@ public class BrandsRecyclerViewAdapter extends RecyclerView.Adapter<BrandsRecycl
 
     class ItemRowHolder extends RecyclerView.ViewHolder {
         ImageView ivBrands;
-        LinearLayout llWrapper;
+        CardView cardWrapper;
 
         ItemRowHolder(View view) {
             super(view);
             this.ivBrands = (ImageView) view.findViewById(R.id.iv_brands);
-            this.llWrapper = (LinearLayout) view.findViewById(R.id.ll_wrapper);
+            this.cardWrapper = (CardView) view.findViewById(R.id.card_wrapper);
         }
 
     }

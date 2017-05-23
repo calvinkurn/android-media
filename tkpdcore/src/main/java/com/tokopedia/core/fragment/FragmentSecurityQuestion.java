@@ -31,10 +31,9 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
@@ -315,6 +314,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
     @Override
     public void showTrueCaller(boolean b) {
         verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+        if(b) UnifyTracking.eventTruecallerImpression();
     }
 
     @Override
@@ -353,6 +353,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             @Override
             public void onClick(View v) {
                 presenter.getPhoneTrueCaller();
+                UnifyTracking.eventClickTruecaller();
             }
         });
     }

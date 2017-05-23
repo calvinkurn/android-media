@@ -9,6 +9,7 @@ import java.util.List;
 public class ProductPhotoListDomainModel {
     List<ImageProductInputDomainModel> photos;
     int productDefaultPicture;
+    int originalProductDefaultPicture = -1;
 
     public List<ImageProductInputDomainModel> getPhotos() {
         return photos;
@@ -24,5 +25,13 @@ public class ProductPhotoListDomainModel {
 
     public void setProductDefaultPicture(int productDefaultPicture) {
         this.productDefaultPicture = productDefaultPicture;
+    }
+
+    public int getOriginalProductDefaultPicture() {
+        return originalProductDefaultPicture;
+    }
+
+    public void setOriginalProductDefaultPicture(int originalProductDefaultPicture) {
+        this.originalProductDefaultPicture = originalProductDefaultPicture;
     }
 }
