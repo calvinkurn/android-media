@@ -101,11 +101,23 @@ public class BrowseShopAdapter extends ProductAdapter {
         @BindView(R2.id.item_shop_gold)
         ImageView itemShopBadge;
 
-        @BindView(R2.id.item_shop_lucky)
-        ImageView itemShopLucky;
-
         @BindView(R2.id.item_shop_name)
         TextView itemShopName;
+
+        @BindView(R2.id.reputation_view)
+        ImageView reputationView;
+
+        @BindView(R2.id.shop_location)
+        TextView shopLocation;
+
+        @BindView(R2.id.shop_item_preview_1)
+        ImageView itemPreview1;
+
+        @BindView(R2.id.shop_item_preview_2)
+        ImageView itemPreview2;
+
+        @BindView(R2.id.shop_item_preview_3)
+        ImageView itemPreview3;
 
         public ShopViewHolder(View itemView) {
             super(itemView);
@@ -121,9 +133,6 @@ public class BrowseShopAdapter extends ProductAdapter {
         public void bindData(final Context context, final ShopModel shopModel, int position){
             ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
             itemShopName.setText(shopModel.getShopName());
-            if (shopModel.getIsGold() != null){
-                LuckyShopImage.loadImage(itemShopLucky, shopModel.getLuckyImage());
-            }
             if(shopModel.isOfficial() || shopModel.getIsGold().equals("1")){
                 itemShopBadge.setVisibility(View.VISIBLE);
                 if(shopModel.isOfficial()) {
@@ -143,6 +152,29 @@ public class BrowseShopAdapter extends ProductAdapter {
                     context.startActivity(intent);
                 }
             });
+            shopLocation.setText(shopModel.getLocation());
+            ImageHandler.LoadImage(reputationView, shopModel.getReputationImageUrl());
+
+            try{
+                itemPreview1.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview1, shopModel.getProductImages().get(0));
+            } catch (IndexOutOfBoundsException e) {
+                itemPreview1.setVisibility(View.GONE);
+            }
+
+            try{
+                itemPreview2.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview2, shopModel.getProductImages().get(1));
+            } catch (IndexOutOfBoundsException e) {
+                itemPreview2.setVisibility(View.GONE);
+            }
+
+            try{
+                itemPreview3.setVisibility(View.VISIBLE);
+                ImageHandler.LoadImage(itemPreview3, shopModel.getProductImages().get(2));
+            } catch (IndexOutOfBoundsException e) {
+                itemPreview3.setVisibility(View.GONE);
+            }
         }
     }
 
