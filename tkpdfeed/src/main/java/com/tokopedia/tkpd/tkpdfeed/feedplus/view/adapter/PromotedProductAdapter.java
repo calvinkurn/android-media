@@ -20,13 +20,13 @@ import java.util.ArrayList;
 /**
  * Created by stevenfredian on 5/18/17.
  */
-public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdapter.ViewHolder>{
+public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProductAdapter.ViewHolder>{
 
     protected ArrayList<ProductFeedViewModel> list;
     private final Context context;
     private final FeedPlus.View viewListener;
 
-    public OfficialStoreAdapter(Context context, FeedPlus.View viewListener) {
+    public PromotedProductAdapter(Context context, FeedPlus.View viewListener) {
         this.context = context;
         this.viewListener = viewListener;
     }
@@ -36,36 +36,25 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
         public TextView productName;
         public TextView productPrice;
         public ImageView productImage;
-        public ImageView shopAva;
-        public TextView shopName;
-        public FloatingActionButton favoriteButton;
-
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             productName = (TextView) itemLayoutView.findViewById(R.id.title);
             productPrice = (TextView) itemLayoutView.findViewById(R.id.price);
             productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
-            shopAva = (ImageView) itemLayoutView.findViewById(R.id.shop_ava);
-            shopName = (TextView) itemLayoutView.findViewById(R.id.shop_name);
-            favoriteButton = (FloatingActionButton) itemLayoutView.findViewById(R.id.fab);
         }
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.official_store_item, parent, false);
+                .inflate(R.layout.promoted_product_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 //        super.onBindViewHolder(holder, position);
-        ImageHandler.LoadImage(holder.shopAva, list.get(position).getShopAva());
-        holder.favoriteButton.setBackgroundResource(list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
-        holder.shopName.setText(list.get(position).getShopName());
-
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
         ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());

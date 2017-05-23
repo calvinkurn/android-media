@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
+package com.tokopedia.tkpd.tkpdfeed.feedplus.view.util;
 
 import android.content.Context;
 import android.content.res.TypedArray;
