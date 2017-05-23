@@ -148,6 +148,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     productOperator.setPricePlain(product.getAttributes().getPricePlain());
                     productOperator.setProductType(product.getType());
                     productOperator.setProductId(product.getId());
+                    productOperator.setStatus(product.getAttributes().getStatus());
                     if (product.getAttributes().getPromo() != null) {
                         Promo productPromo = new Promo();
                         productPromo.setBonusText(product.getAttributes().getPromo().getBonusText());
