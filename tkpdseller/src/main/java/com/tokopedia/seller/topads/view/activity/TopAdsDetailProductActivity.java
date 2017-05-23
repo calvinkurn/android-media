@@ -1,12 +1,11 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
@@ -59,6 +58,18 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
     public void goToProductActivity(String productUrl) {
         if (getApplication() instanceof SellerModuleRouter) {
             ((SellerModuleRouter) getApplication()).goToProductDetail(this, productUrl);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            //coming from deeplink
+            Intent intent = new Intent(this, TopAdsDashboardActivity.class);
+            this.startActivity(intent);
+            this.finish();
+        } else {
+            super.onBackPressed();
         }
     }
 

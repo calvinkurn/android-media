@@ -4,12 +4,10 @@ import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailProductLi
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateNewGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailGroupUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailGroupUseCase;
-import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailProductUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
-import com.tokopedia.seller.topads.view.mapper.TopAdDetailGroupMapper;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
@@ -28,6 +26,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
 
     private TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase;
     private TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase;
+    // TODO hendry add usecase
 
     public TopAdsDetailNewGroupPresenterImpl(TopAdsCreateNewGroupUseCase topAdsCreateNewGroupUseCase,
                                              TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
@@ -36,6 +35,7 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         super(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase);
         this.topAdsCreateNewGroupUseCase = topAdsCreateNewGroupUseCase;
         this.topAdsCreateDetailProductListUseCase = topAdsCreateDetailProductListUseCase;
+        // TODO hendry add usecase
     }
 
     @Override
@@ -117,6 +117,32 @@ public class TopAdsDetailNewGroupPresenterImpl<T extends TopAdsDetailNewGroupVie
         super.detachView();
         topAdsCreateNewGroupUseCase.unsubscribe();
         topAdsCreateDetailProductListUseCase.unsubscribe();
+        // TODO hendry usecase unsubscribe
     }
 
+    @Override
+    public void getProductDetail(String productId) {
+        // TODO hendry
+        //RequestParams params = FetchEditProductFormUseCase.createParams(productId);
+        //fetchEditProductFormUseCase.execute(params, new FetchEditProductFormSubscriber());
+    }
+
+//    private class FetchEditProductFormSubscriber extends Subscriber<UploadProductInputDomainModel> {
+//        @Override
+//        public void onCompleted() {
+//
+//        }
+//
+//        @Override
+//        public void onError(Throwable e) {
+//            e.printStackTrace();
+//        }
+//
+//        @Override
+//        public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
+//            checkViewAttached();
+//            TopAdsProductViewModel model = UploadProductMapper.mapDomainToTopAdsView(editProductFormDomainModel);
+//            getView().onSuccessLoadProduct(model);
+//        }
+//    }
 }

@@ -1,9 +1,9 @@
 package com.tokopedia.seller.topads.di;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.factory.TopAdsProductAdFactory;
@@ -31,9 +31,11 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenterI
 
 public class TopAdsDetailNewGroupDI {
 
-    public static TopAdsDetailNewGroupPresenter createPresenter(Context context) {
-        JobExecutor threadExecutor = new JobExecutor();
-        UIThread postExecutionThread = new UIThread();
+    public static TopAdsDetailNewGroupPresenter createPresenter(BaseActivity context) {
+        AppComponent component = context.getApplicationComponent();
+
+        ThreadExecutor threadExecutor = component.threadExecutor();
+        PostExecutionThread postExecutionThread = component.postExecutionThread();
 
         TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();

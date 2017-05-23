@@ -1,9 +1,11 @@
 package com.tokopedia.seller.topads.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailEditProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewProductFragment;
 
@@ -16,9 +18,15 @@ public class TopAdsDetailNewProductActivity extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String itemIdToAdd = null;
+        Intent intent = getIntent();
+        if (intent!= null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            itemIdToAdd = extras.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
+        }
         inflateView(R.layout.activity_top_ads_edit_promo);
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailNewProductFragment.createInstance(), TopAdsDetailEditProductFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailNewProductFragment.createInstance(itemIdToAdd), TopAdsDetailEditProductFragment.class.getSimpleName())
                 .commit();
     }
 

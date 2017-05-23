@@ -20,17 +20,19 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewGroupFragment;
 public class TopAdsDetailNewGroupActivity extends TActivity {
 
     public static void startNewGroup(Activity activity, int requestCode,
-                                     String groupName){
+                                     String groupName, String itemIdToAdd){
         Intent intent = new Intent(activity, TopAdsDetailNewGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void startEditExistingGroup(Activity activity, int requestCode,
-                                              String groupId, String groupName){
+                                              String groupId, String groupName, String itemIdToAdd){
         Intent intent = new Intent(activity, TopAdsDetailNewGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         intent.putExtra(TopAdsExtraConstant.EXTRA_GROUP_NAME, groupName);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         activity.startActivityForResult(intent, requestCode);
     }
 
@@ -40,12 +42,16 @@ public class TopAdsDetailNewGroupActivity extends TActivity {
         inflateView(R.layout.activity_top_ads_edit_promo);
         String name = null;
         String adId = null;
-        if (getIntent() != null && getIntent().getExtras() != null) {
-            name = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_NAME);
-            adId = getIntent().getExtras().getString(TopAdsExtraConstant.EXTRA_AD_ID);
+        String itemIdToAdd = null;
+        Intent intent = getIntent();
+        if (intent!= null && intent.getExtras() != null) {
+            Bundle extras = intent.getExtras();
+            name = extras.getString(TopAdsExtraConstant.EXTRA_NAME);
+            adId = extras.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+            itemIdToAdd = extras.getString(TopAdsExtraConstant.EXTRA_ITEM_ID);
         }
         getFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, TopAdsDetailNewGroupFragment.createInstance(name, adId), TopAdsDetailEditShopFragment.class.getSimpleName())
+                .replace(R.id.container, TopAdsDetailNewGroupFragment.createInstance(name, adId, itemIdToAdd), TopAdsDetailEditShopFragment.class.getSimpleName())
                 .commit();
     }
 

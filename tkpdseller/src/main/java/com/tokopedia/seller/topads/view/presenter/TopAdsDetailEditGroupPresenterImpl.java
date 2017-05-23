@@ -50,6 +50,11 @@ public class TopAdsDetailEditGroupPresenterImpl<T extends TopAdsDetailEditView> 
                 getDetailAdSubscriber());
     }
 
+    @Override
+    public void getProductDetail(String productId) {
+        //TODO hendry
+    }
+
     public void getDetailAd(String adId, Subscriber<TopAdsDetailGroupDomainModel> subscriber) {
         topAdsGetDetailGroupUseCase.execute(
                 TopAdsGetDetailGroupUseCase.createRequestParams(adId),

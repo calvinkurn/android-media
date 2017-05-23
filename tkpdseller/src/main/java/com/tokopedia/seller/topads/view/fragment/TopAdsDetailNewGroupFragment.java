@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.di.TopAdsDetailNewGroupDI;
@@ -13,6 +14,7 @@ import com.tokopedia.seller.topads.view.activity.TopAdsAddProductListActivity;
 import com.tokopedia.seller.topads.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailGroupViewModel;
+import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 
 /**
@@ -25,18 +27,19 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDetailNewGroupPresenter;
 public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAdsDetailNewGroupPresenter>
         implements TopAdsDetailNewGroupView {
 
-    public static Fragment createInstance(String groupName, String groupId) {
+    public static Fragment createInstance(String groupName, String groupId, String itemIdToAdd) {
         Fragment fragment = new TopAdsDetailNewGroupFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TopAdsExtraConstant.EXTRA_NAME, groupName);
         bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
+        bundle.putString(TopAdsExtraConstant.EXTRA_ITEM_ID, itemIdToAdd);
         fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     protected void initialPresenter() {
-        presenter = TopAdsDetailNewGroupDI.createPresenter(getActivity());
+        presenter = TopAdsDetailNewGroupDI.createPresenter((BaseActivity)getActivity());
         presenter.attachView(this);
     }
 
@@ -89,5 +92,10 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSuccessLoadProduct(TopAdsProductViewModel model) {
+        super.onSuccessLoadProduct(model);
     }
 }
