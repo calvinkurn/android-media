@@ -13,6 +13,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.ActivityModule;
 import com.tokopedia.core.base.di.module.AppModule;
@@ -83,15 +84,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     protected void initInjector() {
 
-        DaggerAppComponent daggerAppComponent =
-                (DaggerAppComponent) DaggerAppComponent.builder()
-                        .appModule(new AppModule(getContext()))
-                        .activityModule(new ActivityModule(getActivity()))
-                        .build();
+        AppComponent appComponent = getComponent(AppComponent.class);
 
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                .appComponent(daggerAppComponent)
+                .appComponent(appComponent)
                 .build();
 
         daggerFeedPlusComponent.inject(this);

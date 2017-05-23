@@ -22,8 +22,11 @@ public interface FeedPlus{
         void onCopyClicked(String s);
 
         void onGoToBlogWebView(String url);
+
+        void onOpenVideo(String videoUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View>{
+
     }
 }

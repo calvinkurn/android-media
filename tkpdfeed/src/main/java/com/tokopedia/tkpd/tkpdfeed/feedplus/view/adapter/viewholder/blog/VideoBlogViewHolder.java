@@ -69,37 +69,44 @@ public class VideoBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
 
         ImageHandler.LoadImage(videoCover, viewModel.getImageUrl());
 
-        if (!viewModel.getVideoUrl().equals("")
-                && !viewModel.getImageUrl().equals("")) {
-            videoCover.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    video.setVisibility(View.VISIBLE);
-                    videoCover.setVisibility(View.GONE);
-                    videoPlayerManager.playNewVideo(null, video, viewModel.getVideoUrl());
-                }
-            });
+//        if (!viewModel.getVideoUrl().equals("")
+//                && !viewModel.getImageUrl().equals("")) {
+//            videoCover.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    video.setVisibility(View.VISIBLE);
+//                    videoCover.setVisibility(View.GONE);
+//                    videoPlayerManager.playNewVideo(null, video, viewModel.getVideoUrl());
+//                }
+//            });
+//
+//            video.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener() {
+//                @Override
+//                public void onVideoPreparedMainThread() {
+//                    videoCover.setVisibility(View.GONE);
+//                    video.setVisibility(View.VISIBLE);
+//
+//                }
+//
+//                @Override
+//                public void onVideoStoppedMainThread() {
+//                    videoCover.setVisibility(View.VISIBLE);
+//                    video.setVisibility(View.GONE);
+//                }
+//
+//                @Override
+//                public void onVideoCompletionMainThread() {
+//                    videoCover.setVisibility(View.VISIBLE);
+//                    video.setVisibility(View.GONE);
+//                }
+//            });
+//        }
 
-            video.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener() {
-                @Override
-                public void onVideoPreparedMainThread() {
-                    videoCover.setVisibility(View.GONE);
-                    video.setVisibility(View.VISIBLE);
-
-                }
-
-                @Override
-                public void onVideoStoppedMainThread() {
-                    videoCover.setVisibility(View.VISIBLE);
-                    video.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onVideoCompletionMainThread() {
-                    videoCover.setVisibility(View.VISIBLE);
-                    video.setVisibility(View.GONE);
-                }
-            });
-        }
+        videoCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onOpenVideo(viewModel.getVideoUrl());
+            }
+        });
     }
 }

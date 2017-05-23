@@ -40,7 +40,6 @@ import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.IConsumerModuleRouter;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 
@@ -48,7 +47,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

@@ -27,6 +27,7 @@ import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactoryImpl;
@@ -84,14 +85,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     protected void initInjector() {
         DaggerAppComponent daggerAppComponent =
                 (DaggerAppComponent) DaggerAppComponent.builder()
-                .appModule(new AppModule(getContext()))
-                .activityModule(new ActivityModule(getActivity()))
-                .build();
+                        .appModule(new AppModule(getContext()))
+                        .activityModule(new ActivityModule(getActivity()))
+                        .build();
 
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                .appComponent(daggerAppComponent)
-                .build();
+                        .appComponent(daggerAppComponent)
+                        .build();
 
         daggerFeedPlusComponent.inject(this);
     }
@@ -147,6 +148,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 "Rp 11.0000",
                 "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
         ProductFeedViewModel prod3 = new ProductFeedViewModel(
+
                 "Produk3",
                 "Rp 21.0000",
                 "http://img03.deviantart.net/ebe3/i/2007/294/e/c/kerbau_by_jin_concepts.jpg");
@@ -205,10 +207,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listProduct8.add(prod8);
 
         ArrayList<PromoViewModel> listPromo = new ArrayList<>();
-        listPromo.add(new PromoViewModel("Hemat Air","30 Juni", "AIRMURAH", prod2.getImageSource()));
-        listPromo.add(new PromoViewModel("Hemat Gas","1 Juni - 3 Juli", "GASANGIN", prod6.getImageSource()));
-        listPromo.add(new PromoViewModel("Hemat Listrik","6 Agustus", "LISTRIKWEK", prod1.getImageSource()));
-        listPromo.add(new PromoViewModel("Bayar BPJS","7 Januari - 8 Maret", "BAYARBPJS", prod4.getImageSource()));
+        listPromo.add(new PromoViewModel("Hemat Air", "30 Juni", "AIRMURAH", prod2.getImageSource()));
+        listPromo.add(new PromoViewModel("Hemat Gas", "1 Juni - 3 Juli", "GASANGIN", prod6.getImageSource()));
+        listPromo.add(new PromoViewModel("Hemat Listrik", "6 Agustus", "LISTRIKWEK", prod1.getImageSource()));
+        listPromo.add(new PromoViewModel("Bayar BPJS", "7 Januari - 8 Maret", "BAYARBPJS", prod4.getImageSource()));
 
         List<Visitable> list = new ArrayList<>();
         list.add(imageBlog);
@@ -305,6 +307,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToBlogWebView(String url) {
         Intent intent = BlogWebViewActivity.getIntent(getActivity(), url);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onOpenVideo(String videoUrl) {
+        Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl);
         startActivity(intent);
     }
 
