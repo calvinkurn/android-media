@@ -101,7 +101,8 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
                 String shopDomain = linkSegment.get(0);
                 getShopInfo(url, shopDomain);
             } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                DeepLinkChecker.openProduct(url, getActivity());
+                String shopDomain = linkSegment.get(0);
+                openProductPageIfValid(url, shopDomain);
             } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
                 DeepLinkChecker.openCategory(url, getActivity());
             } else {
@@ -141,7 +142,39 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
                 || link.equals("p")
                 || link.equals("catalog")
                 || link.equals("toppicks")
+                || link.equals("promo")
                 || link.startsWith("invoice.pl");
+    }
+
+    public void openProductPageIfValid(final String url, final String shopDomain) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(getActivity(), "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    ShopModel shopModel = new Gson().fromJson(result,
+                            ShopModel.class);
+                    if (shopModel.info != null) {
+                        DeepLinkChecker.openProduct(url, getActivity());
+                    } else {
+                        openWebViewURL(url);
+                    }
+                } catch (Exception e) {
+                    openWebViewURL(url);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                openWebViewURL(url);
+            }
+
+            @Override
+            public void onFailure() {
+                openWebViewURL(url);
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
     }
 
     public void getShopInfo(final String url, final String shopDomain) {

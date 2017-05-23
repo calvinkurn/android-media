@@ -1,8 +1,9 @@
 package com.tokopedia.seller.product.view.model.upload;
 
-import com.tokopedia.seller.product.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.intdef.ProductStatus;
+
+import com.tokopedia.seller.product.constant.CurrencyTypeDef;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class UploadProductInputViewModel {
     private int productPriceCurrency;
     private int productReturnable;
     private int productUploadTo;
-    @SwitchTypeDef
+    @InvenageSwitchTypeDef
     private int productInvenageSwitch;
     private int productInvenageValue;
     private int productWeight;
@@ -43,6 +44,8 @@ public class UploadProductInputViewModel {
     private int productStatus;
     private String productId;
     private int productNameEditable;
+    private int productChangeWholesale;
+    private int productChangeCatalog;
 
     public UploadProductInputViewModel() {
         productPhotos = new ProductPhotoListViewModel();
@@ -200,7 +203,7 @@ public class UploadProductInputViewModel {
         this.productUploadTo = productUploadTo;
     }
 
-    @SwitchTypeDef
+    @InvenageSwitchTypeDef
     public int getProductInvenageSwitch() {
         return productInvenageSwitch;
     }
@@ -282,4 +285,19 @@ public class UploadProductInputViewModel {
         return productNameEditable;
     }
 
+    public int getProductChangeWholesale() {
+        return productChangeWholesale;
+    }
+
+    public void setProductChangeWholesale(int productChangeWholesale) {
+        this.productChangeWholesale = productChangeWholesale;
+    }
+
+    public void setProductChangeCatalog(int productChangeCatalog) {
+        this.productChangeCatalog = productChangeCatalog;
+    }
+
+    public int getProductChangeCatalog() {
+        return productChangeCatalog;
+    }
 }

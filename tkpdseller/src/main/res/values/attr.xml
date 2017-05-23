@@ -181,6 +181,12 @@
         <attr name="spinner_decimal_enabled" format="boolean"/>
         <attr name="spinner_decimal_spinner_width" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="TkpdTextInputLayout">
+        <attr name="success_focus_color" format="color" />
+        <attr name="success_leave_color" format="color" />
+        <attr name="success_text_appearance" format="reference" />
+        <attr name="prefix_string" format="string" />
+    </declare-styleable>
 
     <declare-styleable name="ReputationView">
         <attr name="default_layout" format="integer" />

@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -34,6 +35,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -288,6 +290,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
             toolbar.setElevation(10);
         }
 
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
@@ -959,6 +962,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 if (data != null && data.getStringExtra("phone") != null) {
                     fragment.onSuccessProfileShared(data.getStringExtra("phone"));
+                    UnifyTracking.eventClickTruecallerConfirm();
                 } else if (data != null && data.getStringExtra("error") != null) {
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }

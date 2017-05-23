@@ -39,6 +39,7 @@ import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
+import com.tokopedia.core.product.model.productdetail.ProductBreadcrumb;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
@@ -270,6 +271,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         pdt.addProduct(product.getProduct());
 
         UnifyTracking.eventPDPDetail(pdt);
+        TrackingUtils.sendMoEngageOpenProductEvent(successResult);
     }
 
     @Override
@@ -653,7 +655,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess() {
                         viewListener.finishLoadingWishList();
                         viewListener.showDialog(createSuccessWishListDialog(context));
-                        viewListener.updateWishListStatus(1);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_IN_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -675,7 +677,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.finishLoadingWishList();
                         viewListener.showToastMessage(context
                                 .getString(R.string.msg_remove_wishlist));
-                        viewListener.updateWishListStatus(0);
+                        viewListener.updateWishListStatus(ProductDetailFragment.STATUS_NOT_WISHLIST);
                         cacheInteractor.deleteProductDetail(productId);
                         viewListener.refreshMenu();
                     }
@@ -816,6 +818,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void sendButtonClickEvent(@NonNull Context context, @NonNull ProductDetailData successResult) {
         UnifyTracking.eventPDPAddToWishlist(successResult.getInfo().getProductName());
+        TrackingUtils.sendMoEngageAddWishlistEvent(successResult);
     }
 
     private void requestVideo(@NonNull Context context, @NonNull String productID) {

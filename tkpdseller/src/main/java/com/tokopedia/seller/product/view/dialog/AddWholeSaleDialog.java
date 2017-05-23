@@ -322,7 +322,8 @@ public class AddWholeSaleDialog extends DialogFragment {
     }
 
     protected void addItem(WholesaleModel object) {
-        validatePrice(wholesalePrice.getDoubleValue());
+        if(!isErrorReturn)
+            validatePrice(wholesalePrice.getDoubleValue());
 
         if (isErrorReturn)
             return;
