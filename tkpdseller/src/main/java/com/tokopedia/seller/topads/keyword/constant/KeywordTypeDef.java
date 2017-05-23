@@ -21,4 +21,10 @@ public @interface KeywordTypeDef {
     int KEYWORD_TYPE_NEGATIVE_BROAD  = 2;
     int KEYWORD_TYPE_NEGATIVE_PHRASE = 12;
     int KEYWORD_TYPE_NEGATIVE_EXACT  = 22;
+
+    String KEYWORD = "keyword";
+    String START_DATE = "start_date";
+    String END_DATE = "end_date";
+    String PAGE = "page";
+    String IS_POSITIVE = "is_positive";
 }

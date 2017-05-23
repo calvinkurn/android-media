@@ -7,6 +7,7 @@ import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.view.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -38,11 +39,19 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     }
 
     @Override
+    protected void fetchData() {
+        BaseKeywordParam baseKeywordParam
+                = topAdsKeywordListPresenter.generateParam(keyword, page, false,
+                startDate.getTime(), endDate.getTime());
+        topAdsKeywordListPresenter.fetchNegativeKeyword(
+                baseKeywordParam
+        );
+    }
+
+    @Override
     protected void searchAd() {
         super.searchAd();
-        topAdsKeywordListPresenter.fetchNegativeKeyword(
-                topAdsKeywordListPresenter.generateParam(getActivity(), keyword, page, false)
-        );
+        fetchData();
     }
 
     @Override

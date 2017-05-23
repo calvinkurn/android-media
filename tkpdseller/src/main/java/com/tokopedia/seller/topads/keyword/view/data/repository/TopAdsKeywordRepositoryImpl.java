@@ -1,6 +1,8 @@
 package com.tokopedia.seller.topads.keyword.view.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.product.domain.ShopInfoRepository;
+import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.topads.keyword.view.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.seller.topads.keyword.view.domain.TopAdsKeywordRepository;
 import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
@@ -8,6 +10,7 @@ import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDom
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 5/18/17.
@@ -16,14 +19,22 @@ import rx.Observable;
 public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
 
     private KeywordDashboardDataSouce keywordDashboardDataSouce;
+    private ShopInfoRepository shopInfoRepository;
 
     @Inject
-    public TopAdsKeywordRepositoryImpl(KeywordDashboardDataSouce keywordDashboardDataSouce) {
+    public TopAdsKeywordRepositoryImpl(KeywordDashboardDataSouce keywordDashboardDataSouce, ShopInfoRepository shopInfoRepository) {
         this.keywordDashboardDataSouce = keywordDashboardDataSouce;
+        this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
-    public Observable<KeywordDashboardDomain> getDashboardKeyword(RequestParams requestParams) {
-        return keywordDashboardDataSouce.getKeywordDashboard(requestParams);
+    public Observable<KeywordDashboardDomain> getDashboardKeyword(final RequestParams requestParams) {
+        return shopInfoRepository.getAddProductShopInfo().flatMap(new Func1<AddProductShopInfoDomainModel, Observable<KeywordDashboardDomain>>() {
+            @Override
+            public Observable<KeywordDashboardDomain> call(AddProductShopInfoDomainModel addProductShopInfoDomainModel) {
+                requestParams.putString("shop_id", addProductShopInfoDomainModel.getShopId());
+                return keywordDashboardDataSouce.getKeywordDashboard(requestParams);
+            }
+        });
     }
 }

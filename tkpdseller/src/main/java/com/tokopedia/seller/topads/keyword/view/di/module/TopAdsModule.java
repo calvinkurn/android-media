@@ -1,6 +1,13 @@
 package com.tokopedia.seller.topads.keyword.view.di.module;
 
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.seller.product.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.product.data.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.product.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.product.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.topads.keyword.view.data.repository.TopAdsKeywordRepositoryImpl;
 import com.tokopedia.seller.topads.keyword.view.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.seller.topads.keyword.view.data.source.cloud.api.KeywordApi;
@@ -29,9 +36,17 @@ public class TopAdsModule {
 
     @TopAdsKeywordScope
     @Provides
-    TopAdsKeywordRepository provideTopAdsKeywordRepository
-            (KeywordDashboardDataSouce keywordDashboardDataSouce) {
-        return new TopAdsKeywordRepositoryImpl(keywordDashboardDataSouce);
+    TopAdsKeywordRepository provideTopAdsKeywordRepository(
+            KeywordDashboardDataSouce keywordDashboardDataSouce,
+            ShopInfoRepository shopInfoRepository) {
+        return new TopAdsKeywordRepositoryImpl(
+                keywordDashboardDataSouce, shopInfoRepository);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource) {
+        return new ShopInfoRepositoryImpl(shopInfoDataSource);
     }
 
     @TopAdsKeywordScope
@@ -40,6 +55,18 @@ public class TopAdsModule {
             KeywordDashboardUseCase keywordDashboardUseCase
     ) {
         return new TopAdsKeywordListPresenterImpl(keywordDashboardUseCase);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(ShopApi.class);
+    }
+
+    @TopAdsKeywordScope
+    @Provides
+    SimpleDataResponseMapper<ShopModel> provideShopModelMapper() {
+        return new SimpleDataResponseMapper<>();
     }
 
 }
