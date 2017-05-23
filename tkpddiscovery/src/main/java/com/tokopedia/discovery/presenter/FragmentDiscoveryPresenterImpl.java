@@ -67,7 +67,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     private BrowseProductModel browseProductModel;
     int spanCount;
     private int topAdsPaging = 1;
-    private int wishlistButtonCounter = 0;
     private CacheInteractorImpl cacheInteractor;
     private RetrofitInteractorImpl retrofitInteractor;
 
@@ -200,15 +199,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void onWishlistButtonClick(ProductItem data, int itemPosition, Context context) {
         int productId = Integer.parseInt(data.getId());
         if (SessionHandler.isV4Login(context)) {
-            if (wishlistButtonCounter < 6) {
-                if (data.productAlreadyWishlist) {
-                    requestRemoveWishList(context, productId, itemPosition);
-                } else {
-                    requestAddWishList(context, productId, itemPosition);
-                }
-                wishlistButtonCounter++;
+            if (data.productAlreadyWishlist) {
+                requestRemoveWishList(context, productId, itemPosition);
             } else {
-                view.showToastMessage(context.getString(R.string.wishlist_too_much_attempt_error_message));
+                requestAddWishList(context, productId, itemPosition);
             }
         } else {
             cacheInteractor.deleteProductDetail(productId);

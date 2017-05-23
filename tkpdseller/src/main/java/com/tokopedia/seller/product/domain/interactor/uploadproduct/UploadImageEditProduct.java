@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.domain.interactor.uploadproduct;
 
 import com.tokopedia.core.base.utils.StringUtils;
+import com.tokopedia.seller.product.constant.ImageStatusTypeDef;
 import com.tokopedia.seller.product.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.domain.UploadProductRepository;
 import com.tokopedia.seller.product.domain.model.EditImageProductDomainModel;
@@ -11,22 +12,25 @@ import com.tokopedia.seller.product.domain.model.UploadProductInputDomainModel;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 5/8/17.
  */
 
-public class EditProductImage implements Func1<UploadProductInputDomainModel, Observable<List<ImageProductInputDomainModel>>> {
+public class UploadImageEditProduct implements Func1<UploadProductInputDomainModel, Observable<List<ImageProductInputDomainModel>>> {
     private String hostUrl;
     private String productId;
     private int serverId;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
-    public EditProductImage(UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository) {
+    public UploadImageEditProduct(UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
@@ -36,26 +40,17 @@ public class EditProductImage implements Func1<UploadProductInputDomainModel, Ob
         productId = domainModel.getProductId();
         return Observable.from(domainModel.getProductPhotos().getPhotos())
                 .flatMap(new EditProductSigleImage())
-                .filter(new Func1<ImageProductInputDomainModel, Boolean>() {
-                    @Override
-                    public Boolean call(ImageProductInputDomainModel imageProductInputDomainModel) {
-                        return imageProductInputDomainModel != null && StringUtils.isNotBlank(imageProductInputDomainModel.getPicId());
-                    }
-                })
+                .doOnNext(new UpdateDraft(domainModel, draftUpdate))
                 .toList();
     }
 
     private class EditProductSigleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
         @Override
         public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel domainModel) {
-            if (StringUtils.isNotBlank(domainModel.getImagePath())){
+            if (domainModel.getStatus() == ImageStatusTypeDef.WILL_BE_UPLOADED){
                 return Observable
                         .just(domainModel)
                         .flatMap(new UploadNewImage());
-            } else if (StringUtils.isBlank(domainModel.getUrl())){
-                return Observable
-                        .just(domainModel)
-                        .flatMap(new DeleteImage());
             }
             return Observable.just(domainModel);
         }
@@ -91,16 +86,25 @@ public class EditProductImage implements Func1<UploadProductInputDomainModel, Ob
                 @Override
                 public ImageProductInputDomainModel call(EditImageProductDomainModel domainModel) {
                     this.domainModel.setPicId(domainModel.getPicId());
+                    this.domainModel.setStatus(ImageStatusTypeDef.ALREADY_UPLOADED);
                     return this.domainModel;
                 }
             }
         }
+    }
 
-        private class DeleteImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
-            @Override
-            public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel domainModel) {
-                return uploadProductRepository.deleteProductPicture(domainModel.getPicId(), productId);
-            }
+    private static class UpdateDraft implements Action1<ImageProductInputDomainModel> {
+        private final UploadProductInputDomainModel domainModel;
+        private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
+
+        public UpdateDraft(UploadProductInputDomainModel domainModel, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
+            this.domainModel = domainModel;
+            this.draftUpdate = draftUpdate;
+        }
+
+        @Override
+        public void call(ImageProductInputDomainModel imageProductInputDomainModel) {
+            draftUpdate.updateDraft(domainModel);
         }
     }
 }

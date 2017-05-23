@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.view.mapper;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.constant.SwitchTypeDef;
+import com.tokopedia.seller.product.constant.InvenageSwitchTypeDef;
 import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class AnalyticsMapper {
         if(viewModel.getProductWholesaleList()!= null && viewModel.getProductWholesaleList().size() >0 ){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_WHOLESALE);
         }
-        if(viewModel.getProductInvenageSwitch() == SwitchTypeDef.TYPE_ACTIVE){
+        if(viewModel.getProductInvenageSwitch() == InvenageSwitchTypeDef.TYPE_ACTIVE){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_STOCK_MANAGEMENT);
         }
         if(viewModel.getProductReturnable() == freeReturnActive){

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.seller.product.data.repository.MyEtalaseRepositoryImpl;
 import com.tokopedia.seller.product.data.source.MyEtalaseDataSource;
 import com.tokopedia.seller.product.data.source.cloud.api.MyEtalaseApi;
@@ -38,7 +39,7 @@ public class EtalasePickerModule {
 
     @EtalasePickerScope
     @Provides
-    MyEtalaseApi provideMyEtalaseApi(@WsV4Qualifier Retrofit retrofit){
+    MyEtalaseApi provideMyEtalaseApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
         return retrofit.create(MyEtalaseApi.class);
     }
 
