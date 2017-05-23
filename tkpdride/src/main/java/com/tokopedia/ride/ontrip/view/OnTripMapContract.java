@@ -210,5 +210,7 @@ public interface OnTripMapContract {
         void actionGoToCurrentLocation();
 
         void onResume();
+
+        void onPause();
     }
 }

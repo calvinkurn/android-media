@@ -33,6 +33,7 @@ import com.google.maps.android.PolyUtil;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
@@ -56,12 +57,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func0;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by alvarisi on 3/24/17.
@@ -84,8 +90,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-
-    private Handler handler = new Handler();
+    private CompositeSubscription subscription;
 
     public OnTripMapPresenter(CreateRideRequestUseCase createRideRequestUseCase,
                               CancelRideRequestUseCase cancelRideRequestUseCase,
@@ -101,6 +106,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         this.getRideRequestUseCase = getRideRequestUseCase;
         this.getFareEstimateUseCase = getFareEstimateUseCase;
         this.getRideProductUseCase = getRideProductUseCase;
+        subscription = new CompositeSubscription();
     }
 
 
@@ -489,82 +495,77 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         });
     }
 
-
-    /**
-     * This is a task to poll the request details api after every 2 seconds
-     */
-    private Runnable timedTask = new Runnable() {
-        @Override
-        public void run() {
-
-            //if get view is null
-            if (getView() == null) {
-                if (handler != null) {
-                    handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
-                }
-
-                return;
-            }
-
-
-            //request the current ride details
-            RequestParams requestParams = getView().getCurrentRequestParams(getView().getRequestId());
-            if (mCurrentLocation != null) {
-                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
-                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
-            }
-
-            getRideRequestUseCase.execute(requestParams,
-                    new Subscriber<RideRequest>() {
-                        @Override
-                        public void onCompleted() {
-                            CommonUtils.dumper("GetCurrentRideRequestService timedTask complete");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                            CommonUtils.dumper("GetCurrentRideRequestService timedTask error = " + e.toString());
-                        }
-
-                        @Override
-                        public void onNext(RideRequest rideRequest) {
-                            CommonUtils.dumper("GetCurrentRideRequestService timedTask onNext");
-
-                            if (isViewAttached()) {
-                                if (activeRideRequest == null) {
-                                    if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
-                                        if (getView()
-                                                .getActiveProductNameInCache()
-                                                .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
-                                                ) {
-                                            getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
-                                        } else {
-                                            getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
-                                        }
-                                    }
-                                    actionGetProductDetailToDecideIcon(rideRequest);
-                                }
-                                activeRideRequest = rideRequest;
-
-                                proccessGetCurrentRideRequest(rideRequest);
-
-                                //update poll wait
-                                if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
-                                    CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
-                                    CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
-                                }
-
-                                handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
-                            }
-                        }
-                    });
-        }
-    };
-
     @Override
     public void startGetRequestDetailsPeriodicService(String requestId) {
-        handler.postDelayed(timedTask, 100);
+        subscription.add(Observable.defer(new Func0<Observable<RideRequest>>() {
+                    @Override
+                    public Observable<RideRequest> call() {
+                        if (isViewAttached()) {
+
+                            RequestParams requestParams = getView().getCurrentRequestParams(getView().getRequestId());
+                            if (mCurrentLocation != null) {
+                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LATITUDE, mCurrentLocation.getLatitude());
+                                requestParams.putObject(GetRideRequestDetailUseCase.PARAM_APP_LONGITUDE, mCurrentLocation.getLongitude());
+                            }
+                            return getRideRequestUseCase.createObservable(requestParams);
+                        }
+                        return Observable.error(null);
+                    }
+                }).repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return observable.concatMap(new Func1<Void, Observable<?>>() {
+                            @Override
+                            public Observable<?> call(Void aVoid) {
+                                return Observable.timer(CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY, TimeUnit.MILLISECONDS);
+                            }
+                        });
+                    }
+                })
+                        .subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<RideRequest>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onNext(RideRequest rideRequest) {
+                                if (isViewAttached()) {
+                                    if (activeRideRequest == null) {
+                                        if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
+                                            if (getView()
+                                                    .getActiveProductNameInCache()
+                                                    .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
+                                                    ) {
+                                                getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
+                                            } else {
+                                                getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
+                                            }
+                                        }
+                                        actionGetProductDetailToDecideIcon(rideRequest);
+                                    }
+                                    activeRideRequest = rideRequest;
+
+                                    proccessGetCurrentRideRequest(rideRequest);
+
+                                    //update poll wait
+                                    if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
+                                        CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
+                                        CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
+                                    }
+                                }
+                            }
+                        })
+        );
+
     }
 
     @Override
@@ -798,9 +799,15 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
     @Override
     public void onResume() {
         getOverViewPolyLine(true, true);
+        subscription = RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         if (getView().getRequestId() != null) {
-            handler.removeCallbacks(timedTask);
-            handler.postDelayed(timedTask, CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY);
+            startGetRequestDetailsPeriodicService(getView().getRequestId());
         }
     }
+
+    @Override
+    public void onPause() {
+        RxUtils.unsubscribeIfNotNull(subscription);
+    }
+
 }
