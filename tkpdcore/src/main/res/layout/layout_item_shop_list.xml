@@ -53,7 +53,7 @@
             <ImageView
                 android:id="@+id/reputation_view"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/shop_list_reputation_view_height"
                 />
             
             <TextView

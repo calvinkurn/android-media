@@ -159,21 +159,21 @@ public class BrowseShopAdapter extends ProductAdapter {
                 itemPreview1.setVisibility(View.VISIBLE);
                 ImageHandler.LoadImage(itemPreview1, shopModel.getProductImages().get(0));
             } catch (IndexOutOfBoundsException e) {
-                itemPreview1.setVisibility(View.GONE);
+                itemPreview1.setVisibility(View.INVISIBLE);
             }
 
             try{
                 itemPreview2.setVisibility(View.VISIBLE);
                 ImageHandler.LoadImage(itemPreview2, shopModel.getProductImages().get(1));
             } catch (IndexOutOfBoundsException e) {
-                itemPreview2.setVisibility(View.GONE);
+                itemPreview2.setVisibility(View.INVISIBLE);
             }
 
             try{
                 itemPreview3.setVisibility(View.VISIBLE);
                 ImageHandler.LoadImage(itemPreview3, shopModel.getProductImages().get(2));
             } catch (IndexOutOfBoundsException e) {
-                itemPreview3.setVisibility(View.GONE);
+                itemPreview3.setVisibility(View.INVISIBLE);
             }
         }
     }
