@@ -14,8 +14,8 @@
         android:layout_weight="3.0"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingTop="15dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:visibility="visible">
 
         <TextView
@@ -50,8 +50,8 @@
         android:background="?selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingTop="17dp">
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
