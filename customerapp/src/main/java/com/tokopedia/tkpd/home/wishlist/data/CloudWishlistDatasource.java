@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.home.wishlist.data;
 
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 
 import java.util.concurrent.TimeUnit;
@@ -24,8 +25,12 @@ public class CloudWishlistDatasource {
     }
 
     public Observable<DataWishlist> searchWishlist(String userId, String query, int page) {
-        return mojitoService.getApi().searchWishlist(userId, query, page, 10)
+        return mojitoService.getApi().searchWishlist(userId, query, page, 10, generateDeviceHeader())
                 .debounce(150, TimeUnit.MILLISECONDS)
                 .map(wishlistDataMapper);
+    }
+
+    public String generateDeviceHeader() {
+        return "android-"+ GlobalConfig.VERSION_NAME;
     }
 }

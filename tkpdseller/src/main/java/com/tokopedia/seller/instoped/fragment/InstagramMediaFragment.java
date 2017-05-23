@@ -134,12 +134,6 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         }
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        instagramMedia.initData();
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -149,6 +143,8 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
         emptyImage = (ImageView) view.findViewById(R.id.no_result_image);
         prepareView();
         setListener();
+
+        instagramMedia.initData();
         return view;
     }
 
@@ -177,7 +173,7 @@ public class InstagramMediaFragment extends Fragment implements InstagramMediaFr
 
     @Override
     public void updateTitleView(int itemCount, int maxItemCount){
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Produk", itemCount, maxItemCount));
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(String.format("%d / %d Gambar", itemCount, maxItemCount));
     }
 
     @Override

@@ -34,6 +34,6 @@ public class GetFeedsUseCase extends UseCase<List<DataFeedDomain>> {
 
     @Override
     public Observable<List<DataFeedDomain>> createObservable(RequestParams requestParams) {
-        return feedRepository.getFeeds();
+        return feedRepository.getFeeds(requestParams);
     }
 }

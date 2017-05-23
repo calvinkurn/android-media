@@ -1,5 +1,6 @@
 package com.tokopedia.seller.gmstat.views;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +17,12 @@ import android.widget.TextView;
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.dynamicfilter.facade.models.HadesV1Model;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.Router;
 import com.tokopedia.seller.gmstat.models.GetKeyword;
 import com.tokopedia.seller.gmstat.models.GetShopCategory;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +83,8 @@ public class MarketInsightViewHelper {
     }
 
     public void addProductMarketInsight() {
-        ProductActivity.moveToAddProduct(view.getContext());
+        Intent intent = new Intent(view.getContext(), ProductAddActivity.class);
+        view.getContext().startActivity(intent);
 
         // analytic below : https://phab.tokopedia.com/T18496
         UnifyTracking.eventClickGMStatMarketInsight();

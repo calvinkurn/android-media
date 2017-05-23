@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository;
 
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 
 import java.util.List;
@@ -12,6 +13,6 @@ import rx.Observable;
 
 public interface FeedRepository {
 
-    Observable<List<DataFeedDomain>> getFeeds();
+    Observable<List<DataFeedDomain>> getFeeds(RequestParams requestParams);
 
 }

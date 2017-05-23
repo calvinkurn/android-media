@@ -26,6 +26,7 @@
         style="@style/TextView.TopAds.Body.Black"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
+        android:textSize="@dimen/font_medium"
         tools:text="@string/top_ads_empty_group_title_promo_text"/>
 
     <TextView
@@ -33,8 +34,8 @@
         style="@style/TextView.TopAds.Body.Gray"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
-        android:maxLines="3"
-        tools:text="@string/top_ads_empty_group_promo_content_empty_text"/>
+        android:maxLines="4"
+        tools:text="@string/top_ads_empty_group_promo_content_text"/>
 
     <TextView
         android:id="@+id/text_view_empty_content_item_text"
@@ -42,5 +43,15 @@
         android:layout_margin="@dimen/margin_med"
         android:visibility="gone"
         tools:text="@string/top_ads_empty_group_promo_content_item_no_text"/>
+
+    <!-- text will be override programmatically -->
+    <Button
+        android:id="@+id/button_add_promo"
+        style="@style/Button.Submit.Green"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/menu_top_ads_add_promo_group"/>
 
 </LinearLayout>

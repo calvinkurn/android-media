@@ -7,6 +7,7 @@ import com.apollographql.apollo.ApolloClient;
 import com.apollographql.apollo.ApolloWatcher;
 import com.apollographql.apollo.api.Response;
 import com.tkpdfeed.feeds.Feeds;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
@@ -24,20 +25,19 @@ public class CloudFeedDataSource {
     private ApolloClient apolloClient;
     private Context context;
     private FeedListMapper feedListMapper;
-    private String cursor;
+    public static final String KEY_CURSOR = "cursor";
 
     public CloudFeedDataSource(Context context,
                                ApolloClient apolloClient,
-                               FeedListMapper feedListMapper,
-                               String cursor) {
+                               FeedListMapper feedListMapper) {
 
         this.apolloClient = apolloClient;
         this.context = context;
         this.feedListMapper = feedListMapper;
-        this.cursor = cursor;
     }
 
-    public Observable<List<DataFeedDomain>> getFeedsList() {
+    public Observable<List<DataFeedDomain>> getFeedsList(RequestParams requestParams) {
+        String cursor = requestParams.getString(KEY_CURSOR, "");
         ApolloWatcher<Feeds.Data> apolloWatcher = apolloClient.newCall(Feeds.builder()
                 .userID(getLoginId(context))
                 .limit(5)

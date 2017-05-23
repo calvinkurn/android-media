@@ -33,6 +33,7 @@ public class FragmentIndexMainHeader {
     RelativeLayout emptyLayout;
     RelativeLayout emptyHistory;
     TextView findFavoriteShop;
+    View officialStoreLinkContainer;
 
     // data
     private Data data;
@@ -83,6 +84,7 @@ public class FragmentIndexMainHeader {
         emptyHistory = (RelativeLayout) parentView.findViewById(R.id.empty_history);
         findNow = (TextView) parentView.findViewById(R.id.find_now);
         findFavoriteShop = (TextView) parentView.findViewById(R.id.find_favorite_shop);
+        officialStoreLinkContainer = parentView.findViewById(R.id.official_store_link_container);
         title = (TextView) parentView.findViewById(R.id.title);
 
         // get recycler view
@@ -202,5 +204,9 @@ public class FragmentIndexMainHeader {
 
     public void setFindFavoriteShop(TextView findFavoriteShop) {
         this.findFavoriteShop = findFavoriteShop;
+    }
+
+    public View getOfficialStoreLinkContainer() {
+        return officialStoreLinkContainer;
     }
 }

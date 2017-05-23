@@ -22,6 +22,8 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.LabelSwitch;
+import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
@@ -29,8 +31,6 @@ import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelSwitch;
-import com.tokopedia.seller.topads.view.widget.TopAdsLabelView;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
@@ -41,25 +41,25 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
-    protected TopAdsLabelView priceAndSchedule;
-    protected TopAdsLabelView name;
-    private TopAdsLabelSwitch status;
-    private TopAdsLabelView maxBid;
-    private TopAdsLabelView avgCost;
-    protected TopAdsLabelView start;
-    protected TopAdsLabelView end;
-    protected TopAdsLabelView dailyBudget;
-    private TopAdsLabelView sent;
-    private TopAdsLabelView impr;
-    private TopAdsLabelView click;
-    private TopAdsLabelView ctr;
-    protected TopAdsLabelView favorite;
+    protected LabelView priceAndSchedule;
+    protected LabelView name;
+    private LabelSwitch status;
+    private LabelView maxBid;
+    private LabelView avgCost;
+    protected LabelView start;
+    protected LabelView end;
+    protected LabelView dailyBudget;
+    private LabelView sent;
+    private LabelView impr;
+    private LabelView click;
+    private LabelView ctr;
+    protected LabelView favorite;
 
     private SwipeToRefresh swipeToRefresh;
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    private Ad ad;
+    protected Ad ad;
     protected String adId;
 
     protected abstract void refreshAd();
@@ -78,20 +78,20 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
-        name = (TopAdsLabelView) view.findViewById(R.id.name);
-        status = (TopAdsLabelSwitch) view.findViewById(R.id.status);
-        maxBid = (TopAdsLabelView) view.findViewById(R.id.max_bid);
-        avgCost = (TopAdsLabelView) view.findViewById(R.id.avg_cost);
-        start = (TopAdsLabelView) view.findViewById(R.id.start);
-        end = (TopAdsLabelView) view.findViewById(R.id.end);
-        dailyBudget = (TopAdsLabelView) view.findViewById(R.id.daily_budget);
-        sent = (TopAdsLabelView) view.findViewById(R.id.sent);
-        impr = (TopAdsLabelView) view.findViewById(R.id.impr);
-        click = (TopAdsLabelView) view.findViewById(R.id.click);
-        ctr = (TopAdsLabelView) view.findViewById(R.id.ctr);
-        favorite = (TopAdsLabelView) view.findViewById(R.id.favorite);
+        name = (LabelView) view.findViewById(R.id.name);
+        status = (LabelSwitch) view.findViewById(R.id.status);
+        maxBid = (LabelView) view.findViewById(R.id.max_bid);
+        avgCost = (LabelView) view.findViewById(R.id.avg_cost);
+        start = (LabelView) view.findViewById(R.id.start);
+        end = (LabelView) view.findViewById(R.id.end);
+        dailyBudget = (LabelView) view.findViewById(R.id.daily_budget);
+        sent = (LabelView) view.findViewById(R.id.sent);
+        impr = (LabelView) view.findViewById(R.id.impr);
+        click = (LabelView) view.findViewById(R.id.click);
+        ctr = (LabelView) view.findViewById(R.id.ctr);
+        favorite = (LabelView) view.findViewById(R.id.favorite);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        priceAndSchedule = (TopAdsLabelView) view.findViewById(R.id.title_price_and_schedule);
+        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {

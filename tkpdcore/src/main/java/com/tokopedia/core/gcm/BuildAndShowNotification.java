@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -18,9 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.NotificationCenter;
 import com.tokopedia.core.R;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -28,7 +25,6 @@ import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdState;
 
 import java.io.File;
 import java.util.List;
@@ -37,8 +33,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_UPDATE_APPS_TITLE;
-import static com.tokopedia.core.gcm.Constants.EXTRA_PLAYSTORE_URL;
 
 /**
  * @author by alvarisi on 1/11/17.
@@ -223,7 +217,8 @@ public class BuildAndShowNotification {
         }
 
         stackBuilder.addNextIntent(notificationPass.getIntent());
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (configuration.isVibrate() && configuration.isBell()) {
