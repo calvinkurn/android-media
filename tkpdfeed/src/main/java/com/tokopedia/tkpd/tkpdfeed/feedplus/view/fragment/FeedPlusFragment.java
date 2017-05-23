@@ -12,11 +12,8 @@ import android.view.ViewGroup;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 
@@ -49,10 +46,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * @author by nisie on 5/15/17.
  */
@@ -61,16 +54,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
     @Inject
     FeedPlusPresenter presenter;
 
-    private Unbinder unbinder;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
@@ -83,15 +72,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        DaggerAppComponent daggerAppComponent =
-                (DaggerAppComponent) DaggerAppComponent.builder()
-                        .appModule(new AppModule(getContext()))
-                        .activityModule(new ActivityModule(getActivity()))
-                        .build();
+        AppComponent appComponent = getComponent(AppComponent.class);
 
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                        .appComponent(daggerAppComponent)
+                        .appComponent(appComponent)
                         .build();
 
         daggerFeedPlusComponent.inject(this);
@@ -118,7 +103,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -216,9 +202,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(imageBlog);
         list.add(videoBlog);
 
-        list.add(new ActivityCardViewModel("Nisie 1", listProduct));
-        list.add(new ActivityCardViewModel("Nisie 2", listProduct2));
-        list.add(new ActivityCardViewModel("Nisie 3", listProduct3));
+        list.add(new ActivityCardViewModel(listProduct));
+        list.add(new ActivityCardViewModel(listProduct2));
+        list.add(new ActivityCardViewModel(listProduct3));
         list.add(new PromoCardViewModel(listPromo));
 
         ArrayList<ProductFeedViewModel> listOfficialStore = new ArrayList<>();
@@ -238,9 +224,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new OfficialStoreViewModel("https://ecs7.tokopedia.net/img/mobile/banner-4.png", listOfficialStore));
 //        list.add(new ActivityCardViewModel("Nisie 4", listProduct4));
 //        list.add(new ActivityCardViewModel("Nisie 5", listProduct5));
-        list.add(new ActivityCardViewModel("Nisie 6", listProduct6));
+        list.add(new ActivityCardViewModel(listProduct6));
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
-        list.add(new ActivityCardViewModel("Nisie 8", listProduct8));
+        list.add(new ActivityCardViewModel(listProduct8));
 
         adapter.addList(list);
         adapter.notifyDataSetChanged();
@@ -264,22 +250,27 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
     @Override
-    public void onShareButtonClicked() {
+    public void onShareButtonClicked(String shareUrl,
+                                     String title,
+                                     String imgUrl,
+                                     String contentMessage) {
+
         if (shareBottomDialog == null) {
             shareBottomDialog = new ShareBottomDialog(
                     FeedPlusFragment.this,
                     callbackManager);
         }
 
-        shareBottomDialog.setShareModel(new ShareModel("https://www.tokopedia.com/",
-                "Tokopedia",
-                "",
-                ""));
+        shareBottomDialog.setShareModel(
+                new ShareModel(shareUrl,
+                        title,
+                        imgUrl,
+                        contentMessage));
+
         shareBottomDialog.show();
     }
 
@@ -311,9 +302,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onOpenVideo(String videoUrl) {
-        Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl);
+    public void onOpenVideo(String videoUrl, String subtitle) {
+        Intent intent = TransparentVideoActivity.getIntent(getActivity(), videoUrl, subtitle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
+
     }
 
 //    @Override

@@ -7,16 +7,30 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+
 /**
  * @author by nisie on 5/18/17.
  */
 
-public class FeedPlusDetailActivity extends BasePresenterActivity {
+public class FeedPlusDetailActivity extends BasePresenterActivity implements HasComponent {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
+
+    public static Intent getIntent(FragmentActivity activity, ActivityCardViewModel activityCardViewModel) {
+        Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
+        intent.putExtra(EXTRA_DATA, activityCardViewModel);
+        return intent;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -41,13 +55,16 @@ public class FeedPlusDetailActivity extends BasePresenterActivity {
     @Override
     protected void initView() {
         Bundle bundle = new Bundle();
-        if(getIntent().getExtras()!= null)
+        if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
 
         FeedPlusDetailFragment fragment = FeedPlusDetailFragment.createInstance(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (getSupportFragmentManager().findFragmentByTag(FeedPlusDetailFragment.class.getSimpleName()) == null) {
-            fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        if (getSupportFragmentManager().findFragmentByTag(
+                FeedPlusDetailFragment.class.getSimpleName()) == null) {
+            fragmentTransaction.replace(R.id.container,
+                    fragment,
+                    fragment.getClass().getSimpleName());
         } else
             fragmentTransaction.replace(R.id.container,
                     getSupportFragmentManager().findFragmentByTag(
@@ -71,9 +88,4 @@ public class FeedPlusDetailActivity extends BasePresenterActivity {
 
     }
 
-    public static Intent getIntent(FragmentActivity activity, ActivityCardViewModel activityCardViewModel) {
-        Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
-        intent.putExtra(EXTRA_DATA, activityCardViewModel);
-        return intent;
-    }
 }

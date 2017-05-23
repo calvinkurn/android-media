@@ -8,30 +8,43 @@
 
     <ImageView
         android:id="@+id/shop_avatar"
-        android:layout_width="@dimen/user_ava"
-        android:layout_height="@dimen/user_ava"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_marginRight="@dimen/margin_small"
         android:background="@drawable/cards_ui_2"
         tools:src="@drawable/ic_check_green_24dp" />
 
     <ImageView
         android:id="@+id/gold_merchant"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/ic_badge_size"
+        android:layout_height="@dimen/ic_badge_size"
         android:layout_alignTop="@id/shop_avatar"
         android:layout_toEndOf="@id/shop_avatar"
+        android:layout_marginTop="2dp"
+        android:visibility="visible"
         android:layout_toRightOf="@id/shop_avatar"
         android:src="@drawable/ic_shop_gold" />
+
+    <ImageView
+        android:id="@+id/official_store"
+        android:layout_width="@dimen/ic_badge_size"
+        android:layout_height="@dimen/ic_badge_size"
+        android:layout_alignTop="@id/shop_avatar"
+        android:layout_toEndOf="@id/gold_merchant"
+        android:layout_toRightOf="@id/gold_merchant"
+        android:layout_marginTop="2dp"
+        tools:visibility="gone"
+        android:src="@drawable/ic_official" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/gold_merchant"
+        android:layout_alignTop="@id/official_store"
         android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_toEndOf="@id/gold_merchant"
-        android:layout_toRightOf="@id/gold_merchant"
-        tools:text="MaroonVape supwpaiwiajjfawioi \nubah 1 produk " />
+        android:layout_toEndOf="@id/official_store"
+        android:layout_toRightOf="@id/official_store"
+        tools:text="MaroonVape supwpaiwiasdasdasdasdasioi " />
 
     <TextView
         android:id="@+id/time"

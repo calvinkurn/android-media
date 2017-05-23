@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="video_height">200dp</dimen>
+    <dimen name="ic_badge_size">15dp</dimen>
+    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="share_button_height">52dp</dimen>
+
+</resources>

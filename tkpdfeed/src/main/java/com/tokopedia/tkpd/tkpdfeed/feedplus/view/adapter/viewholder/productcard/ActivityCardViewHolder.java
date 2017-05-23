@@ -21,28 +21,32 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel
  * @author by nisie on 5/16/17.
  */
 
-public class ProductCardViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
+public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_feed_product_multi;
+    public static final int LAYOUT = R.layout.list_feed_activity_card;
 
     TextView title;
     ImageView shopAvatar;
     ImageView goldMerchantBadge;
+    ImageView officialStoreBadge;
     TextView time;
     View shareButton;
+    View buyButton;
     RecyclerView recyclerView;
 
     private FeedProductAdapter adapter;
     private FeedPlus.View viewListener;
 
-    public ProductCardViewHolder(View itemView, FeedPlus.View viewListener) {
+    public ActivityCardViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
 
         title = (TextView) itemView.findViewById(R.id.title);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
         time = (TextView) itemView.findViewById(R.id.time);
         shareButton = itemView.findViewById(R.id.share_button);
+        buyButton = itemView.findViewById(R.id.buy_button);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
 
         this.viewListener = viewListener;
@@ -105,6 +109,11 @@ public class ProductCardViewHolder extends AbstractViewHolder<ActivityCardViewMo
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
+        if (activityCardViewModel.getHeader().isOfficialStore())
+            officialStoreBadge.setVisibility(View.VISIBLE);
+        else
+            officialStoreBadge.setVisibility(View.GONE);
+
         time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getPostTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
@@ -122,12 +131,32 @@ public class ProductCardViewHolder extends AbstractViewHolder<ActivityCardViewMo
 
     }
 
-    public void setFooter(ActivityCardViewModel footer) {
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onShareButtonClicked();
-            }
-        });
+    public void setFooter(final ActivityCardViewModel viewModel) {
+        if (viewModel.getListProduct().size() > 1) {
+            shareButton.setVisibility(View.VISIBLE);
+            buyButton.setVisibility(View.GONE);
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String titleText = viewModel.getHeader().getShopName()
+                            + viewModel.getHeader().getActionText();
+                    viewListener.onShareButtonClicked(
+                            viewModel.getShareUrl(),
+                            titleText,
+                            "",
+                            titleText
+                            );
+                }
+            });
+        } else {
+            shareButton.setVisibility(View.GONE);
+            buyButton.setVisibility(View.VISIBLE);
+            buyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToBuyProduct(viewModel.getListProduct().get(0));
+                }
+            });
+        }
     }
 }

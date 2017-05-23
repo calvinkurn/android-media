@@ -33,8 +33,7 @@ public class VideoBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
     TextView title;
     TextView content;
     ImageView videoCover;
-    VideoPlayerView video;
-    private VideoPlayerManager<MetaData> videoPlayerManager;
+    View shareButton;
 
     private final FeedPlus.View viewListener;
 
@@ -43,14 +42,7 @@ public class VideoBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
         title = (TextView) itemView.findViewById(R.id.title);
         content = (TextView) itemView.findViewById(R.id.content);
         videoCover = (ImageView) itemView.findViewById(R.id.video_cover);
-        video = (VideoPlayerView) itemView.findViewById(R.id.video_player);
-
-        videoPlayerManager = new SingleVideoPlayerManager(new PlayerItemChangeListener() {
-            @Override
-            public void onPlayerItemChanged(MetaData metaData) {
-
-            }
-        });
+        shareButton = itemView.findViewById(R.id.share_button);
 
         this.viewListener = viewListener;
     }
@@ -69,43 +61,23 @@ public class VideoBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
 
         ImageHandler.LoadImage(videoCover, viewModel.getImageUrl());
 
-//        if (!viewModel.getVideoUrl().equals("")
-//                && !viewModel.getImageUrl().equals("")) {
-//            videoCover.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    video.setVisibility(View.VISIBLE);
-//                    videoCover.setVisibility(View.GONE);
-//                    videoPlayerManager.playNewVideo(null, video, viewModel.getVideoUrl());
-//                }
-//            });
-//
-//            video.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener() {
-//                @Override
-//                public void onVideoPreparedMainThread() {
-//                    videoCover.setVisibility(View.GONE);
-//                    video.setVisibility(View.VISIBLE);
-//
-//                }
-//
-//                @Override
-//                public void onVideoStoppedMainThread() {
-//                    videoCover.setVisibility(View.VISIBLE);
-//                    video.setVisibility(View.GONE);
-//                }
-//
-//                @Override
-//                public void onVideoCompletionMainThread() {
-//                    videoCover.setVisibility(View.VISIBLE);
-//                    video.setVisibility(View.GONE);
-//                }
-//            });
-//        }
-
         videoCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onOpenVideo(viewModel.getVideoUrl());
+                viewListener.onOpenVideo(viewModel.getVideoUrl(),
+                        viewModel.getTitle());
+            }
+        });
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onShareButtonClicked(
+                        viewModel.getUrl(),
+                        viewModel.getTitle(),
+                        viewModel.getImageUrl(),
+                        viewModel.getContent()
+                );
             }
         });
     }

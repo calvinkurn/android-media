@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/tkpd_bg_color"
     android:orientation="vertical">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
@@ -15,6 +16,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:scrollbars="vertical"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_marginBottom="@dimen/margin_small"/>
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </LinearLayout>
