@@ -134,12 +134,15 @@
             android:label="@string/title_top_ads_dashboard"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordFilterActivity"
+            android:label="@string/title_top_ads_dashboard"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordAddDetailActivity"
             android:label="@string/title_top_ads_keyword_add_detail"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:label="@string/top_ads_title_keyword_add_keyword"
