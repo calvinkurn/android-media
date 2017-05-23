@@ -17,8 +17,6 @@ import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
-import com.tokopedia.core.network.entity.topads.TopAds;
-import com.tokopedia.core.network.entity.topads.TopAdsResponse;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
@@ -40,7 +38,6 @@ import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 import com.tokopedia.discovery.model.NetworkParam;
 import com.tokopedia.discovery.model.ProductModel;
-import com.tokopedia.discovery.model.ProductModelMapper;
 import com.tokopedia.discovery.util.PagingHandlerUtil;
 import com.tokopedia.discovery.view.FragmentBrowseProductView;
 
