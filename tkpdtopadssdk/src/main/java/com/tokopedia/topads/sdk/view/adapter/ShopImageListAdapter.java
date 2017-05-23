@@ -3,6 +3,8 @@ package com.tokopedia.topads.sdk.view.adapter;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,10 +57,23 @@ public class ShopImageListAdapter extends RecyclerView.Adapter<ShopImageListAdap
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
+        private CardView cardView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             imageView = (ImageView) itemView.findViewById(R.id.image);
+            cardView = (CardView) itemView.findViewById(R.id.image_container);
+            if (layoutViewHolder == R.layout.layout_shop_product_image_big) {
+                DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                int dpWidth = (int) ((displayMetrics.widthPixels / displayMetrics.density) / 3) -
+                        ((int) (5 / displayMetrics.density) * 2);
+                dpWidth = toPixels(dpWidth, displayMetrics);
+                cardView.setLayoutParams(new CardView.LayoutParams(dpWidth, dpWidth));
+            }
+        }
+
+        private int toPixels(int dp, DisplayMetrics metrics) {
+            return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, metrics);
         }
     }
 }
