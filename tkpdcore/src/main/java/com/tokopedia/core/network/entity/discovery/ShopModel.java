@@ -2,6 +2,8 @@ package com.tokopedia.core.network.entity.discovery;
 
 import com.tokopedia.core.var.RecyclerViewItem;
 
+import java.util.List;
+
 /**
  * @author kulomady on 11/26/16.
  */
@@ -15,6 +17,9 @@ public class ShopModel extends RecyclerViewItem {
     String shopId;
     String isGold;
     String luckyImage;
+    String location;
+    String reputationImageUrl;
+    List<String> productImages;
     boolean isOfficial;
 
     public ShopModel() {
@@ -31,6 +36,9 @@ public class ShopModel extends RecyclerViewItem {
         isGold = shop.shopGoldShop;
         luckyImage = shop.shopLucky;
         isOfficial = shop.isOfficial;
+        location = shop.shopLocation;
+        reputationImageUrl = shop.reputationImageUri;
+        productImages = shop.productImages;
     }
 
     public String getShopImage() {
@@ -61,6 +69,18 @@ public class ShopModel extends RecyclerViewItem {
         return luckyImage;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public String getReputationImageUrl() {
+        return reputationImageUrl;
+    }
+
+    public List<String> getProductImages() {
+        return productImages;
+    }
+
     public boolean isOfficial() {
         return isOfficial;
     }
@@ -80,6 +100,9 @@ public class ShopModel extends RecyclerViewItem {
         dest.writeString(this.shopId);
         dest.writeString(this.isGold);
         dest.writeString(this.luckyImage);
+        dest.writeString(this.location);
+        dest.writeString(this.reputationImageUrl);
+        dest.writeStringList(this.productImages);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
     }
 
@@ -92,6 +115,9 @@ public class ShopModel extends RecyclerViewItem {
         this.shopId = in.readString();
         this.isGold = in.readString();
         this.luckyImage = in.readString();
+        this.location = in.readString();
+        this.reputationImageUrl = in.readString();
+        in.readStringList(this.productImages);
         this.isOfficial = in.readByte() != 0;
     }
 
