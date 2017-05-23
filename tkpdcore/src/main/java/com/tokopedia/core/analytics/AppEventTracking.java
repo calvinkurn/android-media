@@ -114,7 +114,7 @@ public interface AppEventTracking {
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
-        String CLICK_VIEW_ALL_OS = "clickOS";
+        String CLICK_VIEW_ALL_OS = "clickOfficialStore";
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
     }
