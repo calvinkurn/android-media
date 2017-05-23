@@ -49,7 +49,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                 .intent(handlerIntent)
                 .multipleSender(false)
                 .build();
-        buildAndShowNotification.buildAndShowNotification(applinkNotificationPass, configuration);
+        buildAndShowNotification.buildAndShowApplinkNotification(applinkNotificationPass, data, configuration);
     }
 
     @Override
