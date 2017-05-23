@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
-import com.tokopedia.seller.topads.keyword.view.domain.model.Datum;
+import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 
 import java.util.ArrayList;

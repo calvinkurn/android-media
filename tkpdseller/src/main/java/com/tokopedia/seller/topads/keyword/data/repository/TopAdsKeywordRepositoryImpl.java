@@ -1,11 +1,11 @@
-package com.tokopedia.seller.topads.keyword.view.data.repository;
+package com.tokopedia.seller.topads.keyword.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
-import com.tokopedia.seller.topads.keyword.view.data.source.KeywordDashboardDataSouce;
-import com.tokopedia.seller.topads.keyword.view.domain.TopAdsKeywordRepository;
-import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.data.source.KeywordDashboardDataSouce;
+import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
+import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
 
 import javax.inject.Inject;
 

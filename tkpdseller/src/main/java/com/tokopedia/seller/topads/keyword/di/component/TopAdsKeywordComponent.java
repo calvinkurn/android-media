@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.keyword.view.di.component;
+package com.tokopedia.seller.topads.keyword.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.topads.keyword.view.di.module.TopAdsModule;
-import com.tokopedia.seller.topads.keyword.view.di.scope.TopAdsKeywordScope;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordListFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNegativeListFragment;
 

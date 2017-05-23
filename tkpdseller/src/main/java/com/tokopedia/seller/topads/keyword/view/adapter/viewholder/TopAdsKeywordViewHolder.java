@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.domain.model.Datum;
+import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 
 /**
  * Created by normansyahputa on 5/19/17.

@@ -1,8 +1,8 @@
-package com.tokopedia.seller.topads.keyword.view.data.source.cloud.api;
+package com.tokopedia.seller.topads.keyword.data.source.cloud.api;
 
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.view.data.model.cloud.Datum;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 
 import java.util.List;
 import java.util.Map;

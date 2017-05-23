@@ -1,4 +1,4 @@
-package com.tokopedia.seller.topads.keyword.view.domain.model;
+package com.tokopedia.seller.topads.keyword.domain.model;
 
 /**
  * Created by normansyahputa on 5/18/17.

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.view.data.mapper;
+package com.tokopedia.seller.topads.keyword.data.mapper;
 
 import com.tokopedia.seller.topads.data.model.data.Page;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
-import com.tokopedia.seller.topads.keyword.view.data.model.cloud.Datum;
-import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
+import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +23,9 @@ public class KeywordDashboardMapper implements Func1<PageDataResponse<List<Datum
     }
 
 
-    private com.tokopedia.seller.topads.keyword.view.domain.model.Page convertToDomain(Page page) {
-        com.tokopedia.seller.topads.keyword.view.domain.model.Page res =
-                new com.tokopedia.seller.topads.keyword.view.domain.model.Page();
+    private com.tokopedia.seller.topads.keyword.domain.model.Page convertToDomain(Page page) {
+        com.tokopedia.seller.topads.keyword.domain.model.Page res =
+                new com.tokopedia.seller.topads.keyword.domain.model.Page();
 
         res.setCurrent(page.getCurrent());
         res.setMax(page.getMax());
@@ -37,9 +37,9 @@ public class KeywordDashboardMapper implements Func1<PageDataResponse<List<Datum
     }
 
 
-    private com.tokopedia.seller.topads.keyword.view.domain.model.Datum convertToDomain(Datum datum) {
-        com.tokopedia.seller.topads.keyword.view.domain.model.Datum res =
-                new com.tokopedia.seller.topads.keyword.view.domain.model.Datum();
+    private com.tokopedia.seller.topads.keyword.domain.model.Datum convertToDomain(Datum datum) {
+        com.tokopedia.seller.topads.keyword.domain.model.Datum res =
+                new com.tokopedia.seller.topads.keyword.domain.model.Datum();
         res.setKeywordId(datum.getKeywordId());//1
         res.setKeywordTag(datum.getKeywordTag());//2
         res.setGroupId(datum.getGroupId());//3
@@ -70,7 +70,7 @@ public class KeywordDashboardMapper implements Func1<PageDataResponse<List<Datum
         KeywordDashboardDomain keywordDashboardDomain =
                 new KeywordDashboardDomain();
 
-        ArrayList<com.tokopedia.seller.topads.keyword.view.domain.model.Datum> data
+        ArrayList<com.tokopedia.seller.topads.keyword.domain.model.Datum> data
                 = new ArrayList<>();
         for (Datum datum : listPageDataResponse.getData()) {
             data.add(convertToDomain(datum));

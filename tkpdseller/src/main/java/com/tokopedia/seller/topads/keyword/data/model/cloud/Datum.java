@@ -1,37 +1,71 @@
-package com.tokopedia.seller.topads.keyword.view.domain.model;
+package com.tokopedia.seller.topads.keyword.data.model.cloud;
 
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by normansyahputa on 5/18/17.
  */
 
-public class Datum extends TypeBasedModel {
-    public static final int TYPE = 292912;
+public class Datum {
 
-    private int keywordId;// 1
-    private String keywordTag;// 2
-    private int groupId;// 3
-    private String groupName;// 4
-    private int keywordStatus;// 5
-    private String keywordStatusDesc;// 6
-    private String keywordTypeId;//7
-    private String keywordTypeDesc;// 8
-    private int keywordStatusToogle;// 9
-    private String keywordPriceBidFmt;// 10
-    private String statAvgClick; // 11
-    private String statTotalSpent; // 12
-    private String statTotalImpression; // 13
-    private String statTotalClick; // 14
-    private String statTotalCtr; // 15
-    private String statTotalConversion; // 16
-    private String labelEdit; // 17
-    private String labelPerClick; // 18
-    private String labelOf; // 19
-
-    public Datum() {
-        super(TYPE);
-    }
+    @SerializedName("keyword_id")
+    @Expose
+    private int keywordId;
+    @SerializedName("keyword_tag")
+    @Expose
+    private String keywordTag;
+    @SerializedName("group_id")
+    @Expose
+    private int groupId;
+    @SerializedName("group_name")
+    @Expose
+    private String groupName;
+    @SerializedName("keyword_status")
+    @Expose
+    private int keywordStatus;
+    @SerializedName("keyword_status_desc")
+    @Expose
+    private String keywordStatusDesc;
+    @SerializedName("keyword_type_id")
+    @Expose
+    private String keywordTypeId;
+    @SerializedName("keyword_type_desc")
+    @Expose
+    private String keywordTypeDesc;
+    @SerializedName("keyword_status_toogle")
+    @Expose
+    private int keywordStatusToogle;
+    @SerializedName("keyword_price_bid_fmt")
+    @Expose
+    private String keywordPriceBidFmt;
+    @SerializedName("stat_avg_click")
+    @Expose
+    private String statAvgClick;
+    @SerializedName("stat_total_spent")
+    @Expose
+    private String statTotalSpent;
+    @SerializedName("stat_total_impression")
+    @Expose
+    private String statTotalImpression;
+    @SerializedName("stat_total_click")
+    @Expose
+    private String statTotalClick;
+    @SerializedName("stat_total_ctr")
+    @Expose
+    private String statTotalCtr;
+    @SerializedName("stat_total_conversion")
+    @Expose
+    private String statTotalConversion;
+    @SerializedName("label_edit")
+    @Expose
+    private String labelEdit;
+    @SerializedName("label_per_click")
+    @Expose
+    private String labelPerClick;
+    @SerializedName("label_of")
+    @Expose
+    private String labelOf;
 
     public int getKeywordId() {
         return keywordId;

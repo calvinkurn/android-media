@@ -1,9 +1,9 @@
-package com.tokopedia.seller.topads.keyword.view.data.source;
+package com.tokopedia.seller.topads.keyword.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.topads.keyword.view.data.mapper.KeywordDashboardMapper;
-import com.tokopedia.seller.topads.keyword.view.data.source.cloud.api.DashboardKeywordCloud;
-import com.tokopedia.seller.topads.keyword.view.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.data.mapper.KeywordDashboardMapper;
+import com.tokopedia.seller.topads.keyword.data.source.cloud.api.DashboardKeywordCloud;
+import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
 
 import javax.inject.Inject;
 
