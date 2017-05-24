@@ -4,6 +4,8 @@ import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailGroupDomainModel;
 
+import javax.inject.Inject;
+
 import retrofit2.Response;
 import rx.functions.Func1;
 
@@ -12,6 +14,12 @@ import rx.functions.Func1;
  */
 
 public class TopAdsDetailGroupDomainMapper implements Func1<Response<DataResponse<DataResponseCreateGroup>>, TopAdsDetailGroupDomainModel> {
+
+    @Inject
+    public TopAdsDetailGroupDomainMapper() {
+    }
+
+
     @Override
     public TopAdsDetailGroupDomainModel call(Response<DataResponse<DataResponseCreateGroup>> dataResponseResponse) {
         if (dataResponseResponse.isSuccessful() && dataResponseResponse.body() != null
