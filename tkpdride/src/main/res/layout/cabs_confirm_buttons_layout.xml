@@ -34,6 +34,7 @@
             android:layout_marginTop="10dp"
             android:text="@string/confirm_booking_you_pay"
             android:textColor="#666666"
+            android:visibility="gone"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -94,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="@string/confirm_booking_seats_needed"
+            android:visibility="gone"
             android:textColor="#666666"
             android:textSize="11sp" />
     </LinearLayout>
