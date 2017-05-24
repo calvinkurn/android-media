@@ -27,7 +27,8 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 5/3/17.
  */
 public class CategoryProductStyle1View extends
-        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> {
+        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber>
+        implements ProductAdditionalInfoView.ActionListener {
 
     @BindView(R2.id.tv_title_category)
     TextView tvTitle;
@@ -309,5 +310,8 @@ public class CategoryProductStyle1View extends
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;
     }
 
+    @Override
+    public void onProductLinkClicked(String url) {
 
+    }
 }

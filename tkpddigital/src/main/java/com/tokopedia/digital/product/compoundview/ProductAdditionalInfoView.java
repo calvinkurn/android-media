@@ -1,14 +1,10 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.text.Html;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,8 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.util.SelectableSpannedMovementMethod;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
@@ -32,6 +27,7 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     public static final String PLAYSTORE_STRING = "play.google.com/store/apps";
     public static final String URL = "url";
+    private ActionListener actionListener;
 
     @BindView(R2.id.tv_info)
     TextView tvInfo;
@@ -43,6 +39,16 @@ public class ProductAdditionalInfoView extends RelativeLayout {
     public ProductAdditionalInfoView(Context context) {
         super(context);
         initialView(context, null, 0);
+    }
+
+    public ProductAdditionalInfoView(Context context, ActionListener actionListener) {
+        super(context);
+        this.actionListener = actionListener;
+        initialView(context, null, 0);
+    }
+
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     public ProductAdditionalInfoView(Context context, AttributeSet attrs) {
@@ -74,7 +80,26 @@ public class ProductAdditionalInfoView extends RelativeLayout {
 
     @SuppressWarnings("deprecation")
     public void convertDetailWithHtml(Product product) {
-        tvInfo.setText(Html.fromHtml(product.getDetail()));
-        Linkify.addLinks(tvInfo, Linkify.WEB_URLS);
+        CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+        for (final URLSpan span : urls) {
+            int start = strBuilder.getSpanStart(span);
+            int end = strBuilder.getSpanEnd(span);
+            int flags = strBuilder.getSpanFlags(span);
+            ClickableSpan clickable = new ClickableSpan() {
+                public void onClick(View view) {
+                    actionListener.onProductLinkClicked(span.getURL());
+                }
+            };
+            strBuilder.setSpan(clickable, start, end, flags);
+            strBuilder.removeSpan(span);
+        }
+        tvInfo.setText(strBuilder);
+        tvInfo.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    public interface ActionListener {
+        void onProductLinkClicked(String url);
     }
 }

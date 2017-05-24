@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@drawable/digital_bg_chooser_operator_product_item"
-    android:minHeight="60dp"
-    android:orientation="vertical">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@drawable/digital_bg_chooser_operator_product_item"
+              android:minHeight="60dp"
+              android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
             android:paddingBottom="@dimen/digital_padding_2"
-            tools:text="additional" />
+            tools:text="additional"/>
 
         <TextView
             android:id="@+id/product_plain_description"
@@ -32,10 +32,11 @@
             android:layout_below="@id/product_price_no_addition"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
+            android:linksClickable="true"
             android:paddingBottom="@dimen/digital_padding_2"
             android:paddingTop="@dimen/digital_padding_2"
             tools:text="plaim desc"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
 
         <TextView
             android:id="@+id/product_total_price"
@@ -48,7 +49,7 @@
             android:layout_marginStart="@dimen/margin_ms"
             android:paddingTop="@dimen/digital_padding_2"
             android:textColor="@color/black"
-            tools:text="price" />
+            tools:text="price"/>
 
         <TextView
             android:id="@+id/empty_stock_notification"
@@ -70,7 +71,7 @@
             android:textColor="@color/white"
             android:textStyle="bold"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
     </RelativeLayout>
 
 
@@ -79,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/padding_vs"
-        android:background="@color/digital_separator" />
+        android:background="@color/digital_separator"/>
 
 
 </LinearLayout>

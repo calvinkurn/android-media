@@ -11,6 +11,7 @@ import android.view.View;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.adapter.ProductChooserAdapter;
 import com.tokopedia.digital.product.model.Product;
 
@@ -132,6 +133,11 @@ public class DigitalChooserProductFragment extends BasePresenterFragment
     @Override
     public void onProductItemSelected(Product product) {
         actionListener.onProductItemSelected(product);
+    }
+
+    @Override
+    public void onProductLinkClicked(String url) {
+        startActivity(DigitalWebActivity.newInstance(getActivity(), url));
     }
 
     public interface ActionListener {

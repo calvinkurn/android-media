@@ -599,6 +599,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void onProductDetailLinkClicked(String url) {
+        startActivity(DigitalWebActivity.newInstance(getActivity(), url));
+    }
+
+    @Override
     public void onButtonCopyBannerVoucherCodeClicked(String voucherCode) {
         this.voucherCodeCopiedState = voucherCode;
         ClipboardManager clipboard = (ClipboardManager)

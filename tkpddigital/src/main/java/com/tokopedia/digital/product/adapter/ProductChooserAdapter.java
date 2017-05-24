@@ -3,11 +3,16 @@ package com.tokopedia.digital.product.adapter;
 import android.app.Fragment;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.model.Product;
@@ -51,9 +56,9 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 hostFragment.getActivity()).inflate(viewType, parent, false);
         if (viewType == TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM) {
             return new ItemDescAndPriceHolder(mainAdapterView);
-        } else if(viewType == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
+        } else if (viewType == TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC) {
             return new ItemPriceAdmin(mainAdapterView);
-        } else if(viewType == TYPE_HOLDER_PRODUCT_PROMO) {
+        } else if (viewType == TYPE_HOLDER_PRODUCT_PROMO) {
             return new ItemHolderPromoProduct(mainAdapterView);
         }
         return null;
@@ -84,7 +89,25 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private void setViewPriceAdditionalFee(ItemPriceAdmin holder, Product product) {
         holder.tvProductPrice.setText(product.getDesc());
-        holder.tvProductDescription.setText(product.getDetail());
+
+        CharSequence sequence = MethodChecker.fromHtml(product.getDetail());
+        SpannableStringBuilder strBuilder = new SpannableStringBuilder(sequence);
+        URLSpan[] urls = strBuilder.getSpans(0, sequence.length(), URLSpan.class);
+        for (final URLSpan span : urls) {
+            int start = strBuilder.getSpanStart(span);
+            int end = strBuilder.getSpanEnd(span);
+            int flags = strBuilder.getSpanFlags(span);
+            ClickableSpan clickable = new ClickableSpan() {
+                public void onClick(View view) {
+                    actionListener.onProductLinkClicked(span.getURL());
+                }
+            };
+            strBuilder.setSpan(clickable, start, end, flags);
+            strBuilder.removeSpan(span);
+        }
+        holder.tvProductDescription.setText(strBuilder);
+        holder.tvProductDescription.setMovementMethod(LinkMovementMethod.getInstance());
+
         holder.tvProductTotalPrice.setText(product.getPrice());
     }
 
@@ -103,9 +126,9 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        if(productList.get(position).getPromo()!=null)
+        if (productList.get(position).getPromo() != null)
             return TYPE_HOLDER_PRODUCT_PROMO;
-        else if(!productList.get(position).getDetail().isEmpty())
+        else if (!productList.get(position).getDetail().isEmpty())
             return TYPE_HOLDER_PRODUCT_PRICE_PLUS_ADMIN_AND_DESC;
         else return TYPE_HOLDER_PRODUCT_DESC_AND_PRICE_ITEM;
     }
@@ -122,6 +145,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvPrice;
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
+
         ItemDescAndPriceHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -137,6 +161,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvProductTotalPrice;
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
+
         ItemPriceAdmin(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -154,6 +179,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         TextView tvProductPromoOldPrice;
         @BindView(R2.id.empty_stock_notification)
         TextView emptyStockNotification;
+
         ItemHolderPromoProduct(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -162,18 +188,20 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public interface ActionListener {
         void onProductItemSelected(Product product);
+
+        void onProductLinkClicked(String url);
     }
 
     private void setProductAvailability(final RecyclerView.ViewHolder holder,
                                         final Product product,
                                         final TextView emptyStockLabel) {
-        if(product.getStatus() == 3) {
-            for (int i = 0; i < ((ViewGroup)mainAdapterView).getChildCount(); i++) {
+        if (product.getStatus() == 3) {
+            for (int i = 0; i < ((ViewGroup) mainAdapterView).getChildCount(); i++) {
                 View adapterElement = ((ViewGroup) mainAdapterView).getChildAt(i);
                 adapterElement.setEnabled(false);
                 if (adapterElement instanceof TextView) {
                     disableTextView((TextView) adapterElement);
-                } else if(adapterElement instanceof ViewGroup) {
+                } else if (adapterElement instanceof ViewGroup) {
                     for (int j = 0; j < ((ViewGroup) adapterElement).getChildCount(); j++) {
                         if (((ViewGroup) adapterElement).getChildAt(j) instanceof TextView) {
                             disableTextView(((TextView) ((ViewGroup) adapterElement)

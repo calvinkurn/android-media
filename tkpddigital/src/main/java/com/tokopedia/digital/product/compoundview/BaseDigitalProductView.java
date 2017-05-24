@@ -141,6 +141,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         void onButtonContactPickerClicked();
 
+        void onProductDetailLinkClicked(String url);
+
     }
 
     public static class PreCheckoutProduct {

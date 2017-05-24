@@ -330,5 +330,5 @@ public class CategoryProductStyle2View extends
     private boolean hasLastOrderHistoryData() {
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;
     }
-
+    
 }
