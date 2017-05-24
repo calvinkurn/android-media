@@ -119,6 +119,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.banner_container)
     RelativeLayout bannerContainer;
 
+    @BindView(R2.id.header_container)
+    RelativeLayout headerContainer;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -277,14 +280,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
         bannerViewPager.setAdapter(bannerPagerAdapter);
         bannerViewPager.addOnPageChangeListener(onBannerChange());
-        bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
-        bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
+        bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        bannerIndicator.setPageColor(ContextCompat.getColor(getContext(), R.color.white));
         bannerIndicator.setViewPager(bannerViewPager);
         bannerPagerAdapter.notifyDataSetChanged();
         RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) bannerViewPager.getLayoutParams();
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
         bannerViewPager.setLayoutParams(param);
+        headerContainer.setVisibility(View.GONE);
         startSlide();
     }
 

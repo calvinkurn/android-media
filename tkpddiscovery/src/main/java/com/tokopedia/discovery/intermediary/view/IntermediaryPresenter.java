@@ -19,7 +19,6 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
         this.getIntermediaryCategoryUseCase = getIntermediaryCategoryUseCase;
     }
 
-
     @Override
     public void getIntermediaryCategory(String categoryId) {
         getIntermediaryCategoryUseCase.setCategoryId(categoryId);

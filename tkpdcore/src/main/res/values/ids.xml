@@ -149,6 +149,9 @@
     <item name="banner_container" type="id"/>
     <item name="view_pager_intermediary" type="id"/>
     <item name="indicator_intermediary" type="id"/>
+    <item name="card_video_intermediary" type="id"/>
+    <item name="card_official_intermediary" type="id"/>
+    <item name="header_container" type="id"/>
 
 
 

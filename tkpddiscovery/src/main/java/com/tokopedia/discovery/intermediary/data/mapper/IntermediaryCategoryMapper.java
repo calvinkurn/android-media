@@ -146,6 +146,7 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
                 bannerModel.setUrl(image.getApplinks());
                 bannerModel.setImageUrl(image.getImageUrl());
                 bannerModel.setPosition(image.getPosition());
+                bannerModels.add(bannerModel);
             }
         }
         return  bannerModels;

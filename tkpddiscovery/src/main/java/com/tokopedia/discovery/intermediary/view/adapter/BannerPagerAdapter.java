@@ -22,9 +22,10 @@ import java.util.List;
 public class BannerPagerAdapter extends PagerAdapter {
 
     List<BannerModel> bannerList = new ArrayList<>();
-    private Context context;
+    private final Context context;
 
     public BannerPagerAdapter(Context context, List<BannerModel> bannerList) {
+        this.context = context;
         this.bannerList = bannerList;
     }
 

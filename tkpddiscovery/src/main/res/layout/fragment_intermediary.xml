@@ -19,6 +19,7 @@
             android:layout_height="wrap_content" />
 
         <RelativeLayout
+            android:id="@id/header_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/item_revamp_category">
 
@@ -175,6 +176,34 @@
 
         </android.support.v7.widget.CardView>
 
+        <android.support.v7.widget.CardView
+            android:id="@id/card_hoth_intermediary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:visibility="gone"
+            card_view:cardCornerRadius="0dip"
+            card_view:cardElevation="3dip"
+            card_view:contentPadding="@dimen/padding_vs">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@id/youtube_video_place_holder"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
         <TextView
             android:id="@id/category_view_all"
             android:layout_width="match_parent"
@@ -190,8 +219,6 @@
             android:textColor="@android:color/white"
             android:textStyle="bold"
             android:visibility="gone"/>
-
-
 
     </LinearLayout>
 
