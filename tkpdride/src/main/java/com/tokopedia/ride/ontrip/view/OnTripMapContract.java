@@ -77,7 +77,9 @@ public interface OnTripMapContract {
 
         void renderArrivingDriverEvent(RideRequest result);
 
-        public void setTitle(int resId);
+        void setTitle(int resId);
+
+        void setTitle(String title);
 
         void onSuccessCancelRideRequest();
 

@@ -38,6 +38,7 @@ import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
+import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.exception.InterruptConfirmationHttpException;
 import com.tokopedia.ride.common.exception.UnprocessableEntityHttpException;
@@ -293,7 +294,16 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().clearSavedActiveProductName();
                 break;
             case RideStatus.PROCESSING:
-                getView().setTitle(R.string.title_requesting_ride);
+                RideConfiguration configuration = new RideConfiguration(getView().getActivity());
+                if (!TextUtils.isEmpty(configuration.getActiveProductName())) {
+                    getView().setTitle(String.format("%s %s",
+                            getView().getActivity().getString(R.string.notification_title_finding_uber),
+                            configuration.getActiveProductName())
+                    );
+                } else {
+                    getView().setTitle(R.string.title_requesting_ride);
+                }
+
                 getView().showFindingUberNotification();
                 getView().showLoadingWaitingResponse();
                 getView().showCancelRequestButton();
@@ -309,6 +319,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().showBottomSection();
                 updatePolylineIfResetedByUiLifecycle(result);
+                RideConfiguration configurationAcc = new RideConfiguration(getView().getActivity());
+                if (!TextUtils.isEmpty(configurationAcc.getActiveProductName())) {
+                    getView().setTitle(String.format("%s %s", configurationAcc.getActiveProductName(),
+                            getView().getActivity().getString(R.string.title_trip_accepted_postfix))
+                    );
+                } else {
+                    getView().setTitle(R.string.title_trip_accepted);
+                }
                 break;
             case RideStatus.ARRIVING:
                 getView().saveActiveRequestId(result.getRequestId());

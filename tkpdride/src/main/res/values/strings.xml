@@ -20,7 +20,7 @@
     <string name="en_route">On Trip</string>
     <string name="driver_cancelled_ride_message">Sorry, driver cancelled your request. Try booking again.</string>
     <string name="no_uber_valid_location">This service is available for Indonesia only.</string>
-    <string name="notification_title_finding_uber">Finding your Uber</string>
+    <string name="notification_title_finding_uber">Finding your </string>
     <string name="accepted_push_message">%1$s (%2$s stars) will pick you up in %3$s minutes.</string>
     <string name="accepted_push_title">Ride Accepted</string>
     <string name="share_ride_title">Follow my Uber trip.</string>
@@ -96,4 +96,5 @@
     <string name="loading">loading ...</string>
     <string name="ride_home_map_dest_same_source_error">Destination not allowed to be same with Pickup</string>
     <string name="set_location_on_map">Select location on map</string>
+    <string name="title_trip_accepted_postfix">Booked</string>
 </resources>

@@ -333,6 +333,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
             return;
         }
+        mGoogleMap.setPadding(0, 0, 400, 0);
         mGoogleMap.setMyLocationEnabled(false);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.getUiSettings().setRotateGesturesEnabled(false);
@@ -492,8 +493,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         if (result.getLocation() != null) {
             reDrawDriverMarker(result);
         }
-
-        setTitle(R.string.title_trip_accepted);
     }
 
     private void replaceFragment(int containerViewId, android.app.Fragment fragment) {
@@ -521,6 +520,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 //        }
 
         setTitle(R.string.title_trip_in_progress);
+    }
+
+    @Override
+    public void setTitle(String title) {
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(title);
     }
 
     @Override

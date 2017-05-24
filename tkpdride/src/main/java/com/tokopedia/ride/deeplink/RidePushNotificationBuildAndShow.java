@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -153,7 +154,7 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showRideAccepted(final Context context, final RideRequest rideRequest) {
-        RideConfiguration rideConfiguration = new RideConfiguration(context);
+        final RideConfiguration rideConfiguration = new RideConfiguration(context);
         rideConfiguration.setActiveRequestId(rideRequest.getRequestId());
         // Create remote view and set bigContentView.
         final RemoteViews remoteView = new RemoteViews(context.getPackageName(),
@@ -212,12 +213,16 @@ public class RidePushNotificationBuildAndShow {
                                                           shareIntent.putExtra("share", url);
                                                           PendingIntent sharePendingIntent = PendingIntent.getBroadcast(context, 0, shareIntent, 0);
                                                           remoteView.setOnClickPendingIntent(R.id.layout_share_eta, sharePendingIntent);
+                                                          String title = context.getString(R.string.ride_push_driver_arriving_now);
+                                                          if (!TextUtils.isEmpty(rideConfiguration.getActiveProductName())) {
+                                                              title = String.format("Your %s is arriving now", rideConfiguration.getActiveProductName());
+                                                          }
 
                                                           NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                                   .setSmallIcon(R.drawable.ic_stat_notify)
                                                                   .setAutoCancel(true)
                                                                   .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
-                                                                  .setContentTitle("Your Uber is arriving now")
+                                                                  .setContentTitle(title)
                                                                   .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                                                                           rideRequest.getDriver().getName(),
                                                                           rideRequest.getDriver().getRating(),
@@ -249,13 +254,17 @@ public class RidePushNotificationBuildAndShow {
                                                   });
                                               } else {
                                                   remoteView.setViewVisibility(R.id.layout_share_eta, View.GONE);
+                                                  String title = context.getString(R.string.ride_push_driver_arriving_now);
+                                                  if (!TextUtils.isEmpty(rideConfiguration.getActiveProductName())) {
+                                                      title = String.format("Your %s is arriving now", rideConfiguration.getActiveProductName());
+                                                  }
                                                   NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                                                           .setSmallIcon(R.drawable.ic_stat_notify)
                                                           .setAutoCancel(true)
                                                           .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
                                                           .setPriority(Notification.PRIORITY_MAX)
                                                           .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
-                                                          .setContentTitle(context.getString(R.string.ride_push_driver_arriving_now))
+                                                          .setContentTitle(title)
                                                           .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
                                                                   rideRequest.getDriver().getName(),
                                                                   rideRequest.getDriver().getRating(),
@@ -291,35 +300,6 @@ public class RidePushNotificationBuildAndShow {
                                 );
                     }
                 });
-    }
-
-    private static void executeAcceptedRideRequest(Context context, RideRequest rideRequest, RemoteViews remoteView) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_stat_notify)
-                .setAutoCancel(true)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
-                .setContentTitle("Your Uber is arriving now")
-                .setContentText(String.format("%s (%s stars) will pick you up in %s minutes.",
-                        rideRequest.getDriver().getName(),
-                        rideRequest.getDriver().getRating(),
-                        String.valueOf(rideRequest.getPickup().getEta()))
-                )
-                .setCustomBigContentView(remoteView);
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(OnTripActivity.EXTRA_RIDE_REQUEST, rideRequest);
-        bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
-        TaskStackBuilder stackBuilder = OnTripActivity.getCallingApplinkTaskStack(context, bundle);
-
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_CANCEL_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-
-        // Gets an instance of the NotificationManager service
-        NotificationManager mNotifyMgr =
-                (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
-
-        // Builds the notification and issues it.
-        mNotifyMgr.notify(ACCEPTED_UBER_NOTIFICATION_ID, mBuilder.build());
     }
 
     public static void showDriverCancelledRide(Context context) {
@@ -374,6 +354,13 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showFindingUberNotication(Context context) {
+        String title = context.getResources().getString(R.string.notification_title_finding_uber);
+        RideConfiguration rideConfiguration = new RideConfiguration(context);
+        if (!TextUtils.isEmpty(rideConfiguration.getActiveProductName())) {
+            title += String.format(" %s", rideConfiguration.getActiveProductName());
+        } else {
+            title += " Uber";
+        }
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_stat_notify)
                 .setAutoCancel(true)
@@ -381,7 +368,7 @@ public class RidePushNotificationBuildAndShow {
                 .setProgress(0, 0, true)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setContentTitle(context.getResources().getString(R.string.notification_title_finding_uber));
+                .setContentTitle(title);
 
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
