@@ -1,5 +1,7 @@
 package com.tokopedia.core.network.constants;
 
+import okhttp3.HttpUrl;
+
 /**
  * Created by Angga.Prasetiyo on 07/12/2015.
  */
@@ -41,6 +43,7 @@ public class TkpdBaseURL {
     public static String TOKOPEDIA_CART_DOMAIN = "https://fs.tokopedia.net/tkpdcart";
     public static String BASE_ACTION = BASE_DOMAIN + "v4/action/";
     public static String DIGITAL_API_DOMAIN = "https://pulsa-api.tokopedia.com/";
+    public static final String GRAPHQL_DOMAIN = "https://m.tokopedia.com/graphql";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";

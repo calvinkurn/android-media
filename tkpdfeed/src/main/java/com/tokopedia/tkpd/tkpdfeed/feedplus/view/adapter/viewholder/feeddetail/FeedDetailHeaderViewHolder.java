@@ -26,20 +26,17 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<ProductCardHe
     public static final int LAYOUT = R.layout.feed_detail_product_header;
     private final FeedPlusDetail.View viewListener;
 
-    @BindView(R2.id.title)
     TextView title;
-
-    @BindView(R2.id.shop_avatar)
     ImageView shopAvatar;
-
-    @BindView(R2.id.gold_merchant)
     ImageView goldMerchantBadge;
-
-    @BindView(R2.id.time)
     TextView time;
 
     public FeedDetailHeaderViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
+        title = (TextView) itemView.findViewById(R.id.title);
+        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
+        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        time = (TextView) itemView.findViewById(R.id.time);
         this.viewListener = viewListener;
     }
 

@@ -15,6 +15,9 @@ public interface FeedPlusDetail {
 
         void onGoToShopDetail();
 
+        void onErrorGetFeedDetail(String errorMessage);
+
+        void onGetFeedDetail();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
