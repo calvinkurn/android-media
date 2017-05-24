@@ -1,18 +1,20 @@
 package com.tokopedia.ride.ontrip.view.fragment;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -27,7 +29,10 @@ import com.tokopedia.ride.common.ride.domain.model.Vehicle;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_PARENT_TAG = "EXTRA_PARENT_TAG";
     private static final String EXTRA_DRIVER = "EXTRA_DRIVER";
@@ -45,20 +50,20 @@ public class DriverDetailFragment extends BaseFragment {
     TextView driverNameTextView;
     @BindView(R2.id.tv_cab_detail)
     TextView vehicleDetailTextView;
-    @BindView(R2.id.rb_driver_rating)
-    RatingBar driverRateRatingBar;
+    @BindView(R2.id.tv_cab_plate)
+    TextView vehiclePlateTextView;
     @BindView(R2.id.tv_driver_rating)
     TextView driverRatingTextView;
     @BindView(R2.id.driver_eta_text)
     TextView driverEtaTextView;
-    @BindView(R2.id.call_driver_layout)
-    RelativeLayout callDriverLayout;
+    //@BindView(R2.id.call_driver_layout)
+    //RelativeLayout callDriverLayout;
     @BindView(R2.id.layout_cancel_ride)
-    RelativeLayout cancelRideLayout;
+    LinearLayout cancelRideLayout;
     @BindView(R2.id.tv_pool_status)
     TextView poolStatusTextView;
     @BindView(R2.id.help_layout)
-    RelativeLayout shareRideLayout;
+    LinearLayout shareRideLayout;
 
     private Driver driver;
     private Vehicle vehicle;
@@ -174,12 +179,38 @@ public class DriverDetailFragment extends BaseFragment {
                     }
                 });
 
-        vehicleDetailTextView.setText(String.format("%s %s %s", vehicle.getMake(), vehicle.getVehicleModel(), vehicle.getLicensePlate()));
+        vehicleDetailTextView.setText(String.format("%s %s", vehicle.getMake(), vehicle.getVehicleModel()));
+        vehiclePlateTextView.setText(vehicle.getLicensePlate());
     }
 
-    @OnClick(R2.id.call_driver_layout)
+//    @OnClick(R2.id.call_driver_layout)
+//    public void actionCallDriver() {
+//        onFragmentInteractionListener.actionContactDriver(driver.getPhoneNumber());
+//    }
+
+    @OnClick(R2.id.icon_call)
     public void actionCallDriver() {
-        onFragmentInteractionListener.actionContactDriver(driver.getPhoneNumber());
+        DriverDetailFragmentPermissionsDispatcher.openCallIntentWithCheck(this, driver.getPhoneNumber());
+    }
+
+    @OnClick(R2.id.icon_message)
+    public void actionSMSDriver() {
+        openSmsIntent(driver.getPhoneNumber());
+    }
+
+    @NeedsPermission({Manifest.permission.CALL_PHONE})
+    public void openCallIntent(String phoneNumber) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(callIntent);
+    }
+
+    public void openSmsIntent(String smsNumber) {
+        if (!TextUtils.isEmpty(smsNumber)) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.fromParts("sms", smsNumber, null))
+            );
+        }
     }
 
     /**
