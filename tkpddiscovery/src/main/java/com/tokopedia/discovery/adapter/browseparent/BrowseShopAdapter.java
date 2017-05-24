@@ -187,12 +187,12 @@ public class BrowseShopAdapter extends ProductAdapter {
 
             if (shopModel.isFavorited()) {
                 favoriteButton.setBackgroundResource(R.drawable.white_button_rounded);
-                favoriteButtonText.setText(context.getString(R.string.shop_list_favorite_button_already_favorited));
+                favoriteButtonText.setText("Favorit");
                 favoriteButtonText.setTextColor(context.getResources().getColor(R.color.black_54));
                 favoriteButtonIcon.setImageResource(R.drawable.shop_list_favorite_check);
             } else {
                 favoriteButton.setBackgroundResource(R.drawable.green_button_rounded);
-                favoriteButtonText.setText(context.getString(R.string.shop_list_favorite_button_not_yet_favorited));
+                favoriteButtonText.setText("Favoritkan");
                 favoriteButtonText.setTextColor(context.getResources().getColor(R.color.white));
                 favoriteButtonIcon.setImageResource(R.drawable.ic_add);
             }
