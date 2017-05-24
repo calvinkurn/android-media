@@ -17,16 +17,6 @@ import java.util.ArrayList;
 
 public class TopAdsKeywordAddPositiveSummaryFragment extends AbsTopAdsKeywordAddSummaryFragment {
 
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
-    boolean isPositiveKeyword() {
-        return true;
-    }
-
     public static TopAdsKeywordAddPositiveSummaryFragment newInstance(int groupId, String groupName) {
         TopAdsKeywordAddPositiveSummaryFragment fragment = new TopAdsKeywordAddPositiveSummaryFragment();
         fragment.setArguments(createBundle(groupId,groupName));

@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddDetailActivity;
 
@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * Created by hendry on 5/18/2017.
  */
 
-public abstract class AbsTopAdsKeywordAddSummaryFragment extends BaseDaggerFragment {
+public abstract class AbsTopAdsKeywordAddSummaryFragment extends Fragment {
 
     public static final String TAG = AbsTopAdsKeywordAddSummaryFragment.class.getSimpleName();
 
@@ -52,11 +52,6 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends BaseDaggerFragm
     private TextView textPhraseMatchCount;
     private TextView textExactMatchCount;
 
-    @Override
-    protected String getScreenName() {
-        return null;
-    }
-
     public static Bundle createBundle(int groupId, String groupName) {
         Bundle args = new Bundle();
         args.putInt(EXTRA_GROUP_ID, groupId);
@@ -82,11 +77,6 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends BaseDaggerFragm
             exactMatchList = savedInstanceState.getStringArrayList(SAVED_EXACT);
             serverKeywordCount = savedInstanceState.getInt(SAVED_SERVER_KEYWORD_COUNT);
         }
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 
     @Nullable
@@ -166,9 +156,6 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends BaseDaggerFragm
         }
         return false;
     }
-
-    abstract boolean isPositiveKeyword();
-
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -253,4 +240,5 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends BaseDaggerFragm
         outState.putStringArrayList(SAVED_EXACT, exactMatchList);
         outState.putInt(SAVED_SERVER_KEYWORD_COUNT, serverKeywordCount);
     }
+
 }
