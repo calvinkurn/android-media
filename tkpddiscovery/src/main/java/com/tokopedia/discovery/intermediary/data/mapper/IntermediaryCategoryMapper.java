@@ -1,13 +1,15 @@
 package com.tokopedia.discovery.intermediary.data.mapper;
 
-import com.tokopedia.core.network.entity.categoriesHades.Badge;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.core.network.entity.categoriesHades.Label;
-import com.tokopedia.core.network.entity.categoriesHades.Product;
-import com.tokopedia.core.network.entity.categoriesHades.Section;
+import com.tokopedia.core.network.entity.intermediary.Badge;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.Image;
+import com.tokopedia.core.network.entity.intermediary.Label;
+import com.tokopedia.core.network.entity.intermediary.Product;
+import com.tokopedia.core.network.entity.intermediary.Section;
 import com.tokopedia.core.network.entity.hotlist.HotListResponse;
 import com.tokopedia.discovery.intermediary.domain.model.BadgeModel;
+import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
@@ -15,6 +17,7 @@ import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 import com.tokopedia.discovery.intermediary.domain.model.LabelModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
+import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +37,19 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
                                                 Response<HotListResponse> hotListResponseResponse) {
         IntermediaryCategoryDomainModel intermediaryCategoryDomainModel = new IntermediaryCategoryDomainModel();
 
-        if (categoryHadesModelResponse.body().getData().getIsIntermediary()) {
+        if (categoryHadesModelResponse.body().getData().getIsIntermediary() &&
+                getIntermediaryTemplate(categoryHadesModelResponse.body(),intermediaryCategoryDomainModel)) {
             intermediaryCategoryDomainModel.setIntermediary(true);
             intermediaryCategoryDomainModel.setDepartementId(categoryHadesModelResponse.body().getData().getId());
             intermediaryCategoryDomainModel.setHeaderModel(mapHeaderModel(categoryHadesModelResponse.body()));
             intermediaryCategoryDomainModel.setChildCategoryModelList(mapCategoryChildren(categoryHadesModelResponse.body()));
             intermediaryCategoryDomainModel.setCuratedSectionModelList(mapCuration(categoryHadesModelResponse.body()));
+            intermediaryCategoryDomainModel.setBannerModelList(mapBanner(categoryHadesModelResponse.body()));
+            if (categoryHadesModelResponse.body().getData().getVideo()!=null) {
+                intermediaryCategoryDomainModel.setVideoModel(mapVideo(categoryHadesModelResponse.body()));
+            }
             intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
         }
-
         return  intermediaryCategoryDomainModel;
     }
 
@@ -117,7 +124,6 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
     }
 
     private List<HotListModel> mapHotList(HotListResponse hotListResponse) {
-
         List<HotListModel> hotListModels = new ArrayList<>();
         if (hotListResponse==null) return hotListModels;
         for (com.tokopedia.core.network.entity.hotlist.List list: hotListResponse.getList()) {
@@ -127,10 +133,52 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
             hotListModel.setTitle(list.getTitle());
             hotListModel.setUrl(list.getUrl());
             hotListModels.add(hotListModel);
-            if (hotListModels.size()==4)
-                break;
         }
         return  hotListModels;
+    }
+
+    private List<BannerModel> mapBanner(CategoryHadesModel categoryHadesModel) {
+
+        List<BannerModel> bannerModels = new ArrayList<>();
+        if (categoryHadesModel.getData().getBanner()!=null && categoryHadesModel.getData().getBanner().getImages()!=null) {
+            for (Image image: categoryHadesModel.getData().getBanner().getImages()) {
+                BannerModel bannerModel = new BannerModel();
+                bannerModel.setUrl(image.getApplinks());
+                bannerModel.setImageUrl(image.getImageUrl());
+                bannerModel.setPosition(image.getPosition());
+            }
+        }
+        return  bannerModels;
+    }
+
+    private VideoModel mapVideo(CategoryHadesModel categoryHadesModel) {
+
+        VideoModel videoModel = new VideoModel();
+        videoModel.setTitle(categoryHadesModel.getData().getVideo().getTitle());
+        videoModel.setDescription(categoryHadesModel.getData().getVideo().getDescription());
+        videoModel.setVideoUrl(categoryHadesModel.getData().getVideo().getVideoUrl());
+
+        return  videoModel;
+    }
+
+    private boolean getIntermediaryTemplate(CategoryHadesModel categoryHadesModel,
+                                            IntermediaryCategoryDomainModel intermediaryCategoryDomainModel) {
+        if (categoryHadesModel.getData().getTemplate()==null) return false;
+        switch (categoryHadesModel.getData().getTemplate()) {
+            case IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE:
+                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE);
+                return true;
+          /*  BELOW IS COMMENTED FOR NEXT RELEASE
+
+            case IntermediaryCategoryDomainModel.TECHNOLOGY_TEMPLATE:
+                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.LIFESTYLE_TEMPLATE);
+                return true;
+            case IntermediaryCategoryDomainModel.DEFAULT_TEMPLATE:
+                intermediaryCategoryDomainModel.setTemplate(IntermediaryCategoryDomainModel.DEFAULT_TEMPLATE);
+                return true;*/
+           default:
+               return false;
+        }
     }
 
 

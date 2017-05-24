@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +22,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -39,11 +45,14 @@ import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
+import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
 import com.tokopedia.discovery.intermediary.domain.model.ProductModel;
+import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
+import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CuratedProductAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
@@ -73,6 +82,9 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
     CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
         IntermediaryCategoryAdapter.CategoryListener {
+
+    public static final String TAG = "INTERMEDIARY_FRAGMENT";
+    private static final long SLIDE_DELAY = 8000;
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -104,7 +116,15 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.category_view_all)
     TextView viewAllCategory;
 
-    public static final String TAG = "INTERMEDIARY_FRAGMENT";
+    @BindView(R2.id.banner_container)
+    RelativeLayout bannerContainer;
+
+    private CirclePageIndicator bannerIndicator;
+    private View banner;
+    private ViewPager bannerViewPager;
+    private BannerPagerAdapter bannerPagerAdapter;
+    private Handler bannerHandler;
+    private Runnable incrementPage;
 
     private String departmentId = "";
     private IntermediaryCategoryAdapter categoryAdapter;
@@ -120,7 +140,6 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         intermediaryFragment.departmentId = departmentId;
         return intermediaryFragment;
     }
-
 
     @Override
     protected String getScreenName() {
@@ -249,6 +268,82 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void renderBanner(List<BannerModel> bannerModelList) {
+        bannerHandler = new Handler();
+        incrementPage = runnableIncrement();
+        bannerPagerAdapter = new BannerPagerAdapter(getActivity(),bannerModelList);
+        banner = getActivity().getLayoutInflater().inflate(R.layout.banner_intermediary, bannerContainer);
+        bannerViewPager = (ViewPager) banner.findViewById(R.id.view_pager_intermediary);
+        bannerIndicator = (CirclePageIndicator) banner.findViewById(R.id.indicator_intermediary);
+        bannerViewPager.setAdapter(bannerPagerAdapter);
+        bannerViewPager.addOnPageChangeListener(onBannerChange());
+        bannerIndicator.setFillColor(ContextCompat.getColor(getContext(), R.color.green_400));
+        bannerIndicator.setStrokeColor(ContextCompat.getColor(getContext(), R.color.green_500));
+        bannerIndicator.setViewPager(bannerViewPager);
+        bannerPagerAdapter.notifyDataSetChanged();
+        RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) bannerViewPager.getLayoutParams();
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        bannerViewPager.setLayoutParams(param);
+        startSlide();
+    }
+
+    private ViewPager.OnPageChangeListener onBannerChange() {
+        return new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                stopSlide();
+                startSlide();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+    }
+
+    private Runnable runnableIncrement() {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int currentItem = bannerViewPager.getCurrentItem();
+                    int maxItems = bannerViewPager.getAdapter().getCount();
+                    if (maxItems != 0) {
+                        bannerViewPager.setCurrentItem((currentItem + 1) % maxItems, true);
+                    } else {
+                        bannerViewPager.setCurrentItem(0, true);
+                    }
+                    bannerHandler.postDelayed(incrementPage, SLIDE_DELAY);
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+    }
+
+
+    private void stopSlide() {
+        if (bannerHandler!=null && incrementPage!=null) bannerHandler.removeCallbacks(incrementPage);
+    }
+
+    private void startSlide() {
+        bannerHandler.removeCallbacks(incrementPage);
+        bannerHandler.postDelayed(incrementPage, SLIDE_DELAY);
+    }
+
+    @Override
+    public void renderVideo(VideoModel videoModel) {
+
+    }
+
+    @Override
     public void showLoading() {
         ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
     }
@@ -294,6 +389,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if(!TextUtils.isEmpty(departmentId)) {
             ScreenTracking.eventDiscoveryScreenAuth(departmentId);
         }
+    }
+
+    @Override
+    public void onStop() {
+        stopSlide();
+        super.onStop();
     }
 
     private void showErrorEmptyState() {

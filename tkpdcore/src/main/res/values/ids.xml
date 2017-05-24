@@ -146,6 +146,9 @@
     <item name="category_view_all" type="id"/>
     <item name="top_ads_view" type="id"/>
     <item name="nested_intermediary" type="id"/>
+    <item name="banner_container" type="id"/>
+    <item name="view_pager_intermediary" type="id"/>
+    <item name="indicator_intermediary" type="id"/>
 
 
 

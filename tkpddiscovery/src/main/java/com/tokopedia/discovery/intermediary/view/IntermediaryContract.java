@@ -2,10 +2,12 @@ package com.tokopedia.discovery.intermediary.view;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
 import com.tokopedia.discovery.intermediary.domain.model.HotListModel;
+import com.tokopedia.discovery.intermediary.domain.model.VideoModel;
 
 import java.util.List;
 
@@ -26,6 +28,10 @@ public interface IntermediaryContract {
         void renderCuratedProducts(List<CuratedSectionModel> curatedSectionModelList);
 
         void renderHotList(List<HotListModel> hotListModelList);
+
+        void renderBanner(List<BannerModel> bannerModelList);
+
+        void renderVideo(VideoModel videoModel);
 
         void showLoading();
 

@@ -14,12 +14,13 @@ import com.tokopedia.core.discovery.model.searchSuggestion.SearchDataModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
+import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
 import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.CategoryHadesModel;
+import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
@@ -135,7 +136,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     @Override
     public void getCategoryHeader(String categoryId, final int level) {
-        getCompositeSubscription().add(hadesService.getApi().getCategories(categoryId)
+        getCompositeSubscription().add(hadesService.getApi().getCategories(HadesApi.ANDROID_DEVICE,categoryId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())

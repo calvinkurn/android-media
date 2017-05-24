@@ -1,5 +1,5 @@
 
-package com.tokopedia.core.network.entity.categoriesHades;
+package com.tokopedia.core.network.entity.intermediary;
 
 import android.os.Parcel;
 import android.os.Parcelable;

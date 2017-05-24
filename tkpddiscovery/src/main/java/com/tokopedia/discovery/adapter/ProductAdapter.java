@@ -29,7 +29,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
@@ -52,8 +51,8 @@ import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.categoriesHades.Child;
-import com.tokopedia.core.network.entity.categoriesHades.Data;
+import com.tokopedia.core.network.entity.intermediary.Child;
+import com.tokopedia.core.network.entity.intermediary.Data;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -78,10 +77,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.core.router.discovery.BrowseProductRouter.GridType.GRID_1;
-import static com.tokopedia.discovery.activity.BrowseProductActivity.EXTRA_TITLE;
 
 
 /**

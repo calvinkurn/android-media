@@ -9,12 +9,19 @@ import java.util.List;
 
 public class IntermediaryCategoryDomainModel {
 
+    public static final String LIFESTYLE_TEMPLATE = "LIFESTYLE";
+    public static final String DEFAULT_TEMPLATE = "DEFAULT";
+    public static final String TECHNOLOGY_TEMPLATE = "TECHNOLOGY";
+
     boolean isIntermediary = false;
     String departementId = "0";
+    String template = "";
     HeaderModel headerModel;
     List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();
     List<CuratedSectionModel> curatedSectionModelList = new ArrayList<>();
     List<HotListModel> hotListModelList = new ArrayList<>();
+    List<BannerModel> bannerModelList = new ArrayList<>();
+    VideoModel videoModel;
 
     public HeaderModel getHeaderModel() {
         return headerModel;
@@ -62,5 +69,29 @@ public class IntermediaryCategoryDomainModel {
 
     public void setDepartementId(String departementId) {
         this.departementId = departementId;
+    }
+
+    public List<BannerModel> getBannerModelList() {
+        return bannerModelList;
+    }
+
+    public void setBannerModelList(List<BannerModel> bannerModelList) {
+        this.bannerModelList = bannerModelList;
+    }
+
+    public VideoModel getVideoModel() {
+        return videoModel;
+    }
+
+    public void setVideoModel(VideoModel videoModel) {
+        this.videoModel = videoModel;
+    }
+
+    public String getTemplate() {
+        return template;
+    }
+
+    public void setTemplate(String template) {
+        this.template = template;
     }
 }
