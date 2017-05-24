@@ -73,7 +73,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     }
 
     private void fabOnClick() {
-
+        getTopAdsBaseKeywordListFragment().onCreateKeyword();
     }
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
