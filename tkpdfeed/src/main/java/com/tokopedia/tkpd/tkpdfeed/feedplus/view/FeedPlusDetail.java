@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 
 import java.util.ArrayList;
 
@@ -16,12 +17,15 @@ public interface FeedPlusDetail {
 
         void onWishlistClicked();
 
-        void onGoToShopDetail();
+        void onGoToShopDetail(String shopUrl);
 
         void onErrorGetFeedDetail(String errorMessage);
 
-        void onSuccessGetFeedDetail(ArrayList<Visitable> listDetail, boolean hasNextPage);
+        void onSuccessGetFeedDetail(FeedDetailHeaderViewModel header,
+                                    ArrayList<Visitable> listDetail,
+                                    boolean hasNextPage);
 
+        void showLoading();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

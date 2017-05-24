@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
@@ -22,12 +24,15 @@ import java.util.List;
 public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
+    private EmptyModel emptyModel;
+    private LoadingModel loadingModel;
     private final FeedPlusDetailTypeFactory typeFactory;
-    private ProductCardHeaderViewModel header;
 
     public DetailFeedAdapter(FeedPlusDetailTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
+        this.emptyModel = new EmptyModel();
+        this.loadingModel = new LoadingModel();
     }
 
     @Override
@@ -55,5 +60,29 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
 
     public void addList(ArrayList<Visitable> list) {
         this.list.addAll(list);
+    }
+
+    public void add(Visitable item) {
+        this.list.add(item);
+    }
+
+    public void showEmpty() {
+        this.list.add(emptyModel);
+        notifyDataSetChanged();
+    }
+
+    public void dismissEmpty() {
+        this.list.remove(emptyModel);
+        notifyDataSetChanged();
+    }
+
+    public void showLoading() {
+        this.list.add(loadingModel);
+        notifyDataSetChanged();
+    }
+
+    public void dismissLoading() {
+        this.list.remove(loadingModel);
+        notifyDataSetChanged();
     }
 }

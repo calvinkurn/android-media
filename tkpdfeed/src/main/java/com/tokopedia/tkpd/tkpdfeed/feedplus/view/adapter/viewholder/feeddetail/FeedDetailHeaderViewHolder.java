@@ -12,7 +12,6 @@ import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
 /**
  * @author by nisie on 5/19/17.
@@ -42,7 +41,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
     }
 
     @Override
-    public void bind(FeedDetailHeaderViewModel viewModel) {
+    public void bind(final FeedDetailHeaderViewModel viewModel) {
 
         shopName.setText(MethodChecker.fromHtml(viewModel.getShopName()));
         ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
@@ -57,12 +56,12 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         else
             officialStoreBadge.setVisibility(View.GONE);
 
-        shopSlogan.setText(TimeConverter.generateTime(viewModel.getShopSlogan()));
+        shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToShopDetail();
+                viewListener.onGoToShopDetail(viewModel.getShopUrl());
             }
         });
     }

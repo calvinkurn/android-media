@@ -38,8 +38,13 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     @Override
     public void onNext(List<DataFeedDetailDomain> dataFeedDetailDomains) {
+        DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+
         viewListener.onSuccessGetFeedDetail(
-                convertToViewModel(dataFeedDetailDomains),
+                createHeaderViewModel(
+                        dataFeedDetailDomain.getCreate_time(),
+                        dataFeedDetailDomain.getSource().getShop()),
+                convertToViewModel(dataFeedDetailDomain),
                 checkHasNextPage(dataFeedDetailDomains));
 
     }
@@ -48,11 +53,9 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
         return dataFeedDetailDomains.get(0).getMeta().getHas_next_page();
     }
 
-    private ArrayList<Visitable> convertToViewModel(List<DataFeedDetailDomain> dataFeedDetailDomains) {
-        DataFeedDetailDomain dataFeedDetailDomain = dataFeedDetailDomains.get(0);
+    private ArrayList<Visitable> convertToViewModel(DataFeedDetailDomain dataFeedDetailDomain) {
 
         ArrayList<Visitable> listDetail = new ArrayList<>();
-        listDetail.add(createHeaderViewModel(dataFeedDetailDomain.getSource().getShop()));
 
         for (FeedDetailProductDomain productDomain : dataFeedDetailDomain.getContent().getProducts()) {
             listDetail.add(createProductViewModel(productDomain));
@@ -80,11 +83,14 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
     }
 
 
-    private FeedDetailHeaderViewModel createHeaderViewModel(FeedDetailShopDomain shop) {
+    private FeedDetailHeaderViewModel createHeaderViewModel(String create_time, FeedDetailShopDomain shop) {
         return new FeedDetailHeaderViewModel(shop.getName(),
                 shop.getAvatar(),
                 shop.getGold(),
-                shop.getShareLinkDescription(),
-                shop.getOfficial());
+                create_time,
+                shop.getOfficial(),
+                shop.getShopLink(),
+                shop.getShareLinkURL(),
+                shop.getShareLinkDescription());
     }
 }

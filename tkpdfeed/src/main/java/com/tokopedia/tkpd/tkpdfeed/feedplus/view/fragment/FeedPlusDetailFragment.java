@@ -28,7 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 
 import java.util.ArrayList;
 
@@ -143,20 +143,14 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         presenter.getFeedDetail(detailId, pagingHandler.getPage());
-
-        shareButton.setOnClickListener(onShareClicked());
-        seeShopButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGoToShopDetail();
-            }
-        });
 
     }
 
-    private View.OnClickListener onShareClicked() {
+    private View.OnClickListener onShareClicked(final String url,
+                                                final String title,
+                                                final String imageUrl,
+                                                final String description) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,10 +160,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                             callbackManager);
                 }
 
-                shareBottomDialog.setShareModel(new ShareModel("https://www.tokopedia.com/",
-                        "Tokopedia",
-                        "",
-                        ""));
+                shareBottomDialog.setShareModel(
+                        new ShareModel(
+                                url,
+                                title,
+                                imageUrl,
+                                description));
                 shareBottomDialog.show();
             }
         };
@@ -181,22 +177,56 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail() {
+    public void onGoToShopDetail(String shopUrl) {
 
     }
 
     @Override
     public void onErrorGetFeedDetail(String errorMessage) {
+        finishLoading();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    private void finishLoading() {
+        adapter.dismissLoading();
     }
 
     @Override
     public void onSuccessGetFeedDetail(
+            final FeedDetailHeaderViewModel header,
             ArrayList<Visitable> listDetail,
             boolean hasNextPage) {
-        adapter.addList(listDetail);
+        finishLoading();
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
+        }
+
+        if (listDetail.size() == 0) {
+            adapter.showEmpty();
+        } else {
+            adapter.addList(listDetail);
+        }
+
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopUrl());
+            }
+        });
+
         adapter.notifyDataSetChanged();
         pagingHandler.setHasNext(hasNextPage);
+    }
+
+    @Override
+    public void showLoading() {
+        adapter.showLoading();
     }
 
     @Override
