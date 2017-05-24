@@ -9,6 +9,8 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ public class TopAdsSearchGroupAdsNameUseCase extends UseCase<List<GroupAd>> {
     public static final String KEYWORD_NAME = "KEYWORD_NAME";
     private final TopAdsGroupAdsRepository topAdsGroupAdsRepository;
 
+    @Inject
     public TopAdsSearchGroupAdsNameUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsGroupAdsRepository topAdsGroupAdsRepository) {
         super(threadExecutor, postExecutionThread);
         this.topAdsGroupAdsRepository = topAdsGroupAdsRepository;
