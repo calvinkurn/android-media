@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -27,7 +27,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends TActivity implements
+public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
         KeywordListListener.Listener {
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
