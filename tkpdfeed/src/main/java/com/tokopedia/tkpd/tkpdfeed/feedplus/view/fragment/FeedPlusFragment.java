@@ -205,10 +205,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listPromo.add(new PromoViewModel("Hemat Listrik", "6 Agustus", "LISTRIKWEK", prod1.getImageSource()));
         listPromo.add(new PromoViewModel("Bayar BPJS", "7 Januari - 8 Maret", "BAYARBPJS", prod4.getImageSource()));
 
-        list.add(new ActivityCardViewModel(listProduct));
-        list.add(new ActivityCardViewModel(listProduct2));
-        list.add(new ActivityCardViewModel(listProduct3));
-        list.add(new PromoCardViewModel(listPromo));
+
         ArrayList<PromoViewModel> listPromo2 = new ArrayList<>();
         listPromo2.add(new PromoViewModel("Hemat Air","30 Juni", "AIRMURAH", prod2.getImageSource()));
 
@@ -228,6 +225,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         List<Visitable> list = new ArrayList<>();
         list.add(imageBlog);
         list.add(videoBlog);
+        list.add(new ActivityCardViewModel(listProduct));
+        list.add(new ActivityCardViewModel(listProduct2));
+        list.add(new ActivityCardViewModel(listProduct3));
+        list.add(new PromoCardViewModel(listPromo));
         list.add(new PromotedProductViewModel(listPromotedProduct));
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
         list.add(new PromotedShopViewModel("Tep Shop 2", false, "Toko terbaik", listProduct3));
@@ -335,8 +336,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onInfoClicked() {
-        InfoTopAdsBottomDialog dialog = new InfoTopAdsBottomDialog(getActivity(), R.layout.promoted_info_dialog);
-        dialog.show();
+
     }
 
     @Override
