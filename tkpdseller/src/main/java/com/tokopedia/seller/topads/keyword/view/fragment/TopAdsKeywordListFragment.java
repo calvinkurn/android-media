@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,8 @@ import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
@@ -113,6 +116,12 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     public void onFilterChanged(Object someObject) {
 
+    }
+
+    @Override
+    public void onCreateKeyword() {
+        Intent intent = new Intent(getActivity(), TopAdsKeywordNewChooseGroupActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_CREATE_KEYWORD);
     }
 
     @Override
