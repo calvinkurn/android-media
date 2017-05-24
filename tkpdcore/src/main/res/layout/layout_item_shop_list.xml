@@ -99,8 +99,12 @@
 
         <LinearLayout
             android:id="@+id/shop_list_favorite_button"
-            android:layout_width="73dp"
-            android:layout_height="41dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
             android:gravity="center"
             android:orientation="horizontal"
             android:background="@drawable/green_button_rounded">
