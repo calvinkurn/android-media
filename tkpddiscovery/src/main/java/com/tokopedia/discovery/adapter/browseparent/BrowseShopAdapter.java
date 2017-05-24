@@ -119,6 +119,15 @@ public class BrowseShopAdapter extends ProductAdapter {
         @BindView(R2.id.shop_item_preview_3)
         ImageView itemPreview3;
 
+        @BindView(R2.id.shop_list_favorite_button)
+        View favoriteButton;
+
+        @BindView(R2.id.shop_list_favorite_button_text)
+        TextView favoriteButtonText;
+
+        @BindView(R2.id.shop_list_favorite_button_icon)
+        ImageView favoriteButtonIcon;
+
         public ShopViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -174,6 +183,18 @@ public class BrowseShopAdapter extends ProductAdapter {
                 ImageHandler.LoadImage(itemPreview3, shopModel.getProductImages().get(2));
             } catch (IndexOutOfBoundsException e) {
                 itemPreview3.setVisibility(View.INVISIBLE);
+            }
+
+            if (shopModel.isFavorited()) {
+                favoriteButton.setBackgroundResource(R.drawable.white_button_rounded);
+                favoriteButtonText.setText(R.string.shop_list_favorite_button_already_favorited);
+                favoriteButtonText.setTextColor(context.getResources().getColor(R.color.black_54));
+                favoriteButtonIcon.setImageResource(R.drawable.shop_list_favorite_check);
+            } else {
+                favoriteButton.setBackgroundResource(R.drawable.green_button_rounded);
+                favoriteButtonText.setText(R.string.shop_list_favorite_button_not_yet_favorited);
+                favoriteButtonText.setTextColor(context.getResources().getColor(R.color.white));
+                favoriteButtonIcon.setImageResource(R.drawable.ic_add);
             }
         }
     }

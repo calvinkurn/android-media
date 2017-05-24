@@ -21,6 +21,7 @@ public class ShopModel extends RecyclerViewItem {
     String reputationImageUrl;
     List<String> productImages;
     boolean isOfficial;
+    boolean isFavorited;
 
     public ShopModel() {
         setType(SHOP_MODEL_TYPE);
@@ -36,6 +37,7 @@ public class ShopModel extends RecyclerViewItem {
         isGold = shop.shopGoldShop;
         luckyImage = shop.shopLucky;
         isOfficial = shop.isOfficial;
+        isFavorited = shop.isFavorited;
         location = shop.shopLocation;
         reputationImageUrl = shop.reputationImageUri;
         productImages = shop.productImages;
@@ -85,6 +87,10 @@ public class ShopModel extends RecyclerViewItem {
         return isOfficial;
     }
 
+    public boolean isFavorited() {
+        return isFavorited;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -104,6 +110,7 @@ public class ShopModel extends RecyclerViewItem {
         dest.writeString(this.reputationImageUrl);
         dest.writeStringList(this.productImages);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isFavorited ? (byte) 1 : (byte) 0);
     }
 
     protected ShopModel(android.os.Parcel in) {
@@ -119,6 +126,7 @@ public class ShopModel extends RecyclerViewItem {
         this.reputationImageUrl = in.readString();
         in.readStringList(this.productImages);
         this.isOfficial = in.readByte() != 0;
+        this.isFavorited = in.readByte() != 0;
     }
 
     public static final Creator<ShopModel> CREATOR = new Creator<ShopModel>() {
