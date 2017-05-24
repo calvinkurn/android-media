@@ -8,6 +8,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 /**
@@ -28,7 +29,7 @@ public interface FeedPlusTypeFactory  {
 
     int type(BlogViewModel viewModel);
 
+    int type(PromotedProductViewModel promotedProductViewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);
-
 }

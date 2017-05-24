@@ -1,32 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <com.tokopedia.core.customwidget.SquareImageView
-        android:id="@+id/product_image"
+    <android.support.v7.widget.CardView
+        app:cardElevation="0dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="@dimen/margin_vs"
-        android:adjustViewBounds="true"
-        android:contentDescription="@string/image_product_desc"
-        android:gravity="center"
-        android:scaleType="centerCrop" />
+        android:id="@id/card_view">
+
+        <com.tokopedia.core.customwidget.SquareImageView
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@drawable/feed_container_rounded_corners"
+            android:backgroundTint="@color/transparent"
+            android:contentDescription="@string/image_product_desc"
+            android:gravity="center"
+            android:scaleType="centerCrop" />
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/product_image"
+        android:layout_below="@id/card_view"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         android:layout_marginTop="5dp"
         android:ellipsize="end"
         android:maxLines="2"
+        android:textColor="@color/black_70"
         tools:text="Nexus 5X 32 ,awawdawdasdas  pure white dan juga warna rose gold" />
 
     <TextView

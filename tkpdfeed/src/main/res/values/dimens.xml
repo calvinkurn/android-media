@@ -5,4 +5,16 @@
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="share_button_height">52dp</dimen>
 
+    <dimen name="feed_shop_ava"> 30dp </dimen>
+    <dimen name="feed_user_ava"> 40dp </dimen>
+    <dimen name="feed_gold_badge"> 15dp </dimen>
+    <dimen name="feed_info_"> 15dp </dimen>
+    <dimen name="small_icon_size"> 6dp </dimen>
+
+    <dimen name="text_size_11"> 11sp </dimen>
+    <dimen name="text_size_13"> 13sp </dimen>
+    <dimen name="text_size_14"> 14sp </dimen>
+
+    <dimen name="feed_margin_s"> 4.2dp</dimen>
+
 </resources>

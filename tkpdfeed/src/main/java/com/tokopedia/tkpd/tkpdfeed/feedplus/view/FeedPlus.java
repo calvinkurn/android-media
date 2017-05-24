@@ -1,7 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
+import android.view.View;
+
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 
@@ -31,6 +34,9 @@ public interface FeedPlus{
 
         void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel);
 
+        void onInfoClicked();
+
+        void onFavoritedClicked();
     }
 
     public interface Presenter extends CustomerPresenter<View>{
