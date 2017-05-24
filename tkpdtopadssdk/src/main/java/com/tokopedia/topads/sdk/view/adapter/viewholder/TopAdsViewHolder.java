@@ -35,7 +35,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     private AdsItemAdapter adapter;
     private LinearLayout adsHeader;
     private Context context;
-    private DividerItemDecoration itemDecoration;
     private static final int DEFAULT_SPAN_COUNT = 2;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
@@ -52,8 +51,6 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         itemView.findViewById(R.id.info_topads).setOnClickListener(this);
         adapter = new AdsItemAdapter(context);
         adapter.setItemClickListener(itemClickListener);
-        itemDecoration = new DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL_LIST);
-        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
     }
@@ -85,19 +82,15 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
         switch (displayMode) {
             case FEED:
                 if(item instanceof ShopFeedViewModel){
-                    itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                     recyclerView.setLayoutManager(linearLayoutManager);
                 } else {
-                    itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                     recyclerView.setLayoutManager(gridLayoutManager);
                 }
                 break;
             case GRID:
-                itemDecoration.setOrientation(DividerItemDecoration.HORIZONTAL_LIST);
                 recyclerView.setLayoutManager(gridLayoutManager);
                 break;
             case LIST:
-                itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
