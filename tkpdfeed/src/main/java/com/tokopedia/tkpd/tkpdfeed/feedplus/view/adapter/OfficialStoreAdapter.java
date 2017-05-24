@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
 import android.content.Context;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +38,7 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
         public ImageView productImage;
         public ImageView shopAva;
         public TextView shopName;
-        public ImageView favoriteButton;
+        public FloatingActionButton favoriteButton;
 
 
         public ViewHolder(View itemLayoutView) {
@@ -47,7 +48,7 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
             productImage = (ImageView) itemLayoutView.findViewById(R.id.product_image);
             shopAva = (ImageView) itemLayoutView.findViewById(R.id.shop_ava);
             shopName = (TextView) itemLayoutView.findViewById(R.id.shop_name);
-            favoriteButton = (ImageView) itemLayoutView.findViewById(R.id.fav_area);
+            favoriteButton = (FloatingActionButton) itemLayoutView.findViewById(R.id.fab);
         }
     }
 
@@ -62,8 +63,7 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
 //        super.onBindViewHolder(holder, position);
         ImageHandler.LoadImage(holder.shopAva, list.get(position).getShopAva());
-        ImageHandler.loadImage2(holder.favoriteButton, ""
-            ,list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
+        holder.favoriteButton.setBackgroundResource(list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
         holder.shopName.setText(list.get(position).getShopName());
 
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));

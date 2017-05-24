@@ -28,16 +28,9 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.promo_layout;
 
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.shop_name)
     TextView promoterName;
-
-    @BindView(R2.id.shop_desc)
     TextView promoterDesc;
-
-    @BindView(R2.id.user_ava)
     ImageView promoterAva;
 
     private PromoAdapter adapter;
@@ -47,7 +40,10 @@ public class PromoViewHolder extends AbstractViewHolder<PromoCardViewModel> {
 
     public PromoViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+        promoterName = (TextView) itemView.findViewById(R.id.shop_name);
+        promoterDesc = (TextView) itemView.findViewById(R.id.shop_desc);
+        promoterAva = (ImageView) itemView.findViewById(R.id.user_ava);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()
                 , LinearLayoutManager.HORIZONTAL, false));

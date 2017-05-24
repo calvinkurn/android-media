@@ -8,12 +8,10 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.SpannedGridLayoutManager;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.SpannedGridLayoutManager;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.PromotedShopAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
-
-import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 5/16/17.
@@ -23,9 +21,15 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
 
     @LayoutRes
     public static final int LAYOUT = R.layout.promoted_shop_layout;
+    private final FeedPlus.View viewListener;
+    private final View favoriteButton;
 
     TextView shopName;
+    TextView shopDesc;
     View goldMerchant;
+    View infoView;
+    View favorite;
+    View favorited;
 
     RecyclerView recyclerView;
 
@@ -35,13 +39,17 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
 
     private PromotedShopViewModel promotedShopViewModel;
 
-    public PromotedShopViewHolder(View itemView) {
+    public PromotedShopViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-
+        this.viewListener = viewListener;
         shopName = (TextView) itemView.findViewById(R.id.shop_name);
+        shopDesc = (TextView) itemView.findViewById(R.id.shop_desc);
         goldMerchant = itemView.findViewById(R.id.gold_merchant);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
-
+        infoView = itemView.findViewById(R.id.info_topads);
+        favoriteButton = itemView.findViewById(R.id.fav_btn);
+        favorite = itemView.findViewById(R.id.favorite);
+        favorited = itemView.findViewById(R.id.favorited);
 
         SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
                 new SpannedGridLayoutManager.GridSpanLookup() {
@@ -68,7 +76,31 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
     public void bind(PromotedShopViewModel promotedShopViewModel) {
         this.promotedShopViewModel = promotedShopViewModel;
         shopName.setText(promotedShopViewModel.getShopName());
+        shopDesc.setText(promotedShopViewModel.getDescription());
         goldMerchant.setVisibility(promotedShopViewModel.isGoldMerchant() ? View.VISIBLE : View.GONE);
         adapter.setList(promotedShopViewModel.getListProduct());
+        infoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onInfoClicked();
+            }
+        });
+        setFavoriteButton(promotedShopViewModel.isFavorited());
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onFavoritedClicked();
+            }
+        });
+    }
+
+    public void setFavoriteButton(boolean favoriteButton) {
+        if(favoriteButton){
+            favorite.setVisibility(View.GONE);
+            favorited.setVisibility(View.VISIBLE);
+        }else{
+            favorite.setVisibility(View.VISIBLE);
+            favorited.setVisibility(View.GONE);
+        }
     }
 }

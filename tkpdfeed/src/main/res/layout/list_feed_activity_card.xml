@@ -15,4 +15,7 @@
         android:layout_height="wrap_content"/>
 
     <include layout="@layout/feed_share_button"/>
+
+    <include layout="@layout/buy_button"/>
+
 </LinearLayout>

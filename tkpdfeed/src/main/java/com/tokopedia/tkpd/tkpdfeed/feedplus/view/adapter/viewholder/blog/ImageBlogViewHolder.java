@@ -26,17 +26,17 @@ public class ImageBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
 
     private final FeedPlus.View viewListener;
 
-    @BindView(R2.id.title)
     TextView title;
-
-    @BindView(R2.id.content)
     TextView content;
-
-    @BindView(R2.id.image)
     ImageView image;
+    View shareButton;
 
     public ImageBlogViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
+        title = (TextView) itemView.findViewById(R.id.title);
+        content = (TextView) itemView.findViewById(R.id.content);
+        image = (ImageView) itemView.findViewById(R.id.image);
+        shareButton = itemView.findViewById(R.id.share_button);
         this.viewListener = viewListener;
     }
 
@@ -50,6 +50,17 @@ public class ImageBlogViewHolder extends AbstractViewHolder<BlogViewModel> {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToBlogWebView(viewModel.getUrl());
+            }
+        });
+
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onShareButtonClicked(
+                        viewModel.getUrl(),
+                        viewModel.getTitle(),
+                        viewModel.getImageUrl(),
+                        viewModel.getContent());
             }
         });
     }

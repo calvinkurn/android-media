@@ -18,11 +18,14 @@ public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeF
     private String actionText;
     private boolean isGoldMerchant;
     private String postTime;
+    private boolean isOfficialStore;
 
     public ProductCardHeaderViewModel() {
+        this.shopName = "Nisie shop";
         this.actionText = "ubah 1 produk";
         this.shopAvatar = "https://imagerouter.tokopedia.com/img/100-square/shops-1/2016/8/5/1205649/1205649_620e3ec4-9a94-4210-bac4-f31ab1d1b9f5.jpg";
         this.isGoldMerchant = true;
+        this.isOfficialStore = false;
         this.postTime = "2017-05-17T15:10:53+07:00";
     }
 
@@ -37,6 +40,7 @@ public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeF
         actionText = in.readString();
         isGoldMerchant = in.readByte() != 0;
         postTime = in.readString();
+        isOfficialStore = in.readByte() != 0;
     }
 
     public static final Creator<ProductCardHeaderViewModel> CREATOR = new Creator<ProductCardHeaderViewModel>() {
@@ -103,5 +107,15 @@ public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeF
         dest.writeString(actionText);
         dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
         dest.writeString(postTime);
+        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
+
+    }
+
+    public boolean isOfficialStore() {
+        return isOfficialStore;
+    }
+
+    public void setOfficialStore(boolean isOfficialStore) {
+        this.isOfficialStore = isOfficialStore;
     }
 }

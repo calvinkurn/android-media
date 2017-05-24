@@ -11,6 +11,13 @@
             android:name=".feedplus.view.activity.BlogWebViewActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".feedplus.view.activity.TransparentVideoActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Transparent.Black"
+            android:configChanges="orientation"
+            />
     </application>
 
 </manifest>
