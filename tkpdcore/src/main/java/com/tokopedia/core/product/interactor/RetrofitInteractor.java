@@ -147,7 +147,7 @@ public interface RetrofitInteractor {
 
     interface ProductCampaignListener {
 
-        void onSucccess(@NonNull ProductCampaign productCampaign);
+        void onSucccess(ProductCampaign productCampaign);
 
         void onError(String error);
     }

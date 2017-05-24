@@ -17,7 +17,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by nakama on 15/05/17.
+ * Created by brilliant.oka on 15/05/17.
  */
 
 public class GetShopProductCampaignRetrofit {
@@ -97,7 +97,7 @@ public class GetShopProductCampaignRetrofit {
             public void onNext(Response<ShopProductCampaignResponse> tkpdResponse) {
                 if(tkpdResponse.isSuccessful()) {
                     ShopProductCampaignResponse response = tkpdResponse.body();
-                    if(response.getData() != null && response.getData().size() > 0) {
+                    if(response.getData() != null) {
                         for(ShopProductCampaign productCampaign : response.getData()) {
                             for(com.tokopedia.core.shopinfo.models.productmodel.List list : productModel.list) {
                                 if(list.productId == productCampaign.getProductId()) {

@@ -849,14 +849,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         retrofitInteractor.getProductCampaign(context, id,
                 new RetrofitInteractor.ProductCampaignListener() {
                     @Override
-                    public void onSucccess(@NonNull ProductCampaign productCampaign) {
+                    public void onSucccess(ProductCampaign productCampaign) {
                         viewListener.showProductCampaign(productCampaign);
                     }
 
                     @Override
-                    public void onError(String error) {
-                        Log.d("PDP oka", error);
-                    }
+                    public void onError(String error) { }
                 }
         );
     }
