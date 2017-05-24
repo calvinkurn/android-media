@@ -25,6 +25,7 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
     }
 
     private ProductFeedDomain createProductFeedDomain(Feeds.Data.Product product, List<WholesaleDomain> wholesaleDomains) {
+        if (product == null) return null;
         return new ProductFeedDomain(product.id(), product.name(), product.price(),
                 product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
                 product.preorder(), product.cashback(), product.url(), product.productLink(), product.wishlist(),
@@ -32,6 +33,7 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
     }
 
     private PromotionFeedDomain createPromotionFeedDomain(Feeds.Data.Promotion promotion) {
+        if (promotion == null) return null;
         return new PromotionFeedDomain(promotion.id(), promotion.name(), promotion.type(),
                 promotion.thumbnail(), promotion.feature_image(), promotion.description(),
                 promotion.periode(), promotion.code(), promotion.url(), promotion.min_transcation());
@@ -43,8 +45,10 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
 
     private List<WholesaleDomain> convertToWholesaleDomain(List<Feeds.Data.Wholesale> wholesales) {
         List<WholesaleDomain> wholesaleDomains = new ArrayList<>();
-        for (int i  = 0; i < wholesales.size(); i++) {
-            wholesaleDomains.add(createWholesaleDomain(wholesales.get(i)));
+        if (wholesales != null) {
+            for (int i  = 0; i < wholesales.size(); i++) {
+                wholesaleDomains.add(createWholesaleDomain(wholesales.get(i)));
+            }
         }
 
         return wholesaleDomains;
@@ -52,12 +56,14 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
 
     private List<ProductFeedDomain> convertToProductFeedDomain(List<Feeds.Data.Product> products) {
         List<ProductFeedDomain> productFeedDomains = new ArrayList<>();
-        for (int i = 0; i < products.size(); i++) {
-            Feeds.Data.Product product = products.get(i);
+        if (products != null) {
+            for (int i = 0; i < products.size(); i++) {
+                Feeds.Data.Product product = products.get(i);
 
-            List<WholesaleDomain> wholesaleDomains = convertToWholesaleDomain(product.wholesale());
+                List<WholesaleDomain> wholesaleDomains = convertToWholesaleDomain(product.wholesale());
 
-            productFeedDomains.add(createProductFeedDomain(product, wholesaleDomains));
+                productFeedDomains.add(createProductFeedDomain(product, wholesaleDomains));
+            }
         }
 
         return productFeedDomains;
@@ -65,14 +71,17 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
 
     private List<PromotionFeedDomain> convertToPromotionFeedDomain(List<Feeds.Data.Promotion> promotions) {
         List<PromotionFeedDomain> promotionFeedDomains = new ArrayList<>();
-        for (int i = 0; i < promotions.size(); i++) {
-            promotionFeedDomains.add(createPromotionFeedDomain(promotions.get(i)));
+        if (promotions != null) {
+            for (int i = 0; i < promotions.size(); i++) {
+                promotionFeedDomains.add(createPromotionFeedDomain(promotions.get(i)));
+            }
         }
 
         return  promotionFeedDomains;
     }
 
     private ShopFeedDomain createShopFeedDomain(Feeds.Data.Shop shop) {
+        if (shop == null) return null;
         return new ShopFeedDomain(shop.id(), shop.name(), shop.avatar(), shop.isOfficial(),
                 shop.isGold(), shop.url(), shop.shopLink());
     }
@@ -80,25 +89,29 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
     private ContentFeedDomain createContentFeedDomain(Feeds.Data.Content content,
                                                       List<ProductFeedDomain> productFeedDomains,
                                                       List<PromotionFeedDomain> promotionFeedDomains) {
+        if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product(), productFeedDomains, promotionFeedDomains, content.status_activity());
     }
 
     private  SourceFeedDomain createSourceFeedDomain(Feeds.Data.Source source, ShopFeedDomain shopFeedDomain) {
+        if (source == null) return null;
         return new SourceFeedDomain(source.type(), shopFeedDomain);
     }
 
     private List<DataFeedDomain> convertToDataFeedDomain(List<Feeds.Data.Datum> datumList) {
         List<DataFeedDomain> dataFeedDomains = new ArrayList<>();
-        for (int i = 0 ; i < datumList.size(); i++) {
-            Feeds.Data.Datum datum = datumList.get(i);
-            List<ProductFeedDomain> productFeedDomains = convertToProductFeedDomain(datum.content().products());
-            List<PromotionFeedDomain> promotionFeedDomains = convertToPromotionFeedDomain(datum.content().promotions());
-            ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
-            ContentFeedDomain contentFeedDomain = createContentFeedDomain(datum.content(), productFeedDomains, promotionFeedDomains);
-            SourceFeedDomain sourceFeedDomain = createSourceFeedDomain(datum.source(), shopFeedDomain);
+        if (datumList != null) {
+            for (int i = 0 ; i < datumList.size(); i++) {
+                Feeds.Data.Datum datum = datumList.get(i);
+                List<ProductFeedDomain> productFeedDomains = convertToProductFeedDomain(datum.content().products());
+                List<PromotionFeedDomain> promotionFeedDomains = convertToPromotionFeedDomain(datum.content().promotions());
+                ShopFeedDomain shopFeedDomain = createShopFeedDomain(datum.source().shop());
+                ContentFeedDomain contentFeedDomain = createContentFeedDomain(datum.content(), productFeedDomains, promotionFeedDomains);
+                SourceFeedDomain sourceFeedDomain = createSourceFeedDomain(datum.source(), shopFeedDomain);
 
-            dataFeedDomains.add(createDataFeedDomain(datum, contentFeedDomain, sourceFeedDomain));
+                dataFeedDomains.add(createDataFeedDomain(datum, contentFeedDomain, sourceFeedDomain));
+            }
         }
 
         return dataFeedDomains;

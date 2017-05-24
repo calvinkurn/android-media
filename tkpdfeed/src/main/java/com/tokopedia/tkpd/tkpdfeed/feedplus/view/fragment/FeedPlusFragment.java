@@ -13,19 +13,15 @@ import android.view.ViewGroup;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
-
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -35,13 +31,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTyp
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.InfoTopAdsBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
@@ -67,6 +62,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Inject
     FeedPlusPresenter presenter;
 
+    private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
@@ -98,7 +94,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
-        adapter = new FeedPlusAdapter(typeFactory);
+        //adapter = new FeedPlusAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
@@ -249,8 +245,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
         list.add(new ActivityCardViewModel(listProduct8));
 
-        adapter.addList(list);
-        adapter.notifyDataSetChanged();
+       // adapter.addList(list);
+        //adapter.notifyDataSetChanged();
     }
 
 

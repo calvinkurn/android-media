@@ -41,5 +41,9 @@ public interface FeedPlus{
 
     public interface Presenter extends CustomerPresenter<View>{
 
+        void fetchFirstPage();
+
+        void fetchNextPage();
+
     }
 }
