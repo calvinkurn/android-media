@@ -38,4 +38,15 @@
                 android:layout_height="match_parent"/>
         </RelativeLayout>
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/top_ads_dashboard_keyword_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add_black_48dp_00"
+        app:backgroundTint="@color/tkpd_main_green"
+        app:fabSize="normal"
+        app:layout_anchorGravity="bottom|right|end" />
 </android.support.design.widget.CoordinatorLayout>
