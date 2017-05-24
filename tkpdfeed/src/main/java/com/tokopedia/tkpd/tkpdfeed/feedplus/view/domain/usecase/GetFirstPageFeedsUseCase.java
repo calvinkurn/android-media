@@ -5,23 +5,21 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 
-import java.util.List;
-
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * @author ricoharisin .
  */
 
-public class GetFeedsUseCase extends UseCase<FeedResult> {
+public class GetFirstPageFeedsUseCase extends UseCase<FeedResult> {
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
     private FeedRepository feedRepository;
 
-    public GetFeedsUseCase(ThreadExecutor threadExecutor,
+    public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
                            PostExecutionThread postExecutionThread,
                            FeedRepository feedRepository) {
 
@@ -32,9 +30,14 @@ public class GetFeedsUseCase extends UseCase<FeedResult> {
         this.feedRepository = feedRepository;
 
     }
-
     @Override
     public Observable<FeedResult> createObservable(RequestParams requestParams) {
-        return feedRepository.getFeedsFromCloud(requestParams);
+        return Observable.concat(feedRepository.getFirstPageFeedsFromLocal(), feedRepository.getFirstPageFeedsFromCloud())
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
+                    @Override
+                    public Observable<? extends FeedResult> call(Throwable throwable) {
+                        return feedRepository.getFirstPageFeedsFromCloud();
+                    }
+                });
     }
 }

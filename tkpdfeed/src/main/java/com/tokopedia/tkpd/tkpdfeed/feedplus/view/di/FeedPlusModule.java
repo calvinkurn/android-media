@@ -2,7 +2,9 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.di;
 
 import com.apollographql.apollo.ApolloClient;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.di.module.OkHttpClientModule;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,10 +25,12 @@ public class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    ApolloClient providesApolloClient(@DefaultAuth OkHttpClient okHttpClient) {
+    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
-                .serverUrl("http://3-feature-m-staging.tokopedia.com/graphql")
+                .serverUrl("https://m.tokopedia.com/graphql")
                 .build();
     }
+
+
 }

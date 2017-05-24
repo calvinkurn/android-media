@@ -48,10 +48,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * @author by nisie on 5/15/17.
  */
@@ -60,19 +56,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener {
 
-    @BindView(R2.id.recycler_view)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
     @Inject
     FeedPlusPresenter presenter;
 
-    private Unbinder unbinder;
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
-    private FeedPlusAdapter adapter;
+    //private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
 
@@ -107,7 +99,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
-        adapter = new FeedPlusAdapter(typeFactory);
+        //adapter = new FeedPlusAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
@@ -119,7 +111,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.recycler_view);
+        swipeToRefresh = (SwipeToRefresh) parentView.findViewById(R.id.swipe_refresh_layout);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -129,7 +122,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adapter);
+        //recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(recyclerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
 
@@ -244,8 +237,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
         list.add(new ActivityCardViewModel("Nisie 8", listProduct8));
 
-        adapter.addList(list);
-        adapter.notifyDataSetChanged();
+       // adapter.addList(list);
+        //adapter.notifyDataSetChanged();
     }
 
 
@@ -266,7 +259,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 

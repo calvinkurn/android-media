@@ -77,7 +77,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_FEED_DETAIL;
+        return "";
     }
 
     @Override
