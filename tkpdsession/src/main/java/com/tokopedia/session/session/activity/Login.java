@@ -221,7 +221,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
-                    session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
+                    session.setWhichFragment(((BaseView) fragment).getFragmentId());
                     setToolbarTitle();
                     invalidateOptionsMenu();
                 }
