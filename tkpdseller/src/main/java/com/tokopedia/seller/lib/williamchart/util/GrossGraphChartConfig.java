@@ -167,7 +167,7 @@ public class GrossGraphChartConfig {
         }
 
         chart.setTooltips(mTip);
-        chart.putYRndrStringFormatter(new YAxisRenderer());
+        chart.putYRndrStringFormatter(new TopAdsYAxisRenderer());
         chart.setDrawable(dotDrawable);
 
         //give space for display tooltip

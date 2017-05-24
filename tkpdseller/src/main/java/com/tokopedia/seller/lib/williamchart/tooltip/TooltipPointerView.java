@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.seller.R;
 
@@ -21,6 +22,8 @@ class TooltipPointerView extends View {
 
     private Paint mPaint;
     private int color;
+    private int layout_width;
+    private int layout_height;
 
     public TooltipPointerView(Context context) {
         super(context);
@@ -43,6 +46,22 @@ class TooltipPointerView extends View {
     }
 
     private void init(AttributeSet attrs) {
+
+        int[] attrsArray = new int[] {
+                android.R.attr.id, // 0
+                android.R.attr.background, // 1
+                android.R.attr.layout_width, // 2
+                android.R.attr.layout_height // 3
+        };
+
+        TypedArray ta = getContext().obtainStyledAttributes(attrs, attrsArray);
+        try {
+            layout_width = ta.getDimensionPixelSize(2, ViewGroup.LayoutParams.MATCH_PARENT);
+            layout_height = ta.getDimensionPixelSize(3, ViewGroup.LayoutParams.MATCH_PARENT);
+        }finally {
+            ta.recycle();
+        }
+
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TooltipPointerAttrs);
         try {
             color = styledAttributes.getColor(R.styleable.TooltipPointerAttrs_tooltip_pointer_color, 0);
@@ -60,6 +79,14 @@ class TooltipPointerView extends View {
 
     public void setColor(int color) {
         this.color = color;
+    }
+
+    public int getLayout_width() {
+        return layout_width;
+    }
+
+    public int getLayout_height() {
+        return layout_height;
     }
 
     @Override
