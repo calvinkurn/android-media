@@ -101,6 +101,21 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             indicator.notifyDataSetChanged();
             imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
         }
+        if (data.getInfo().getProductStatus().equals("-1")) {
+            if (data.getInfo().getProductStatusMessage() != null && data.getInfo().getProductStatusTitle() != null) {
+                errorProductContainer.setVisibility(VISIBLE);
+                errorProductTitle.setText(data.getInfo().getProductStatusTitle());
+                errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
+            }
+            listener.onProductStatusError();
+        } else if (data.getInfo().getProductStatus().equals("3") &
+                data.getShopInfo().getShopStatus() == 1) {
+            errorProductContainer.setVisibility(VISIBLE);
+            errorProductTitle.setText(data.getInfo().getProductStatusTitle());
+            errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
+        } else if (!data.getInfo().getProductStatus().equals("1")) {
+            listener.onProductStatusError();
+        }
     }
 
     public void renderTempData(ProductPass productPass) {

@@ -2,6 +2,7 @@
 
     package="com.tokopedia.tkpdpdp">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -19,6 +20,11 @@
         <activity
             android:name=".WholesaleActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".PreviewProductImageDetail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoTitleBar.Fullscreen" />
         <activity
             android:name=".InstallmentActivity"
             android:screenOrientation="portrait" />

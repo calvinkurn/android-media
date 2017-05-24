@@ -123,6 +123,8 @@ public interface ProductDetailView extends ViewListener {
 
     void onInstallmentClicked(@NonNull Bundle bundle);
 
+    void onDescriptionClicked(@NonNull Bundle bundle);
+
     /**
      * Pada saat ada error pada toko
      */

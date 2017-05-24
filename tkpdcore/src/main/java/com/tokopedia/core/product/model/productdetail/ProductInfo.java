@@ -93,6 +93,19 @@ public class ProductInfo implements Parcelable {
     @Expose
     private List<ProductInstallment> productInstallments = null;
 
+    @SerializedName("wholesale_min_price")
+    @Expose
+    private String wholseSaleMinPrice;
+    @SerializedName("wholesale_min_quantity")
+    @Expose
+    private String wholeSaleMinQuantity;
+    @SerializedName("installment_min_percentage")
+    @Expose
+    private String installmentMinPercentage;
+    @SerializedName("installment_min_price")
+    @Expose
+    private String installmentMinPrice;
+
 
     public ProductInfo() {
     }
@@ -297,6 +310,38 @@ public class ProductInfo implements Parcelable {
         this.returnInfo = returnInfo;
     }
 
+    public String getWholseSaleMinPrice() {
+        return wholseSaleMinPrice;
+    }
+
+    public void setWholseSaleMinPrice(String wholseSaleMinPrice) {
+        this.wholseSaleMinPrice = wholseSaleMinPrice;
+    }
+
+    public String getWholeSaleMinQuantity() {
+        return wholeSaleMinQuantity;
+    }
+
+    public void setWholeSaleMinQuantity(String wholeSaleMinQuantity) {
+        this.wholeSaleMinQuantity = wholeSaleMinQuantity;
+    }
+
+    public String getInstallmentMinPercentage() {
+        return installmentMinPercentage;
+    }
+
+    public void setInstallmentMinPercentage(String installmentMinPercentage) {
+        this.installmentMinPercentage = installmentMinPercentage;
+    }
+
+    public String getInstallmentMinPrice() {
+        return installmentMinPrice;
+    }
+
+    public void setInstallmentMinPrice(String installmentMinPrice) {
+        this.installmentMinPrice = installmentMinPrice;
+    }
+
     protected ProductInfo(Parcel in) {
         productWeightUnit = in.readString();
         productEtalaseId = in.readString();
@@ -378,10 +423,14 @@ public class ProductInfo implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeList(productInstallments);
         }
+        dest.writeString(wholseSaleMinPrice);
+        dest.writeString(wholeSaleMinQuantity);
+        dest.writeString(installmentMinPercentage);
+        dest.writeString(installmentMinPrice);
     }
 
     @SuppressWarnings("unused")
-    public static final Creator<ProductInfo> CREATOR = new Creator<ProductInfo>() {
+    public static final Parcelable.Creator<ProductInfo> CREATOR = new Parcelable.Creator<ProductInfo>() {
         @Override
         public ProductInfo createFromParcel(Parcel in) {
             return new ProductInfo(in);

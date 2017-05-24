@@ -50,6 +50,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpdpdp.CourierActivity;
+import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -74,7 +75,6 @@ import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 
 import java.util.List;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -237,7 +237,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         //buttonShareView.setListener(this);
         buttonBuyView.setListener(this);
         //talkReviewView.setListener(this);
-        manageView.setListener(this);
+        //manageView.setListener(this);
         ratingTalkCourierView.setListener(this);
         detailInfoView.setListener(this);
         //descriptionView.setListener(this);
@@ -367,6 +367,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
+    public void onDescriptionClicked(@NonNull Bundle bundle) {
+        Intent intent = new Intent(context, DescriptionActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
     public void onInstallmentClicked(@NonNull Bundle bundle) {
         Intent intent = new Intent(context, InstallmentActivity.class);
         intent.putExtras(bundle);
@@ -412,7 +419,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.errorShopView.renderData(successResult);
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
-        this.manageView.renderData(successResult);
+        //this.manageView.renderData(successResult);
         this.buttonBuyView.renderData(successResult);
         //this.talkReviewView.renderVideoData(successResult);
         this.ratingTalkCourierView.renderData(successResult);
@@ -476,12 +483,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onSuccessToEtalase() {
-        manageView.hideToEtalase();
+
+        //manageView.hideToEtalase();
     }
 
     @Override
     public void onSuccessToWarehouse() {
-        manageView.hideToWareHouse();
+
+        //manageView.hideToWareHouse();
     }
 
     @Override
@@ -502,7 +511,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void updateWishListStatus(int status) {
         this.productData.getInfo().setProductAlreadyWishlist(status);
-        if (status == 1) {
+        if (productData.getShopInfo().getShopIsOwner() == 1) {
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.icon_wishlist_plain));
+            fabWishlist.setOnClickListener(new EditClick(productData));
+        } else if (status == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_faved));
         } else {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_fav));
@@ -870,6 +882,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
         toolbar.setTitleTextColor(getResources().getColor(R.color.grey_toolbar_icon));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.white));
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
         if (menu != null && menu.size() > 2) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_black));
@@ -880,8 +893,9 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     private void initToolbarTransparant() {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(Color.TRANSPARENT);
+        toolbar.setBackgroundColor(Color.TRANSPARENT);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back);
         if (menu != null && menu.size() > 1) {
             menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_icon_share_white));
@@ -915,6 +929,22 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
                 }
             }
+        }
+    }
+
+    private class EditClick implements View.OnClickListener {
+        private final ProductDetailData data;
+
+        public EditClick(ProductDetailData data) {
+            this.data = data;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("is_edit", true);
+            bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
+            onProductManageEditClicked(bundle);
         }
     }
 

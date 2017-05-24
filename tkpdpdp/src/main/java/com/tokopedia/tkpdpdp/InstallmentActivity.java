@@ -68,15 +68,15 @@ public class InstallmentActivity extends TActivity {
             for (ProductInstallment productInstallment : productInstallments) {
                 Terms terms = productInstallment.getTerms();
                 if (terms != null && terms.getRule3Months() != null) {
-                    monthsInstallmentItemss3.add(new MonthsInstallmentItem(terms.getRule3Months().getPercentage(),
+                    monthsInstallmentItemss3.add(new MonthsInstallmentItem(terms.getRule3Months().getPrice(),
                             terms.getRule3Months().getMinPurchase(), productInstallment.getIcon()));
                 }
                 if (terms != null && terms.getRule6Months() != null) {
-                    monthsInstallmentItemss6.add(new MonthsInstallmentItem(terms.getRule6Months().getPercentage(),
+                    monthsInstallmentItemss6.add(new MonthsInstallmentItem(terms.getRule6Months().getPrice(),
                             terms.getRule6Months().getMinPurchase(), productInstallment.getIcon()));
                 }
                 if (terms != null && terms.getRule12Months() != null) {
-                    monthsInstallmentItemss12.add(new MonthsInstallmentItem(terms.getRule12Months().getPercentage(),
+                    monthsInstallmentItemss12.add(new MonthsInstallmentItem(terms.getRule12Months().getPrice(),
                             terms.getRule12Months().getMinPurchase(), productInstallment.getIcon()));
                 }
             }

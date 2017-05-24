@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- * Created by alifa on 5/16/17.
+ * Created by Angga.Prasetiyo on 02/11/2015.
  */
 
 public class WholesaleActivity extends TActivity {

@@ -171,6 +171,7 @@
     <item name="view_transaction_detail" type="id" />
     <item name="fab_detail" type="id" />
     <item name="view_price_simulation" type="id" />
+    <item name="button_buy_container" type="id" />
 
 
 </resources>

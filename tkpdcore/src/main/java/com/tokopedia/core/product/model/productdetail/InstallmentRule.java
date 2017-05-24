@@ -12,9 +12,9 @@ public class InstallmentRule implements Parcelable {
     @SerializedName("min_purchase")
     @Expose
     private String minPurchase;
-    @SerializedName("percentage")
+    @SerializedName("installment_price")
     @Expose
-    private String percentage;
+    private String price;
 
     public String getMinPurchase() {
         return minPurchase;
@@ -24,18 +24,18 @@ public class InstallmentRule implements Parcelable {
         this.minPurchase = minPurchase;
     }
 
-    public String getPercentage() {
-        return percentage;
+    public String getPrice() {
+        return price;
     }
 
-    public void setPercentage(String percentage) {
-        this.percentage = percentage;
+    public void setPrice(String price) {
+        this.price = price;
     }
 
 
     protected InstallmentRule(Parcel in) {
         minPurchase = in.readString();
-        percentage = in.readString();
+        price = in.readString();
     }
 
     @Override
@@ -46,11 +46,11 @@ public class InstallmentRule implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(minPurchase);
-        dest.writeString(percentage);
+        dest.writeString(price);
     }
 
     @SuppressWarnings("unused")
-    public static final Creator<InstallmentRule> CREATOR = new Creator<InstallmentRule>() {
+    public static final Parcelable.Creator<InstallmentRule> CREATOR = new Parcelable.Creator<InstallmentRule>() {
         @Override
         public InstallmentRule createFromParcel(Parcel in) {
             return new InstallmentRule(in);

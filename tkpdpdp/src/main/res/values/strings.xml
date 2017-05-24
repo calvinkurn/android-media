@@ -15,4 +15,8 @@
     <string name="favorited">Favorited</string>
     <string name="title_installment">\"Bunga 0% mulai dari ...\"</string>
     <string name="prefix_wholesale">Mulai dari Rp</string>
+    <string name="description_page_title">Deskripsi Produk</string>
+    <string name="no_description_pdp">Tidak Ada Deskripsi</string>
+    <string name="download">Download</string>
+    <string name="descriptions">Descriptions</string>
 </resources>

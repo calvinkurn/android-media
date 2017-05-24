@@ -60,22 +60,36 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
-        if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
-                && !data.getPreOrder().getPreorderStatus().equals("0")
-                && !data.getPreOrder().getPreorderProcessTime().equals("0")
-                && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
-                && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
-            tvBuy.setText(getContext().getString(R.string.title_pre_order));
-        } else {
-            tvBuy.setText(getContext().getString(R.string.title_buy));
-        }
-        setOnClickListener(new ClickBuy(data));
         if (data.getShopInfo().getShopIsOwner() == 1 || data.getShopInfo().getShopStatus() != 1
                 || (data.getInfo().getProductStatus().equals("3") & data.getShopInfo().getShopStatus() == 1)
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
-            setVisibility(GONE);
+            tvBuy.setText(getContext().getString(R.string.title_promo));
+            setOnClickListener(new PromoteClick(data));
         } else {
-            setVisibility(VISIBLE);
+            if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
+                    && !data.getPreOrder().getPreorderStatus().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTime().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeType().equals("0")
+                    && !data.getPreOrder().getPreorderProcessTimeTypeString().equals("0")) {
+                tvBuy.setText(getContext().getString(R.string.title_pre_order));
+            } else {
+                tvBuy.setText(getContext().getString(R.string.title_buy));
+            }
+            setOnClickListener(new ClickBuy(data));
+        }
+        setVisibility(VISIBLE);
+    }
+
+    private class PromoteClick implements OnClickListener {
+        private final ProductDetailData data;
+
+        public PromoteClick(ProductDetailData data) {
+            this.data = data;
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onProductManagePromoteClicked(data);
         }
     }
 

@@ -10,14 +10,12 @@ import android.widget.TextView;
 
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class PriceSimulationView extends BaseView<ProductDetailData, ProductDetailView> {
 
@@ -74,7 +72,8 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
 
         if (data.getInfo().getProductInstallments() != null && data.getInfo().getProductInstallments().size() > 0) {
             installmentLayout.setVisibility(VISIBLE);
-            tvInstallment.setText(getContext().getString(R.string.title_installment));
+            tvInstallment.setText("Bunga " + data.getInfo().getInstallmentMinPercentage() + " mulai dari "
+                    + data.getInfo().getInstallmentMinPrice());
             isInstallment = true;
             installmentLayout.setOnClickListener(new OnClickListener() {
                 @Override
@@ -88,10 +87,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
         }
         if (data.getWholesalePrice() != null && data.getWholesalePrice().size() > 0) {
             wholesaleLayout.setVisibility(VISIBLE);
-            String wholesalePrefix = getContext().getString(R.string.prefix_wholesale);
-            String wholesaleValue = wholesalePrefix + Collections.min(data.getWholesalePrice(),
-                    new ProductWholesalePrice.WholesaleComparator()).getWholesalePrice();
-            tvWholesale.setText(wholesaleValue);
+            tvWholesale.setText("Mulai dari " + data.getInfo().getWholseSaleMinPrice());
             isWholesale = true;
             wholesaleLayout.setOnClickListener(new OnClickListener() {
                 @Override
