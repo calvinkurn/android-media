@@ -25,9 +25,18 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.deeplink.RideDeeplinkModuleLoader;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by alvarisi on 3/29/17.
@@ -114,7 +123,26 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
             Log.d(TAG, "shouldOverrideUrlLoading: " + urlString);
 
             Uri uri = Uri.parse(urlString);
-            if (uri.getScheme().equals("toko")) {
+            if (urlString.endsWith("action_back")) {
+                isProgramaticallyDismissed = true;
+                getTargetFragment().onActivityResult(
+                        getTargetRequestCode(),
+                        Activity.RESULT_CANCELED,
+                        null);
+                dismiss();
+
+            } else if (uri.getScheme().equals("tokopedia") && uri.getHost().equalsIgnoreCase("digital")) {
+                Map<String, String> maps = splitQuery(uri);
+                Bundle bundle = new Bundle();
+                for (Map.Entry<String, String> imap : maps.entrySet()) {
+                    bundle.putString(imap.getKey(), imap.getValue());
+                }
+                IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+                InterruptConfirmationDialogFragment.this.startActivityForResult(
+                        digitalModuleRouter.instanceIntentCartDigitalProductWithBundle(bundle),
+                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                );
+            } else if (uri.getScheme().equals("toko")) {
                 String id = "";
                 String key = "";
                 if (!TextUtils.isEmpty(uri.getQueryParameter("tos_confirmation_id"))) {
@@ -150,6 +178,26 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
             handler.cancel();
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private Map<String, String> splitQuery(Uri url) {
+        Map<String, String> queryPairs = new LinkedHashMap<>();
+        String query = url.getQuery();
+        if (!TextUtils.isEmpty(query)) {
+            String[] pairs = query.split("&|\\?");
+            for (String pair : pairs) {
+                int indexKey = pair.indexOf("=");
+                if (indexKey > 0 && indexKey + 1 <= pair.length()) {
+                    try {
+                        queryPairs.put(URLDecoder.decode(pair.substring(0, indexKey), "UTF-8"),
+                                URLDecoder.decode(pair.substring(indexKey + 1), "UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return queryPairs;
     }
 
     @Override
@@ -231,6 +279,40 @@ public class InterruptConfirmationDialogFragment extends DialogFragment {
                     null);
 
             super.dismiss();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL:
+                if (resultCode == IDigitalModuleRouter.PAYMENT_SUCCESS) {
+                    if (data.hasExtra(IDigitalModuleRouter.EXTRA_MESSAGE)) {
+                        String message = data.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
+                        if (!TextUtils.isEmpty(message)) {
+                            NetworkErrorHelper.showSnackbar(getActivity(), message);
+                        }
+                    }
+                    Intent intent = getActivity().getIntent();
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(),
+                            Activity.RESULT_OK,
+                            intent
+                    );
+                    isProgramaticallyDismissed = true;
+                    dismiss();
+                } else {
+                    isProgramaticallyDismissed = true;
+                    getTargetFragment().onActivityResult(
+                            getTargetRequestCode(),
+                            Activity.RESULT_CANCELED,
+                            null);
+                    dismiss();
+                }
+
+                break;
         }
     }
 }

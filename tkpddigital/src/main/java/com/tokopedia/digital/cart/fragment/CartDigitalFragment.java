@@ -653,6 +653,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
+                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
                     closeView();
                     break;
                 case TopPayActivity.PAYMENT_FAILED:

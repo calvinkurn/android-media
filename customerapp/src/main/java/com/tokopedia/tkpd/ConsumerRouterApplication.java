@@ -119,6 +119,11 @@ public class ConsumerRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
+        return CartDigitalActivity.newInstance(this, bundle);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
     }
