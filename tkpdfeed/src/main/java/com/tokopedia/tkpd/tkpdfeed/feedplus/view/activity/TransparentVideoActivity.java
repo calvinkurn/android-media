@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,11 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.readystatesoftware.chuck.internal.ui.MainActivity;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.tkpd.tkpdfeed.R;
 
@@ -26,9 +31,12 @@ public class TransparentVideoActivity extends AppCompatActivity {
 
     private static final String PARAM_VIDEO_URL = "PARAM_VIDEO_URL";
     private static final String PARAM_TEXT = "PARAM_TEXT";
+    private static final String ARGS_POSITION = "ARGS_POSITION";
 
+    private ProgressDialog progressDialog;
     VideoView videoPlayer;
     TextView subtitle;
+    int position;
 
     public static Intent getIntent(Activity activity, String videoUrl, String text) {
         Intent intent = new Intent(activity, TransparentVideoActivity.class);
@@ -46,22 +54,22 @@ public class TransparentVideoActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         setContentView(R.layout.activity_feed_video);
         videoPlayer = (VideoView) findViewById(R.id.video_player);
         subtitle = (TextView) findViewById(R.id.subtitle);
 
-        if (getIntent().getExtras() != null
-                && !getIntent().getExtras().getString(PARAM_VIDEO_URL, "").equals("")) {
-            setVideo();
+        setVideo();
+
+        if (subtitle != null)
             subtitle.setText(getIntent().getExtras().getString(PARAM_TEXT, ""));
 
-        } else {
-            finish();
-        }
     }
 
     private void setVideo() {
         MediaController vidControl = new MediaController(this);
+
+        showLoadingProgress();
         vidControl.setAnchorView(videoPlayer);
         videoPlayer.setMediaController(vidControl);
         videoPlayer.setVideoURI(Uri.parse(getIntent()
@@ -94,10 +102,36 @@ public class TransparentVideoActivity extends AppCompatActivity {
         videoPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.start();
+                progressDialog.dismiss();
+                videoPlayer.seekTo(position);
+                if (position == 0) {
+                    videoPlayer.start();
+                } else {
+                    videoPlayer.pause();
+                }
             }
         });
 
     }
 
+    private void showLoadingProgress() {
+        progressDialog = new ProgressDialog(TransparentVideoActivity.this);
+        progressDialog.setMessage("Buffering...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(ARGS_POSITION, videoPlayer.getCurrentPosition());
+        videoPlayer.pause();
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        position = savedInstanceState.getInt(ARGS_POSITION);
+        videoPlayer.seekTo(position);
+    }
 }

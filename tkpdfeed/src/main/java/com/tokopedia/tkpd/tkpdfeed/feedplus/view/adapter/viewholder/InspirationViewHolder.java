@@ -27,10 +27,7 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
     public static final int LAYOUT = R.layout.inspiration_layout;
     private final FeedPlus.View viewListener;
 
-    @BindView(R2.id.product_list)
     RecyclerView recyclerView;
-
-    @BindView(R2.id.title)
     TextView textView;
 
     private InspirationAdapter adapter;
@@ -39,6 +36,8 @@ public class InspirationViewHolder extends AbstractViewHolder<InspirationViewMod
 
     public InspirationViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
+        recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+        textView = (TextView) itemView.findViewById(R.id.title);
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),

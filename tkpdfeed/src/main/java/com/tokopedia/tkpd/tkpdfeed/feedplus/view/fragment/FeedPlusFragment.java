@@ -123,7 +123,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
 
         BlogViewModel imageBlog = new BlogViewModel("https://islamkajian.files.wordpress.com/2015/03/kuda.jpg", "Test Blog");
-        BlogViewModel videoBlog = new BlogViewModel("http://techslides.com/demos/sample-videos/small.mp4");
+        BlogViewModel videoBlog = new BlogViewModel("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
 
         ProductFeedViewModel prod1 = new ProductFeedViewModel(
                 "Produk1",
