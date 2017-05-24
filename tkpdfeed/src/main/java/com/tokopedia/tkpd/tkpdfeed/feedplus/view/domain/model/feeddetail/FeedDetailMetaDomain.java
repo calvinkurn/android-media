@@ -15,4 +15,9 @@ public class FeedDetailMetaDomain {
     public FeedDetailMetaDomain(Boolean has_next_page) {
         this.has_next_page = has_next_page;
     }
+
+    @Nullable
+    public Boolean getHas_next_page() {
+        return has_next_page;
+    }
 }

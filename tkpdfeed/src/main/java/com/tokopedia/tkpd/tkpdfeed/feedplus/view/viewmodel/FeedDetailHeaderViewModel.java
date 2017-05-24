@@ -1,40 +1,34 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDetailTypeFactory;
 
 /**
- * @author by nisie on 5/19/17.
+ * @author by nisie on 5/24/17.
  */
 
-public class ProductCardHeaderViewModel{
+public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFactory> {
 
     private String shopName;
     private String shopAvatar;
     private boolean isGoldMerchant;
-    private String time;
+    private String shopSlogan;
     private boolean isOfficialStore;
 
-    public ProductCardHeaderViewModel() {
-        this.shopName = "Nisie shop";
-        this.shopAvatar = "https://imagerouter.tokopedia.com/img/100-square/shops-1/2016/8/5/1205649/1205649_620e3ec4-9a94-4210-bac4-f31ab1d1b9f5.jpg";
-        this.isGoldMerchant = true;
-        this.isOfficialStore = false;
-        this.time = "2017-05-17T15:10:53+07:00";
+    @Override
+    public int type(FeedPlusDetailTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
-    public ProductCardHeaderViewModel(String shopName,
-                                      String shopAvatar,
-                                      boolean isGoldMerchant,
-                                      String postTime,
-                                      boolean isOfficialStore) {
+    public FeedDetailHeaderViewModel(String shopName,
+                                     String shopAvatar,
+                                     boolean isGoldMerchant,
+                                     String shopSlogan,
+                                     boolean isOfficialStore) {
         this.shopName = shopName;
         this.shopAvatar = shopAvatar;
         this.isGoldMerchant = isGoldMerchant;
-        this.time = postTime;
+        this.shopSlogan = shopSlogan;
         this.isOfficialStore = isOfficialStore;
     }
 
@@ -62,19 +56,19 @@ public class ProductCardHeaderViewModel{
         isGoldMerchant = goldMerchant;
     }
 
-    public String getTime() {
-        return time;
+    public String getShopSlogan() {
+        return shopSlogan;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setShopSlogan(String shopSlogan) {
+        this.shopSlogan = shopSlogan;
     }
 
     public boolean isOfficialStore() {
         return isOfficialStore;
     }
 
-    public void setOfficialStore(boolean isOfficialStore) {
-        this.isOfficialStore = isOfficialStore;
+    public void setOfficialStore(boolean officialStore) {
+        isOfficialStore = officialStore;
     }
 }

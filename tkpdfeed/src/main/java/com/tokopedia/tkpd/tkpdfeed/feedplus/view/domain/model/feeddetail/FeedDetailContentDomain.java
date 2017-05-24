@@ -37,4 +37,24 @@ public class FeedDetailContentDomain {
         this.products = products;
         this.status_activity = status_activity;
     }
+
+    @Nullable
+    public String getType() {
+        return type;
+    }
+
+    @Nullable
+    public Integer getTotal_product() {
+        return total_product;
+    }
+
+    @Nullable
+    public List<FeedDetailProductDomain> getProducts() {
+        return products;
+    }
+
+    @Nullable
+    public String getStatus_activity() {
+        return status_activity;
+    }
 }

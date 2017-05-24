@@ -46,4 +46,49 @@ public class FeedDetailShopDomain {
         this.shareLinkDescription = shareLinkDescription;
         this.shareLinkURL = shareLinkURL;
     }
+
+    @Nullable
+    public Integer getId() {
+        return id;
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    @Nullable
+    public String getAvatar() {
+        return avatar;
+    }
+
+    @Nullable
+    public Boolean getOfficial() {
+        return isOfficial;
+    }
+
+    @Nullable
+    public Boolean getGold() {
+        return isGold;
+    }
+
+    @Nullable
+    public String getUrl() {
+        return url;
+    }
+
+    @Nullable
+    public String getShopLink() {
+        return shopLink;
+    }
+
+    @Nullable
+    public String getShareLinkDescription() {
+        return shareLinkDescription;
+    }
+
+    @Nullable
+    public String getShareLinkURL() {
+        return shareLinkURL;
+    }
 }

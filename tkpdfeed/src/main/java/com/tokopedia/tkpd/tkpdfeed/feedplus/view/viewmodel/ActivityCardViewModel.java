@@ -12,10 +12,12 @@ import java.util.ArrayList;
  * @author by nisie on 5/15/17.
  */
 
-public class ActivityCardViewModel extends ProductCardViewModel implements Parcelable {
+public class ActivityCardViewModel extends ProductCardViewModel {
 
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
+    private String actionText;
+
 
     public ActivityCardViewModel() {
     }
@@ -23,25 +25,9 @@ public class ActivityCardViewModel extends ProductCardViewModel implements Parce
     public ActivityCardViewModel(ArrayList<ProductFeedViewModel> listProduct) {
         this.productCardHeaderViewModel = new ProductCardHeaderViewModel();
         this.shareUrl = "https://tokopedia.com";
+        this.actionText = "Mengubah 1 produk";
         this.listProduct = listProduct;
     }
-
-    protected ActivityCardViewModel(Parcel in) {
-        productCardHeaderViewModel = in.readParcelable(ProductCardHeaderViewModel.class.getClassLoader());
-        shareUrl = in.readString();
-    }
-
-    public static final Creator<ActivityCardViewModel> CREATOR = new Creator<ActivityCardViewModel>() {
-        @Override
-        public ActivityCardViewModel createFromParcel(Parcel in) {
-            return new ActivityCardViewModel(in);
-        }
-
-        @Override
-        public ActivityCardViewModel[] newArray(int size) {
-            return new ActivityCardViewModel[size];
-        }
-    };
 
     @Override
     public int type(FeedPlusTypeFactory typeFactory) {
@@ -61,14 +47,16 @@ public class ActivityCardViewModel extends ProductCardViewModel implements Parce
         return shareUrl;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setShareUrl(String shareUrl) {
+        this.shareUrl = shareUrl;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(productCardHeaderViewModel, flags);
-        dest.writeString(shareUrl);
+    public String getActionText() {
+        return actionText;
     }
+
+    public void setActionText(String actionText) {
+        this.actionText = actionText;
+    }
+
 }

@@ -53,4 +53,39 @@ public class DataFeedDetailDomain {
         this.content = content;
         this.meta = meta;
     }
+
+    @Nullable
+    public String getId() {
+        return id;
+    }
+
+    @Nullable
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    @Nullable
+    public String getType() {
+        return type;
+    }
+
+    @Nullable
+    public String getCursor() {
+        return cursor;
+    }
+
+    @Nullable
+    public FeedDetailSourceDomain getSource() {
+        return source;
+    }
+
+    @Nullable
+    public FeedDetailContentDomain getContent() {
+        return content;
+    }
+
+    @Nullable
+    public FeedDetailMetaDomain getMeta() {
+        return meta;
+    }
 }

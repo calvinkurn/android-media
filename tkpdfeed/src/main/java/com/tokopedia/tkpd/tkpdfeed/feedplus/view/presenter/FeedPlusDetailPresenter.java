@@ -32,6 +32,7 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     @Override
     public void detachView() {
         super.detachView();
+        getFeedsDetailUseCase.unsubscribe();
     }
 
     public void getFeedDetail(String detailId, int page) {

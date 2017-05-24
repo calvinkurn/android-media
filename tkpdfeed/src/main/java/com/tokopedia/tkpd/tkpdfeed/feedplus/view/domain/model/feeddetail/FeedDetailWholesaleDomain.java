@@ -14,4 +14,9 @@ public class FeedDetailWholesaleDomain {
     public FeedDetailWholesaleDomain(String qty_min_fmt) {
         this.qty_min_fmt = qty_min_fmt;
     }
+
+    @Nullable
+    public String getQty_min_fmt() {
+        return qty_min_fmt;
+    }
 }

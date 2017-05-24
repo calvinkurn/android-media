@@ -20,17 +20,26 @@ public class FeedDetailViewModel implements Visitable<FeedPlusDetailTypeFactory>
     private boolean isWishlist;
     private int rating;
 
-    public FeedDetailViewModel(String name, String imageSource) {
+    public FeedDetailViewModel(String name,
+                               String price,
+                               String imageSource,
+                               String url,
+                               String cashback,
+                               boolean isWholesale,
+                               boolean isPreorder,
+                               boolean isFreeReturn,
+                               boolean isWishlist,
+                               int rating) {
         this.name = name;
-        this.price = "Rp 10.000";
-        this.url ="http://tokopedia.com";
+        this.price = price;
         this.imageSource = imageSource;
-        this.cashback = "";
-        this.isWholesale = false;
-        this.isPreorder = false;
-        this.isFreeReturn = false;
-        this.isWishlist = false;
-        this.rating = 4;
+        this.url = url;
+        this.cashback = cashback;
+        this.isWholesale = isWholesale;
+        this.isPreorder = isPreorder;
+        this.isFreeReturn = isFreeReturn;
+        this.isWishlist = isWishlist;
+        this.rating = rating;
     }
 
     @Override

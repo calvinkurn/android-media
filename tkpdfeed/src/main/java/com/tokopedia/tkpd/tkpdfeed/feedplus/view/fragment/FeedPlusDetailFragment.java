@@ -16,9 +16,9 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.DetailFeedAdapter;
@@ -29,15 +29,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresent
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * @author by nisie on 5/18/17.
@@ -47,6 +42,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         implements FeedPlusDetail.View {
 
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final String ARGS_DETAIL_ID = "DETAIL_ID";
+
 
     RecyclerView recyclerView;
     TextView shareButton;
@@ -58,9 +55,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ActivityCardViewModel activityCardViewModel;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
+    private PagingHandler pagingHandler;
+    private String detailId;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
         FeedPlusDetailFragment fragment = new FeedPlusDetailFragment();
@@ -95,11 +93,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
-            activityCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            detailId = savedInstanceState.getString(ARGS_DETAIL_ID);
         else if (getArguments() != null)
-            activityCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
+            detailId = getArguments().getString(FeedPlusDetailActivity.EXTRA_DETAIL_ID);
         else
-            activityCardViewModel = new ActivityCardViewModel();
+            detailId = "";
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
@@ -107,7 +105,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         adapter = new DetailFeedAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
+        pagingHandler = new PagingHandler();
     }
 
     @Nullable
@@ -142,37 +140,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
 
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        presenter.getFeedDetail("1758307", 1);
-        FeedDetailViewModel prod1 = new FeedDetailViewModel(
-                "Produk1",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg");
-
-        FeedDetailViewModel prod2 = new FeedDetailViewModel(
-                "Produk2",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
-
-        FeedDetailViewModel prod3 = new FeedDetailViewModel(
-                "Produk3",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg");
-
-        FeedDetailViewModel prod4 = new FeedDetailViewModel(
-                "Produk4",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
-
-        ArrayList<Visitable> listProduct = new ArrayList<>();
-        listProduct.add(activityCardViewModel.getHeader());
-        listProduct.add(prod1);
-        listProduct.add(prod2);
-        listProduct.add(prod3);
-        listProduct.add(prod4);
-
-        adapter.addList(listProduct);
-        adapter.notifyDataSetChanged();
+        presenter.getFeedDetail(detailId, pagingHandler.getPage());
 
         shareButton.setOnClickListener(onShareClicked());
         seeShopButon.setOnClickListener(new View.OnClickListener() {
@@ -219,9 +191,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGetFeedDetail() {
-        NetworkErrorHelper.showSnackbar(getActivity(), "SUKSES");
-
+    public void onSuccessGetFeedDetail(
+            ArrayList<Visitable> listDetail,
+            boolean hasNextPage) {
+        adapter.addList(listDetail);
+        adapter.notifyDataSetChanged();
+        pagingHandler.setHasNext(hasNextPage);
     }
 
     @Override
@@ -233,7 +208,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_DATA, activityCardViewModel);
+        outState.putString(ARGS_DETAIL_ID, detailId);
     }
 
 

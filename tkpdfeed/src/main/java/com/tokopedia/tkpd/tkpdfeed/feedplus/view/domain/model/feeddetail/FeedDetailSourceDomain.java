@@ -18,4 +18,14 @@ public class FeedDetailSourceDomain {
         this.type = type;
         this.shop = shop;
     }
+
+    @Nullable
+    public Integer getType() {
+        return type;
+    }
+
+    @Nullable
+    public FeedDetailShopDomain getShop() {
+        return shop;
+    }
 }

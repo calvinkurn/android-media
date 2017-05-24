@@ -207,7 +207,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
         ArrayList<PromoViewModel> listPromo2 = new ArrayList<>();
-        listPromo2.add(new PromoViewModel("Hemat Air","30 Juni", "AIRMURAH", prod2.getImageSource()));
+        listPromo2.add(new PromoViewModel("Hemat Air", "30 Juni", "AIRMURAH", prod2.getImageSource()));
 
         ArrayList<ProductFeedViewModel> listOfficialStore = new ArrayList<>();
         listOfficialStore.add(new ProductFeedViewModel(prod1, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocky", true));
@@ -302,7 +302,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
-        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), activityCardViewModel);
+        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), "1758307");
         startActivity(intent);
     }
 

@@ -84,4 +84,64 @@ public class FeedDetailProductDomain {
         this.wishlist = wishlist;
         this.rating = rating;
     }
+
+    @Nullable
+    public Integer getId() {
+        return id;
+    }
+
+    @Nullable
+    public String getName() {
+        return name;
+    }
+
+    @Nullable
+    public String getPrice() {
+        return price;
+    }
+
+    @Nullable
+    public String getImage() {
+        return image;
+    }
+
+    @Nullable
+    public List<FeedDetailWholesaleDomain> getWholesale() {
+        return wholesale;
+    }
+
+    @Nullable
+    public Boolean getFreereturns() {
+        return freereturns;
+    }
+
+    @Nullable
+    public Boolean getPreorder() {
+        return preorder;
+    }
+
+    @Nullable
+    public String getCashback() {
+        return cashback;
+    }
+
+    @Nullable
+    public Object getUrl() {
+        return url;
+    }
+
+    @Nullable
+    public String getProductLink() {
+        return productLink;
+    }
+
+    @Nullable
+    public Boolean getWishlist() {
+        return wishlist;
+    }
+
+    @Nullable
+    public Integer getRating() {
+        return rating;
+    }
 }
