@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -34,6 +36,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
     private SearchView searchView;
     private KeywordListListener keywordListTablayout;
     private MenuItem searchItem;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,13 @@ public class TopAdsKeywordListActivity extends TActivity implements
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
         viewPager = (ViewPager) findViewById(R.id.pager);
+        fab = (FloatingActionButton) findViewById(R.id.top_ads_dashboard_keyword_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabOnClick();
+            }
+        });
 
         setSupportActionBar(toolbar);
         ActionBar supportActionBar = getSupportActionBar();
@@ -60,6 +70,10 @@ public class TopAdsKeywordListActivity extends TActivity implements
         tabLayout.setOnTabSelectedListener(tabListener);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.key_word));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.negative));
+    }
+
+    private void fabOnClick() {
+
     }
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
@@ -124,9 +138,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
     @Override
     public boolean onQueryTextChange(String newText) {
         if (getTopAdsBaseKeywordListFragment() != null) {
-            if (!TextUtils.isEmpty(newText)) {
-                onQueryTextSubmit(newText);
-            } else {
+            if (TextUtils.isEmpty(newText)) {
                 onQueryTextSubmit(null);
             }
         }
@@ -135,7 +147,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_date) {
+        if (item.getItemId() == R.id.menu_filter) {
             if (getTopAdsBaseKeywordListFragment() != null) {
                 getTopAdsBaseKeywordListFragment().onFilterChanged("sekarang");
             }
