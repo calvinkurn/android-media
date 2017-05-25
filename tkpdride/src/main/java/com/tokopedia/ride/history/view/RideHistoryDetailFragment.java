@@ -1,6 +1,7 @@
 package com.tokopedia.ride.history.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class RideHistoryDetailFragment extends BaseFragment implements RideHistoryDetailContract.View {
     private OnFragmentInteractionListener mListener;
@@ -174,6 +176,12 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     @Override
     public RideHistoryViewModel getRideHistory() {
         return rideHistory;
+    }
+
+    @OnClick(R2.id.layout_need_help)
+    public void actionNeedHelpClicked() {
+        Intent intent = new Intent(getActivity(), RideHistoryNeedHelpActivity.class);
+        startActivity(intent);
     }
 
 
