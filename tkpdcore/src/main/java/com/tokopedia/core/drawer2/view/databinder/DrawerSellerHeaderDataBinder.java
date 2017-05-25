@@ -73,9 +73,9 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
     private DrawerHeaderListener listener;
 
     public DrawerSellerHeaderDataBinder(DataBindAdapter dataBindAdapter,
-                                  Context context,
-                                  DrawerHeaderListener listener,
-                                  LocalCacheHandler drawerCache) {
+                                        Context context,
+                                        DrawerHeaderListener listener,
+                                        LocalCacheHandler drawerCache) {
         super(dataBindAdapter);
         this.context = context;
         this.data = createDataFromCache(drawerCache);
@@ -115,7 +115,7 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
         setCover(holder);
 
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
-            ImageHandler.loadImageCircle2(context, holder.avatar, data.getDrawerProfile().getUserAvatar());
+            ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
         holder.name.setText(data.getDrawerProfile().getUserName());
 

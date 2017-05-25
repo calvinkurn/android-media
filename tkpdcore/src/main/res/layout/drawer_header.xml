@@ -9,32 +9,34 @@
         android:id="@+id/drawer_header"
         android:layout_width="match_parent"
         android:layout_height="@dimen/drawer_cover_height"
-        android:background="@color/tkpd_main_green">
+        android:background="@color/grey_100">
 
         <ImageView
             android:id="@+id/cover_img"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/drawer_cover_height"
             android:layout_centerHorizontal="true"
+            tools:src="@drawable/drawer_header_bg"
             android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:id="@+id/gradient_black"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/drawer_cover_height"
+            android:layout_centerVertical="true"
             android:background="@drawable/gradient_black">
 
-            <RelativeLayout android:layout_width="wrap_content"
+            <RelativeLayout android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true">
+                android:padding="@dimen/padding_small"
+                android:layout_centerVertical="true"
+                >
 
                 <ImageView
                     android:id="@+id/user_avatar"
                     android:layout_width="@dimen/drawer_avatar"
                     android:layout_height="@dimen/drawer_avatar"
-                    android:layout_centerHorizontal="true"
-                    android:background="@drawable/border_circle"
+                    android:background="@drawable/cards_ui_2"
                     tools:src="@drawable/ic_loading_toped"
                     />
 
@@ -42,15 +44,15 @@
                     android:id="@+id/name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/user_avatar"
+                    android:layout_toRightOf="@id/user_avatar"
                     android:layout_centerHorizontal="true"
                     android:padding="@dimen/padding_small"
                     android:shadowColor="@color/trans_black_40"
                     android:shadowDx="2"
                     android:shadowDy="2"
+                    android:layout_centerVertical="true"
                     android:shadowRadius="1.5"
                     android:text="Loading.."
-                    android:textColor="@color/white"
                     android:textStyle="bold"
                     android:textSize="@dimen/text_size_large" />
             </RelativeLayout>

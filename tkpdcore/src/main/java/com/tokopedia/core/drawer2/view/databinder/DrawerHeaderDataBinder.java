@@ -91,9 +91,6 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         @BindView(R2.id.toko_cash_label)
         TextView tokoCashLabel;
 
-        @BindView(R2.id.toko_cash_redirect_arrow)
-        View tokoCashRedirectArrow;
-
         @BindView(R2.id.toko_cash_activation_button)
         TextView tokoCashActivationButton;
 
@@ -166,7 +163,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setCover(holder);
 
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
-            ImageHandler.loadImageCircle2(context, holder.avatar, data.getDrawerProfile().getUserAvatar());
+            ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
 
         holder.name.setText(data.getDrawerProfile().getUserName());
 
@@ -236,12 +233,10 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.tokoCashLayout.setVisibility(View.VISIBLE);
         holder.tokoCashActivationButton.setVisibility(View.GONE);
         holder.tokoCash.setVisibility(View.VISIBLE);
-        holder.tokoCashRedirectArrow.setVisibility(View.VISIBLE);
     }
 
     private void showTokoCashActivateView(ViewHolder holder) {
         holder.tokoCashLayout.setVisibility(View.VISIBLE);
-        holder.tokoCashRedirectArrow.setVisibility(View.GONE);
         holder.tokoCashActivationButton.setVisibility(View.VISIBLE);
         holder.tokoCash.setVisibility(View.GONE);
     }
