@@ -162,6 +162,7 @@ public class CategoryProductStyle3View extends
         clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.enableImageOperator(operatorSelected.getImage());
+        clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (operatorSelected != null && operatorSelected.getOperatorId().equalsIgnoreCase(

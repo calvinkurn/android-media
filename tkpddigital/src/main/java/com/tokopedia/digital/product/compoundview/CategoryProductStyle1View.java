@@ -157,6 +157,7 @@ public class CategoryProductStyle1View extends
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(clientNumber);
         holderClientNumber.addView(clientNumberInputView);
+        clientNumberInputView.resetInputTyped();
 
         String lastClientNumberHistory = "";
         if (hasLastOrderHistoryData())
@@ -164,6 +165,7 @@ public class CategoryProductStyle1View extends
         if (!TextUtils.isEmpty(lastClientNumberHistory)) {
             clientNumberInputView.setText(lastClientNumberHistory);
         }
+
 
         if (hasLastOrderHistoryData()) {
             if (!data.getClientNumberList().isEmpty()) {

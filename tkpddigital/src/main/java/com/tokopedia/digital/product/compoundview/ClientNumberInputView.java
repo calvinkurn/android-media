@@ -291,6 +291,10 @@ public class ClientNumberInputView extends LinearLayout {
         };
     }
 
+    public void resetInputTyped() {
+        autoCompleteTextView.setText("");
+    }
+
     public interface ActionListener {
         void onButtonContactPickerClicked();
 

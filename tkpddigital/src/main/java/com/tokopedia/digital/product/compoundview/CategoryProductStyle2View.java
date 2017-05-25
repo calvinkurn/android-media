@@ -160,6 +160,7 @@ public class CategoryProductStyle2View extends
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
+        clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
             if (historyClientNumber.getLastOrderClientNumber().getOperatorId().equalsIgnoreCase(
