@@ -71,6 +71,7 @@ public class CategoryProductStyle1View extends
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
+        productAdditionalInfoView.setActionListener(this);
     }
 
     @Override
@@ -312,6 +313,6 @@ public class CategoryProductStyle1View extends
 
     @Override
     public void onProductLinkClicked(String url) {
-
+        actionListener.onProductDetailLinkClicked(url);
     }
 }
