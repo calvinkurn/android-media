@@ -43,6 +43,10 @@
             android:name=".bookingride.view.activity.ApplyPromoActivity"
             android:theme="@style/AppTheme.Ride.NoActionBar" />
 
+        <activity
+            android:name=".history.view.RideHistoryNeedHelpActivity"
+            android:theme="@style/AppTheme.Ride.NoActionBar" />
+
         <receiver
             android:name=".ontrip.receiver.CallDriverReceiver"
             android:exported="false">

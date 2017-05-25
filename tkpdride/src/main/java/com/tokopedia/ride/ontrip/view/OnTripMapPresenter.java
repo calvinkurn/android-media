@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -58,7 +57,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -352,8 +350,10 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 if (!getView().isAlreadyRouteDrawed()) {
                     getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
                     getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
+                    getOverViewPolyLine(true, true);
+                } else {
+                    getOverViewPolyLine(false, false);
                 }
-                getOverViewPolyLine(false, false);
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideRequestLoadingLayout();
