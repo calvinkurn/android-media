@@ -198,7 +198,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
 
     public void updateSeatCount(int seat) {
         confirmBookingViewModel.setSeatCount(seat);
-        presenter.actionGetFareAndEstimate();
+        presenter.actionGetFareAndEstimate(true);
     }
 
     @Override
@@ -443,7 +443,7 @@ public class ConfirmBookingRideFragment extends BaseFragment implements ConfirmB
     public void updateLocations(PlacePassViewModel source, PlacePassViewModel destination) {
         confirmBookingViewModel.setSource(source);
         confirmBookingViewModel.setDestination(destination);
-        presenter.actionGetFareAndEstimate();
+        presenter.actionGetFareAndEstimate(true);
     }
 
     @OnClick(R2.id.confirm_booking_header)

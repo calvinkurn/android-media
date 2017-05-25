@@ -25,14 +25,17 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
 
     @Override
     public void initialize() {
-        actionGetFareAndEstimate();
+        actionGetFareAndEstimate(false);
     }
 
     @Override
-    public void actionGetFareAndEstimate() {
-        getView().showProgress();
-        getView().hideConfirmLayout();
-        getView().hidePromoLayout();
+    public void actionGetFareAndEstimate(boolean showProgress) {
+        if (showProgress) {
+            getView().showProgress();
+            getView().hideConfirmLayout();
+            getView().hidePromoLayout();
+        }
+
         RequestParams requestParams = getView().getParam();
         getFareEstimateUseCase.execute(requestParams, new Subscriber<FareEstimate>() {
             @Override
@@ -55,6 +58,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
                     getView().hideProgress();
                     getView().showConfirmLayout();
                     getView().showPromoLayout();
+
                     float surgeMultiplier = 0;
                     String display = "";
                     String surgeConfirmationHref = null;

@@ -549,7 +549,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void actionDestinationClearIconClicked() {
         enablePickLocation();
         destination = null;
-        isAlreadySelectDestination = true;
+        isAlreadySelectDestination = false;
 
         //update map
         if (mGoogleMap != null) {

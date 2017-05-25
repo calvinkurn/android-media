@@ -59,7 +59,7 @@ public interface ConfirmBookingContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void actionGetFareAndEstimate();
+        void actionGetFareAndEstimate(boolean showProgress);
 
         void initialize();
     }
