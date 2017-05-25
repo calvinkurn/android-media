@@ -196,6 +196,8 @@ public class CategoryProductStyle3View extends
             for (Product product : operatorSelected.getProductList()) {
                 if (product.getProductId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getProductId()
+                ) && operatorSelected.getOperatorId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
                     digitalProductChooserView.renderUpdateDataSelected(product);
                     break;
