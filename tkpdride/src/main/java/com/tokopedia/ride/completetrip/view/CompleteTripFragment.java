@@ -120,10 +120,9 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         driverRatingTextView.setText(String.valueOf(driverVehicleAddressViewModel.getDriver().getRating()));
         vehicleLicenseNumberTextView.setText(String.valueOf(driverVehicleAddressViewModel.getVehicle().getLicensePlate()));
         vehicleDescTextView.setText(String.format(
-                "%s %s %s",
+                "%s %s",
                 driverVehicleAddressViewModel.getVehicle().getMake(),
-                driverVehicleAddressViewModel.getVehicle().getVehicleModel(),
-                driverVehicleAddressViewModel.getVehicle().getLicensePlate())
+                driverVehicleAddressViewModel.getVehicle().getVehicleModel())
         );
         sourceTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getStartAddressName() : "");
         destinationTextView.setText(driverVehicleAddressViewModel.getAddress() != null ? driverVehicleAddressViewModel.getAddress().getEndAddressName() : "");
