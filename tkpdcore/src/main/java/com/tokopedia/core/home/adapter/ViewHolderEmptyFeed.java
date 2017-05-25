@@ -13,9 +13,12 @@ import com.tokopedia.core.R;
 public class ViewHolderEmptyFeed extends RecyclerView.ViewHolder {
 
     public TextView checkFavoriteShopButton;
+    public View officialStoreLinkContainer;
+
     public ViewHolderEmptyFeed(View itemView) {
         super(itemView);
         checkFavoriteShopButton = (TextView) itemView.findViewById(R.id.find_favorite_shop);
+        officialStoreLinkContainer = itemView.findViewById(R.id.official_store_link_container);
     }
 
 }

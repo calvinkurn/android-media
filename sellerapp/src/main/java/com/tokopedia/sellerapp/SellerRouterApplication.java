@@ -10,20 +10,26 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.drawer.DrawerVariable;
 import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
 import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.payment.activity.TopPayActivity;
+import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
+import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
-import com.tokopedia.seller.myproduct.ProductActivity;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
+import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.gmsubscribe.GMSubscribeActivity;
+import com.tokopedia.sellerapp.drawer.DrawerVariableSeller;
 import com.tokopedia.sellerapp.home.view.SellerHomeActivity;
 
 /**
@@ -63,7 +69,7 @@ public class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductActivity.moveToEditFragment(context, isEdit, productId);
+        return ProductEditActivity.createInstance(context, productId);
     }
 
     @Override
@@ -108,6 +114,11 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void onLogout(AppComponent appComponent) {
+        TkpdSellerLogout.onLogOut(appComponent);
+    }
+
+    @Override
     public void goToHome(Context context) {
         Intent intent = getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -115,16 +126,20 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToGMSubscribe(Context context) {
-        if(context == null)
-            throw new RuntimeException("unable to process to next view !!");
-
-        context.startActivity(new Intent(context, GMSubscribeActivity.class));
+    public void goToProductDetail(Context context, String productUrl) {
+        DeepLinkChecker.openProduct(productUrl, context);
     }
 
     @Override
-    public void goToProductDetail(Context context, String productUrl) {
-        DeepLinkChecker.openProduct(productUrl, context);
+    public void goToTkpdPayment(Context context, String url, String parameter, String callbackUrl, Integer paymentId) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setRedirectUrl(url);
+        paymentPassData.setQueryString(parameter);
+        paymentPassData.setCallbackSuccessUrl(callbackUrl);
+        paymentPassData.setPaymentId(String.valueOf(paymentId));
+        Intent intent = TopPayActivity.createInstance(context, paymentPassData);
+        context.startActivity(intent);
+
     }
 
     private void goToDefaultRoute(Context context) {

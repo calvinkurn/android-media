@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.base.di.component.AppComponent;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -43,4 +44,6 @@ public interface TkpdCoreRouter {
                            SessionHandler sessionHandler,
                            LocalCacheHandler drawerCache);
 
+
+    void onLogout(AppComponent appComponent);
 }

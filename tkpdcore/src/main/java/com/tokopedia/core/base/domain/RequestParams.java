@@ -31,6 +31,10 @@ public class RequestParams {
         parameters.put(key, value);
     }
 
+    public void putLong(String key, long value) {
+        parameters.put(key, value);
+    }
+
     public void putObject(String key, Object object) {
         parameters.put(key, object);
     }
@@ -66,6 +70,18 @@ public class RequestParams {
         }
         try {
             return (Boolean) object;
+        } catch (ClassCastException e) {
+            return defaultValue;
+        }
+    }
+
+    public long getLong(String key, long defaultValue){
+        final Object object = parameters.get(key);
+        if (object == null) {
+            return defaultValue;
+        }
+        try {
+            return (Long) object;
         } catch (ClassCastException e) {
             return defaultValue;
         }
