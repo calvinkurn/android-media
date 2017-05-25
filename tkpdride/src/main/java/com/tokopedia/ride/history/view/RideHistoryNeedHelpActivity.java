@@ -7,17 +7,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
-public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHistoryNeedHelpFragment.OnFragmentInteractionListener {
+public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHistoryNeedHelpFragment.OnFragmentInteractionListener, FragmentGeneralWebView.OnFragmentInteractionListener {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
+    private static final String HELP_URL = "https://help.uber.com/h/d69a65cd-e466-43bc-900e-55e04cc9e656";
+
     private RideHistoryViewModel rideHistory;
 
     public static Intent getCallingIntent(Activity activity, RideHistoryViewModel rideHistory) {
@@ -74,20 +73,43 @@ public class RideHistoryNeedHelpActivity extends BaseActivity implements RideHis
 
     @Override
     public void showTokoCashBillingFragment() {
+        setTitle(R.string.title_tokocash_billing);
         replaceFragment(R.id.fl_container, RideTokocashBillingHelpFragment.newInstance(rideHistory));
     }
 
     @Override
     public void rideHelpButtonClicked() {
+        setTitle(R.string.title_ride);
+        replaceFragment(R.id.fl_container, FragmentGeneralWebView.createInstance(HELP_URL));
+    }
 
+    public void setTitle(int resId) {
+        getSupportActionBar().setTitle(resId);
     }
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment) {
+        if ((getFragmentManager().findFragmentById(R.id.fl_container) instanceof RideTokocashBillingHelpFragment)
+                || (getFragmentManager().findFragmentById(R.id.fl_container) instanceof FragmentGeneralWebView)) {
+            setTitle(R.string.help_toolbar_title);
             replaceFragment(R.id.fl_container, RideHistoryNeedHelpFragment.newInstance(rideHistory));
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onWebViewSuccessLoad() {
+
+    }
+
+    @Override
+    public void onWebViewErrorLoad() {
+
+    }
+
+    @Override
+    public void onWebViewProgressLoad() {
+
     }
 }

@@ -90,7 +90,7 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
 
     @OnClick(R2.id.btn_ride_help)
     public void actionRideHelpClicked() {
-
+        mListener.rideHelpButtonClicked();
     }
 
     @OnClick(R2.id.btn_billing_help)

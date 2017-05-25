@@ -105,4 +105,6 @@
     <string name="tokocash_billing">Tokocash Billing</string>
     <string name="billing_problem_hint">Please explain your problems in detail here...</string>
     <string name="btn_submit">Submit</string>
+    <string name="title_ride">Ride</string>
+    <string name="title_tokocash_billing">Tokocash Billing</string>
 </resources>
