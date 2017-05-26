@@ -49,7 +49,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;
@@ -577,7 +577,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 }
 
                 if (getPageTitle(position).equals(content.get(2))) {
-                    return new FragmentIndexFavoriteV2();
+                    return new FragmentFavorite();
                 }
 
                 if (getPageTitle(position).equals(content.get(3))) {

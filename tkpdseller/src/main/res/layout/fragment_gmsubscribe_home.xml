@@ -27,16 +27,9 @@
 
 
         <Button
-            android:padding="@dimen/gmsubscribe_padding_button"
             android:id="@+id/button_home_to_select_product"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
             android:text="@string/gmsubscribe_home_button_finish"
-            android:textColor="@color/white"
-            android:layout_margin="5dp"
-            style="?android:attr/borderlessButtonStyle"
-            android:background="@drawable/bg_button_green"/>
+            style="@style/Button.Submit.Green"/>
 
     </LinearLayout>
 

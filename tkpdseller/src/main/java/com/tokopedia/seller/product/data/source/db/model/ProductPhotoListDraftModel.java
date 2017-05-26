@@ -15,6 +15,9 @@ public class ProductPhotoListDraftModel {
     @SerializedName("product_default_picture")
     private int productDefaultPicture;
 
+    @SerializedName("ori_product_default_picture")
+    private int oriProductDefaultPicture;
+
     public List<ImageProductInputDraftModel> getPhotos() {
         return photos;
     }
@@ -29,5 +32,13 @@ public class ProductPhotoListDraftModel {
 
     public void setProductDefaultPicture(int productDefaultPicture) {
         this.productDefaultPicture = productDefaultPicture;
+    }
+
+    public int getOriProductDefaultPicture() {
+        return oriProductDefaultPicture;
+    }
+
+    public void setOriProductDefaultPicture(int oriProductDefaultPicture) {
+        this.oriProductDefaultPicture = oriProductDefaultPicture;
     }
 }

@@ -222,6 +222,14 @@ public class NotificationModHandler {
                                     dialog.dismiss();
                                 }
                             })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
@@ -242,6 +250,14 @@ public class NotificationModHandler {
                                     dialog.dismiss();
                                 }
                             })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
@@ -253,10 +269,11 @@ public class NotificationModHandler {
         PackageManager pm = context.getPackageManager();
         boolean app_installed;
         try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            pm.getApplicationInfo(uri, PackageManager.GET_META_DATA);
             app_installed = true;
         } catch (PackageManager.NameNotFoundException e) {
             app_installed = false;
+            e.printStackTrace();
         }
         return app_installed;
     }
