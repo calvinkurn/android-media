@@ -15,9 +15,14 @@ public interface RideHistoryNeedHelpContract {
 
         Context getActivity();
 
+        void renderUi();
+
+        void showToast(int resourceId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
+
+        void copyToClipboard(Context context, String text);
     }
 }
