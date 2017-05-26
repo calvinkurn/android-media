@@ -25,8 +25,7 @@ import butterknife.ButterKnife;
 
 public class InstallmentMonthsFragment extends Fragment {
 
-    @BindView(R2.id.courier_list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
     private final ArrayList<MonthsInstallmentItem> monthsInstallmentItems;
 
@@ -50,8 +49,12 @@ public class InstallmentMonthsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        initView(view);
         setupRecyclerView();
+    }
+
+    private void initView(View view) {
+        recyclerView = (RecyclerView) view.findViewById(R.id.courier_list);
     }
 
     private void setupRecyclerView() {

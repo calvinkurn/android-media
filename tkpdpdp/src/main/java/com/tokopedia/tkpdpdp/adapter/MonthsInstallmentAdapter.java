@@ -11,12 +11,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.etalase.MonthsInstallmentItem;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by alifa on 5/17/17.
@@ -63,18 +59,17 @@ public class MonthsInstallmentAdapter extends RecyclerView.Adapter<MonthsInstall
 
     static class MonthsInstallmentViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.courier_item_name)
-        TextView name;
+        private TextView name;
 
-        @BindView(R2.id.courier_item_info)
-        TextView info;
+        private TextView info;
 
-        @BindView(R2.id.courier_item_image)
-        ImageView image;
+        private ImageView image;
 
-        public MonthsInstallmentViewHolder(View itemView) {
+        MonthsInstallmentViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            name = (TextView) itemView.findViewById(R.id.courier_item_name);
+            info = (TextView) itemView.findViewById(R.id.courier_item_info);
+            image = (ImageView) itemView.findViewById(R.id.courier_item_image);
         }
 
         public void bindData(MonthsInstallmentItem monthsInstallmentItem) {

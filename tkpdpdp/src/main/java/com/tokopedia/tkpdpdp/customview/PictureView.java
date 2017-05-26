@@ -71,7 +71,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        vpImage = (ViewPager) findViewById(R.id.view_pager_product);
+        vpImage = (ViewPager) findViewById(R.id.view_pager);
         indicator = (CirclePageIndicator) findViewById(R.id.indicator);
         errorProductContainer = (LinearLayout) findViewById(R.id.error_product_container);
         errorProductTitle = (TextView) findViewById(R.id.error_product_title);

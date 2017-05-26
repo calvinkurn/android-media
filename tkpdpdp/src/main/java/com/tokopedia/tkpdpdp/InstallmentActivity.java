@@ -2,6 +2,7 @@ package com.tokopedia.tkpdpdp;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
@@ -14,10 +15,6 @@ import com.tokopedia.tkpdpdp.fragment.InstallmentMonthsFragment;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 public class InstallmentActivity extends TActivity {
 
     public static final String KEY_INSTALLMENT_DATA = "WHOLESALE_DATA";
@@ -25,12 +22,9 @@ public class InstallmentActivity extends TActivity {
     public static final String MONTHS_6 = "6 Bulan";
     public static final String MONTHS_12 = "12 Bulan";
 
-    @BindView(R2.id.tabs)
-    TabLayout tabs;
-    @BindView(R2.id.viewpager)
-    WrapContentViewPager viewPager;
-    @BindView(R2.id.simple_top_bar_title)
-    TextView topBarTitle;
+    private TabLayout tabs;
+    private WrapContentViewPager viewPager;
+    private TextView topBarTitle;
 
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss3 = new ArrayList<>();
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss6 = new ArrayList<>();
@@ -41,12 +35,25 @@ public class InstallmentActivity extends TActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_installment);
         hideToolbar();
-        ButterKnife.bind(this);
+        initView();
         setupData();
         setupViewPager();
         setupTopbar();
         tabs.setupWithViewPager(viewPager);
 
+    }
+
+    private void initView() {
+        tabs = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (WrapContentViewPager) findViewById(R.id.viewpager);
+        topBarTitle = (TextView) findViewById(R.id.simple_top_bar_title);
+        findViewById(R.id.simple_top_bar_close_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
     }
 
     private void setupViewPager() {
@@ -82,11 +89,5 @@ public class InstallmentActivity extends TActivity {
             }
         }
     }
-
-    @OnClick(R2.id.simple_top_bar_close_button)
-    public void onCloseButtonClick() {
-        finish();
-    }
-
 
 }

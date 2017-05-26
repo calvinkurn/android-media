@@ -88,7 +88,7 @@ public class PreviewProductImageDetail extends TActivity {
     }
 
     private void initView() {
-        vpImage = (TouchViewPager) findViewById(R.id.view_pager);
+        vpImage = (TouchViewPager) findViewById(R.id.view_pager_product);
         tvDownload = (Button) findViewById(R.id.download_image);
         closeButton = (ImageView) findViewById(R.id.close_button);
     }

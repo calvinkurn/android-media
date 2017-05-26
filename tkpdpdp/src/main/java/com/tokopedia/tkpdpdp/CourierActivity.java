@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
@@ -14,8 +15,6 @@ import com.tokopedia.tkpdpdp.adapter.CourierAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -26,11 +25,9 @@ public class CourierActivity extends TActivity {
 
     public static final String KEY_COURIER_DATA = "courierData";
 
-    @BindView(R2.id.courier_list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
-    @BindView(R2.id.simple_top_bar_title)
-    TextView topBarTitle;
+    private TextView topBarTitle;
 
     List<CourierItem> courierItemList = new ArrayList<>();
 
@@ -41,11 +38,24 @@ public class CourierActivity extends TActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_courier);
         hideToolbar();
-        ButterKnife.bind(this);
+        initView();
         setupTopbar();
         setupAdapter();
         setupRecyclerView();
         showCourierData();
+    }
+
+    private void initView() {
+        recyclerView = (RecyclerView) findViewById(R.id.courier_list);
+        topBarTitle = (TextView) findViewById(R.id.simple_top_bar_title);
+        findViewById(R.id.simple_top_bar_close_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        finish();
+                    }
+                });
+
     }
 
     private void setupTopbar() {

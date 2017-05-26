@@ -21,9 +21,6 @@ import butterknife.ButterKnife;
 
 public class YoutubeWebViewThumbnail extends RelativeLayout{
 
-    /*@Bind(R2.id.thumbnail_webview)
-    WebView thumbnailWebView;*/
-
     private ImageView thumbnail;
 
 

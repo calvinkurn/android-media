@@ -16,23 +16,15 @@ import com.tokopedia.tkpdpdp.listener.ProductYoutubeActivityView;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ProductYoutubeActivity extends YouTubeBaseActivity
         implements ProductYoutubeActivityView {
 
     public static final String EXTRA_YOUTUBE_VIDEO_DATA = "EXTRA_YOUTUBE_VIDEO_DATA";
     public static final String EXTRA_YOUTUBE_VIDEO_INDEX = "EXTRA_YOUTUBE_VIDEO_INDEX";
 
-    @BindView(R2.id.youtube_player_main)
-    YouTubePlayerView youTubePlayerView;
-
-    @BindView(R2.id.youtube_activity_place_holder)
-    LinearLayout placeHolder;
-
-    @BindView(R2.id.youtube_activity_place_holder_scroll_view)
-    ScrollView placeHolderScrollView;
+    private YouTubePlayerView youTubePlayerView;
+    private LinearLayout placeHolder;
+    private ScrollView placeHolderScrollView;
 
     private YouTubePlayer youTubePlayerScreen;
     private List<Video> youtubeVideoList;
@@ -44,9 +36,17 @@ public class ProductYoutubeActivity extends YouTubeBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_youtube);
         getVideoDatas();
-        ButterKnife.bind(this);
+//        ButterKnife.bind(this);
+        initViews();
         setSideBarAvailability();
 
+    }
+
+    private void initViews() {
+        youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player_main);
+        placeHolder = (LinearLayout) findViewById(R.id.youtube_activity_place_holder);
+        placeHolderScrollView
+                = (ScrollView) findViewById(R.id.youtube_activity_place_holder_scroll_view);
     }
 
     private void getVideoDatas() {
