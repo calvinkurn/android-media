@@ -25,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.youtube.player.YouTubeApiServiceUtil;
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.R2;
@@ -35,6 +37,8 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
+import com.tokopedia.core.product.customview.YoutubeThumbnailViewHolder;
+import com.tokopedia.core.product.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -110,6 +114,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.card_hoth_intermediary)
     CardView cardViewHotList;
 
+    @BindView(R2.id.card_video_intermediary)
+    CardView cardViewVideo;
+
+    @BindView(R2.id.youtube_video_place_holder)
+    LinearLayout placeHolderVideo;
+
     @BindView(R2.id.recycler_view_hot_list)
     RecyclerView hotListRecyclerView;
 
@@ -121,6 +131,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @BindView(R2.id.header_container)
     RelativeLayout headerContainer;
+
+    @BindView(R2.id.intermediary_video_title)
+    TextView videoTitle;
+
+    @BindView(R2.id.intermediary_video_desc)
+    TextView videoDesc;
 
     private CirclePageIndicator bannerIndicator;
     private View banner;
@@ -345,7 +361,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void renderVideo(VideoModel videoModel) {
+        cardViewVideo.setVisibility(View.VISIBLE);
+        videoTitle.setText(videoModel.getTitle());
+        videoDesc.setText(videoModel.getDescription());
+        if(YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
+                .equals(YouTubeInitializationResult.SUCCESS)) {
 
+                placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl()));
+
+        } else {
+            placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
+        }
     }
 
     @Override

@@ -152,6 +152,8 @@
     <item name="card_video_intermediary" type="id"/>
     <item name="card_official_intermediary" type="id"/>
     <item name="header_container" type="id"/>
+    <item name="intermediary_video_title" type="id"/>
+    <item name="intermediary_video_desc" type="id"/>
 
 
 
