@@ -24,6 +24,7 @@ import com.tokopedia.core.home.helper.ProductFeedHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
@@ -211,7 +212,8 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         if (browseShopAdapter != null) {
             return;
         }
-        browseShopAdapter = new BrowseShopAdapter(getActivity(), browseShopModelList);
+        browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(),
+                browseShopModelList, this);
         browseShopAdapter.setIsLoading(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         spanCount = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
@@ -322,6 +324,13 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
         ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    @Override
+    public void startShopInfoActivity(String shopId) {
+        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
     }
 
     @Override

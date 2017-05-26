@@ -22,4 +22,6 @@ public interface ShopView extends BaseView {
     void setLoading(boolean isLoading);
 
     void setDynamicFilterAtrribute(DataValue filterAtrribute, int activeTab);
+
+    void startShopInfoActivity(String shopId);
 }

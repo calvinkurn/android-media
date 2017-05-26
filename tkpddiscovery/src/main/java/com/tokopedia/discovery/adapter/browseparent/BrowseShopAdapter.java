@@ -32,6 +32,7 @@ import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ShopFragment;
+import com.tokopedia.discovery.view.ShopView;
 
 import java.util.List;
 
@@ -45,13 +46,15 @@ import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_T
  */
 public class BrowseShopAdapter extends ProductAdapter {
 
-    private final Activity activity;
+    private final ShopView shopView;
     private BrowseProductRouter.GridType gridType;
     private int lastItemClickedPosition = -1;
 
-    public BrowseShopAdapter(Activity activity, List<RecyclerViewItem> data) {
-        super(activity.getApplicationContext(), data);
-        this.activity = activity;
+    public BrowseShopAdapter(Context context,
+                             List<RecyclerViewItem> data,
+                             ShopView shopView) {
+        super(context, data);
+        this.shopView = shopView;
     }
 
     @Override
@@ -173,9 +176,7 @@ public class BrowseShopAdapter extends ProductAdapter {
                 @Override
                 public void onClick(View v) {
                     lastItemClickedPosition = position;
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
-                    activity.startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
+                    shopView.startShopInfoActivity(shopModel.getShopId());
                 }
             });
             shopLocation.setText(shopModel.getLocation());
