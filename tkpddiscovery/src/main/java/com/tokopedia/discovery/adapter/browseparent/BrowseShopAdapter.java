@@ -175,7 +175,6 @@ public class BrowseShopAdapter extends ProductAdapter {
                     lastItemClickedPosition = position;
                     Intent intent = new Intent(context, ShopInfoActivity.class);
                     intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     activity.startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
                 }
             });
