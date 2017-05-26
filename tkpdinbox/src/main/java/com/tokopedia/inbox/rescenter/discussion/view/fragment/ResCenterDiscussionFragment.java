@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -68,6 +70,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     private static final String PARAM_FLAG_ALLOW_REPLY = "PARAM_FLAG_ALLOW_REPLY";
     private static final String PARAM_IS_ERROR = "PARAM_IS_ERROR";
     private static final String PARAM_STRING_ERROR = "PARAM_STRING_ERROR";
+    private static final int REQUEST_CODE_GALLERY = 1243;
     private ResCenterDiscussionAdapter adapter;
     private AttachmentAdapter attachmentAdapter;
     private RecyclerView discussionList;
@@ -301,7 +304,10 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void actionImagePicker() {
-        uploadImageDialog.actionImagePicker();
+        startActivityForResult(
+                GalleryActivity.createIntent(getActivity()),
+                REQUEST_CODE_GALLERY
+        );
     }
 
     private void addTemporaryMessage() {
