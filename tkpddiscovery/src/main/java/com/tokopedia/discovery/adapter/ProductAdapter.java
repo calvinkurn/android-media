@@ -807,7 +807,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public void updateWishlistStatus(boolean isWishlist, int position) {
         if (!data.isEmpty() && data.get(position) instanceof ProductItem) {
             ((ProductItem) data.get(position)).setProductAlreadyWishlist(isWishlist);
-            notifyDataSetChanged();
+            notifyItemChanged(position);
         }
     }
 

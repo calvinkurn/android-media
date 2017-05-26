@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,9 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
+                Log.d(TAG, "onItemRangeChanged positionStart "+positionStart+" itemCount "+itemCount);
+                positionStart = placer.getPositionStart(positionStart);
+                Log.d(TAG, "onItemRangeChanged adjustedPositionStart "+positionStart+" itemCount "+itemCount);
                 notifyItemRangeChanged(positionStart, itemCount);
             }
 
@@ -84,7 +88,6 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
                 notifyDataSetChanged();
             }
-
         };
         this.mOriginalAdapter.registerAdapterDataObserver(mAdapterDataObserver);
 
@@ -99,6 +102,8 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case ObserverType.ITEM_RANGE_INSERTED:
                 notifyItemRangeInserted(
                         placer.getAjustedPositionStart(), placer.getAjustedItemCount());
+                break;
+            case ObserverType.ITEM_RANGE_CHANGE:
 
                 break;
         }

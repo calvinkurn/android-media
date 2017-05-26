@@ -56,6 +56,17 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         this.ajustedItemCount = ajustedItemCount;
     }
 
+    public int getPositionStart(int positionStart){
+        int newPosition = positionStart;
+        for (int i = 0; i <= positionStart; i++) {
+            Item item = items.get(i);
+            if(item instanceof TopAdsViewModel){
+                newPosition++;
+            }
+        }
+        return newPosition;
+    }
+
     public int getAjustedPositionStart() {
         return ajustedPositionStart;
     }
@@ -92,6 +103,11 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
         } else {
             renderItemWithoutAds(ajustedPositionStart, (ajustedPositionStart + ajustedItemCount));
         }
+    }
+
+    public void onItemRangeChanged(int positionStart, int itemCount) {
+        observerType = ObserverType.ITEM_RANGE_CHANGE;
+
     }
 
     @Override
