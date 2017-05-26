@@ -59,7 +59,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .addHeader(TKPD_USER_ID, config.getUserId())
                 .addHeader(X_DEVICE, DEFAULT_X_DEVICE)
-                .addParameter("pub_id", "12")
+                .addParameter("pub_id", "14")
                 .build();
         RawHttpRequestExecutor executor = RawHttpRequestExecutor.newInstance(httpRequest);
         return new PreferedCategoryMapper(context, executor).getModel();
