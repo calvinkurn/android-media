@@ -55,7 +55,7 @@ public class TkpdDigitalResponse {
                     DigitalErrorResponse digitalErrorResponse =
                             new Gson().fromJson(strResponse, DigitalErrorResponse.class);
                     throw new ResponseErrorException(
-                            digitalErrorResponse.getErrorMessageFormatted()
+                            digitalErrorResponse.getDigitalErrorMessageFormatted()
                     );
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -212,19 +212,70 @@ public class TkpdDigitalResponse {
      */
 
     public static class DigitalErrorResponse {
+        public static final int ERROR_DIGITAL = 1;
+        public static final int ERROR_SERVER = 2;
+
         @SerializedName("errors")
         @Expose
         private List<Error> errors = new ArrayList<>();
+        @SerializedName("message_error")
+        @Expose
+        private List<String> messageError = new ArrayList<>();
+        @SerializedName("message")
+        @Expose
+        private String message;
+        @SerializedName("status")
+        @Expose
+        private String status;
 
-        public void setErrors(List<Error> errors) {
-            this.errors = errors;
-        }
+        private int errorCode;
 
         public List<Error> getErrors() {
             return errors;
         }
 
-        public String getErrorMessageFormatted() {
+        public void setErrors(List<Error> errors) {
+            this.errors = errors;
+        }
+
+        public List<String> getMessageError() {
+            return messageError;
+        }
+
+        public void setMessageError(List<String> messageError) {
+            this.messageError = messageError;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public int getErrorCode() {
+            return errorCode;
+        }
+
+        public void setErrorCode(int errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public int getTypeOfError() {
+            if (!errors.isEmpty()) return ERROR_DIGITAL;
+            else return ERROR_SERVER;
+        }
+
+        public String getDigitalErrorMessageFormatted() {
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < errors.size(); i++) {
                 stringBuilder.append(errors.get(i).getTitle());
@@ -235,16 +286,34 @@ public class TkpdDigitalResponse {
             return stringBuilder.toString().trim();
         }
 
-        public static DigitalErrorResponse factory(String errorBody) {
+        public String getServerErrorMessageFormatted() {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < messageError.size(); i++) {
+                stringBuilder.append(messageError.get(i));
+                if (i < errors.size() - 1) {
+                    stringBuilder.append(", ");
+                }
+            }
+            return stringBuilder.toString().trim();
+        }
+
+        public static DigitalErrorResponse factory(String errorBody, int code) {
             try {
-                return new Gson().fromJson(errorBody, DigitalErrorResponse.class);
+                DigitalErrorResponse digitalErrorResponse =
+                        new Gson().fromJson(errorBody, DigitalErrorResponse.class);
+                digitalErrorResponse.setErrorCode(code);
+                return digitalErrorResponse;
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
-                return DigitalErrorResponse.factoryDefault(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                return DigitalErrorResponse.factoryDefault(
+                        ErrorNetMessage.MESSAGE_ERROR_DEFAULT, code
+                );
             }
         }
 
-        private static DigitalErrorResponse factoryDefault(String messageErrorDefault) {
+        private static DigitalErrorResponse factoryDefault(
+                String messageErrorDefault, int errorCode
+        ) {
             DigitalErrorResponse digitalErrorResponse = new DigitalErrorResponse();
             List<DigitalErrorResponse.Error> errorList = new ArrayList<>();
             DigitalErrorResponse.Error error = new Error();
@@ -253,6 +322,7 @@ public class TkpdDigitalResponse {
             error.setTitle(messageErrorDefault);
             errorList.add(error);
             digitalErrorResponse.setErrors(errorList);
+            digitalErrorResponse.setErrorCode(errorCode);
             return digitalErrorResponse;
         }
 

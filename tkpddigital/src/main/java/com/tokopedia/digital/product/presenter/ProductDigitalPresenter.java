@@ -10,6 +10,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -25,6 +26,7 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
+import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -229,6 +231,9 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
              code http errornya bisa diambil
              e.getErrorCode */
                     view.renderErrorHttpProductDigitalData(e.getMessage());
+                } else if (e instanceof ServerErrorException) {
+                    view.clearContentRendered();
+                    ServerErrorHandlerUtil.handleError(e);
                 } else {
             /* Ini diluar dari segalanya hahahaha */
                     view.renderErrorProductDigitalData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
