@@ -31,6 +31,7 @@ public class ReloginActivity extends AppCompatActivity
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initInjector();
+        presenter.attachView(this);
         presenter.makeLogin();
     }
 
@@ -75,5 +76,11 @@ public class ReloginActivity extends AppCompatActivity
         intent.putExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE, getString(R.string.default_relogin));
         setResult(Activity.RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(0,0);
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -50,6 +51,8 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
 
+import java.util.List;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -77,6 +80,8 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private GCMHandler gcmHandler;
     private GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
+    private boolean isReloginActivityShown = false;
+    private int retryLogin = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -305,12 +310,15 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
-        startActivityForResult(SessionRouter.getReloginActivityIntent(BaseActivity.this), REQUEST_RELOGIN);
-        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
-    }
-
-    private void checkIsTokenExpired() {
-
+        if (!isReloginActivityShown && retryLogin > 0) {
+            isReloginActivityShown = true;
+            retryLogin--;
+            startActivityForResult(
+                    SessionRouter.getReloginActivityIntent(BaseActivity.this),
+                    REQUEST_RELOGIN);
+        } else if (!DialogForceLogout.isDialogShown(this) && retryLogin == 0) {
+            showForceLogoutDialog();
+        }
     }
 
     @Override
@@ -387,6 +395,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .getApplicationComponent(getActivityModule());
     }
 
+
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
     }
@@ -397,13 +406,16 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_RELOGIN && resultCode == Activity.RESULT_CANCELED)
-            showForceLogoutDialog();
-        else if (requestCode == REQUEST_RELOGIN && resultCode == Activity.RESULT_OK) {
-            String message = data.getStringExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE);
-            NetworkErrorHelper.showSnackbar(this, message);
+        if (requestCode == REQUEST_RELOGIN) {
+            isReloginActivityShown = false;
+            if (resultCode == Activity.RESULT_CANCELED &&
+                    !DialogForceLogout.isDialogShown(this)) {
+                showForceLogoutDialog();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+
 }

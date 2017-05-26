@@ -117,5 +117,5 @@ public interface AccountsApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
-    Observable<Response<TkpdResponse>> makeLogin(TKPDMapParam<String, Object> parameters);
+    Observable<Response<TkpdResponse>> makeLogin(@FieldMap TKPDMapParam<String, Object> parameters);
 }

@@ -36,7 +36,9 @@ class ReloginModule {
     Bundle provideAccountsBundle(@ActivityContext Context context,
                                  SessionHandler sessionHandler) {
         Bundle bundle = new Bundle();
-        bundle.putString(AccountsService.AUTH_KEY, sessionHandler.getAccessToken());
+        String authKey;
+        authKey = sessionHandler.getTokenType(context) + " " + sessionHandler.getAccessToken(context);
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
         bundle.putString(AccountsService.WEB_SERVICE, AccountsService.WS);
         return bundle;
     }

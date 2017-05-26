@@ -1,7 +1,5 @@
 package com.tokopedia.session.login.domain.model;
 
-import com.tokopedia.core.network.entity.otp.RequestOtpData;
-
 /**
  * @author by nisie on 5/26/17.
  */

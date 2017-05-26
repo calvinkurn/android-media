@@ -23,7 +23,6 @@ public class SessionRouter {
     private static final String RELOGIN_ACTIVITY = "com.tokopedia.session.login.view.ReloginActivity";
 
 
-
     public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
     private static final String CHANGE_PHONE_NUMBER_REQUEST_ACTIVITY = "com.tokopedia.session.changephonenumber.activity.ChangePhoneNumberRequestActivity";
