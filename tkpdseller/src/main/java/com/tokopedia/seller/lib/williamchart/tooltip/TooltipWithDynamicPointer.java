@@ -72,6 +72,7 @@ public class TooltipWithDynamicPointer extends Tooltip {
         this.value = value;
         titleText.setText(value.getTitle());
         requestLayout();
+
     }
 
     @Override
@@ -79,7 +80,7 @@ public class TooltipWithDynamicPointer extends Tooltip {
         super.correctPosition(left, top, right, bottom);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
 
-        int arrowMargin = ((rect.left + rect.width()/2) - layoutParams.leftMargin) - (tooltipPointerView.getLayout_width() /2);
+        int arrowMargin = ((rect.left + rect.width()/2) - layoutParams.leftMargin) - (tooltipPointerView.getLayoutWidth() /2);
 
         ViewGroup.MarginLayoutParams layoutParamsPointer = (ViewGroup.MarginLayoutParams)  tooltipPointerView.getLayoutParams();
         layoutParamsPointer.leftMargin =  arrowMargin;

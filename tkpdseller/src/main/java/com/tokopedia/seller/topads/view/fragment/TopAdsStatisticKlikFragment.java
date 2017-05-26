@@ -18,7 +18,7 @@ public class TopAdsStatisticKlikFragment extends TopAdsStatisticFragment {
 
     @Override
     public float getValueData(Cell cell) {
-        return (float)cell.getClickSum();
+        return (float) cell.getClickSum();
     }
 
     @Override
@@ -28,6 +28,6 @@ public class TopAdsStatisticKlikFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return getString(R.string.tooltip_statistic_click, cell.getClickSumFmt());
+        return cell.getClickSumFmt();
     }
 }

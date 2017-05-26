@@ -28,6 +28,6 @@ public class TopAdsStatisticConversionFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return getString(R.string.tooltip_statistic_conversion, cell.getConversionSumFmt());
+        return cell.getConversionSumFmt();
     }
 }

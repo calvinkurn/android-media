@@ -22,8 +22,8 @@ class TooltipPointerView extends View {
 
     private Paint mPaint;
     private int color;
-    private int layout_width;
-    private int layout_height;
+    private int layoutWidth;
+    private int layoutHeight;
 
     public TooltipPointerView(Context context) {
         super(context);
@@ -56,8 +56,8 @@ class TooltipPointerView extends View {
 
         TypedArray ta = getContext().obtainStyledAttributes(attrs, attrsArray);
         try {
-            layout_width = ta.getDimensionPixelSize(2, ViewGroup.LayoutParams.MATCH_PARENT);
-            layout_height = ta.getDimensionPixelSize(3, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutWidth = ta.getDimensionPixelSize(2, ViewGroup.LayoutParams.MATCH_PARENT);
+            layoutHeight = ta.getDimensionPixelSize(3, ViewGroup.LayoutParams.MATCH_PARENT);
         }finally {
             ta.recycle();
         }
@@ -81,12 +81,12 @@ class TooltipPointerView extends View {
         this.color = color;
     }
 
-    public int getLayout_width() {
-        return layout_width;
+    public int getLayoutWidth() {
+        return layoutWidth;
     }
 
-    public int getLayout_height() {
-        return layout_height;
+    public int getLayoutHeight() {
+        return layoutHeight;
     }
 
     @Override

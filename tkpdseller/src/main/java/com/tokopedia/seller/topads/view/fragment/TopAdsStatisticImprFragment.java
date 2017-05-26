@@ -28,6 +28,6 @@ public class TopAdsStatisticImprFragment extends TopAdsStatisticFragment {
 
     @Override
     protected String getValueDisplay(Cell cell) {
-        return getString(R.string.tooltip_statistic_display, cell.getImpressionSumFmt());
+        return cell.getImpressionSumFmt();
     }
 }

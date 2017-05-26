@@ -536,9 +536,6 @@
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
 
     <!-- tooltip statistic topads -->
-    <string name="tooltip_statistic_click">%1s Klik</string>
     <string name="tooltip_statistic_use">Rp %1s</string>
     <string name="tooltip_statistic_avg">Rp %1s</string>
-    <string name="tooltip_statistic_conversion">%1s Konversi</string>
-    <string name="tooltip_statistic_display">%1s Tampil</string>
 </resources>
