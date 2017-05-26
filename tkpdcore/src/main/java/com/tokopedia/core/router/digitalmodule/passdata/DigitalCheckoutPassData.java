@@ -11,7 +11,7 @@ public class DigitalCheckoutPassData implements Parcelable {
     public static final String PARAM_ACTION = "action";
     public static final String PARAM_CATEGORY_ID = "category_id";
     public static final String PARAM_CLIENT_NUMBER = "client_number";
-    public static final String PARAM_PRODUCT_ID = "productId";
+    public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_OPERATOR_ID = "operator_id";
     public static final String PARAM_IS_PROMO = "is_promo";
     public static final String PARAM_INSTANT_CHECKOUT = "instant_checkout";
