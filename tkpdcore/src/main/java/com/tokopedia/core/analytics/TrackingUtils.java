@@ -7,12 +7,14 @@ import android.text.TextUtils;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
+import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer.model.profileinfo.ProfileData;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.home.model.HotListModel;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.SessionRouter;
@@ -51,6 +53,7 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEngageExistingUser(){
         getMoEngine().isExistingUser(SessionHandler.isV4Login(MainApplication.getAppContext()));
+        PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
     public static void setMoEngageUser(CustomerWrapper customerWrapper){
