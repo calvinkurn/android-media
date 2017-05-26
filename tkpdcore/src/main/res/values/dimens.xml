@@ -114,6 +114,7 @@
     <dimen name="img_index_home">144.5dp</dimen>
     <dimen name="img_hotprod">156dp</dimen>
     <dimen name="img_hot_prod">157.5dp</dimen>
+    <dimen name="img_hot_intermediary">177dp</dimen>
 
     <dimen name="screen_size">360dp</dimen>
     <dimen name="img_index_home_small">69dp</dimen>

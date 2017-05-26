@@ -137,6 +137,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private CurationAdapter curationAdapter;
     private IntermediaryContract.Presenter presenter;
     com.tokopedia.topads.sdk.view.TopAdsView topAdsView;
+    private NonScrollGridLayoutManager gridLayoutManager;
 
     public static IntermediaryFragment createInstance(String departmentId) {
         IntermediaryFragment intermediaryFragment = new IntermediaryFragment();
@@ -263,9 +264,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
         hotListRecyclerView.setHasFixedSize(true);
         hotListRecyclerView.setNestedScrollingEnabled(false);
-        hotListRecyclerView.setLayoutManager(
-                new NonScrollGridLayoutManager(getActivity(), 2,
-                        GridLayoutManager.VERTICAL, false));
+        gridLayoutManager = new NonScrollGridLayoutManager(getActivity(), 2,  GridLayoutManager.VERTICAL, false);
+        gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
+        hotListRecyclerView.setLayoutManager(gridLayoutManager);
         hotListRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(),R.drawable.divider300));
         hotListRecyclerView.setAdapter(hotListItemAdapter);
     }
@@ -491,5 +492,22 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public void setDepartmentId(String departmentId) {
         this.departmentId = departmentId;
+    }
+
+    private GridLayoutManager.SpanSizeLookup onSpanSizeLookup() {
+        return new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+
+                int regularColumnSize = 1;
+                int fullColumnSize = 2;
+
+                if (position == 0) {
+                    return fullColumnSize;
+                } else {
+                    return regularColumnSize;
+                }
+            }
+        };
     }
 }

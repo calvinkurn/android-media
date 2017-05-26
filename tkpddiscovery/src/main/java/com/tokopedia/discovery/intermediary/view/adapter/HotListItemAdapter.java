@@ -5,21 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
-import com.tokopedia.core.network.entity.topPicks.Item;
-import com.tokopedia.core.network.entity.topPicks.Toppick;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.R;
@@ -30,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
 import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
@@ -41,7 +35,8 @@ import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
 
 public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final int TOPPICKS_TITLE = 0;
+    public static final int BANNER_HOTLIST = -1;
+    public static final int SHORT_HEIGHT_HOTLIST = -2;
 
     private List<HotListModel> hotListModelList = new ArrayList<>();
     private final int homeMenuWidth;
@@ -58,17 +53,38 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        if (hotListModelList.size()>=3 && position==0) {
+            return BANNER_HOTLIST;
+        } else if (hotListModelList.size()>=3 && position<3) {
+            return SHORT_HEIGHT_HOTLIST;
+        } else {
+            return position;
+        }
     }
 
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                viewGroup.getContext()).inflate(R.layout.item_hotlist, null
-        );
-        v.setMinimumWidth(homeMenuWidth);
-        return new HotListItemRowHolder(v);
+        switch (viewType) {
+            case SHORT_HEIGHT_HOTLIST:
+                @SuppressLint("InflateParams") View v = LayoutInflater.from(
+                        viewGroup.getContext()).inflate(R.layout.item_hotlist_square, null
+                );
+                v.setMinimumWidth(homeMenuWidth);
+                return new HotListItemRowHolder(v);
+            case BANNER_HOTLIST:
+                @SuppressLint("InflateParams") View vBanner = LayoutInflater.from(
+                        viewGroup.getContext()).inflate(R.layout.item_hotlist_banner, null
+                );
+                vBanner.setMinimumWidth(homeMenuWidth);
+                return new HotListItemRowHolder(vBanner);
+            default:
+                @SuppressLint("InflateParams") View vDefault = LayoutInflater.from(
+                    viewGroup.getContext()).inflate(R.layout.item_hotlist, null
+                );
+                vDefault.setMinimumWidth(homeMenuWidth);
+                return new HotListItemRowHolder(vDefault);
+        }
 
     }
 
