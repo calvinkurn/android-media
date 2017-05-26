@@ -102,7 +102,7 @@ public class TopAdsDashboardProductFragment extends TopAdsDashboardFragment<TopA
         return getView().findViewById(R.id.view_group_deposit);
     }
     public View getCalendarView() {
-        return getView().findViewById(R.id.layout_date);
+        return getView().findViewById(R.id.date_label_view);
     }
     public View getStatisticView() {
         return getView().findViewById(R.id.view_group_statistic);

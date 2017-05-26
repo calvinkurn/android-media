@@ -101,6 +101,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     protected void onStart() {
+        super.onStart();
         MainApplication.setActivityState(TkpdState.Application.ACTIVITY);
         MainApplication.setActivityname(this.getClass().getSimpleName());
         if (!MainApplication.isTablet()) {
@@ -108,7 +109,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        super.onStart();
     }
 
     @Override

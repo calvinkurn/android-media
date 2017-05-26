@@ -216,7 +216,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         initPresenter();
-
         presenter.getOrderList(isVisibleToUser);
         ScreenTracking.screenLoca(AppScreen.SCREEN_LOCA_NEWORDER);
         ScreenTracking.eventLoca(AppScreen.SCREEN_LOCA_NEWORDER);
