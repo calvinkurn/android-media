@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.fragment;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,9 @@ import java.util.List;
 
 import butterknife.BindView;
 
+import static com.tokopedia.core.shopinfo.ShopInfoActivity.FAVORITE_STATUS_UPDATED;
+import static com.tokopedia.core.shopinfo.ShopInfoActivity.SHOP_STATUS_IS_FAVORITED;
+
 /**
  * Created by Erry on 6/30/2016.
  * modified by m.normansyah
@@ -46,6 +50,7 @@ import butterknife.BindView;
 public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchNetwork {
     public static final int IDFRAGMENT = 1903_909;
     public static final String INDEX = "FRAGMENT_INDEX";
+    public static final int GOTO_SHOP_DETAIL = 125;
     @BindView(R2.id.list_shop)
     RecyclerView list_shop;
 
@@ -206,7 +211,7 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         if (browseShopAdapter != null) {
             return;
         }
-        browseShopAdapter = new BrowseShopAdapter(getActivity().getApplicationContext(), browseShopModelList);
+        browseShopAdapter = new BrowseShopAdapter(getActivity(), browseShopModelList);
         browseShopAdapter.setIsLoading(true);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         spanCount = ProductFeedHelper.calcColumnSize(getResources().getConfiguration().orientation);
@@ -317,6 +322,19 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
             filterAtrribute.setSelected(filterAtrribute.getSort().get(0).getName());
         }
         ((BrowseView) getActivity()).setFilterAttribute(filterAtrribute, activeTab);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null && requestCode == GOTO_SHOP_DETAIL && resultCode == Activity.RESULT_CANCELED) {
+            boolean isFavorited = data.getBooleanExtra(SHOP_STATUS_IS_FAVORITED, false);
+            boolean isUpdated = data.getBooleanExtra(FAVORITE_STATUS_UPDATED, false);
+            int position = browseShopAdapter.getLastItemClickedPosition();
+            if (browseShopAdapter != null && position != -1 && isUpdated) {
+                browseShopAdapter.updateShopIsFavorited(isFavorited, position);
+            }
+        }
     }
 
     @Override

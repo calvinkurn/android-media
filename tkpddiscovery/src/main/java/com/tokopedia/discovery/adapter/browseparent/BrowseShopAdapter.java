@@ -7,6 +7,7 @@
 
 package com.tokopedia.discovery.adapter.browseparent;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -23,12 +24,14 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customwidget.SquareImageView;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
+import com.tokopedia.discovery.fragment.ShopFragment;
 
 import java.util.List;
 
@@ -42,11 +45,13 @@ import static com.tokopedia.core.network.entity.discovery.ShopModel.SHOP_MODEL_T
  */
 public class BrowseShopAdapter extends ProductAdapter {
 
-
+    private final Activity activity;
     private BrowseProductRouter.GridType gridType;
+    private int lastItemClickedPosition = -1;
 
-    public BrowseShopAdapter(Context context, List<RecyclerViewItem> data) {
-        super(context, data);
+    public BrowseShopAdapter(Activity activity, List<RecyclerViewItem> data) {
+        super(activity.getApplicationContext(), data);
+        this.activity = activity;
     }
 
     @Override
@@ -91,7 +96,18 @@ public class BrowseShopAdapter extends ProductAdapter {
         this.gridType = gridType;
     }
 
-    public static class ShopViewHolder extends RecyclerView.ViewHolder{
+    public void updateShopIsFavorited(boolean isFavorited, int position) {
+        if (!data.isEmpty() && data.get(position) instanceof ShopModel) {
+            ((ShopModel) data.get(position)).setFavorited(isFavorited);
+            notifyItemChanged(position);
+        }
+    }
+
+    public int getLastItemClickedPosition() {
+        return lastItemClickedPosition;
+    }
+
+    public class ShopViewHolder extends RecyclerView.ViewHolder{
 
         @BindView(R2.id.shop_1)
         LinearLayout mainContent;
@@ -140,7 +156,7 @@ public class BrowseShopAdapter extends ProductAdapter {
             }
         }
 
-        public void bindData(final Context context, final ShopModel shopModel, int position){
+        public void bindData(final Context context, final ShopModel shopModel, final int position){
             ImageHandler.loadImageThumbs(context, itemShopImage, shopModel.getShopImage());
             itemShopName.setText(shopModel.getShopName());
             if(shopModel.isOfficial() || shopModel.getIsGold().equals("1")){
@@ -156,10 +172,11 @@ public class BrowseShopAdapter extends ProductAdapter {
             mainContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    lastItemClickedPosition = position;
                     Intent intent = new Intent(context, ShopInfoActivity.class);
                     intent.putExtras(ShopInfoActivity.createBundle(shopModel.getShopId(), ""));
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+                    activity.startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
                 }
             });
             shopLocation.setText(shopModel.getLocation());
@@ -203,8 +220,9 @@ public class BrowseShopAdapter extends ProductAdapter {
                         }
 
                         @Override
-                        public void onFailure(String string) {
+                        public void onFailure(String error) {
                             favoriteButton.setEnabled(true);
+                            NetworkErrorHelper.showSnackbar(activity, error);
                         }
                     });
                     favoriteAction.actionToggleFav();
