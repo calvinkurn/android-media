@@ -559,11 +559,13 @@
     <string name="negative">Negatif</string>
     <string name="title_top_ads_keyword_add">Tambah Kata Kunci</string>
     <string name="count">(%1$d)</string>
-    <string name="broad_match">Broad Match</string>
-    <string name="phrase_match">Phrase Match</string>
-    <string name="exact_match">Exact Match</string>
-    <string name="broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
-    <string name="exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
+    <string name="top_ads_broad_match">Broad Match</string>
+    <string name="top_ads_phrase_match">Phrase Match</string>
+    <string name="top_ads_exact_match">Exact Match</string>
+    <string name="top_ads_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
+    <string name="top_ads_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
+    <string name="top_ads_exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
 
+    <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
+    <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
 </resources>

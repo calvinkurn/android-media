@@ -54,7 +54,7 @@
                     android:id="@+id/text_broad"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/broad_match"
+                    android:text="@string/top_ads_broad_match"
                     style="@style/TextView.TopAds.Title.Green"/>
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_toRightOf="@id/text_broad"
@@ -69,7 +69,7 @@
                     android:layout_below="@id/text_broad"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/broad_match_positive_description"
+                    android:text="@string/top_ads_broad_match_positive_description"
                     style="@style/TextView.TopAds.Caption1.Gray"
                     android:maxLines="3"/>
             </RelativeLayout>
@@ -84,7 +84,7 @@
                     android:id="@+id/text_phrase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/phrase_match"
+                    android:text="@string/top_ads_phrase_match"
                     style="@style/TextView.TopAds.Title.Green"/>
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_toRightOf="@id/text_phrase"
@@ -99,7 +99,7 @@
                     android:layout_below="@id/text_phrase"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/phrase_match_positive_description"
+                    android:text="@string/top_ads_phrase_match_positive_description"
                     style="@style/TextView.TopAds.Caption1.Gray"
                     android:maxLines="3"/>
             </RelativeLayout>
@@ -114,7 +114,7 @@
                     android:id="@+id/text_exact"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/exact_match"
+                    android:text="@string/top_ads_exact_match"
                     style="@style/TextView.TopAds.Title.Green"/>
                 <android.support.v7.widget.AppCompatTextView
                     android:layout_toRightOf="@id/text_exact"
@@ -129,7 +129,7 @@
                     android:layout_below="@id/text_exact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/exact_match_positive_description"
+                    android:text="@string/top_ads_exact_match_positive_description"
                     style="@style/TextView.TopAds.Caption1.Gray"
                     android:maxLines="3"/>
             </RelativeLayout>

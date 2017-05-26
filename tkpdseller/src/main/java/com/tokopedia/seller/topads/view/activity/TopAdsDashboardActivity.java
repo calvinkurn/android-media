@@ -220,7 +220,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         viewPager.post(new Runnable() {
             @Override
             public void run() {
-                if (isFinishing()) {
+                if (isFinishing() ) {
                     return;
                 }
                 View depositView = dashboardProductFragment.getDepositView();
