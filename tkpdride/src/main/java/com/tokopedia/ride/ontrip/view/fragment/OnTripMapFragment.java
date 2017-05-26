@@ -97,6 +97,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         DriverDetailFragment.OnFragmentInteractionListener {
     private static final int REQUEST_CODE_INTERRUPT_DIALOG = 1005;
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
+    private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
     private static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
@@ -105,11 +106,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final float DEFAUL_MAP_ZOOM = 16;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
 
+
     OnTripMapContract.Presenter presenter;
     ConfirmBookingViewModel confirmBookingViewModel;
     GoogleMap mGoogleMap;
     private Marker mDriverMarker;
     private String requestId;
+    private RideRequest rideRequest;
 
     @BindView(R2.id.mapview)
     MapView mapView;
@@ -173,6 +176,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         return fragment;
     }
 
+    public static OnTripMapFragment newInstance(RideRequest rideRequest) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_RIDE_REQUEST, rideRequest);
+        OnTripMapFragment fragment = new OnTripMapFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public interface OnFragmentInteractionListener {
 
     }
@@ -191,7 +202,14 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             confirmBookingViewModel = getArguments().getParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING);
-            requestId = getArguments().getString(EXTRA_RIDE_REQUEST_ID);
+            rideRequest = getArguments().getParcelable(EXTRA_RIDE_REQUEST);
+
+            if (rideRequest != null) {
+                requestId = rideRequest.getRequestId();
+            } else {
+                requestId = getArguments().getString(EXTRA_RIDE_REQUEST_ID);
+            }
+
             if (confirmBookingViewModel != null) {
                 source = new Location();
                 source.setLatitude(confirmBookingViewModel.getSource().getLatitude());
@@ -199,6 +217,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 destination = new Location();
                 destination.setLatitude(confirmBookingViewModel.getDestination().getLatitude());
                 destination.setLongitude(confirmBookingViewModel.getDestination().getLongitude());
+            } else if (rideRequest != null) {
+                source = new Location();
+                source.setLatitude(rideRequest.getPickup().getLatitude());
+                source.setLongitude(rideRequest.getPickup().getLongitude());
+                destination = new Location();
+                destination.setLatitude(rideRequest.getDestination().getLatitude());
+                destination.setLongitude(rideRequest.getDestination().getLongitude());
             }
         }
     }
@@ -473,6 +498,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
+    public RideRequest getRideRequest() {
+        return rideRequest;
+    }
+
+    @Override
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
@@ -484,7 +514,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void onSuccessCreateRideRequest(RideRequest rideRequest) {
-        requestId = rideRequest.getRequestId();
+        this.rideRequest = rideRequest;
     }
 
     @Override
@@ -714,6 +744,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void reDrawDriverMarker(RideRequest result) {
+        if (mGoogleMap == null) {
+            return;
+        }
+
         if (mDriverMarker != null) {
             mDriverMarker.remove();
         }
@@ -1187,7 +1221,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .rotation(result.getLocation().getBearing())
                 .title("Driver");
 
-        mDriverMarker = mGoogleMap.addMarker(options);
+        if (mGoogleMap != null) {
+            mDriverMarker = mGoogleMap.addMarker(options);
+        }
     }
 
     @Override

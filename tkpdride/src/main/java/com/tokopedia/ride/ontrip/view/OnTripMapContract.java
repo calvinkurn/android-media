@@ -61,6 +61,8 @@ public interface OnTripMapContract {
 
         String getRequestId();
 
+        RideRequest getRideRequest();
+
         void onSuccessCreateRideRequest(RideRequest rideRequest);
 
         void showBottomSection();

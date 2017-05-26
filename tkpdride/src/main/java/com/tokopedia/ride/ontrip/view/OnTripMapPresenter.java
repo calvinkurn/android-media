@@ -118,6 +118,12 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
         if (getView().isAlreadyRequested()) {
             getView().setTitle(R.string.title_fetching_ride);
+
+            if (getView().getRideRequest() != null) {
+                handlePeriodicServiceSuccessResponse(getView().getRideRequest());
+                activeRideRequest = getView().getRideRequest();
+            }
+
             getView().startPeriodicService(getView().getRequestId());
         } else {
             getView().setSourceAndDestinationTextByBookingParam();
@@ -347,13 +353,14 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().showBottomSection();
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
-                if (!getView().isAlreadyRouteDrawed()) {
-                    getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
-                    getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
-                    getOverViewPolyLine(true, true);
-                } else {
-                    getOverViewPolyLine(false, false);
-                }
+                updatePolylineIfResetedByUiLifecycle(result);
+//                if (!getView().isAlreadyRouteDrawed()) {
+//                    getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
+//                    getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
+//                    getOverViewPolyLine(true, true);
+//                } else {
+//                    getOverViewPolyLine(false, false);
+//                }
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideRequestLoadingLayout();
@@ -556,34 +563,39 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                             @Override
                             public void onNext(RideRequest rideRequest) {
-                                if (isViewAttached()) {
-                                    if (activeRideRequest == null) {
-                                        if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
-                                            if (getView()
-                                                    .getActiveProductNameInCache()
-                                                    .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
-                                                    ) {
-                                                getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
-                                            } else {
-                                                getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
-                                            }
-                                        }
-                                        actionGetProductDetailToDecideIcon(rideRequest);
-                                    }
-                                    activeRideRequest = rideRequest;
-
-                                    proccessGetCurrentRideRequest(rideRequest);
-
-                                    //update poll wait
-                                    if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
-                                        CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
-                                        CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
-                                    }
-                                }
+                                handlePeriodicServiceSuccessResponse(rideRequest);
                             }
                         })
         );
 
+    }
+
+    private void handlePeriodicServiceSuccessResponse(RideRequest rideRequest) {
+        if (isViewAttached()) {
+            if (activeRideRequest == null) {
+                if (!TextUtils.isEmpty(getView().getActiveProductNameInCache())) {
+                    if (getView()
+                            .getActiveProductNameInCache()
+                            .equalsIgnoreCase(getView().getActivity().getString(R.string.uber_moto_display_name))
+                            ) {
+                        getView().setDriverIcon(rideRequest, R.drawable.moto_map_icon);
+                    } else {
+                        getView().setDriverIcon(rideRequest, R.drawable.car_map_icon);
+                    }
+                }
+                actionGetProductDetailToDecideIcon(rideRequest);
+            }
+
+            getView().onSuccessCreateRideRequest(rideRequest);
+            activeRideRequest = rideRequest;
+            proccessGetCurrentRideRequest(rideRequest);
+
+            //update poll wait
+            if (activeRideRequest != null && activeRideRequest.getPollWait() > 0) {
+                CommonUtils.dumper("Latest poll wait = " + activeRideRequest.getPollWait());
+                CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY = activeRideRequest.getPollWait() * 1000;
+            }
+        }
     }
 
     @Override
