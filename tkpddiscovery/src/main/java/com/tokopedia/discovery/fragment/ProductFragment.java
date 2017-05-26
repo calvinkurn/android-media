@@ -651,6 +651,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 productAdapter.notifyDataSetChanged();
                 isHasOfficialStoreBanner = true;
                 backToTop();
+
+                UnifyTracking.eventImpressionOsBanner(model.getBannerUrl() + " - " + model.getKeyword());
             }
         }
     }

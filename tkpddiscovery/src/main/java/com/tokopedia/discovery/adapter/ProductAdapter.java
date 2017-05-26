@@ -28,8 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.URLParser;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
@@ -1143,9 +1145,7 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         public void bind(final OsBannerViewModel viewModel) {
-            ImageHandler.loadImageAndCache(imageBannerOs,
-                    viewModel.bannerOfficialStore.getBannerUrl(),
-            );
+            ImageHandler.loadImageAndCache(imageBannerOs, viewModel.bannerOfficialStore.getBannerUrl());
             imageBannerOs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1154,8 +1154,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     // GTM Tracker
                     UnifyTracking.eventClickOsBanner(
                             viewModel.bannerOfficialStore.getBannerUrl()
-                                    + " - "
-                                    + viewModel.bannerOfficialStore.getKeyword()
+                            + " - "
+                            + viewModel.bannerOfficialStore.getKeyword()
                     );
                 }
             });
