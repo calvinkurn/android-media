@@ -21,6 +21,7 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.helper.ProductFeedHelper;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.session.base.BaseFragment;
@@ -331,6 +332,11 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
         startActivityForResult(intent, ShopFragment.GOTO_SHOP_DETAIL);
+    }
+
+    @Override
+    public void showErrorMessage(String error) {
+        NetworkErrorHelper.showSnackbar(getActivity(), error);
     }
 
     @Override

@@ -222,7 +222,7 @@ public class BrowseShopAdapter extends ProductAdapter {
                         @Override
                         public void onFailure(String error) {
                             favoriteButton.setEnabled(true);
-                            NetworkErrorHelper.showSnackbar(activity, error);
+                            shopView.showErrorMessage(error);
                         }
                     });
                     favoriteAction.actionToggleFav();
