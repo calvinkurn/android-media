@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,7 +55,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }else {
             final LayoutViewHolder temp = (LayoutViewHolder) holder;
             if(getItemCount()==1){
-                temp.container.setLayoutParams(new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT));
+                final float scale = temp.container.getResources().getDisplayMetrics().density;
+                CardView.LayoutParams params = new CardView.LayoutParams(CardView.LayoutParams.MATCH_PARENT, CardView.LayoutParams.WRAP_CONTENT);
+                int marginPixels = (int) (3.3 * scale + 0.5f);
+                params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
+                temp.container.setLayoutParams(params);
             }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());
             temp.period.setText(list.get(position).getPeriod());
