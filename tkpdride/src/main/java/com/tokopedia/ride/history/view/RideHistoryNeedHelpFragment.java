@@ -6,8 +6,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
@@ -22,7 +25,11 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
     private RideHistoryViewModel rideHistory;
 
     @BindView(R2.id.btn_billing_help)
-    CardView btnBillingHelp;
+    CardView mBtnBillingHelp;
+    @BindView(R2.id.tv_user_name)
+    TextView mTextViewUserName;
+    @BindView(R2.id.value_trip_id)
+    TextView mTextViewTripId;
 
 
     RideHistoryNeedHelpContract.Presenter mPresenter;
@@ -78,6 +85,18 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
         mListener = null;
     }
 
+    @Override
+    public void renderUi() {
+        mTextViewUserName.setText(new SessionHandler(getActivity()).getLoginName() + "!");
+        mTextViewTripId.setText(rideHistory.getRequestId());
+    }
+
+    @Override
+    public void showToast(int resourceId) {
+        Toast.makeText(getActivity(), getString(resourceId), Toast.LENGTH_SHORT).show();
+    }
+
+
     @NonNull
     private NetworkErrorHelper.RetryClickedListener getRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
@@ -98,6 +117,10 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
         mListener.showTokoCashBillingFragment();
     }
 
+    @OnClick(R2.id.iv_copy)
+    public void actionCopyTripIdClicked() {
+        mPresenter.copyToClipboard(getActivity(), rideHistory.getRequestId());
+    }
 
     public interface OnFragmentInteractionListener {
         void showTokoCashBillingFragment();

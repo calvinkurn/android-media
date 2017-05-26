@@ -1,7 +1,6 @@
 package com.tokopedia.ride.history.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -180,8 +179,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
-        Intent intent = new Intent(getActivity(), RideHistoryNeedHelpActivity.class);
-        startActivity(intent);
+        startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 
 

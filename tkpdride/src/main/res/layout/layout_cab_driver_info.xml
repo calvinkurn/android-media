@@ -112,18 +112,18 @@
                 android:clickable="true"
                 android:padding="8dp"
                 android:src="@drawable/ic_call_black_24dp"
-                android:tint="@color/grey_700" />
+                android:tint="@color/grey_600" />
 
             <ImageView
                 android:id="@+id/icon_message"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="16dp"
                 android:background="@drawable/shape_bg_border_green"
                 android:clickable="true"
                 android:padding="8dp"
                 android:src="@drawable/ic_message"
-                android:tint="@color/grey_700" />
+                android:tint="@color/grey_600" />
 
         </LinearLayout>
     </RelativeLayout>

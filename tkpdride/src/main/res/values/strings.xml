@@ -107,4 +107,6 @@
     <string name="btn_submit">Submit</string>
     <string name="title_ride">Ride</string>
     <string name="title_tokocash_billing">Tokocash Billing</string>
+    <string name="label_trip_id">Trip Id:</string>
+    <string name="message_copied">Copied!</string>
 </resources>
