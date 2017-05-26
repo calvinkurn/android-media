@@ -55,7 +55,7 @@
     <dimen name="gmsubscribe_line_height_textview">5dp</dimen>
     <dimen name="gmsubscribe_padding_button">16dp</dimen>
 
-    <dimen name="topads_dashboard_size_image_plus">30dp</dimen>
+    <dimen name="topads_dashboard_size_image_plus">20dp</dimen>
 
     <dimen name="item_space">10dp</dimen>
 

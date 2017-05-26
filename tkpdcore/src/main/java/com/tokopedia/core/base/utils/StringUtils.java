@@ -44,12 +44,12 @@ public class StringUtils {
         }
     }
 
-    public static boolean containNonAlphaNumeric(String stringToCheck){
+    public static boolean containNonSpaceAlphaNumeric(String stringToCheck){
         if (TextUtils.isEmpty(stringToCheck)){
             return false;
         }
         else {
-            Pattern p = Pattern.compile("[^a-zA-Z0-9]");
+            Pattern p = Pattern.compile("[^a-zA-Z 0-9]");
             return p.matcher(stringToCheck).find();
         }
     }

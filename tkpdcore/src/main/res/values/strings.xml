@@ -188,6 +188,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_payment_cancellation_confirmation_detil1">Jumlah Kupon yg diaktifkan : </string>
     <string name="dialog_payment_cancellation_confirmation_detil2">Daftar Kupon : </string>
 
+    <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
+    <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
+
     <string-array name="return_policy">
         <item>@string/return_policy_not_set</item>
         <item>Ya</item>

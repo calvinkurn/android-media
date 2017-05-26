@@ -30,20 +30,22 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
 
     public static final String TAG = TopAdsKeywordAddDetailFragment.class.getSimpleName();
 
-    public static final String EXTRA_SERVER_WORDS = "server_wrds";
+    public static final String EXTRA_SERVER_COUNT = "server_cnt";
+    public static final String EXTRA_MAX_WORDS = "max_words";
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
 
     public static final int MIN_WORDS = 5;
 
-    private int maxKeywordInGroup;
+    private int maxKeyword;
 
     OnSaveKeywordListener onSaveKeywordListener;
     public interface OnSaveKeywordListener{
         void onSaveClicked(ArrayList<String> keyWordsList);
     }
 
-    private ArrayList<String> serverWords = new ArrayList<>();
     private ArrayList<String> localWords = new ArrayList<>();
+    private int serverCount;
+    private int maxWords;
     private KeywordRecyclerView keywordRecyclerView;
     private View buttonAddKeyword;
     private TextInputLayout textInputKeyword;
@@ -52,11 +54,13 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
     private TextView textViewTotalKeyworGroup;
     private View buttonSave;
 
-    public static TopAdsKeywordAddDetailFragment newInstance(ArrayList<String> serverWords,
+    public static TopAdsKeywordAddDetailFragment newInstance(int serverCount,
+                                                             int maxWords,
                                                              ArrayList<String> localWords) {
         TopAdsKeywordAddDetailFragment fragment = new TopAdsKeywordAddDetailFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(EXTRA_SERVER_WORDS, serverWords);
+        args.putInt(EXTRA_SERVER_COUNT, serverCount);
+        args.putInt(EXTRA_MAX_WORDS, maxWords);
         args.putStringArrayList(EXTRA_LOCAL_WORDS, localWords);
         fragment.setArguments(args);
         return fragment;
@@ -66,10 +70,9 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        maxKeywordInGroup = getContext().getResources().getInteger(R.integer.topads_max_keyword_in_group);
-
         Bundle args = getArguments();
-        serverWords = args.getStringArrayList(EXTRA_SERVER_WORDS);
+        serverCount = args.getInt(EXTRA_SERVER_COUNT);
+        maxKeyword = args.getInt(EXTRA_MAX_WORDS);
         if (savedInstanceState == null) {
             localWords = args.getStringArrayList(EXTRA_LOCAL_WORDS);
         } else {
@@ -120,6 +123,7 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
                 onButtonSaveClicked();
             }
         });
+        buttonSave.setEnabled(false);
         return v;
     }
 
@@ -131,7 +135,7 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
 
     private void onButtonAddClicked(){
         // check if max words has been reached
-        if ((getLocalKeyWordSize() + getServerKeyWordSize()) == maxKeywordInGroup) {
+        if (getLocalKeyWordSize()  == maxKeyword) {
             textInputKeyword.setError(getString(R.string.error_keyword_per_group_reach_limit));
             return;
         }
@@ -139,7 +143,7 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         String keyword = editTextKeyword.getText().toString();
 
         // check if contain alphanumeric
-        if (StringUtils.containNonAlphaNumeric(keyword)) {
+        if (StringUtils.containNonSpaceAlphaNumeric(keyword)) {
             textInputKeyword.setError(getString(R.string.error_keyword_must_only_letter_or_digit));
             return;
         }
@@ -172,22 +176,6 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
             return;
         }
 
-        // validate if keyword has existed in server
-        boolean hasInputtedInServer = false;
-        if (serverWords!= null) {
-            for (int i = 0, sizei = serverWords.size(); i < sizei; i++) {
-                if (validKeyword.equals(serverWords.get(i))) {
-                    hasInputtedInServer = true;
-                    break;
-                }
-            }
-        }
-
-        if (hasInputtedInServer) {
-            textInputKeyword.setError(getString(R.string.error_keyword_has_existed));
-            return;
-        }
-
         textInputKeyword.setErrorEnabled(false);
 
         // add to recyclerview
@@ -205,38 +193,29 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         keywordRecyclerView.setKeywordList(localWords);
         setCurrentMaxKeyword();
         setServerKeyword();
-        checkSaveButtonEnabled();
         checkAddButtonEnabled();
     }
 
     private void setCurrentMaxKeyword(){
         textViewKeywordCurrentMax.setText(getString(R.string.top_ads_total_keywords_current_and_max,
-                getLocalKeyWordSize() +getServerKeyWordSize(),
-                maxKeywordInGroup));
+                getLocalKeyWordSize(),
+                maxKeyword));
     }
 
     private void setServerKeyword(){
-        textViewTotalKeyworGroup.setText(getString(R.string.top_ads_keywords_in_groups, getServerKeyWordSize()));
+        textViewTotalKeyworGroup.setText(getString(R.string.top_ads_keywords_in_groups, serverCount));
     }
 
     private int getLocalKeyWordSize(){
         return keywordRecyclerView.getKeywordList().size();
     }
 
-    private int getServerKeyWordSize(){
-        if (serverWords == null)  {
-            return 0;
-        }
-        return serverWords.size();
-    }
-
     @Override
     public void onKeywordRemoved() {
-        checkSaveButtonEnabled();
+        if (! buttonSave.isEnabled()) {
+            buttonSave.setEnabled(true);
+        }
         setCurrentMaxKeyword();
-    }
-    private void checkSaveButtonEnabled(){
-        buttonSave.setEnabled(getLocalKeyWordSize() > 0);
     }
 
     private void checkAddButtonEnabled(){
@@ -246,6 +225,10 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         } else if (!TextUtils.isEmpty(currentKeywordString) && !buttonAddKeyword.isEnabled()) {
             buttonAddKeyword.setEnabled (true);
         }
+    }
+
+    public boolean isButtonSaveEnabled(){
+        return buttonSave.isEnabled();
     }
 
     @Override
