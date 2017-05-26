@@ -114,4 +114,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.CHANGE_EMAIL)
     Observable<Response<TkpdResponse>> changeEmail(@FieldMap Map<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.User.PATH_MAKE_LOGIN)
+    Observable<Response<TkpdResponse>> makeLogin(TKPDMapParam<String, Object> parameters);
 }

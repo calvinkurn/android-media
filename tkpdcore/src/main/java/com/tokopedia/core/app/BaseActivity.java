@@ -1,5 +1,6 @@
 package com.tokopedia.core.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -30,9 +31,11 @@ import com.tokopedia.core.category.data.utils.CategoryVersioningHelperListener;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.network.retrofit.utils.DialogNoConnection;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
@@ -63,6 +66,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     private static final long DISMISS_TIME = 10000;
     private static final String HADES = "TAG HADES";
+    private static final int REQUEST_RELOGIN = 12123;
     protected Boolean isAllowFetchDepartmentView = false;
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
@@ -301,7 +305,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     @Override
     public void onForceLogout() {
+        startActivityForResult(SessionRouter.getReloginActivityIntent(BaseActivity.this), REQUEST_RELOGIN);
         if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+    }
+
+    private void checkIsTokenExpired() {
+
     }
 
     @Override
@@ -384,5 +393,17 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_RELOGIN && resultCode == Activity.RESULT_CANCELED)
+            showForceLogoutDialog();
+        else if (requestCode == REQUEST_RELOGIN && resultCode == Activity.RESULT_OK) {
+            String message = data.getStringExtra(SessionRouter.PARAM_FORCE_LOGOUT_MESSAGE);
+            NetworkErrorHelper.showSnackbar(this, message);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
