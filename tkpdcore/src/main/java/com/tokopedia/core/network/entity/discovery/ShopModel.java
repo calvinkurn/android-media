@@ -19,6 +19,7 @@ public class ShopModel extends RecyclerViewItem {
     String luckyImage;
     String location;
     String reputationImageUrl;
+    String shopDomain;
     List<String> productImages;
     boolean isOfficial;
     boolean isFavorited;
@@ -40,6 +41,7 @@ public class ShopModel extends RecyclerViewItem {
         isFavorited = shop.isFavorited;
         location = shop.shopLocation;
         reputationImageUrl = shop.reputationImageUri;
+        shopDomain = shop.shopDomain;
         productImages = shop.productImages;
     }
 
@@ -79,6 +81,10 @@ public class ShopModel extends RecyclerViewItem {
         return reputationImageUrl;
     }
 
+    public String getShopDomain() {
+        return shopDomain;
+    }
+
     public List<String> getProductImages() {
         return productImages;
     }
@@ -89,6 +95,10 @@ public class ShopModel extends RecyclerViewItem {
 
     public boolean isFavorited() {
         return isFavorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        isFavorited = favorited;
     }
 
     @Override
@@ -108,6 +118,7 @@ public class ShopModel extends RecyclerViewItem {
         dest.writeString(this.luckyImage);
         dest.writeString(this.location);
         dest.writeString(this.reputationImageUrl);
+        dest.writeString(this.shopDomain);
         dest.writeStringList(this.productImages);
         dest.writeByte(this.isOfficial ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isFavorited ? (byte) 1 : (byte) 0);
@@ -124,6 +135,7 @@ public class ShopModel extends RecyclerViewItem {
         this.luckyImage = in.readString();
         this.location = in.readString();
         this.reputationImageUrl = in.readString();
+        this.shopDomain = in.readString();
         in.readStringList(this.productImages);
         this.isOfficial = in.readByte() != 0;
         this.isFavorited = in.readByte() != 0;

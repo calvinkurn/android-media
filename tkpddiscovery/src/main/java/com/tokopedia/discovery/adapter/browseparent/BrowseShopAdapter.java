@@ -26,6 +26,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.discovery.ShopModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 
@@ -185,7 +186,42 @@ public class BrowseShopAdapter extends ProductAdapter {
                 itemPreview3.setVisibility(View.INVISIBLE);
             }
 
+            adjustFavoriteButtonAppearance(context, shopModel.isFavorited());
+            favoriteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favoriteButton.setEnabled(false);
+                    final ActionShopInfoRetrofit favoriteAction
+                            = new ActionShopInfoRetrofit(context, shopModel.getShopId(), shopModel.getShopDomain(), "");
+
+                    favoriteAction.setOnActionToggleFavListener(new ActionShopInfoRetrofit.OnActionToggleFavListener() {
+                        @Override
+                        public void onSuccess() {
+                            toggleIsFavoritedState(shopModel);
+                            adjustFavoriteButtonAppearance(context, shopModel.isFavorited());
+                            favoriteButton.setEnabled(true);
+                        }
+
+                        @Override
+                        public void onFailure(String string) {
+                            favoriteButton.setEnabled(true);
+                        }
+                    });
+                    favoriteAction.actionToggleFav();
+                }
+            });
+        }
+
+        private void toggleIsFavoritedState(ShopModel shopModel) {
             if (shopModel.isFavorited()) {
+                shopModel.setFavorited(false);
+            } else {
+                shopModel.setFavorited(true);
+            }
+        }
+
+        public void adjustFavoriteButtonAppearance(Context context, boolean isFavorited) {
+            if (isFavorited) {
                 favoriteButton.setBackgroundResource(R.drawable.white_button_rounded);
                 favoriteButtonText.setText("Favorit");
                 favoriteButtonText.setTextColor(context.getResources().getColor(R.color.black_54));
