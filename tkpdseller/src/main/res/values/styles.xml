@@ -33,6 +33,10 @@
         <item name="android:textColor">@color/font_top_ads_black_54</item>
     </style>
 
+    <style name="TextView.TopAds.Caption1.Gray">
+        <item name="android:textColor">@color/thirty_eight_percent_black</item>
+    </style>
+
     <style name="TextView.TopAds.Title">
         <item name="android:textSize">@dimen/font_medium</item>
     </style>
@@ -180,7 +184,7 @@
     <style name="LabelLayout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:foreground">?android:attr/selectableItemBackground</item>
         <item name="android:paddingTop">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="android:paddingLeft">@dimen/top_ads_dashboard_padding_cards</item>
         <item name="android:paddingRight">@dimen/top_ads_dashboard_padding_cards</item>

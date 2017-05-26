@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 
@@ -95,7 +96,7 @@ public class TopAdsBasicRadioButtonAdapter extends BaseLinearRecyclerViewAdapter
     private void bindProduct(final ViewHolder holder, int position) {
         final RadioButtonItem radioButtonItem = data.get(position);
         holder.radioButton.setChecked(position == selectedPosition);
-        holder.radioButton.setText(radioButtonItem.getName());
+        holder.radioButton.setText(MethodChecker.fromHtml(radioButtonItem.getName()));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
