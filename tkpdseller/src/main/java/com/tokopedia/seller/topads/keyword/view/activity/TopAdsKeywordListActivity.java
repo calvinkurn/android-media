@@ -97,7 +97,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
+        getMenuInflater().inflate(R.menu.menu_top_ads_keyword_list, menu);
         searchItem = menu.findItem(R.id.menu_search);
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
