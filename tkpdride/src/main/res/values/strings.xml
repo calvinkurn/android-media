@@ -109,4 +109,5 @@
     <string name="title_tokocash_billing">Tokocash Billing</string>
     <string name="label_trip_id">Trip Id:</string>
     <string name="message_copied">Copied!</string>
+    <string name="label_license_plate_number">License Plate Number</string>
 </resources>

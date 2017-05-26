@@ -78,6 +78,10 @@ public class RideHistoryPresenter extends BaseDaggerPresenter<RideHistoryContrac
                         viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
                         viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
 
+                        if (rideHistory.getVehicle() != null) {
+                            viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
+                        }
+
                         LocationLatLng pickupObject = rideHistory.getPickup();
                         if (pickupObject != null) {
                             viewModel.setStartLatitude(pickupObject.getLatitude());

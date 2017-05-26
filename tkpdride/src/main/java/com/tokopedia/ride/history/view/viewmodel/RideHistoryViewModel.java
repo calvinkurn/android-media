@@ -28,6 +28,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String endAddress;
     private String mapImage;
     private String displayStatus;
+    private String licensePlateNumber;
 
     public RideHistoryViewModel() {
     }
@@ -165,6 +166,14 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.displayStatus = displayStatus;
     }
 
+    public String getLicensePlateNumber() {
+        return licensePlateNumber;
+    }
+
+    public void setLicensePlateNumber(String licensePlateNumber) {
+        this.licensePlateNumber = licensePlateNumber;
+    }
+
     protected RideHistoryViewModel(Parcel in) {
         requestId = in.readString();
         requestTime = in.readString();
@@ -183,6 +192,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         startAddress = in.readString();
         endAddress = in.readString();
         displayStatus = in.readString();
+        licensePlateNumber = in.readString();
     }
 
     @Override
@@ -209,6 +219,7 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         dest.writeString(startAddress);
         dest.writeString(endAddress);
         dest.writeString(displayStatus);
+        dest.writeString(licensePlateNumber);
     }
 
     @SuppressWarnings("unused")

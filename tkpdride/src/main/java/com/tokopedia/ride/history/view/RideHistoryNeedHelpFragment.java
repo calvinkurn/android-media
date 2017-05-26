@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,12 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
     TextView mTextViewUserName;
     @BindView(R2.id.value_trip_id)
     TextView mTextViewTripId;
+    @BindView(R2.id.value_license_plate)
+    TextView mTextViewLicensePLate;
+    @BindView(R2.id.label_license_plate)
+    TextView mTextViewLicensePLateLabel;
+    @BindView(R2.id.iv_license_plate_copy)
+    ImageView mImageViewLicensePlateCopy;
 
 
     RideHistoryNeedHelpContract.Presenter mPresenter;
@@ -89,6 +96,14 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
     public void renderUi() {
         mTextViewUserName.setText(new SessionHandler(getActivity()).getLoginName() + "!");
         mTextViewTripId.setText(rideHistory.getRequestId());
+
+        if (rideHistory.getLicensePlateNumber() != null && rideHistory.getLicensePlateNumber().length() > 0) {
+            mTextViewLicensePLate.setText(rideHistory.getLicensePlateNumber());
+        } else {
+            mTextViewLicensePLate.setVisibility(View.GONE);
+            mTextViewLicensePLateLabel.setVisibility(View.GONE);
+            mImageViewLicensePlateCopy.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -120,6 +135,11 @@ public class RideHistoryNeedHelpFragment extends BaseFragment implements RideHis
     @OnClick(R2.id.iv_copy)
     public void actionCopyTripIdClicked() {
         mPresenter.copyToClipboard(getActivity(), rideHistory.getRequestId());
+    }
+
+    @OnClick(R2.id.iv_license_plate_copy)
+    public void actionCopyLicensePlateClicked() {
+        mPresenter.copyToClipboard(getActivity(), rideHistory.getLicensePlateNumber());
     }
 
     public interface OnFragmentInteractionListener {
