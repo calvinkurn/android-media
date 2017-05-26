@@ -3,7 +3,12 @@ package com.tokopedia.ride.bookingride.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -24,6 +29,8 @@ import com.tokopedia.ride.common.ride.data.source.api.RideUrl;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Named;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -76,19 +83,26 @@ public class ConfirmBookingDependencyInjection {
         return new RideInterceptor(token, userId);
     }
 
+    private ChuckInterceptor provideChuckInterceptor() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
+        return new ChuckInterceptor(MainApplication.getAppContext())
+                .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
+    }
+
     private HttpLoggingInterceptor provideLoggingInterceptory() {
         HttpLoggingInterceptor logInterceptor = new HttpLoggingInterceptor();
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return logInterceptor;
     }
 
-    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor) {
+    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.interceptors().add(rideInterceptor);
         clientBuilder.interceptors().add(loggingInterceptor);
+        clientBuilder.interceptors().add(chuckInterceptor);
         return clientBuilder.build();
     }
 
@@ -143,7 +157,7 @@ public class ConfirmBookingDependencyInjection {
         return new Cache(context.getCacheDir(), cacheSize);
     }
 
-    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId){
+    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId) {
         return new GetFareEstimateUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -152,7 +166,8 @@ public class ConfirmBookingDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(),
+                                                        provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -167,7 +182,7 @@ public class ConfirmBookingDependencyInjection {
         );
     }
 
-    public static ConfirmBookingContract.Presenter createPresenter(Context context){
+    public static ConfirmBookingContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
         String userId = sessionHandler.getLoginID();

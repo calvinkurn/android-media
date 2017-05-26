@@ -3,6 +3,10 @@ package com.tokopedia.ride.ontrip.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -89,14 +93,19 @@ public class OnTripDependencyInjection {
         logInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return logInterceptor;
     }
-
-    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor) {
+    private ChuckInterceptor provideChuckInterceptor() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
+        return new ChuckInterceptor(MainApplication.getAppContext())
+                .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
+    }
+    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.interceptors().add(rideInterceptor);
         clientBuilder.interceptors().add(loggingInterceptor);
+        clientBuilder.interceptors().add(chuckInterceptor);
         return clientBuilder.build();
     }
 
@@ -155,7 +164,8 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(),
+                                                        provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -179,7 +189,7 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -203,7 +213,7 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -243,7 +253,7 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -275,7 +285,7 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -299,7 +309,7 @@ public class OnTripDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),

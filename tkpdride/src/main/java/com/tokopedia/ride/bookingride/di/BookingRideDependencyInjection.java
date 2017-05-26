@@ -3,6 +3,10 @@ package com.tokopedia.ride.bookingride.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -89,7 +93,7 @@ public class BookingRideDependencyInjection {
         return logInterceptor;
     }
 
-    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor) {
+    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
@@ -128,7 +132,13 @@ public class BookingRideDependencyInjection {
         return new BookingRideRepositoryData(factory, mapper, estimateEntityMapper);
     }
 
-    private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor) {
+    private ChuckInterceptor provideChuckInterceptor() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
+        return new ChuckInterceptor(MainApplication.getAppContext())
+                .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
+    }
+
+    private OkHttpClient providePlaceOkHttpClient(Cache cache, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder client = new OkHttpClient.Builder()
                 .addInterceptor(loggingInterceptor)
                 .cache(cache);
@@ -172,7 +182,8 @@ public class BookingRideDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(),
+                                                        provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -193,7 +204,8 @@ public class BookingRideDependencyInjection {
                 providePostExecutionThread(),
                 providePlaceRepository(providePlaceDataStoreFactory(providePlaceApi(providePlaceRetrofit(
                         providePlaceOkHttpClient(provideHttpCacheCache(context),
-                                provideLoggingInterceptory()),
+                                provideLoggingInterceptory(),
+                                provideChuckInterceptor()),
                         provideGeneratedHostConverter(),
                         provideTkpdResponseConverter(),
                         provideResponseConverter(),

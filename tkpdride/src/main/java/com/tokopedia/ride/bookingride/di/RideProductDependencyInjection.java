@@ -3,6 +3,10 @@ package com.tokopedia.ride.bookingride.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.DeveloperOptions;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -81,13 +85,20 @@ public class RideProductDependencyInjection {
         return logInterceptor;
     }
 
-    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor) {
+    private ChuckInterceptor provideChuckInterceptor() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), DeveloperOptions.CHUCK_ENABLED);
+        return new ChuckInterceptor(MainApplication.getAppContext())
+                .showNotification(localCacheHandler.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false));
+    }
+
+    private OkHttpClient provideRideOkHttpClient(RideInterceptor rideInterceptor, HttpLoggingInterceptor loggingInterceptor, ChuckInterceptor chuckInterceptor) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.connectTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.readTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.writeTimeout(45L, TimeUnit.SECONDS);
         clientBuilder.interceptors().add(rideInterceptor);
         clientBuilder.interceptors().add(loggingInterceptor);
+        clientBuilder.interceptors().add(chuckInterceptor);
         return clientBuilder.build();
     }
 
@@ -126,7 +137,7 @@ public class RideProductDependencyInjection {
         return client.build();
     }
 
-    private GetProductAndEstimatedUseCase provideGetProductAndEstimatedUseCase(String token, String userId){
+    private GetProductAndEstimatedUseCase provideGetProductAndEstimatedUseCase(String token, String userId) {
         return new GetProductAndEstimatedUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -135,7 +146,8 @@ public class RideProductDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(),
+                                                        provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -150,7 +162,7 @@ public class RideProductDependencyInjection {
         );
     }
 
-    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId){
+    private GetFareEstimateUseCase provideGetFareEstimateUseCase(String token, String userId) {
         return new GetFareEstimateUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -159,7 +171,7 @@ public class RideProductDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -174,7 +186,7 @@ public class RideProductDependencyInjection {
         );
     }
 
-    private GetPromoUseCase getPromoUseCase(String token, String userId){
+    private GetPromoUseCase getPromoUseCase(String token, String userId) {
         return new GetPromoUseCase(
                 provideThreadExecutor(),
                 providePostExecutionThread(),
@@ -183,7 +195,7 @@ public class RideProductDependencyInjection {
                                 provideRideApi(
                                         provideRideRetrofit(
                                                 provideRideOkHttpClient(provideRideInterceptor(token, userId),
-                                                        provideLoggingInterceptory()),
+                                                        provideLoggingInterceptory(), provideChuckInterceptor()),
                                                 provideGeneratedHostConverter(),
                                                 provideTkpdResponseConverter(),
                                                 provideResponseConverter(),
@@ -199,12 +211,10 @@ public class RideProductDependencyInjection {
     }
 
 
-
-
     public static UberProductContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
-        String userId= sessionHandler.getLoginID();
+        String userId = sessionHandler.getLoginID();
         RideProductDependencyInjection injection = new RideProductDependencyInjection();
         GetProductAndEstimatedUseCase getUberProductsUseCase = injection.provideGetProductAndEstimatedUseCase(token, userId);
         GetFareEstimateUseCase getFareEstimateUseCase = injection.provideGetFareEstimateUseCase(token, userId);
