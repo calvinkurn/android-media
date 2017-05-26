@@ -32,10 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import static android.text.TextUtils.isEmpty;
 
 /**
@@ -60,13 +56,9 @@ public class ShopScheduleDialog extends DialogFragment {
         return fragment;
     }
 
-    @BindView(R2.id.start_date)
     EditText startDate;
-    @BindView(R2.id.end_date)
     EditText endDate;
-    @BindView(R2.id.close_checkbox)
     CheckBox closeCheckbox;
-    @BindView(R2.id.note_text)
     EditText noteText;
 
     private DatePickerUtil datePicker;
@@ -106,7 +98,28 @@ public class ShopScheduleDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title);
         View view = View.inflate(getContext(), R.layout.dialog_shop_schedule, null);
-        ButterKnife.bind(this, view);
+        startDate =(EditText) view.findViewById(R.id.start_date);
+        endDate = (EditText) view.findViewById(R.id.end_date);
+        closeCheckbox = (CheckBox) view.findViewById(R.id.close_checkbox);
+        noteText = (EditText) view.findViewById(R.id.note_text);
+        startDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showStartDatePickerDialog();
+            }
+        });
+        endDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showEndDatePickerDialog();
+            }
+        });
+        closeCheckbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onCheckCloseShop();
+            }
+        });
         builder.setView(view);
         setData(closedDetail, scheduleDetail);
 
@@ -209,7 +222,6 @@ public class ShopScheduleDialog extends DialogFragment {
         return dialog;
     }
 
-    @OnClick(R2.id.start_date)
     void showStartDatePickerDialog() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if(!startDate.getText().toString().isEmpty()){
@@ -232,7 +244,6 @@ public class ShopScheduleDialog extends DialogFragment {
         });
     }
 
-    @OnClick(R2.id.end_date)
     void showEndDatePickerDialog() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if(!endDate.getText().toString().isEmpty()){
@@ -259,7 +270,6 @@ public class ShopScheduleDialog extends DialogFragment {
         });
     }
 
-    @OnClick(R2.id.close_checkbox)
     void onCheckCloseShop() {
         calendar = Calendar.getInstance(TimeZone.getDefault());
         if (closeCheckbox.isChecked()) {

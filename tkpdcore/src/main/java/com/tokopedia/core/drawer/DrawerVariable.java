@@ -41,8 +41,10 @@ import com.tokopedia.core.drawer.model.LoyaltyItem.LoyaltyItem;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer.var.UserType;
+import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -92,6 +94,7 @@ public class DrawerVariable {
     private DefaultItemAnimator animator;
     private ToolbarVariable toolbar;
     private boolean hasUpdated = false;
+    private GetUserInfoListener getUserInfoListener;
 
     public boolean hasUpdated() {
         return hasUpdated;
@@ -131,6 +134,8 @@ public class DrawerVariable {
 
     public DrawerVariable(AppCompatActivity context) {
         this.context = context;
+        if(context instanceof GetUserInfoListener)
+            getUserInfoListener = (GetUserInfoListener)context;
     }
 
     public void createDrawer(boolean withSearchBox) {
@@ -456,9 +461,12 @@ public class DrawerVariable {
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
-                if(TrackingUtils.getBoolean(AppEventTracking.GTM.CREATE_TICKET)) {
-                    intent.putExtra("link", "https://tokopedia.com/contact-us-android");
-                }
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
+                context.startActivity(intent);
+                break;
+            case TkpdState.DrawerPosition.HELP:
+                intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
@@ -473,7 +481,6 @@ public class DrawerVariable {
         if (isFinish && drawerPosition != TkpdState.DrawerPosition.INDEX_HOME) {
             context.finish();
         }
-//        updateData();
         closeDrawer();
     }
 
@@ -525,8 +532,8 @@ public class DrawerVariable {
     }
 
     private void goToManageProduct() {
-        if(context.getApplication() instanceof TkpdCoreRouter){
-            ((TkpdCoreRouter)context.getApplication()).goToManageProduct(context);
+        if (context.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplication()).goToManageProduct(context);
         }
     }
 
@@ -729,11 +736,12 @@ public class DrawerVariable {
         if (!Session.getShopID().equals("0") && !Session.getShopID().equals("")) {
             model.data.add(model.shopMenu);
             model.data.add(new DrawerItem("Gold Merchant", 0, R.drawable.ic_goldmerchant_drawer,
-                    TkpdState.DrawerPosition.GOLD_MERCHANT,false));
+                    TkpdState.DrawerPosition.GOLD_MERCHANT, false));
         }
         model.data.add(new DrawerItem("Pengaturan", 0, R.drawable.icon_setting, TkpdState.DrawerPosition.SETTINGS, false));
+        model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contactus, TkpdState.DrawerPosition.CONTACT_US, false));
         if (!TrackingUtils.getBoolean(AppEventTracking.GTM.CONTACT_US)) {
-            model.data.add(new DrawerItem("Hubungi Kami", 0, R.drawable.ic_contact_us, TkpdState.DrawerPosition.CONTACT_US, false));
+            model.data.add(new DrawerItem("Bantuan", 0, R.drawable.ic_help, TkpdState.DrawerPosition.HELP, false));
         }
         model.data.add(new DrawerItem("Keluar", 0, R.drawable.ic_menu_logout, TkpdState.DrawerPosition.LOGOUT, false));
         if (BuildConfig.DEBUG & MainApplication.isDebug()) {
@@ -762,7 +770,7 @@ public class DrawerVariable {
 
     }
 
-    private void getUserInfo() {
+    public void getUserInfo() {
         networkInteractor.getProfileInfo(context, new NetworkInteractor.ProfileInfoListener() {
             @Override
             public void onSuccess(DrawerHeader profile) {
@@ -782,6 +790,8 @@ public class DrawerVariable {
                 SessionHandler.setUserAvatarUri(context, profile.userIcon);
                 model.header.setDataToCache(context);
                 adapter.notifyDataSetChanged();
+                if(getUserInfoListener!=null)
+                    getUserInfoListener.onGetUserInfo();
                 setShop();
             }
 
@@ -1013,14 +1023,14 @@ public class DrawerVariable {
     private void populateTokoCashData(TopCashItem topCashItem) {
         model.header.tokoCashURL = topCashItem.getData().getRedirectUrl();
         model.header.tokoCashLink = topCashItem.getData().getLink();
-        if(model.header.tokoCashLink == 1) {
+        if (model.header.tokoCashLink == 1) {
             model.header.tokoCashValue = topCashItem.getData().getBalance();
             model.header.tokoCashText = topCashItem.getData().getText();
             model.header.tokoCashToWallet = true;
         } else {
             model.header.tokoCashToWallet = false;
             model.header.tokoCashText = topCashItem.getData().getText();
-            if(topCashItem.getData().getAction() != null) {
+            if (topCashItem.getData().getAction() != null) {
                 model.header.tokoCashText = topCashItem.getData().getAction().getText();
                 model.header.tokoCashURL = topCashItem.getData().getAction().getRedirectUrl();
             }
@@ -1040,7 +1050,7 @@ public class DrawerVariable {
         Cache.putString(CACHE_TOKO_CASH_URL, model.header.tokoCashURL);
         Cache.putString(CACHE_TOKO_CASH_LABEL, model.header.tokoCashText);
         Cache.putInt(CACHE_TOKO_CASH_LINK, model.header.tokoCashLink);
-        Cache.putBoolean(CACHE_TOKO_CASH_ACTION_TYPE,model.header.tokoCashToWallet);
+        Cache.putBoolean(CACHE_TOKO_CASH_ACTION_TYPE, model.header.tokoCashToWallet);
         Cache.getBoolean(CACHE_TOKO_CASH_OTHER_ACTION);
     }
 }

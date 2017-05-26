@@ -1,23 +1,19 @@
 package com.tokopedia.tkpd.home.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.home.BannerWebView;
@@ -105,7 +101,8 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
                 String shopDomain = linkSegment.get(0);
                 getShopInfo(url, shopDomain);
             } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                DeepLinkChecker.openProduct(url, getActivity());
+                String shopDomain = linkSegment.get(0);
+                openProductPageIfValid(url, shopDomain);
             } else if (DeepLinkChecker.getDeepLinkType(url)==DeepLinkChecker.CATEGORY) {
                 DeepLinkChecker.openCategory(url, getActivity());
             } else {
@@ -145,7 +142,39 @@ public class FragmentBanner extends Fragment implements View.OnTouchListener {
                 || link.equals("p")
                 || link.equals("catalog")
                 || link.equals("toppicks")
+                || link.equals("promo")
                 || link.startsWith("invoice.pl");
+    }
+
+    public void openProductPageIfValid(final String url, final String shopDomain) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(getActivity(), "", shopDomain);
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    ShopModel shopModel = new Gson().fromJson(result,
+                            ShopModel.class);
+                    if (shopModel.info != null) {
+                        DeepLinkChecker.openProduct(url, getActivity());
+                    } else {
+                        openWebViewURL(url);
+                    }
+                } catch (Exception e) {
+                    openWebViewURL(url);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                openWebViewURL(url);
+            }
+
+            @Override
+            public void onFailure() {
+                openWebViewURL(url);
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
     }
 
     public void getShopInfo(final String url, final String shopDomain) {

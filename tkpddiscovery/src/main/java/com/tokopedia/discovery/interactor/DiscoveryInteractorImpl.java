@@ -15,6 +15,7 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.apiservices.ace.DiscoveryService;
 import com.tokopedia.core.network.apiservices.hades.HadesService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
+import com.tokopedia.core.network.apiservices.mojito.MojitoSimpleService;
 import com.tokopedia.core.network.apiservices.search.HotListService;
 import com.tokopedia.core.network.apiservices.search.SearchSuggestionService;
 import com.tokopedia.core.network.apiservices.topads.TopAdsService;
@@ -25,22 +26,28 @@ import com.tokopedia.core.network.entity.discovery.BrowseCatalogModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
+import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.dynamicfilter.DynamicFilterFactory;
 import com.tokopedia.discovery.interfaces.DiscoveryListener;
 import com.tokopedia.discovery.model.ErrorContainer;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -61,6 +68,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     CompositeSubscription compositeSubscription;
     Gson gson = new GsonBuilder().create();
     GlobalCacheManager cacheManager;
+    private MojitoSimpleService mojitoSimpleService;
 
     public CompositeSubscription getCompositeSubscription() {
         return RxUtils.getNewCompositeSubIfUnsubscribed(compositeSubscription);
@@ -78,6 +86,7 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
         searchSuggestionService = new SearchSuggestionService();
         mojitoService = new MojitoService();
         cacheManager = new GlobalCacheManager();
+        mojitoSimpleService = new MojitoSimpleService();
     }
 
     public DiscoveryListener getDiscoveryListener() {
@@ -169,20 +178,20 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
     @Override
     public void storeCacheCategoryHeader(int level, CategoryHadesModel categoriesHadesModel) {
         new GlobalCacheManager()
-                .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level)
+                .setKey(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level)
                 .setValue(gson.toJson(categoriesHadesModel))
                 .store();
     }
 
     @Override
     public CategoryHadesModel getCategoryHeaderCache(int level) {
-        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL+level, CategoryHadesModel.class);
+        return cacheManager.getConvertObjData(TkpdCache.Key.CATEOGRY_HEADER_LEVEL + level, CategoryHadesModel.class);
     }
 
     @Override
     public void getTopAds(HashMap<String, String> data) {
         final String page = data.get(TopAdsApi.PAGE);
-        Log.d(TAG, "getTopAds params "+data.toString());
+        Log.d(TAG, "getTopAds params " + data.toString());
         String xDevice = "android";
         String userId = SessionHandler.getLoginID(MainApplication.getAppContext());
         String sessionId = GCMHandler.getRegistrationId(MainApplication.getAppContext());
@@ -301,6 +310,33 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                     }
                 })
         );
+    }
+
+    @Override
+    public Observable<Map<String, Boolean>> checkProductsInWishlist(String userId,
+                                                                    List<ProductItem> productItemList) {
+
+        StringBuilder productIds = new StringBuilder();
+
+        for (ProductItem item : productItemList) {
+            productIds.append(item.getId());
+            productIds.append(",");
+        }
+
+        productIds.deleteCharAt(productIds.length() - 1);
+
+        return mojitoSimpleService.getApi().checkWishlist(userId, productIds.toString())
+                .map(new Func1<Response<WishlistCheckResult>, Map<String, Boolean>>() {
+                    @Override
+                    public Map<String, Boolean> call(Response<WishlistCheckResult> wishlistCheckResultResponse) {
+                        Map<String, Boolean> resultMap = new HashMap<>();
+                        List<String> idList = wishlistCheckResultResponse.body().getCheckResultIds().getIds();
+                        for (String id : idList) {
+                            resultMap.put(id, true);
+                        }
+                        return resultMap;
+                    }
+                });
     }
 
     @Override
@@ -471,12 +507,12 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                                 modelResponse.body().setKeyword(keyword);
 
                                 Pair<String, BannerOfficialStoreModel.BannerOfficialStoreContainer> pair =
-                                    new Pair<>(
-                                        DiscoveryListener.OSBANNER,
-                                        new BannerOfficialStoreModel.BannerOfficialStoreContainer(
-                                                modelResponse.body()
-                                        )
-                                    );
+                                        new Pair<>(
+                                                DiscoveryListener.OSBANNER,
+                                                new BannerOfficialStoreModel.BannerOfficialStoreContainer(
+                                                        modelResponse.body()
+                                                )
+                                        );
 
                                 discoveryListener.onSuccess(DiscoveryListener.OS_BANNER, pair);
                             }

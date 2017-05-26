@@ -11,17 +11,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.util.SparseArray;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.instoped.fragment.InstagramMediaFragment;
-import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.seller.myproduct.ProductSocMedActivity;
-import com.tokopedia.seller.myproduct.presenter.ProductSocMedPresenter;
+import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 
 import org.parceler.Parcels;
 
@@ -34,7 +31,7 @@ import java.util.List;
 
 public class InstopedActivity extends TActivity implements InstagramActivityListener {
 
-    private static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
+    public static final String FRAGMENT_TO_SHOW = "FRAGMENT_TO_SHOW";
     private static final String MAX_RESULT = "MAX_R";
     private String FRAGMENT;
     private FragmentManager supportFragmentManager;
@@ -138,12 +135,10 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
                 if (getCallingActivity() == null) {
                     selectedModel.size();
                     //[START] move to productSocMedActivity
-                    Intent moveToProductSocMed = new Intent(InstopedActivity.this, ProductSocMedActivity.class);
-                    moveToProductSocMed.putExtra(
-                            GalleryActivity.PRODUCT_SOC_MED_DATA,
-                            Parcels.wrap(selectedModel)
+                    Intent intent = new Intent(InstopedActivity.this, ProductAddActivity.class);
+                    intent.putExtra(GalleryActivity.PRODUCT_SOC_MED_DATA, Parcels.wrap(selectedModel)
                     );
-                    InstopedActivity.this.startActivity(moveToProductSocMed);
+                    InstopedActivity.this.startActivity(intent);
                     InstopedActivity.this.finish();
                     //[END] move to productSocMedActivity
                 }
@@ -164,9 +159,28 @@ public class InstopedActivity extends TActivity implements InstagramActivityList
         return AppScreen.SCREEN_INSTOPED;
     }
 
+    @Override
+    public void onBackPressed() {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        if (fragmentList != null && fragmentList.size() != 0) {
+            //TODO: Perform your logic to pass back press here
+            for (Fragment fragment : fragmentList) {
+                if (fragment instanceof OnBackPressedListener) {
+                    boolean canGoBack = ((OnBackPressedListener) fragment).onBackPressed();
+                    if (!canGoBack) {
+                        super.onBackPressed();
+                    }
+                } else {
+                    super.onBackPressed();
+                }
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public interface OnBackPressedListener {
         boolean onBackPressed();
     }
-
 
 }

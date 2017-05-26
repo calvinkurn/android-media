@@ -20,7 +20,9 @@ import com.tkpd.library.ui.utilities.CustomCheckBoxPreference;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdBasePreferenceFragment;
+import com.tokopedia.core.gcm.Constants;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -43,6 +45,7 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private static Context context;
     private CustomCheckBoxPreference optionVibrate;
+    private CustomCheckBoxPreference optionPromo;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -78,15 +81,18 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_notification);
 
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+        bindPreferenceSummaryToValue(findPreference(Constants.Settings.NOTIFICATION_RINGTONE));
 
-        optionVibrate = (CustomCheckBoxPreference) findPreference("notifications_new_message_vibrate");
+        optionVibrate = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_VIBRATE);
         optionVibrate.setOnPreferenceClickListener(new OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 //SystemPreferencesHandler.setVibrate(context, preference.get)
                 return true;
             }
         });
+
+        optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
+        optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
 
     /** {@inheritDoc} */
@@ -168,11 +174,18 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                     }
                 }
 
-            } else {
+            } else  {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
-                preference.setSummary(stringValue);
+                if(!preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO))
+                    preference.setSummary(stringValue);
             }
+
+            if(preference.getKey().equals(Constants.Settings.NOTIFICATION_PROMO)){
+                boolean notificationsDisabled = !(boolean)value;
+                TrackingUtils.eventLocaSetNotification(notificationsDisabled);
+            }
+
             return true;
         }
     };

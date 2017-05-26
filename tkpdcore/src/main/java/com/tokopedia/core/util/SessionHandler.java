@@ -46,12 +46,12 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.Arrays;
 
 public class SessionHandler {
-    public static final String SAVE_REAL = "SAVE_REAL";
-    public static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
+    private static final String SAVE_REAL = "SAVE_REAL";
+    private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
-    public static final String PHONE_NUMBER = "PHONE_NUMBER";
-    public static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
-    public static final String TEMP_NAME = "TEMP_NAME";
+    private static final String PHONE_NUMBER = "PHONE_NUMBER";
+    private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
+    private static final String TEMP_NAME = "TEMP_NAME";
     private static final String IS_LOGIN = "IS_LOGIN";
     private static final String LOGIN_ID = "LOGIN_ID";
     private static final String GTM_LOGIN_ID = "GTM_LOGIN_ID";
@@ -74,6 +74,7 @@ public class SessionHandler {
     private static final String DEFAULT_UUID_VALUE = "";
     private static final String CACHE_PHONE_VERIF_TIMER = "CACHE_PHONE_VERIF_TIMER";
     private static final String KEY_LAST_ORDER = "RECHARGE_LAST_ORDER";
+    private static final String USER_DATA = "USER_DATA";
 
     private Context context;
 
@@ -125,6 +126,7 @@ public class SessionHandler {
         editor.putBoolean(IS_LOGIN, false);
         editor.putBoolean(IS_MSISDN_VERIFIED, false);
         editor.putString(PHONE_NUMBER, null);
+        editor.putString(USER_DATA,null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -141,6 +143,8 @@ public class SessionHandler {
         reputationDetailCache.deleteAll();
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
+
+        TrackingUtils.eventMoEngageLogoutUser();
 
         clearFeedCache();
 
@@ -554,12 +558,11 @@ public class SessionHandler {
         editor.apply();
     }
 
-    public void setToken(String accessToken, String tokenType, String refreshToken) {
+    public void setToken(String accessToken, String tokenType) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         saveToSharedPref(editor, ACCESS_TOKEN, accessToken);
         saveToSharedPref(editor, TOKEN_TYPE, tokenType);
-        saveToSharedPref(editor, REFRESH_TOKEN, refreshToken);
         editor.apply();
     }
 

@@ -3,7 +3,6 @@ package com.tokopedia.discovery.intermediary.view;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.domain.interactor.GetIntermediaryCategoryUseCase;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
