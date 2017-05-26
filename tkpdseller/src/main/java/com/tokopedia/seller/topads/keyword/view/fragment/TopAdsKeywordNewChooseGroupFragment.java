@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -35,12 +36,11 @@ import javax.inject.Inject;
 
 public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment implements TopAdsKeywordNewChooseGroupView {
 
+    @Inject
+    public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     TkpdTextInputLayout inputLayoutChooseGroup;
     TopAdsCustomAutoCompleteTextView autoCompleteChooseGroup;
     Button buttonNext;
-
-    @Inject
-    public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
 
     private ArrayList<String> groupNames = new ArrayList<>();
@@ -135,5 +135,20 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     @Override
     public void onGetGroupAdListError() {
         inputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+
+    }
+
+    @Override
+    public void onLoadSearchAdError() {
+
     }
 }

@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources>
     <string name="app_name">tkpdseller</string>
 
     <string name="title_activity_gmstat">Statistik</string>
@@ -553,5 +553,6 @@
     <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
     <string name="key_word">Kata Kunci</string>
     <string name="negative">Negatif</string>
+    <string name="search_group">Cari Grup</string>
 
 </resources>
