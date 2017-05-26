@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 /**
  * Created by alvarisi on 3/15/17.
@@ -49,7 +50,11 @@ public class PlacePassViewModel implements Parcelable {
     }
 
     public void setAndFormatLatitude(double latitude) {
-        this.latitude = Double.parseDouble(new DecimalFormat("#.######").format(latitude));
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator(',');
+        DecimalFormat decimalFormat = new DecimalFormat("#.######", otherSymbols);
+        this.latitude = Double.parseDouble(decimalFormat.format(latitude));
     }
 
     public double getLongitude() {
@@ -57,7 +62,11 @@ public class PlacePassViewModel implements Parcelable {
     }
 
     public void setAndFormatLongitude(double longitude) {
-        this.longitude = Double.parseDouble(new DecimalFormat("#.######").format(longitude));
+        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator(',');
+        DecimalFormat decimalFormat = new DecimalFormat("#.######", otherSymbols);
+        this.longitude = Double.parseDouble(decimalFormat.format(longitude));
     }
 
     public TYPE getType() {
