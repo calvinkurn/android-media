@@ -50,6 +50,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
@@ -60,6 +61,7 @@ import com.tokopedia.discovery.intermediary.view.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CuratedProductAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
+import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -85,7 +87,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALU
 
 public class IntermediaryFragment extends BaseDaggerFragment implements IntermediaryContract.View,
     CuratedProductAdapter.OnItemClickListener, TopAdsItemClickListener, TopAdsListener,
-        IntermediaryCategoryAdapter.CategoryListener {
+        IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener {
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
@@ -138,6 +140,12 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.intermediary_video_desc)
     TextView videoDesc;
 
+    @BindView(R2.id.card_official_intermediary)
+    CardView cardOfficial;
+
+    @BindView(R2.id.rv_official_intermediary)
+    RecyclerView brandsRecyclerView;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -147,7 +155,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     private String departmentId = "";
     private IntermediaryCategoryAdapter categoryAdapter;
+    private IntermediaryBrandsAdapter brandsAdapter;
     private IntermediaryCategoryAdapter.CategoryListener categoryListener;
+    private IntermediaryBrandsAdapter.BrandListener brandListener;
     private ArrayList<ChildCategoryModel> activeChildren = new ArrayList<>();
     private boolean isUsedUnactiveChildren = false;
     private CurationAdapter curationAdapter;
@@ -375,6 +385,18 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     }
 
     @Override
+    public void renderBrands(List<BrandModel> brandModels) {
+        cardOfficial.setVisibility(View.VISIBLE);
+        brandsRecyclerView.setVisibility(View.VISIBLE);
+        brandsRecyclerView.setHasFixedSize(true);
+        brandsRecyclerView.setLayoutManager(
+                new NonScrollGridLayoutManager(getActivity(), 3,
+                        GridLayoutManager.VERTICAL, false));
+        brandsAdapter = new IntermediaryBrandsAdapter(  getCategoryWidth(),brandModels,this);
+        brandsRecyclerView.setAdapter(brandsAdapter);
+    }
+
+    @Override
     public void showLoading() {
         ((IntermediaryActivity) getActivity()).getProgressBar().setVisibility(View.VISIBLE);
     }
@@ -535,5 +557,13 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 }
             }
         };
+    }
+
+    @Override
+    public void onBrandClick(BrandModel brandModel) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(brandModel.getId(), ""));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
     }
 }

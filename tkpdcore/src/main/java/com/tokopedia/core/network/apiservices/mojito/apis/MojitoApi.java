@@ -3,6 +3,7 @@ package com.tokopedia.core.network.apiservices.mojito.apis;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.entity.home.Brands;
+import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.core.network.entity.wishlist.WishlistCheckResult;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
 
@@ -21,6 +22,7 @@ import rx.Observable;
 public interface MojitoApi {
 
     String DEVICE = "device";
+    String CATEGORY_ID = "categoryId";
 
     //api requirement add static header
     @Headers({
@@ -31,6 +33,11 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.API_V1_BRANDS)
     Observable<Response<Brands>> getBrands(
             @Query(DEVICE) String device
+    );
+
+    @GET(TkpdBaseURL.Mojito.API_V1_BRANDS_CATEGORY)
+    Observable<Response<MojitoBrandsModel>> getBrandsCategory(
+            @Path(CATEGORY_ID) String categoryID
     );
 
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)

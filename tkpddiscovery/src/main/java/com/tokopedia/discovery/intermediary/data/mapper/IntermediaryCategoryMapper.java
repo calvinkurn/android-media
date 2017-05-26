@@ -8,8 +8,11 @@ import com.tokopedia.core.network.entity.intermediary.Label;
 import com.tokopedia.core.network.entity.intermediary.Product;
 import com.tokopedia.core.network.entity.intermediary.Section;
 import com.tokopedia.core.network.entity.hotlist.HotListResponse;
+import com.tokopedia.core.network.entity.intermediary.brands.Brand;
+import com.tokopedia.core.network.entity.intermediary.brands.MojitoBrandsModel;
 import com.tokopedia.discovery.intermediary.domain.model.BadgeModel;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
+import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
 import com.tokopedia.discovery.intermediary.domain.model.ChildCategoryModel;
 import com.tokopedia.discovery.intermediary.domain.model.CuratedSectionModel;
 import com.tokopedia.discovery.intermediary.domain.model.HeaderModel;
@@ -24,17 +27,19 @@ import java.util.List;
 
 import retrofit2.Response;
 import rx.functions.Func2;
+import rx.functions.Func3;
 
 /**
  * Created by alifa on 3/27/17.
  */
 
-public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesModel>,
-        Response<HotListResponse>,IntermediaryCategoryDomainModel> {
+public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesModel>,
+        Response<HotListResponse>, Response<MojitoBrandsModel>, IntermediaryCategoryDomainModel> {
 
     @Override
     public IntermediaryCategoryDomainModel call(Response<CategoryHadesModel> categoryHadesModelResponse,
-                                                Response<HotListResponse> hotListResponseResponse) {
+                                                Response<HotListResponse> hotListResponseResponse,
+                                                Response<MojitoBrandsModel> mojitoBrandsModelResponse) {
         IntermediaryCategoryDomainModel intermediaryCategoryDomainModel = new IntermediaryCategoryDomainModel();
 
         if (categoryHadesModelResponse.body().getData().getIsIntermediary() &&
@@ -49,6 +54,9 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
                 intermediaryCategoryDomainModel.setVideoModel(mapVideo(categoryHadesModelResponse.body()));
             }
             intermediaryCategoryDomainModel.setHotListModelList(mapHotList(hotListResponseResponse.body()));
+            if (mojitoBrandsModelResponse!=null) {
+                intermediaryCategoryDomainModel.setBrandModelList(mapBrands(mojitoBrandsModelResponse.body()));
+            }
         }
         return  intermediaryCategoryDomainModel;
     }
@@ -130,6 +138,8 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
             HotListModel hotListModel = new HotListModel();
             hotListModel.setId(list.getHotProductId());
             hotListModel.setImageUrl(list.getImgPortrait()==null ? "" :list.getImgPortrait().get280x418());
+            hotListModel.setImageUrlBanner(list.getImgShare()==null ? "" :list.getImg().get375x200());
+            hotListModel.setImageUrlSquare(list.getImgSquare()==null ? "" :list.getImgSquare().get200x200());
             hotListModel.setTitle(list.getTitle());
             hotListModel.setUrl(list.getUrl());
             hotListModels.add(hotListModel);
@@ -150,6 +160,21 @@ public class IntermediaryCategoryMapper implements Func2<Response<CategoryHadesM
             }
         }
         return  bannerModels;
+    }
+
+
+    private List<BrandModel> mapBrands(MojitoBrandsModel mojitoBrandsModel) {
+
+        List<BrandModel> brandModels = new ArrayList<>();
+        if (mojitoBrandsModel.getData()!=null && mojitoBrandsModel.getData().size()>0) {
+            for (Brand brand: mojitoBrandsModel.getData()) {
+                BrandModel brandModel = new BrandModel();
+                brandModel.setId(String.valueOf(brand.getShopId()));
+                brandModel.setImageUrl(brand.getLogoUrl());
+                brandModels.add(brandModel);
+            }
+        }
+        return  brandModels;
     }
 
     private VideoModel mapVideo(CategoryHadesModel categoryHadesModel) {

@@ -21,6 +21,7 @@ public class IntermediaryCategoryDomainModel {
     List<CuratedSectionModel> curatedSectionModelList = new ArrayList<>();
     List<HotListModel> hotListModelList = new ArrayList<>();
     List<BannerModel> bannerModelList = new ArrayList<>();
+    List<BrandModel> brandModelList = new ArrayList<>();
     VideoModel videoModel;
 
     public HeaderModel getHeaderModel() {
@@ -93,5 +94,13 @@ public class IntermediaryCategoryDomainModel {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public List<BrandModel> getBrandModelList() {
+        return brandModelList;
+    }
+
+    public void setBrandModelList(List<BrandModel> brandModelList) {
+        this.brandModelList = brandModelList;
     }
 }

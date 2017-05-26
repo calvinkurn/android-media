@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
+import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.discovery.intermediary.data.mapper.IntermediaryCategoryMapper;
 import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
@@ -21,13 +22,15 @@ public class IntermediaryDataSource {
     private final Context context;
     private final HadesApi hadesApi;
     private final SearchApi aceApi;
+    private final MojitoApi mojitoApi;
     private final IntermediaryCategoryMapper mapper;
 
     public IntermediaryDataSource(Context context, HadesApi hadesApi, SearchApi searchApi,
-                                  IntermediaryCategoryMapper mapper) {
+                                  MojitoApi mojitoApi, IntermediaryCategoryMapper mapper) {
         this.context = context;
         this.hadesApi = hadesApi;
         this.aceApi=searchApi;
+        this.mojitoApi = mojitoApi;
         this.mapper = mapper;
     }
 
@@ -38,7 +41,7 @@ public class IntermediaryDataSource {
         param.put("perPage", "7");
 
         return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId),
-                aceApi.getHotlistCategory(param), mapper);
+                aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
 
     }
 

@@ -61,6 +61,9 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
                 if (domainModel.getVideoModel()!=null) {
                     getView().renderVideo(domainModel.getVideoModel());
                 }
+                if (domainModel.getBrandModelList()!=null && domainModel.getBrandModelList().size()>0) {
+                    getView().renderBrands(domainModel.getBrandModelList());
+                }
                 getView().backToTop();
             } else {
                 getView().skipIntermediaryPage();

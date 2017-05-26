@@ -93,7 +93,16 @@ public class HotListItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         HotListItemRowHolder hotListItemRowHolder = (HotListItemRowHolder) holder;
 
         final HotListModel hotListModel = hotListModelList.get(i);
-        ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrl());
+        switch (getItemViewType(i)) {
+            case SHORT_HEIGHT_HOTLIST:
+                ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrlSquare());
+                break;
+            case BANNER_HOTLIST:
+                ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrlBanner());
+                break;
+            default:
+                ImageHandler.LoadImage(hotListItemRowHolder.itemImage,hotListModel.getImageUrl());
+        }
         hotListItemRowHolder.itemImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
