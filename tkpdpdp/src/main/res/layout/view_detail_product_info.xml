@@ -11,6 +11,7 @@
         android:gravity="center"
         android:paddingBottom="@dimen/margin_med"
         android:paddingLeft="@dimen/margin_small"
+        android:paddingStart="@dimen/margin_small"
         android:background="@color/white">
 
         <TableRow
