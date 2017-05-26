@@ -541,7 +541,8 @@
     <string name="prompt_larger">jumlah maksimum harus lebih besar dibandingkan jumlah minimum</string>
     <string name="prompt_lesser">jumlah minimum harus lebih kecil dibandingkan jumlah maksimum</string>
     <string name="product_error_product_minimum_order_number_not_valid">Format minimum order harus benar</string>
-	<string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
+    <string name="couldn_t_add_videos">tidak dapat menambahkan video</string>
+    <string name="product_error_product_name_copy_duplicate">Nama produk harus diganti</string>
     <string name="etalase_picker_add_etalase_name_too_short">Nama etalase minimal 3 karakter</string>
     <string name="add_keyword">Tambah Kata Kunci</string>
     <string name="save_keyword">Simpan</string>

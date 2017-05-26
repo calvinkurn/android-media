@@ -394,7 +394,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     }
 
-    private boolean isDataValid() {
+    protected boolean isDataValid() {
         if (!productInfoViewHolder.isDataValid().first) {
             UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
             return false;

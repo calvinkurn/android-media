@@ -114,9 +114,10 @@ public interface AppEventTracking {
         String OPEN_PUSH_NOTIFICATION = "openPushNotification";
         String RECEIVED_PUSH_NOTIFICATION = "receivedPushNotification";
         String EVENT_OTP = "OTPSuccess";
-        String CLICK_VIEW_ALL_OS = "clickOS";
+        String CLICK_VIEW_ALL_OS = "clickOfficialStore";
         String IMPRESSION_OTP = "impressionOtp";
         String CLICK_OTP = "clickOtp";
+        String CLICK_OS_BANNER_EMPTY_FEED = "clickFeed";
     }
 
     interface Category {
@@ -180,6 +181,7 @@ public interface AppEventTracking {
         String SMART_LOCK = "Smart Lock";
         String SLIDER = "Slider";
         String RECHARGE = "Recharge - ";
+        String PRODUCT_FEED = "Product Feed";
     }
 
     interface Action {
@@ -395,6 +397,7 @@ public interface AppEventTracking {
         String TRUECALLER = "Truecaller";
         String TRUECALLER_ATTEMPT = "Truecaller - Attempt";
         String TRUECALLER_CONFIRM = "Truecaller - Confirm";
+        String VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED = "View All - Official Store";
     }
 
     interface SOCIAL_MEDIA {
@@ -458,17 +461,17 @@ public interface AppEventTracking {
         String USER_ID = "User_ID";
         String MEDIUM = "Medium";
         String EMAIL = "Email";
-        String LOGIN_STATUS = "Logged_in_Status";
-        String PRODUCTS_NUMBER = "Number_of_Products";
-        String SUBCATEGORY = "SubCategory_name";
-        String SUBCATEGORY_ID = "SubCategory_id";
-        String CATEGORY = "Category";
-        String PRODUCT_ID = "Product_id";
-        String PRODUCT_NAME = "Product_name";
-        String PRODUCT_URL = "Product_url";
-        String PRODUCT_PRICE = "Product_price";
-        String BRAND_NAME = "Brand_name";
-        String BRAND_ID = "Brand_id";
+        String LOGIN_STATUS = "logged_in_status";
+        String PRODUCTS_NUMBER = "number_of_products";
+        String SUBCATEGORY = "subcategory_name";
+        String SUBCATEGORY_ID = "subcategory_id";
+        String CATEGORY = "category";
+        String PRODUCT_ID = "product_id";
+        String PRODUCT_NAME = "product_name";
+        String PRODUCT_URL = "product_url";
+        String PRODUCT_PRICE = "product_price";
+        String BRAND_NAME = "brand_name";
+        String BRAND_ID = "brand_id";
         String DATE_OF_BIRTH = "Date of Birth";
         String NAME = "Name";
 
@@ -476,11 +479,11 @@ public interface AppEventTracking {
         String EVENT_OPEN_BERANDA = "Beranda_Screen_Launched";
         String EVENT_OPEN_FEED = "Feed_Screen_Launched";
         String EVENT_OPEN_FAVORITE = "Favorite_Screen_Launched";
-        String EVENT_OPEN_HOTLIST = "HotList_Screen_Launched";
+        String EVENT_OPEN_HOTLIST = "Hotlist_Screen_Launched";
         String EVENT_OPEN_PRODUCTPAGE = "Product_Page_Opened";
-        String EVENT_CLICK_HOTLIST = "Clicked_HotList_Item";
-        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist";
-        String EVENT_CLICK_MAIN_CATEGORY_ICON = "MainCategory_Icon_Tapped";
+        String EVENT_CLICK_HOTLIST = "Clicked_Hotlist_Item";
+        String EVENT_ADD_WISHLIST = "Product_Added_To_Wishlist_Marketplace";
+        String EVENT_CLICK_MAIN_CATEGORY_ICON = "Maincategory_Icon_Tapped";
 
 
         String REG_START = "Registration_Start";

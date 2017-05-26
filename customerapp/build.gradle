@@ -69,8 +69,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 2030104;
-        defaultVersionName = "2.3.1";
+        defaultVersionCode = 2080104;
+        defaultVersionName = "2.8.1";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion

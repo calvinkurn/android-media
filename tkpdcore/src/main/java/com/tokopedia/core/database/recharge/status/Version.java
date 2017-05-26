@@ -8,13 +8,13 @@ public class Version {
 
     @SerializedName("category")
     @Expose
-    private Integer category;
+    private int category;
     @SerializedName("operator")
     @Expose
-    private Integer operator;
+    private int operator;
     @SerializedName("product")
     @Expose
-    private Integer product;
+    private int product;
     @SerializedName("minimum_android_build")
     @Expose
     private String minimumAndroidBuild;
@@ -22,94 +22,43 @@ public class Version {
     @Expose
     private String minimumIosBuild;
 
-    /**
-     * 
-     * @return
-     *     The category
-     */
-    public Integer getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    /**
-     * 
-     * @param category
-     *     The category
-     */
-    public void setCategory(Integer category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 
-    /**
-     * 
-     * @return
-     *     The operator
-     */
-    public Integer getOperator() {
+    public int getOperator() {
         return operator;
     }
 
-    /**
-     * 
-     * @param operator
-     *     The operator
-     */
-    public void setOperator(Integer operator) {
+    public void setOperator(int operator) {
         this.operator = operator;
     }
 
-    /**
-     * 
-     * @return
-     *     The product
-     */
-    public Integer getProduct() {
+    public int getProduct() {
         return product;
     }
 
-    /**
-     * 
-     * @param product
-     *     The product
-     */
-    public void setProduct(Integer product) {
+    public void setProduct(int product) {
         this.product = product;
     }
 
-    /**
-     * 
-     * @return
-     *     The minimumAndroidBuild
-     */
     public String getMinimumAndroidBuild() {
         return minimumAndroidBuild;
     }
 
-    /**
-     * 
-     * @param minimumAndroidBuild
-     *     The minimum_android_build
-     */
     public void setMinimumAndroidBuild(String minimumAndroidBuild) {
         this.minimumAndroidBuild = minimumAndroidBuild;
     }
 
-    /**
-     * 
-     * @return
-     *     The minimumIosBuild
-     */
     public String getMinimumIosBuild() {
         return minimumIosBuild;
     }
 
-    /**
-     * 
-     * @param minimumIosBuild
-     *     The minimum_ios_build
-     */
     public void setMinimumIosBuild(String minimumIosBuild) {
         this.minimumIosBuild = minimumIosBuild;
     }
-
 }

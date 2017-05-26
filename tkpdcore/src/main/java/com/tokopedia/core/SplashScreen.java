@@ -14,7 +14,6 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.CategoryDatabaseManager;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -35,7 +34,7 @@ import org.parceler.Parcels;
  *
  * fetch some data from server in order to worked around.
  */
-public class SplashScreen extends TActivity implements DownloadResultReceiver.Receiver{
+public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
     public static final int TIME_DELAY = 300;
     public static final String IS_LOADING = "IS_LOADING";
     public static final String RE_INIT_DATA_FOR_THE_FIRST_TIME = "RE-INIT-DATA-FOR-THE-FIRST-TIME";
