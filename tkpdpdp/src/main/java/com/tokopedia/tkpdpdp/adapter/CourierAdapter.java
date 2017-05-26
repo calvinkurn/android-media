@@ -11,15 +11,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by HenryPri on 12/05/17.
+ * @author by HenryPri on 12/05/17.
  */
 
 public class CourierAdapter extends RecyclerView.Adapter<CourierAdapter.CourierViewHolder> {
@@ -61,18 +59,18 @@ public class CourierAdapter extends RecyclerView.Adapter<CourierAdapter.CourierV
 
     static class CourierViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.courier_item_name)
-        TextView name;
+        private TextView name;
 
-        @BindView(R2.id.courier_item_info)
-        TextView info;
+        private TextView info;
 
-        @BindView(R2.id.courier_item_image)
-        ImageView image;
+        private ImageView image;
 
-        public CourierViewHolder(View itemView) {
+        CourierViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            name = (TextView) itemView.findViewById(R.id.courier_item_name);
+            info = (TextView) itemView.findViewById(R.id.courier_item_info);
+            image = (ImageView) itemView.findViewById(R.id.courier_item_image);
         }
 
         public void bindData(ShopShipment shopShipment) {

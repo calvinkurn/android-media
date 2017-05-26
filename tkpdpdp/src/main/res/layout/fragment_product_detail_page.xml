@@ -128,24 +128,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_small" />
 
-                    <!--<com.tokopedia.core.product.customview.TalkReviewView-->
-                    <!--android:id="@id/view_talk_review"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:visibility="gone"-->
-                    <!--android:layout_marginBottom="@dimen/margin_small" />-->
-
-                    <!--<com.tokopedia.core.product.customview.ButtonShareView-->
-                    <!--android:id="@id/view_share"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content" />-->
-
-                    <!--<com.tokopedia.core.product.customview.TransactionSuccessView-->
-                    <!--android:id="@id/view_transaction_success"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginBottom="@dimen/margin_small" />-->
-
                     <com.tokopedia.tkpdpdp.customview.ShopInfoViewV2
                         android:id="@+id/view_shop_info"
                         android:layout_width="match_parent"
@@ -167,11 +149,6 @@
                         android:id="@+id/video_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-
-                    <!--<com.tokopedia.core.product.customview.WholesaleView-->
-                    <!--android:id="@id/view_wholesale"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content" />-->
 
                     <com.tokopedia.tkpdpdp.customview.OtherProductsView
                         android:id="@+id/view_other_products"

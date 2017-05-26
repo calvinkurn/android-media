@@ -42,6 +42,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private TextView favoriteText;
     private LinearLayout llRating;
     private LinearLayout llReputationMedal;
+    private ImageView lastOnlineImageView;
 
     private boolean isShopFavorite = false;
 
@@ -89,6 +90,7 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         favoriteText = (TextView) findViewById(R.id.favorite_tv);
         llRating = (LinearLayout) findViewById(R.id.l_rating);
         llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
+        lastOnlineImageView = (ImageView) findViewById(R.id.last_online_icon);
     }
 
     @SuppressLint("DefaultLocale")
@@ -100,7 +102,9 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         ImageHandler.loadImage2(ivShopAva, data.getShopInfo().getShopAvatar(),
                 R.drawable.ic_default_shop_ava);
         LuckyShopImage.loadImage(ivLuckyShop, data.getShopInfo().getShopLucky());
-        tvLastOnline.setText(data.getShopInfo().getShopOwnerLastLogin());
+
+        displayLastLogin(data);
+
         favoriteButton.setVisibility(data.getShopInfo().getShopIsOwner() == 1 ? GONE : VISIBLE);
         ivGoldShop.setVisibility(showGoldBadge(data) ? VISIBLE : GONE);
         switchOfficialStoreBadge(data.getShopInfo().getShopIsOfficial());
@@ -116,6 +120,19 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         sendMsgButton.setOnClickListener(new ClickShopMessage(data));
         favoriteButton.setOnClickListener(new ClickBtnFave(data));
         setVisibility(VISIBLE);
+    }
+
+    private void displayLastLogin(@NonNull ProductDetailData data) {
+        if (data.getShopInfo().getShopOwnerLastLogin() != null
+                && data.getShopInfo().getShopOwnerLastLogin().length() > 0) {
+
+            lastOnlineImageView.setVisibility(VISIBLE);
+            tvLastOnline.setText(data.getShopInfo().getShopOwnerLastLogin());
+            tvLastOnline.setVisibility(VISIBLE);
+        } else {
+            lastOnlineImageView.setVisibility(GONE);
+            tvLastOnline.setVisibility(GONE);
+        }
     }
 
     private void generateMedal(ProductDetailData data) {
