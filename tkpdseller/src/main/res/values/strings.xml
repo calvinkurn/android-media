@@ -553,5 +553,9 @@
     <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
     <string name="key_word">Kata Kunci</string>
     <string name="negative">Negatif</string>
+    <string name="top_ads_keyword_type_hint">Kata Kunci</string>
+    <string name="top_ads_title_keyword_edit_keyword">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
 
 </resources>
