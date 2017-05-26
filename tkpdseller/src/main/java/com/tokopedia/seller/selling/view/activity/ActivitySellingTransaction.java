@@ -94,7 +94,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
                 .putExtras(extras);
     }
 
@@ -103,7 +103,7 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
+                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
                 .putExtras(extras);
     }
 
@@ -273,16 +273,16 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
 
     private void setDrawerPosition(int position) {
         switch (position) {
-            case 1:
+            case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
-            case 2:
+            case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
-            case 3:
+            case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
-            case 4:
+            case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
                 drawer.setDrawerPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
                 break;
             default:
