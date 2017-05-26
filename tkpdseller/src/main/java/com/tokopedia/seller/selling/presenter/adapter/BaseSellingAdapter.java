@@ -19,9 +19,6 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Created by Erry on 7/18/2016.
  */
@@ -50,24 +47,22 @@ public abstract class BaseSellingAdapter<T, VH extends RecyclerView.ViewHolder> 
     }
 
     public static class ViewHolderRetry extends SwappingHolder {
-        @BindView(R2.id.button_retry)
         TextView retry;
 
         public ViewHolderRetry(View itemView) {
 //            super(itemView);
             super(itemView, new MultiSelector());
-            ButterKnife.bind(this, itemView);
+            retry = (TextView) itemView.findViewById(R.id.button_retry);
         }
     }
 
     public static class ViewHolderEmpty extends SwappingHolder {
-        @BindView(R2.id.no_result_image)
         ImageView emptyImage;
 
         public ViewHolderEmpty(View itemView) {
 //            super(itemView);
             super(itemView, new MultiSelector());
-            ButterKnife.bind(this, itemView);
+            emptyImage = (ImageView) itemView.findViewById(R.id.no_result_image);
         }
     }
 

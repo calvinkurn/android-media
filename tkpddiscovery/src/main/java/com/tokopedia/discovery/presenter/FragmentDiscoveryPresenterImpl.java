@@ -1,20 +1,39 @@
 package com.tokopedia.discovery.presenter;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.network.entity.topads.TopAds;
 import com.tokopedia.core.network.entity.topads.TopAdsResponse;
+import com.tokopedia.core.product.fragment.ProductDetailFragment;
+import com.tokopedia.core.product.interactor.CacheInteractorImpl;
+import com.tokopedia.core.product.interactor.RetrofitInteractor;
+import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
+import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.home.SimpleHomeRouter;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.Pair;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
@@ -29,9 +48,16 @@ import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by noiz354 on 3/24/16.
@@ -45,6 +71,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     private BrowseProductModel browseProductModel;
     int spanCount;
     private int topAdsPaging = 1;
+    private CacheInteractorImpl cacheInteractor;
+    private RetrofitInteractorImpl retrofitInteractor;
 
     public FragmentDiscoveryPresenterImpl(FragmentBrowseProductView view) {
         super(view);
@@ -172,6 +200,93 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     @Override
+    public void onWishlistButtonClick(ProductItem data, int itemPosition, Context context) {
+        int productId = Integer.parseInt(data.getId());
+        if (SessionHandler.isV4Login(context)) {
+            if (data.productAlreadyWishlist) {
+                requestRemoveWishList(context, productId, itemPosition);
+            } else {
+                requestAddWishList(context, productId, itemPosition);
+            }
+        } else {
+            cacheInteractor.deleteProductDetail(productId);
+            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+            intent.putExtra("product_id", String.valueOf(productId));
+            view.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
+        }
+    }
+
+    private void requestAddWishList(final Context context, final Integer productId, final int itemPosition) {
+        view.loadingWishList();
+        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
+        retrofitInteractor.addToWishList(context, productId,
+                new RetrofitInteractor.AddWishListListener() {
+                    @Override
+                    public void onSuccess() {
+                        view.finishLoadingWishList();
+                        view.showDialog(createSuccessWishListDialog(context));
+                        view.updateWishListStatus(true, itemPosition);
+                        cacheInteractor.deleteProductDetail(productId);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        view.finishLoadingWishList();
+                        view.showWishListRetry(error);
+                    }
+                });
+    }
+
+    private void requestRemoveWishList(final Context context, final Integer productId, final int itemPosition) {
+        view.loadingWishList();
+        retrofitInteractor.removeFromWishList(context, productId,
+                new RetrofitInteractor.RemoveWishListListener() {
+                    @Override
+                    public void onSuccess() {
+                        view.finishLoadingWishList();
+                        view.showToastMessage(context
+                                .getString(com.tokopedia.core.R.string.msg_remove_wishlist));
+                        view.updateWishListStatus(false, itemPosition);
+                        cacheInteractor.deleteProductDetail(productId);
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        view.finishLoadingWishList();
+                        view.showWishListRetry(error);
+                    }
+                });
+    }
+
+    private Dialog createSuccessWishListDialog(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(context.getString(com.tokopedia.core.R.string.msg_add_wishlist));
+        builder.setPositiveButton(context.getString(com.tokopedia.core.R.string.go_to_wishlist),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(context, SimpleHomeRouter.getSimpleHomeActivityClass());
+                        intent.putExtra(
+                                SimpleHomeRouter.FRAGMENT_TYPE,
+                                SimpleHomeRouter.WISHLIST_FRAGMENT);
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        view.navigateToActivity(intent);
+                        view.closeView();
+                    }
+                });
+        builder.setNegativeButton(context.getString(com.tokopedia.core.R.string.prompt_shop_again),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        return builder.create();
+    }
+
+    @Override
     public String getMessageTAG() {
         return FragmentDiscoveryPresenterImpl.class.getSimpleName();
     }
@@ -204,7 +319,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                 && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
-                            processBrowseProduct(browseProductModel.header.getTotalData(), listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            view.updateTotalProduct(browseProductModel.header.getTotalData());
+                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -248,12 +364,82 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(Long totalProduct, List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceResult2(totalProduct, productItems, pagingHandlerModel);
+    public void processBrowseProduct(final List<ProductItem> productItems,
+                                     final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+
+        if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
+            view.onCallProductServiceResult2(productItems, pagingHandlerModel);
+            return;
+        }
+
+        Log.d(TAG, "getProduct2 startMojito");
+
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, Boolean> checkResultMap) {
+                        Log.d(TAG, "getProduct2 finishMojito");
+                        for (ProductItem item : productItems) {
+                            if (checkResultMap.get(item.getId()) != null) {
+                                item.setProductAlreadyWishlist(true);
+                            } else {
+                                item.setProductAlreadyWishlist(false);
+                            }
+                        }
+                        view.onCallProductServiceResult2(productItems, pagingHandlerModel);
+                    }
+                });
     }
 
-    public void processBrowseProductLoadMore(List<ProductItem> productItems, PagingHandler.PagingHandlerModel pagingHandlerModel) {
-        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+    public void processBrowseProductLoadMore(final List<ProductItem> productItems,
+                                             final PagingHandler.PagingHandlerModel pagingHandlerModel) {
+
+        if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
+            view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+            return;
+        }
+
+        Log.d(TAG, "getProduct2 startMojito");
+
+        discoveryInteractor.checkProductsInWishlist(view.getUserId(), productItems)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Map<String, Boolean>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Map<String, Boolean> checkResultMap) {
+                        Log.d(TAG, "getProduct2 finishMojito");
+                        for (ProductItem item : productItems) {
+                            if (checkResultMap.get(item.getId()) != null) {
+                                item.setProductAlreadyWishlist(true);
+                            } else {
+                                item.setProductAlreadyWishlist(false);
+                            }
+                        }
+                        view.onCallProductServiceLoadMore(productItems, pagingHandlerModel);
+                    }
+                });
     }
 
     @Override
@@ -279,6 +465,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     @Override
     public void initDataInstance(Context context) {
         view.setupAdapter();
+        retrofitInteractor = new RetrofitInteractorImpl();
+        cacheInteractor = new CacheInteractorImpl();
         discoveryInteractor = new DiscoveryInteractorImpl();
         discoveryInteractor.setDiscoveryListener(this);
     }

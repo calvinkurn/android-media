@@ -1,8 +1,10 @@
 package com.tokopedia.seller.topads.view.fragment;
 
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -25,13 +27,13 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsListPromoViewListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -45,8 +47,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private static final int START_PAGE = 1;
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
+    protected static final int REQUEST_CODE_AD_ADD = 4;
 
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
     private FloatingActionButton fabFilter;
 
@@ -55,17 +58,26 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected int page;
 
     protected int totalItem;
-    private boolean searchMode;
+
+    boolean adsStatusChanged;
+    boolean updateEmptyDefault;
 
     protected TopAdsAdListAdapter adapter;
-    private LinearLayoutManager layoutManager;
+    protected LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
+    private boolean isSearchModeOn;
+
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
     protected abstract void goToFilter();
+
+    OnAdListFragmentListener listener;
+    public interface OnAdListFragmentListener{
+        void startShowCase();
+    }
 
     public TopAdsAdListFragment() {
         // Required empty public constructor
@@ -122,7 +134,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 }
             }
         };
-        swipeToRefresh.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -135,7 +146,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         super.initialVar();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
-        searchMode = false;
         new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
@@ -164,10 +174,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         emptyGroupAdsDataBinder.setEmptyContentItemText(null);
         adapter.setEmptyView(emptyGroupAdsDataBinder);
         adapter.notifyDataSetChanged();
+
+        isSearchModeOn = true;
     }
 
     private void updateEmptyViewDefault(){
         adapter.setEmptyView(getEmptyViewBinder());
+
         adapter.notifyDataSetChanged();
     }
 
@@ -186,7 +199,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     }
 
     protected void searchAd() {
-        swipeToRefresh.setEnabled(false);
     }
 
     @Override
@@ -200,6 +212,28 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
                 searchAd(START_PAGE);
                 setResultAdListChanged();
             }
+            if (adDeleted && status <= 0 && TextUtils.isEmpty(keyword)) {
+                updateEmptyDefault = true;
+            }
+        } else if (requestCode == REQUEST_CODE_AD_ADD && intent != null){
+            adsStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adsStatusChanged) {
+            page = START_PAGE;
+            adapter.clearData();
+            adapter.showLoadingFull(true);
+            searchAd(START_PAGE);
+            setResultAdListChanged();
+            adsStatusChanged = false;
+        }
+        if (updateEmptyDefault) {
+            updateEmptyViewDefault();
+            updateEmptyDefault = false;
         }
     }
 
@@ -214,7 +248,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         recyclerView.removeOnScrollListener(onScrollListener);
         recyclerView.addOnScrollListener(onScrollListener);
         this.totalItem = totalItem;
-        if (totalItem > 0 && !searchMode) {
+        if (totalItem > 0) {
             updateEmptyViewNoResult();
         }
         if (page == START_PAGE) {
@@ -223,11 +257,16 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         adapter.addData(adList);
         hideLoading();
-        if (adapter.getDataSize() < 1) {
+        if (adapter.getDataSize() < 1 ) {
             adapter.showEmptyFull(true);
         }
-        if (fabFilter.getVisibility() == View.GONE) {
+        if (adapter.getDataSize() < 1 && !isSearchModeOn) {
+            fabFilter.setVisibility(View.GONE);
+        } else {
             fabFilter.setVisibility(View.VISIBLE);
+        }
+        if (listener!=null && adapter.getDataSize() > 0) {
+            listener.startShowCase();
         }
     }
 
@@ -243,7 +282,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
             });
         } else {
             recyclerView.removeOnScrollListener(onScrollListener);
-            swipeToRefresh.setEnabled(false);
             adapter.showRetryFull(true);
             if (fabFilter.getVisibility() == View.VISIBLE) {
                 fabFilter.setVisibility(View.GONE);
@@ -259,7 +297,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         if (swipeToRefresh.isRefreshing()) {
             swipeToRefresh.setRefreshing(false);
         }
-        swipeToRefresh.setEnabled(true);
         progressDialog.dismiss();
         hideSnackBarRetry();
     }
@@ -317,5 +354,42 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnAdListFragmentListener) {
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof OnAdListFragmentListener) {
+            listener = (OnAdListFragmentListener) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
+    // for show case purpose
+    public FloatingActionButton getFab(){
+        return fabFilter;
+    }
+    // for show case
+    public View getItemRecyclerView(){
+        int position = layoutManager.findFirstCompletelyVisibleItemPosition();
+        return layoutManager.findViewByPosition(position);
+    }
+
+    public RecyclerView getRecyclerView(){
+        return recyclerView;
     }
 }

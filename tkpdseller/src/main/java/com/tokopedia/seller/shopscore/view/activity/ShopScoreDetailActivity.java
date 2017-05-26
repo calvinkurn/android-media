@@ -13,6 +13,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.gmsubscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragment;
 import com.tokopedia.seller.shopscore.view.fragment.ShopScoreDetailFragmentCallback;
 
@@ -90,7 +91,8 @@ public class ShopScoreDetailActivity extends BasePresenterActivity implements Sh
     @Override
     public void goToGmSubscribe() {
         if (getApplication() instanceof SellerModuleRouter) {
-            ((SellerModuleRouter) getApplication()).goToGMSubscribe(this);
+            Intent intent = new Intent(this, GmSubscribeHomeActivity.class);
+            startActivity(intent);
         }
     }
 
