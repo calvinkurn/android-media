@@ -35,6 +35,7 @@ import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.fragment.FragmentSecurityQuestion;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -220,7 +221,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                     destroy();
                 } else {
                     Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.login_fragment);
-                    session.setWhichFragment(TkpdState.DrawerPosition.LOGIN);
+                    session.setWhichFragment(((BaseView) fragment).getFragmentId());
                     setToolbarTitle();
                     invalidateOptionsMenu();
                 }
@@ -961,6 +962,7 @@ public class Login extends GoogleActivity implements SessionView, GoogleActivity
                 FragmentSecurityQuestion fragment = (FragmentSecurityQuestion) supportFragmentManager.findFragmentByTag(SECURITY_QUESTION_TAG);
                 if (data != null && data.getStringExtra("phone") != null) {
                     fragment.onSuccessProfileShared(data.getStringExtra("phone"));
+                    UnifyTracking.eventClickTruecallerConfirm();
                 } else if (data != null && data.getStringExtra("error") != null) {
                     fragment.onFailedProfileShared(data.getStringExtra("error"));
                 }

@@ -22,13 +22,15 @@ public class UploadProduct implements Func1<UploadProductInputDomainModel, Obser
     private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
     private final ImageProductUploadRepository imageProductUploadRepository;
+    private final UploadProductUseCase.ProductDraftUpdate draftUpdate;
 
-    public UploadProduct(long productId, AddProductNotificationListener listener, GenerateHostRepository generateHostRepository, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository) {
+    public UploadProduct(long productId, AddProductNotificationListener listener, GenerateHostRepository generateHostRepository, UploadProductRepository uploadProductRepository, ImageProductUploadRepository imageProductUploadRepository, UploadProductUseCase.ProductDraftUpdate draftUpdate) {
         this.productId = productId;
         this.listener = listener;
         this.generateHostRepository = generateHostRepository;
         this.uploadProductRepository = uploadProductRepository;
         this.imageProductUploadRepository = imageProductUploadRepository;
+        this.draftUpdate = draftUpdate;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class UploadProduct implements Func1<UploadProductInputDomainModel, Obser
                 .flatMap(new GetGeneratedHost(generateHostRepository))
                 .doOnNext(notificationManager.getUpdateNotification())
                 .map(new PrepareUploadImage(domainModel))
-                .flatMap(new ProceedUploadProduct(String.valueOf(productId), notificationManager, uploadProductRepository, imageProductUploadRepository))
+                .flatMap(new ProceedUploadProduct(notificationManager, uploadProductRepository, imageProductUploadRepository, draftUpdate))
                 .onErrorResumeNext(new AddProductStatusToError(domainModel.getProductStatus()));
     }
 
@@ -51,7 +53,7 @@ public class UploadProduct implements Func1<UploadProductInputDomainModel, Obser
         }
 
         @Override
-        public Observable<? extends AddProductDomainModel> call(Throwable throwable) {
+        public Observable<AddProductDomainModel> call(Throwable throwable) {
             throw new UploadProductException(String.valueOf(productId), productStatus, throwable);
         }
     }

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
@@ -339,10 +340,16 @@ public class ProductAddActivity extends BaseActivity implements HasComponent<App
         addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {
             @Override
             public void onDismiss() {
-                View view = getCurrentFocus();
-                if (view != null) {
-                    CommonUtils.hideSoftKeyboard(view);
-                }
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        View view = getCurrentFocus();
+                        if (view != null) {
+                            CommonUtils.hideSoftKeyboard(view);
+                            view.clearFocus();
+                        }
+                    }
+                });
             }
         });
     }

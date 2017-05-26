@@ -15,6 +15,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.tokopedia.core.home.customview.TokoCashHeaderView
+            android:id="@+id/toko_cash_header_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/announcement_ticker"
             android:layout_width="match_parent"
@@ -77,7 +83,6 @@
             android:layout_marginTop="@dimen/margin_small"
             app:cardCornerRadius="0dip"
             app:cardElevation="0dip"
-            app:contentPadding="@dimen/padding_vs"
             android:visibility="gone">
 
             <RelativeLayout
@@ -91,7 +96,9 @@
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
-                    android:padding="@dimen/margin_vvvs">
+                    android:layout_marginLeft="@dimen/padding_vs"
+                    android:layout_marginStart="@dimen/padding_vs"
+                    android:layout_marginTop="@dimen/padding_vs">
 
                     <TextView
                         android:id="@id/tv_title"

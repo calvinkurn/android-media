@@ -12,7 +12,7 @@ public class ProductComparator implements Comparator<Product> {
 
     @Override
     public int compare(Product p1, Product p2) {
-        return p1.getAttributes().getWeight().compareTo(p2.getAttributes().getWeight());
+        return ((Integer) p1.getAttributes().getWeight()).compareTo(p2.getAttributes().getWeight());
     }
 
 }

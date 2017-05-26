@@ -33,8 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by Erry on 6/3/2016.
@@ -205,34 +203,34 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.image)
         ImageView imageView;
-        @BindView(R2.id.checkbox)
         CheckBox checkBox;
-        @BindView(R2.id.title)
         TextView titleTxt;
-        @BindView(R2.id.price)
         TextView priceTxt;
-        @BindView(R2.id.weight)
         TextView weightTxt;
-        @BindView(R2.id.label_stock_empty)
         TextView labelEmptyStock;
-        @BindView(R2.id.edit_description)
         ImageButton editDesc;
-        @BindView(R2.id.edit_price)
         ImageButton editPrice;
-        @BindView(R2.id.description)
         TextView descTxt;
-        @BindView(R2.id.container_description)
         LinearLayout containerDesc;
-        @BindView(R2.id.container_price)
         LinearLayout containerPrice;
         Context context;
 
         public ViewHolder(Context context, View itemView) {
             super(itemView);
             this.context = context;
-            ButterKnife.bind(this, itemView);
+
+            imageView = (ImageView) itemView.findViewById(R.id.image);
+            checkBox = (CheckBox) itemView.findViewById(R.id.checkbox);
+            titleTxt = (TextView)  itemView.findViewById(R.id.title);
+            priceTxt = (TextView) itemView.findViewById(R.id.price);
+            weightTxt = (TextView) itemView.findViewById(R.id.weight);
+            labelEmptyStock = (TextView) itemView.findViewById(R.id.label_stock_empty);
+            editDesc = (ImageButton) itemView.findViewById(R.id.edit_description);
+            editPrice = (ImageButton) itemView.findViewById(R.id.edit_price);
+            descTxt = (TextView) itemView.findViewById(R.id.description);
+            containerDesc = (LinearLayout) itemView.findViewById(R.id.container_description);
+            containerPrice = (LinearLayout) itemView.findViewById(R.id.container_price);
         }
 
         public void enableEditDecription() {

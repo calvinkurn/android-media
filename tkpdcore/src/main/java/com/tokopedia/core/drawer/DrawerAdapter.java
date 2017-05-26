@@ -40,6 +40,7 @@ import java.util.List;
  */
 public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TOKO_CASH_URL = "url";
     private String DEFAULT_BANNER = "web_service-shopnocover.png";
     private static final String TAG = "DrawerAdapter";
 
@@ -538,7 +539,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     private void openTokoCashWebView(String redirectURL) {
         Bundle bundle = new Bundle();
-        bundle.putString("url", redirectURL);
+        bundle.putString(TOKO_CASH_URL, redirectURL);
         if(context instanceof Activity){
             if(((Activity) context).getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter)((Activity) context).getApplication())

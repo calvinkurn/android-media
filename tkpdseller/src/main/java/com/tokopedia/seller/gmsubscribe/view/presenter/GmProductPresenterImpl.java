@@ -37,6 +37,7 @@ public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> i
         checkViewAttached();
         getView().clearPackage();
         getView().showProgressDialog();
+        getView().setVisibilitySelectButton(false);
         getGmSubscribeCurrentProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
@@ -44,6 +45,7 @@ public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> i
     public void getExtendPackageSelection() {
         checkViewAttached();
         getView().showProgressDialog();
+        getView().setVisibilitySelectButton(false);
         getGmSubscribeExtendProductUseCase.execute(RequestParams.EMPTY, new ProductListSubscriber());
     }
 
@@ -72,6 +74,7 @@ public class GmProductPresenterImpl extends BaseDaggerPresenter<GmProductView> i
         public void onNext(List<GmProductDomainModel> gmProductDomainModels) {
             Log.d(TAG, "Present the data");
             getView().dismissProgressDialog();
+            getView().setVisibilitySelectButton(true);
             if (isViewAttached()) {
                 List<GmProductViewModel> viewModels = new ArrayList<>();
                 for (GmProductDomainModel domainModel : gmProductDomainModels) {
