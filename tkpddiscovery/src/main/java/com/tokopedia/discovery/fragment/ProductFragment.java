@@ -191,7 +191,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceResult2(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         productAdapter.addAll(false, false, new ArrayList<RecyclerViewItem>(model));
         productAdapter.setgridView(((BrowseProductActivity)getActivity()).getGridType());
         productAdapter.setPagingHandlerModel(pagingHandlerModel);
@@ -211,9 +211,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
                 presenter.getTopAds(productAdapter.getTopAddsCounter(), TAG, getActivity(), spanCount);
             }
 
-            if (totalProduct > 0)
-                browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
-                        .format(totalProduct.longValue()).replace(',', '.'));
             productAdapter.incrementPage();
 
             UnifyTracking.eventAppsFlyerViewListingSearch(model, browseModel.q);
@@ -284,6 +281,17 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
+    public void updateTotalProduct(Long totalProduct) {
+        BrowseProductActivityModel browseModel = ((BrowseProductActivity) getActivity()).getBrowseProductActivityModel();
+        if (totalProduct > 0) {
+            browseModel.setTotalDataCategory(NumberFormat.getNumberInstance(Locale.US)
+                    .format(totalProduct.longValue()).replace(',', '.'));
+        } else {
+            browseModel.setTotalDataCategory("0");
+        }
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == GOTO_PRODUCT_DETAIL && resultCode == Activity.RESULT_CANCELED) {
@@ -343,6 +351,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
+        productAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);
@@ -419,7 +428,8 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading() && gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1) {
+                if (!productAdapter.isEmpty() && productAdapter.getPagingHandlerModel() != null
+                        && isLoading() && isReachingLastItem()) {
                     presenter.loadMore(getActivity());
                 }
                 if(gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1
@@ -431,6 +441,10 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
         });
         changeLayoutType(((BrowseProductActivity)getActivity()).getGridType());
         return true;
+    }
+
+    private boolean isReachingLastItem() {
+        return gridLayoutManager.findLastVisibleItemPosition() == gridLayoutManager.getItemCount() - 1;
     }
 
     @Override

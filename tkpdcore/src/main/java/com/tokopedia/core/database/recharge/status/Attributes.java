@@ -11,41 +11,33 @@ public class Attributes {
     private Version version;
     @SerializedName("is_maintenance")
     @Expose
-    private Boolean isMaintenance;
+    private boolean isMaintenance;
 
     /**
-     * 
-     * @return
-     *     The version
+     * @return The version
      */
     public Version getVersion() {
         return version;
     }
 
     /**
-     * 
-     * @param version
-     *     The version
+     * @param version The version
      */
     public void setVersion(Version version) {
         this.version = version;
     }
 
     /**
-     * 
-     * @return
-     *     The isMaintenance
+     * @return The isMaintenance
      */
-    public Boolean getIsMaintenance() {
+    public boolean getIsMaintenance() {
         return isMaintenance;
     }
 
     /**
-     * 
-     * @param isMaintenance
-     *     The is_maintenance
+     * @param isMaintenance The is_maintenance
      */
-    public void setIsMaintenance(Boolean isMaintenance) {
+    public void setIsMaintenance(boolean isMaintenance) {
         this.isMaintenance = isMaintenance;
     }
 

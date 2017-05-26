@@ -68,6 +68,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
+    private boolean isSearchModeOn;
+
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
     protected abstract void goToFilter();
@@ -172,6 +174,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         emptyGroupAdsDataBinder.setEmptyContentItemText(null);
         adapter.setEmptyView(emptyGroupAdsDataBinder);
         adapter.notifyDataSetChanged();
+
+        isSearchModeOn = true;
     }
 
     private void updateEmptyViewDefault(){
@@ -253,10 +257,10 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         adapter.addData(adList);
         hideLoading();
-        if (adapter.getDataSize() < 1) {
+        if (adapter.getDataSize() < 1 ) {
             adapter.showEmptyFull(true);
         }
-        if (adapter.getDataSize() < 1) {
+        if (adapter.getDataSize() < 1 && !isSearchModeOn) {
             fabFilter.setVisibility(View.GONE);
         } else {
             fabFilter.setVisibility(View.VISIBLE);

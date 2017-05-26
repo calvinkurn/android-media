@@ -1517,6 +1517,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventBannerEmptyFeedOS() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
+                AppEventTracking.Category.PRODUCT_FEED,
+                AppEventTracking.Action.CLICK,
+                AppEventTracking.EventLabel.VIEW_ALL_OFFICIAL_STORE_EMPTY_FEED
+        ).getEvent());
+    }
+
     public static void eventAddProductErrorServer(String label){
         sendGTMEvent(new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,

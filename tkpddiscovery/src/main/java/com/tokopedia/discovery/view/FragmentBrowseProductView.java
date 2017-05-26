@@ -28,7 +28,7 @@ public interface FragmentBrowseProductView extends BaseView {
     int getDataSize(String TAG);
     void setupAdapter();
     boolean setupRecyclerView();
-    void onCallProductServiceResult2(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
+    void onCallProductServiceResult2(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     void onCallProductServiceLoadMore(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel);
     boolean isLoading();
     int getStartIndexForQuery(String TAG);
@@ -51,6 +51,7 @@ public interface FragmentBrowseProductView extends BaseView {
     void showDialog(Dialog dialog);
     void closeView();
     void showWishListRetry(String errorMessage);
+    void updateTotalProduct(Long totalProduct);
 
     //    int VALUES_PRODUCT_FRAGMENT_ID = 812_192;
     int getTopAdsPaging();

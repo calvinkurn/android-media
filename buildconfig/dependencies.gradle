@@ -112,7 +112,6 @@ ext {
             smoothAppBarLayout    : "me.henrytao:smooth-app-bar-layout:24.1.1.0",
             trueCaller            : "true.caller.sdk:truecaller:0.5",
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
-            kmNumber              : 'com.shootr:KMNumbers:1.0.0',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     ]
 
