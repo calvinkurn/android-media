@@ -41,7 +41,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_date_picker);
+        setContentView(R.layout.activity_top_ads_keyword_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
