@@ -267,7 +267,7 @@ public class ShopInfoActivity extends BaseActivity
             @Override
             public void onSuccess() {
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
-                updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited);
+                updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
                 holder.favorite.clearAnimation();
             }
@@ -280,7 +280,7 @@ public class ShopInfoActivity extends BaseActivity
         };
     }
 
-    private void updateIsFavoritedIntent(int shopAlreadyFavorited) {
+    private void updateIsFavoritedIntent(boolean shopAlreadyFavorited) {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(SHOP_STATUS_IS_FAVORITED, shopAlreadyFavorited);
         resultIntent.putExtra(FAVORITE_STATUS_UPDATED, true);
