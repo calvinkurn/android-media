@@ -5,7 +5,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
@@ -56,6 +55,7 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchFirstPage() {
+        viewListener.showRefresh();
         getFirstPageFeedsUseCase.execute(getFeedPlusParam(), getFirstPageFeedsSubscriber());
     }
 
@@ -80,7 +80,7 @@ public class FeedPlusPresenter
 
             @Override
             public void onError(Throwable e) {
-                viewListener.onFailedGetFeedFirstPage(e.toString());
+                viewListener.onErrorGetFeedFirstPage(e.toString());
             }
 
             @Override

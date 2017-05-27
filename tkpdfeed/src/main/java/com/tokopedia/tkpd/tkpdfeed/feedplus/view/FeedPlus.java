@@ -43,9 +43,11 @@ public interface FeedPlus{
 
         void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
 
-        void onFailedGetFeedFirstPage(String errorMessage);
+        void onErrorGetFeedFirstPage(String errorMessage);
 
         void onSearchShopButtonClicked();
+
+        void showRefresh();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

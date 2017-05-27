@@ -21,6 +21,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -364,14 +365,33 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFailedGetFeedFirstPage(String errorMessage) {
+    public void onErrorGetFeedFirstPage(String errorMessage) {
         finishLoading();
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        if (adapter.getItemCount() == 0) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                    new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            presenter.fetchFirstPage();
+                        }
+                    });
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
     public void onSearchShopButtonClicked() {
+        Intent intent = HomeRouter.getHomeActivity(getActivity());
+        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_FAVORITE);
+        startActivity(intent);
+    }
 
+    @Override
+    public void showRefresh() {
+        if (!swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(true);
+        }
     }
 
 //    @Override
