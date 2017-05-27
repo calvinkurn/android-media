@@ -3,6 +3,8 @@ package com.tokopedia.seller.topads.keyword.di.component;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
 import com.tokopedia.seller.topads.keyword.di.scope.TopAdsKeywordScope;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddSummaryActivity;
+import com.tokopedia.seller.topads.keyword.view.fragment.AbsTopAdsKeywordAddSummaryFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNewChooseGroupFragment;
 
 import dagger.Component;

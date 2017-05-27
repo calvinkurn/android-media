@@ -1,6 +1,9 @@
 package com.tokopedia.seller.topads.keyword.di.module;
 
+import android.util.Log;
+
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4Auth;
 import com.tokopedia.seller.topads.data.factory.TopAdsGroupAdFactory;
 import com.tokopedia.seller.topads.data.repository.TopAdsGroupAdsRepositoryImpl;
 import com.tokopedia.seller.topads.data.source.cloud.apiservice.api.TopAdsManagementApi;
@@ -39,4 +42,5 @@ public class TopAdsKeywordNewChooseGroupModule extends TopAdsModule {
     TopAdsManagementApi provideManagementApi(@TopAdsQualifier Retrofit retrofit){
         return retrofit.create(TopAdsManagementApi.class);
     }
+
 }

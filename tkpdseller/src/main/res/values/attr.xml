@@ -169,6 +169,9 @@
         <attr name="spinner_values" format="reference"/>
         <attr name="spinner_enabled" format="boolean"/>
     </declare-styleable>
+    <declare-styleable name="DefaultValueSpinnerTextView">
+        <attr name="default_value" format="string"/>
+    </declare-styleable>
     <declare-styleable name="SpinnerCounterInputView">
         <attr name="spinner_decimal_max_length" format="integer"/>
         <attr name="spinner_decimal_entries" format="reference"/>

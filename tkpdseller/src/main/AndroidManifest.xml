@@ -155,7 +155,8 @@
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:theme="@style/BasicThemeActionBar"
+            android:exported="true"/>
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"

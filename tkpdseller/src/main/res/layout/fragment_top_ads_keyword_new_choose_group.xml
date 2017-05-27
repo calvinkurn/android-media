@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -10,13 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="@dimen/margin_med">
+        android:padding="@dimen/activity_horizontal_margin">
 
-        <include layout="@layout/include_topads_search_group" />
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/include_topads_search_group" />
+
+            <com.tokopedia.seller.product.view.widget.DefValueSpinnerTextView
+                android:id="@+id/spinner_keyword_type"
+                style="@style/LabelLayoutWithoutBorder"
+                android:padding="0dp"
+                app:spinner_entries="@array/top_ads_keyword_type_entries"
+                app:spinner_hint="@string/top_ads_keyword_type"
+                app:spinner_selection_index="-1"
+                app:spinner_values="@array/top_ads_keyword_type_values"
+                app:default_value="@string/top_ads_choose_keyword_type"/>
+        </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
-
-    <include layout="@layout/include_separator_horizontal"/>
 
     <Button
         android:id="@+id/button_submit"

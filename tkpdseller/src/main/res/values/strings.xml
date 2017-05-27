@@ -439,6 +439,15 @@
         <item>Stock Tersedia</item>
         <item>Stock Kosong</item>
     </string-array>
+
+    <string-array name="top_ads_keyword_type_entries">
+        <item>@string/top_ads_phrase_match</item>
+        <item>@string/top_ads_exact_match</item>
+    </string-array>
+    <string-array name="top_ads_keyword_type_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
         <item>@string/product_stock_not_available_value</item>
@@ -568,4 +577,6 @@
 
     <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
+    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
+    <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
 </resources>
