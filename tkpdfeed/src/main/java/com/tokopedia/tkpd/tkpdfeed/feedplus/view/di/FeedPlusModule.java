@@ -5,6 +5,7 @@ import android.content.Context;
 import com.apollographql.apollo.ApolloClient;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -14,6 +15,7 @@ import com.tokopedia.core.network.di.module.OkHttpClientModule;
 import com.tokopedia.core.network.di.module.OkHttpClientModule;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedDetailListMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedListMapper;
@@ -46,6 +48,12 @@ public class FeedPlusModule {
     @Provides
     GlobalCacheManager provideGlobalCacheManager() {
         return new GlobalCacheManager();
+    }
+
+    @FeedPlusScope
+    @Provides
+    SessionHandler provideSessionHandler(@ApplicationContext Context context) {
+        return new SessionHandler(context);
     }
 
     @FeedPlusScope

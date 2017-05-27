@@ -17,6 +17,8 @@ import rx.Observable;
  */
 
 public class GetFeedsUseCase extends UseCase<FeedResult> {
+    public static final String PARAM_USER_ID = "PARAM_USER_ID";
+    public static final String PARAM_CURSOR = "PARAM_CURSOR";
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
     private FeedRepository feedRepository;
