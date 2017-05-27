@@ -3,11 +3,14 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.R2;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 import butterknife.BindView;
@@ -16,27 +19,28 @@ import butterknife.BindView;
  * @author by nisie on 5/15/17.
  */
 
-public class EmptyFeedViewHolder extends AbstractViewHolder<ActivityCardViewModel> {
+public class EmptyFeedViewHolder extends AbstractViewHolder<EmptyModel> {
+
+    private final FeedPlus.View viewListener;
+    Button searchShopButton;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_product_empty;
 
-    @BindView(R2.id.author_name)
-    TextView authorName;
-
-    private ActivityCardViewModel activityCardViewModel;
-    private Context context;
-
-    public EmptyFeedViewHolder(View itemView) {
+    public EmptyFeedViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
-        context = itemView.getContext();
+        this.viewListener = viewListener;
+        searchShopButton = (Button) itemView.findViewById(R.id.search_shop_button);
     }
 
     @Override
-    public void bind(ActivityCardViewModel activityCardViewModel) {
-        this.activityCardViewModel = activityCardViewModel;
-        authorName.setText(activityCardViewModel.getHeader().getShopName());
+    public void bind(EmptyModel emptyModel) {
+        searchShopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onSearchShopButtonClicked();
+            }
+        });
     }
-
 
 }

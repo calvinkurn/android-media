@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
-import android.util.Log;
-
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -11,6 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -28,6 +28,7 @@ public class FeedPlusPresenter
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private String currentCursor = "";
+    private FeedPlus.View viewListener;
 
     @Inject
     FeedPlusPresenter(GetFeedsUseCase getFeedsUseCase,
@@ -39,10 +40,9 @@ public class FeedPlusPresenter
     }
 
     @Override
-    public void attachView(FeedPlus.View view) {
-        super.attachView(view);
-        fetchFirstPage();
-
+    public void attachView(FeedPlus.View viewListener) {
+        super.attachView(viewListener);
+        this.viewListener = viewListener;
     }
 
     @Override
@@ -72,20 +72,29 @@ public class FeedPlusPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                viewListener.onFailedGetFeedFirstPage(e.toString());
             }
 
             @Override
             public void onNext(FeedResult feedResult) {
                 if (feedResult.getDataSource() == FeedResult.SOURCE_LOCAL) {
-                    //load from cache, display the feed from cache
+                    viewListener.onSuccessGetFeedFirstPage(
+                            convertToViewModel(feedResult.getDataFeedDomainList()));
                 } else {
-                    //load from network, update the view or display the feed if empty
+                    viewListener.onSuccessGetFeedFirstPage(
+                            convertToViewModel(feedResult.getDataFeedDomainList()));
                 }
 
-                currentCursor = getCurrentCursor(feedResult);
+                if (feedResult.getDataFeedDomainList().size() > 0)
+                    currentCursor = getCurrentCursor(feedResult);
             }
         };
+    }
+
+    private ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
+        ArrayList<Visitable> listFeed = new ArrayList<>();
+
+        return listFeed;
     }
 
     private String getCurrentCursor(FeedResult feedResult) {
@@ -93,7 +102,7 @@ public class FeedPlusPresenter
         return feedResult.getDataFeedDomainList().get(lastIndex).getCursor();
     }
 
-    private  Subscriber<FeedResult> getFeedsSubscriber() {
+    private Subscriber<FeedResult> getFeedsSubscriber() {
         return new Subscriber<FeedResult>() {
             @Override
             public void onCompleted() {

@@ -39,6 +39,9 @@ import okhttp3.OkHttpClient;
 @Module
 public class FeedPlusModule {
 
+    private static final String NAME_CLOUD = "CLOUD";
+    private static final String NAME_LOCAL = "LOCAL";
+
     @FeedPlusScope
     @Provides
     GlobalCacheManager provideGlobalCacheManager() {
@@ -81,8 +84,8 @@ public class FeedPlusModule {
     FeedFactory provideFeedFactory(@ActivityContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
-                                   @Named("CLOUD") FeedResultMapper feedResultMapperCloud,
-                                   @Named("LOCAL") FeedResultMapper feedResultMapperLocal,
+                                   @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
+                                   @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager) {
         return new FeedFactory(
@@ -102,14 +105,14 @@ public class FeedPlusModule {
     }
 
     @FeedPlusScope
-    @Named("LOCAL")
+    @Named(NAME_LOCAL)
     @Provides
     FeedResultMapper provideLocalFeedResultMapper() {
         return new FeedResultMapper(FeedResult.SOURCE_LOCAL);
     }
 
     @FeedPlusScope
-    @Named("CLOUD")
+    @Named(NAME_CLOUD)
     @Provides
     FeedResultMapper provideCloudFeedResultMapper() {
         return new FeedResultMapper(FeedResult.SOURCE_CLOUD);

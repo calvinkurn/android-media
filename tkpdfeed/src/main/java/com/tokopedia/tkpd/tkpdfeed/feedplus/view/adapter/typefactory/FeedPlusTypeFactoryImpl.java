@@ -3,8 +3,9 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.database.recharge.product.Promo;
+import com.tokopedia.core.base.adapter.viewholders.EmptyViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.InspirationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.OfficialStoreViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -73,6 +74,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         return PromotedProductViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(EmptyModel emptyModel) {
+        return EmptyFeedViewHolder.LAYOUT;
+    }
+
 
     @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
@@ -80,7 +86,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
         AbstractViewHolder viewHolder;
 
         if (type == EmptyFeedViewHolder.LAYOUT)
-            viewHolder = new EmptyFeedViewHolder(view);
+            viewHolder = new EmptyFeedViewHolder(view, viewListener);
         else if (type == ActivityCardViewHolder.LAYOUT)
             viewHolder = new ActivityCardViewHolder(view, viewListener);
         else if (type == PromotedShopViewHolder.LAYOUT)
@@ -99,7 +105,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
-
         return viewHolder;
     }
 }

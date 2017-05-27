@@ -22,8 +22,9 @@ def getArtifactVersionCode() {
 }
 
 def getTkpdCore() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
+//    return project.hasProperty('isArtifact') ?
+//            rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
+    return project(':tkpdcore');
 }
 
 publishing {
