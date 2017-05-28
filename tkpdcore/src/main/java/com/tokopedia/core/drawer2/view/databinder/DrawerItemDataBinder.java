@@ -86,16 +86,10 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
         setSelectedBackground(item, holder);
         holder.icon.setImageResource(item.getIconId());
 
-        if (item.getIconId() != 0) {
+        if (item.getId() == selectedItem) {
             holder.label.setTypeface(null, Typeface.BOLD);
         } else {
             holder.label.setTypeface(null, Typeface.NORMAL);
-        }
-
-        if (item.getId() == selectedItem) {
-            holder.label.setTextColor(context.getResources().getColor(R.color.green_500));
-        } else {
-            holder.label.setTextColor(context.getResources().getColor(R.color.black));
         }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +103,9 @@ public class DrawerItemDataBinder extends DataBinder<DrawerItemDataBinder.ViewHo
 
     private void setSelectedBackground(DrawerItem item, ViewHolder holder) {
         if (item.getId() == drawerPosition) {
-            holder.label.setTextColor(context.getResources().getColor(R.color.green_500));
-        } else if (item.getIconId() != 0) {
-            holder.label.setTextColor(context.getResources().getColor(R.color.black));
+            holder.label.setTypeface(null, Typeface.BOLD);
         } else {
-            holder.label.setTextColor(context.getResources().getColor(R.color.grey_500));
+            holder.label.setTypeface(null, Typeface.NORMAL);
         }
     }
 

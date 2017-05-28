@@ -112,7 +112,7 @@ public class DrawerSellerHeaderDataBinder extends DataBinder<DrawerSellerHeaderD
         holder.name.setVisibility(View.VISIBLE);
         holder.avatar.setVisibility(View.VISIBLE);
 
-        setCover(holder);
+//        setCover(holder);
 
         if (data.getDrawerProfile().getUserAvatar() != null && !data.getDrawerProfile().getUserAvatar().equals(""))
             ImageHandler.LoadImage(holder.avatar, data.getDrawerProfile().getUserAvatar());
