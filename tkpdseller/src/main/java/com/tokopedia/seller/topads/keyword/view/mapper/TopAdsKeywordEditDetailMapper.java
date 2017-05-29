@@ -8,8 +8,15 @@ import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailVie
  */
 
 public class TopAdsKeywordEditDetailMapper {
-    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(TopAdsKeywordEditDetailViewModel model) {
+    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(TopAdsKeywordEditDetailViewModel viewModel) {
         TopAdsKeywordEditDetailInputDomainModel domainModel = new TopAdsKeywordEditDetailInputDomainModel();
+
+        domainModel.setKeywordId(viewModel.getKeywordId());
+        domainModel.setGroupId(viewModel.getGroupId());
+        domainModel.setKeywordTag(viewModel.getKeywordTag());
+        domainModel.setKeywordTypeId(viewModel.getKeywordTypeId());
+        domainModel.setPriceBid(viewModel.getPriceBid());
+        domainModel.setToggle(viewModel.getToggle());
 
         return domainModel;
     }

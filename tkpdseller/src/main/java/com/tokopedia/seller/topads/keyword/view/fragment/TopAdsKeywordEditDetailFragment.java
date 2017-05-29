@@ -70,8 +70,8 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     private void fillDataToView(TopAdsKeywordEditDetailViewModel model) {
-        topAdsKeyword.setText(model.getKeywordText());
-        topAdsCostPerClick.setText(String.valueOf(model.getCostPerClick()));
+        topAdsKeyword.setText(model.getKeywordTag());
+        topAdsCostPerClick.setText(String.valueOf(model.getPriceBid()));
     }
 
     private void settingTopAdsCostPerClick(View view) {
@@ -92,8 +92,8 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     private TopAdsKeywordEditDetailViewModel collectDataFromView() {
         TopAdsKeywordEditDetailViewModel model = new TopAdsKeywordEditDetailViewModel();
-        model.setKeywordText(getTopAdsKeywordText());
-        model.setCostPerClick(getTopAdsCostPerClick());
+        model.setKeywordTag(getTopAdsKeywordText());
+        model.setPriceBid(getTopAdsCostPerClick());
         return model;
     }
 

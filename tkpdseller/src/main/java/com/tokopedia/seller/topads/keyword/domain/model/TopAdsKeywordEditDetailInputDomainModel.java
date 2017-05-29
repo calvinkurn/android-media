@@ -6,28 +6,66 @@ package com.tokopedia.seller.topads.keyword.domain.model;
 
 public class TopAdsKeywordEditDetailInputDomainModel {
     private String keywordId;
-    private String groudId;
+    private String groupId;
     private String keywordTag;
-    private String keywordTypeId;
-    private String priceBid;
+    private int keywordTypeId;
+    private double priceBid;
+    private String shopId;
+    private String toggle;
 
     public String getKeywordId() {
         return keywordId;
     }
 
-    public String getGroudId() {
-        return groudId;
+    public String getGroupId() {
+        return groupId;
     }
 
     public String getKeywordTag() {
         return keywordTag;
     }
 
-    public String getKeywordTypeId() {
+    public int getKeywordTypeId() {
         return keywordTypeId;
     }
 
-    public String getPriceBid() {
+    public double getPriceBid() {
         return priceBid;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public String getToggle() {
+        return toggle;
+    }
+
+    public void setKeywordId(String keywordId) {
+        this.keywordId = keywordId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setKeywordTag(String keywordTag) {
+        this.keywordTag = keywordTag;
+    }
+
+    public void setKeywordTypeId(int keywordTypeId) {
+        this.keywordTypeId = keywordTypeId;
+    }
+
+    public void setPriceBid(double priceBid) {
+        this.priceBid = priceBid;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public void setToggle(String toggle) {
+        this.toggle = toggle;
     }
 }

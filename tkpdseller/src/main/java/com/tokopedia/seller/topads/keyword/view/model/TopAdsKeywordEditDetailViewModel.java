@@ -1,77 +1,69 @@
 package com.tokopedia.seller.topads.keyword.view.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 
 /**
  * @author sebastianuskh on 5/26/17.
  */
 
-public class TopAdsKeywordEditDetailViewModel implements Parcelable {
+public class TopAdsKeywordEditDetailViewModel{
 
     @KeywordTypeDef
-    private int keywordType;
+    private int keywordTypeId;
 
-    private String keywordText;
+    private String keywordTag;
 
-    private double costPerClick;
+    private double priceBid;
 
-    public int getKeywordType() {
-        return keywordType;
+    private String keywordId;
+    private String groupId;
+    private String toggle;
+
+    public int getKeywordTypeId() {
+        return keywordTypeId;
     }
 
-    public void setKeywordType(int keywordType) {
-        this.keywordType = keywordType;
+    public void setKeywordTypeId(int keywordTypeId) {
+        this.keywordTypeId = keywordTypeId;
     }
 
-    public String getKeywordText() {
-        return keywordText;
+    public String getKeywordTag() {
+        return keywordTag;
     }
 
-    public void setKeywordText(String keywordText) {
-        this.keywordText = keywordText;
+    public void setKeywordTag(String keywordTag) {
+        this.keywordTag = keywordTag;
     }
 
-    public double getCostPerClick() {
-        return costPerClick;
+    public double getPriceBid() {
+        return priceBid;
     }
 
-    public void setCostPerClick(double costPerClick) {
-        this.costPerClick = costPerClick;
+    public void setPriceBid(double priceBid) {
+        this.priceBid = priceBid;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getKeywordId() {
+        return keywordId;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.keywordType);
-        dest.writeString(this.keywordText);
-        dest.writeDouble(this.costPerClick);
+    public String getGroupId() {
+        return groupId;
     }
 
-    public TopAdsKeywordEditDetailViewModel() {
+    public String getToggle() {
+        return toggle;
     }
 
-    protected TopAdsKeywordEditDetailViewModel(Parcel in) {
-        this.keywordType = in.readInt();
-        this.keywordText = in.readString();
-        this.costPerClick = in.readDouble();
+    public void setKeywordId(String keywordId) {
+        this.keywordId = keywordId;
     }
 
-    public static final Parcelable.Creator<TopAdsKeywordEditDetailViewModel> CREATOR = new Parcelable.Creator<TopAdsKeywordEditDetailViewModel>() {
-        @Override
-        public TopAdsKeywordEditDetailViewModel createFromParcel(Parcel source) {
-            return new TopAdsKeywordEditDetailViewModel(source);
-        }
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
 
-        @Override
-        public TopAdsKeywordEditDetailViewModel[] newArray(int size) {
-            return new TopAdsKeywordEditDetailViewModel[size];
-        }
-    };
+    public void setToggle(String toggle) {
+        this.toggle = toggle;
+    }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.data.mapper;
 
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
@@ -19,10 +20,13 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
     public static TopAdsKeywordEditDetailInputDataModel mapDomainToData(TopAdsKeywordEditDetailInputDomainModel modelInput) {
         TopAdsKeywordEditDetailInputDataModel dataModel = new TopAdsKeywordEditDetailInputDataModel();
         dataModel.setKeywordId(modelInput.getKeywordId());
-        dataModel.setGroupId(modelInput.getGroudId());
+        dataModel.setGroupId(modelInput.getGroupId());
         dataModel.setKeywordTag(modelInput.getKeywordTag());
-        dataModel.setKeywordTypeId(modelInput.getKeywordTypeId());
-        dataModel.setPriceBid(modelInput.getPriceBid());
+        dataModel.setKeywordTypeId(String.valueOf(modelInput.getKeywordTypeId()));
+        dataModel.setPriceBid(String.valueOf(modelInput.getPriceBid()));
+        dataModel.setShopId(modelInput.getShopId());
+        dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
+        dataModel.setToggle(modelInput.getToggle());
         return dataModel;
     }
 

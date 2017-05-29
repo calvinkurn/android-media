@@ -46,6 +46,7 @@ public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
 
     @Override
     public Observable<EditTopAdsKeywordDetailDomainModel> editTopAdsKeywordDetail(TopAdsKeywordEditDetailInputDomainModel modelInput) {
+        modelInput.setShopId(shopInfoRepository.getShopId());
         return keywordDashboardDataSouce.editTopAdsKeywordDetail(modelInput);
     }
 
