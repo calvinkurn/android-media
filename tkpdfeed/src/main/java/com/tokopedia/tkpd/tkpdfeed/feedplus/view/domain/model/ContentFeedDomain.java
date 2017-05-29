@@ -53,4 +53,9 @@ public class ContentFeedDomain {
     public String getStatusActivity() {
         return statusActivity;
     }
+
+    @Nullable
+    public String getType() {
+        return type;
+    }
 }

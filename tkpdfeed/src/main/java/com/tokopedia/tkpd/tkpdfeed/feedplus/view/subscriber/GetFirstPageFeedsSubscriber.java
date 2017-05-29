@@ -22,6 +22,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private final FeedPlus.View viewListener;
     private static final String TYPE_ACTIVITY = "activity";
+    private static final String TYPE_NEW_PRODUCT = "new_product";
+    private static final String TYPE_PROMOTION = "promotion";
+
+
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -54,8 +58,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
         ArrayList<Visitable> listFeed = new ArrayList<>();
         for (DataFeedDomain domain : dataFeedDomainList) {
-            switch (domain.getType()) {
-                case TYPE_ACTIVITY:
+            switch (domain.getContent().getType()) {
+                case TYPE_NEW_PRODUCT:
                     listFeed.add(convertToActivityViewModel(domain));
                     break;
                 default:
