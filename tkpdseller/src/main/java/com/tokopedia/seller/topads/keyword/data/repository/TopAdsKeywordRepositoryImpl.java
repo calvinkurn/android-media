@@ -5,7 +5,9 @@ import com.tokopedia.seller.product.domain.ShopInfoRepository;
 import com.tokopedia.seller.product.domain.model.AddProductShopInfoDomainModel;
 import com.tokopedia.seller.topads.keyword.data.source.KeywordDashboardDataSouce;
 import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
+import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 
 import javax.inject.Inject;
 
@@ -36,5 +38,10 @@ public class TopAdsKeywordRepositoryImpl implements TopAdsKeywordRepository {
                 return keywordDashboardDataSouce.getKeywordDashboard(requestParams);
             }
         });
+    }
+
+    @Override
+    public Observable<EditTopAdsKeywordDetailDomainModel> editTopAdsKeywordDetail(TopAdsKeywordEditDetailInputDomainModel modelInput) {
+        return keywordDashboardDataSouce.editTopAdsKeywordDetail(modelInput);
     }
 }
