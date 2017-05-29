@@ -54,6 +54,7 @@
                 android:id="@+id/reputation_view"
                 android:layout_width="80dp"
                 android:layout_height="@dimen/shop_list_reputation_view_height"
+                android:layout_marginTop="2dp"
                 android:scaleType="fitStart"
                 />
             
@@ -61,6 +62,7 @@
                 android:id="@+id/shop_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:drawableLeft="@drawable/ic_place_black_24dp"
                 android:textSize="11sp"
                 android:textColor="@color/black_36"
