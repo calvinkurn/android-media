@@ -21,6 +21,7 @@ import rx.functions.Action1;
 public class LocalFeedDataSource {
 
     private static final String KEY_FEED_PLUS = "FEED_PLUS";
+    private static final int CACHE_DURATION = 10;
     private GlobalCacheManager cacheManager;
     private FeedResultMapper feedResultMapper;
 
@@ -37,6 +38,7 @@ public class LocalFeedDataSource {
            public List<DataFeedDomain> call() throws Exception {
                cacheManager = new GlobalCacheManager();
                cacheManager.setKey(KEY_FEED_PLUS);
+               cacheManager.setCacheDuration(CACHE_DURATION);
                return CacheUtil.convertStringToListModel(cacheManager.getValueString(KEY_FEED_PLUS),
                        new TypeToken<List<DataFeedDomain>>(){}.getType());
            }

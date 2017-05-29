@@ -48,6 +48,8 @@ public interface FeedPlus{
         void onSearchShopButtonClicked();
 
         void showRefresh();
+
+        void updateCursor(String currentCursor);
     }
 
     public interface Presenter extends CustomerPresenter<View>{

@@ -8,24 +8,47 @@ import javax.annotation.Nullable;
 
 public class ShopFeedDomain {
 
-    private @Nullable
+    private
+    @Nullable
     Integer id;
 
-    private @Nullable String name;
+    private
+    @Nullable
+    String name;
 
-    private @Nullable String avatar;
+    private
+    @Nullable
+    String avatar;
 
-    private @Nullable Boolean isOfficial;
+    private
+    @Nullable
+    Boolean isOfficial;
 
-    private @Nullable Boolean isGold;
+    private
+    @Nullable
+    Boolean isGold;
 
-    private @Nullable Object url;
+    private
+    @Nullable
+    Object url;
 
-    private @Nullable String shopLink;
+    private
+    @Nullable
+    String shopLink;
+
+    private
+    @Nullable
+    String shareLinkDescription;
+
+    private
+    @Nullable
+    String shareLinkURL;
+
 
     public ShopFeedDomain(@Nullable Integer id, @Nullable String name, @Nullable String avatar,
-                @Nullable Boolean isOfficial, @Nullable Boolean isGold, @Nullable Object url,
-                @Nullable String shopLink) {
+                          @Nullable Boolean isOfficial, @Nullable Boolean isGold, @Nullable Object url,
+                          @Nullable String shopLink, @Nullable String shareLinkDescription,
+                          @Nullable String shareLinkURL) {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
@@ -33,6 +56,8 @@ public class ShopFeedDomain {
         this.isGold = isGold;
         this.url = url;
         this.shopLink = shopLink;
+        this.shareLinkDescription = shareLinkDescription;
+        this.shareLinkURL = shareLinkURL;
     }
 
     @Nullable
@@ -96,5 +121,23 @@ public class ShopFeedDomain {
 
     public void setShopLink(@Nullable String shopLink) {
         this.shopLink = shopLink;
+    }
+
+    @Nullable
+    public String getShareLinkDescription() {
+        return shareLinkDescription;
+    }
+
+    public void setShareLinkDescription(@Nullable String shareLinkDescription) {
+        this.shareLinkDescription = shareLinkDescription;
+    }
+
+    @Nullable
+    public String getShareLinkURL() {
+        return shareLinkURL;
+    }
+
+    public void setShareLinkURL(@Nullable String shareLinkURL) {
+        this.shareLinkURL = shareLinkURL;
     }
 }

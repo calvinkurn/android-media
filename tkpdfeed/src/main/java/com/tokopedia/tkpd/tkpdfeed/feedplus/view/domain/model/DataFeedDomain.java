@@ -54,4 +54,14 @@ public class DataFeedDomain {
     public String getCursor() {
         return cursor;
     }
+
+    @Nullable
+    public SourceFeedDomain getSource() {
+        return source;
+    }
+
+    @Nullable
+    public ContentFeedDomain getContent() {
+        return content;
+    }
 }

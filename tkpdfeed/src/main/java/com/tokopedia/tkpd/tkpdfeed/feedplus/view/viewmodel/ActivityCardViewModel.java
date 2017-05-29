@@ -19,7 +19,14 @@ public class ActivityCardViewModel extends ProductCardViewModel {
     private String actionText;
 
 
-    public ActivityCardViewModel() {
+    public ActivityCardViewModel(ProductCardHeaderViewModel productCardHeaderViewModel,
+                                 ArrayList<ProductFeedViewModel> listProduct,
+                                 String shareUrl,
+                                 String actionText) {
+        this.listProduct = listProduct;
+        this.productCardHeaderViewModel = productCardHeaderViewModel;
+        this.shareUrl = shareUrl;
+        this.actionText = actionText;
     }
 
     public ActivityCardViewModel(ArrayList<ProductFeedViewModel> listProduct) {

@@ -13,10 +13,11 @@ public class ProductFeedViewModel implements Parcelable{
     private String price;
     private String imageSource;
     private String url;
-
     private String shopName;
     private String shopAva;
     private boolean isFavorited;
+
+
 
     public ProductFeedViewModel(String produk1, String s, String s1) {
         this.name = produk1;
@@ -32,10 +33,19 @@ public class ProductFeedViewModel implements Parcelable{
         this.isFavorited = isFavorited;
     }
 
-    public ProductFeedViewModel(ProductFeedViewModel model, String shopAva, String shopName, boolean isFavorited){
-        this(model.getName(), model.getPrice(), model.getImageSource());
-        this.shopAva = shopAva;
+    public ProductFeedViewModel(String name,
+                                String price,
+                                String imageSource,
+                                String url,
+                                String shopName,
+                                String shopAva,
+                                boolean isFavorited) {
+        this.name = name;
+        this.price = price;
+        this.imageSource = imageSource;
+        this.url = url;
         this.shopName = shopName;
+        this.shopAva = shopAva;
         this.isFavorited = isFavorited;
     }
 

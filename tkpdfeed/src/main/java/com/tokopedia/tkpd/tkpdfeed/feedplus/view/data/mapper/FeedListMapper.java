@@ -83,7 +83,7 @@ public class FeedListMapper implements Func1<Feeds.Data, List<DataFeedDomain>> {
     private ShopFeedDomain createShopFeedDomain(Feeds.Data.Shop shop) {
         if (shop == null) return null;
         return new ShopFeedDomain(shop.id(), shop.name(), shop.avatar(), shop.isOfficial(),
-                shop.isGold(), shop.url(), shop.shopLink());
+                shop.isGold(), shop.url(), shop.shopLink(), shop.shareLinkDescription(), shop.shareLinkURL());
     }
 
     private ContentFeedDomain createContentFeedDomain(Feeds.Data.Content content,

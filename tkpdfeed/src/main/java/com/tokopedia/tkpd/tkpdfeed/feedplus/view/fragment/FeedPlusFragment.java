@@ -394,6 +394,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public void updateCursor(String currentCursor) {
+        presenter.setCursor(currentCursor);
+    }
+
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {
 //        try {
