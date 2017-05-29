@@ -868,10 +868,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (scrollRange + verticalOffset == 0) {
                     initStatusBarLight();
                     initToolbarLight();
+                    fabWishlist.setVisibility(View.GONE);
                     isShow = true;
                 } else if (isShow) {
                     initStatusBarDark();
                     initToolbarTransparant();
+                    fabWishlist.setVisibility(View.VISIBLE);
                     isShow = false;
                 }
             }
