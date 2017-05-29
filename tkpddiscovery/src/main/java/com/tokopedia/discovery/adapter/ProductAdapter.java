@@ -57,6 +57,7 @@ import com.tokopedia.core.product.customview.RatingView;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
@@ -93,6 +94,8 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
     public static final String DATA_LIST = "DATA_LIST";
     public static final String TOPADS_COUNTER = "TOPADS_COUNTER";
     public static final String ADAPTER_PAGING = "ADAPTER_PAGING";
+    public static final String KEYWORD = "keyword";
+    public static final String ETALASE_NAME = "etalase_name";
     private static final String TAG = ProductAdapter.class.getSimpleName();
     public static final int ROWS_OF_PRODUCT = 12;
     //    private static final int PRODUCT_GRIDVIEW = 151_458;
@@ -1179,10 +1182,19 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
                     DeepLinkChecker.openProduct(url, context);
                     break;
                 case DeepLinkChecker.SHOP:
-                    DeepLinkChecker.openShop(url, context);
+                    Bundle bundle = new Bundle();
+                    if(DeepLinkChecker.getQuery(url, KEYWORD) != null) {
+                        bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
+                    }
+                    DeepLinkChecker.openShopWithParameter(url, context, bundle);
                     break;
                 case DeepLinkChecker.ETALASE:
-                    DeepLinkChecker.openShopEtalase(url, context);
+                    bundle = new Bundle();
+                    bundle.putString(ETALASE_NAME, DeepLinkChecker.getLinkSegment(url).get(2));
+                    if(DeepLinkChecker.getQuery(url, KEYWORD) != null) {
+                        bundle.putString(KEYWORD, DeepLinkChecker.getQuery(url, KEYWORD));
+                    }
+                    DeepLinkChecker.openShopWithParameter(url, context, bundle);
                     break;
                 default:
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

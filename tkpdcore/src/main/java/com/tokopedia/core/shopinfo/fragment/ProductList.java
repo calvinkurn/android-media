@@ -634,6 +634,12 @@ public class ProductList extends V2BaseFragment {
         }
     }
 
+    public void refreshProductListByKeyword(String keyword) {
+        holder.searchView.setQuery(keyword, false);
+        this.productShopParam.setKeyword(keyword);
+        refreshProductList(this.productShopParam);
+    }
+
     private void getProductNextPage() {
         facadeShopProd.unsubscribeGetShopProduct();
         facadeShopProd.getShopProduct(productShopParam);

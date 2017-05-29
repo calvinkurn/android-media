@@ -124,7 +124,7 @@ public class DeepLinkChecker {
         return (linkSegment.size() == 3 && linkSegment.get(1).equals("etalase"));
     }
 
-    private static String getQuery(String url, String q) {
+    public static String getQuery(String url, String q) {
         CommonUtils.dumper("DEEPLINK " + Uri.parse(url).getQueryParameter(q));
         return Uri.parse(url).getQueryParameter(q);
     }
@@ -246,11 +246,11 @@ public class DeepLinkChecker {
         context.startActivity(intent);
     }
 
-    public static void openShopEtalase(String url, Context context) {
-        Bundle bundle = ShopInfoActivity
-                .createBundleWithEtalase("", getLinkSegment(url).get(0), getLinkSegment(url).get(2));
+    public static void openShopWithParameter(String url, Context context, Bundle parameter) {
+        Bundle bundle = ShopInfoActivity.createBundle("", getLinkSegment(url).get(0));
         Intent intent = new Intent(context, ShopInfoActivity.class);
         intent.putExtras(bundle);
+        intent.putExtras(parameter);
         context.startActivity(intent);
     }
 }

@@ -127,6 +127,7 @@ public class ShopInfoActivity extends BaseActivity
     public static String SHOP_COVER = "shop_cover";
     public static String SHOP_AD_KEY = "shop_ad_key";
     public static String ETALASE_NAME = "etalase_name";
+    public static String KEYWORD = "keyword";
     private final int REQ_RELOAD = 100;
     private ViewHolder holder;
     private com.tokopedia.core.shopinfo.models.shopmodel.ShopModel shopModel;
@@ -178,12 +179,6 @@ public class ShopInfoActivity extends BaseActivity
     public static Bundle createBundle(String id, String domain, String name, String avatar, String cover, int favorite) {
         Bundle bundle = createBundle(id, domain, name, avatar, favorite);
         bundle.putString(SHOP_COVER, cover);
-        return bundle;
-    }
-
-    public static Bundle createBundleWithEtalase(String id, String domain, String etalase) {
-        Bundle bundle = createBundle(id, domain);
-        bundle.putString(ETALASE_NAME, etalase);
         return bundle;
     }
 
@@ -510,6 +505,13 @@ public class ShopInfoActivity extends BaseActivity
 
         // switch to product tab if ETALASE_NAME not empty
         if(getIntent().getStringExtra(ETALASE_NAME) != null) {
+            holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
+        }
+
+        if(getIntent().getStringExtra(KEYWORD) != null) {
+            ProductList productListFragment = (ProductList) adapter.getItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0);
+            productListFragment.refreshProductListByKeyword(getIntent().getStringExtra(KEYWORD));
+
             holder.pager.setCurrentItem(shopModel.info.shopIsOfficial == 1 ? 1 : 0, true);
         }
     }
