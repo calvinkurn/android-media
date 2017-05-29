@@ -7,18 +7,16 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.product.model.CourierItem;
 import com.tokopedia.core.product.model.productdetail.ShopShipment;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.tkpdpdp.adapter.CourierAdapter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.OnClick;
 
 /**
- * Created by HenryPri on 12/05/17.
+ * @author by HenryPri on 12/05/17.
  */
 
 public class CourierActivity extends TActivity {
@@ -28,9 +26,6 @@ public class CourierActivity extends TActivity {
     private RecyclerView recyclerView;
 
     private TextView topBarTitle;
-
-    List<CourierItem> courierItemList = new ArrayList<>();
-
     private CourierAdapter courierAdapter;
 
     @Override

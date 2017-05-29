@@ -1,10 +1,13 @@
 package com.tokopedia.core.product.model.etalase;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
- * Created by alifa on 5/17/17.
+ * @author by alifa on 5/17/17.
  */
 
-public class MonthsInstallmentItem {
+public class MonthsInstallmentItem implements Parcelable {
 
     private String value;
     private String info;
@@ -39,4 +42,37 @@ public class MonthsInstallmentItem {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    protected MonthsInstallmentItem(Parcel in) {
+        value = in.readString();
+        info = in.readString();
+        imageUrl = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(value);
+        dest.writeString(info);
+        dest.writeString(imageUrl);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<MonthsInstallmentItem> CREATOR
+            = new Parcelable.Creator<MonthsInstallmentItem>() {
+
+        @Override
+        public MonthsInstallmentItem createFromParcel(Parcel in) {
+            return new MonthsInstallmentItem(in);
+        }
+
+        @Override
+        public MonthsInstallmentItem[] newArray(int size) {
+            return new MonthsInstallmentItem[size];
+        }
+    };
 }
