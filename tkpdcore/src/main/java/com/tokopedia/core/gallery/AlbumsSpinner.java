@@ -56,8 +56,8 @@ class AlbumsSpinner {
         mListPopupWindow.dismiss();
         Cursor cursor = mAdapter.getCursor();
         cursor.moveToPosition(position);
-        Album album = Album.valueOf(cursor);
-        String displayName = album.getDisplayName(context);
+        AlbumItem albumItem = AlbumItem.valueOf(cursor);
+        String displayName = albumItem.getDisplayName(context);
         if (mSelected.getVisibility() == View.VISIBLE) {
             mSelected.setText(displayName);
         } else {

@@ -31,15 +31,15 @@ public class AlbumAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Album album = Album.valueOf(cursor);
-        ((TextView) view.findViewById(R.id.album_name)).setText(album.getDisplayName(context));
-        ((TextView) view.findViewById(R.id.album_media_count)).setText(String.valueOf(album.getCount()));
+        AlbumItem albumItem = AlbumItem.valueOf(cursor);
+        ((TextView) view.findViewById(R.id.album_name)).setText(albumItem.getDisplayName(context));
+        ((TextView) view.findViewById(R.id.album_media_count)).setText(String.valueOf(albumItem.getCount()));
 
         // do not need to load animated Gif
         ImageHandler.loadImageFromFileFitCenter(
                 context,
                 (ImageView) view.findViewById(R.id.album_cover),
-                new File(album.getCoverPath())
+                new File(albumItem.getCoverPath())
         );
     }
 }

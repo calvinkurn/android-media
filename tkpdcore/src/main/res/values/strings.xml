@@ -1998,4 +1998,5 @@ di Tokopedia Sekarang!</string>
     <string name="register_text_login">Belum punya akun? Daftar</string>
     <string name="or">Atau</string>
     <string name="album_name_all">Semua Media</string>
+    <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
 </resources>

@@ -6,16 +6,18 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
+import com.tokopedia.core.network.NetworkErrorHelper;
 
 import javax.annotation.Nonnull;
 
@@ -31,6 +33,8 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
 
     private View previewButton;
     private View applyButtonn;
+    private View loading;
+    private FrameLayout container;
 
     private final AlbumCollection albumCollection = new AlbumCollection();
     private AlbumsSpinner albumSpinner;
@@ -61,6 +65,8 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     protected void initView() {
         previewButton = findViewById(R.id.button_preview);
         applyButtonn = findViewById(R.id.button_apply);
+        loading = findViewById(R.id.loading);
+        container = (FrameLayout) findViewById(R.id.container);
     }
 
     protected void setViewListener() {
@@ -129,20 +135,31 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
                 cursor.moveToPosition(albumCollection.getCurrentSelection());
                 albumSpinner.setSelection(GalleryActivity.this,
                         albumCollection.getCurrentSelection());
-                Album album = Album.valueOf(cursor);
-                if (album.isAll()) {
-                    album.addCaptureCount();
+                AlbumItem albumItem = AlbumItem.valueOf(cursor);
+                if (albumItem.isAll()) {
+                    albumItem.addCaptureCount();
                 }
-                onAlbumSelected(album);
+                onAlbumSelected(albumItem);
             }
         });
     }
 
-    private void onAlbumSelected(Album album) {
-        if (album.isAll() && album.isEmpty()) {
-            Log.d(TAG, "onAlbumSelected:empty");
+    private void onAlbumSelected(AlbumItem albumItem) {
+        if (albumItem.isAll() && albumItem.isEmpty()) {
+            loading.setVisibility(View.GONE);
+            NetworkErrorHelper.showEmptyState(this, container, getString(R.string.error_no_media_storage), null);
         } else {
-            Log.d(TAG, "onAlbumSelected: " + album.getDisplayName());
+            loading.setVisibility(View.GONE);
+            inflateFragment(albumItem);
+        }
+    }
+
+    private void inflateFragment(AlbumItem albumItem) {
+        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
+            Fragment fragment = GallerySelectedFragment.newInstance(albumItem);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment, TAG)
+                    .commit();
         }
     }
 
@@ -155,11 +172,11 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         albumCollection.setStateCurrentSelection(position);
         albumAdapter.getCursor().moveToPosition(position);
-        Album album = Album.valueOf(albumAdapter.getCursor());
-        if (album.isAll()) {
-            album.addCaptureCount();
+        AlbumItem albumItem = AlbumItem.valueOf(albumAdapter.getCursor());
+        if (albumItem.isAll()) {
+            albumItem.addCaptureCount();
         }
-        onAlbumSelected(album);
+        onAlbumSelected(albumItem);
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.tokopedia.core.R;
  * Created by hangnadi on 5/22/17.
  */
 
-public class Album implements Parcelable {
+public class AlbumItem implements Parcelable {
 
     public static final String ALBUM_ID_ALL = String.valueOf(-1);
     public static final String ALBUM_NAME_ALL = "All";
@@ -22,7 +22,7 @@ public class Album implements Parcelable {
     private final String displayName;
     private long mCount;
 
-    public Album(String mId, String coverPath, String displayName, long mCount) {
+    public AlbumItem(String mId, String coverPath, String displayName, long mCount) {
         this.mId = mId;
         this.coverPath = coverPath;
         this.displayName = displayName;
@@ -62,27 +62,27 @@ public class Album implements Parcelable {
         dest.writeLong(this.mCount);
     }
 
-    protected Album(Parcel in) {
+    protected AlbumItem(Parcel in) {
         this.mId = in.readString();
         this.coverPath = in.readString();
         this.displayName = in.readString();
         this.mCount = in.readLong();
     }
 
-    public static final Parcelable.Creator<Album> CREATOR = new Parcelable.Creator<Album>() {
+    public static final Parcelable.Creator<AlbumItem> CREATOR = new Parcelable.Creator<AlbumItem>() {
         @Override
-        public Album createFromParcel(Parcel source) {
-            return new Album(source);
+        public AlbumItem createFromParcel(Parcel source) {
+            return new AlbumItem(source);
         }
 
         @Override
-        public Album[] newArray(int size) {
-            return new Album[size];
+        public AlbumItem[] newArray(int size) {
+            return new AlbumItem[size];
         }
     };
 
-    public static Album valueOf(Cursor cursor) {
-        return new Album(
+    public static AlbumItem valueOf(Cursor cursor) {
+        return new AlbumItem(
                 cursor.getString(cursor.getColumnIndex("bucket_id")),
                 cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA)),
                 cursor.getString(cursor.getColumnIndex("bucket_display_name")),
