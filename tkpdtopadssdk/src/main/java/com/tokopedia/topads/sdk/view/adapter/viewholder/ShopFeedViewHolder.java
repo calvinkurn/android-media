@@ -2,9 +2,11 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +15,11 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,12 +27,16 @@ import android.widget.TextView;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Data;
+import com.tokopedia.topads.sdk.domain.model.ImageProduct;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+import com.tokopedia.topads.sdk.view.SquareImageView;
 import com.tokopedia.topads.sdk.view.adapter.ShopImageListAdapter;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopFeedViewModel;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.ShopListViewModel;
+
+import java.util.List;
 
 /**
  * @author by errysuprayogi on 3/30/17.
@@ -44,13 +54,13 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     private TextView shopTitle;
     private TextView shopSubtitle;
     private TextView favTxt;
-    private RecyclerView shopListImage;
     private LinearLayout favBtn;
     private LinearLayout container;
     private Data data;
     private Context context;
-    private SnapHelper snapHelper;
     private ImageLoader imageLoader;
+    private LinearLayout imageContainerBig;
+    private LinearLayout imageContainerSmall;
 
     public ShopFeedViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener) {
         super(itemView);
@@ -60,14 +70,13 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         shopImage = (ImageView) itemView.findViewById(R.id.shop_image);
         shopTitle = (TextView) itemView.findViewById(R.id.shop_title);
         shopSubtitle = (TextView) itemView.findViewById(R.id.shop_subtitle);
-        shopListImage = (RecyclerView) itemView.findViewById(R.id.image_list);
         favBtn = (LinearLayout) itemView.findViewById(R.id.fav_btn);
         favTxt = (TextView) itemView.findViewById(R.id.fav_text);
+        imageContainerBig = (LinearLayout) itemView.findViewById(R.id.image_container_big);
+        imageContainerSmall = (LinearLayout) itemView.findViewById(R.id.image_container_small);
         container = (LinearLayout) itemView.findViewById(R.id.container);
         container.setOnClickListener(this);
         favBtn.setOnClickListener(this);
-        snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(shopListImage);
     }
 
     @Override
@@ -92,11 +101,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             imageLoader.loadImage(shop.getImageShop().getXsEcs(), shop.getImageShop().getXsUrl(),
                     shopImage);
             if(shop.getImageProduct()!=null){
-                ShopImageListAdapter imageListAdapter = new ShopImageListAdapter(context, imageLoader,
-                        shop.getImageProduct(), this, R.layout.layout_shop_product_image_big);
-                shopListImage.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                shopListImage.setHasFixedSize(true);
-                shopListImage.setAdapter(imageListAdapter);
+                generateThumbnailImages(shop.getImageProduct());
             }
 
             Spanned title;
@@ -116,6 +121,20 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
                 shopTitle.setText(title);
             }
             setFavorite(data.isFavorit());
+        }
+    }
+
+    private void generateThumbnailImages(List<ImageProduct> imageProducts) {
+        for (int i = 0; i < 3; i++) {
+            ImageProduct imgProduct = imageProducts.get(i);
+            View view = LayoutInflater.from(context).inflate(R.layout.layout_shop_product_image_big, null);
+            SquareImageView imageView = (SquareImageView) view.findViewById(R.id.image);
+            if(i==0) {
+                imageContainerBig.addView(view);
+            } else {
+                imageContainerSmall.addView(view);
+            }
+            imageLoader.loadImage(imgProduct.getImageUrl(), imageView);
         }
     }
 
