@@ -22,7 +22,9 @@ import android.text.Html;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -226,7 +228,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setActionVar() {
-
+        stopScrollOnEdittext();
     }
 
     @Override
@@ -891,8 +893,21 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             convertedAmount = 0;
         }
         if (convertedAmount > 1) {
-            return noun+"s";
+            return noun + "s";
         }
         return noun;
+    }
+
+    private void stopScrollOnEdittext() {
+        nsvContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+        nsvContainer.setFocusable(true);
+        nsvContainer.setFocusableInTouchMode(true);
+        nsvContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.requestFocusFromTouch();
+                return false;
+            }
+        });
     }
 }
