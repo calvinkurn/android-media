@@ -26,6 +26,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.ConsumerDeeplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
+import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAcceptedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel2DNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseAutoCancel4DNotification;
@@ -154,22 +155,34 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
                 break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
                     serverId = Uri.parse(applinks).getLastPathSegment();
                 }
+                saveApplinkPushNotification(
+                        category,
+                        convertBundleToJsonString(data),
+                        customIndex,
+                        serverId,
+                        new SavePushNotificationCallback()
+                );
+                break;
+            default:
+                ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                applinkBuildAndShowNotification.showApplinkNotification(data);
                 break;
         }
 
-        saveApplinkPushNotification(
-                category,
-                convertBundleToJsonString(data),
-                customIndex,
-                serverId,
-                new SavePushNotificationCallback()
-        );
+
     }
 
 
@@ -207,11 +220,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     private boolean isSupportedApplinkNotification(Bundle bundle) {
         String applink = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK, "");
-        DeepLinkDelegate deepLinkDelegate = new DeepLinkDelegate(
-                new ConsumerDeeplinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader()
-        );
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(applink);
     }
 
