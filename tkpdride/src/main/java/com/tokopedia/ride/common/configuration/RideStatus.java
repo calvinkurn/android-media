@@ -14,4 +14,9 @@ public interface RideStatus {
     String DRIVER_CANCELED = "driver_canceled";
     String RIDER_CANCELED = "rider_canceled";
     String COMPLETED = "completed";
+
+    interface Action{
+        String KEY = "KEY_ACTION";
+        String ACTION_SHARE = "ACTION_SHARE";
+    }
 }

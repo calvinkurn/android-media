@@ -243,6 +243,7 @@ public class RidePushNotificationBuildAndShow {
                 public void onNext(String url) {
                     Intent shareIntent = new Intent(context.getResources().getString(R.string.broadcast_share_eta));
                     shareIntent.putExtra("share", url);
+                    shareIntent.putExtra("riderequest", rideRequest);
                     PendingIntent sharePendingIntent = PendingIntent.getBroadcast(context, 0, shareIntent, 0);
                     remoteView.setOnClickPendingIntent(R.id.layout_share_eta, sharePendingIntent);
                     String title = context.getString(R.string.ride_push_driver_arriving_now);

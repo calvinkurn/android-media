@@ -231,6 +231,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         });
     }
 
+
+
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void actionInflateInitialToolbar() {
@@ -514,6 +516,7 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        mPresenter.onDestroy();
     }
 
     private void onBottomContainerChangeToProductListScreen() {

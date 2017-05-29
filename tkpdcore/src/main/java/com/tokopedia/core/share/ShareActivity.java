@@ -23,7 +23,7 @@ public class ShareActivity extends TActivity implements ShareView {
         return intent;
     }
 
-    public static Intent getCallingRideIntent(Activity activity, ShareData shareData){
+    public static Intent getCallingRideIntent(Context activity, ShareData shareData){
         Intent intent = new Intent(activity, ShareActivity.class);
         intent.putExtra(ShareData.TAG, shareData);
         return intent;

@@ -63,6 +63,7 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
@@ -99,7 +100,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int REQUEST_CODE_DRIVER_NOT_FOUND = 1006;
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
     private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
-    private static final String EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID";
+    private static final String EXTRA_ACTION = "EXTRA_ACTION";
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
@@ -167,15 +168,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         presenter.onMapReady();
     }
 
-    public static OnTripMapFragment newInstance(String requestId, String productId) {
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_RIDE_REQUEST_ID, requestId);
-        bundle.putString(EXTRA_PRODUCT_ID, productId);
-        OnTripMapFragment fragment = new OnTripMapFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     public static OnTripMapFragment newInstance(RideRequest rideRequest) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_RIDE_REQUEST, rideRequest);
@@ -206,8 +198,6 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
             if (rideRequest != null) {
                 requestId = rideRequest.getRequestId();
-            } else {
-                requestId = getArguments().getString(EXTRA_RIDE_REQUEST_ID);
             }
 
             if (confirmBookingViewModel != null) {

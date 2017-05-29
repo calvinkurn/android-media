@@ -19,12 +19,15 @@ import android.widget.Toast;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.view.fragment.OnTripMapFragment;
@@ -63,6 +66,42 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         intent.putExtra(EXTRA_RIDE_REQUEST, rideRequest);
         return intent;
     }
+
+    public static TaskStackBuilder getCallingIntentWithShareAction(Context context, String url) {
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.EXTRA_FROM_PUSH, true);
+        bundle.putString(RideStatus.KEY, RideStatus.ACCEPTED);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
+
+        Intent parentHome = new Intent(context, RideHomeActivity.class)
+                .putExtras(bundle);
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType(ShareData.RIDE_TYPE)
+                .setName(context.getString(R.string.share_ride_title))
+                .setTextContent(context.getString(R.string.share_ride_description))
+                .setUri(url)
+                .build();
+
+        Intent shareIntent = ShareActivity.getCallingRideIntent(context, shareData);
+
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentHome);
+        taskStackBuilder.addNextIntent(shareIntent);
+        return taskStackBuilder;
+    }
+
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, OnTripActivity.class);

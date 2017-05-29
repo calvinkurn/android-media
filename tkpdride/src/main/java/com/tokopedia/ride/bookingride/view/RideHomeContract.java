@@ -52,5 +52,7 @@ public interface RideHomeContract {
         void initialize();
 
         void actionCheckPendingRequestIfAny();
+
+        void onDestroy();
     }
 }
