@@ -1148,7 +1148,17 @@ public class ProductAdapter extends BaseRecyclerViewAdapter {
         }
 
         public void bind(final OsBannerViewModel viewModel) {
-            ImageHandler.loadImageAndCache(imageBannerOs, viewModel.bannerOfficialStore.getBannerUrl());
+            ImageHandler.loadImageWithTarget(context, viewModel.bannerOfficialStore.getBannerUrl(),
+                new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if(resource.getHeight()!= 1 && resource.getWidth() != 1) {
+                            imageBannerOs.setImageBitmap(resource);
+                        }
+                    }
+                }
+            );
+            
             imageBannerOs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
