@@ -22,6 +22,8 @@ public class RideHistory implements Parcelable {
     private boolean shared;
     private Payment payment;
     private String requestTime;
+    private float cashbackAmount;
+    private float discountAmount;
 
     public String getRequestId() {
         return requestId;
@@ -101,6 +103,22 @@ public class RideHistory implements Parcelable {
 
     public void setRequestTime(String requestTime) {
         this.requestTime = requestTime;
+    }
+
+    public float getCashbackAmount() {
+        return cashbackAmount;
+    }
+
+    public void setCashbackAmount(float cashbackAmount) {
+        this.cashbackAmount = cashbackAmount;
+    }
+
+    public float getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public void setDiscountAmount(float discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
     public RideHistory() {

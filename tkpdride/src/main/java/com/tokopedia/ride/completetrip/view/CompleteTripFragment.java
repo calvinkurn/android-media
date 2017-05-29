@@ -46,7 +46,7 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     @BindView(R2.id.layout_loader)
     LinearLayout loaderLayout;
     @BindView(R2.id.tv_total_fare)
-    TextView totalFareTextView;
+    TextView totalChargedTopTextView;
     @BindView(R2.id.iv_driver_pict)
     ImageView driverPictImageView;
     @BindView(R2.id.tv_driver_rating)
@@ -71,6 +71,18 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     LinearLayout uberSingupLayout;
     @BindView(R2.id.tv_signup_tnc)
     TextView signUpUberTermsTextView;
+    @BindView(R2.id.tv_label_total_fare)
+    TextView totalFareLabelTextView;
+    @BindView(R2.id.tv_total_fare_value)
+    TextView totalFareValueTextView;
+    @BindView(R2.id.tv_label_discount)
+    TextView discountLabelTextView;
+    @BindView(R2.id.tv_discount)
+    TextView discountValueTextView;
+    @BindView(R2.id.tv_label_cashback)
+    TextView cashbackLableTextView;
+    @BindView(R2.id.tv_cashback)
+    TextView cashbackValueTextView;
 
     CompleteTripContract.Presenter presenter;
     private String requestId;
@@ -178,7 +190,9 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
     public void renderReceipt(Receipt receipt) {
         this.receipt = receipt;
         totalChargedTextView.setText(receipt.getTotalCharged());
-        totalFareTextView.setText(receipt.getTotalFare());
+        totalChargedTopTextView.setText(receipt.getTotalCharged());
+        totalFareValueTextView.setText(receipt.getTotalFare());
+
         if (receipt.getUberSignupText() != null) {
             uberSingupLayout.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -194,6 +208,20 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
             signUpUberTermsTextView.setVisibility(View.GONE);
         } else {
             signUpUberTermsTextView.setVisibility(View.VISIBLE);
+        }
+
+        if (receipt.getCashback() > 0) {
+            cashbackValueTextView.setText(receipt.getCashback() + "");
+        } else {
+            cashbackValueTextView.setVisibility(View.GONE);
+            cashbackLableTextView.setVisibility(View.GONE);
+        }
+
+        if (receipt.getDiscount() > 0) {
+            discountValueTextView.setText("- " + receipt.getDiscount());
+        } else {
+            discountValueTextView.setVisibility(View.GONE);
+            discountLabelTextView.setVisibility(View.GONE);
         }
     }
 

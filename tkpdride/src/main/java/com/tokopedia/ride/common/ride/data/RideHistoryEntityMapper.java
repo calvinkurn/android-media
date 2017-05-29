@@ -48,6 +48,8 @@ public class RideHistoryEntityMapper {
             rideHistory.setDestination(rideRequestEntityMapper.transform(entity.getDestination()));
             rideHistory.setPickup(rideRequestEntityMapper.transform(entity.getPickupEntity()));
             rideHistory.setPayment(transform(entity.getPaymentEntity()));
+            rideHistory.setCashbackAmount(entity.getCashbackAmount());
+            rideHistory.setDiscountAmount(entity.getDiscountAmount());
             rideHistory.setRequestTime(entity.getRequestTime());
         }
         return rideHistory;

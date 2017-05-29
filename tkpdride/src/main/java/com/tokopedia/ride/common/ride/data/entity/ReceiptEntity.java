@@ -74,6 +74,12 @@ public class ReceiptEntity {
     @SerializedName("ride_offer")
     @Expose
     RideOfferEntity rideOffer;
+    @SerializedName("discount_amount")
+    @Expose
+    float discountAmount;
+    @SerializedName("cashback_amount")
+    @Expose
+    float cashbackAmount;
 
     public ReceiptEntity() {
     }
@@ -128,5 +134,13 @@ public class ReceiptEntity {
 
     public RideOfferEntity getRideOffer() {
         return rideOffer;
+    }
+
+    public float getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public float getCashbackAmount() {
+        return cashbackAmount;
     }
 }

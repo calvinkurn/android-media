@@ -63,7 +63,6 @@ import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
-import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
@@ -104,7 +103,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
-    private static final float DEFAUL_MAP_ZOOM = 16;
+    private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 18;
 
 
@@ -387,6 +386,10 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                     destination.getLongitude()
             ));
             requestParams.putString("sensor", "false");
+            requestParams.putString("traffic_model", "best_guess");
+            requestParams.putString("mode", "driving");
+
+            requestParams.putString("departure_time", (int) (System.currentTimeMillis() / 1000) + "");
 
             if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString("waypoints", String.format("%s,%s",

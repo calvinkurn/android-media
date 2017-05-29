@@ -77,6 +77,12 @@ public class RideHistoryEntity {
     @SerializedName("vehicle")
     @Expose
     VehicleEntity vehicleEntity;
+    @SerializedName("discount_amount")
+    @Expose
+    float discountAmount;
+    @SerializedName("cashback_amount")
+    @Expose
+    float cashbackAmount;
     @SerializedName("create_time")
     @Expose
     String requestTime;
@@ -126,5 +132,13 @@ public class RideHistoryEntity {
 
     public String getRequestTime() {
         return requestTime;
+    }
+
+    public float getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public float getCashbackAmount() {
+        return cashbackAmount;
     }
 }

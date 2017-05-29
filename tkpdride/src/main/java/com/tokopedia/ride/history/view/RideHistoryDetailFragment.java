@@ -12,6 +12,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -19,6 +20,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.history.di.RideHistoryDetailDependencyInjection;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
@@ -50,6 +52,22 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     AppCompatTextView driverNameTextView;
     @BindView(R2.id.top_container)
     RelativeLayout topLayout;
+    @BindView(R2.id.tv_label_total_fare)
+    TextView totalFareLabelTextView;
+    @BindView(R2.id.tv_total_fare_value)
+    TextView totalFareValueTextView;
+    @BindView(R2.id.tv_label_discount)
+    TextView discountLabelTextView;
+    @BindView(R2.id.tv_discount)
+    TextView discountValueTextView;
+    @BindView(R2.id.tv_label_cashback)
+    TextView cashbackLableTextView;
+    @BindView(R2.id.tv_cashback)
+    TextView cashbackValueTextView;
+    @BindView(R2.id.tv_total_charged)
+    TextView totalChargedTexView;
+    @BindView(R2.id.rl_payment_details)
+    RelativeLayout paymentDetailsLayout;
 
     RideHistoryDetailContract.Presenter mPresenter;
 
@@ -122,9 +140,31 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
         driverNameTextView.setText(getString(R.string.your_trip_with) + " " + rideHistory.getDriverName());
-        rideFareTextView.setText(rideHistory.getFare());
         setPickupLocationText(rideHistory.getStartAddress());
         setDestinationLocation(rideHistory.getEndAddress());
+
+        totalChargedTexView.setText(rideHistory.getFare());
+        rideFareTextView.setText(rideHistory.getFare());
+        totalFareValueTextView.setText(rideHistory.getTotalFare());
+
+        if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
+            paymentDetailsLayout.setVisibility(View.VISIBLE);
+            if (rideHistory.getCashback() > 0) {
+                cashbackValueTextView.setText(rideHistory.getCashback() + "");
+            } else {
+                cashbackValueTextView.setVisibility(View.GONE);
+                cashbackLableTextView.setVisibility(View.GONE);
+            }
+        } else {
+            paymentDetailsLayout.setVisibility(View.GONE);
+        }
+
+        if (rideHistory.getDiscount() > 0) {
+            discountValueTextView.setText("- " + rideHistory.getDiscount());
+        } else {
+            discountValueTextView.setVisibility(View.GONE);
+            discountLabelTextView.setVisibility(View.GONE);
+        }
 
 
         if (rideHistory.getDriverPictureUrl().length() > 0) {

@@ -443,6 +443,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
 
                         if (activeRideRequest != null) {
+                            CommonUtils.dumper("Zoom activeRideRequest is not null");
                             double startLat = activeRideRequest.getPickup().getLatitude();
                             double startLng = activeRideRequest.getPickup().getLongitude();
                             double endLat = activeRideRequest.getDestination().getLatitude();
@@ -465,6 +466,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                                 );
                             }
                         } else {
+                            CommonUtils.dumper("Zoom activeRideRequest is null");
+
                             if (routes.size() > 0) {
                                 List<LatLng> route = routes.get(0);
                                 double startLat = route.get(0).latitude;

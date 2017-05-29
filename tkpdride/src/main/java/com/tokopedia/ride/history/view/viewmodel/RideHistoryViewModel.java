@@ -29,6 +29,9 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
     private String mapImage;
     private String displayStatus;
     private String licensePlateNumber;
+    private String totalFare;
+    private float discount;
+    private float cashback;
 
     public RideHistoryViewModel() {
     }
@@ -174,6 +177,30 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         this.licensePlateNumber = licensePlateNumber;
     }
 
+    public String getTotalFare() {
+        return totalFare;
+    }
+
+    public void setTotalFare(String totalFare) {
+        this.totalFare = totalFare;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public float getCashback() {
+        return cashback;
+    }
+
+    public void setCashback(float cashback) {
+        this.cashback = cashback;
+    }
+
     protected RideHistoryViewModel(Parcel in) {
         requestId = in.readString();
         requestTime = in.readString();
@@ -193,6 +220,9 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         endAddress = in.readString();
         displayStatus = in.readString();
         licensePlateNumber = in.readString();
+        totalFare = in.readString();
+        discount = in.readFloat();
+        cashback = in.readFloat();
     }
 
     @Override
@@ -220,6 +250,9 @@ public class RideHistoryViewModel implements Visitable<RideHistoryAdapterTypeFac
         dest.writeString(endAddress);
         dest.writeString(displayStatus);
         dest.writeString(licensePlateNumber);
+        dest.writeString(totalFare);
+        dest.writeFloat(discount);
+        dest.writeFloat(cashback);
     }
 
     @SuppressWarnings("unused")
