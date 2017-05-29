@@ -2,6 +2,7 @@ package com.tokopedia.discovery.intermediary.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 
@@ -30,12 +32,21 @@ public class BannerPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.image_slider, container, false);
 
         ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
-        //promoImage.setOnClickListener(onPromoClicked(bannerList.get(position).promoUrl));
+        if (bannerList.get(position).getUrl()!=null && bannerList.get(position).getUrl().length()>0) {
+            bannerImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, BannerWebView.class);
+                    intent.putExtra("url", bannerList.get(position).getUrl());
+                    context.startActivity(intent);
+                }
+            });
+        }
         ImageHandler.LoadImage(
                 bannerImage,
                 bannerList.get(position).getImageUrl()

@@ -18,9 +18,9 @@ public class Image implements Parcelable {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
-    @SerializedName("applinks")
+    @SerializedName("url")
     @Expose
-    private String applinks;
+    private String url;
 
     public Integer getPosition() {
         return position;
@@ -38,19 +38,19 @@ public class Image implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public String getApplinks() {
-        return applinks;
+    public String getUrl() {
+        return url;
     }
 
-    public void setApplinks(String applinks) {
-        this.applinks = applinks;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
 
     protected Image(Parcel in) {
         position = in.readByte() == 0x00 ? null : in.readInt();
         imageUrl = in.readString();
-        applinks = in.readString();
+        url = in.readString();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Image implements Parcelable {
             dest.writeInt(position);
         }
         dest.writeString(imageUrl);
-        dest.writeString(applinks);
+        dest.writeString(url);
     }
 
     @SuppressWarnings("unused")

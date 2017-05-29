@@ -18,7 +18,7 @@ public class Video implements Parcelable {
     @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("video_url")
+    @SerializedName("youtube_id")
     @Expose
     private String videoUrl;
 

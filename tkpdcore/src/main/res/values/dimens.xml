@@ -192,5 +192,5 @@
     <dimen name="spacing_show_case">12dp</dimen>
     <dimen name="arrow_width_show_case">16dp</dimen>
 
-    <dimen name="intermediary_brand">90dp</dimen>
+    <dimen name="intermediary_brand">86dp</dimen>
 </resources>

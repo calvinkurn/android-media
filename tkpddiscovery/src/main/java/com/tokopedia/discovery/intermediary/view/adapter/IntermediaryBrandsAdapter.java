@@ -33,6 +33,7 @@ public class IntermediaryBrandsAdapter extends
                                      IntermediaryBrandsAdapter.BrandListener brandListener) {
         this.brandWidth = brandWidth;
         this.brandModels = brandModels;
+        this.brandListener = brandListener;
     }
 
     @Override

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
-import rx.functions.Func2;
 import rx.functions.Func3;
 
 /**
@@ -153,7 +152,7 @@ public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesM
         if (categoryHadesModel.getData().getBanner()!=null && categoryHadesModel.getData().getBanner().getImages()!=null) {
             for (Image image: categoryHadesModel.getData().getBanner().getImages()) {
                 BannerModel bannerModel = new BannerModel();
-                bannerModel.setUrl(image.getApplinks());
+                bannerModel.setUrl(image.getUrl());
                 bannerModel.setImageUrl(image.getImageUrl());
                 bannerModel.setPosition(image.getPosition());
                 bannerModels.add(bannerModel);
