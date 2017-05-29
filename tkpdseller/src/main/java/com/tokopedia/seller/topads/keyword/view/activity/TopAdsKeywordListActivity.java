@@ -147,7 +147,10 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_filter) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.menu_filter) {
             if (getTopAdsBaseKeywordListFragment() != null) {
                 getTopAdsBaseKeywordListFragment().onFilterChanged("sekarang");
             }
