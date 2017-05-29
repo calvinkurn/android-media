@@ -13,8 +13,11 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
@@ -35,9 +38,7 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     @Inject
     TopAdsKeywordListPresenterImpl topAdsKeywordListPresenter;
-    private DateHeaderFormatter dateHeaderFormatter;
-    private ReputationHeaderViewHelper reputationViewHelper;
-    private RelativeLayout widgetHeaderReputaitonContainer;
+    private DateLabelView dateLabelView;
     private TopAdsDashboardListener keywordListListener;
 
     public static Fragment createInstance() {
@@ -49,10 +50,6 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
         super.initialPresenter();
         topAdsKeywordListPresenter.attachView(this);
 
-        dateHeaderFormatter = new DateHeaderFormatter(
-                getResources().getStringArray(R.array.month_names_abrev)
-        );
-
         if (getActivity() != null && getActivity() instanceof TopAdsDashboardListener) {
             keywordListListener = (TopAdsDashboardListener) getActivity();
         }
@@ -63,12 +60,11 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        widgetHeaderReputaitonContainer = (RelativeLayout) view.findViewById(R.id.widget_header_reputation_container);
-        reputationViewHelper = new ReputationHeaderViewHelper(view);
-        widgetHeaderReputaitonContainer.setOnClickListener(new View.OnClickListener() {
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reputationViewHelper.onClick(TopAdsKeywordListFragment.this, false);
+                openDatePicker();
             }
         });
         return view;
@@ -103,14 +99,9 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     }
 
     private void bindDate() {
-        reputationViewHelper.bindDate(
-                dateHeaderFormatter,
-                startDate.getTime(),
-                endDate.getTime(),
-                DatePickerConstant.SELECTION_TYPE_CUSTOM_DATE,
-                DatePickerConstant.SELECTION_TYPE_PERIOD_DATE
-        );
+        dateLabelView.setDate(startDate, endDate);
     }
+
 
     @Override
     protected void searchAd() {
@@ -120,7 +111,7 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_list_with_date;
+        return R.layout.fragment_top_ads_keyword_positive_list;
     }
 
     @Override

@@ -17,6 +17,7 @@ import java.util.List;
 /*
  * Digunakan untuk memfilter Product y
  */
+@Deprecated
 public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
 
     private int selectedStatusPromo;

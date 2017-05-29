@@ -11,6 +11,7 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
 
+@Deprecated
 public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> {
 
     private static final int REQUEST_CODE_DATE = 5;

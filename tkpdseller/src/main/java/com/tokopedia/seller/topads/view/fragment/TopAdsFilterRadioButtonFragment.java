@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/31/2017.
  */
-
+@Deprecated
 public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterContentFragment<P> implements TopAdsBasicRadioButtonAdapter.Callback {
 
     private RecyclerView recyclerView;
@@ -47,7 +47,7 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
         setAdapterData(getRadioButtonList());
     }
 
-    public void setAdapterData(List<RadioButtonItem> radioButtonItems){
+    public void setAdapterData(List<RadioButtonItem> radioButtonItems) {
         adapter.setData(radioButtonItems);
         adapter.notifyDataSetChanged();
         if (selectedAdapterPosition > -1) { // data might come from api
@@ -56,8 +56,8 @@ public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterCon
         adapter.setCallback(this);
     }
 
-    public String getSelectedRadioValue(){
-        if ( adapter.isEmpty()) {
+    public String getSelectedRadioValue() {
+        if (adapter.isEmpty()) {
             return String.valueOf(0);
         }
         return adapter.getSelectedItem().getValue();

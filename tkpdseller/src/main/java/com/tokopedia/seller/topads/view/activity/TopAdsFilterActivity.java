@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
+@Deprecated
 public abstract class TopAdsFilterActivity extends BasePresenterActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
 
     private TopAdsFilterListFragment topAdsFilterListFragment;
