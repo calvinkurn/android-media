@@ -53,7 +53,6 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void setMoEngageExistingUser(){
         getMoEngine().isExistingUser(SessionHandler.isV4Login(MainApplication.getAppContext()));
-        PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
     public static void setMoEngageUser(CustomerWrapper customerWrapper){
