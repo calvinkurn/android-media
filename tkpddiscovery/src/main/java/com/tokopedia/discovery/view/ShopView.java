@@ -26,4 +26,6 @@ public interface ShopView extends BaseView {
     void startShopInfoActivity(String shopId);
 
     void showErrorMessage(String error);
+
+    void showToggleFavoriteSuccess(String shopName, boolean favorited);
 }

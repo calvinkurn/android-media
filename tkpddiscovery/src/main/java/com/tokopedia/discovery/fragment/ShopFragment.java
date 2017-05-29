@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
@@ -337,6 +338,19 @@ public class ShopFragment extends BaseFragment<Shop> implements ShopView, FetchN
     @Override
     public void showErrorMessage(String error) {
         NetworkErrorHelper.showSnackbar(getActivity(), error);
+    }
+
+    @Override
+    public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
+        String message;
+        if (favorited) {
+            message = getResources().getString(R.string.add_favorite_success_message)
+                    .replace("$1", shopName);
+        } else {
+            message = getResources().getString(R.string.remove_favorite_success_message)
+                    .replace("$1", shopName);
+        }
+        SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

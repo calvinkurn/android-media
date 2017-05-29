@@ -209,14 +209,15 @@ public class BrowseShopAdapter extends ProductAdapter {
                 public void onClick(View v) {
                     favoriteButton.setEnabled(false);
                     final ActionShopInfoRetrofit favoriteAction
-                            = new ActionShopInfoRetrofit(context, shopModel.getShopId(), shopModel.getShopDomain(), "");
+                            = new ActionShopInfoRetrofit(context, shopModel.getShopName(), shopModel.getShopId(), shopModel.getShopDomain(), "");
 
                     favoriteAction.setOnActionToggleFavListener(new ActionShopInfoRetrofit.OnActionToggleFavListener() {
                         @Override
-                        public void onSuccess() {
+                        public void onSuccess(String shopName) {
                             toggleIsFavoritedState(shopModel);
                             adjustFavoriteButtonAppearance(context, shopModel.isFavorited());
                             favoriteButton.setEnabled(true);
+                            shopView.showToggleFavoriteSuccess(shopName, shopModel.isFavorited());
                         }
 
                         @Override

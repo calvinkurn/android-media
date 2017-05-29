@@ -258,18 +258,20 @@ public class ShopInfoActivity extends BaseActivity
     private void initFacadeGet() {
         facadeGetRetrofit = new GetShopInfoRetrofit(this, shopModel.info.shopId, shopModel.info.shopDomain);
         facadeGetRetrofit.setGetShopInfoListener(onGetShopInfoRetro());
-        facadeAction = new ActionShopInfoRetrofit(this, shopModel.info.shopId, shopModel.info.shopDomain, adKey);
+        facadeAction = new ActionShopInfoRetrofit(this,
+                shopModel.info.shopName, shopModel.info.shopId, shopModel.info.shopDomain, adKey);
         facadeAction.setOnActionToggleFavListener(onActionToggleFav());
     }
 
     private ActionShopInfoRetrofit.OnActionToggleFavListener onActionToggleFav() {
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
-            public void onSuccess() {
+            public void onSuccess(String shopName) {
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
                 updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
                 holder.favorite.clearAnimation();
+                showToggleFavoriteSuccess(shopName, shopModel.info.shopAlreadyFavorited != 0);
             }
 
             @Override
@@ -278,6 +280,18 @@ public class ShopInfoActivity extends BaseActivity
                 NetworkErrorHelper.showSnackbar(ShopInfoActivity.this, error);
             }
         };
+    }
+
+    public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
+        String message;
+        if (favorited) {
+            message = getResources().getString(R.string.add_favorite_success_message)
+                    .replace("$1", shopName);
+        } else {
+            message = getResources().getString(R.string.remove_favorite_success_message)
+                    .replace("$1", shopName);
+        }
+        SnackbarManager.make(this, message, Snackbar.LENGTH_LONG).show();
     }
 
     private void updateIsFavoritedIntent(boolean shopAlreadyFavorited) {
