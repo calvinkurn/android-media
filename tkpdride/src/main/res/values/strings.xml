@@ -95,7 +95,7 @@
     <string name="choose_below_offer">Choose from Offers below</string>
     <string name="loading">loading ...</string>
     <string name="ride_home_map_dest_same_source_error">Destination not allowed to be same with Pickup</string>
-    <string name="set_location_on_map">Select location on map</string>
+    <string name="set_location_on_map">Open map</string>
     <string name="title_trip_accepted_postfix">Booked</string>
     <string name="need_help">NEED HELP?</string>
     <string name="link_click_here">CLICK HERE</string>

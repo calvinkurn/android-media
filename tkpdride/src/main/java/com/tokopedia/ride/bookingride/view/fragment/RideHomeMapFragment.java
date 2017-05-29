@@ -527,7 +527,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void actionSourceButtonClicked() {
         if (isDisableSelectLocation)
             return;
-        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
+        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_green);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE, mDestinationLayout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_SOURCE_REQUEST_CODE);
@@ -537,7 +537,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void actionDestinationButtonClicked() {
         if (isDisableSelectLocation)
             return;
-        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity());
+        Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, mDestinationLayout);

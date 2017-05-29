@@ -19,9 +19,12 @@ public class GooglePlacePickerActivity extends BaseActivity
     public static String EXTRA_REQUEST_CODE = "EXTRA_REQUEST_CODE";
     public static String EXTRA_SELECTED_PLACE = "EXTRA_SELECTED_PLACE";
     public static String EXTRA_SOURCE = "EXTRA_SOURCE";
+    public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, GooglePlacePickerActivity.class);
+    public static Intent getCallingIntent(Activity activity, int markerId) {
+        Intent intent = new Intent(activity, GooglePlacePickerActivity.class);
+        intent.putExtra(EXTRA_MARKER_ID, markerId);
+        return intent;
     }
 
     @Override
@@ -76,5 +79,32 @@ public class GooglePlacePickerActivity extends BaseActivity
             setResult(RESULT_OK, intent);
         }
         finish();
+    }
+
+    @Override
+    public void backArrowClicked() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof SelectLocationOnMapFragment) {
+            //hideBlockTranslucentLayout();
+            //hideSeatPanelLayout();
+            getFragmentManager().popBackStack();
+
+            boolean showAutoDetectLocation = true;
+            boolean selectLocationOnMap = false;
+            if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
+                showAutoDetectLocation = false;
+                selectLocationOnMap = true;
+            }
+
+            replaceFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap));
+//            mSlidingUpPanelLayout.setPanelHeight(Float.floatToIntBits(getResources().getDimension(R.dimen.sliding_panel_min_height)));
+//            mSlidingUpPanelLayout.setParallaxOffset(Float.floatToIntBits(getResources().getDimension(R.dimen.tooler_height)));
+        } else {
+            super.onBackPressed();
+        }
     }
 }

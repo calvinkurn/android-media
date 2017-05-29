@@ -7,7 +7,10 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +32,7 @@ import butterknife.OnClick;
 
 public class SelectLocationOnMapFragment extends BaseFragment implements SelectLocationOnMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
     private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
+    public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
 
     private static final float DEFAULT_MAP_ZOOM = 18;
     private static final LatLng DEFAULT_LATLNG = new LatLng(-6.175794, 106.826457);
@@ -36,19 +40,18 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @BindView(R2.id.mapview)
     MapView mapView;
-    @BindView(R2.id.crux_cabs_source)
-    TextView tvSource;
-    @BindView(R2.id.crux_cabs_destination)
-    TextView tvDestination;
-    @BindView(R2.id.layout_src_destination)
-    View mSrcDestLayout;
+    @BindView(R2.id.tv_cabs_autocomplete)
+    TextView addressNameTextView;
     @BindView(R2.id.tw_map_wrapper)
     TouchableWrapperLayout mapWrapperLayout;
+    @BindView(R2.id.iv_android_center_marker)
+    ImageView centerMarker;
 
     private SelectLocationOnMapContract.Presenter mPresenter;
-    private PlacePassViewModel source, destination;
+    //    private PlacePassViewModel source, destination;
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
+    private PlacePassViewModel locationDragged;
 
     @Override
     public void onLayoutDrag() {
@@ -61,7 +64,9 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
     public interface OnFragmentInteractionListener {
-        public void handleSelectDestinationOnMap(PlacePassViewModel destination);
+        void handleSelectDestinationOnMap(PlacePassViewModel destination);
+
+        void backArrowClicked();
     }
 
     public SelectLocationOnMapFragment() {
@@ -72,6 +77,14 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         SelectLocationOnMapFragment fragment = new SelectLocationOnMapFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SOURCE, source);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    public static SelectLocationOnMapFragment newInstance(int markerId) {
+        SelectLocationOnMapFragment fragment = new SelectLocationOnMapFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXTRA_MARKER_ID, markerId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -95,7 +108,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_SOURCE, source);
+//        outState.putParcelable(EXTRA_SOURCE, source);
     }
 
     @Override
@@ -104,13 +117,18 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         if (savedInstanceState != null) {
-            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
+            centerMarker.setImageDrawable(getResources().getDrawable(savedInstanceState.getInt(EXTRA_MARKER_ID)));
+//            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
         }
     }
 
     private void setViewListener() {
-        mapWrapperLayout.setListener(this);
-        setSourceLocationText(source.getTitle());
+        mapWrapperLayout.setListener(this);/*
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.core.R.drawable.ic_arrow_back_24dp);
+        }*/
     }
 
     @Override
@@ -155,22 +173,22 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @Override
     public void onStart() {
-        super.onStart();
+        super.onStart();/*
         if (mGoogleMap != null && source != null) {
             moveMapToLocation(source.getLatitude(), source.getLongitude());
-        }
+        }*/
     }
 
     private void setInitialVariable() {
         mPresenter = new SelectLocationOnMapPresenter();
-        source = getArguments().getParcelable(EXTRA_SOURCE);
+        /*source = getArguments().getParcelable(EXTRA_SOURCE);
         if (source == null) {
             source = new PlacePassViewModel();
             source.setAddress("Source");
             source.setAddress("Source");
             source.setAndFormatLatitude(DEFAULT_LATLNG.latitude);
             source.setAndFormatLongitude(DEFAULT_LATLNG.longitude);
-        }
+        }*/
     }
 
     private void setMapViewListener() {
@@ -185,7 +203,6 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         }
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(source.getLatitude(), source.getLongitude()), DEFAULT_MAP_ZOOM));
 
 //        mGoogleMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
 //            @Override
@@ -241,17 +258,17 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @Override
     public void setSourceLocationText(String address) {
-        tvSource.setText(address);
+
     }
 
     @Override
     public void setDestinationLocationText(String address) {
-        tvDestination.setText(address);
+        addressNameTextView.setText(address);
     }
 
     @Override
     public void setDestination(PlacePassViewModel destination) {
-        this.destination = destination;
+        locationDragged = destination;
     }
 
     @Override
@@ -269,6 +286,11 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @OnClick(R2.id.btn_done)
     public void actionOnDoneClicked() {
-        mListener.handleSelectDestinationOnMap(destination);
+        mListener.handleSelectDestinationOnMap(locationDragged);
+    }
+
+    @OnClick(R2.id.cabs_autocomplete_back_icon)
+    public void actionBackClicked(){
+        mListener.backArrowClicked();
     }
 }
