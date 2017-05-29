@@ -14,6 +14,7 @@ import android.widget.EditText;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
@@ -33,13 +34,15 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter> implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener {
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter>
+        implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
     protected TopAdsFilterContentFragment.Callback callback;
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private EditText groupFilterSearch;
     private RecyclerView groupFilterRecyclerView;
+    private GroupAd selection;
     /**
      * Sign for title filter list
      */
@@ -47,6 +50,15 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     public static TopAdsKeywordGroupsFragment createInstance(long selectedGroupId, long currentGroupId, String currentGroupName) {
         return new TopAdsKeywordGroupsFragment();
+    }
+
+    public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
+        TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
+        Bundle argument = new Bundle();
+        if (currentGroupAd != null)
+            argument.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, currentGroupAd);
+        topAdsKeywordGroupsFragment.setArguments(argument);
+        return topAdsKeywordGroupsFragment;
     }
 
     @Override
@@ -78,6 +90,9 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (savedInstanceState == null && getArguments() != null) {
+            selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        }
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -142,7 +157,9 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     protected TopAdsAdListAdapter initializeTopAdsAdapter() {
-        return new TopAdsKeywordGroupListAdapter();
+        TopAdsKeywordGroupListAdapter topAdsKeywordGroupListAdapter = new TopAdsKeywordGroupListAdapter();
+        topAdsKeywordGroupListAdapter.setListener(this);
+        return topAdsKeywordGroupListAdapter;
     }
 
     @Override
@@ -152,7 +169,9 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public Intent addResult(Intent intent) {
-        // TODO return selection.
+        if (selection != null)
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, selection);
+
         return intent;
     }
 
@@ -169,5 +188,15 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     @Override
     public void setCallback(TopAdsFilterContentFragment.Callback callback) {
         this.callback = callback;
+    }
+
+    @Override
+    public void notifySelect(GroupAd groupAd) {
+        this.selection = groupAd;
+    }
+
+    @Override
+    public boolean isSelection(GroupAd groupAd) {
+        return selection != null && selection.equals(groupAd);
     }
 }

@@ -22,7 +22,6 @@ import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseKeywordListFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
-import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener;
 
 /**
  * Created by nathan on 5/15/17.
@@ -30,7 +29,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener
 
 public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
-        KeywordListListener.Listener, TopAdsDashboardListener {
+        KeywordListListener.Listener {
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
     private ViewPager viewPager;
     private TopAdsPagerAdapter pagerAdapter;
@@ -174,14 +173,5 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     public void expand() {
         searchItem.expandActionView();
-    }
-
-    @Override
-    public void resetSearchView() {
-        if (searchView == null)
-            return;
-
-        removeListener();
-        addListener();
     }
 }
