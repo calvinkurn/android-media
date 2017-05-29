@@ -43,4 +43,5 @@ public class EmptyFeedViewHolder extends AbstractViewHolder<EmptyModel> {
         });
     }
 
+
 }

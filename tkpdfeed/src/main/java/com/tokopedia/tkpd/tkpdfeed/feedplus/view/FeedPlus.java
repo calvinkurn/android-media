@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -39,13 +41,21 @@ public interface FeedPlus{
 
         void onInfoClicked();
 
-        void onFavoritedClicked();
-
         void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
 
         void onFailedGetFeedFirstPage(String errorMessage);
 
         void onSearchShopButtonClicked();
+
+        void onFavoritedClicked(int adapterPosition);
+
+        void showSnackbar(String s);
+
+        Context getActivity();
+
+        void updateFavorite(int adapterPosition);
+
+        void onViewMorePromoClicked();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

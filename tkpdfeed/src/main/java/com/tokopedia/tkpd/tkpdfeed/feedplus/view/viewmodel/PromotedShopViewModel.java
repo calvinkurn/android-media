@@ -12,6 +12,11 @@ import java.util.ArrayList;
 public class PromotedShopViewModel implements Visitable<FeedPlusTypeFactory>{
 
     private String shopName;
+    private String shopId;
+    private String shopDomain;
+    private String src;
+    private String adKey;
+
     private boolean isGoldMerchant;
     private String description;
     private boolean isFavorited;
@@ -72,5 +77,37 @@ public class PromotedShopViewModel implements Visitable<FeedPlusTypeFactory>{
 
     public void setFavorited(boolean favorited) {
         isFavorited = favorited;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopDomain() {
+        return shopDomain;
+    }
+
+    public void setShopDomain(String shopDomain) {
+        this.shopDomain = shopDomain;
+    }
+
+    public String getSrc() {
+        return src;
+    }
+
+    public void setSrc(String src) {
+        this.src = src;
+    }
+
+    public String getAdKey() {
+        return adKey;
+    }
+
+    public void setAdKey(String adKey) {
+        this.adKey = adKey;
     }
 }

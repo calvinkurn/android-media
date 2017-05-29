@@ -51,7 +51,13 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(getItemViewType(position) == VIEW_MORE) {
-
+            final ViewMoreViewHolder temp = (ViewMoreViewHolder) holder;
+            temp.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewListener.onViewMorePromoClicked();
+                }
+            });
         }else {
             final LayoutViewHolder temp = (LayoutViewHolder) holder;
             if(getItemCount()==1){
@@ -119,8 +125,11 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     public class ViewMoreViewHolder extends RecyclerView.ViewHolder{
 
+        private View container;
+
         public ViewMoreViewHolder(View itemView) {
             super(itemView);
+            container = itemView.findViewById(R.id.container);
         }
     }
 

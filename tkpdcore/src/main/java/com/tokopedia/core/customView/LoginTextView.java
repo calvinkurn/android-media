@@ -38,6 +38,10 @@ public class LoginTextView extends LinearLayout {
     boolean imageEnabled;
     GradientDrawable shape;
     private Drawable drawable;
+    int backgroundColor;
+    private float myDefaultPadding;
+    private int padding;
+    private int height;
 
 
     public LoginTextView(Context context) {
@@ -71,6 +75,7 @@ public class LoginTextView extends LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.provider_login_text_view, this);
         shape = new GradientDrawable();
         shape.setColor(Color.TRANSPARENT);
+        myDefaultPadding = getResources().getDimension(R.dimen.padding_small);
         if(attrs == null){
             setDefaultShape();
         }else{
@@ -83,7 +88,11 @@ public class LoginTextView extends LinearLayout {
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.LoginTextView, 0, 0);
         try {
+
+            padding = (int) (a.getDimension(R.styleable.LoginTextView_btn_padding,  myDefaultPadding));
+            height = (int) a.getDimension(R.styleable.LoginTextView_btn_height, getResources().getDimension(R.dimen.btn_height));
             customText = a.getString(R.styleable.LoginTextView_customText);
+            backgroundColor = a.getColor(R.styleable.LoginTextView_backgroundColor,Color.WHITE);
             textColor = a.getColor(R.styleable.LoginTextView_textColor,Color.WHITE);
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor,0);
             cornerSize = a.getInt(R.styleable.LoginTextView_cornerSize,3);
@@ -99,6 +108,13 @@ public class LoginTextView extends LinearLayout {
         }
 
         ((TextView)findViewById(R.id.provider_name)).setTextColor(textColor);
+        (findViewById(R.id.provider_layout)).setBackgroundColor(backgroundColor);
+
+        (findViewById(R.id.provider_layout)).setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT
+                , height == 0? LayoutParams.WRAP_CONTENT : height));
+
+        (findViewById(R.id.provider_layout)).setPadding(padding, padding, padding, padding);
+
         shape.setCornerRadii(new float[]{cornerSize, cornerSize, cornerSize, cornerSize
                 , cornerSize, cornerSize, cornerSize, cornerSize});
 

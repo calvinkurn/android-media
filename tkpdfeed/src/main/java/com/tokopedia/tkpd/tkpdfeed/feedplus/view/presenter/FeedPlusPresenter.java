@@ -3,13 +3,16 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.source.cloud.CloudFeedDataSource;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,23 +32,27 @@ public class FeedPlusPresenter
     private final SessionHandler sessionHandler;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
+    private FavoriteShopUseCase doFavoriteShopUseCase;
     private String currentCursor = "";
     private FeedPlus.View viewListener;
 
     @Inject
     FeedPlusPresenter(SessionHandler sessionHandler,
-            GetFeedsUseCase getFeedsUseCase,
-                      GetFirstPageFeedsUseCase getFirstPageFeedsUseCase) {
+                      GetFeedsUseCase getFeedsUseCase,
+                      GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
+                      FavoriteShopUseCase favoriteShopUseCase) {
         this.sessionHandler = sessionHandler;
         this.getFeedsUseCase = getFeedsUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
-
+        this.doFavoriteShopUseCase = favoriteShopUseCase;
     }
 
     @Override
-    public void attachView(FeedPlus.View viewListener) {
-        super.attachView(viewListener);
-        this.viewListener = viewListener;
+    public void attachView(FeedPlus.View view) {
+        super.attachView(view);
+        this.viewListener = view;
+        fetchFirstPage();
+
     }
 
     @Override
@@ -56,7 +63,7 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchFirstPage() {
-        getFirstPageFeedsUseCase.execute(getFeedPlusParam(), getFirstPageFeedsSubscriber());
+//        getFirstPageFeedsUseCase.execute(getFeedPlusParam(), getFirstPageFeedsSubscriber());
     }
 
     private RequestParams getFeedPlusParam() {
@@ -128,5 +135,31 @@ public class FeedPlusPresenter
                 currentCursor = getCurrentCursor(feedResult);
             }
         };
+    }
+
+    public void favoriteShop(PromotedShopViewModel promotedShopViewModel, final int adapterPosition) {
+        RequestParams params = RequestParams.create();
+        AuthUtil.generateParamsNetwork2(viewListener.getActivity(), params.getParameters());
+        params.putString(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShopId());
+        params.putString(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShopDomain());
+        params.putString(FavoriteShopUseCase.PARAM_SRC, promotedShopViewModel.getSrc());
+        params.putString(FavoriteShopUseCase.PARAM_AD_KEY, promotedShopViewModel.getAdKey());
+        doFavoriteShopUseCase.execute(params, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                viewListener.showSnackbar(s);
+                viewListener.updateFavorite(adapterPosition);
+            }
+        });
     }
 }
