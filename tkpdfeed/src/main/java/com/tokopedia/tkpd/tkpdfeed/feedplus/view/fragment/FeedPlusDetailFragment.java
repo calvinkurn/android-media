@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -18,6 +20,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -41,9 +44,7 @@ import javax.inject.Inject;
 public class FeedPlusDetailFragment extends BaseDaggerFragment
         implements FeedPlusDetail.View {
 
-    private static final String ARGS_DATA = "ARGS_DATA";
     private static final String ARGS_DETAIL_ID = "DETAIL_ID";
-
 
     RecyclerView recyclerView;
     TextView shareButton;
@@ -58,6 +59,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
     private PagingHandler pagingHandler;
+    private TkpdProgressDialog progressDialog;
+
     private String detailId;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
@@ -134,7 +137,10 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         return new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
+                if (!adapter.isLoading() && pagingHandler.CheckNextPage()) {
+                    pagingHandler.nextPage();
+                    presenter.getFeedDetail(detailId, pagingHandler.getPage());
+                }
             }
         };
     }
@@ -173,12 +179,15 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onWishlistClicked() {
-
+        presenter.addToWishlist();
     }
 
     @Override
-    public void onGoToShopDetail(String shopUrl) {
-
+    public void onGoToShopDetail(String shopId) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -227,6 +236,15 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void showLoading() {
         adapter.showLoading();
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (getActivity() != null)
+            progressDialog.showDialog();
     }
 
     @Override

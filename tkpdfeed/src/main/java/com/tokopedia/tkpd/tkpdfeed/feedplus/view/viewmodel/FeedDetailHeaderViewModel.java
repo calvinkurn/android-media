@@ -9,6 +9,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDet
 
 public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFactory> {
 
+    private Integer shopId;
     private String shopName;
     private String shopAvatar;
     private boolean isGoldMerchant;
@@ -23,7 +24,8 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
         return typeFactory.type(this);
     }
 
-    public FeedDetailHeaderViewModel(String shopName,
+    public FeedDetailHeaderViewModel(Integer shopId,
+                                     String shopName,
                                      String shopAvatar,
                                      boolean isGoldMerchant,
                                      String time,
@@ -31,6 +33,7 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
                                      String shopUrl,
                                      String shareLinkURL,
                                      String shareLinkDescription) {
+        this.shopId = shopId;
         this.shopName = shopName;
         this.shopAvatar = shopAvatar;
         this.isGoldMerchant = isGoldMerchant;
@@ -103,5 +106,13 @@ public class FeedDetailHeaderViewModel implements Visitable<FeedPlusDetailTypeFa
 
     public void setShareLinkDescription(String shareLinkDescription) {
         this.shareLinkDescription = shareLinkDescription;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
     }
 }

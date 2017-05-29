@@ -47,4 +47,8 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         params.putInt(GetFeedsDetailUseCase.PARAM_PAGE, page);
         return params;
     }
+
+    public void addToWishlist() {
+        viewListener.showLoadingProgress();
+    }
 }

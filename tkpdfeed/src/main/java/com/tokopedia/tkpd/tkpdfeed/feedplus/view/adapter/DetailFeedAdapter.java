@@ -85,4 +85,8 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
         this.list.remove(loadingModel);
         notifyDataSetChanged();
     }
+
+    public boolean isLoading() {
+        return this.list.contains(loadingModel);
+    }
 }

@@ -10,8 +10,10 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDet
  * @author by nisie on 5/19/17.
  */
 
-public class ProductCardHeaderViewModel{
+public class ProductCardHeaderViewModel {
 
+    private String url;
+    private Integer shopId;
     private String shopName;
     private String shopAvatar;
     private boolean isGoldMerchant;
@@ -26,11 +28,15 @@ public class ProductCardHeaderViewModel{
         this.time = "2017-05-17T15:10:53+07:00";
     }
 
-    public ProductCardHeaderViewModel(String shopName,
+    public ProductCardHeaderViewModel(Integer shopId,
+                                      String url,
+                                      String shopName,
                                       String shopAvatar,
                                       boolean isGoldMerchant,
                                       String postTime,
                                       boolean isOfficialStore) {
+        this.shopId = shopId;
+        this.url = url;
         this.shopName = shopName;
         this.shopAvatar = shopAvatar;
         this.isGoldMerchant = isGoldMerchant;
@@ -76,5 +82,21 @@ public class ProductCardHeaderViewModel{
 
     public void setOfficialStore(boolean isOfficialStore) {
         this.isOfficialStore = isOfficialStore;
+    }
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

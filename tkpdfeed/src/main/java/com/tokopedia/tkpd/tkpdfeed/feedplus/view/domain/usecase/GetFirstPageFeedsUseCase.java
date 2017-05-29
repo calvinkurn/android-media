@@ -15,6 +15,7 @@ import rx.functions.Func1;
  */
 
 public class GetFirstPageFeedsUseCase extends UseCase<FeedResult> {
+    public static final String PARAM_IS_LOAD_FROM_CACHE = "PARAM_IS_LOAD_FROM_CACHE";
     private FeedRepository feedRepository;
 
     public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
@@ -28,14 +29,19 @@ public class GetFirstPageFeedsUseCase extends UseCase<FeedResult> {
 
     @Override
     public Observable<FeedResult> createObservable(final RequestParams requestParams) {
-        return Observable.concat(
-                feedRepository.getFirstPageFeedsFromLocal(),
-                feedRepository.getFirstPageFeedsFromCloud(requestParams))
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
-                    @Override
-                    public Observable<? extends FeedResult> call(Throwable throwable) {
-                        return feedRepository.getFirstPageFeedsFromCloud(requestParams);
-                    }
-                });
+        if (requestParams.getBoolean(PARAM_IS_LOAD_FROM_CACHE, false)) {
+            return Observable.concat(
+                    feedRepository.getFirstPageFeedsFromLocal(),
+                    feedRepository.getFirstPageFeedsFromCloud(requestParams))
+                    .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
+                        @Override
+                        public Observable<? extends FeedResult> call(Throwable throwable) {
+                            return feedRepository.getFirstPageFeedsFromCloud(requestParams);
+                        }
+                    });
+        } else {
+            return feedRepository.getFirstPageFeedsFromCloud(requestParams);
+
+        }
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +52,7 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
@@ -62,14 +61,14 @@ public class PromotedProductAdapter extends RecyclerView.Adapter<PromotedProduct
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
     }

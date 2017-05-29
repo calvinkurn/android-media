@@ -20,12 +20,10 @@ import rx.Subscriber;
 
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
-    private final FeedPlus.View viewListener;
+    protected final FeedPlus.View viewListener;
     private static final String TYPE_ACTIVITY = "activity";
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
-
-
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -55,7 +53,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewListener.updateCursor(getCurrentCursor(feedResult));
     }
 
-    private ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
+    protected ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
         ArrayList<Visitable> listFeed = new ArrayList<>();
         for (DataFeedDomain domain : dataFeedDomainList) {
             switch (domain.getContent().getType()) {
@@ -69,16 +67,20 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return listFeed;
     }
 
-    private ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
+    protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
         return new ActivityCardViewModel(
                 convertToProductCardHeaderViewModel(domain),
                 convertToProductListViewModel(domain),
                 domain.getSource().getShop().getShareLinkURL(),
-                domain.getContent().getStatusActivity());
+                domain.getSource().getShop().getShareLinkDescription(),
+                domain.getContent().getStatusActivity(),
+                domain.getId());
     }
 
-    private ProductCardHeaderViewModel convertToProductCardHeaderViewModel(DataFeedDomain domain) {
+    protected ProductCardHeaderViewModel convertToProductCardHeaderViewModel(DataFeedDomain domain) {
         return new ProductCardHeaderViewModel(
+                domain.getSource().getShop().getId(),
+                (String) domain.getSource().getShop().getUrl(),
                 domain.getSource().getShop().getName(),
                 domain.getSource().getShop().getAvatar(),
                 domain.getSource().getShop().getGold(),
@@ -87,11 +89,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private ArrayList<ProductFeedViewModel> convertToProductListViewModel(DataFeedDomain dataFeedDomain) {
+    protected ArrayList<ProductFeedViewModel> convertToProductListViewModel(DataFeedDomain dataFeedDomain) {
         ArrayList<ProductFeedViewModel> listProduct = new ArrayList<>();
         for (ProductFeedDomain domain : dataFeedDomain.getContent().getProducts()) {
             listProduct.add(
                     new ProductFeedViewModel(
+                            domain.getId(),
                             domain.getName(),
                             domain.getPrice(),
                             domain.getImage(),
@@ -103,7 +106,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return listProduct;
     }
 
-    private String getCurrentCursor(FeedResult feedResult) {
+    protected String getCurrentCursor(FeedResult feedResult) {
         int lastIndex = feedResult.getDataFeedDomainList().size() - 1;
         return feedResult.getDataFeedDomainList().get(lastIndex).getCursor();
     }

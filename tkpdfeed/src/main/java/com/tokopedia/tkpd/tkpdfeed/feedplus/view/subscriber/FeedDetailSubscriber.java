@@ -84,7 +84,8 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
 
     private FeedDetailHeaderViewModel createHeaderViewModel(String create_time, FeedDetailShopDomain shop) {
-        return new FeedDetailHeaderViewModel(shop.getName(),
+        return new FeedDetailHeaderViewModel(shop.getId(),
+                shop.getName(),
                 shop.getAvatar(),
                 shop.getGold(),
                 create_time,
