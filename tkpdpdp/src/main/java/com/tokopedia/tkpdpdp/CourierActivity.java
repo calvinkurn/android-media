@@ -13,8 +13,6 @@ import com.tokopedia.tkpdpdp.adapter.CourierAdapter;
 
 import java.util.ArrayList;
 
-import butterknife.OnClick;
-
 /**
  * @author by HenryPri on 12/05/17.
  */
@@ -62,18 +60,20 @@ public class CourierActivity extends TActivity {
     }
 
     private void setupRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(courierAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(CourierActivity.this, R.drawable.divider300));
-    }
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
-    @OnClick(R2.id.simple_top_bar_close_button)
-    public void onCloseButtonClick() {
-        finish();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(courierAdapter);
+        DividerItemDecoration itemDecoration
+                = new DividerItemDecoration(CourierActivity.this, R.drawable.divider300);
+
+        recyclerView.addItemDecoration(itemDecoration);
     }
 
     public void showCourierData() {
-        ArrayList<ShopShipment> shopShipments = getIntent().getParcelableArrayListExtra(KEY_COURIER_DATA);
+        ArrayList<ShopShipment> shopShipments
+                = getIntent().getParcelableArrayListExtra(KEY_COURIER_DATA);
         courierAdapter.setData(shopShipments);
     }
 }

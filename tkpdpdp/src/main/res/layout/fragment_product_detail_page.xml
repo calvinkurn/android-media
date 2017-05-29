@@ -186,7 +186,7 @@
         android:clickable="true"
         app:backgroundTint="@color/white"
         android:src="@drawable/ic_fav"
-        app:layout_anchor="@id/collapsing_toolbar"
+        app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>
