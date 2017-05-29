@@ -59,6 +59,7 @@ public class ClientNumberInputView extends LinearLayout {
     private ActionListener actionListener;
     private Context context;
     private ArrayAdapter<String> adapterAutoComplete;
+    private ClientNumber clientNumber;
 
     public ClientNumberInputView(Context context) {
         super(context);
@@ -199,6 +200,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     public void renderData(final ClientNumber clientNumber) {
+        this.clientNumber = clientNumber;
         if (!TextUtils.isEmpty(clientNumber.getText())) {
             tvLabel.setVisibility(VISIBLE);
             tvLabel.setText(clientNumber.getText());
@@ -292,6 +294,18 @@ public class ClientNumberInputView extends LinearLayout {
 
             }
         };
+    }
+
+    public boolean isValidInput() {
+        if (clientNumber != null) {
+            for (Validation validation : clientNumber.getValidation()) {
+                if (Pattern.matches(validation.getRegex(), autoCompleteTextView.getText().toString()))
+                    return true;
+            }
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void resetInputTyped() {

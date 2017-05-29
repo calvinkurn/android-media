@@ -84,7 +84,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "Title belum ada" : data.getTitleText());
+        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         clearHolder(holderRadioChooserOperator);
         renderInstantCheckoutOptions();
         renderOperatorChooserOptions();
@@ -254,11 +254,18 @@ public class CategoryProductStyle2View extends
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
                 clientNumberInputView.enableImageOperator(operatorSelected.getImage());
-                if (operatorSelected.getRule().getProductViewStyle() == 99
-                        || (operatorSelected.getProductList().size() == 1
-                        && String.valueOf(operatorSelected.getDefaultProductId())
-                        .equalsIgnoreCase(operatorSelected.getProductList().get(0).getProductId()))) {
-                    productSelected = operatorSelected.getProductList().get(0);
+                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                    if (operatorSelected.getProductList().get(0) != null)
+                        productSelected = operatorSelected.getProductList().get(0);
+                    else
+                        productSelected = new Product.Builder()
+                                .productId(String.valueOf(operatorSelected.getDefaultProductId()))
+                                .desc("")
+                                .detail("")
+                                .price("")
+                                .pricePlain(0)
+                                .info("")
+                                .build();
                     renderAdditionalProductInfo();
                     renderPriceProductInfo();
                 } else {
@@ -317,9 +324,20 @@ public class CategoryProductStyle2View extends
                                     .toLowerCase()
                     );
                 } else if (productSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(R.string.message_error_digital_product_not_selected)
-                    );
+                    if (operatorSelected.getRule().getProductViewStyle() == 99
+                            && !operatorSelected.getClientNumberList().isEmpty()
+                            && !clientNumberInputView.isValidInput()) {
+                        actionListener.onCannotBeCheckoutProduct(
+                                operatorSelected.getClientNumberList().get(0).getText()
+                                        .toLowerCase() + " " + context.getString(
+                                        R.string.message_error_digital_client_number_format_invalid
+                                )
+                        );
+                    } else {
+                        actionListener.onCannotBeCheckoutProduct(
+                                context.getString(R.string.message_error_digital_product_not_selected)
+                        );
+                    }
                 } else {
                     preCheckoutProduct.setProductId(productSelected.getProductId());
                     preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());

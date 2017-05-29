@@ -162,8 +162,7 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                         productPromo.setValueText(product.getAttributes().getPromo().getValueText());
                         productOperator.setPromo(productPromo);
                     }
-                    if (productOperator.getStatus() != Product.STATUS_INACTIVE)
-                        productOperatorList.add(productOperator);
+                    productOperatorList.add(productOperator);
                 }
                 List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
                 for (com.tokopedia.digital.product.data.entity.response.Field field

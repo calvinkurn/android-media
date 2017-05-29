@@ -21,6 +21,18 @@ public class Product implements Parcelable {
     private Promo promo;
     private int status;
 
+    private Product(Builder builder) {
+        setProductId(builder.productId);
+        setProductType(builder.productType);
+        setDesc(builder.desc);
+        setDetail(builder.detail);
+        setInfo(builder.info);
+        setPrice(builder.price);
+        setPricePlain(builder.pricePlain);
+        setPromo(builder.promo);
+        setStatus(builder.status);
+    }
+
     public String getDesc() {
         return desc;
     }
@@ -127,7 +139,7 @@ public class Product implements Parcelable {
         this.status = in.readInt();
     }
 
-    public static final Parcelable.Creator<Product> CREATOR = new Parcelable.Creator<Product>() {
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
         @Override
         public Product createFromParcel(Parcel source) {
             return new Product(source);
@@ -138,4 +150,69 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
+
+    public static final class Builder {
+        private String productId;
+        private String productType;
+        private String desc;
+        private String detail;
+        private String info;
+        private String price;
+        private int pricePlain;
+        private Promo promo;
+        private int status;
+
+        public Builder() {
+        }
+
+        public Builder productId(String val) {
+            productId = val;
+            return this;
+        }
+
+        public Builder productType(String val) {
+            productType = val;
+            return this;
+        }
+
+        public Builder desc(String val) {
+            desc = val;
+            return this;
+        }
+
+        public Builder detail(String val) {
+            detail = val;
+            return this;
+        }
+
+        public Builder info(String val) {
+            info = val;
+            return this;
+        }
+
+        public Builder price(String val) {
+            price = val;
+            return this;
+        }
+
+        public Builder pricePlain(int val) {
+            pricePlain = val;
+            return this;
+        }
+
+        public Builder promo(Promo val) {
+            promo = val;
+            return this;
+        }
+
+        public Builder status(int val) {
+            status = val;
+            return this;
+        }
+
+        public Product build() {
+            return new Product(this);
+        }
+    }
 }

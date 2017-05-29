@@ -263,10 +263,18 @@ public class CategoryProductStyle3View extends
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
                 clientNumberInputView.enableImageOperator(operatorSelected.getImage());
-                if (operatorSelected.getProductList().size() == 1
-                        && String.valueOf(operatorSelected.getDefaultProductId())
-                        .equalsIgnoreCase(operatorSelected.getProductList().get(0).getProductId())) {
-                    productSelected = operatorSelected.getProductList().get(0);
+                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                    if (operatorSelected.getProductList().get(0) != null)
+                        productSelected = operatorSelected.getProductList().get(0);
+                    else
+                        productSelected = new Product.Builder()
+                                .productId(String.valueOf(operatorSelected.getDefaultProductId()))
+                                .desc("")
+                                .detail("")
+                                .price("")
+                                .pricePlain(0)
+                                .info("")
+                                .build();
                     renderAdditionalProductInfo();
                     renderPriceProductInfo();
                 } else {
@@ -319,9 +327,20 @@ public class CategoryProductStyle3View extends
                             context.getString(R.string.message_error_digital_operator_not_selected)
                     );
                 } else if (productSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(R.string.message_error_digital_product_not_selected)
-                    );
+                    if (operatorSelected.getRule().getProductViewStyle() == 99
+                            && !operatorSelected.getClientNumberList().isEmpty()
+                            && !clientNumberInputView.isValidInput()) {
+                        actionListener.onCannotBeCheckoutProduct(
+                                operatorSelected.getClientNumberList().get(0).getText()
+                                        .toLowerCase() + " " + context.getString(
+                                        R.string.message_error_digital_client_number_format_invalid
+                                )
+                        );
+                    } else {
+                        actionListener.onCannotBeCheckoutProduct(
+                                context.getString(R.string.message_error_digital_product_not_selected)
+                        );
+                    }
                 } else if (!operatorSelected.getClientNumberList().isEmpty()
                         && clientNumberInputView.getText().isEmpty()) {
                     actionListener.onCannotBeCheckoutProduct(

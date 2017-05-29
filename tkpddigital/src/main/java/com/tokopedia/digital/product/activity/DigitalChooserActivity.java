@@ -49,9 +49,13 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     public static Intent newInstanceProductChooser(
             Activity activity, List<Product> productListData, String titleChooser
     ) {
+        List<Product> productListModify = new ArrayList<>();
+        for (Product product : productListData) {
+            if (product.getStatus() != Product.STATUS_INACTIVE) productListModify.add(product);
+        }
         Intent intent = new Intent(activity, DigitalChooserActivity.class);
         intent.putParcelableArrayListExtra(EXTRA_LIST_DATA_PRODUCT,
-                (ArrayList<? extends Parcelable>) productListData);
+                (ArrayList<? extends Parcelable>) productListModify);
         intent.putExtra(EXTRA_TITLE_CHOOSER, titleChooser);
         return intent;
     }
