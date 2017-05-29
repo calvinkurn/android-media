@@ -141,6 +141,10 @@ public class CategoryProductStyle2View extends
 
     private void renderOperatorChooserOptions() {
         clearHolder(holderRadioChooserOperator);
+        clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         digitalOperatorRadioChooserView.setActionListener(getActionListenerRadioChooserOperator());
         digitalOperatorRadioChooserView.renderInitDataList(data.getOperatorList());
         holderRadioChooserOperator.addView(digitalOperatorRadioChooserView);
@@ -156,7 +160,9 @@ public class CategoryProductStyle2View extends
 
     private void renderClientNumberInputForm() {
         clearHolder(holderClientNumber);
-        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
@@ -188,6 +194,8 @@ public class CategoryProductStyle2View extends
 
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
@@ -245,6 +253,7 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
+                clientNumberInputView.enableImageOperator(operatorSelected.getImage());
                 if (operatorSelected.getRule().getProductViewStyle() == 99
                         || (operatorSelected.getProductList().size() == 1
                         && String.valueOf(operatorSelected.getDefaultProductId())

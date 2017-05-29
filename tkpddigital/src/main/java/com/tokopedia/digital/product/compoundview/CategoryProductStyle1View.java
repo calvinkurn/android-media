@@ -154,6 +154,9 @@ public class CategoryProductStyle1View extends
     private void renderClientNumberInputForm() {
         final ClientNumber clientNumber = data.getClientNumberList().get(0);
         clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(clientNumber);
         holderClientNumber.addView(clientNumberInputView);
@@ -181,6 +184,8 @@ public class CategoryProductStyle1View extends
 
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());

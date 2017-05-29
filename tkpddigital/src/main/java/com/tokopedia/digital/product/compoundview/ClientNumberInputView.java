@@ -267,7 +267,8 @@ public class ClientNumberInputView extends LinearLayout {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
-                for (Validation validation : clientNumber.getValidation()) {
+                if (tempInput.isEmpty()) actionListener.onClientNumberInputInvalid();
+                else for (Validation validation : clientNumber.getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), tempInput)) {
                         actionListener.onClientNumberInputInvalid();
                         if (tempInput.isEmpty()) {

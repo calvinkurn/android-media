@@ -32,6 +32,7 @@
 
     <string name="label_btn_buy_digital">BELI</string>
     <string name="message_error_digital_product_not_selected">Anda belum memilih produk</string>
+    <string name="message_error_digital_client_number_format_invalid">yang anda masukkan tidak sesuai</string>
     <string name="message_error_digital_operator_not_selected">Anda belum memilih operator</string>
     <string name="message_error_digital_client_number_not_filled">Anda belum mengisi</string>
     <string name="message_error_digital_category_style_not_supported">Produk belum didukung, Silahkan memilih produk lainnya</string>

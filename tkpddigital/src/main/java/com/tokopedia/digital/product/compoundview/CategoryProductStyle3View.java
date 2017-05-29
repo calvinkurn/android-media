@@ -26,7 +26,8 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 5/3/17.
  */
 public class CategoryProductStyle3View extends
-        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> implements ProductAdditionalInfoView.ActionListener {
+        BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber>
+        implements ProductAdditionalInfoView.ActionListener {
 
     @BindView(R2.id.tv_title_category)
     TextView tvTitle;
@@ -139,6 +140,10 @@ public class CategoryProductStyle3View extends
 
     private void renderOperatorChooserOptions() {
         clearHolder(holderChooserOperator);
+        clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
         digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
         holderChooserOperator.addView(digitalOperatorChooserView);
@@ -158,10 +163,12 @@ public class CategoryProductStyle3View extends
 
     private void renderClientNumberInputForm() {
         clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(operatorSelected.getClientNumberList().get(0));
         holderClientNumber.addView(clientNumberInputView);
-        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
         clientNumberInputView.resetInputTyped();
 
         if (hasLastOrderHistoryData()) {
@@ -189,6 +196,8 @@ public class CategoryProductStyle3View extends
 
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
@@ -253,6 +262,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
+                clientNumberInputView.enableImageOperator(operatorSelected.getImage());
                 if (operatorSelected.getProductList().size() == 1
                         && String.valueOf(operatorSelected.getDefaultProductId())
                         .equalsIgnoreCase(operatorSelected.getProductList().get(0).getProductId())) {
@@ -267,6 +277,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onClientNumberInputInvalid() {
+                clientNumberInputView.disableImageOperator();
                 clearHolder(holderChooserProduct);
                 clearHolder(holderAdditionalInfoProduct);
                 clearHolder(holderPriceInfoProduct);
@@ -288,7 +299,8 @@ public class CategoryProductStyle3View extends
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
                 actionListener.onProductChooserStyle3Clicked(
-                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                        data, operatorSelected != null
+                                ? operatorSelected.getRule().getProductText() : ""
                 );
             }
         };
