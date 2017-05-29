@@ -1,8 +1,13 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel;
 
+import android.text.Html;
+import android.text.Spanned;
+
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -25,6 +30,10 @@ public class PromoViewModel{
 
     public String getDescription() {
         return description;
+    }
+
+    public Spanned getDescriptionSpanned(){
+        return MethodChecker.fromHtml(getDescription());
     }
 
     public void setDescription(String description) {

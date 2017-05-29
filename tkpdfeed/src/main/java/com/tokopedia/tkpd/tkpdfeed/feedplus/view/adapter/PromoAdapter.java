@@ -66,10 +66,17 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                 int marginPixels = (int) (3.3 * scale + 0.5f);
                 params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
                 temp.container.setLayoutParams(params);
+            }else{
+                final float scale = temp.container.getResources().getDisplayMetrics().density;
+                int widthPixels = (int) (285 * scale + 0.5f);
+                CardView.LayoutParams params = new CardView.LayoutParams(widthPixels, CardView.LayoutParams.WRAP_CONTENT);
+                int marginPixels = (int) (3.3 * scale + 0.5f);
+                params.setMargins(marginPixels, marginPixels, marginPixels, marginPixels);
+                temp.container.setLayoutParams(params);
             }
             ImageHandler.LoadImage(temp.imageView, list.get(position).getImageUrl());
             temp.period.setText(list.get(position).getPeriod());
-            temp.description.setText(list.get(position).getDescription());
+            temp.description.setText(list.get(position).getDescriptionSpanned());
             temp.promoCode.setText(list.get(position).getPromoCode());
             temp.copyButton.setOnClickListener(new View.OnClickListener() {
                 @Override

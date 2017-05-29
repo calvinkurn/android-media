@@ -35,6 +35,11 @@ public class ContentFeedDomain {
     }
 
     @Nullable
+    public String getType() {
+        return type;
+    }
+
+    @Nullable
     public Integer getTotalProduct() {
         return totalProduct;
     }

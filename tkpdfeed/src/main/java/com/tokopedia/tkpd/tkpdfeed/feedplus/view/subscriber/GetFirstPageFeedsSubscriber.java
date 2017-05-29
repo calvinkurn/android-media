@@ -5,9 +5,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.ProductFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.PromotionFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private final FeedPlus.View viewListener;
     private static final String TYPE_ACTIVITY = "activity";
+    private static final String TYPE_PROMO = "promotion";
 
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener) {
         this.viewListener = viewListener;
@@ -54,9 +59,12 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
         ArrayList<Visitable> listFeed = new ArrayList<>();
         for (DataFeedDomain domain : dataFeedDomainList) {
-            switch (domain.getType()) {
+            switch (domain.getContent().getType()) {
                 case TYPE_ACTIVITY:
                     listFeed.add(convertToActivityViewModel(domain));
+                    break;
+                case TYPE_PROMO:
+                    listFeed.add(convertToPromoViewModel(domain));
                     break;
                 default:
                     break;
@@ -98,6 +106,28 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         }
         return listProduct;
     }
+
+    private PromoCardViewModel convertToPromoViewModel(DataFeedDomain domain) {
+        return new PromoCardViewModel(convertToPromoListViewModel(domain));
+    }
+
+    private ArrayList<PromoViewModel> convertToPromoListViewModel(DataFeedDomain dataFeedDomain) {
+        ArrayList<PromoViewModel> listPromo = new ArrayList<>();
+        for (PromotionFeedDomain domain : dataFeedDomain.getContent().getPromotions()) {
+            listPromo.add(
+                    new PromoViewModel(
+                            domain.getDescription(),
+                            domain.getPeriode(),
+                            domain.getCode(),
+                            domain.getThumbnail()));
+        }
+        if(dataFeedDomain.getContent().getPromotions().size()>1){
+            listPromo.add(new PromoViewModel(null, null, null, null));
+        }
+
+        return listPromo;
+    }
+
 
     private String getCurrentCursor(FeedResult feedResult) {
         int lastIndex = feedResult.getDataFeedDomainList().size() - 1;
