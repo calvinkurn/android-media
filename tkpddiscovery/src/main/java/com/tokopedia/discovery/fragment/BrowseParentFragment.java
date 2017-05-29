@@ -277,10 +277,10 @@ public class BrowseParentFragment extends BaseFragment<BrowseProductParent> impl
             if (browserSectionsPagerAdapter.getItem(i) instanceof ProductFragment) {
                 ProductFragment productFragment = (ProductFragment) browserSectionsPagerAdapter.getItem(i);
                 productFragment.addCategoryHeader(categoryHeader);
-                if (categoryHeader.getIsRevamp()) {
-                    tabLayout.setVisibility(View.GONE);
-                }
             }
+        }
+        if (browserSectionsPagerAdapter.getCount()==1) {
+            tabLayout.setVisibility(View.GONE);
         }
     }
 
