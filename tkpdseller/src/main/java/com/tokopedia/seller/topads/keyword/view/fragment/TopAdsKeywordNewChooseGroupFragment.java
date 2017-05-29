@@ -5,23 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
-import com.tokopedia.seller.product.view.widget.AbsSpinnerTextView;
-import com.tokopedia.seller.product.view.widget.DefValueSpinnerTextView;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
@@ -63,7 +57,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false);
 
-        buttonNext = view.findViewById(R.id.button_submit);
+        buttonNext = view.findViewById(R.id.button_next);
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
         inputLayoutChooseGroup = (TkpdTextInputLayout) view.findViewById(R.id.input_layout_choose_group);
         autoCompleteChooseGroup = (TopAdsCustomAutoCompleteTextView) inputLayoutChooseGroup.findViewById(R.id.choose_group_auto_text);
@@ -91,14 +85,6 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                 if (groupAds.get(i) != null) {
                     choosenId = groupAds.get(i).getId();
                 }
-            }
-        });
-
-        keywordTypeSpinner = (DefValueSpinnerTextView) view.findViewById(R.id.spinner_keyword_type);
-        keywordTypeSpinner.setOnDropDownListener(new AbsSpinnerTextView.OnDropDownListener() {
-            @Override
-            public void onDropDownShown() {
-                KeyboardHandler.hideSoftKeyboard(getActivity());
             }
         });
 

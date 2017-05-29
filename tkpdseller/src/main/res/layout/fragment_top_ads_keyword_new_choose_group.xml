@@ -19,21 +19,20 @@
 
             <include layout="@layout/include_topads_search_group" />
 
-            <com.tokopedia.seller.product.view.widget.DefValueSpinnerTextView
+            <com.tokopedia.seller.product.view.widget.SpinnerTextView
                 android:id="@+id/spinner_keyword_type"
                 style="@style/LabelLayoutWithoutBorder"
                 android:padding="0dp"
                 app:spinner_entries="@array/top_ads_keyword_type_entries"
-                app:spinner_hint="@string/top_ads_keyword_type"
+                app:spinner_hint="@string/top_ads_choose_keyword_type"
                 app:spinner_selection_index="-1"
-                app:spinner_values="@array/top_ads_keyword_type_values"
-                app:default_value="@string/top_ads_choose_keyword_type"/>
+                app:spinner_values="@array/top_ads_keyword_type_values"/>
         </android.support.v7.widget.LinearLayoutCompat>
 
     </ScrollView>
 
     <Button
-        android:id="@+id/button_submit"
+        android:id="@+id/button_next"
         style="@style/Button.Submit.Green"
         android:enabled="false"
         android:text="@string/next" />
