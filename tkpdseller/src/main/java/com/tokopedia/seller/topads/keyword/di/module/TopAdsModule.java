@@ -1,5 +1,8 @@
 package com.tokopedia.seller.topads.keyword.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -45,8 +48,8 @@ public class TopAdsModule {
 
     @TopAdsKeywordScope
     @Provides
-    ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource) {
-        return new ShopInfoRepositoryImpl(shopInfoDataSource);
+    ShopInfoRepository provideShopInfoRepository(@ActivityContext Context context, ShopInfoDataSource shopInfoDataSource) {
+        return new ShopInfoRepositoryImpl(context, shopInfoDataSource);
     }
 
     @TopAdsKeywordScope
