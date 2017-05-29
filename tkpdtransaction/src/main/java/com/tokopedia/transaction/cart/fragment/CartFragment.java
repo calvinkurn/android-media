@@ -209,6 +209,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     protected void initView(View view) {
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        stopNestedScrollingView();
     }
 
     @Override
@@ -228,7 +229,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void setActionVar() {
-        stopScrollOnEdittext();
+
     }
 
     @Override
@@ -898,7 +899,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return noun;
     }
 
-    private void stopScrollOnEdittext() {
+    private void stopNestedScrollingView() {
         nsvContainer.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
         nsvContainer.setFocusable(true);
         nsvContainer.setFocusableInTouchMode(true);
