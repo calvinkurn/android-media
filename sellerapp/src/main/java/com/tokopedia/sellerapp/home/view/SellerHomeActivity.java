@@ -116,6 +116,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -219,6 +220,9 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
     private SellerHomePresenterImpl presenter;
     private SessionHandler sessionHandler;
 
+    @BindString(R.string.message_exception_description)
+    String messageExceptionDescription;
+
     @OnClick({R.id.discussion_see_more, R.id.discussion_container})
     public void discussionSeeMore() {
         startActivity(InboxRouter.getInboxTalkActivityIntent(this));
@@ -303,7 +307,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
             }
         });
 
-        snackbarRetry = new SnackbarRetry(Snackbar.make(activitySellerHome, getString(R.string.msg_network_error_1), Snackbar.LENGTH_LONG),
+        snackbarRetry = new SnackbarRetry(Snackbar.make(activitySellerHome, messageExceptionDescription, Snackbar.LENGTH_LONG),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -313,7 +317,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 });
 
         snackbarRetryUndefinite = new SnackbarRetry(Snackbar.make(activitySellerHome,
-                getString(R.string.msg_network_error_1), Snackbar.LENGTH_INDEFINITE),
+                messageExceptionDescription, Snackbar.LENGTH_INDEFINITE),
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -415,18 +419,13 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
         shopController.getDeposit(userId, gcmId, getDeposit());
 
         shopController.getTicker(getTicker());
-
-        // get all this using this
-//        shopController.getData(userId, gcmId, shopInfoParam, getShopInfo(),
-//                getNotif(gcmId, userId), getResCenter(), getDeposit(), getTicker()
-//        );
     }
 
     protected MojitoController.ListenerGetTicker getTicker() {
         return new MojitoController.ListenerGetTicker() {
             @Override
             public void onError(Throwable e) {
-                onError();
+                announcementTicker.setVisibility(View.GONE);
             }
 
             @Override
@@ -439,11 +438,6 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
                 if (tickers != null && tickers.length > 0) {
                     generateTicker(tickers);
                 }
-            }
-
-            @Override
-            public void onError() {
-                announcementTicker.setVisibility(View.GONE);
             }
         };
     }
@@ -498,13 +492,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -512,6 +500,16 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             }
         };
+    }
+
+    protected void showMessageError(Throwable e) {
+        if (e instanceof MessageErrorException) {
+            Snackbar.make(activitySellerHome, messageExceptionDescription, Snackbar.LENGTH_LONG).show();
+        }else{
+            if (snackbarRetryUndefinite != null) {
+                snackbarRetryUndefinite.showRetrySnackbar();
+            }
+        }
     }
 
     @NonNull
@@ -528,13 +526,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -600,13 +592,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }else{
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
 
             @Override
@@ -714,20 +700,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof MessageErrorException) {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-//                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                } else if (e instanceof ManyRequestErrorException) {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                } else {
-                    if (snackbarRetryUndefinite != null) {
-                        snackbarRetryUndefinite.showRetrySnackbar();
-                    }
-                }
+                showMessageError(e);
             }
         };
     }
@@ -756,9 +729,7 @@ public class SellerHomeActivity extends BaseActivity implements GCMHandlerListen
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof ShopNetworkController.MessageErrorException) {
-                    Snackbar.make(activitySellerHome, e.getMessage(), Snackbar.LENGTH_LONG).show();
-                }
+                showMessageError(e);
             }
 
             @Override

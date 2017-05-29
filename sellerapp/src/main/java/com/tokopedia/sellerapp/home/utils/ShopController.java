@@ -7,6 +7,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.network.CommonListener;
 import com.tkpd.library.utils.network.ManyRequestErrorException;
+import com.tkpd.library.utils.network.MessageErrorException;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -204,7 +205,7 @@ public class ShopController extends BaseController{
             if (data != null) {
                 tickerListener.onSuccess(data.getTickers());
             } else {
-                tickerListener.onError();
+                tickerListener.onError(new Throwable());
             }
         } else {
             onResponseError(response.code(), tickerListener);
@@ -229,7 +230,7 @@ public class ShopController extends BaseController{
                         if(response.body().getStatus()!= null && response.body().getStatus().equalsIgnoreCase("TOO_MANY_REQUEST")){
                             throw new ManyRequestErrorException(response.body().getErrorMessages().get(0));
                         }else {
-                            throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                            throw new MessageErrorException(response.body().getErrorMessages().get(0));
                         }
                     }else{
                         String stringData = response.body().getStringData();
@@ -246,7 +247,7 @@ public class ShopController extends BaseController{
                         = (NotifNetworkController.GetNotif) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getNotif : onNext : "+stringData);
@@ -262,7 +263,7 @@ public class ShopController extends BaseController{
                         (InboxResCenterNetworkController.InboxResCenterListener) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else{
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getResCenterList : onNext : "+stringData);
@@ -278,7 +279,7 @@ public class ShopController extends BaseController{
                         (DepositNetworkController.DepositListener) commonListener;
                 if (response.isSuccessful()) {
                     if(response.body().isError()){
-                        throw new ShopNetworkController.MessageErrorException(response.body().getErrorMessages().get(0));
+                        throw new MessageErrorException(response.body().getErrorMessages().get(0));
                     }else {
                         String stringData = response.body().getStringData();
                         Log.d("STUART", "getDeposit : onNext : "+stringData);

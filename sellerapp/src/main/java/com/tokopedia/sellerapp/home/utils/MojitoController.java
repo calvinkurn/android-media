@@ -54,7 +54,7 @@ public class MojitoController extends BaseNetworkController {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "getData : onError : " + e.toString());
-                        listenerGetTicker.onError();
+                        listenerGetTicker.onError(e);
                     }
 
                     @Override
@@ -68,10 +68,10 @@ public class MojitoController extends BaseNetworkController {
                             if (data != null) {
                                 listenerGetTicker.onSuccess(data.getTickers());
                             } else {
-                                listenerGetTicker.onError();
+                                listenerGetTicker.onError(new Throwable());
                             }
                         } else {
-                            listenerGetTicker.onError();
+                            listenerGetTicker.onError(new Throwable());
                         }
                     }
                 });
@@ -79,9 +79,5 @@ public class MojitoController extends BaseNetworkController {
 
     public interface ListenerGetTicker extends CommonListener {
         void onSuccess(Ticker.Tickers[] tickers);
-
-        void onError();
     }
-
-    ;
 }
