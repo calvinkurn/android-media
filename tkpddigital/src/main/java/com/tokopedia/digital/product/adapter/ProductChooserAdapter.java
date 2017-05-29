@@ -195,7 +195,7 @@ public class ProductChooserAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private void setProductAvailability(final RecyclerView.ViewHolder holder,
                                         final Product product,
                                         final TextView emptyStockLabel) {
-        if (product.getStatus() == 3) {
+        if (product.getStatus() == Product.STATUS_OUT_OF_STOCK) {
             for (int i = 0; i < ((ViewGroup) mainAdapterView).getChildCount(); i++) {
                 View adapterElement = ((ViewGroup) mainAdapterView).getChildAt(i);
                 adapterElement.setEnabled(false);
