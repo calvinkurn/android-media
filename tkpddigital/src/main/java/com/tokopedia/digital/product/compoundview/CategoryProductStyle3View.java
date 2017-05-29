@@ -332,7 +332,7 @@ public class CategoryProductStyle3View extends
                             && !clientNumberInputView.isValidInput()) {
                         actionListener.onCannotBeCheckoutProduct(
                                 operatorSelected.getClientNumberList().get(0).getText()
-                                        .toLowerCase() + " " + context.getString(
+                                        + " " + context.getString(
                                         R.string.message_error_digital_client_number_format_invalid
                                 )
                         );

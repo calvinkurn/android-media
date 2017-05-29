@@ -269,22 +269,27 @@ public class ClientNumberInputView extends LinearLayout {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
-                if (tempInput.isEmpty()) actionListener.onClientNumberInputInvalid();
-                else for (Validation validation : clientNumber.getValidation()) {
-                    if (!Pattern.matches(validation.getRegex(), tempInput)) {
-                        actionListener.onClientNumberInputInvalid();
-                        if (tempInput.isEmpty()) {
+                if (tempInput.isEmpty()) {
+                    actionListener.onClientNumberInputInvalid();
+                    tvErrorClientNumber.setText("");
+                    tvErrorClientNumber.setVisibility(GONE);
+                } else {
+                    for (Validation validation : clientNumber.getValidation()) {
+                        if (!Pattern.matches(validation.getRegex(), tempInput)) {
+                            actionListener.onClientNumberInputInvalid();
+                            if (tempInput.isEmpty()) {
+                                tvErrorClientNumber.setText("");
+                                tvErrorClientNumber.setVisibility(GONE);
+                            } else {
+                                tvErrorClientNumber.setText(validation.getError());
+                                tvErrorClientNumber.setVisibility(VISIBLE);
+                            }
+                            break;
+                        } else {
                             tvErrorClientNumber.setText("");
                             tvErrorClientNumber.setVisibility(GONE);
-                        } else {
-                            tvErrorClientNumber.setText(validation.getError());
-                            tvErrorClientNumber.setVisibility(VISIBLE);
+                            actionListener.onClientNumberInputValid(tempInput);
                         }
-                        break;
-                    } else {
-                        tvErrorClientNumber.setText("");
-                        tvErrorClientNumber.setVisibility(GONE);
-                        actionListener.onClientNumberInputValid(tempInput);
                     }
                 }
             }
