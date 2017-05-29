@@ -190,7 +190,7 @@
                 android:id="@+id/img_help"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/cab_help"
+                android:src="@drawable/ic_share"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
@@ -201,7 +201,7 @@
                 android:layout_below="@id/img_help"
                 android:layout_centerHorizontal="true"
                 android:layout_marginLeft="16dp"
-                android:text="Share status"
+                android:text="@string/driver_detail_share_eta"
                 android:textColor="@color/black"
                 android:textSize="14sp" />
         </LinearLayout>
