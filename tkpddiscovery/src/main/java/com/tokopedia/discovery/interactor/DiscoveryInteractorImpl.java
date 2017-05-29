@@ -385,7 +385,8 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
                 .map(new Func1<Response<BrowseShopModel>, Response<BrowseShopModel>>() {
                     @Override
                     public Response<BrowseShopModel> call(Response<BrowseShopModel> browseShopModelResponse) {
-                        if(!isShopListEmpty(browseShopModelResponse)) {
+                        if(SessionHandler.isV4Login(MainApplication.getAppContext())
+                                && !isShopListEmpty(browseShopModelResponse)) {
 
                             Map<String, Boolean> favoriteShopMap =
                                     getFavoriteShopMap(browseShopModelResponse);
