@@ -49,7 +49,7 @@ public class ImageLoader {
         imageFetcher.loadImage(ecs, imageView, new ImageWorker.OnImageLoadedListener() {
             @Override
             public void onImageLoaded(boolean success) {
-                if (success && url != null) {
+                if (success && url != null && url.contains("views")) {
                     new ImpresionTask().execute(url);
                 }
             }

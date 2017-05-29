@@ -68,9 +68,7 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             @Override
             public void onItemRangeChanged(int positionStart, int itemCount) {
-                Log.d(TAG, "onItemRangeChanged positionStart "+positionStart+" itemCount "+itemCount);
                 positionStart = placer.getPositionStart(positionStart);
-                Log.d(TAG, "onItemRangeChanged adjustedPositionStart "+positionStart+" itemCount "+itemCount);
                 notifyItemRangeChanged(positionStart, itemCount);
             }
 
