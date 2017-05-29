@@ -42,7 +42,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
 
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
-        datePickerResultListener = new DatePickerResultListener(this);
+        datePickerResultListener = new DatePickerResultListener(this, REQUEST_CODE_DATE);
     }
 
     @Override
@@ -98,13 +98,8 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
         datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
         datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
 
-        fetchData();
+        loadData();
     }
-
-    /**
-     * fetch data after select date.
-     */
-    protected abstract void fetchData();
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);

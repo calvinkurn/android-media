@@ -131,11 +131,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     }
 
     @Override
-    protected void fetchData() {
-
-    }
-
-    @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         onSearchAdLoaded(groupAds, groupAds.size());
     }
