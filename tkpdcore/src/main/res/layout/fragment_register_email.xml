@@ -1,16 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:clipToPadding="false"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:clipToPadding="false">
 
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/login_button"
             android:layout_width="match_parent"
@@ -22,12 +23,14 @@
             android:text="@string/already_has_account_sign_in"
             android:textColor="@color/grey_500" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/login_button"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -37,12 +40,12 @@
                 android:padding="@dimen/padding_med"
                 android:visibility="visible">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/wrapper_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_small"
-                android:layout_marginTop="@dimen/margin_small">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/wrapper_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small">
 
                     <AutoCompleteTextView
                         android:id="@+id/register_email"
@@ -141,8 +144,9 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/fragment_redirect_reset_password"
+    <include
         android:id="@+id/redirect_reset_password"
-        android:visibility="gone"/>
+        layout="@layout/fragment_redirect_reset_password"
+        android:visibility="gone" />
 
 </RelativeLayout>

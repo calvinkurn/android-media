@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,11 @@ import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
 import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
+import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
@@ -35,6 +38,7 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     private DateHeaderFormatter dateHeaderFormatter;
     private ReputationHeaderViewHelper reputationViewHelper;
     private RelativeLayout widgetHeaderReputaitonContainer;
+    private TopAdsDashboardListener keywordListListener;
 
     public static Fragment createInstance() {
         return new TopAdsKeywordListFragment();
@@ -48,6 +52,10 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
         dateHeaderFormatter = new DateHeaderFormatter(
                 getResources().getStringArray(R.array.month_names_abrev)
         );
+
+        if (getActivity() != null && getActivity() instanceof TopAdsDashboardListener) {
+            keywordListListener = (TopAdsDashboardListener) getActivity();
+        }
 
     }
 
@@ -69,6 +77,11 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     protected void fetchData() {
         bindDate(); // set ui after date changed.
+
+        // reset searchview and filter
+        if (keywordListListener != null) {
+            keywordListListener.resetSearchView();
+        }
 
         BaseKeywordParam baseKeywordParam
                 = topAdsKeywordListPresenter.generateParam(keyword, page, true,
@@ -113,6 +126,12 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     public void onFilterChanged(Object someObject) {
 
+    }
+
+    @Override
+    public void onCreateKeyword() {
+        Intent intent = new Intent(getActivity(), TopAdsKeywordNewChooseGroupActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_CREATE_KEYWORD);
     }
 
     @Override

@@ -15,17 +15,13 @@ import java.util.List;
  * Created by Nathaniel on 1/31/2017.
  */
 
-public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment {
+public abstract class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment {
 
     private int selectedStatus;
 
-    public static TopAdsFilterStatusFragment createInstance(int status) {
-        TopAdsFilterStatusFragment fragment = new TopAdsFilterStatusFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, status);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    public abstract String[] getStatusValueList();
+
+    public abstract String[] getStatusNameList();
 
     @Override
     protected int getFragmentLayout() {
@@ -41,8 +37,8 @@ public class TopAdsFilterStatusFragment extends TopAdsFilterRadioButtonFragment 
     @Override
     protected List<RadioButtonItem> getRadioButtonList() {
         List<RadioButtonItem> radioButtonItemList = new ArrayList<>();
-        String[] statusValueList = getResources().getStringArray(R.array.filter_status_list_values);
-        String[] statusNameList = getResources().getStringArray(R.array.filter_status_list_names);
+        String[] statusValueList = getStatusValueList();
+        String[] statusNameList = getStatusNameList();
         for (int i = 0; i < statusNameList.length; i++) {
             RadioButtonItem radioButtonItem = new RadioButtonItem();
             radioButtonItem.setName(statusNameList[i]);

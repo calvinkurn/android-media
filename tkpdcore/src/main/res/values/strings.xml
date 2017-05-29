@@ -188,6 +188,9 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="dialog_payment_cancellation_confirmation_detil1">Jumlah Kupon yg diaktifkan : </string>
     <string name="dialog_payment_cancellation_confirmation_detil2">Daftar Kupon : </string>
 
+    <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
+    <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
+
     <string-array name="return_policy">
         <item>@string/return_policy_not_set</item>
         <item>Ya</item>
@@ -1266,6 +1269,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="success_fetch_truecaller">Sukses mendapat data dari Truecaller.</string>
     <string name="error_fetch_truecaller">Gagal mendapat data dari Truecaller.</string>
     <string name="error_user_truecaller">Mohon pastikan nomor di perangkat ini sesuai dengan nomor Tokopedia Anda.</string>
+    <string name="error_code_truecaller">Kode Error %1$d</string>
     <!-- String Buy Credit -->
     <string name="title_choose_provider">Pilih Provider</string>
     <string name="title_credit_value">Nominal Pulsa</string>
@@ -1941,6 +1945,6 @@ di Tokopedia Sekarang!</string>
     <string name="notification_dialog_negative_button">Batal</string>
     <string name="wishlist_too_much_attempt_error_message">Tunggu beberapa saat lagi</string>
 
-    <string name="banner_official_store_title_text">Sudah Pernah cek Official Store Tokopedia belum?</string>
+    <string name="banner_official_store_title_text">Sudah pernah cek Official Store Tokopedia belum?</string>
     <string name="banner_official_store_subtitle_text">Lihat Sekarang</string>
 </resources>

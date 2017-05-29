@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.MenuItem;
@@ -19,6 +21,13 @@ import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewGroupFragment;
 
 public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements HasComponent<AppComponent> {
 
+    public static final String TAG_FRAGMENT = TopAdsDetailEditShopFragment.class.getSimpleName();
+
+    public static Intent createInstance(Context context){
+        Intent intent = new Intent(context, TopAdsKeywordNewChooseGroupActivity.class);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +40,16 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements
 
     private void setupFragment() {
         getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, getFragment(), TopAdsDetailEditShopFragment.class.getSimpleName())
+                .replace(R.id.container, getFragment(), TAG_FRAGMENT)
                 .commit();
     }
 
     protected Fragment getFragment() {
-        return TopAdsKeywordNewChooseGroupFragment.createInstance();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        if(fragment == null){
+            fragment = TopAdsKeywordNewChooseGroupFragment.createInstance();
+        }
+        return fragment;
     }
 
     @Override
