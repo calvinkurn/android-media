@@ -169,7 +169,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter>
         page = START_PAGE;
         adapter.clearData();
         adapter.showLoadingFull(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
         searchAd();
     }
 

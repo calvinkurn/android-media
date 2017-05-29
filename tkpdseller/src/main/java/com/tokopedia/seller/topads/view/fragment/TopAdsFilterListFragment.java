@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
+@Deprecated
 public class TopAdsFilterListFragment extends BasePresenterFragment implements TopAdsFilterAdapter.Callback {
 
     private TopAdsFilterAdapter adapter;
