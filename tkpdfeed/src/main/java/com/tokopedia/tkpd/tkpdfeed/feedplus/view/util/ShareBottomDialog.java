@@ -100,19 +100,19 @@ public class ShareBottomDialog {
 
     protected void setShareList() {
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_google_share), "Google+", shareGoogle()));
+                R.drawable.ic_googleplus), "Google+", shareGoogle()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_facebook_share), "Facebook", shareFb()));
+                R.drawable.ic_facebook), "Facebook", shareFb()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_line_share), "Line", shareLine()));
+                R.drawable.ic_line), "Line", shareLine()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_whatsapp_share), "Whatsapp", shareWhatsapp()));
+                R.drawable.ic_whatsapp), "Whatsapp", shareWhatsapp()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_twitter_share), "Twitter", shareTwitter()));
+                R.drawable.ic_twitter), "Twitter", shareTwitter()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_message), "SMS", shareSMS()));
+                R.drawable.ic_sms), "SMS", shareSMS()));
         adapter.addItem(new ShareItem(MethodChecker.getDrawable(activity,
-                R.drawable.ic_copy_share), "Copy Link", shareCopyLink()));
+                R.drawable.ic_link), "Copy Link", shareCopyLink()));
         adapter.notifyDataSetChanged();
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepository;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import rx.Observable;
  * @author ricoharisin .
  */
 
-public class GetFeedsUseCase extends UseCase<List<DataFeedDomain>> {
+public class GetFeedsUseCase extends UseCase<FeedResult> {
     private ThreadExecutor threadExecutor;
     private PostExecutionThread postExecutionThread;
     private FeedRepository feedRepository;
@@ -33,7 +34,7 @@ public class GetFeedsUseCase extends UseCase<List<DataFeedDomain>> {
     }
 
     @Override
-    public Observable<List<DataFeedDomain>> createObservable(RequestParams requestParams) {
-        return feedRepository.getFeeds(requestParams);
+    public Observable<FeedResult> createObservable(RequestParams requestParams) {
+        return feedRepository.getFeedsFromCloud(requestParams);
     }
 }

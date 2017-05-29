@@ -10,50 +10,33 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusDet
  * @author by nisie on 5/19/17.
  */
 
-public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeFactory>,
-        Parcelable {
+public class ProductCardHeaderViewModel{
 
     private String shopName;
     private String shopAvatar;
-    private String actionText;
     private boolean isGoldMerchant;
-    private String postTime;
+    private String time;
     private boolean isOfficialStore;
 
     public ProductCardHeaderViewModel() {
         this.shopName = "Nisie shop";
-        this.actionText = "ubah 1 produk";
         this.shopAvatar = "https://imagerouter.tokopedia.com/img/100-square/shops-1/2016/8/5/1205649/1205649_620e3ec4-9a94-4210-bac4-f31ab1d1b9f5.jpg";
         this.isGoldMerchant = true;
         this.isOfficialStore = false;
-        this.postTime = "2017-05-17T15:10:53+07:00";
+        this.time = "2017-05-17T15:10:53+07:00";
     }
 
-    @Override
-    public int type(FeedPlusDetailTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public ProductCardHeaderViewModel(String shopName,
+                                      String shopAvatar,
+                                      boolean isGoldMerchant,
+                                      String postTime,
+                                      boolean isOfficialStore) {
+        this.shopName = shopName;
+        this.shopAvatar = shopAvatar;
+        this.isGoldMerchant = isGoldMerchant;
+        this.time = postTime;
+        this.isOfficialStore = isOfficialStore;
     }
-
-    protected ProductCardHeaderViewModel(Parcel in) {
-        shopName = in.readString();
-        shopAvatar = in.readString();
-        actionText = in.readString();
-        isGoldMerchant = in.readByte() != 0;
-        postTime = in.readString();
-        isOfficialStore = in.readByte() != 0;
-    }
-
-    public static final Creator<ProductCardHeaderViewModel> CREATOR = new Creator<ProductCardHeaderViewModel>() {
-        @Override
-        public ProductCardHeaderViewModel createFromParcel(Parcel in) {
-            return new ProductCardHeaderViewModel(in);
-        }
-
-        @Override
-        public ProductCardHeaderViewModel[] newArray(int size) {
-            return new ProductCardHeaderViewModel[size];
-        }
-    };
 
     public String getShopName() {
         return shopName;
@@ -71,14 +54,6 @@ public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeF
         this.shopAvatar = shopAvatar;
     }
 
-    public String getActionText() {
-        return actionText;
-    }
-
-    public void setActionText(String actionText) {
-        this.actionText = actionText;
-    }
-
     public boolean isGoldMerchant() {
         return isGoldMerchant;
     }
@@ -87,28 +62,12 @@ public class ProductCardHeaderViewModel implements Visitable<FeedPlusDetailTypeF
         isGoldMerchant = goldMerchant;
     }
 
-    public String getPostTime() {
-        return postTime;
+    public String getTime() {
+        return time;
     }
 
-    public void setPostTime(String postTime) {
-        this.postTime = postTime;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(shopName);
-        dest.writeString(shopAvatar);
-        dest.writeString(actionText);
-        dest.writeByte((byte) (isGoldMerchant ? 1 : 0));
-        dest.writeString(postTime);
-        dest.writeByte((byte) (isOfficialStore ? 1 : 0));
-
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public boolean isOfficialStore() {

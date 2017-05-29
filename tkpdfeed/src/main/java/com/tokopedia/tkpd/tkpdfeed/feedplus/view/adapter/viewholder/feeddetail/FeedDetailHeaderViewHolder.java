@@ -9,58 +9,59 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.TimeConverter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
-
-import butterknife.BindView;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 
 /**
  * @author by nisie on 5/19/17.
  */
 
-public class FeedDetailHeaderViewHolder extends AbstractViewHolder<ProductCardHeaderViewModel> {
+public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHeaderViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.feed_detail_product_header;
+    public static final int LAYOUT = R.layout.feed_detail_header;
     private final FeedPlusDetail.View viewListener;
 
-    @BindView(R2.id.title)
-    TextView title;
-
-    @BindView(R2.id.shop_avatar)
+    TextView shopName;
     ImageView shopAvatar;
-
-    @BindView(R2.id.gold_merchant)
     ImageView goldMerchantBadge;
-
-    @BindView(R2.id.time)
-    TextView time;
+    ImageView officialStoreBadge;
+    TextView shopSlogan;
 
     public FeedDetailHeaderViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
+        shopName = (TextView) itemView.findViewById(R.id.shop_name);
+        shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
+        goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
+        officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
+
+        shopSlogan = (TextView) itemView.findViewById(R.id.shop_slogan);
         this.viewListener = viewListener;
     }
 
     @Override
-    public void bind(ProductCardHeaderViewModel productCardHeaderViewModel) {
-        String titleText = "<b>" + productCardHeaderViewModel.getShopName() + "</b> "
-                + productCardHeaderViewModel.getActionText();
-        title.setText(MethodChecker.fromHtml(titleText));
-        ImageHandler.LoadImage(shopAvatar, productCardHeaderViewModel.getShopAvatar());
+    public void bind(final FeedDetailHeaderViewModel viewModel) {
 
-        if (productCardHeaderViewModel.isGoldMerchant())
+        shopName.setText(MethodChecker.fromHtml(viewModel.getShopName()));
+        ImageHandler.LoadImage(shopAvatar, viewModel.getShopAvatar());
+
+        if (viewModel.isGoldMerchant())
             goldMerchantBadge.setVisibility(View.VISIBLE);
         else
             goldMerchantBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(productCardHeaderViewModel.getPostTime()));
+        if (viewModel.isOfficialStore())
+            officialStoreBadge.setVisibility(View.VISIBLE);
+        else
+            officialStoreBadge.setVisibility(View.GONE);
+
+        shopSlogan.setText(TimeConverter.generateTime(viewModel.getTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToShopDetail();
+                viewListener.onGoToShopDetail(viewModel.getShopUrl());
             }
         });
     }

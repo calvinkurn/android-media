@@ -11,7 +11,7 @@ import dagger.Component;
  */
 
 @FeedPlusScope
-@Component(modules = FeedPlusDataModule.class, dependencies = AppComponent.class)
+@Component(modules = FeedPlusModule.class, dependencies = AppComponent.class)
 public interface FeedPlusComponent {
 
     void inject(FeedPlusFragment feedPlusFragment);

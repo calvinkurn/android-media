@@ -14,13 +14,11 @@ import com.facebook.FacebookSdk;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.database.model.PagingHandler;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.DetailFeedAdapter;
@@ -30,16 +28,11 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * @author by nisie on 5/18/17.
@@ -49,26 +42,23 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         implements FeedPlusDetail.View {
 
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final String ARGS_DETAIL_ID = "DETAIL_ID";
 
-    @BindView(R2.id.detail_list)
+
     RecyclerView recyclerView;
-
-    @BindView(R2.id.share_button)
     TextView shareButton;
-
-    @BindView(R2.id.see_shop)
     TextView seeShopButon;
 
     @Inject
     FeedPlusDetailPresenter presenter;
 
-    private Unbinder unbinder;
     private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private DetailFeedAdapter adapter;
-    private ActivityCardViewModel activityCardViewModel;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
+    private PagingHandler pagingHandler;
+    private String detailId;
 
     public static FeedPlusDetailFragment createInstance(Bundle bundle) {
         FeedPlusDetailFragment fragment = new FeedPlusDetailFragment();
@@ -78,7 +68,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_FEED_DETAIL;
+        return "";
     }
 
     @Override
@@ -88,8 +78,8 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
         DaggerFeedPlusComponent daggerFeedPlusComponent =
                 (DaggerFeedPlusComponent) DaggerFeedPlusComponent.builder()
-                .appComponent(appComponent)
-                .build();
+                        .appComponent(appComponent)
+                        .build();
 
         daggerFeedPlusComponent.inject(this);
 
@@ -103,11 +93,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
 
     private void initVar(Bundle savedInstanceState) {
         if (savedInstanceState != null)
-            activityCardViewModel = savedInstanceState.getParcelable(ARGS_DATA);
+            detailId = savedInstanceState.getString(ARGS_DETAIL_ID);
         else if (getArguments() != null)
-            activityCardViewModel = getArguments().getParcelable(FeedPlusDetailActivity.EXTRA_DATA);
+            detailId = getArguments().getString(FeedPlusDetailActivity.EXTRA_DETAIL_ID);
         else
-            activityCardViewModel = new ActivityCardViewModel();
+            detailId = "";
 
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerviewScrollListener = onRecyclerViewListener();
@@ -115,16 +105,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         adapter = new DetailFeedAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
-    }
-
-    private EndlessRecyclerviewListener onRecyclerViewListener() {
-        return new EndlessRecyclerviewListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
-            }
-        };
+        pagingHandler = new PagingHandler();
     }
 
     @Nullable
@@ -133,7 +114,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_feed_plus_detail, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        recyclerView = (RecyclerView) parentView.findViewById(R.id.detail_list);
+        shareButton = (TextView) parentView.findViewById(R.id.share_button);
+        seeShopButon = (TextView) parentView.findViewById(R.id.see_shop);
         prepareView();
         presenter.attachView(this);
         return parentView;
@@ -147,46 +130,27 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         recyclerView.addOnScrollListener(recyclerviewScrollListener);
     }
 
+    private EndlessRecyclerviewListener onRecyclerViewListener() {
+        return new EndlessRecyclerviewListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+
+            }
+        };
+    }
+
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FeedDetailViewModel prod1 = new FeedDetailViewModel(
-                "Produk1",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg");
-
-        FeedDetailViewModel prod2 = new FeedDetailViewModel(
-                "Produk2",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
-
-        FeedDetailViewModel prod3 = new FeedDetailViewModel(
-                "Produk3",
-                "https://4.bp.blogspot.com/-zZl5RYBFxUU/V7WrX7e2rjI/AAAAAAAAAs4/_qJ8TaLqGlgT0MegrxAzFKKbhOAk8jsHACLcB/s1600/Ayam%2BBangkok%2BBagus%2B1.jpg");
-
-        FeedDetailViewModel prod4 = new FeedDetailViewModel(
-                "Produk4",
-                "https://islamkajian.files.wordpress.com/2015/03/kuda.jpg");
-
-        ArrayList<Visitable> listProduct = new ArrayList<>();
-        listProduct.add(activityCardViewModel.getHeader());
-        listProduct.add(prod1);
-        listProduct.add(prod2);
-        listProduct.add(prod3);
-        listProduct.add(prod4);
-
-        adapter.addList(listProduct);
-        adapter.notifyDataSetChanged();
-
-        shareButton.setOnClickListener(onShareClicked());
-        seeShopButon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onGoToShopDetail();
-            }
-        });
+        presenter.getFeedDetail(detailId, pagingHandler.getPage());
 
     }
 
-    private View.OnClickListener onShareClicked() {
+    private View.OnClickListener onShareClicked(final String url,
+                                                final String title,
+                                                final String imageUrl,
+                                                final String description) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,10 +160,12 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
                             callbackManager);
                 }
 
-                shareBottomDialog.setShareModel(new ShareModel("https://www.tokopedia.com/",
-                        "Tokopedia",
-                        "",
-                        ""));
+                shareBottomDialog.setShareModel(
+                        new ShareModel(
+                                url,
+                                title,
+                                imageUrl,
+                                description));
                 shareBottomDialog.show();
             }
         };
@@ -211,21 +177,68 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail() {
+    public void onGoToShopDetail(String shopUrl) {
 
+    }
+
+    @Override
+    public void onErrorGetFeedDetail(String errorMessage) {
+        finishLoading();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    private void finishLoading() {
+        adapter.dismissLoading();
+    }
+
+    @Override
+    public void onSuccessGetFeedDetail(
+            final FeedDetailHeaderViewModel header,
+            ArrayList<Visitable> listDetail,
+            boolean hasNextPage) {
+        finishLoading();
+        if (pagingHandler.getPage() == 1) {
+            adapter.add(header);
+        }
+
+        if (listDetail.size() == 0) {
+            adapter.showEmpty();
+        } else {
+            adapter.addList(listDetail);
+        }
+
+        shareButton.setOnClickListener(onShareClicked(
+                header.getShareLinkURL(),
+                header.getShopName(),
+                header.getShopAvatar(),
+                header.getShareLinkDescription()));
+
+        seeShopButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onGoToShopDetail(header.getShopUrl());
+            }
+        });
+
+        adapter.notifyDataSetChanged();
+        pagingHandler.setHasNext(hasNextPage);
+    }
+
+    @Override
+    public void showLoading() {
+        adapter.showLoading();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(ARGS_DATA, activityCardViewModel);
+        outState.putString(ARGS_DETAIL_ID, detailId);
     }
 
 

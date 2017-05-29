@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.feeddetail.DataFeedDetailDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 
 import java.util.List;
 
@@ -21,7 +23,23 @@ public class FeedRepositoryImpl implements FeedRepository{
     }
 
     @Override
-    public Observable<List<DataFeedDomain>> getFeeds(RequestParams params) {
-        return feedFactory.createCloudFeedDataSource().getFeedsList(params);
+    public Observable<FeedResult> getFeedsFromCloud(RequestParams requestParams) {
+        return feedFactory.createCloudFeedDataSource().getNextPageFeedsList(requestParams);
+
+    }
+
+    @Override
+    public Observable<FeedResult> getFirstPageFeedsFromCloud() {
+        return feedFactory.createCloudFeedDataSource().getFirstPageFeedsList();
+    }
+
+    @Override
+    public Observable<FeedResult> getFirstPageFeedsFromLocal() {
+        return feedFactory.createLocalFeedDataSource().getFeeds();
+    }
+
+    @Override
+    public Observable<List<DataFeedDetailDomain>> getFeedsDetail(RequestParams requestParams) {
+        return feedFactory.createCloudDetailFeedDataSource().getFeedsDetailList(requestParams);
     }
 }

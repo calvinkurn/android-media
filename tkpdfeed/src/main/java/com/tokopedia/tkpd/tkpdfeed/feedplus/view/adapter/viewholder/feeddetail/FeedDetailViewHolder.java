@@ -25,37 +25,29 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_detail;
 
-    @BindView(R2.id.product_name)
     public TextView productName;
-
-    @BindView(R2.id.product_price)
     public TextView productPrice;
-
-    @BindView(R2.id.product_image)
     public ImageView productImage;
-
-    @BindView(R2.id.wishlist)
     public ImageView wishlist;
-
-    @BindView(R2.id.product_rating)
     public RatingBar productRating;
-
-    @BindView(R2.id.cashback)
     public TextView cashback;
-
-    @BindView(R2.id.wholesale)
     public TextView wholesale;
-
-    @BindView(R2.id.preorder)
     public TextView preorder;
-
-    @BindView(R2.id.free_return)
     public ImageView freeReturn;
 
     private final FeedPlusDetail.View viewListener;
 
     public FeedDetailViewHolder(View itemView, FeedPlusDetail.View viewListener) {
         super(itemView);
+        productName = (TextView) itemView.findViewById(R.id.product_name);
+        productPrice = (TextView) itemView.findViewById(R.id.product_price);
+        productImage = (ImageView) itemView.findViewById(R.id.product_image);
+        wishlist = (ImageView) itemView.findViewById(R.id.wishlist);
+        productRating = (RatingBar) itemView.findViewById(R.id.product_rating);
+        cashback = (TextView) itemView.findViewById(R.id.cashback);
+        wholesale = (TextView) itemView.findViewById(R.id.wholesale);
+        preorder = (TextView) itemView.findViewById(R.id.preorder);
+        freeReturn = (ImageView) itemView.findViewById(R.id.free_return);
         this.viewListener = viewListener;
     }
 

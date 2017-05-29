@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
+import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -36,10 +38,20 @@ public interface FeedPlus{
 
         void onInfoClicked();
 
-        void onFavoritedClicked();
+        void onFavoritedClicked(int adapterPosition);
+
+        void showSnackbar(String s);
+
+        Context getActivity();
+
+        void updateFavorite(int adapterPosition);
     }
 
     public interface Presenter extends CustomerPresenter<View>{
+
+        void fetchFirstPage();
+
+        void fetchNextPage();
 
     }
 }

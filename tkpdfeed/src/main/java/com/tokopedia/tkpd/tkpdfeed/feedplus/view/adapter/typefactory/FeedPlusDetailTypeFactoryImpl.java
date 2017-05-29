@@ -7,6 +7,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailHeaderViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
@@ -29,7 +30,7 @@ public class FeedPlusDetailTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
-    public int type(ProductCardHeaderViewModel viewModel) {
+    public int type(FeedDetailHeaderViewModel viewModel) {
         return FeedDetailHeaderViewHolder.LAYOUT;
     }
 

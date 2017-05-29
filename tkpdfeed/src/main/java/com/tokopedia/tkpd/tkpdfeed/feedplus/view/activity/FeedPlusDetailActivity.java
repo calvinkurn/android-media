@@ -11,7 +11,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusDetailFragment;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 
 /**
  * @author by nisie on 5/18/17.
@@ -19,11 +18,11 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel
 
 public class FeedPlusDetailActivity extends BasePresenterActivity implements HasComponent {
 
-    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_DETAIL_ID = "EXTRA_DETAIL_ID";
 
-    public static Intent getIntent(FragmentActivity activity, ActivityCardViewModel activityCardViewModel) {
+    public static Intent getIntent(FragmentActivity activity, String detailId) {
         Intent intent = new Intent(activity, FeedPlusDetailActivity.class);
-        intent.putExtra(EXTRA_DATA, activityCardViewModel);
+        intent.putExtra(EXTRA_DETAIL_ID, detailId);
         return intent;
     }
 

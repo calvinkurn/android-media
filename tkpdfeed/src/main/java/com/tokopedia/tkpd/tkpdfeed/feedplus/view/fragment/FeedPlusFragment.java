@@ -10,22 +10,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.ActivityModule;
-import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
-
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -35,13 +32,12 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTyp
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.InfoTopAdsBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
@@ -67,10 +63,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Inject
     FeedPlusPresenter presenter;
 
+    private EndlessRecyclerviewListener recyclerviewScrollListener;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
+    private List<Visitable> list;
 
     @Override
     protected String getScreenName() {
@@ -207,7 +205,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
         ArrayList<PromoViewModel> listPromo2 = new ArrayList<>();
-        listPromo2.add(new PromoViewModel("Hemat Air","30 Juni", "AIRMURAH", prod2.getImageSource()));
+        listPromo2.add(new PromoViewModel("Hemat Air", "30 Juni", "AIRMURAH", prod2.getImageSource()));
 
         ArrayList<ProductFeedViewModel> listOfficialStore = new ArrayList<>();
         listOfficialStore.add(new ProductFeedViewModel(prod1, "https://cdn.dribbble.com/users/255/screenshots/683315/rogie_small.png", "Toko Rocky", true));
@@ -222,7 +220,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listPromotedProduct.add(prod4);
 
 
-        List<Visitable> list = new ArrayList<>();
+        list = new ArrayList<>();
         list.add(imageBlog);
         list.add(videoBlog);
         list.add(new ActivityCardViewModel(listProduct));
@@ -230,8 +228,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new ActivityCardViewModel(listProduct3));
         list.add(new PromoCardViewModel(listPromo));
         list.add(new PromotedProductViewModel(listPromotedProduct));
-        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
-        list.add(new PromotedShopViewModel("Tep Shop 2", false, "Toko terbaik", listProduct3));
+        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3, false));
+        list.add(new PromotedShopViewModel("Tep Shop 2", false, "Toko terbaik", listProduct3, true));
         ArrayList<ProductFeedViewModel> listInspiration = new ArrayList<>();
         listInspiration.addAll(listOfficialStore);
 
@@ -302,7 +300,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
-        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), activityCardViewModel);
+        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), "1758307");
         startActivity(intent);
     }
 
@@ -340,9 +338,25 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onFavoritedClicked() {
-
+    public void onFavoritedClicked(int adapterPosition) {
+        adapter.getItemViewType(adapterPosition);
+        PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
+        presenter.favoriteShop(promotedShopViewModel, adapterPosition);
+        Toast.makeText(getActivity(), String.valueOf(adapterPosition), Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void showSnackbar(String s) {
+        SnackbarManager.make(getActivity(), s, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void updateFavorite(int adapterPosition) {
+        PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
+        promotedShopViewModel.setFavorited(!promotedShopViewModel.isFavorited());
+        adapter.notifyItemChanged(adapterPosition);
+    }
+
 
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {

@@ -100,7 +100,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
 
     public void setHeader(final ActivityCardViewModel activityCardViewModel) {
         String titleText = "<b>" + activityCardViewModel.getHeader().getShopName() + "</b> "
-                + activityCardViewModel.getHeader().getActionText();
+                + activityCardViewModel.getActionText();
         title.setText(MethodChecker.fromHtml(titleText));
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
@@ -114,7 +114,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         else
             officialStoreBadge.setVisibility(View.GONE);
 
-        time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getPostTime()));
+        time.setText(TimeConverter.generateTime(activityCardViewModel.getHeader().getTime()));
 
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,13 +139,13 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                 @Override
                 public void onClick(View v) {
                     String titleText = viewModel.getHeader().getShopName()
-                            + viewModel.getHeader().getActionText();
+                            + viewModel.getActionText();
                     viewListener.onShareButtonClicked(
                             viewModel.getShareUrl(),
                             titleText,
                             "",
                             titleText
-                            );
+                    );
                 }
             });
         } else {

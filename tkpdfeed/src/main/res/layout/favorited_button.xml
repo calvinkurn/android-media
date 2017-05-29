@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/feed_rounded_corners"
-    android:backgroundTint="@color/white"
-    android:gravity="center">
 
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:background="@drawable/checked_thin"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/favorited"
-        android:textColor="@color/black"
-        android:padding="@dimen/padding_small"
-        />
-</LinearLayout>
+<com.tokopedia.core.customView.LoginTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:backgroundColor="@color/white"
+    app:borderColor="@color/black"
+    app:btn_height="0dp"
+    app:cornerSize="5"
+    app:customText="@string/favorite"
+    app:iconButton="@drawable/checked_thin"
+    app:textColor="@color/black" />
