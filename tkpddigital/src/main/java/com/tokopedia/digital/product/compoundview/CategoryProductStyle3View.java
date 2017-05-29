@@ -102,7 +102,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     public void renderClientNumberFromContact(String clientNumber) {
-
+        clientNumberInputView.setText(clientNumber);
     }
 
     @Override
