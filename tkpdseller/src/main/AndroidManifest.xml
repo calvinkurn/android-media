@@ -44,15 +44,18 @@
         <activity
             android:name=".topads.view.activity.TopAdsFilterGroupActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
@@ -136,7 +139,8 @@
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordFilterActivity"
             android:label="@string/title_top_ads_dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordAddDetailActivity"
             android:label="@string/title_top_ads_keyword_add_detail"

@@ -42,7 +42,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_date_picker);
+        setContentView(R.layout.activity_keyword_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
@@ -97,7 +97,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
+        getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
         searchItem = menu.findItem(R.id.menu_search);
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -179,6 +179,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void resetSearchView() {
+        if (searchView == null)
+            return;
+
         removeListener();
         addListener();
     }

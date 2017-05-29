@@ -5,11 +5,11 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
-import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
-import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
@@ -59,7 +59,8 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
 
     @Override
     public void onFilterChanged(Object someObject) {
-
+        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_FILTER_KEYWORD);
     }
 
     @Override

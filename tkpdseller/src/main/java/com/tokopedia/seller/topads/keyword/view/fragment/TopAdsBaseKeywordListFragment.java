@@ -7,8 +7,8 @@ import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPrese
  */
 public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsAdListFragment<T> {
 
+    public static final int REQUEST_CODE_FILTER_KEYWORD = 21;
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
-
     protected String keyword;
 
     public void onSearchChanged(String query) {

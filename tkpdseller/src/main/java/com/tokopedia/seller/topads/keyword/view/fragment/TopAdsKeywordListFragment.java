@@ -17,6 +17,7 @@ import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener;
@@ -125,7 +126,8 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     @Override
     public void onFilterChanged(Object someObject) {
-
+        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_FILTER_KEYWORD);
     }
 
     @Override

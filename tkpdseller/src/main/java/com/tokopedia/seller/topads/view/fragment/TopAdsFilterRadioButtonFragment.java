@@ -7,8 +7,9 @@ import android.view.View;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.model.RadioButtonItem;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBasicRadioButtonAdapter;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
 
 import java.util.List;
@@ -19,9 +20,9 @@ import java.util.List;
 
 public abstract class TopAdsFilterRadioButtonFragment<P> extends TopAdsFilterContentFragment<P> implements TopAdsBasicRadioButtonAdapter.Callback {
 
-    private RecyclerView recyclerView;
     protected TopAdsBasicRadioButtonAdapter adapter;
     protected int selectedAdapterPosition;
+    private RecyclerView recyclerView;
 
     protected abstract List<RadioButtonItem> getRadioButtonList();
 
