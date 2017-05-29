@@ -66,7 +66,7 @@ public class AlbumLoader extends CursorLoader {
                 allAlbumCoverPath = albums.getString(albums.getColumnIndex(MediaStore.MediaColumns.DATA));
             }
         }
-        allAlbum.addRow(new String[]{Album.ALBUM_ID_ALL, Album.ALBUM_ID_ALL, Album.ALBUM_NAME_ALL, allAlbumCoverPath,
+        allAlbum.addRow(new String[]{AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_ID_ALL, AlbumItem.ALBUM_NAME_ALL, allAlbumCoverPath,
                 String.valueOf(totalCount)});
 
         return new MergeCursor(new Cursor[]{allAlbum, albums});
