@@ -190,5 +190,5 @@
     <dimen name="arrow_width_show_case">16dp</dimen>
     <dimen name="shop_item_preview_width">36dp</dimen>
     <dimen name="shop_item_preview_height">41dp</dimen>
-    <dimen name="shop_list_reputation_view_height">18dp</dimen>
+    <dimen name="shop_list_reputation_view_height">15dp</dimen>
 </resources>
