@@ -81,34 +81,39 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(activityCardViewModel);
+                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                }
+            });
+            holder.productName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
+                }
+            });
+
+            holder.productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
                 }
             });
         } else {
             holder.blackScreen.setForeground(null);
             holder.extraProduct.setVisibility(View.GONE);
-            holder.blackScreen.setOnClickListener(new View.OnClickListener() {
+            holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToFeedDetail(activityCardViewModel);
+                    viewListener.onGoToProductDetail(list.get(position).getProductId());
+                }
+            });
+
+            holder.productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(list.get(position).getProductId());
                 }
             });
         }
-
-        holder.productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
-            }
-        });
-
-        holder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail(list.get(position).getProductId());
-            }
-        });
-
 
     }
 

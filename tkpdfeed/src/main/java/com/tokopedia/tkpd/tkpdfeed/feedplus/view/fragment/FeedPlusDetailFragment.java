@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -183,7 +182,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToShopDetail(String shopId) {
+    public void onGoToShopDetail(Integer shopId) {
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
         intent.putExtras(bundle);
@@ -225,7 +224,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         seeShopButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onGoToShopDetail(header.getShopUrl());
+                onGoToShopDetail(header.getShopId());
             }
         });
 

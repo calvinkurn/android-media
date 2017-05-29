@@ -129,7 +129,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToFeedDetail(activityCardViewModel);
+                viewListener.onGoToFeedDetail(activityCardViewModel.getFeedId());
             }
         });
         shopName.setOnClickListener(new View.OnClickListener() {

@@ -17,7 +17,7 @@ public interface FeedPlusDetail {
 
         void onWishlistClicked();
 
-        void onGoToShopDetail(String shopUrl);
+        void onGoToShopDetail(Integer shopId);
 
         void onErrorGetFeedDetail(String errorMessage);
 

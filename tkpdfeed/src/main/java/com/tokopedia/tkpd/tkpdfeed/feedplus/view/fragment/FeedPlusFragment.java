@@ -39,7 +39,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
@@ -305,10 +304,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
+    public void onGoToFeedDetail(String feedId) {
         Intent intent = FeedPlusDetailActivity.getIntent(
                 getActivity(),
-                activityCardViewModel.getFeedId());
+                feedId);
         startActivity(intent);
     }
 

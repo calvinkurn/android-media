@@ -27,7 +27,7 @@ public interface FeedPlus{
 
         void onGoToProductDetail(Integer productId);
 
-        void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel);
+        void onGoToFeedDetail(String feedId);
 
         void onGoToShopDetail(Integer shopId, String url);
 
