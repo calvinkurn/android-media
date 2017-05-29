@@ -5,13 +5,26 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class GroupAd implements Ad, Parcelable {
+public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
 
+    public static final int TYPE = 19294123;
+    public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {
+        @Override
+        public GroupAd createFromParcel(Parcel source) {
+            return new GroupAd(source);
+        }
+
+        @Override
+        public GroupAd[] newArray(int size) {
+            return new GroupAd[size];
+        }
+    };
     @SerializedName("group_id")
     @Expose
     private long id;
@@ -51,7 +64,6 @@ public class GroupAd implements Ad, Parcelable {
     @SerializedName("group_end_time")
     @Expose
     private String endTime;
-
     @SerializedName("stat_avg_click")
     @Expose
     private String statAvgClick;
@@ -79,22 +91,52 @@ public class GroupAd implements Ad, Parcelable {
     @SerializedName("label_of")
     @Expose
     private String labelOf;
-
     @SerializedName("group_name")
     @Expose
     private String name;
-
     @SerializedName("group_moderated")
     @Expose
     private int adModerated;
     @SerializedName("group_moderated_reason")
     @Expose
     private String adModeratedReason;
-
     @SerializedName("total_item")
     @Expose
     private int totalItem;
 
+    public GroupAd() {
+        super(TYPE);
+    }
+
+    protected GroupAd(Parcel in) {
+        super(TYPE);
+        this.id = in.readLong();
+        this.status = in.readInt();
+        this.statusDesc = in.readString();
+        this.statusToogle = in.readInt();
+        this.priceBidFmt = in.readString();
+        this.priceDailyFmt = in.readString();
+        this.priceDailySpentFmt = in.readString();
+        this.priceDailyBar = in.readString();
+        this.editable = in.readInt();
+        this.startDate = in.readString();
+        this.startTime = in.readString();
+        this.endDate = in.readString();
+        this.endTime = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.labelEdit = in.readString();
+        this.labelPerClick = in.readString();
+        this.labelOf = in.readString();
+        this.name = in.readString();
+        this.adModerated = in.readInt();
+        this.adModeratedReason = in.readString();
+        this.totalItem = in.readInt();
+    }
 
     @Override
     public String getPriceDailySpentFmt() {
@@ -222,9 +264,6 @@ public class GroupAd implements Ad, Parcelable {
         return totalItem;
     }
 
-    public GroupAd() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -259,45 +298,4 @@ public class GroupAd implements Ad, Parcelable {
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
     }
-
-    protected GroupAd(Parcel in) {
-        this.id = in.readLong();
-        this.status = in.readInt();
-        this.statusDesc = in.readString();
-        this.statusToogle = in.readInt();
-        this.priceBidFmt = in.readString();
-        this.priceDailyFmt = in.readString();
-        this.priceDailySpentFmt = in.readString();
-        this.priceDailyBar = in.readString();
-        this.editable = in.readInt();
-        this.startDate = in.readString();
-        this.startTime = in.readString();
-        this.endDate = in.readString();
-        this.endTime = in.readString();
-        this.statAvgClick = in.readString();
-        this.statTotalSpent = in.readString();
-        this.statTotalImpression = in.readString();
-        this.statTotalClick = in.readString();
-        this.statTotalCtr = in.readString();
-        this.statTotalConversion = in.readString();
-        this.labelEdit = in.readString();
-        this.labelPerClick = in.readString();
-        this.labelOf = in.readString();
-        this.name = in.readString();
-        this.adModerated = in.readInt();
-        this.adModeratedReason = in.readString();
-        this.totalItem = in.readInt();
-    }
-
-    public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {
-        @Override
-        public GroupAd createFromParcel(Parcel source) {
-            return new GroupAd(source);
-        }
-
-        @Override
-        public GroupAd[] newArray(int size) {
-            return new GroupAd[size];
-        }
-    };
 }

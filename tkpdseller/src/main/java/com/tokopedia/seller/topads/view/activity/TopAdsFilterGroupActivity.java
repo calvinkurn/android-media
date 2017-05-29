@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
+@Deprecated
 public class TopAdsFilterGroupActivity extends TopAdsFilterActivity {
 
     private int selectedFilterStatus;

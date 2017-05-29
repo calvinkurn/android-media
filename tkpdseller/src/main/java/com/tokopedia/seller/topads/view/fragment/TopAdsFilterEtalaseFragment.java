@@ -20,8 +20,9 @@ import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenter>
-    implements TopAdsEtalaseListView{
+        implements TopAdsEtalaseListView {
 
     private int selectedEtalaseId;
     private String shopId;
@@ -137,7 +138,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
 
-    private RadioButtonItem getDefaultRadioButton (){
+    private RadioButtonItem getDefaultRadioButton() {
         RadioButtonItem defaultRadioButton = new RadioButtonItem();
         defaultRadioButton.setName(getString(R.string.title_all_etalase));
         defaultRadioButton.setValue("0");

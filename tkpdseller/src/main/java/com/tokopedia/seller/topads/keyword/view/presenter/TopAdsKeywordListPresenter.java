@@ -7,5 +7,5 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
  * Created by normansyahputa on 5/22/17.
  */
 
-public abstract class TopAdsKeywordListPresenter extends BaseDaggerPresenter<TopAdsListViewListener> {
+public abstract class TopAdsKeywordListPresenter<T extends TopAdsListViewListener> extends BaseDaggerPresenter<T> {
 }

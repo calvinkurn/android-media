@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
@@ -51,16 +52,10 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private ArrayList<String> groupNames = new ArrayList<>();
     private List<GroupAd> groupAds = new ArrayList<>();
     private String choosenId = "";
-    private DefValueSpinnerTextView keywordTypeSpinner;
 
     public static Fragment createInstance() {
         Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
         return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -160,5 +155,20 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     public void onDestroy() {
         super.onDestroy();
         topAdsKeywordNewChooseGroupPresenter.detachView();
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+
+    }
+
+    @Override
+    public void onLoadSearchAdError() {
+
     }
 }

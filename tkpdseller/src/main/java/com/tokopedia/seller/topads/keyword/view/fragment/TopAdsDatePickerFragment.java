@@ -87,7 +87,6 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-
         if (datePickerResultListener != null) {
             datePickerResultListener.onActivityResult(requestCode, resultCode, intent);
         }

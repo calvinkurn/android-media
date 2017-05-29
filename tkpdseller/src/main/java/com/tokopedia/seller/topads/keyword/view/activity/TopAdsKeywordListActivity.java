@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -22,14 +22,15 @@ import com.tokopedia.seller.lib.datepicker.DatePickerTabListener;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsPagerAdapter;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsBaseKeywordListFragment;
 import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener;
 
 /**
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends TActivity implements
+public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
-        KeywordListListener.Listener {
+        KeywordListListener.Listener, TopAdsDashboardListener {
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
     private ViewPager viewPager;
     private TopAdsPagerAdapter pagerAdapter;
@@ -41,7 +42,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_date_picker);
+        setContentView(R.layout.activity_top_ads_keyword_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
@@ -96,7 +97,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
+        getMenuInflater().inflate(R.menu.menu_top_ads_keyword_list, menu);
         searchItem = menu.findItem(R.id.menu_search);
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -174,5 +175,11 @@ public class TopAdsKeywordListActivity extends TActivity implements
     @Override
     public void expand() {
         searchItem.expandActionView();
+    }
+
+    @Override
+    public void resetSearchView() {
+        removeListener();
+        addListener();
     }
 }
