@@ -24,12 +24,12 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
     private final FeedPlus.View viewListener;
     private final View favoriteButton;
 
-    TextView shopName;
-    TextView shopDesc;
-    View goldMerchant;
-    View infoView;
-    View favorite;
-    View favorited;
+    private TextView shopName;
+    private TextView shopDesc;
+    private View goldMerchant;
+    private View infoView;
+    private View favorite;
+    private View favorited;
 
     RecyclerView recyclerView;
 
@@ -89,7 +89,7 @@ public class PromotedShopViewHolder extends AbstractViewHolder<PromotedShopViewM
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onFavoritedClicked();
+                viewListener.onFavoritedClicked(getAdapterPosition());
             }
         });
     }

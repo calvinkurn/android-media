@@ -25,6 +25,8 @@ public class PromotedProductViewHolder extends AbstractViewHolder<PromotedProduc
     public static final int LAYOUT = R.layout.promoted_product_layout;
     private final FeedPlus.View viewListener;
 
+    private View infoView;
+
     RecyclerView recyclerView;
 
     private PromotedProductAdapter adapter;
@@ -34,6 +36,7 @@ public class PromotedProductViewHolder extends AbstractViewHolder<PromotedProduc
     public PromotedProductViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
         recyclerView = (RecyclerView) itemView.findViewById(R.id.product_list);
+        infoView = itemView.findViewById(R.id.info_topads);
         this.viewListener = viewListener;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(
                 itemView.getContext(),
@@ -63,6 +66,12 @@ public class PromotedProductViewHolder extends AbstractViewHolder<PromotedProduc
     public void bind(PromotedProductViewModel promotedProductViewModel) {
         this.promotedProductViewModel = promotedProductViewModel;
         adapter.setList(this.promotedProductViewModel.getListProduct());
+        infoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onInfoClicked();
+            }
+        });
     }
 
 }
