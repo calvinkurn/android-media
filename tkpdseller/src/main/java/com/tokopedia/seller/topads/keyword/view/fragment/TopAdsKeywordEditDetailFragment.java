@@ -9,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
@@ -38,6 +41,16 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEYWORD_DETAIL_MODEL, model);
         return bundle;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerTopAdsKeywordEditDetailComponent
+                .builder()
+                .appComponent(getComponent(AppComponent.class))
+                .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
+                .build()
+                .inject(this);
     }
 
     @Nullable
@@ -114,10 +127,5 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return null;
-    }
-
-    @Override
-    protected void initInjector() {
-
     }
 }

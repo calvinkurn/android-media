@@ -8,6 +8,8 @@ import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordRepository;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ public class EditTopAdsKeywordDetailUseCase extends UseCase<EditTopAdsKeywordDet
     public static final String TOPADS_KEYWORD_EDIT_DETAIL_INPUT = "TOPADS_KEYWORD_EDIT_DETAIL_INPUT";
     private final TopAdsKeywordRepository topAdsKeywordRepository;
 
+    @Inject
     public EditTopAdsKeywordDetailUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, TopAdsKeywordRepository topAdsKeywordRepository) {
         super(threadExecutor, postExecutionThread);
         this.topAdsKeywordRepository = topAdsKeywordRepository;

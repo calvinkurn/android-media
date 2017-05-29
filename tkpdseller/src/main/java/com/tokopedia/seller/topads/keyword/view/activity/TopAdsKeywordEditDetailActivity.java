@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailPositiveFragment;
 import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
@@ -15,7 +17,7 @@ import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailVie
  * @author sebastianuskh on 5/23/17.
  */
 
-public class TopAdsKeywordEditDetailActivity extends BaseActivity {
+public class TopAdsKeywordEditDetailActivity extends BaseActivity implements HasComponent<AppComponent> {
 
     public static final String KEYWORD_DETAIL_MODEL = "KEYWORD_DETAIL_MODEL";
 
@@ -44,5 +46,10 @@ public class TopAdsKeywordEditDetailActivity extends BaseActivity {
                     .replace(R.id.container, fragment, TopAdsKeywordEditDetailPositiveFragment.TAG)
                     .commit();
         }
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

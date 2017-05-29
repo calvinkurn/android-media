@@ -19,14 +19,14 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
 
     public static TopAdsKeywordEditDetailInputDataModel mapDomainToData(TopAdsKeywordEditDetailInputDomainModel modelInput) {
         TopAdsKeywordEditDetailInputDataModel dataModel = new TopAdsKeywordEditDetailInputDataModel();
-        dataModel.setKeywordId(modelInput.getKeywordId());
-        dataModel.setGroupId(modelInput.getGroupId());
+        dataModel.setKeywordId(String.valueOf(modelInput.getKeywordId()));
+        dataModel.setGroupId(String.valueOf(modelInput.getGroupId()));
         dataModel.setKeywordTag(modelInput.getKeywordTag());
         dataModel.setKeywordTypeId(String.valueOf(modelInput.getKeywordTypeId()));
         dataModel.setPriceBid(String.valueOf(modelInput.getPriceBid()));
         dataModel.setShopId(modelInput.getShopId());
         dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
-        dataModel.setToggle(modelInput.getToggle());
+        dataModel.setToggle(String.valueOf(modelInput.getToggle()));
         return dataModel;
     }
 
