@@ -75,6 +75,8 @@ public class TrackingUtils extends TrackingConfig {
 
             getMoEngine().setUserData(customerWrapper);
         }
+        if(!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(MainApplication.getAppContext())))
+            PushManager.getInstance().refreshToken(MainApplication.getAppContext(),FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
     public static void setMoEUserAttributes(Bundle bundle, String label){
