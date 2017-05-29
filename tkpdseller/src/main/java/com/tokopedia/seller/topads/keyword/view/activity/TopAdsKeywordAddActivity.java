@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.view.MenuItem;
-import android.view.Window;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
+import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddDetailFragment;
 
 import java.util.ArrayList;
@@ -21,52 +25,58 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordAddDetailActivity extends BaseActivity
-        implements TopAdsKeywordAddDetailFragment.OnSaveKeywordListener {
+public class TopAdsKeywordAddActivity extends BaseActivity
+        implements HasComponent<AppComponent>,
+        TopAdsKeywordAddDetailFragment.OnSuccessSaveKeywordListener {
 
+    public static final String EXTRA_GROUP_ID = "grp_id";
     public static final String EXTRA_GROUP_NAME = "grp_nm";
-    public static final String EXTRA_KEYWORD_NAME = "key_nm";
+    public static final String EXTRA_KEYWORD_TYPE = "key_typ";
     public static final String EXTRA_SERVER_COUNT = "server_count";
     public static final String EXTRA_MAX_WORDS = "max_words";
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
 
     public static final String RESULT_WORDS = "rslt_wrds";
-    public static final int DEFAULT_MAX_WORDS = 50;
 
+    private String groupId;
     private String groupName;
-    private String keywordName;
+    private int keywordType;
     private int serverCount;
     private int maxWords;
     private ArrayList<String> localWords = new ArrayList<>();
 
     public static void start(Activity activity, int requestCode,
+                             String groupId,
                              String groupName,
-                             String keywordName,
+                             @KeywordTypeDef int keywordType,
                              int serverCount, int maxWords,
-                             ArrayList<String> localWords) {
-        Intent intent = createIntent(activity, groupName, keywordName, serverCount, maxWords, localWords);
+                             @NonNull ArrayList<String> localWords) {
+        Intent intent = createIntent(activity, groupId, groupName, keywordType, serverCount, maxWords, localWords);
         activity.startActivityForResult(intent, requestCode);
     }
 
     public static void start(Fragment fragment, Context context, int requestCode,
+                             String groupId,
                              String groupName,
-                             String keywordName,
+                             @KeywordTypeDef int keywordType,
                              int serverCount, int maxWords,
-                             ArrayList<String> localWords) {
-        Intent intent = createIntent(context, groupName, keywordName, serverCount, maxWords, localWords);
+                             @NonNull ArrayList<String> localWords) {
+        Intent intent = createIntent(context,  groupId, groupName, keywordType, serverCount, maxWords, localWords);
         fragment.startActivityForResult(intent, requestCode);
     }
 
     private static Intent createIntent(Context context,
+                                       String groupId,
                                        String groupName,
-                                       String keywordName,
+                                       @KeywordTypeDef int keywordType,
                                        int serverCount,
                                        int maxWords,
-                                       ArrayList<String> localWords) {
-        Intent intent = new Intent(context, TopAdsKeywordAddDetailActivity.class);
+                                       @NonNull ArrayList<String> localWords) {
+        Intent intent = new Intent(context, TopAdsKeywordAddActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_GROUP_ID, groupId);
         bundle.putString(EXTRA_GROUP_NAME, groupName);
-        bundle.putString(EXTRA_KEYWORD_NAME, keywordName);
+        bundle.putInt(EXTRA_KEYWORD_TYPE, keywordType);
         bundle.putInt(EXTRA_SERVER_COUNT, serverCount);
         bundle.putInt(EXTRA_MAX_WORDS, maxWords);
         bundle.putStringArrayList(EXTRA_LOCAL_WORDS, localWords);
@@ -82,12 +92,12 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         retrieveFromIntent();
-        getSupportActionBar().setTitle(keywordName);
+        getSupportActionBar().setTitle(KeywordTypeMapper.mapToKeywordName(this,keywordType));
 
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.container,
-                    TopAdsKeywordAddDetailFragment.newInstance(serverCount, maxWords, localWords)
+                    TopAdsKeywordAddDetailFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords)
                     , TopAdsKeywordAddDetailFragment.TAG);
             fragmentTransaction.commit();
         }
@@ -95,10 +105,12 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity
 
     private void retrieveFromIntent() {
         Intent intent = getIntent();
+        groupId = intent.getStringExtra(EXTRA_GROUP_ID);
         groupName = intent.getStringExtra(EXTRA_GROUP_NAME);
-        keywordName = intent.getStringExtra(EXTRA_KEYWORD_NAME);
+        keywordType = intent.getIntExtra(EXTRA_KEYWORD_TYPE, KeywordTypeDef.KEYWORD_TYPE_EXACT);
         serverCount = intent.getIntExtra(EXTRA_SERVER_COUNT, 0);
-        maxWords = intent.getIntExtra(EXTRA_MAX_WORDS, DEFAULT_MAX_WORDS);
+        maxWords = intent.getIntExtra(EXTRA_MAX_WORDS,
+                getResources().getInteger(R.integer.topads_max_keyword_in_group));
         localWords = intent.getStringArrayListExtra(EXTRA_LOCAL_WORDS);
     }
 
@@ -108,7 +120,7 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity
     }
 
     @Override
-    public void onSaveClicked(ArrayList<String> keyWordsList) {
+    public void onSuccessSave(ArrayList<String> keyWordsList) {
         Intent intent = new Intent();
         intent.putStringArrayListExtra(RESULT_WORDS, keyWordsList);
         setResult(Activity.RESULT_OK, intent);
@@ -137,7 +149,7 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity
                     .setPositiveButton(getString(R.string.exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            TopAdsKeywordAddDetailActivity.super.onBackPressed();
+                            TopAdsKeywordAddActivity.super.onBackPressed();
                         }
                     }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -148,5 +160,10 @@ public class TopAdsKeywordAddDetailActivity extends BaseActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

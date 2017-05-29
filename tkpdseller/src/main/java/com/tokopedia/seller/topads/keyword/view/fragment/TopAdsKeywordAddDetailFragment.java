@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -14,38 +13,55 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.utils.StringUtils;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.utils.ViewUtils;
+import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordAddComponent;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordAddModule;
 import com.tokopedia.seller.topads.keyword.view.adapter.KeywordAdapter;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordAddView;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordAddPresenter;
 import com.tokopedia.seller.topads.keyword.view.widget.KeywordRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by hendry on 5/18/2017.
  */
 
-public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordAdapter.OnKeywordAdapterListener {
+public class TopAdsKeywordAddDetailFragment extends BaseDaggerFragment
+        implements KeywordAdapter.OnKeywordAdapterListener, TopAdsKeywordAddView {
 
     public static final String TAG = TopAdsKeywordAddDetailFragment.class.getSimpleName();
 
+    @Inject
+    TopAdsKeywordAddPresenter topAdsKeywordAddPresenter;
+
+    public static final String EXTRA_GROUP_ID = "grp_id";
+    public static final String EXTRA_KEYWORD_TYPE = "keyword_typ";
     public static final String EXTRA_SERVER_COUNT = "server_cnt";
     public static final String EXTRA_MAX_WORDS = "max_words";
     public static final String EXTRA_LOCAL_WORDS = "lcl_wrds";
 
     public static final int MIN_WORDS = 5;
 
-    private int maxKeyword;
-
-    OnSaveKeywordListener onSaveKeywordListener;
-    public interface OnSaveKeywordListener{
-        void onSaveClicked(ArrayList<String> keyWordsList);
+    OnSuccessSaveKeywordListener onSuccessSaveListener;
+    public interface OnSuccessSaveKeywordListener {
+        void onSuccessSave(ArrayList<String> keyWordsList);
     }
 
     private ArrayList<String> localWords = new ArrayList<>();
     private int serverCount;
-    private int maxWords;
+    private int maxKeyword;
+    private String groupId;
+    private int keywordType;
     private KeywordRecyclerView keywordRecyclerView;
     private View buttonAddKeyword;
     private TextInputLayout textInputKeyword;
@@ -53,12 +69,17 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
     private TextView textViewKeywordCurrentMax;
     private TextView textViewTotalKeyworGroup;
     private View buttonSave;
+    private TkpdProgressDialog progressDialog;
 
-    public static TopAdsKeywordAddDetailFragment newInstance(int serverCount,
+    public static TopAdsKeywordAddDetailFragment newInstance(String groupId,
+                                                             int keywordType,
+                                                             int serverCount,
                                                              int maxWords,
                                                              ArrayList<String> localWords) {
         TopAdsKeywordAddDetailFragment fragment = new TopAdsKeywordAddDetailFragment();
         Bundle args = new Bundle();
+        args.putString(EXTRA_GROUP_ID, groupId);
+        args.putInt(EXTRA_KEYWORD_TYPE, keywordType);
         args.putInt(EXTRA_SERVER_COUNT, serverCount);
         args.putInt(EXTRA_MAX_WORDS, maxWords);
         args.putStringArrayList(EXTRA_LOCAL_WORDS, localWords);
@@ -71,6 +92,8 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         super.onCreate(savedInstanceState);
 
         Bundle args = getArguments();
+        groupId = args.getString(EXTRA_GROUP_ID);
+        keywordType = args.getInt(EXTRA_KEYWORD_TYPE);
         serverCount = args.getInt(EXTRA_SERVER_COUNT);
         maxKeyword = args.getInt(EXTRA_MAX_WORDS);
         if (savedInstanceState == null) {
@@ -78,6 +101,16 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         } else {
             localWords = savedInstanceState.getStringArrayList(EXTRA_LOCAL_WORDS);
         }
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerTopAdsKeywordAddComponent.builder()
+                .topAdsKeywordAddModule(new TopAdsKeywordAddModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+        topAdsKeywordAddPresenter.attachView(this);
     }
 
     @Nullable
@@ -128,15 +161,52 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
     }
 
     private void onButtonSaveClicked(){
-        if (onSaveKeywordListener!= null) {
-            onSaveKeywordListener.onSaveClicked(keywordRecyclerView.getKeywordList());
+        showLoading();
+        topAdsKeywordAddPresenter.addKeyword(groupId,keywordType, keywordRecyclerView.getKeywordList());
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsKeywordAddPresenter.detachView();
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    public void onSuccessSaveKeyword() {
+        hideLoading();
+        if (onSuccessSaveListener != null) {
+            onSuccessSaveListener.onSuccessSave(keywordRecyclerView.getKeywordList());
         }
+    }
+
+    @Override
+    public void onFailedSaveKeyword(Throwable e) {
+        hideLoading();
+        CommonUtils.UniversalToast(getActivity(), ViewUtils.getErrorMessage(getContext(), e));
+    }
+
+    private void hideLoading(){
+        if (progressDialog!= null) {
+            progressDialog.dismiss();
+        }
+    }
+    private void showLoading(){
+        if (progressDialog==null) {
+            progressDialog = new TkpdProgressDialog(getActivity(),
+                    TkpdProgressDialog.NORMAL_PROGRESS);
+        }
+        progressDialog.showDialog();
     }
 
     private void onButtonAddClicked(){
         // check if max words has been reached
         if (getLocalKeyWordSize()  == maxKeyword) {
-            textInputKeyword.setError(getString(R.string.error_keyword_per_group_reach_limit));
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_per_group_reach_limit));
             return;
         }
 
@@ -144,20 +214,20 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
 
         // check if contain alphanumeric
         if (StringUtils.containNonSpaceAlphaNumeric(keyword)) {
-            textInputKeyword.setError(getString(R.string.error_keyword_must_only_letter_or_digit));
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
             return;
         }
         // revalidate double space, then check if empty
         String validKeyword = StringUtils.omitPunctuationAndDoubleSpace(keyword).toLowerCase();
         if (TextUtils.isEmpty(validKeyword)) {
-            textInputKeyword.setError(getString(R.string.error_keyword_must_only_letter_or_digit));
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_must_only_letter_or_digit));
             return;
         }
 
         // validate no more 5 words
         String words[] = validKeyword.split("\\s|\\n", MIN_WORDS + 1);
         if (words.length > MIN_WORDS) {
-            textInputKeyword.setError(getString(R.string.error_keyword_cannot_more_than_5));
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_cannot_more_than_5));
             return;
         }
 
@@ -172,7 +242,7 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
         }
 
         if (hasInputtedInLocal) {
-            textInputKeyword.setError(getString(R.string.error_keyword_has_existed));
+            textInputKeyword.setError(getString(R.string.top_ads_keyword_has_existed));
             return;
         }
 
@@ -240,12 +310,12 @@ public class TopAdsKeywordAddDetailFragment extends Fragment implements KeywordA
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        onSaveKeywordListener = (OnSaveKeywordListener) context;
+        onSuccessSaveListener = (OnSuccessSaveKeywordListener) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        onSaveKeywordListener = null;
+        onSuccessSaveListener = null;
     }
 }

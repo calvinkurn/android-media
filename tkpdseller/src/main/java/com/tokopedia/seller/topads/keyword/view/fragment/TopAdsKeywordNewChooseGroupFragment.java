@@ -1,24 +1,32 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
+import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroupModule;
+import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddActivity;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAutoCompleteAdapter;
@@ -35,21 +43,57 @@ import javax.inject.Inject;
 
 public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment implements TopAdsKeywordNewChooseGroupView {
 
-    private TkpdTextInputLayout inputLayoutChooseGroup;
-    private TopAdsCustomAutoCompleteTextView autoCompleteChooseGroup;
-    private View buttonNext;
+    public static final String TAG = TopAdsKeywordNewChooseGroupFragment.class.getSimpleName();
+
+    private static final String EXTRA_IS_POSITIVE = "is_pos";
+
+    private static final String SAVED_GROUP_ID = "grp_id";
+    private static final String SAVED_GROUP_NAME = "grp_nm";
+    private static final String SAVED_KEYWORD_COUNT = "key_count";
+    private static final String SAVED_SPINNER_POS = "spinner_pos";
+
+    public static final int ADD_REQUEST_CODE = 100;
 
     @Inject
     public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
+
     private TopAdsAutoCompleteAdapter adapterChooseGroup;
+    private TkpdTextInputLayout inputLayoutChooseGroup;
+    private TopAdsCustomAutoCompleteTextView autoCompleteChooseGroup;
+
+    private boolean isPositive;
 
     private ArrayList<String> groupNames = new ArrayList<>();
     private List<GroupAd> groupAds = new ArrayList<>();
-    private String choosenId = "";
+    private String chosenId = "";
+    private int keywordCount = 0;
+    private View buttonNext;
+    private SpinnerTextView spinnerKeywordType;
+    private View viewGroupKeywordInfo;
+    private TextView textKeywordTitle;
+    private TextView textKeywordDesc;
+    private TextView textKeywordExample;
 
-    public static Fragment createInstance() {
+    private
+    @KeywordTypeDef
+    int keywordType;
+
+    public static Fragment newInstance(boolean isPositiveKeyword) {
         Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(EXTRA_IS_POSITIVE, isPositiveKeyword);
+        fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE, true);
+        }
+        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
     }
 
     @Nullable
@@ -58,10 +102,53 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false);
 
         buttonNext = view.findViewById(R.id.button_next);
-        adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
         inputLayoutChooseGroup = (TkpdTextInputLayout) view.findViewById(R.id.input_layout_choose_group);
         autoCompleteChooseGroup = (TopAdsCustomAutoCompleteTextView) inputLayoutChooseGroup.findViewById(R.id.choose_group_auto_text);
         autoCompleteChooseGroup.setAdapter(adapterChooseGroup);
+
+        spinnerKeywordType = (SpinnerTextView) view.findViewById(R.id.spinner_keyword_type);
+
+        viewGroupKeywordInfo = view.findViewById(R.id.view_group_keyword_info);
+        textKeywordTitle = (TextView) viewGroupKeywordInfo.findViewById(R.id.text_keyword_title);
+        textKeywordDesc = (TextView) viewGroupKeywordInfo.findViewById(R.id.text_keyword_desc);
+        textKeywordExample = (TextView) viewGroupKeywordInfo.findViewById(R.id.text_keyword_example);
+        viewGroupKeywordInfo.setVisibility(View.GONE);
+
+        // update from savedInstance
+        String groupName = null;
+        int spinnerPos = -1;
+        if (savedInstanceState != null) {
+            chosenId = savedInstanceState.getString(SAVED_GROUP_ID);
+            groupName = savedInstanceState.getString(SAVED_GROUP_NAME);
+            keywordCount = savedInstanceState.getInt(SAVED_KEYWORD_COUNT);
+            spinnerPos = savedInstanceState.getInt(SAVED_SPINNER_POS);
+        }
+        if (TextUtils.isEmpty(chosenId)) {
+            inputLayoutChooseGroup.setErrorSuccessEnabled(false);
+        } else {
+            autoCompleteChooseGroup.setText(groupName);
+            autoCompleteChooseGroup.lockView();
+            inputLayoutChooseGroup.setSuccess(getString(R.string.top_ads_keywords_in_groups, keywordCount));
+        }
+        if (spinnerPos > -1) {
+            spinnerKeywordType.setSpinnerPosition(spinnerPos);
+            keywordType = KeywordTypeMapper.mapToDef(isPositive, spinnerPos);
+            setKeywordsInfo(keywordType);
+        }
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setChooseGroupListener();
+        setSpinnerListener();
+        setButtonNextListener();
+
+        checkButtonNextEnabled();
+    }
+
+    private void setChooseGroupListener() {
         autoCompleteChooseGroup.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -75,6 +162,12 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
 
             @Override
             public void afterTextChanged(Editable editable) {
+                if (! autoCompleteChooseGroup.isEnabled()) {
+                    return;
+                }
+                inputLayoutChooseGroup.hideErrorSuccess();
+                buttonNext.setEnabled(false);
+                chosenId = "";
                 topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
             }
         });
@@ -83,7 +176,11 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 autoCompleteChooseGroup.lockView();
                 if (groupAds.get(i) != null) {
-                    choosenId = groupAds.get(i).getId();
+                    GroupAd groupAd = groupAds.get(i);
+                    chosenId = groupAd.getId();
+                    keywordCount = isPositive ? groupAd.getPositiveCount() : groupAd.getNegativeCount();
+                    inputLayoutChooseGroup.setSuccess(getString(R.string.top_ads_keywords_in_groups, keywordCount));
+                    checkButtonNextEnabled();
                 }
             }
         });
@@ -94,15 +191,80 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                 return groupNames;
             }
         });
+    }
 
+    private void setSpinnerListener() {
+        spinnerKeywordType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                keywordType = KeywordTypeMapper.mapToDef(isPositive, position);
+                setKeywordsInfo(keywordType);
+                checkButtonNextEnabled();
+            }
+        });
+    }
+
+    private void setButtonNextListener() {
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra("id", choosenId);
+                //validate if server max not reached
+                if (keywordCount >= getResources().getInteger(R.integer.topads_max_keyword_in_group)) {
+                    CommonUtils.UniversalToast(getActivity(), getString(R.string.top_ads_keyword_per_group_reach_limit));
+                    return;
+                }
+                // go to add keyword activity
+                TopAdsKeywordAddActivity.start(TopAdsKeywordNewChooseGroupFragment.this,
+                        getActivity(),
+                        ADD_REQUEST_CODE,
+                        chosenId,
+                        autoCompleteChooseGroup.getText().toString(),
+                        keywordType,
+                        keywordCount,
+                        getResources().getInteger(R.integer.topads_max_keyword_in_group) - keywordCount,
+                        new ArrayList<String>()
+                );
             }
         });
-        return view;
+    }
+
+    private void setKeywordsInfo(@KeywordTypeDef int keywordType) {
+        switch (keywordType) {
+            case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
+                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
+                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
+                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                viewGroupKeywordInfo.setVisibility(View.VISIBLE);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_EXACT:
+                textKeywordTitle.setText(getString(R.string.top_ads_exact_match));
+                textKeywordDesc.setText(getString(R.string.top_ads_exact_match_positive_description));
+                textKeywordExample.setText(getString(R.string.top_ads_exact_match_positive_example));
+                viewGroupKeywordInfo.setVisibility(View.VISIBLE);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
+                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
+                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
+                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                viewGroupKeywordInfo.setVisibility(View.VISIBLE);
+                break;
+            case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
+                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
+                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
+                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                viewGroupKeywordInfo.setVisibility(View.VISIBLE);
+                break;
+            default:
+                viewGroupKeywordInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private void checkButtonNextEnabled() {
+        if (!TextUtils.isEmpty(chosenId) && keywordType > -1) {
+            buttonNext.setEnabled(true);
+        } else {
+            buttonNext.setEnabled(false);
+        }
     }
 
     @Override
@@ -116,6 +278,19 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ADD_REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                }
+                break;
+        }
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -125,7 +300,6 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
         this.groupAds.clear();
         this.groupAds.addAll(groupAds);
         groupNames.clear();
-        inputLayoutChooseGroup.setError(null);
         for (GroupAd groupAd : groupAds) {
             groupNames.add(groupAd.getName());
         }
@@ -156,5 +330,14 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     @Override
     public void onLoadSearchAdError() {
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(SAVED_GROUP_ID, chosenId);
+        outState.putString(SAVED_GROUP_NAME, autoCompleteChooseGroup.getText().toString());
+        outState.putInt(SAVED_KEYWORD_COUNT, keywordCount);
+        outState.putInt(SAVED_SPINNER_POS, spinnerKeywordType.getSpinnerPosition());
     }
 }

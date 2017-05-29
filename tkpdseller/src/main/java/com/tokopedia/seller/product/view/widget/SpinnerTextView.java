@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +38,7 @@ public class SpinnerTextView extends FrameLayout {
     private CharSequence[] entries;
     private CharSequence[] values;
     private int selectionIndex;
+    private float textSize;
     private boolean enabled;
     private AdapterView.OnItemClickListener onItemClickListener;
 
@@ -74,9 +76,12 @@ public class SpinnerTextView extends FrameLayout {
             entries = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_entries);
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
+            textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
+                    getResources().getDimension(R.dimen.font_medium));
         } finally {
             styledAttributes.recycle();
         }
+        textAutoComplete.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
     }
 
     @Override
@@ -106,10 +111,10 @@ public class SpinnerTextView extends FrameLayout {
         textAutoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                selectionIndex = position;
                 if (onItemClickListener != null) {
                     onItemClickListener.onItemClick(adapterView, view, position, id);
                 }
-                selectionIndex = position;
                 updateOnItemChanged(position);
             }
         });
