@@ -21,6 +21,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -69,6 +70,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private ShareBottomDialog shareBottomDialog;
     private CallbackManager callbackManager;
     private List<Visitable> list;
+    private TopAdsInfoBottomSheet infoBottomSheet;
 
     @Override
     protected String getScreenName() {
@@ -120,7 +122,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
-
+        infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
     }
 
     @Override
@@ -220,7 +222,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         listPromotedProduct.add(prod4);
 
 
-        list = new ArrayList<>();
+        List<Visitable> list = new ArrayList<>();
         list.add(imageBlog);
         list.add(videoBlog);
         list.add(new ActivityCardViewModel(listProduct));
@@ -228,8 +230,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new ActivityCardViewModel(listProduct3));
         list.add(new PromoCardViewModel(listPromo));
         list.add(new PromotedProductViewModel(listPromotedProduct));
-        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3, false));
-        list.add(new PromotedShopViewModel("Tep Shop 2", false, "Toko terbaik", listProduct3, true));
+        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
+        list.add(new PromotedShopViewModel("Tep Shop 2", false, "Toko terbaik", listProduct3));
         ArrayList<ProductFeedViewModel> listInspiration = new ArrayList<>();
         listInspiration.addAll(listOfficialStore);
 
@@ -247,8 +249,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
         list.add(new ActivityCardViewModel(listProduct8));
 
-        adapter.addList(list);
+         adapter.addList(list);
         adapter.notifyDataSetChanged();
+
+//        presenter.fetchFirstPage();
     }
 
 
@@ -263,7 +267,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
-
+        presenter.fetchFirstPage();
     }
 
     @Override
@@ -334,7 +338,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onInfoClicked() {
-
+        infoBottomSheet.show();
     }
 
     @Override
@@ -342,7 +346,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.getItemViewType(adapterPosition);
         PromotedShopViewModel promotedShopViewModel = (PromotedShopViewModel) list.get(adapterPosition);
         presenter.favoriteShop(promotedShopViewModel, adapterPosition);
-        Toast.makeText(getActivity(), String.valueOf(adapterPosition), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -357,6 +360,43 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter.notifyItemChanged(adapterPosition);
     }
 
+    @Override
+    public void onViewMorePromoClicked() {
+        Intent intent = BlogWebViewActivity.getIntent(getActivity(), "https://www.tokopedia.com/promo/");
+        startActivity(intent);
+    }
+
+
+    @Override
+    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
+        adapter.clearData();
+
+        finishLoading();
+        adapter.removeEmpty();
+
+        if (listFeed.size() == 0) {
+            adapter.showEmpty();
+        } else {
+            adapter.addList(listFeed);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void finishLoading() {
+        if (swipeToRefresh.isRefreshing())
+            swipeToRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void onFailedGetFeedFirstPage(String errorMessage) {
+        finishLoading();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSearchShopButtonClicked() {
+
+    }
 
 //    @Override
 //    public void setUserVisibleHint(boolean isVisibleToUser) {

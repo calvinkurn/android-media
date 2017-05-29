@@ -18,4 +18,7 @@
     <dimen name="feed_margin_s"> 4.2dp</dimen>
     <dimen name="feed_detail_product">100dp</dimen>
 
+    <dimen name="padding_info">16dp</dimen>
+
+
 </resources>

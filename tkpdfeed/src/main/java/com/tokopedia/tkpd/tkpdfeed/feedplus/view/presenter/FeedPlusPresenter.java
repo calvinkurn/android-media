@@ -1,16 +1,21 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.source.cloud.CloudFeedDataSource;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.source.cloud.FavoriteShopDataSource;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,27 +29,28 @@ public class FeedPlusPresenter
         extends BaseDaggerPresenter<FeedPlus.View>
         implements FeedPlus.Presenter {
 
+    private final SessionHandler sessionHandler;
     private GetFeedsUseCase getFeedsUseCase;
     private GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private FavoriteShopUseCase doFavoriteShopUseCase;
     private String currentCursor = "";
-    private FeedPlus.View view;
+    private FeedPlus.View viewListener;
 
     @Inject
-    FeedPlusPresenter(GetFeedsUseCase getFeedsUseCase,
+    FeedPlusPresenter(SessionHandler sessionHandler,
+                      GetFeedsUseCase getFeedsUseCase,
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase) {
-
+        this.sessionHandler = sessionHandler;
         this.getFeedsUseCase = getFeedsUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
-
     }
 
     @Override
     public void attachView(FeedPlus.View view) {
         super.attachView(view);
-        this.view = view;
+        this.viewListener = view;
         fetchFirstPage();
 
     }
@@ -57,14 +63,19 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchFirstPage() {
-        getFirstPageFeedsUseCase.execute(RequestParams.EMPTY, getFirstPageFeedsSubscriber());
+//        getFirstPageFeedsUseCase.execute(getFeedPlusParam(), getFirstPageFeedsSubscriber());
+    }
+
+    private RequestParams getFeedPlusParam() {
+        RequestParams params = RequestParams.create();
+        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
+        params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
+        return params;
     }
 
     @Override
     public void fetchNextPage() {
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString(CloudFeedDataSource.KEY_CURSOR, currentCursor);
-        getFeedsUseCase.execute(requestParams, getFeedsSubscriber());
+        getFeedsUseCase.execute(getFeedPlusParam(), getFeedsSubscriber());
     }
 
     private Subscriber<FeedResult> getFirstPageFeedsSubscriber() {
@@ -76,20 +87,29 @@ public class FeedPlusPresenter
 
             @Override
             public void onError(Throwable e) {
-
+                viewListener.onFailedGetFeedFirstPage(e.toString());
             }
 
             @Override
             public void onNext(FeedResult feedResult) {
                 if (feedResult.getDataSource() == FeedResult.SOURCE_LOCAL) {
-                    //load from cache, display the feed from cache
+                    viewListener.onSuccessGetFeedFirstPage(
+                            convertToViewModel(feedResult.getDataFeedDomainList()));
                 } else {
-                    //load from network, update the view or display the feed if empty
+                    viewListener.onSuccessGetFeedFirstPage(
+                            convertToViewModel(feedResult.getDataFeedDomainList()));
                 }
 
-                currentCursor = getCurrentCursor(feedResult);
+                if (feedResult.getDataFeedDomainList().size() > 0)
+                    currentCursor = getCurrentCursor(feedResult);
             }
         };
+    }
+
+    private ArrayList<Visitable> convertToViewModel(List<DataFeedDomain> dataFeedDomainList) {
+        ArrayList<Visitable> listFeed = new ArrayList<>();
+
+        return listFeed;
     }
 
     private String getCurrentCursor(FeedResult feedResult) {
@@ -97,7 +117,7 @@ public class FeedPlusPresenter
         return feedResult.getDataFeedDomainList().get(lastIndex).getCursor();
     }
 
-    private  Subscriber<FeedResult> getFeedsSubscriber() {
+    private Subscriber<FeedResult> getFeedsSubscriber() {
         return new Subscriber<FeedResult>() {
             @Override
             public void onCompleted() {
@@ -119,7 +139,7 @@ public class FeedPlusPresenter
 
     public void favoriteShop(PromotedShopViewModel promotedShopViewModel, final int adapterPosition) {
         RequestParams params = RequestParams.create();
-        AuthUtil.generateParamsNetwork2(view.getActivity(), params.getParameters());
+        AuthUtil.generateParamsNetwork2(viewListener.getActivity(), params.getParameters());
         params.putString(FavoriteShopUseCase.PARAM_SHOP_ID, promotedShopViewModel.getShopId());
         params.putString(FavoriteShopUseCase.PARAM_SHOP_DOMAIN, promotedShopViewModel.getShopDomain());
         params.putString(FavoriteShopUseCase.PARAM_SRC, promotedShopViewModel.getSrc());
@@ -137,8 +157,8 @@ public class FeedPlusPresenter
 
             @Override
             public void onNext(String s) {
-                view.showSnackbar(s);
-                view.updateFavorite(adapterPosition);
+                viewListener.showSnackbar(s);
+                viewListener.updateFavorite(adapterPosition);
             }
         });
     }

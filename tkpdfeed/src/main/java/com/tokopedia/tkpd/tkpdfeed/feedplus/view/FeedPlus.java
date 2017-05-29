@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.PromotedShopViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
+
+import java.util.ArrayList;
 
 /**
  * @author by nisie on 5/15/17.
@@ -38,6 +41,12 @@ public interface FeedPlus{
 
         void onInfoClicked();
 
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
+
+        void onFailedGetFeedFirstPage(String errorMessage);
+
+        void onSearchShopButtonClicked();
+
         void onFavoritedClicked(int adapterPosition);
 
         void showSnackbar(String s);
@@ -45,6 +54,8 @@ public interface FeedPlus{
         Context getActivity();
 
         void updateFavorite(int adapterPosition);
+
+        void onViewMorePromoClicked();
     }
 
     public interface Presenter extends CustomerPresenter<View>{

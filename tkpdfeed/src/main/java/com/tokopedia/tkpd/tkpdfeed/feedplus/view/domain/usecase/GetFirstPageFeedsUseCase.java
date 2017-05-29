@@ -15,28 +15,26 @@ import rx.functions.Func1;
  */
 
 public class GetFirstPageFeedsUseCase extends UseCase<FeedResult> {
-    private ThreadExecutor threadExecutor;
-    private PostExecutionThread postExecutionThread;
     private FeedRepository feedRepository;
 
     public GetFirstPageFeedsUseCase(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           FeedRepository feedRepository) {
+                                    PostExecutionThread postExecutionThread,
+                                    FeedRepository feedRepository) {
 
         super(threadExecutor, postExecutionThread);
-
-        this.threadExecutor = threadExecutor;
-        this.postExecutionThread = postExecutionThread;
         this.feedRepository = feedRepository;
 
     }
+
     @Override
-    public Observable<FeedResult> createObservable(RequestParams requestParams) {
-        return Observable.concat(feedRepository.getFirstPageFeedsFromLocal(), feedRepository.getFirstPageFeedsFromCloud())
+    public Observable<FeedResult> createObservable(final RequestParams requestParams) {
+        return Observable.concat(
+                feedRepository.getFirstPageFeedsFromLocal(),
+                feedRepository.getFirstPageFeedsFromCloud(requestParams))
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends FeedResult>>() {
                     @Override
                     public Observable<? extends FeedResult> call(Throwable throwable) {
-                        return feedRepository.getFirstPageFeedsFromCloud();
+                        return feedRepository.getFirstPageFeedsFromCloud(requestParams);
                     }
                 });
     }

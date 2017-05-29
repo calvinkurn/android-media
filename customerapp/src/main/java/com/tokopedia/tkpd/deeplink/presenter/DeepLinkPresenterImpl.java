@@ -523,7 +523,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private int getDeepLinkType(Uri uriData) {
         List<String> linkSegment = uriData.getPathSegments();
-        if (uriData.toString().contains("accounts-staging.tokopedia.com"))
+        if (uriData.toString().contains("accounts.tokopedia.com"))
             return ACCOUNTS;
         else if (uriData.getScheme().equals(TOKOPEDIA_HOST))
             return APPLINK;

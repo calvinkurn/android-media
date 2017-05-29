@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.FeedPlusTypeFactory;
 
@@ -21,10 +22,13 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private List<Visitable> list;
     private final FeedPlusTypeFactory typeFactory;
+    private EmptyModel emptyModel;
+
 
     public FeedPlusAdapter(FeedPlusTypeFactory typeFactory) {
         this.list = new ArrayList<>();
         this.typeFactory = typeFactory;
+        this.emptyModel = new EmptyModel();
     }
 
     @Override
@@ -63,5 +67,13 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void clearData() {
         this.list.clear();
         notifyDataSetChanged();
+    }
+
+    public void showEmpty() {
+        this.list.add(emptyModel);
+    }
+
+    public void removeEmpty() {
+        this.list.remove(emptyModel);
     }
 }

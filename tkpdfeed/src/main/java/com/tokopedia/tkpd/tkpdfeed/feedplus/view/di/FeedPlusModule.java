@@ -8,6 +8,12 @@ import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.google.gson.Gson;
+import com.tokopedia.core.base.di.qualifier.ActivityContext;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.di.scope.ApplicationScope;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.module.OkHttpClientModule;
@@ -33,6 +39,21 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
 
 import javax.inject.Named;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FeedFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedDetailListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,10 +66,19 @@ import okhttp3.OkHttpClient;
 @Module
 public class FeedPlusModule {
 
+    private static final String NAME_CLOUD = "CLOUD";
+    private static final String NAME_LOCAL = "LOCAL";
+
     @FeedPlusScope
     @Provides
     GlobalCacheManager provideGlobalCacheManager() {
         return new GlobalCacheManager();
+    }
+
+    @FeedPlusScope
+    @Provides
+    SessionHandler provideSessionHandler(@ApplicationContext Context context) {
+        return new SessionHandler(context);
     }
 
     @FeedPlusScope
@@ -87,8 +117,8 @@ public class FeedPlusModule {
     FeedFactory provideFeedFactory(@ActivityContext Context context,
                                    ApolloClient apolloClient,
                                    FeedListMapper feedListMapper,
-                                   @Named("CLOUD") FeedResultMapper feedResultMapperCloud,
-                                   @Named("LOCAL") FeedResultMapper feedResultMapperLocal,
+                                   @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
+                                   @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    FeedDetailListMapper feedDetailListMapper,
                                    GlobalCacheManager globalCacheManager) {
         return new FeedFactory(
@@ -108,14 +138,14 @@ public class FeedPlusModule {
     }
 
     @FeedPlusScope
-    @Named("LOCAL")
+    @Named(NAME_LOCAL)
     @Provides
     FeedResultMapper provideLocalFeedResultMapper() {
         return new FeedResultMapper(FeedResult.SOURCE_LOCAL);
     }
 
     @FeedPlusScope
-    @Named("CLOUD")
+    @Named(NAME_CLOUD)
     @Provides
     FeedResultMapper provideCloudFeedResultMapper() {
         return new FeedResultMapper(FeedResult.SOURCE_CLOUD);
