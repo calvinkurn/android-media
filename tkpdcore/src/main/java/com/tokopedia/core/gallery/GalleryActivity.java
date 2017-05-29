@@ -155,12 +155,10 @@ public class GalleryActivity extends AppCompatActivity implements AlbumCollectio
     }
 
     private void inflateFragment(AlbumItem albumItem) {
-        if (getSupportFragmentManager().findFragmentByTag(TAG) == null) {
-            Fragment fragment = GallerySelectedFragment.newInstance(albumItem);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, fragment, TAG)
-                    .commit();
-        }
+        Fragment fragment = GallerySelectedFragment.newInstance(albumItem);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment, TAG)
+                .commit();
     }
 
     @Override
