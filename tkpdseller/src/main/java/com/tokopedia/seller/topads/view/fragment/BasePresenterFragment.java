@@ -15,6 +15,8 @@ import butterknife.Unbinder;
 /**
  * Created by normansyahputa on 5/26/17.
  * refer to old {@link com.tokopedia.core.app.BasePresenterFragment}
+ *
+ * PLEASE THIS IS TEMPORARY CONVERT FROM OLD BASE CLASS TO {@link BaseDaggerFragment}
  */
 
 public class BasePresenterFragment<P> extends BaseDaggerFragment {
