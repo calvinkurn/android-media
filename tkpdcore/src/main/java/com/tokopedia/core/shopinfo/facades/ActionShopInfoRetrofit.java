@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import retrofit2.Response;
@@ -75,6 +76,9 @@ public class ActionShopInfoRetrofit {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                if (e instanceof UnknownHostException) {
+                    onActionToggleFavListener.onFailure(context.getString(R.string.msg_network_error));
+                }
             }
 
             @Override
