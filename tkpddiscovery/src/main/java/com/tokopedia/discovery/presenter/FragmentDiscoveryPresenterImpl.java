@@ -140,7 +140,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                 } else {
                     requestAddWishList(context, productId, itemPosition);
                 }
-                wishlistButtonCounter++;
+//                wishlistButtonCounter++;
             } else {
                 view.showToastMessage(context.getString(R.string.wishlist_too_much_attempt_error_message));
             }
@@ -154,45 +154,48 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     }
 
     private void requestAddWishList(final Context context, final Integer productId, final int itemPosition) {
-        view.loadingWishList();
-        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
-        retrofitInteractor.addToWishList(context, productId,
-                new RetrofitInteractor.AddWishListListener() {
-                    @Override
-                    public void onSuccess() {
-                        view.finishLoadingWishList();
-                        view.showDialog(createSuccessWishListDialog(context));
-                        view.updateWishListStatus(true, itemPosition);
-                        cacheInteractor.deleteProductDetail(productId);
-                    }
+//        view.loadingWishList();
+//        TrackingUtils.eventLoca(AppScreen.EVENT_ADDED_WISHLIST);
+//        retrofitInteractor.addToWishList(context, productId,
+//                new RetrofitInteractor.AddWishListListener() {
+//                    @Override
+//                    public void onSuccess() {
+//                        view.finishLoadingWishList();
+//                        view.showDialog(createSuccessWishListDialog(context));
+//                        view.updateWishListStatus(true, itemPosition);
+//                        cacheInteractor.deleteProductDetail(productId);
+//                    }
+//
+//                    @Override
+//                    public void onError(String error) {
+//                        view.finishLoadingWishList();
+//                        view.showWishListRetry(error);
+//                    }
+//                });
 
-                    @Override
-                    public void onError(String error) {
-                        view.finishLoadingWishList();
-                        view.showWishListRetry(error);
-                    }
-                });
+        view.updateWishListStatus(true, itemPosition);
     }
 
     private void requestRemoveWishList(final Context context, final Integer productId, final int itemPosition) {
-        view.loadingWishList();
-        retrofitInteractor.removeFromWishList(context, productId,
-                new RetrofitInteractor.RemoveWishListListener() {
-                    @Override
-                    public void onSuccess() {
-                        view.finishLoadingWishList();
-                        view.showToastMessage(context
-                                .getString(com.tokopedia.core.R.string.msg_remove_wishlist));
-                        view.updateWishListStatus(false, itemPosition);
-                        cacheInteractor.deleteProductDetail(productId);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        view.finishLoadingWishList();
-                        view.showWishListRetry(error);
-                    }
-                });
+//        view.loadingWishList();
+//        retrofitInteractor.removeFromWishList(context, productId,
+//                new RetrofitInteractor.RemoveWishListListener() {
+//                    @Override
+//                    public void onSuccess() {
+//                        view.finishLoadingWishList();
+//                        view.showToastMessage(context
+//                                .getString(com.tokopedia.core.R.string.msg_remove_wishlist));
+//                        view.updateWishListStatus(false, itemPosition);
+//                        cacheInteractor.deleteProductDetail(productId);
+//                    }
+//
+//                    @Override
+//                    public void onError(String error) {
+//                        view.finishLoadingWishList();
+//                        view.showWishListRetry(error);
+//                    }
+//                });
+        view.updateWishListStatus(false, itemPosition);
     }
 
     private Dialog createSuccessWishListDialog(final Context context) {
