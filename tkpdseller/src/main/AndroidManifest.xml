@@ -147,6 +147,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"
             android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordAddSummaryActivity"
+            android:label="@string/title_top_ads_keyword_add"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"
+            android:exported="true"/>
+
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:label="@string/top_ads_title_keyword_add_keyword"

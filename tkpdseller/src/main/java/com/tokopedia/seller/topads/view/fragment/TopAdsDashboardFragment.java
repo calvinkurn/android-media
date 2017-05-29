@@ -13,6 +13,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.data.model.data.Summary;
@@ -38,22 +39,21 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
         void startShowCase();
     }
 
-    SwipeToRefresh swipeToRefresh;
+    private SwipeToRefresh swipeToRefresh;
 
-    ImageView shopIconImageView;
-    TextView shopTitleTextView;
-    TextView depositDescTextView;
-    ImageView addDepositButton;
+    private ImageView shopIconImageView;
+    private TextView shopTitleTextView;
+    private TextView depositDescTextView;
+    private ImageView addDepositButton;
 
-    View dateRangeLayout;
-    TextView rangeDateDescTextView;
+    private DateLabelView dateLabelView;
 
-    TopAdsStatisticLabelView impressionStatisticLabelView;
-    TopAdsStatisticLabelView clickStatisticLabelView;
-    TopAdsStatisticLabelView ctrStatisticLabelView;
-    TopAdsStatisticLabelView conversionStatisticLabelView;
-    TopAdsStatisticLabelView averageStatisticLabelView;
-    TopAdsStatisticLabelView costStatisticLabelView;
+    private TopAdsStatisticLabelView impressionStatisticLabelView;
+    private TopAdsStatisticLabelView clickStatisticLabelView;
+    private TopAdsStatisticLabelView ctrStatisticLabelView;
+    private TopAdsStatisticLabelView conversionStatisticLabelView;
+    private TopAdsStatisticLabelView averageStatisticLabelView;
+    private TopAdsStatisticLabelView costStatisticLabelView;
 
     private Callback callback;
 
@@ -80,14 +80,13 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
                 goToAddCredit();
             }
         });
-        dateRangeLayout = view.findViewById(R.id.layout_date);
-        dateRangeLayout.setOnClickListener(new View.OnClickListener() {
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onDateLayoutClicked();
             }
         });
-        rangeDateDescTextView = (TextView) view.findViewById(R.id.text_view_range_date);
         impressionStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_impression);
         clickStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_click);
         ctrStatisticLabelView = (TopAdsStatisticLabelView) view.findViewById(R.id.statistic_label_view_ctr);
@@ -146,7 +145,7 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
 
     public void loadData() {
         swipeToRefresh.setRefreshing(true);
-        rangeDateDescTextView.setText(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+        dateLabelView.setDate(startDate, endDate);
         presenter.populateSummary(startDate, endDate);
         presenter.populateDeposit();
         presenter.populateShopInfo();
