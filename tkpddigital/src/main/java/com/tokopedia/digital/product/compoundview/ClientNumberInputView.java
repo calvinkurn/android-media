@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.DigitsKeyListener;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,6 +183,7 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void setInputTypeNumber() {
         this.autoCompleteTextView.setInputType(InputType.TYPE_CLASS_NUMBER);
+        this.autoCompleteTextView.setKeyListener(DigitsKeyListener.getInstance("0123456789"));
     }
 
     public void setInputTypeText() {
