@@ -150,6 +150,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     protected void bindDrawerHeaderGuest(ViewHolder holder) {
         holder.name.setVisibility(View.GONE);
         holder.avatar.setVisibility(View.GONE);
+        holder.coverImg.setVisibility(View.VISIBLE);
         ImageHandler.loadImageWithId(holder.coverImg, R.drawable.drawer_header_bg);
         holder.gradientBlack.setBackgroundResource(0);
         holder.drawerPointsLayout.setVisibility(View.GONE);
@@ -159,6 +160,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         holder.drawerPointsLayout.setVisibility(View.VISIBLE);
         holder.name.setVisibility(View.VISIBLE);
         holder.avatar.setVisibility(View.VISIBLE);
+        holder.coverImg.setVisibility(View.INVISIBLE);
 
 //        setCover(holder);
 
