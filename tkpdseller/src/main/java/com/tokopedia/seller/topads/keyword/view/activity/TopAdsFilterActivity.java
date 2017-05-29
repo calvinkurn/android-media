@@ -1,61 +1,44 @@
-package com.tokopedia.seller.topads.view.activity;
+package com.tokopedia.seller.topads.keyword.view.activity;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.view.model.FilterTitleItem;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsFilterContentFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterListFragment;
+import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
+import com.tokopedia.seller.topads.view.model.FilterTitleItem;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Nathaniel on 1/27/2017.
+ * @author normansyahputa on 5/26/17.
+ *         just move to new architecture.
  */
-@Deprecated
-public abstract class TopAdsFilterActivity extends BasePresenterActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
-
+public abstract class TopAdsFilterActivity extends BaseActivity implements TopAdsFilterListFragment.Callback, TopAdsFilterContentFragment.Callback {
+    Fragment currentContentFragment;
     private TopAdsFilterListFragment topAdsFilterListFragment;
-    private List<TopAdsFilterContentFragment> filterContentFragmentList;
+    private List<Fragment> filterContentFragmentList;
     private Button submitButton;
-    TopAdsFilterContentFragment currentContentFragment;
 
-    protected abstract List<TopAdsFilterContentFragment> getFilterContentList();
+    protected abstract List<Fragment> getFilterContentList();
 
     protected abstract Intent getDefaultIntentResult();
 
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
     protected int getLayoutId() {
         return R.layout.activity_top_ads_filter;
     }
 
-    @Override
     protected void initView() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -74,47 +57,50 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
         topAdsFilterListFragment = TopAdsFilterListFragment.createInstance(getFilterTitleItemList(), selectedPosition);
         topAdsFilterListFragment.setCallback(this);
         currentContentFragment = filterContentFragmentList.get(selectedPosition);
-        getFragmentManager().beginTransaction().add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
-        getFragmentManager().beginTransaction().add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container_filter_list, topAdsFilterListFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.container_filter_content, currentContentFragment, TopAdsFilterListFragment.class.getSimpleName()).commit();
     }
 
     @Override
-    protected void setViewListener() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().getExtras() != null) {
+            setupBundlePass(getIntent().getExtras());
+        }
+        setContentView(getLayoutId());
+        initView();
+    }
+
+    protected void setupBundlePass(Bundle extras) {
 
     }
 
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    private void changeContent(TopAdsFilterContentFragment filterContentFragment) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+    private void changeContent(Fragment filterContentFragment) {
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         // fragmentTransaction.replace(R.id.container_filter_content, filterContentFragment);
         fragmentTransaction.hide(currentContentFragment);
-        if (! filterContentFragment.isAdded() ) {
+        if (!filterContentFragment.isAdded()) {
             fragmentTransaction.add(R.id.container_filter_content, filterContentFragment);
-        }
-        else {
+        } else {
             fragmentTransaction.show(filterContentFragment);
         }
         currentContentFragment = filterContentFragment;
         fragmentTransaction.commit();
-        filterContentFragment.setCallback(this);
+
+        if (filterContentFragment instanceof TopAdsFilterContentFragmentListener) {
+            ((TopAdsFilterContentFragmentListener) filterContentFragment).setCallback(this);
+        }
     }
 
     private ArrayList<FilterTitleItem> getFilterTitleItemList() {
         ArrayList<FilterTitleItem> filterTitleItemList = new ArrayList<>();
-        for (TopAdsFilterContentFragment filterContentFragment : filterContentFragmentList) {
-            FilterTitleItem filterTitleItem = new FilterTitleItem();
-            filterTitleItem.setTitle(filterContentFragment.getTitle(this));
-            filterTitleItem.setActive(filterContentFragment.isActive());
-            filterTitleItemList.add(filterTitleItem);
+        for (Fragment filterContentFragment : filterContentFragmentList) {
+            if (filterContentFragment instanceof TopAdsFilterContentFragmentListener) {
+                FilterTitleItem filterTitleItem = new FilterTitleItem();
+                filterTitleItem.setTitle(((TopAdsFilterContentFragmentListener) filterContentFragment).getTitle(this));
+                filterTitleItem.setActive(((TopAdsFilterContentFragmentListener) filterContentFragment).isActive());
+                filterTitleItemList.add(filterTitleItem);
+            }
         }
         return filterTitleItemList;
     }
@@ -133,14 +119,16 @@ public abstract class TopAdsFilterActivity extends BasePresenterActivity impleme
     private void setFilterChangedResult() {
         Intent intent = getDefaultIntentResult();
         // overwrite with changes
-        for (TopAdsFilterContentFragment topAdsFilterContentFragment : filterContentFragmentList) {
+        for (Fragment topAdsFilterContentFragment : filterContentFragmentList) {
             // only process the added fragment, not-added-fragment has no adapter created.
             if (topAdsFilterContentFragment.isAdded()) {
-                topAdsFilterContentFragment.addResult(intent);
+                if (topAdsFilterContentFragment instanceof TopAdsFilterContentFragmentListener)
+                    ((TopAdsFilterContentFragmentListener) topAdsFilterContentFragment).addResult(intent);
             }
         }
         setResult(Activity.RESULT_OK, intent);
     }
+
 
     @Override
     public String getScreenName() {

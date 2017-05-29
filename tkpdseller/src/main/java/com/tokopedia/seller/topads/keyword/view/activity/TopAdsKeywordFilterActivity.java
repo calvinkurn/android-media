@@ -2,12 +2,13 @@ package com.tokopedia.seller.topads.keyword.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
-import com.tokopedia.seller.topads.view.activity.TopAdsFilterActivity;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterGroupNameFragment;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
 
 import java.util.ArrayList;
@@ -16,8 +17,7 @@ import java.util.List;
 /**
  * Created by Nathaniel on 1/27/2017.
  */
-
-public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity {
+public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements HasComponent<AppComponent> {
 
     private int selectedFilterStatus;
     private long selectedGroupId;
@@ -34,12 +34,12 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity {
     }
 
     @Override
-    protected List<TopAdsFilterContentFragment> getFilterContentList() {
-        List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
+    protected List<Fragment> getFilterContentList() {
+        List<Fragment> filterContentFragmentList = new ArrayList<>();
         TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsKeywordFilterStatusFragment.createInstance(selectedFilterStatus);
         topAdsFilterStatusFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
-        TopAdsFilterGroupNameFragment topAdsFilterGroupNameFragment = TopAdsFilterGroupNameFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName);
+        TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName);
         topAdsFilterGroupNameFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterGroupNameFragment);
         return filterContentFragmentList;
@@ -56,5 +56,10 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity {
     @Override
     public String getScreenName() {
         return null;
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

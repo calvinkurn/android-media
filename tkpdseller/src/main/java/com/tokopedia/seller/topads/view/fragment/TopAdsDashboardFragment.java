@@ -17,44 +17,30 @@ import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.DataDeposit;
 import com.tokopedia.seller.topads.data.model.data.Summary;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
+import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
+import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDashboardPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.view.activity.TopAdsAddCreditActivity;
-import com.tokopedia.seller.topads.view.listener.TopAdsDashboardFragmentListener;
 import com.tokopedia.seller.topads.view.widget.TopAdsStatisticLabelView;
+
 
 public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDashboardFragmentListener {
 
     private static final int REQUEST_CODE_ADD_KREDIT = TopAdsDashboardFragment.class.hashCode();
-
-    public interface Callback {
-
-        void onLoadDataError();
-
-        void onLoadDataSuccess();
-
-        void onCreditAdded();
-
-        void startShowCase();
-    }
-
     private SwipeToRefresh swipeToRefresh;
-
     private ImageView shopIconImageView;
     private TextView shopTitleTextView;
     private TextView depositDescTextView;
     private ImageView addDepositButton;
-
     private DateLabelView dateLabelView;
-
     private TopAdsStatisticLabelView impressionStatisticLabelView;
     private TopAdsStatisticLabelView clickStatisticLabelView;
     private TopAdsStatisticLabelView ctrStatisticLabelView;
     private TopAdsStatisticLabelView conversionStatisticLabelView;
     private TopAdsStatisticLabelView averageStatisticLabelView;
     private TopAdsStatisticLabelView costStatisticLabelView;
-
     private Callback callback;
 
     public void setCallback(Callback callback) {
@@ -304,5 +290,16 @@ public abstract class TopAdsDashboardFragment<T extends TopAdsDashboardPresenter
     public void onDestroy() {
         super.onDestroy();
         presenter.unSubscribe();
+    }
+
+    public interface Callback {
+
+        void onLoadDataError();
+
+        void onLoadDataSuccess();
+
+        void onCreditAdded();
+
+        void startShowCase();
     }
 }

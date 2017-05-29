@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.lib.datepicker.DatePickerResultListener;
+import com.tokopedia.seller.topads.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 
 import java.util.Date;
@@ -17,7 +17,7 @@ import java.util.Date;
  * @author normansyahputa on 5/17/17.
  *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsDatePickerFragment}
  */
-public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment implements
+public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<T> implements
         DatePickerResultListener.DatePickerResult {
     public static final String START_DATE = "start_date";
     public static final String END_DATE = "end_date";
@@ -42,7 +42,7 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
 
     protected void initialPresenter() {
         datePickerPresenter = getDatePickerPresenter();
-        datePickerResultListener = new DatePickerResultListener(this);
+        datePickerResultListener = new DatePickerResultListener(this, REQUEST_CODE_DATE);
     }
 
     @Override
@@ -73,7 +73,9 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        onRestoreState(savedInstanceState);
+        if (savedInstanceState != null) {
+            onRestoreState(savedInstanceState);
+        }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -98,13 +100,8 @@ public abstract class TopAdsDatePickerFragment<T> extends BaseDaggerFragment imp
         datePickerPresenter.saveDate(new Date(sDate), new Date(eDate));
         datePickerPresenter.saveSelectionDatePicker(selectionType, lastSelection);
 
-        fetchData();
+        loadData();
     }
-
-    /**
-     * fetch data after select date.
-     */
-    protected abstract void fetchData();
 
     protected void openDatePicker() {
         Intent intent = datePickerPresenter.getDatePickerIntent(getActivity(), startDate, endDate);

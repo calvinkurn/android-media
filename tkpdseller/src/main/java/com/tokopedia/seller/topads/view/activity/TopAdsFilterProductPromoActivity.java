@@ -1,13 +1,13 @@
 package com.tokopedia.seller.topads.view.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.view.fragment.TopAdsFilterContentFragment;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsFilterActivity;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterEtalaseFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusPromoFragment;
 
@@ -36,7 +36,7 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(android.support.v4.app.Fragment fragment, Context context, int requestCode,
+    public static void start(android.app.Fragment fragment, Context context, int requestCode,
                              int selectedStatusPromo, int etalaseId, boolean isHideEtalase){
         Intent intent = createIntent(context, selectedStatusPromo, etalaseId, isHideEtalase);
         fragment.startActivityForResult(intent, requestCode);
@@ -62,8 +62,8 @@ public class TopAdsFilterProductPromoActivity extends TopAdsFilterActivity {
     }
 
     @Override
-    protected List<TopAdsFilterContentFragment> getFilterContentList() {
-        List<TopAdsFilterContentFragment> filterContentFragmentList = new ArrayList<>();
+    protected List<Fragment> getFilterContentList() {
+        List<Fragment> filterContentFragmentList = new ArrayList<>();
 
         if (!isHideEtalase) {
             TopAdsFilterEtalaseFragment topAdsFilterStatusFragment = TopAdsFilterEtalaseFragment.createInstance(selectedEtalaseId);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
@@ -11,8 +10,8 @@
         app:showAsAction="always|collapseActionView" />
 
     <item
-        android:id="@+id/menu_date"
-        android:icon="@drawable/ic_calendar_white"
-        android:title="@string/action_filter_date"
-        app:showAsAction="always"/>
+        android:id="@+id/menu_filter"
+        android:icon="@drawable/ic_filter"
+        android:title="@string/filter_top_ads"
+        app:showAsAction="always" />
 </menu>

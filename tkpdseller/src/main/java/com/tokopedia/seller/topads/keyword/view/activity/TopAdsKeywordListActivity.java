@@ -42,7 +42,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_top_ads_keyword_list);
+        setContentView(R.layout.activity_keyword_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
@@ -69,8 +69,8 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         viewPager.addOnPageChangeListener(keywordListTablayout);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.key_word));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.negative));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_key_word));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_negative));
     }
 
     private void fabOnClick() {
@@ -79,8 +79,8 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
         String[] titles = {
-                getString(R.string.key_word),
-                getString(R.string.negative)
+                getString(R.string.top_ads_key_word),
+                getString(R.string.top_ads_negative)
         };
         return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
     }
@@ -97,7 +97,7 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_keyword_list, menu);
+        getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
         searchItem = menu.findItem(R.id.menu_search);
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -162,7 +162,6 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
         searchView.setQuery("", false);
         searchView.clearFocus();
         searchView.setIconified(true);
-        ;
         searchView.setOnQueryTextListener(null);
         searchItem.collapseActionView();
     }
@@ -179,6 +178,9 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void resetSearchView() {
+        if (searchView == null)
+            return;
+
         removeListener();
         addListener();
     }

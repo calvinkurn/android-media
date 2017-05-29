@@ -7,19 +7,14 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.gmstat.utils.DateHeaderFormatter;
-import com.tokopedia.seller.lib.datepicker.constant.DatePickerConstant;
 import com.tokopedia.seller.lib.widget.DateLabelView;
-import com.tokopedia.seller.reputation.view.helper.ReputationHeaderViewHelper;
 import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
-import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsDashboardListener;
@@ -71,23 +66,6 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     }
 
     @Override
-    protected void fetchData() {
-        bindDate(); // set ui after date changed.
-
-        // reset searchview and filter
-        if (keywordListListener != null) {
-            keywordListListener.resetSearchView();
-        }
-
-        BaseKeywordParam baseKeywordParam
-                = topAdsKeywordListPresenter.generateParam(keyword, page, true,
-                startDate.getTime(), endDate.getTime());
-        topAdsKeywordListPresenter.fetchNegativeKeyword(
-                baseKeywordParam
-        );
-    }
-
-    @Override
     protected String getScreenName() {
         return null;
     }
@@ -106,7 +84,14 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
     @Override
     protected void searchAd() {
         super.searchAd();
-        fetchData();
+        bindDate(); // set ui after date changed.
+
+        BaseKeywordParam baseKeywordParam
+                = topAdsKeywordListPresenter.generateParam(keyword, page, true,
+                startDate.getTime(), endDate.getTime());
+        topAdsKeywordListPresenter.fetchNegativeKeyword(
+                baseKeywordParam
+        );
     }
 
     @Override
@@ -116,7 +101,8 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     @Override
     public void onFilterChanged(Object someObject) {
-
+        Intent intent = new Intent(getActivity(), TopAdsKeywordFilterActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_FILTER_KEYWORD);
     }
 
     @Override
