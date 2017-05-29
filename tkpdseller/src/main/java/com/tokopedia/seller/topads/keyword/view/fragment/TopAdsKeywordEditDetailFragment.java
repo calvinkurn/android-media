@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,8 +12,10 @@ import android.widget.EditText;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
 import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
@@ -35,6 +38,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     private SpinnerTextView topAdsKeywordType;
     private EditText topAdsKeyword;
     private EditText topAdsCostPerClick;
+    private TopAdsKeywordEditDetailViewModel model;
 
     public static Bundle createArguments(
             TopAdsKeywordEditDetailViewModel model) {
@@ -65,7 +69,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         settingTopAdsCostPerClick(view);
 
         Bundle bundle = getArguments();
-        TopAdsKeywordEditDetailViewModel model = bundle.getParcelable(KEYWORD_DETAIL_MODEL);
+        model = bundle.getParcelable(KEYWORD_DETAIL_MODEL);
         if (model != null) {
             fillDataToView(model);
         }
@@ -104,7 +108,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     private TopAdsKeywordEditDetailViewModel collectDataFromView() {
-        TopAdsKeywordEditDetailViewModel model = new TopAdsKeywordEditDetailViewModel();
+        model.setKeywordTypeId(KeywordTypeDef.KEYWORD_TYPE_EXACT);
         model.setKeywordTag(getTopAdsKeywordText());
         model.setPriceBid(getTopAdsCostPerClick());
         return model;
@@ -127,5 +131,10 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void showError(String detail) {
+        NetworkErrorHelper.showSnackbar(getActivity(), detail);
     }
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
 import com.tokopedia.seller.topads.keyword.domain.interactor.EditTopAdsKeywordDetailUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
@@ -36,7 +37,13 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
 
         @Override
         public void onError(Throwable e) {
-
+            if (isViewAttached()) {
+                if (e instanceof ResponseErrorException) {
+                    getView().showError(((ResponseErrorException)e).getErrorList().get(0).getDetail());
+                } else {
+                    getView().showError(e.getLocalizedMessage());
+                }
+            }
         }
 
         @Override

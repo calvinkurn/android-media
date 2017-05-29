@@ -6,6 +6,7 @@ import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInp
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import retrofit2.Response;
@@ -23,7 +24,7 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
         dataModel.setGroupId(String.valueOf(modelInput.getGroupId()));
         dataModel.setKeywordTag(modelInput.getKeywordTag());
         dataModel.setKeywordTypeId(String.valueOf(modelInput.getKeywordTypeId()));
-        dataModel.setPriceBid(String.valueOf(modelInput.getPriceBid()));
+        dataModel.setPriceBid(new DecimalFormat("#.##").format(modelInput.getPriceBid()));
         dataModel.setShopId(modelInput.getShopId());
         dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
         dataModel.setToggle(String.valueOf(modelInput.getToggle()));

@@ -7,4 +7,5 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface TopAdsKeywordEditDetailView extends CustomerView {
+    void showError(String detail);
 }
