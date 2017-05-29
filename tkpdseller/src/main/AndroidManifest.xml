@@ -44,15 +44,18 @@
         <activity
             android:name=".topads.view.activity.TopAdsFilterGroupActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
@@ -136,7 +139,8 @@
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordFilterActivity"
             android:label="@string/title_top_ads_dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordAddDetailActivity"
             android:label="@string/title_top_ads_keyword_add_detail"
@@ -146,10 +150,10 @@
 
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordAddSummaryActivity"
+            android:exported="true"
             android:label="@string/title_top_ads_keyword_add"
             android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"
-            android:exported="true"/>
+            android:theme="@style/BasicThemeActionBar" />
 
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailActivity"
@@ -160,7 +164,8 @@
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
             android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar" />
+            android:theme="@style/BasicThemeActionBar"
+            android:exported="true"/>
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
@@ -253,7 +258,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/product_label_video"
+            android:label="@string/product_product_label_video"
             android:theme="@style/BasicThemeActionBar" />
 
         <activity

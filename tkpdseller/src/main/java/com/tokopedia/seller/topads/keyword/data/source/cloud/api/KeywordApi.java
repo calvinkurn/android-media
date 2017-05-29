@@ -6,15 +6,16 @@ import com.tokopedia.seller.topads.data.model.request.DataRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
 
 import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
+import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
@@ -33,7 +34,7 @@ public interface KeywordApi {
 
     @FormUrlEncoded
     @POST("/v2/promo/keyword")
-    Observable<PageDataResponse<List<Datum>>> postAddKeyword(@FieldMap Map<String, String> param);
+    Observable<PageDataResponse<List<KeywordAddResponseDatum>>> addKeyword(@Body AddKeywordRequest addKeywordRequest);
 
     @PATCH(TopAdsNetworkConstant.PATH_EDIT_KEYWORD_DETAIL)
     Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDomainModel>>>> editTopAdsKeywordDetail(@Body DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataModel);

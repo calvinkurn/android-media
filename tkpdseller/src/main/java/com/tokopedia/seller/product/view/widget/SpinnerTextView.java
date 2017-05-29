@@ -29,6 +29,7 @@ public class SpinnerTextView extends FrameLayout {
 
     }
 
+    private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
 
@@ -114,6 +115,11 @@ public class SpinnerTextView extends FrameLayout {
         });
     }
 
+    private void resetPosition() {
+        selectionIndex = DEFAULT_INDEX_NOT_SELECTED;
+        textAutoComplete.setText("");
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         textInputLayout.setEnabled(enabled);
@@ -169,15 +175,17 @@ public class SpinnerTextView extends FrameLayout {
 
     public void setSpinnerValue(String value) {
         if (TextUtils.isEmpty(value)) {
+            resetPosition();
             return;
         }
         for (int i = 0; i < values.length; i++) {
             String tempValue = values[i].toString();
             if (tempValue.equalsIgnoreCase(value)) {
                 setSpinnerPosition(i);
-                break;
+                return;
             }
         }
+        resetPosition();
     }
 
     public void setError(String error) {
@@ -189,8 +197,10 @@ public class SpinnerTextView extends FrameLayout {
             this.entries = entries;
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.item_top_ads_autocomplete_text, entries);
             textAutoComplete.setAdapter(adapter);
-            textAutoComplete.setText(entries[selectionIndex]);
-            updateOnItemChanged(selectionIndex);
+            if (selectionIndex >= 0) {
+                textAutoComplete.setText(entries[selectionIndex]);
+                updateOnItemChanged(selectionIndex);
+            }
         }
     }
 

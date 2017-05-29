@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordAddDetailActivity;
 
@@ -95,7 +96,7 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends Fragment {
                     return;
                 }
                 TopAdsKeywordAddDetailActivity.start(AbsTopAdsKeywordAddSummaryFragment.this,
-                        getActivity(), BROAD_REQ_CODE, groupName, getString(R.string.broad_match),
+                        getActivity(), BROAD_REQ_CODE, groupName, getString(R.string.top_ads_broad_match),
                         serverKeywordCount, max_words_in_group - serverKeywordCount - phraseMatchList.size() - exactMatchList.size(),
                         broadMatchList);
             }
@@ -108,7 +109,7 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends Fragment {
                     return;
                 }
                 TopAdsKeywordAddDetailActivity.start(AbsTopAdsKeywordAddSummaryFragment.this,
-                        getActivity(), PHRASE_REQ_CODE, groupName, getString(R.string.phrase_match),
+                        getActivity(), PHRASE_REQ_CODE, groupName, getString(R.string.top_ads_phrase_match),
                         serverKeywordCount, max_words_in_group - serverKeywordCount - broadMatchList.size() - exactMatchList.size(),
                         phraseMatchList);
             }
@@ -121,7 +122,7 @@ public abstract class AbsTopAdsKeywordAddSummaryFragment extends Fragment {
                     return;
                 }
                 TopAdsKeywordAddDetailActivity.start(AbsTopAdsKeywordAddSummaryFragment.this,
-                        getActivity(), EXACT_REQ_CODE, groupName, getString(R.string.exact_match),
+                        getActivity(), EXACT_REQ_CODE, groupName, getString(R.string.top_ads_exact_match),
                         serverKeywordCount, max_words_in_group - serverKeywordCount - broadMatchList.size() - phraseMatchList.size(),
                         exactMatchList);
             }

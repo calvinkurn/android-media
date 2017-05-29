@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +23,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListV
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
 
 import java.util.List;
 
@@ -30,13 +33,21 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter> implements TopAdsKeywordGroupListView {
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter> implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener {
 
+    protected TopAdsFilterContentFragment.Callback callback;
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private EditText groupFilterSearch;
     private RecyclerView groupFilterRecyclerView;
+    /**
+     * Sign for title filter list
+     */
+    private boolean active;
 
+    public static TopAdsKeywordGroupsFragment createInstance(long selectedGroupId, long currentGroupId, String currentGroupName) {
+        return new TopAdsKeywordGroupsFragment();
+    }
 
     @Override
     protected String getScreenName() {
@@ -120,11 +131,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     }
 
     @Override
-    protected void fetchData() {
-
-    }
-
-    @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         onSearchAdLoaded(groupAds, groupAds.size());
     }
@@ -137,5 +143,31 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     @Override
     protected TopAdsAdListAdapter initializeTopAdsAdapter() {
         return new TopAdsKeywordGroupListAdapter();
+    }
+
+    @Override
+    public String getTitle(Context context) {
+        return "Filter Group";
+    }
+
+    @Override
+    public Intent addResult(Intent intent) {
+        // TODO return selection.
+        return intent;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public void setCallback(TopAdsFilterContentFragment.Callback callback) {
+        this.callback = callback;
     }
 }

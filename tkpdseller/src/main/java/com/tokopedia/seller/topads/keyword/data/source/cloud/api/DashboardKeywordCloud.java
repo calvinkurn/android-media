@@ -5,8 +5,12 @@ import com.tokopedia.seller.topads.data.model.request.DataRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
+import com.tokopedia.seller.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
+import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +47,10 @@ public class DashboardKeywordCloud {
         list.add(dataModel);
         dataRequest.setData(list);
         return dataRequest;
+    }
+
+    public Observable<PageDataResponse<List<KeywordAddResponseDatum>>> addKeyword(AddKeywordDomainModel addKeywordDomainModel) {
+        AddKeywordRequest addKeywordRequest = KeywordAddDomainDataMapper.convertDomainToRequestData(addKeywordDomainModel);
+        return keywordApi.addKeyword(addKeywordRequest);
     }
 }
