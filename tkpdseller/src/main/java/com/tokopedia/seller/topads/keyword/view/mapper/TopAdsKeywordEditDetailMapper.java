@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.mapper;
 
+import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
 
@@ -19,5 +20,16 @@ public class TopAdsKeywordEditDetailMapper {
         domainModel.setToggle(viewModel.getToggle());
 
         return domainModel;
+    }
+
+    public static TopAdsKeywordEditDetailViewModel mapDomainToView(EditTopAdsKeywordDetailDomainModel domainModel) {
+        TopAdsKeywordEditDetailViewModel viewModel = new TopAdsKeywordEditDetailViewModel();
+        viewModel.setToggle(domainModel.getToggle());
+        viewModel.setKeywordTypeId(domainModel.getKeywordTypeId());
+        viewModel.setPriceBid(domainModel.getPriceBid());
+        viewModel.setGroupId(domainModel.getGroupId());
+        viewModel.setKeywordId(domainModel.getKeywordId());
+        viewModel.setKeywordTag(domainModel.getKeywordTag());
+        return viewModel;
     }
 }

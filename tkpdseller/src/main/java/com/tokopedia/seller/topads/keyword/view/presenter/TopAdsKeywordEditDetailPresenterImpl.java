@@ -47,8 +47,11 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
         }
 
         @Override
-        public void onNext(EditTopAdsKeywordDetailDomainModel editTopAdsKeywordDetailDomainModel) {
-
+        public void onNext(EditTopAdsKeywordDetailDomainModel domainModel) {
+            if (isViewAttached()) {
+                TopAdsKeywordEditDetailViewModel viewModel = TopAdsKeywordEditDetailMapper.mapDomainToView(domainModel);
+                getView().onSuccessEditTopAdsKeywordDetail(viewModel);
+            }
         }
     }
 }

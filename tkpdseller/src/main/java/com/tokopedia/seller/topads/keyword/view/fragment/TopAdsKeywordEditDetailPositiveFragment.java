@@ -1,9 +1,8 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
-import android.os.Bundle;
+import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.view.widget.SpinnerTextView;
 import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
 
 /**
@@ -18,4 +17,10 @@ public class TopAdsKeywordEditDetailPositiveFragment extends TopAdsKeywordEditDe
         return fragment;
     }
 
+    @Override
+    protected void settingTopAdsKeywordType(View view) {
+        super.settingTopAdsKeywordType(view);
+        topAdsKeywordType.setEntries(getResources().getStringArray(R.array.top_ads_keyword_type_list_names));
+        topAdsKeywordType.setValues(getResources().getStringArray(R.array.top_ads_keyword_type_positive_list_values));
+    }
 }
