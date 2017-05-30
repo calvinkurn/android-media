@@ -580,6 +580,10 @@
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
 
+    <string name="topads_label_keyword_type">Tipe Kata Kunci</string>
+    <string name="title_delete_keyword_topads">Hapus kata kunci</string>
+    <string name="label_confirm_delete_keyword_topads">Apakah anda yakin untuk menghapus keyword ini?</string>
+
     <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
     <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
