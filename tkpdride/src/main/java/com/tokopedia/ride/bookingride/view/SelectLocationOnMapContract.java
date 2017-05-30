@@ -25,6 +25,14 @@ public interface SelectLocationOnMapContract {
         void setDestination(PlacePassViewModel destination);
 
         void onMapDraggedStopped();
+
+        void showCrossLoading();
+
+        void disableDoneButton();
+
+        void hideCrossLoading();
+
+        void enableDoneButton();
     }
 
     interface Presenter extends CustomerPresenter<View> {

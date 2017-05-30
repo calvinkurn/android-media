@@ -332,6 +332,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         if (!isAlreadySelectDestination) {
             setSourceLocationText("GO TO PIN");
         }
+        mMarkerTimeTextView.setText("--");
 
         //animate marker to lift up
         /*

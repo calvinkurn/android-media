@@ -64,17 +64,17 @@
                 android:id="@+id/tv_cabs_autocomplete"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/cabs_autocomplete_back_icon"
+                android:layout_toRightOf="@+id/cabs_autocomplete_back_icon"
                 android:background="@android:color/transparent"
                 android:gravity="center_vertical"
                 android:paddingBottom="2dp"
                 android:singleLine="true"
-                android:layout_toEndOf="@+id/cabs_autocomplete_back_icon"
-                android:layout_toRightOf="@+id/cabs_autocomplete_back_icon"
                 android:textColor="@color/black"
-                android:textSize="14sp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:textSize="14sp" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -118,10 +118,11 @@
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="24dp"
             android:layout_marginRight="24dp"
-            android:background="@drawable/shape_bg_rounded_white_rectangle"
+            android:background="@drawable/rounded_filled_theme_bttn"
+            android:enabled="false"
             android:gravity="center"
-            android:text="DONE"
-            android:textColor="@color/black_full"
+            android:text="@string/open_map_done"
+            android:textColor="@color/white"
             android:textSize="18dp" />
 
 

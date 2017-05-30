@@ -88,7 +88,7 @@ public class GooglePlacePickerActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentById(R.id.bottom_container) instanceof SelectLocationOnMapFragment) {
+        if (getFragmentManager().findFragmentById(R.id.container) instanceof SelectLocationOnMapFragment) {
             //hideBlockTranslucentLayout();
             //hideSeatPanelLayout();
             getFragmentManager().popBackStack();

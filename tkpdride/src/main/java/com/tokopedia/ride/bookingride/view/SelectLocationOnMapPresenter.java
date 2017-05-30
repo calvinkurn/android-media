@@ -203,6 +203,9 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
     @Override
     public void onMapMoveCameraStarted() {
         CommonUtils.dumper("onMapMoveCameraStarted ");
+        getView().disableDoneButton();
+        getView().showCrossLoading();
+        getView().setDestinationLocationText(null);
     }
 
     @Override
@@ -215,6 +218,8 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
 
     @Override
     public void actionMapDragStopped(final double latitude, final double longitude) {
+        getView().showCrossLoading();
+        getView().disableDoneButton();
         CommonUtils.dumper("actionMapDragStopped = " + latitude + " , " + longitude);
 
         Observable.create(new Observable.OnSubscribe<String>() {
@@ -248,6 +253,8 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (isViewAttached())
+                            getView().hideCrossLoading();
                     }
 
                     @Override
@@ -263,6 +270,8 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
 
                             getView().setDestination(destination);
                             getView().setDestinationLocationText(sourceAddress);
+                            getView().hideCrossLoading();
+                            getView().enableDoneButton();
                         }
                     }
                 });

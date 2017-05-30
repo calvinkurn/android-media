@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,12 +48,17 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     TouchableWrapperLayout mapWrapperLayout;
     @BindView(R2.id.iv_android_center_marker)
     ImageView centerMarker;
+    @BindView(R2.id.pb_loader)
+    ProgressBar progressBar;
+    @BindView(R2.id.btn_done)
+    TextView doneBtn;
 
     private SelectLocationOnMapContract.Presenter mPresenter;
     //    private PlacePassViewModel source, destination;
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
     private PlacePassViewModel locationDragged;
+    private boolean isDisabled;
 
     @Override
     public void onLayoutDrag() {
@@ -279,6 +286,36 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
     @Override
+    public void showCrossLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void disableDoneButton() {
+        isDisabled = false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            doneBtn.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        } else {
+            doneBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_disable_bttn));
+        }
+    }
+
+    @Override
+    public void hideCrossLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableDoneButton() {
+        isDisabled = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            doneBtn.setBackground(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        } else {
+            doneBtn.setBackgroundDrawable(getResources().getDrawable(R.drawable.rounded_filled_theme_bttn));
+        }
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         mPresenter.detachView();
@@ -286,11 +323,12 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @OnClick(R2.id.btn_done)
     public void actionOnDoneClicked() {
-        mListener.handleSelectDestinationOnMap(locationDragged);
+        if (!isDisabled)
+            mListener.handleSelectDestinationOnMap(locationDragged);
     }
 
     @OnClick(R2.id.cabs_autocomplete_back_icon)
-    public void actionBackClicked(){
+    public void actionBackClicked() {
         mListener.backArrowClicked();
     }
 }

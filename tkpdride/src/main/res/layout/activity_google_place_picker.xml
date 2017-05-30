@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container"
-        ></FrameLayout>
+        android:id="@+id/container" />
 </RelativeLayout>

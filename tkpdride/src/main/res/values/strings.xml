@@ -111,4 +111,5 @@
     <string name="message_copied">Copied!</string>
     <string name="label_license_plate_number">License Plate Number</string>
     <string name="driver_detail_share_eta">Share Eta</string>
+    <string name="open_map_done">DONE</string>
 </resources>
