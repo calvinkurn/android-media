@@ -141,7 +141,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
 
         //noinspection ResultOfMethodCallIgnored
         phoneFormatted.replaceAll("[^0-9]+", "");
-        contact.setContactNumber(phoneFormatted);
+        contact.setContactNumber(phoneFormatted.replaceAll("\\D+", ""));
         return contact;
     }
 
