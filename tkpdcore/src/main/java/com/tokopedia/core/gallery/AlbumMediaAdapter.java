@@ -75,18 +75,12 @@ public class AlbumMediaAdapter extends RecyclerViewCursorAdapter<AlbumMediaAdapt
         if (mImageResize == 0) {
             RecyclerView.LayoutManager lm = mRecyclerView.getLayoutManager();
             int spanCount = ((GridLayoutManager) lm).getSpanCount();
-            Log.d("hangnadi", "getImageResize6: " + spanCount);
             int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-            Log.d("hangnadi", "getImageResize5: " + screenWidth);
             int availableWidth = screenWidth - context.getResources().getDimensionPixelSize(
                     R.dimen.media_grid_spacing) * (spanCount - 1);
-            Log.d("hangnadi", "getImageResize4: " + availableWidth);
             mImageResize = availableWidth / spanCount;
-            Log.d("hangnadi", "getImageResize3: " + mImageResize);
             mImageResize = (int) (mImageResize * 0.85f);
-            Log.d("hangnadi", "getImageResize2: " + mImageResize);
         }
-        Log.d("hangnadi", "getImageResize1: " + mImageResize);
         return mImageResize;
     }
 
