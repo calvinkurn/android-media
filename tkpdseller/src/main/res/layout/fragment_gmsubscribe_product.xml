@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <Button
-        android:padding="@dimen/gmsubscribe_padding_button"
         android:id="@+id/button_select_product"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_margin="5dp"
-        android:textAllCaps="false"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/bg_button_orange"
-        android:layout_alignParentBottom="true"/>
+        style="@style/Button.Submit.Orange"
+        android:layout_alignParentBottom="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_package_chooser"
-        android:fitsSystemWindows="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        android:layout_above="@id/button_select_product"/>
-
-
-
+        android:layout_above="@id/button_select_product"
+        android:fitsSystemWindows="false"
+        android:scrollbars="vertical" />
 </RelativeLayout>
-

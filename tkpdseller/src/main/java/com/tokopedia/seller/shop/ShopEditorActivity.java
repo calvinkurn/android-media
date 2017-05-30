@@ -40,7 +40,6 @@ import com.tokopedia.seller.shop.presenter.ShopSettingView;
 import java.io.File;
 import java.util.ArrayList;
 
-import butterknife.BindView;
 
 import static com.tokopedia.core.shipping.OpenShopEditShipping.RESUME_OPEN_SHOP_KEY;
 
@@ -54,7 +53,6 @@ public class ShopEditorActivity extends TkpdActivity implements
     String FRAGMENT;
     Toolbar toolbar;
 
-    @BindView(R2.id.container)
     FrameLayout container;
     private String onBack;
 
@@ -68,6 +66,7 @@ public class ShopEditorActivity extends TkpdActivity implements
         super.onCreate(savedInstanceState);
 
         inflateView(R.layout.activity_simple_fragment);
+        container = (FrameLayout) findViewById(R.id.container);
         toolbar = (Toolbar) this.findViewById(R.id.app_bar);
         toolbar.removeAllViews();
         setSupportActionBar(toolbar);

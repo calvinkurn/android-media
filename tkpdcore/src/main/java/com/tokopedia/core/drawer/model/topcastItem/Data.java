@@ -2,10 +2,13 @@
 package com.tokopedia.core.drawer.model.topcastItem;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
 
-public class Data {
+public class Data implements Parcelable{
 
     @SerializedName("action")
     private Action mAction;
@@ -68,4 +71,51 @@ public class Data {
     public void setLink(Integer link) {
         this.link = link;
     }
+
+    protected Data(Parcel in) {
+        mAction = (Action) in.readValue(Action.class.getClassLoader());
+        mBalance = in.readString();
+        mRedirectUrl = in.readString();
+        mText = in.readString();
+        mWalletId = in.readByte() == 0x00 ? null : in.readLong();
+        link = in.readByte() == 0x00 ? null : in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(mAction);
+        dest.writeString(mBalance);
+        dest.writeString(mRedirectUrl);
+        dest.writeString(mText);
+        if (mWalletId == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeLong(mWalletId);
+        }
+        if (link == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeInt(link);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+        @Override
+        public Data createFromParcel(Parcel in) {
+            return new Data(in);
+        }
+
+        @Override
+        public Data[] newArray(int size) {
+            return new Data[size];
+        }
+    };
 }

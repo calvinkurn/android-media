@@ -1,7 +1,7 @@
 package com.tokopedia.seller.product.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.product.data.exception.FailedToAddEtalaseException;
+import com.tokopedia.core.network.retrofit.exception.ResponseErrorListStringException;
 import com.tokopedia.seller.product.domain.interactor.AddNewEtalaseUseCase;
 import com.tokopedia.seller.product.domain.interactor.FetchMyEtalaseUseCase;
 import com.tokopedia.seller.product.domain.model.MyEtalaseDomainModel;
@@ -94,7 +94,7 @@ public class EtalasePickerPresenterImpl extends EtalasePickerPresenter {
         public void onError(Throwable e) {
             checkViewAttached();
             getView().dismissLoadingDialog();
-            if (e instanceof FailedToAddEtalaseException){
+            if (e instanceof ResponseErrorListStringException){
                 getView().showError(e);
             } else {
                 getView().showRetryAddNewEtalase(newEtalaseName);

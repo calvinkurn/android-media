@@ -11,8 +11,6 @@ import java.util.List;
 
 public class Info {
 
-    public static final String FREE_RETURNS = "Free Returns";
-    public static final String FREE_RETURNS_ACTIVE = "1";
     @SerializedName("shop_status_title")
     @Expose
     public String shopStatusTitle;
@@ -112,7 +110,7 @@ public class Info {
     public List<Badge> badges = new ArrayList<>();
 
     public boolean isFreeReturns(){
-        if(StringUtils.isNotBlank(shopIsFreeReturns) && shopIsFreeReturns.equals(FREE_RETURNS_ACTIVE)){
+        if(StringUtils.isNotBlank(shopIsFreeReturns) && Double.parseDouble( shopIsFreeReturns) > 0){
             return true;
         }
         return false;

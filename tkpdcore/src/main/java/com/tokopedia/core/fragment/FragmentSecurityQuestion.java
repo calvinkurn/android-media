@@ -31,10 +31,10 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
@@ -44,6 +44,7 @@ import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -314,7 +315,12 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
 
     @Override
     public void showTrueCaller(boolean b) {
-        verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+        if(GlobalConfig.isSellerApp()){
+            verifyTrueCaller.setVisibility(b ? View.VISIBLE : View.GONE);
+            if(b) UnifyTracking.eventTruecallerImpression();
+        }else {
+            verifyTrueCaller.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -353,6 +359,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             @Override
             public void onClick(View v) {
                 presenter.getPhoneTrueCaller();
+                UnifyTracking.eventClickTruecaller();
             }
         });
     }

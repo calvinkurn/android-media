@@ -25,7 +25,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.instoped.InstagramActivityListener;
 import com.tokopedia.seller.instoped.adapter.MediaAdapter;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;

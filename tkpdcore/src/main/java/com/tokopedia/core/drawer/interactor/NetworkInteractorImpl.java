@@ -1,6 +1,7 @@
 package com.tokopedia.core.drawer.interactor;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -8,6 +9,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer.model.DrawerHeader;
 import com.tokopedia.core.drawer.model.topcastItem.TopCashItem;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer.var.NotificationItem;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationData;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileData;
@@ -384,6 +386,10 @@ public class NetworkInteractorImpl implements NetworkInteractor {
             @Override
             public void onNext(TopCashItem topCashItemResponse) {
                 listener.onSuccess(topCashItemResponse);
+                Intent intent = new Intent(TokoCashBroadcastReceiver.ACTION_GET_TOKOCASH);
+                intent.putExtra(TokoCashBroadcastReceiver.EXTRA_RESULT_TOKOCASH_DATA,
+                        topCashItemResponse);
+                context.sendBroadcast(intent);
             }
         };
     }

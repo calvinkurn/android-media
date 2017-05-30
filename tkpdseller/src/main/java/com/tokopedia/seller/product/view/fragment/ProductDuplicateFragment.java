@@ -2,9 +2,11 @@ package com.tokopedia.seller.product.view.fragment;
 
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.product.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.di.module.ProductEditModule;
+import com.tokopedia.seller.product.view.model.upload.UploadProductInputViewModel;
 import com.tokopedia.seller.product.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.view.presenter.ProductEditView;
 
@@ -20,6 +22,7 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
 
     @Inject
     public ProductEditPresenter presenter;
+    private String productNameBeforeCopy;
 
     public static ProductDuplicateFragment createInstance(String productId) {
         ProductDuplicateFragment fragment = new ProductDuplicateFragment();
@@ -38,6 +41,22 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
                 .productEditModule(new ProductEditModule())
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onSuccessLoadProduct(UploadProductInputViewModel model) {
+        super.onSuccessLoadProduct(model);
+        productNameBeforeCopy = model.getProductName();
+    }
+
+    @Override
+    protected boolean isDataValid() {
+        boolean dataValid = super.isDataValid();
+        if (!productInfoViewHolder.checkWithPreviousNameBeforeCopy(productNameBeforeCopy).first){
+            UnifyTracking.eventAddProductError(productInfoViewHolder.isDataValid().second);
+            return false;
+        }
+        return dataValid;
     }
 
     @Override

@@ -121,6 +121,11 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         return false;
     }
 
+    @Override
+    public boolean onOverrideUrl(String url) {
+        return false;
+    }
+
 
     public interface OnFragmentInteractionListener {
 

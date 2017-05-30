@@ -58,6 +58,7 @@ import com.tokopedia.seller.product.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.favorite.view.FragmentIndexFavoriteV2;
+import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.home.feed.view.FragmentProductFeed;
 import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.FragmentIndexCategory;

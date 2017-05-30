@@ -112,4 +112,15 @@ public class WalletActivity extends TActivity implements BaseWebViewClient.WebVi
         clearTokoCashData();
         super.onBackPressed();
     }
+
+    @Override
+    public boolean onOverrideUrl(String url) {
+        Uri uri = Uri.parse(url);
+        if(uri.getPath().contains("thanks_wallet")) {
+            clearTokoCashData();
+            finish();
+            return true;
+        }
+        return false;
+    }
 }
