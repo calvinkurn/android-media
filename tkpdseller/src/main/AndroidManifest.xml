@@ -241,6 +241,10 @@
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
+        
+        <activity android:name=".shopsettings.ManageShopActivity"
+            android:label="@string/title_activity_manage_shop"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".selling.SellingService"

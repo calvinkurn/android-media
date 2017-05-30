@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ManageShop">
+    tools:context=".shopsettings.ManageShopActivity">
 
     <LinearLayout
         android:id="@+id/title_shop_setting"
@@ -33,9 +33,10 @@
             android:textStyle="bold" />
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/list_manage"
+    <fragment
+        android:id="@+id/fragment_setting_shop"
+        android:name="com.tokopedia.seller.shopsettings.FragmentSettingShop"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/title_shop_setting" />
+        android:layout_below="@id/title_shop_setting"/>
 </RelativeLayout>

@@ -1,7 +1,6 @@
-package com.tokopedia.core.fragment;
+package com.tokopedia.seller.shopsettings;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,14 +16,21 @@ import com.tokopedia.core.PaymentEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.core.shipping.EditShippingActivity;
+import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shop.presenter.ShopSettingView;
 
 import java.util.ArrayList;
 
+/**
+ * Use in reflection by SellerRouter
+ * If you want to rename the class or refactor its package, rename also the route at SellerRouter
+ */
 public class FragmentSettingShop extends TkpdFragment{
 	private SimpleListTabViewAdapter lvAdapter;
 	private ListView lvManage;
@@ -73,33 +79,37 @@ public class FragmentSettingShop extends TkpdFragment{
 					long arg3) {
 				Intent intent = null;
 				switch(pos) {
-				case 0:
-
-					intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
-					intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-							SellerRouter.ShopSettingConstant.EDIT_SHOP_FRAGMENT_TAG);
-					startActivityForResult(intent, 0);
-					break;
-				case 1:
-					intent = new Intent(getActivity(), EditShippingActivity.class);
-					startActivity(intent);
-					break;
-				case 2:
-					intent = new Intent(getActivity(), PaymentEditor.class);
-					startActivity(intent);
-					break;
-				case 3:
-					intent = new Intent(getActivity(), EtalaseShopEditor.class);
-					startActivity(intent);
-					break;
-				case 4:
-					intent = new Intent(getActivity(), ManageShopNotesActivity.class);
-					startActivity(intent);
-					break;
-				case 5:
-					intent = new Intent(getActivity(), ManageShopAddress.class);
-					startActivity(intent);
-					break;
+					case 0:
+                        intent = new Intent(getActivity(), ShopEditorActivity.class);
+                        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+                        UnifyTracking.eventManageShopInfo();
+						startActivityForResult(intent, 0);
+						break;
+					case 1:
+						intent = new Intent(getActivity(), EditShippingActivity.class);
+						UnifyTracking.eventManageShopShipping();
+						startActivity(intent);
+						break;
+					case 2:
+						UnifyTracking.eventManageShopPayment();
+						intent = new Intent(getActivity(), PaymentEditor.class);
+						startActivity(intent);
+						break;
+					case 3:
+						UnifyTracking.eventManageShopEtalase();
+						intent = new Intent(getActivity(), EtalaseShopEditor.class);
+						startActivity(intent);
+						break;
+					case 4:
+						UnifyTracking.eventManageShopNotes();
+						intent = new Intent(getActivity(), ManageShopNotesActivity.class);
+						startActivity(intent);
+						break;
+					case 5:
+						UnifyTracking.eventManageShopLocation();
+						intent = new Intent(getActivity(), ManageShopAddress.class);
+						startActivity(intent);
+						break;
 				}
 			}
 			
