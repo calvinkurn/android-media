@@ -1,10 +1,12 @@
 package com.tokopedia.tkpd.deeplink;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
@@ -13,6 +15,7 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
+import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
@@ -39,8 +42,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
+        DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
+            Uri applink = intent.getData();
+            presenter.processUTM(applink);
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();
