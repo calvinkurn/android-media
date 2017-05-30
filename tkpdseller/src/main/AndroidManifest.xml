@@ -150,7 +150,12 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailActivity"
+            android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity"
+            android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
+        <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailNegativeActivity"
             android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"/>
