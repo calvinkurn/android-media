@@ -34,7 +34,7 @@ public class TopAdsProductAdListActivity extends TActivity
         super.onCreate(savedInstanceState);
         GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
         inflateView(R.layout.activity_top_ads_payment_credit);
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, TopAdsProductAdListFragment.createInstance(groupAd), TopAdsProductAdListFragment.class.getSimpleName())
                 .commit();
     }
@@ -54,7 +54,7 @@ public class TopAdsProductAdListActivity extends TActivity
             return;
         }
         final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                (TopAdsProductAdListFragment) getFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
+                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
         if (topAdsProductAdListFragment == null) {
             return;
         }

@@ -26,6 +26,7 @@ import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPrese
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
+import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -37,7 +38,7 @@ import java.util.List;
  *         another type of {@link com.tokopedia.seller.topads.view.fragment.TopAdsAdListFragment}
  */
 
-public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsDatePickerFragment<T> implements
+public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment<T> implements
         TopAdsListViewListener, TopAdsAdListAdapter.Callback {
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
@@ -49,15 +50,15 @@ public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter>
     protected int totalItem;
 
     protected TopAdsAdListAdapter adapter;
-    private RecyclerView recyclerView;
+    protected RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
     private boolean searchMode;
-    private LinearLayoutManager layoutManager;
+    protected LinearLayoutManager layoutManager;
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
 
-    public TopAdsAdListFragment() {
+    public TopAdsBaseListFragment() {
         // Required empty public constructor
     }
 
@@ -88,14 +89,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter>
         setViewListener();
     }
 
+    @Override
     protected void initView(View view) {
+        super.initView(view);
         recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    @Override
     protected void setViewListener() {
+        super.setViewListener();
         onScrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -120,7 +125,9 @@ public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter>
         recyclerView.addOnScrollListener(onScrollListener);
     }
 
+    @Override
     protected void initialVar() {
+        super.initialVar();
         page = START_PAGE;
         totalItem = Integer.MAX_VALUE;
         searchMode = false;
@@ -158,7 +165,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsKeywordListPresenter>
         adapter.notifyDataSetChanged();
     }
 
-    private void updateEmptyViewDefault() {
+    protected void updateEmptyViewDefault() {
         adapter.setEmptyView(getEmptyViewBinder());
 
         adapter.notifyDataSetChanged();
