@@ -312,11 +312,12 @@ public class ClientNumberInputView extends LinearLayout {
         }
         if (!isStartWithPrefix) return false;
         if (clientNumber != null) {
+            boolean isValidRegex = false;
             for (Validation validation : clientNumber.getValidation()) {
                 if (Pattern.matches(validation.getRegex(), clientNumberInput))
-                    return true;
+                    isValidRegex = true;
             }
-            return false;
+            return isValidRegex;
         } else {
             return true;
         }

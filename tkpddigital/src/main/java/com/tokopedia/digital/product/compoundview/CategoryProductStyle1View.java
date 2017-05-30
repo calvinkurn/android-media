@@ -226,14 +226,38 @@ public class CategoryProductStyle1View extends
                             R.string.message_error_digital_client_number_not_filled
                     ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
             );
-        } else if (productSelected == null) {
-            preCheckoutProduct.setErrorCheckout(
-                    context.getString(R.string.message_error_digital_product_not_selected)
-            );
         } else if (operatorSelected == null) {
-            preCheckoutProduct.setErrorCheckout(
-                    context.getString(R.string.message_error_digital_operator_not_selected)
-            );
+            if (data.getOperatorList().size() == 1
+                    && !data.getClientNumberList().isEmpty()
+                    && !clientNumberInputView.isValidInput(
+                    data.getOperatorList().get(0).getPrefixList())
+                    ) {
+                preCheckoutProduct.setErrorCheckout(
+                        data.getClientNumberList().get(0).getText()
+                                + " " + context.getString(
+                                R.string.message_error_digital_client_number_format_invalid
+                        )
+                );
+            } else {
+                preCheckoutProduct.setErrorCheckout(
+                        context.getString(R.string.message_error_digital_operator_not_selected)
+                );
+            }
+        } else if (productSelected == null) {
+            if (operatorSelected.getRule().getProductViewStyle() == 99
+                    && !data.getClientNumberList().isEmpty()
+                    && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
+                preCheckoutProduct.setErrorCheckout(
+                        data.getClientNumberList().get(0).getText()
+                                + " " + context.getString(
+                                R.string.message_error_digital_client_number_format_invalid
+                        )
+                );
+            } else {
+                preCheckoutProduct.setErrorCheckout(
+                        context.getString(R.string.message_error_digital_product_not_selected)
+                );
+            }
         } else {
             preCheckoutProduct.setProductId(productSelected.getProductId());
             preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
@@ -266,7 +290,11 @@ public class CategoryProductStyle1View extends
                         if (tempClientNumber.startsWith(prefix)) {
                             operatorSelected = operator;
                             clientNumberInputView.enableImageOperator(operator.getImage());
-                            renderProductChooserOptions();
+                            if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                                renderDefaultProductSelected();
+                            } else {
+                                renderProductChooserOptions();
+                            }
                             break outerLoop;
                         } else {
                             clientNumberInputView.disableImageOperator();
@@ -290,22 +318,34 @@ public class CategoryProductStyle1View extends
         };
     }
 
+    private void renderDefaultProductSelected() {
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
+        if (operatorSelected.getProductList().get(0) != null) {
+            productSelected = operatorSelected.getProductList().get(0);
+        } else {
+            productSelected = new Product.Builder()
+                    .productId(String.valueOf(operatorSelected.getDefaultProductId()))
+                    .info("")
+                    .price("")
+                    .desc("")
+                    .detail("")
+                    .build();
+        }
+        renderAdditionalInfoProduct();
+        renderPriceInfoProduct();
+
+    }
+
     @NonNull
     private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
         return new BaseDigitalChooserView.ActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
-
-                clearHolder(holderAdditionalInfoProduct);
-                productAdditionalInfoView.renderData(data);
-                holderAdditionalInfoProduct.addView(productAdditionalInfoView);
-
-                clearHolder(holderPriceInfoProduct);
-                if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
-                    productPriceInfoView.renderData(productSelected);
-                    holderPriceInfoProduct.addView(productPriceInfoView);
-                }
+                renderAdditionalInfoProduct();
+                renderPriceInfoProduct();
             }
 
             @Override
@@ -315,6 +355,20 @@ public class CategoryProductStyle1View extends
                 );
             }
         };
+    }
+
+    private void renderPriceInfoProduct() {
+        clearHolder(holderPriceInfoProduct);
+        if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
+            productPriceInfoView.renderData(productSelected);
+            holderPriceInfoProduct.addView(productPriceInfoView);
+        }
+    }
+
+    private void renderAdditionalInfoProduct() {
+        clearHolder(holderAdditionalInfoProduct);
+        productAdditionalInfoView.renderData(productSelected);
+        holderAdditionalInfoProduct.addView(productAdditionalInfoView);
     }
 
 

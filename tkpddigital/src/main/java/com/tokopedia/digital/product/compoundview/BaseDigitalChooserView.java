@@ -63,7 +63,7 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                actionListener.onDigitalChooserClicked(dataList);
+                if (actionListener != null) actionListener.onDigitalChooserClicked(dataList);
             }
         };
     }
