@@ -1,24 +1,22 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 
-import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
-import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordEditDetailPresenter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordEditDetailView;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
@@ -35,13 +33,15 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
 
     @Inject
     TopAdsKeywordEditDetailPresenter presenter;
-    private SpinnerTextView topAdsKeywordType;
-    private EditText topAdsKeyword;
-    private EditText topAdsCostPerClick;
-    private TopAdsKeywordEditDetailViewModel model;
+    protected SpinnerTextView topAdsKeywordType;
+    protected EditText topAdsKeyword;
+    protected EditText topAdsCostPerClick;
+    protected TextView topAdsMaxPriceInstruction;
+    private KeywordAd model;
+    private TopAdsKeywordEditDetailFragmentListener listener;
 
     public static Bundle createArguments(
-            TopAdsKeywordEditDetailViewModel model) {
+            KeywordAd model) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEYWORD_DETAIL_MODEL, model);
         return bundle;
@@ -55,6 +55,14 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                 .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopAdsKeywordEditDetailFragmentListener){
+            this.listener = (TopAdsKeywordEditDetailFragmentListener) context;
+        }
     }
 
     @Nullable
@@ -86,13 +94,15 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         return view;
     }
 
-    private void fillDataToView(TopAdsKeywordEditDetailViewModel model) {
-        topAdsKeyword.setText(model.getKeywordTag());
-        topAdsCostPerClick.setText(String.valueOf(model.getPriceBid()));
+    private void fillDataToView(KeywordAd model) {
+        topAdsKeywordType.setSpinnerValue(model.getKeywordTypeId());
+        topAdsKeyword.setText(model.getName());
+        topAdsCostPerClick.setText(model.getPriceBidFmt());
     }
 
-    private void settingTopAdsCostPerClick(View view) {
+    protected void settingTopAdsCostPerClick(View view) {
         topAdsCostPerClick = (EditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
+        topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
         CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick);
         topAdsCostPerClick.addTextChangedListener(textWatcher);
     }
@@ -101,16 +111,14 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         topAdsKeyword = ((EditText) view.findViewById(R.id.edit_text_top_ads_keyword));
     }
 
-    private void settingTopAdsKeywordType(View view) {
+    protected void settingTopAdsKeywordType(View view) {
         topAdsKeywordType = ((SpinnerTextView) view.findViewById(R.id.spinner_text_view_top_ads_keyword_type));
-        topAdsKeywordType.setEntries(getResources().getStringArray(R.array.top_ads_keyword_type_list_names));
-        topAdsKeywordType.setValues(getResources().getStringArray(R.array.top_ads_keyword_type_list_values));
     }
 
-    private TopAdsKeywordEditDetailViewModel collectDataFromView() {
-        model.setKeywordTypeId(KeywordTypeDef.KEYWORD_TYPE_EXACT);
+    private KeywordAd collectDataFromView() {
+        model.setKeywordTypeId(getTopAdsKeywordTypeId());
         model.setKeywordTag(getTopAdsKeywordText());
-        model.setPriceBid(getTopAdsCostPerClick());
+        model.setPriceBidFmt(getTopAdsCostPerClick());
         return model;
     }
 
@@ -118,14 +126,8 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         return topAdsKeyword.getText().toString();
     }
 
-    public double getTopAdsCostPerClick() {
-        String valueString = CurrencyFormatHelper
-                .removeCurrencyPrefix(topAdsCostPerClick.getText().toString());
-        valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
-        if (TextUtils.isEmpty(valueString)) {
-            return 0;
-        }
-        return Double.parseDouble(valueString);
+    public String getTopAdsCostPerClick() {
+        return topAdsCostPerClick.getText().toString();
     }
 
     @Override
@@ -134,7 +136,16 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
+        listener.onSuccessEditTopAdsKeywordDetail(viewModel);
+    }
+
+    @Override
     public void showError(String detail) {
         NetworkErrorHelper.showSnackbar(getActivity(), detail);
+    }
+
+    public String getTopAdsKeywordTypeId() {
+        return topAdsKeywordType.getSpinnerValue();
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.tkpd.library.utils.CurrencyFormatHelper;
@@ -26,6 +27,15 @@ public class ViewUtils {
             errorMessage = ((ResponseErrorException) t).getErrorList().get(0).getDetail();
         }
         return errorMessage;
+    }
+
+    public static String getErrorMessage(@NonNull Context context, Throwable t) {
+        String errorMessage =getErrorMessage(t);
+        if (TextUtils.isEmpty(errorMessage)) {
+            return getGeneralErrorMessage(context, t);
+        } else {
+            return errorMessage;
+        }
     }
 
     public static String getGeneralErrorMessage(@NonNull Context context, Throwable t) {

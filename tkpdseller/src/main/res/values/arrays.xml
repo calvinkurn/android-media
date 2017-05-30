@@ -52,18 +52,24 @@
         <item>@string/label_top_ads_inside_group</item>
     </string-array>
 
-    <string-array name="top_ads_keyword_type_list_values" >
-        <item>0</item>
-        <item>1</item>
+    <string-array name="top_ads_keyword_type_positive_list_values" >
+        <item>11</item>
+        <item>21</item>
     </string-array>
 
     <string-array name="top_ads_keyword_type_list_names" >
-        <item>Broad Match</item>
+        <item>Phrase Match</item>
         <item>Exact Match</item>
     </string-array>
+
+    <string-array name="top_ads_keyword_type_negative_list_values" >
+        <item>12</item>
+        <item>22</item>
+    </string-array>
+
     <string-array name="keyword_type_spinner">
-        <item>@string/top_ads_choose_keyword_type</item>
-        <item>@string/top_ads_phrase_match</item>
-        <item>@string/top_ads_exact_match</item>
+        <item>@string/top_ads_keyword_choose_keyword_type</item>
+        <item>@string/top_ads_keyword_phrase_match</item>
+        <item>@string/top_ads_keyword_exact_match</item>
     </string-array>
 </resources>

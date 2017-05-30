@@ -202,6 +202,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
                 // ensure error view is added next to success view & indicator view is visible
                 super.setErrorEnabled(true);
                 mIndicatorView.addView(mSuccessView, 0);
+                mIndicatorView.setVisibility(View.VISIBLE);
             } else {
                 mSuccessShown = false;
                 mIndicatorView.removeView(mSuccessView);
@@ -230,6 +231,7 @@ public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher 
 
         if (mSuccessShown) {
             super.setErrorEnabled(false); // to update state, make it visible gone
+            mIndicatorView.setVisibility(View.VISIBLE);
             mSuccessView.setText(successString);
             mSuccessView.setActivated(true);
             mSuccessView.setVisibility(VISIBLE);

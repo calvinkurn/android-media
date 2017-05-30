@@ -161,11 +161,11 @@ public class TopAdsKeywordListActivity extends BaseActivity implements
 
     @Override
     public void removeListener() {
-//        searchView.setQuery("", false);
-//        searchView.clearFocus();
-//        searchView.setIconified(true);
-//        searchView.setOnQueryTextListener(null);
-//        searchItem.collapseActionView();
+        searchView.setQuery("", false);
+        searchView.clearFocus();
+        searchView.setIconified(true);
+        searchView.setOnQueryTextListener(null);
+        searchItem.collapseActionView();
     }
 
     @Override

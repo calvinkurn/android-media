@@ -8,6 +8,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordViewHolder;
 import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,27 +17,7 @@ import java.util.List;
  * @author normansyahputa on 5/19/17.
  */
 
-public class TopAdsKeywordAdapter extends TopAdsAdListAdapter {
-    private List<Datum> data;
-    private TopAdsAdListAdapter.Callback callback;
-
-    public TopAdsKeywordAdapter() {
-        super();
-        this.data = new ArrayList<>();
-    }
-
-    public void setCallback(TopAdsAdListAdapter.Callback callback) {
-        this.callback = callback;
-    }
-
-    public int getDataSize() {
-        return data.size();
-    }
-
-    @Override
-    public int getItemCount() {
-        return data.size() + super.getItemCount();
-    }
+public class TopAdsKeywordAdapter extends TopAdsBaseListAdapter<Datum> {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -61,23 +42,13 @@ public class TopAdsKeywordAdapter extends TopAdsAdListAdapter {
         }
     }
 
-    private boolean isLastItemPosition(int position) {
-        return position == data.size();
-    }
-
     @Override
     public int getItemViewType(int position) {
-        if (isLastItemPosition(position) && (data.isEmpty() || isLoading() || isRetry())) {
-            if (isLoading()) {
-                return VIEW_LOADING;
-            } else if (isRetry()) {
-                return VIEW_RETRY;
-            } else {
-                return VIEW_EMPTY;
-            }
-        } else {
-            return data.get(position).getType();
+        int itemType = super.getItemViewType(position);
+        if (!isUnknownViewType(itemType)) {
+            return itemType;
         }
+        return data.get(position).getType();
     }
 
     @Override
@@ -89,10 +60,4 @@ public class TopAdsKeywordAdapter extends TopAdsAdListAdapter {
             }
         }
     }
-
-    public void clearData() {
-        this.data.clear();
-        notifyDataSetChanged();
-    }
-
 }

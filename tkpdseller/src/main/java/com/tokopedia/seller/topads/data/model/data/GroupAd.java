@@ -5,16 +5,16 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.view.model.StateTypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
+public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
 
     public static final int TYPE = 19294123;
-    public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {
+    public static final Creator<GroupAd> CREATOR = new Creator<GroupAd>() {
         @Override
         public GroupAd createFromParcel(Parcel source) {
             return new GroupAd(source);
@@ -103,13 +103,20 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
     @SerializedName("total_item")
     @Expose
     private int totalItem;
+    @SerializedName("positive_count")
+    @Expose
+    private int positiveCount;
+    @SerializedName("negative_count")
+    @Expose
+
+    private int negativeCount;
 
     public GroupAd() {
         super(TYPE);
     }
 
     protected GroupAd(Parcel in) {
-        super(TYPE);
+        this();
         this.id = in.readLong();
         this.status = in.readInt();
         this.statusDesc = in.readString();
@@ -136,6 +143,24 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
         this.adModerated = in.readInt();
         this.adModeratedReason = in.readString();
         this.totalItem = in.readInt();
+        this.positiveCount = in.readInt();
+        this.negativeCount = in.readInt();
+    }
+
+    public int getPositiveCount() {
+        return positiveCount;
+    }
+
+    public void setPositiveCount(int positiveCount) {
+        this.positiveCount = positiveCount;
+    }
+
+    public int getNegativeCount() {
+        return negativeCount;
+    }
+
+    public void setNegativeCount(int negativeCount) {
+        this.negativeCount = negativeCount;
     }
 
     @Override
@@ -146,6 +171,10 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
     @Override
     public String getId() {
         return String.valueOf(id);
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     @Override
@@ -252,6 +281,10 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getAdModerated() {
         return adModerated;
     }
@@ -297,6 +330,8 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
         dest.writeInt(this.adModerated);
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
+        dest.writeInt(this.positiveCount);
+        dest.writeInt(this.negativeCount);
     }
 
     @Override

@@ -6,7 +6,7 @@ import com.tokopedia.seller.topads.keyword.domain.interactor.EditTopAdsKeywordDe
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
 import com.tokopedia.seller.topads.keyword.view.mapper.TopAdsKeywordEditDetailMapper;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 import rx.Subscriber;
 
@@ -23,7 +23,7 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
     }
 
     @Override
-    public void editTopAdsKeywordDetail(TopAdsKeywordEditDetailViewModel model) {
+    public void editTopAdsKeywordDetail(KeywordAd model) {
         TopAdsKeywordEditDetailInputDomainModel domainModel = TopAdsKeywordEditDetailMapper.mapViewToDomain(model);
         RequestParams params = EditTopAdsKeywordDetailUseCase.generateRequestParam(domainModel);
         editTopadsKeywordDetailUseCase.execute(params, new EditTopAdsKeywordDetailSubscriber());
@@ -47,8 +47,11 @@ public class TopAdsKeywordEditDetailPresenterImpl extends TopAdsKeywordEditDetai
         }
 
         @Override
-        public void onNext(EditTopAdsKeywordDetailDomainModel editTopAdsKeywordDetailDomainModel) {
-
+        public void onNext(EditTopAdsKeywordDetailDomainModel domainModel) {
+            if (isViewAttached()) {
+                KeywordAd viewModel = TopAdsKeywordEditDetailMapper.mapDomainToView(domainModel);
+                getView().onSuccessEditTopAdsKeywordDetail(viewModel);
+            }
         }
     }
 }
