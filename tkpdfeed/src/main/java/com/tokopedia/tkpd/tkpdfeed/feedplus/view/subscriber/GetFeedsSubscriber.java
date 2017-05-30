@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
 
 /**
  * @author by nisie on 5/29/17.

@@ -5,9 +5,9 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.FavoriteShopUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
@@ -55,31 +55,20 @@ public class FeedPlusPresenter
 
 
     @Override
-    public void fetchFirstPage(boolean isLoadFromCache) {
+    public void fetchFirstPage() {
         viewListener.showRefresh();
-        getFirstPageFeedsUseCase.execute(getFeedPlusParam(isLoadFromCache),
-                new GetFirstPageFeedsSubscriber(viewListener));
-    }
-
-    private RequestParams getFeedPlusParam(boolean isLoadFromCache) {
-        RequestParams params = getFeedPlusParam();
-        params.putBoolean(GetFirstPageFeedsUseCase.PARAM_IS_LOAD_FROM_CACHE, isLoadFromCache);
         currentCursor = "";
-        params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
-        return params;
-    }
-
-    private RequestParams getFeedPlusParam() {
-        RequestParams params = RequestParams.create();
-        params.putInt(GetFeedsUseCase.PARAM_USER_ID, Integer.parseInt(sessionHandler.getLoginID()));
-        params.putString(GetFeedsUseCase.PARAM_CURSOR, currentCursor);
-        return params;
+        getFirstPageFeedsUseCase.execute(
+                getFirstPageFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
+                new GetFirstPageFeedsSubscriber(viewListener));
     }
 
     @Override
     public void fetchNextPage() {
         viewListener.showLoading();
-        getFeedsUseCase.execute(getFeedPlusParam(), new GetFeedsSubscriber(viewListener));
+        getFeedsUseCase.execute(
+                getFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
+                new GetFeedsSubscriber(viewListener));
     }
 
     public void favoriteShop(PromotedShopViewModel promotedShopViewModel, final int adapterPosition) {
@@ -111,4 +100,14 @@ public class FeedPlusPresenter
     public void setCursor(String currentCursor) {
         this.currentCursor = currentCursor;
     }
+
+    @Override
+    public void refreshPage() {
+        viewListener.showRefresh();
+        currentCursor = "";
+        getFirstPageFeedsUseCase.execute(
+                getFirstPageFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
+                new GetFirstPageFeedsSubscriber(viewListener));
+    }
+
 }

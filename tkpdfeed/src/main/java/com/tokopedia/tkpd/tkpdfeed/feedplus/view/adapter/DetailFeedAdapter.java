@@ -89,4 +89,8 @@ public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> 
     public boolean isLoading() {
         return this.list.contains(loadingModel);
     }
+
+    public List<Visitable> getList() {
+        return list;
+    }
 }

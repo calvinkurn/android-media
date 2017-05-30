@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -33,6 +32,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresent
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -179,12 +179,17 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onWishlistClicked() {
-        presenter.addToWishlist();
+    public void onWishlistClicked(int adapterPosition, Integer productId, boolean isWishlist) {
+        if (!isWishlist) {
+            presenter.addToWishlist(adapterPosition, String.valueOf(productId));
+        } else {
+            presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
+
+        }
     }
 
     @Override
-    public void onGoToShopDetail(String shopId) {
+    public void onGoToShopDetail(Integer shopId) {
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), "");
         intent.putExtras(bundle);
@@ -228,7 +233,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         seeShopButon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onGoToShopDetail(header.getShopUrl());
+                onGoToShopDetail(header.getShopId());
             }
         });
 
@@ -251,6 +256,45 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
+        dismissLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(int adapterPosition) {
+        dismissLoadingProgress();
+        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
+            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(true);
+            adapter.notifyItemChanged(adapterPosition);
+        }
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
+        dismissLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(int adapterPosition) {
+        dismissLoadingProgress();
+        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
+            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(false);
+            adapter.notifyItemChanged(adapterPosition);
+        }
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    private void dismissLoadingProgress() {
+        if (progressDialog != null && progressDialog.isProgress())
+            progressDialog.dismiss();
+    }
+
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -261,6 +305,5 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         super.onSaveInstanceState(outState);
         outState.putString(ARGS_DETAIL_ID, detailId);
     }
-
 
 }

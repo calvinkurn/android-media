@@ -61,7 +61,7 @@ public class FeedDetailHeaderViewHolder extends AbstractViewHolder<FeedDetailHea
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToShopDetail(viewModel.getShopUrl());
+                viewListener.onGoToShopDetail(viewModel.getShopId());
             }
         });
     }

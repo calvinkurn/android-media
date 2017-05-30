@@ -25,6 +25,7 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private final FeedPlusTypeFactory typeFactory;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
+    private boolean canLoadMore;
 
     public FeedPlusAdapter(FeedPlusTypeFactory typeFactory) {
         this.list = new ArrayList<>();
@@ -89,5 +90,17 @@ public class FeedPlusAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public boolean isLoading() {
         return this.list.contains(loadingModel);
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+    }
+
+    public boolean isCanLoadMore() {
+        return canLoadMore;
+    }
+
+    public List<Visitable> getlist() {
+        return list;
     }
 }

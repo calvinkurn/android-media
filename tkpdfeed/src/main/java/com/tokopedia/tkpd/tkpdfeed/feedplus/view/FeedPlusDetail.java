@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -15,9 +18,9 @@ public interface FeedPlusDetail {
 
     public interface View extends CustomerView {
 
-        void onWishlistClicked();
+        void onWishlistClicked(int adapterPosition, Integer productId, boolean wishlist);
 
-        void onGoToShopDetail(String shopUrl);
+        void onGoToShopDetail(Integer shopId);
 
         void onErrorGetFeedDetail(String errorMessage);
 
@@ -28,8 +31,24 @@ public interface FeedPlusDetail {
         void showLoading();
 
         void showLoadingProgress();
+
+        void onErrorAddWishList(String errorMessage, int adapterPosition);
+
+        void onSuccessAddWishlist(int productId);
+
+        Activity getActivity();
+
+        String getString(int resId);
+
+        void onErrorRemoveWishlist(String errorMessage, int productId);
+
+        void onSuccessRemoveWishlist(int productId);
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
+        void addToWishlist(int adapterPosition, String productId);
+
+        void removeFromWishlist(int adapterPosition, String productId);
     }
 }
