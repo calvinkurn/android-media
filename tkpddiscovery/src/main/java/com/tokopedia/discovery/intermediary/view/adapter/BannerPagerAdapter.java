@@ -34,7 +34,7 @@ public class BannerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.image_slider, container, false);
+        View view = inflater.inflate(R.layout.slider_intermediary, container, false);
 
         ImageView bannerImage = (ImageView) view.findViewById(R.id.image);
         if (bannerList.get(position).getUrl()!=null && bannerList.get(position).getUrl().length()>0) {
