@@ -24,10 +24,10 @@
     <string name="label_btn_action_empty_cart">CARI SEKARANG</string>
     <string name="label_message_success_cancel_cart">Berhasil menghapus item keranjang</string>
     <string name="label_message_error_cannot_checkout">Keranjang tidak dapat diproses, mohon periksa kembali keranjang Anda.</string>
-    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan promo "</string>
+    <string name="label_message_default_voucher_desc_result">"Anda mendapatkan voucher "</string>
     <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
     <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
-    <string name="label_error_form_voucher_code_empty">Kode Promo Kosong</string>
+    <string name="label_error_form_voucher_code_empty">Voucher Kosong</string>
     <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
     <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
     <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
@@ -55,7 +55,7 @@
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
     <string name="label_transaction_total_payment">Total Pembayaran</string>
     <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
-    <string name="label_transaction_hint_form_voucher_code">Kode Promo</string>
+    <string name="label_transaction_hint_form_voucher_code">Kode Voucher</string>
     <string name="label_transaction_potential_cashback">Potensi Cashback</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
