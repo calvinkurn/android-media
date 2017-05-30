@@ -89,20 +89,24 @@ public class BuildAndShowNotification {
         }
 
         PendingIntent resultPendingIntent;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            resultPendingIntent = PendingIntent.getActivity(
-                    mContext,
-                    0,
-                    applinkNotificationPass.getIntent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
+        if (applinkNotificationPass.getTaskStackBuilder() != null) {
+            resultPendingIntent = applinkNotificationPass.getTaskStackBuilder().getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
-            resultPendingIntent = PendingIntent.getActivity(
-                    mContext,
-                    applinkNotificationPass.getNotificationId(),
-                    applinkNotificationPass.getIntent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            } else {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        applinkNotificationPass.getNotificationId(),
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            }
         }
 
         mBuilder.setContentIntent(resultPendingIntent);
@@ -118,7 +122,7 @@ public class BuildAndShowNotification {
                 notif.defaults |= Notification.DEFAULT_VIBRATE;
             }
             mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-        } else if(!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())){
+        } else if (!TextUtils.isEmpty(applinkNotificationPass.getImageUrl())) {
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else {
 
@@ -183,7 +187,7 @@ public class BuildAndShowNotification {
         } else {
             homeIntent = HomeRouter.getHomeActivity(mContext);
         }
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         stackBuilder.addNextIntent(homeIntent);
 
         if (notificationPass.isAllowedBigStyle || isSingleNotification()) {

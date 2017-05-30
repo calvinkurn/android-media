@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.TaskStackBuilder;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationConfiguration;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 
 /**
  * Created by alvarisi on 5/22/17.
@@ -21,7 +25,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
     private static final String NOTIFICATION_CATEGORY = "applink";
     private Bundle data;
 
-    public ApplinkPushNotificationBuildAndShow(Bundle bundle){
+    public ApplinkPushNotificationBuildAndShow(Bundle bundle) {
         data = bundle;
     }
 
@@ -39,6 +43,17 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         Uri url = Uri.parse(applink);
         handlerIntent.setData(url);
 
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        stackBuilder.addNextIntent(homeIntent);
+        stackBuilder.addNextIntent(handlerIntent);
+
         ApplinkNotificationPass applinkNotificationPass = builder
                 .description(description)
                 .image(image)
@@ -48,6 +63,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                 .category(NOTIFICATION_CATEGORY)
                 .intent(handlerIntent)
                 .multipleSender(false)
+                .taskStackBuilder(stackBuilder)
                 .build();
         buildAndShowNotification.buildAndShowNotification(applinkNotificationPass, configuration);
     }
