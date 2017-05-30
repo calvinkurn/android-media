@@ -13,6 +13,7 @@ public class KeywordAd implements Ad, Parcelable {
     private String id;
     private String groupId;
     private String keywordTypeId;
+
     private String keywordTag;
     private int status;
     private String statusDesc;
@@ -27,6 +28,66 @@ public class KeywordAd implements Ad, Parcelable {
     private String keywordTypeDesc;
 
     public KeywordAd() {
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setKeywordTypeId(String keywordTypeId) {
+        this.keywordTypeId = keywordTypeId;
+    }
+
+    public void setKeywordTag(String keywordTag) {
+        this.keywordTag = keywordTag;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setStatusDesc(String statusDesc) {
+        this.statusDesc = statusDesc;
+    }
+
+    public void setStatAvgClick(String statAvgClick) {
+        this.statAvgClick = statAvgClick;
+    }
+
+    public void setStatTotalSpent(String statTotalSpent) {
+        this.statTotalSpent = statTotalSpent;
+    }
+
+    public void setStatTotalImpression(String statTotalImpression) {
+        this.statTotalImpression = statTotalImpression;
+    }
+
+    public void setStatTotalClick(String statTotalClick) {
+        this.statTotalClick = statTotalClick;
+    }
+
+    public void setStatTotalCtr(String statTotalCtr) {
+        this.statTotalCtr = statTotalCtr;
+    }
+
+    public void setStatTotalConversion(String statTotalConversion) {
+        this.statTotalConversion = statTotalConversion;
+    }
+
+    public void setPriceBidFmt(String priceBidFmt) {
+        this.priceBidFmt = priceBidFmt;
+    }
+
+    public void setLabelPerClick(String labelPerClick) {
+        this.labelPerClick = labelPerClick;
+    }
+
+    public void setKeywordTypeDesc(String keywordTypeDesc) {
+        this.keywordTypeDesc = keywordTypeDesc;
     }
 
     @Override
