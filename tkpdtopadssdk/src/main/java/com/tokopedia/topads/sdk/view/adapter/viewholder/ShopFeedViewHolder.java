@@ -125,6 +125,8 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
     }
 
     private void generateThumbnailImages(List<ImageProduct> imageProducts) {
+        imageContainerBig.removeAllViews();
+        imageContainerSmall.removeAllViews();
         for (int i = 0; i < 3; i++) {
             ImageProduct imgProduct = imageProducts.get(i);
             View view = LayoutInflater.from(context).inflate(R.layout.layout_shop_product_image_big, null);
