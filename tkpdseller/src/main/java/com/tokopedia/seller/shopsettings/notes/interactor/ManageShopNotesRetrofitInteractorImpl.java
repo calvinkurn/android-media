@@ -1,19 +1,15 @@
-package com.tokopedia.core.manage.shop.notes.interactor;
+package com.tokopedia.seller.shopsettings.notes.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.deposit.interactor.WithdrawRetrofitInteractorImpl;
-import com.tokopedia.core.deposit.model.WithdrawForm;
-import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetailResult;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 import com.tokopedia.core.network.apiservices.shop.MyShopNoteActService;
 import com.tokopedia.core.network.apiservices.shop.MyShopNoteService;
 import com.tokopedia.core.network.apiservices.shop.NotesService;
-import com.tokopedia.core.network.apiservices.transaction.DepositActService;
-import com.tokopedia.core.network.apiservices.transaction.DepositService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

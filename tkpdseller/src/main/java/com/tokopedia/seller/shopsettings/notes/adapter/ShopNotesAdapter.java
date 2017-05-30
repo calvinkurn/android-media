@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.shop.notes.adapter;
+package com.tokopedia.seller.shopsettings.notes.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,18 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by nisie on 10/26/16.
@@ -42,27 +37,23 @@ public class ShopNotesAdapter extends BaseLinearRecyclerViewAdapter {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.notes_name)
         TextView title;
-
-        @BindView(R2.id.delete_notes)
         ImageView deleteButton;
-
-        @BindView(R2.id.edit_notes)
         ImageView editButton;
-
-        @BindView(R2.id.main)
         View mainView;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            title = (TextView) itemView.findViewById(R.id.notes_name);
+            deleteButton = (ImageView) itemView.findViewById(R.id.delete_notes);
+            editButton = (ImageView) itemView.findViewById(R.id.edit_notes);
+            mainView = itemView.findViewById(R.id.main);
         }
     }
 
     private ArrayList<ShopNote> list;
     private final Context context;
-    ActionShopNotesListener listener;
+    private ActionShopNotesListener listener;
 
     public ShopNotesAdapter(Context context, ActionShopNotesListener listener) {
         this.context = context;

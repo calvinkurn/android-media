@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.shop.notes.presenter;
+package com.tokopedia.seller.shopsettings.notes.presenter;
 
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 

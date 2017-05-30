@@ -1,11 +1,11 @@
-package com.tokopedia.core.manage.shop.notes.listener;
+package com.tokopedia.seller.shopsettings.notes.listener;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.widget.EditText;
 
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
+import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFormFragment;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetail;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.shop.notes.fragment;
+package com.tokopedia.seller.shopsettings.notes.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,29 +7,28 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.manage.shop.notes.adapter.ShopNotesAdapter;
-import com.tokopedia.core.manage.shop.notes.listener.ManageShopNotesView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopsettings.notes.adapter.ShopNotesAdapter;
+import com.tokopedia.seller.shopsettings.notes.listener.ManageShopNotesView;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
-import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesPresenter;
-import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesPresenterImpl;
+import com.tokopedia.seller.shopsettings.notes.presenter.ManageShopNotesPresenter;
+import com.tokopedia.seller.shopsettings.notes.presenter.ManageShopNotesPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.shopinfo.ShopNotesDetail;
 import com.tokopedia.core.util.RefreshHandler;
-
-import butterknife.BindView;
 
 /**
  * Created by nisie on 10/26/16.
@@ -37,11 +36,7 @@ import butterknife.BindView;
 
 public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNotesPresenter>
         implements ManageShopNotesView {
-
-    @BindView(R2.id.shop_notes)
     RecyclerView shopNotes;
-
-    @BindView(R2.id.swipe_refresh_layout)
     SwipeToRefresh swipeToRefresh;
 
     ShopNotesAdapter adapter;
@@ -51,6 +46,14 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
 
     public interface OnActionShopNoteListener {
         void onAddShopNote(boolean isReturnablePolicy, ShopNote isEdit);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        shopNotes = (RecyclerView) view.findViewById(R.id.shop_notes);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        return view;
     }
 
     public static ManageShopNotesFragment createInstance(Bundle extras) {
@@ -87,7 +90,7 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.manage_people_notes, menu);
+        inflater.inflate(R.menu.manage_shop_notes, menu);
     }
 
     @Override

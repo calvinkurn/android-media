@@ -19,7 +19,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;

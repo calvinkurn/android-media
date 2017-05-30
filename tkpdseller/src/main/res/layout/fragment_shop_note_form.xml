@@ -6,7 +6,7 @@
     android:background="@color/tkpd_bg_color"
     android:gravity="center_horizontal"
     android:padding="@dimen/padding_vs"
-    tools:context=".manage.shop.notes.activity.ManageShopNotesActivity">
+    tools:context=".shopsettings.notes.activity.ManageShopNotesActivity">
 
     <ScrollView
         android:layout_width="match_parent"

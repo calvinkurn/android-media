@@ -142,11 +142,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity"
-            android:label="@string/title_activity_manage_shop_notes"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name="com.tokopedia.core.ManagePeople"
             android:label="@string/title_activity_manage_people"
             android:screenOrientation="portrait" />

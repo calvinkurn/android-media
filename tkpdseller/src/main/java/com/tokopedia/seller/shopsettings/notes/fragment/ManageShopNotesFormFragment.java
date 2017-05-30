@@ -1,30 +1,29 @@
-package com.tokopedia.core.manage.shop.notes.fragment;
+package com.tokopedia.seller.shopsettings.notes.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.manage.shop.notes.listener.ManageShopNoteFormView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.notes.listener.ManageShopNoteFormView;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetail;
-import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesFormPresenter;
-import com.tokopedia.core.manage.shop.notes.presenter.ManageShopNotesFormPresenterImpl;
+import com.tokopedia.seller.shopsettings.notes.presenter.ManageShopNotesFormPresenter;
+import com.tokopedia.seller.shopsettings.notes.presenter.ManageShopNotesFormPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-
-import butterknife.BindView;
 
 /**
  * Created by nisie on 10/26/16.
@@ -32,19 +31,10 @@ import butterknife.BindView;
 public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageShopNotesFormPresenter>
         implements ManageShopNoteFormView {
 
-    @BindView(R2.id.layout_note_name)
     TextInputLayout layoutNoteName;
-
-    @BindView(R2.id.layout_note_content)
     TextInputLayout layoutNoteContent;
-
-    @BindView(R2.id.note_name)
     EditText noteName;
-
-    @BindView(R2.id.note_content)
     EditText noteContent;
-
-    @BindView(R2.id.save_button)
     Button saveButton;
 
     TkpdProgressDialog progressDialog;
@@ -57,6 +47,17 @@ public class ManageShopNotesFormFragment extends BasePresenterFragment<ManageSho
         ManageShopNotesFormFragment fragment = new ManageShopNotesFormFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view =  super.onCreateView(inflater, container, savedInstanceState);
+        layoutNoteName = (TextInputLayout) view.findViewById(R.id.layout_note_name);
+        layoutNoteContent = (TextInputLayout) view.findViewById(R.id.layout_note_content);
+        noteName = (EditText) view.findViewById(R.id.note_name);
+        noteContent = (EditText) view.findViewById(R.id.note_content);
+        saveButton = (Button) view.findViewById(R.id.save_button);
+        return view;
     }
 
     FinishActionListener listener;

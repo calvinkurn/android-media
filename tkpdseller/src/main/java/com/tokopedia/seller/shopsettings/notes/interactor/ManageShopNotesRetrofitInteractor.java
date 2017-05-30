@@ -1,10 +1,8 @@
-package com.tokopedia.core.manage.shop.notes.interactor;
+package com.tokopedia.seller.shopsettings.notes.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.deposit.model.WithdrawForm;
-import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetailResult;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 

@@ -1,18 +1,17 @@
-package com.tokopedia.core.manage.shop.notes.presenter;
+package com.tokopedia.seller.shopsettings.notes.presenter;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.manage.shop.notes.interactor.ManageShopNotesRetrofitInteractor;
-import com.tokopedia.core.manage.shop.notes.interactor.ManageShopNotesRetrofitInteractorImpl;
-import com.tokopedia.core.manage.shop.notes.listener.ManageShopNoteFormView;
+import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
+import com.tokopedia.seller.shopsettings.notes.interactor.ManageShopNotesRetrofitInteractor;
+import com.tokopedia.seller.shopsettings.notes.interactor.ManageShopNotesRetrofitInteractorImpl;
+import com.tokopedia.seller.shopsettings.notes.listener.ManageShopNoteFormView;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 import com.tokopedia.core.manage.shop.notes.model.ShopNoteDetailResult;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by nisie on 10/26/16.

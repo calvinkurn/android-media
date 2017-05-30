@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.shop.notes.presenter;
+package com.tokopedia.seller.shopsettings.notes.presenter;
 
 /**
  * Created by nisie on 10/26/16.

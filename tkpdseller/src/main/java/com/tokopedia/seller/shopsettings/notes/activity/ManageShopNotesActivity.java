@@ -1,4 +1,4 @@
-package com.tokopedia.core.manage.shop.notes.activity;
+package com.tokopedia.seller.shopsettings.notes.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -8,8 +8,8 @@ import android.os.Bundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFormFragment;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFragment;
+import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFormFragment;
+import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 
 /**

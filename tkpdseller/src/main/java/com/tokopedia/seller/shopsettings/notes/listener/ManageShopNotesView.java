@@ -1,9 +1,9 @@
-package com.tokopedia.core.manage.shop.notes.listener;
+package com.tokopedia.seller.shopsettings.notes.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.core.manage.shop.notes.adapter.ShopNotesAdapter;
-import com.tokopedia.core.manage.shop.notes.fragment.ManageShopNotesFragment;
+import com.tokopedia.seller.shopsettings.notes.adapter.ShopNotesAdapter;
+import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.core.manage.shop.notes.model.ShopNotesResult;
 
 /**
