@@ -33,23 +33,11 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
     InboxTalkResultReceiver mReceiver;
 
     @DeepLink(Constants.Applinks.PRODUCT_TALK)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        Intent detailsIntent = new Intent(context, TalkProductActivity.class).putExtras(extras);
-        detailsIntent.putExtras(extras);
-        Intent parentIntent = new Intent(context, ProductInfoActivity.class);
-        parentIntent.putExtras(extras);
-        String productId = extras.getString(ProductDetailRouter.EXTRA_PRODUCT_ID);
-        parentIntent.putExtras(extras);
-        parentIntent.putExtra(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
-        if (extras.getString(DeepLink.URI) != null) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            detailsIntent.setData(uri.build());
-            parentIntent.setData(uri.build());
-        }
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(detailsIntent);
-        return taskStackBuilder;
+    public static Intent getCallingTaskStack(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, TalkProductActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
     }
 
     @Override
