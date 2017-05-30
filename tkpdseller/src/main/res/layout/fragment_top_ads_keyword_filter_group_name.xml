@@ -20,7 +20,9 @@
             android:maxLines="1"
             android:paddingEnd="24dp"
             android:paddingRight="24dp"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="@color/wholesale_color"
+            android:textSize="@dimen/font_medium" />
 
         <ImageView
             android:id="@+id/group_filter_search_icon"

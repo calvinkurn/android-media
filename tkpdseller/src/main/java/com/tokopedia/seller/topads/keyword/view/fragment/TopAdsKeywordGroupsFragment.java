@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -43,13 +42,30 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private EditText groupFilterSearch;
-    private RecyclerView groupFilterRecyclerView;
     private GroupAd selection;
+
+    private GroupAd allGroup = new GroupAd();
+
     /**
      * Sign for title filter list
      */
     private boolean active;
     private ImageView groupFilterImage;
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
+        }
+    };
 
     public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
         TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
@@ -90,6 +106,13 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
         if (savedInstanceState == null && getArguments() != null) {
             selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
         }
+
+        allGroup.setId(Long.MIN_VALUE);
+        allGroup.setName(getString(R.string.top_ads_keyword__all_group));
+
+        if (selection == null) {
+            selection = allGroup;
+        }
     }
 
     @Nullable
@@ -99,27 +122,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
         View view = super.onCreateView(inflater, container, savedInstanceState);
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
-
-        groupFilterSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                if (s.length() > 0) {
-                    groupFilterImage.setImageResource(R.drawable.ic_close_green_14x14);
-                } else {
-                    groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                topAdsKeywordNewChooseGroupPresenter.searchGroupName(editable.toString());
-            }
-        });
+        groupFilterSearch.addTextChangedListener(textWatcher);
         return view;
     }
 
@@ -157,6 +160,9 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
+        if (groupAds != null && groupAds.size() >= 0) {
+            groupAds.add(0, allGroup);
+        }
         onSearchAdLoaded(groupAds, groupAds.size());
     }
 
@@ -179,7 +185,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public Intent addResult(Intent intent) {
-        if (selection != null)
+        if (selection != null && !selection.equals(allGroup))
             intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, selection);
 
         return intent;
@@ -202,8 +208,25 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     public void notifySelect(GroupAd groupAd, int adapterPosition) {
-
         this.selection = groupAd;
+        groupFilterSearch.removeTextChangedListener(textWatcher);
+        groupFilterSearch.setText(groupAd.getName());
+        groupFilterSearch.setFocusable(false);
+        groupFilterSearch.setEnabled(false);
+        groupFilterImage.setImageResource(R.drawable.ic_close_green_14x14);
+        recyclerView.setVisibility(View.GONE);
+        groupFilterImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                groupFilterSearch.setFocusableInTouchMode(true);
+                groupFilterSearch.setEnabled(true);
+                groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
+                groupFilterImage.setOnClickListener(null);
+                groupFilterSearch.addTextChangedListener(textWatcher);
+                groupFilterSearch.setText("");
+                recyclerView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
