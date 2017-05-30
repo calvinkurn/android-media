@@ -4,11 +4,11 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.topads.data.model.request.DataRequest;
 import com.tokopedia.seller.topads.data.model.response.DataResponse;
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.seller.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.seller.topads.keyword.data.mapper.KeywordAddDomainDataMapper;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.Datum;
-import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
 import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 
@@ -37,7 +37,7 @@ public class DashboardKeywordCloud {
         return keywordApi.getDashboardKeyword(requestParams.getParamsAllValueInString());
     }
 
-    public Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDomainModel>>>> editTopAdsKeywordDetail(TopAdsKeywordEditDetailInputDataModel dataModel) {
+    public Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>>> editTopAdsKeywordDetail(TopAdsKeywordEditDetailInputDataModel dataModel) {
         return keywordApi.editTopAdsKeywordDetail(getEditTopAdsKeywordDetailModel(dataModel));
     }
 

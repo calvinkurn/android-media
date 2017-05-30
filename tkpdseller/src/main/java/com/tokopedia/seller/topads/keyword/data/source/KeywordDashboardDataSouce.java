@@ -23,15 +23,16 @@ public class KeywordDashboardDataSouce {
 
     private DashboardKeywordCloud dashboardKeywordCloud;
     private KeywordDashboardMapper keywordDashboardMapper;
-    private TopAdsKeywordEditDetailDataMapper topAdsKeywordEditDetailDataMapper;
+    private final TopAdsKeywordEditDetailDataMapper topAdsKeywordEditDetailDataMapper;
 
     @Inject
     public KeywordDashboardDataSouce(
             DashboardKeywordCloud dashboardKeywordCloud,
-            KeywordDashboardMapper keywordDashboardMapper
-    ) {
+            KeywordDashboardMapper keywordDashboardMapper,
+            TopAdsKeywordEditDetailDataMapper topAdsKeywordEditDetailDataMapper) {
         this.dashboardKeywordCloud = dashboardKeywordCloud;
         this.keywordDashboardMapper = keywordDashboardMapper;
+        this.topAdsKeywordEditDetailDataMapper = topAdsKeywordEditDetailDataMapper;
     }
 
     public Observable<KeywordDashboardDomain> getKeywordDashboard(RequestParams requestParams) {
