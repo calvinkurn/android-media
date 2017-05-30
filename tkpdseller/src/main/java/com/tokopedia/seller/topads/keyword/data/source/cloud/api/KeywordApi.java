@@ -33,7 +33,6 @@ public interface KeywordApi {
     @GET("/v1.1/dashboard/keywords")
     Observable<PageDataResponse<List<Datum>>> getDashboardKeyword(@QueryMap Map<String, String> param);
 
-    @FormUrlEncoded
     @POST("/v2/promo/keyword")
     Observable<PageDataResponse<List<KeywordAddResponseDatum>>> addKeyword(@Body AddKeywordRequest addKeywordRequest);
 

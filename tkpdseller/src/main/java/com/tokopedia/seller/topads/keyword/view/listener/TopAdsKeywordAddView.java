@@ -13,5 +13,5 @@ import java.util.List;
 
 public interface TopAdsKeywordAddView extends CustomerView {
     void onSuccessSaveKeyword();
-    void onFailedSaveKeyword();
+    void onFailedSaveKeyword(Throwable e);
 }

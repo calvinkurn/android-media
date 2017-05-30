@@ -14,17 +14,6 @@ import com.tokopedia.seller.topads.view.model.TypeBasedModel;
 public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
 
     public static final int TYPE = 19294123;
-    public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {
-        @Override
-        public GroupAd createFromParcel(Parcel source) {
-            return new GroupAd(source);
-        }
-
-        @Override
-        public GroupAd[] newArray(int size) {
-            return new GroupAd[size];
-        }
-    };
     @SerializedName("group_id")
     @Expose
     private long id;
@@ -103,39 +92,33 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
     @SerializedName("total_item")
     @Expose
     private int totalItem;
+    @SerializedName("positive_count")
+    @Expose
+    private int positiveCount;
+
+    public int getPositiveCount() {
+        return positiveCount;
+    }
+
+    public void setPositiveCount(int positiveCount) {
+        this.positiveCount = positiveCount;
+    }
+
+    public int getNegativeCount() {
+        return negativeCount;
+    }
+
+    public void setNegativeCount(int negativeCount) {
+        this.negativeCount = negativeCount;
+    }
+
+    @SerializedName("negative_count")
+    @Expose
+
+    private int negativeCount;
 
     public GroupAd() {
         super(TYPE);
-    }
-
-    protected GroupAd(Parcel in) {
-        super(TYPE);
-        this.id = in.readLong();
-        this.status = in.readInt();
-        this.statusDesc = in.readString();
-        this.statusToogle = in.readInt();
-        this.priceBidFmt = in.readString();
-        this.priceDailyFmt = in.readString();
-        this.priceDailySpentFmt = in.readString();
-        this.priceDailyBar = in.readString();
-        this.editable = in.readInt();
-        this.startDate = in.readString();
-        this.startTime = in.readString();
-        this.endDate = in.readString();
-        this.endTime = in.readString();
-        this.statAvgClick = in.readString();
-        this.statTotalSpent = in.readString();
-        this.statTotalImpression = in.readString();
-        this.statTotalClick = in.readString();
-        this.statTotalCtr = in.readString();
-        this.statTotalConversion = in.readString();
-        this.labelEdit = in.readString();
-        this.labelPerClick = in.readString();
-        this.labelOf = in.readString();
-        this.name = in.readString();
-        this.adModerated = in.readInt();
-        this.adModeratedReason = in.readString();
-        this.totalItem = in.readInt();
     }
 
     @Override
@@ -297,6 +280,8 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
         dest.writeInt(this.adModerated);
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
+        dest.writeInt(this.positiveCount);
+        dest.writeInt(this.negativeCount);
     }
 
     @Override
@@ -317,4 +302,48 @@ public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
+
+    protected GroupAd(Parcel in) {
+        this();
+        this.id = in.readLong();
+        this.status = in.readInt();
+        this.statusDesc = in.readString();
+        this.statusToogle = in.readInt();
+        this.priceBidFmt = in.readString();
+        this.priceDailyFmt = in.readString();
+        this.priceDailySpentFmt = in.readString();
+        this.priceDailyBar = in.readString();
+        this.editable = in.readInt();
+        this.startDate = in.readString();
+        this.startTime = in.readString();
+        this.endDate = in.readString();
+        this.endTime = in.readString();
+        this.statAvgClick = in.readString();
+        this.statTotalSpent = in.readString();
+        this.statTotalImpression = in.readString();
+        this.statTotalClick = in.readString();
+        this.statTotalCtr = in.readString();
+        this.statTotalConversion = in.readString();
+        this.labelEdit = in.readString();
+        this.labelPerClick = in.readString();
+        this.labelOf = in.readString();
+        this.name = in.readString();
+        this.adModerated = in.readInt();
+        this.adModeratedReason = in.readString();
+        this.totalItem = in.readInt();
+        this.positiveCount = in.readInt();
+        this.negativeCount = in.readInt();
+    }
+
+    public static final Creator<GroupAd> CREATOR = new Creator<GroupAd>() {
+        @Override
+        public GroupAd createFromParcel(Parcel source) {
+            return new GroupAd(source);
+        }
+
+        @Override
+        public GroupAd[] newArray(int size) {
+            return new GroupAd[size];
+        }
+    };
 }

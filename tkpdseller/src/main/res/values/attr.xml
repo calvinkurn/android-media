@@ -168,6 +168,7 @@
         <attr name="spinner_entries" format="reference"/>
         <attr name="spinner_values" format="reference"/>
         <attr name="spinner_enabled" format="boolean"/>
+        <attr name="spinner_text_size" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="DefaultValueSpinnerTextView">
         <attr name="default_value" format="string"/>

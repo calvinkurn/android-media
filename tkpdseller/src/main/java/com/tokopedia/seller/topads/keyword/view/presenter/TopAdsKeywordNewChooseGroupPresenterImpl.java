@@ -63,6 +63,7 @@ public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewCh
             @Override
             public void onNext(String s) {
                 // remove checking cause param generator already handle it.
+                topAdsSearchGroupAdsNameUseCase.unsubscribe();
                 topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(s)
                         , getSubscriberSearchGroupName());
             }

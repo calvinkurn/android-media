@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,16 +16,38 @@ import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordNewChooseG
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailEditShopFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDetailNewGroupFragment;
 
+import java.util.ArrayList;
+
 /**
  * Created by nathan on 5/17/17.
  */
 
 public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements HasComponent<AppComponent> {
 
-    public static final String TAG_FRAGMENT = TopAdsDetailEditShopFragment.class.getSimpleName();
+    public static final String TAG = TopAdsKeywordNewChooseGroupActivity.class.getSimpleName();
 
-    public static Intent createInstance(Context context){
+    private static final String EXTRA_IS_POSITIVE = "is_pos";
+
+    private boolean isPositive;
+
+    public static void start(Activity activity, int requestCode,
+                             boolean isPositive) {
+        Intent intent = createIntent(activity, isPositive);
+        activity.startActivityForResult(intent, requestCode);
+    }
+
+    public static void start(Fragment fragment, Context context, int requestCode,
+                             boolean isPositive) {
+        Intent intent = createIntent(context, isPositive);
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    private static Intent createIntent(Context context,
+                                       boolean isPositive) {
         Intent intent = new Intent(context, TopAdsKeywordNewChooseGroupActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_IS_POSITIVE, isPositive);
+        intent.putExtras(bundle);
         return intent;
     }
 
@@ -32,6 +55,14 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_top_ads_edit_promo);
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE);
+        } else {
+            // TODO remove, just for test
+            isPositive = true;
+        }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -39,17 +70,13 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements
     }
 
     private void setupFragment() {
-        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
-                .replace(R.id.container, getFragment(), TAG_FRAGMENT)
-                .commit();
-    }
-
-    protected Fragment getFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG_FRAGMENT);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TopAdsKeywordNewChooseGroupFragment.TAG);
         if(fragment == null){
-            fragment = TopAdsKeywordNewChooseGroupFragment.createInstance();
+            fragment = TopAdsKeywordNewChooseGroupFragment.newInstance(isPositive);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment, TopAdsKeywordNewChooseGroupFragment.TAG)
+                    .commit();
         }
-        return fragment;
     }
 
     @Override

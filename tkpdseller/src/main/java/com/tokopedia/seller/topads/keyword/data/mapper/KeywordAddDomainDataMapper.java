@@ -24,6 +24,7 @@ public class KeywordAddDomainDataMapper
 
     public static final String DEFAULT_TOGGLE = "1";
     public static final String DEFAULT_STATUS = "1";
+    public static final String DEFAULT_SOURCE = "dashboard_user_add_keyword_positive";
 
     @Inject
     public KeywordAddDomainDataMapper() {
@@ -59,6 +60,7 @@ public class KeywordAddDomainDataMapper
      groupId         <= groupId
      toggle          <= 1
      status          <= 1
+     source          <= "android"
      */
 
     public static AddKeywordRequest convertDomainToRequestData(AddKeywordDomainModel addKeywordDomainModel){
@@ -74,6 +76,7 @@ public class KeywordAddDomainDataMapper
             datum.setShopId(domainModel.getShopId());
             datum.setToggle(DEFAULT_TOGGLE);
             datum.setStatus(DEFAULT_STATUS);
+            datum.setSource(DEFAULT_SOURCE);
             datumList.add(datum);
         }
         addKeywordRequest.setData(datumList);
