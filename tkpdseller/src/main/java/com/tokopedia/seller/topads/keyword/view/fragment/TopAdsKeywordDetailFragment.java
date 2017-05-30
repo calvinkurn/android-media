@@ -30,6 +30,7 @@ import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
@@ -239,10 +240,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     private void refreshAd() {
         if (ad != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), ad.getId());
+                    getDatePickerPresenter().getEndDate(), ad.getId(), isPositive());
         }else{
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), adId);
+                    getDatePickerPresenter().getEndDate(), adId, isPositive());
         }
     }
 
@@ -400,5 +401,9 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     public void onDestroy() {
         super.onDestroy();
         topadsKeywordDetailPresenter.unSubscribe();
+    }
+
+    public int isPositive() {
+        return KeywordTypeDef.KEYWORD_TYPE_BROAD;
     }
 }

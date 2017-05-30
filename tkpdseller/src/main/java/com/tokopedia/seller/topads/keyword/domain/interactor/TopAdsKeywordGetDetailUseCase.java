@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.data.mapper.TopAdsKeywordDetailMapperToDomain;
 import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordGetDetailRepository;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDetailDomain;
@@ -43,11 +44,12 @@ public class TopAdsKeywordGetDetailUseCase extends UseCase<KeywordDetailDomain> 
                 .map(topAdsKeywordDetailMapperToDomain);
     }
 
-    public static RequestParams createRequestParams(Date startDate, Date endDate, String adId){
+    public static RequestParams createRequestParams(Date startDate, Date endDate, String adId, int isPositive){
         String startDateText = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate);
         String endDateText = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate);
 
         RequestParams requestParams = RequestParams.create();
+        requestParams.putString(KeywordTypeDef.IS_POSITIVE, Integer.toString(isPositive));
         requestParams.putString(TopAdsNetworkConstant.PARAM_START_DATE, startDateText);
         requestParams.putString(TopAdsNetworkConstant.PARAM_END_DATE, endDateText);
         requestParams.putString(TopAdsNetworkConstant.PARAM_AD_ID, adId);
