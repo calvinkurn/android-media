@@ -20,6 +20,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.review.fragment.ProductReviewFragment;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,10 @@ public class ReputationProduct extends TActivity {
         Intent detailsIntent = new Intent(context, ReputationProduct.class).putExtras(extras);
         detailsIntent.putExtras(extras);
         Intent parentIntent = new Intent(context, ProductInfoActivity.class);
+        String productId = extras.getString(ProductDetailRouter.EXTRA_PRODUCT_ID);
         parentIntent.putExtras(extras);
+        parentIntent.putExtra(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
+
         if (extras.getString(DeepLink.URI) != null) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             detailsIntent.setData(uri.build());

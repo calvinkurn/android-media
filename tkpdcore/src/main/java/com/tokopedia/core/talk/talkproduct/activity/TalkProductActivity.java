@@ -13,7 +13,9 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
@@ -30,12 +32,15 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
 
     InboxTalkResultReceiver mReceiver;
 
-    @DeepLink("tokopedia://product/{product_id}/talk")
+    @DeepLink(Constants.Applinks.PRODUCT_TALK)
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent detailsIntent = new Intent(context, TalkProductActivity.class).putExtras(extras);
         detailsIntent.putExtras(extras);
         Intent parentIntent = new Intent(context, ProductInfoActivity.class);
         parentIntent.putExtras(extras);
+        String productId = extras.getString(ProductDetailRouter.EXTRA_PRODUCT_ID);
+        parentIntent.putExtras(extras);
+        parentIntent.putExtra(ProductDetailRouter.EXTRA_PRODUCT_ID, productId);
         if (extras.getString(DeepLink.URI) != null) {
             Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
             detailsIntent.setData(uri.build());

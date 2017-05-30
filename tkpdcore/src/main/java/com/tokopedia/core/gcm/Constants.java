@@ -56,6 +56,7 @@ public interface Constants {
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
+        String PURCHASE_HISTORY = "tokopedia://buyer/history";
         String CART = "tokopedia://cart";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -64,6 +65,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     }
 
     interface Settings {
