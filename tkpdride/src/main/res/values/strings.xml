@@ -111,5 +111,8 @@
     <string name="message_copied">Copied!</string>
     <string name="label_license_plate_number">License Plate Number</string>
     <string name="driver_detail_share_eta">Share Eta</string>
+    <string name="total_fare">Total Fare</string>
+    <string name="label_discount">Discount</string>
+    <string name="label_cashback">Cashback</string>
     <string name="open_map_done">DONE</string>
 </resources>
