@@ -192,29 +192,14 @@ public class ManagePeopleBankFragment extends BasePresenterFragment<ManagePeople
 
     @Override
     public void onSuccessEditDefaultBankAccount(Bundle resultData) {
-        finishLoading();
-        setActionsEnabled(true);
-        final ActSettingBankPass pass = resultData.getParcelable(PARAM_DEFAULT_BANK_ACCOUNT);
-
-        if (pass != null && !resultData.getString(EXTRA_SUCCESS, "").equals("")) {
-            SnackbarManager.make(getActivity(), resultData.getString(EXTRA_SUCCESS, ""), Snackbar.LENGTH_LONG).show();
-            adapter.setDefaultBank(pass.getPosition());
-        }
+        presenter.initData();
     }
 
     @Override
     public void onSuccessDeleteBankAccount(Bundle resultData) {
-        finishLoading();
-        setActionsEnabled(true);
-        final ActSettingBankPass pass = resultData.getParcelable(PARAM_DELETE_BANK_ACCOUNT);
 
-        if (pass != null && !resultData.getString(EXTRA_SUCCESS, "").equals("")) {
-            SnackbarManager.make(getActivity(), resultData.getString(EXTRA_SUCCESS, ""), Snackbar.LENGTH_LONG).show();
-            adapter.getList().remove(pass.getPosition());
-            if (adapter.getList().size() == 0)
-                adapter.showEmpty(true);
-            adapter.notifyDataSetChanged();
-        }
+        presenter.initData();
+
     }
 
     @Override
