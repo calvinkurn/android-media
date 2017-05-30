@@ -7,10 +7,8 @@ import android.view.ViewGroup;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.view.adapter.viewholder.TopAdsKeywordGroupViewHolder;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,11 +28,6 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd
 
     public int getDataSize() {
         return data.size();
-    }
-
-    @Override
-    public int getItemCount() {
-        return data.size() + super.getItemCount();
     }
 
     @Override
@@ -84,7 +77,7 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsBaseListAdapter<GroupAd
     }
 
     public interface Listener {
-        void notifySelect(GroupAd groupAd);
+        void notifySelect(GroupAd groupAd, int adapterPosition);
 
         boolean isSelection(GroupAd groupAd);
     }
