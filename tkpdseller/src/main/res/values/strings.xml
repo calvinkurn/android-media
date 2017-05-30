@@ -575,6 +575,10 @@
     <string name="top_ads_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
     <string name="top_ads_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
     <string name="top_ads_exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
+    <string name="top_ads_keyword_type_hint">Kata Kunci</string>
+    <string name="top_ads_title_keyword_edit_keyword">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
 
     <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
     <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
