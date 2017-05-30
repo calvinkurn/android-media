@@ -109,6 +109,16 @@ public class CategoryProductStyle1View extends
     }
 
     @Override
+    protected void onInstantCheckoutUnChecked() {
+        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+    }
+
+    @Override
+    protected void onInstantCheckoutChecked() {
+        btnBuyDigital.setText(context.getString(R.string.label_btn_pay_digital));
+    }
+
+    @Override
     public void renderClientNumberFromContact(String clientNumber) {
         this.clientNumberInputView.setText(clientNumber);
     }
@@ -145,6 +155,7 @@ public class CategoryProductStyle1View extends
     private void renderInstantCheckoutOption() {
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
+            cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);

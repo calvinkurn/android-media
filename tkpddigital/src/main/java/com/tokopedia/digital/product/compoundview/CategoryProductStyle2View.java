@@ -107,6 +107,16 @@ public class CategoryProductStyle2View extends
     }
 
     @Override
+    protected void onInstantCheckoutUnChecked() {
+        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+    }
+
+    @Override
+    protected void onInstantCheckoutChecked() {
+        btnBuyDigital.setText(context.getString(R.string.label_btn_pay_digital));
+    }
+
+    @Override
     public boolean isInstantCheckoutChecked() {
         return cbInstantCheckout.isChecked();
     }
@@ -133,6 +143,7 @@ public class CategoryProductStyle2View extends
     private void renderInstantCheckoutOptions() {
         if (data.isInstantCheckout()) {
             cbInstantCheckout.setVisibility(VISIBLE);
+            cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
         } else {
             cbInstantCheckout.setChecked(false);
             cbInstantCheckout.setVisibility(GONE);

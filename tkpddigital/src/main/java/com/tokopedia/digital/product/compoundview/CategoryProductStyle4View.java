@@ -53,6 +53,16 @@ public class CategoryProductStyle4View extends
     }
 
     @Override
+    protected void onInstantCheckoutUnChecked() {
+
+    }
+
+    @Override
+    protected void onInstantCheckoutChecked() {
+
+    }
+
+    @Override
     public void renderClientNumberFromContact(String clientNumber) {
 
     }

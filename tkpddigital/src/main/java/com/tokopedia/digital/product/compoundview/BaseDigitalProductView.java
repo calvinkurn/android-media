@@ -1,8 +1,10 @@
 package com.tokopedia.digital.product.compoundview;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -96,6 +98,16 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         }
     }
 
+    @NonNull
+    protected CompoundButton.OnCheckedChangeListener getInstantCheckoutChangeListener() {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) onInstantCheckoutChecked();
+                else onInstantCheckoutUnChecked();
+            }
+        };
+    }
 
     protected abstract void onCreateView();
 
@@ -106,6 +118,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     protected abstract void onUpdateSelectedProductData();
 
     protected abstract void onUpdateSelectedOperatorData();
+
+    protected abstract void onInstantCheckoutUnChecked();
+
+    protected abstract void onInstantCheckoutChecked();
 
     public abstract void renderClientNumberFromContact(String clientNumber);
 
