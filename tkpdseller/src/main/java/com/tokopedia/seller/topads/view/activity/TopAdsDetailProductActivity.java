@@ -2,8 +2,8 @@ package com.tokopedia.seller.topads.view.activity;
 
 import android.graphics.Color;
 import android.os.Build;
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -40,11 +40,11 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
             ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
             adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
         }
-        Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(TAG);
         if(fragment == null){
             fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
         }
-        getFragmentManager().beginTransaction().disallowAddToBackStack()
+        getSupportFragmentManager().beginTransaction().disallowAddToBackStack()
                 .replace(R.id.container, fragment,
                         TAG)
                 .commit();
@@ -73,7 +73,7 @@ public class TopAdsDetailProductActivity extends TActivity implements TopAdsDeta
         }
 
         final TopAdsDetailProductFragment topAdsDetailProductFragment =
-                (TopAdsDetailProductFragment) getFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
+                (TopAdsDetailProductFragment) getSupportFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
 
         if (topAdsDetailProductFragment == null) {
             return;

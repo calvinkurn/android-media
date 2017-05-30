@@ -1,5 +1,6 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsAdListFragment<T> {
+public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsBaseListFragment<T> {
 
     public static final int REQUEST_CODE_FILTER_KEYWORD = 21;
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;
@@ -30,6 +31,10 @@ public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListP
             filters.putAll(parseFilter(resultCode, intent));
             searchAd(START_PAGE);
             updateEmptyViewNoResult();
+        } else if (requestCode == REQUEST_CODE_CREATE_KEYWORD){
+            if (resultCode == Activity.RESULT_OK) {
+                onSearchChanged(null);
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordAddUseCase;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordAddView;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
@@ -33,6 +34,35 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
     @Inject
     public TopAdsKeywordAddPresenterImpl(KeywordAddUseCase keywordAddUseCase) {
         this.keywordAddUseCase = keywordAddUseCase;
+    }
+
+    public void addKeyword (String groupId,
+                            int keywordType,
+                            ArrayList<String> keywordList){
+        keywordAddUseCase.execute(
+                KeywordAddUseCase.createRequestParam(groupId, keywordType, keywordList),
+                getAddKeywordSubscriber());
+    }
+
+    private Subscriber<AddKeywordDomainModel> getAddKeywordSubscriber(){
+        return new Subscriber<AddKeywordDomainModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onFailedSaveKeyword(e);
+                }
+            }
+
+            @Override
+            public void onNext(AddKeywordDomainModel addKeywordDomainModel) {
+                getView().onSuccessSaveKeyword();
+            }
+        };
     }
 
     public void unsubscribe(){

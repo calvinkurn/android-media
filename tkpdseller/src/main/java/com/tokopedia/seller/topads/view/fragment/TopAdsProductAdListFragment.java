@@ -1,8 +1,8 @@
 package com.tokopedia.seller.topads.view.fragment;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.R;
@@ -46,7 +46,7 @@ public class TopAdsProductAdListFragment extends TopAdsAdListFragment<TopAdsProd
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsProductAdListPresenterImpl(context, this);
+        presenter = new TopAdsProductAdListPresenterImpl(getActivity(), this);
     }
 
     @Override
