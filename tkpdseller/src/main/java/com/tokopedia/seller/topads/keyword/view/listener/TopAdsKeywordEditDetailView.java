@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/26/17.
@@ -10,5 +10,5 @@ import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailVie
 public interface TopAdsKeywordEditDetailView extends CustomerView {
     void showError(String detail);
 
-    void onSuccessEditTopAdsKeywordDetail(TopAdsKeywordEditDetailViewModel viewModel);
+    void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel);
 }

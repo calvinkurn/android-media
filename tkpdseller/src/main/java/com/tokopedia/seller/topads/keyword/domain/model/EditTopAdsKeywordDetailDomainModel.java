@@ -5,27 +5,27 @@ package com.tokopedia.seller.topads.keyword.domain.model;
  */
 
 public class EditTopAdsKeywordDetailDomainModel {
-    private int keywordId;
+    private String keywordId;
 
     private String keywordTag;
 
-    private int keywordTypeId;
+    private String keywordTypeId;
 
-    private long groupId;
+    private String groupId;
 
     private String shopId;
 
-    private double priceBid;
+    private String priceBid;
 
     private int toggle;
 
     private String source;
 
-    public int getKeywordId() {
+    public String getKeywordId() {
         return keywordId;
     }
 
-    public void setKeywordId(int keywordId) {
+    public void setKeywordId(String keywordId) {
         this.keywordId = keywordId;
     }
 
@@ -37,19 +37,19 @@ public class EditTopAdsKeywordDetailDomainModel {
         this.keywordTag = keywordTag;
     }
 
-    public int getKeywordTypeId() {
+    public String getKeywordTypeId() {
         return keywordTypeId;
     }
 
-    public void setKeywordTypeId(int keywordTypeId) {
+    public void setKeywordTypeId(String keywordTypeId) {
         this.keywordTypeId = keywordTypeId;
     }
 
-    public long getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(long groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
@@ -61,11 +61,11 @@ public class EditTopAdsKeywordDetailDomainModel {
         this.shopId = shopId;
     }
 
-    public double getPriceBid() {
+    public String getPriceBid() {
         return priceBid;
     }
 
-    public void setPriceBid(double priceBid) {
+    public void setPriceBid(String priceBid) {
         this.priceBid = priceBid;
     }
 

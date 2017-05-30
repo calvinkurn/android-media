@@ -1,34 +1,46 @@
 package com.tokopedia.seller.topads.keyword.view.mapper;
 
+import android.text.TextUtils;
+
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
 import com.tokopedia.seller.topads.keyword.domain.model.TopAdsKeywordEditDetailInputDomainModel;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/29/17.
  */
 
 public class TopAdsKeywordEditDetailMapper {
-    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(TopAdsKeywordEditDetailViewModel viewModel) {
+    public static TopAdsKeywordEditDetailInputDomainModel mapViewToDomain(KeywordAd viewModel) {
         TopAdsKeywordEditDetailInputDomainModel domainModel = new TopAdsKeywordEditDetailInputDomainModel();
 
-        domainModel.setKeywordId(viewModel.getKeywordId());
+        domainModel.setKeywordId(viewModel.getId());
         domainModel.setGroupId(viewModel.getGroupId());
-        domainModel.setKeywordTag(viewModel.getKeywordTag());
+        domainModel.setKeywordTag(viewModel.getName());
         domainModel.setKeywordTypeId(viewModel.getKeywordTypeId());
-        domainModel.setPriceBid(viewModel.getPriceBid());
-        domainModel.setToggle(viewModel.getToggle());
+        domainModel.setPriceBid(getPrice(viewModel.getPriceBidFmt()));
+        domainModel.setToggle(viewModel.getStatusToogle());
 
         return domainModel;
     }
 
-    public static TopAdsKeywordEditDetailViewModel mapDomainToView(EditTopAdsKeywordDetailDomainModel domainModel) {
-        TopAdsKeywordEditDetailViewModel viewModel = new TopAdsKeywordEditDetailViewModel();
-        viewModel.setToggle(domainModel.getToggle());
+    private static double getPrice(String price) {
+        String valueString = CurrencyFormatHelper
+                .removeCurrencyPrefix(price);
+        valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
+        if (TextUtils.isEmpty(valueString)) {
+            return 0;
+        }
+        return Double.parseDouble(valueString);
+    }
+
+    public static KeywordAd mapDomainToView(EditTopAdsKeywordDetailDomainModel domainModel) {
+        KeywordAd viewModel = new KeywordAd();
         viewModel.setKeywordTypeId(domainModel.getKeywordTypeId());
-        viewModel.setPriceBid(domainModel.getPriceBid());
+        viewModel.setPriceBidFmt(domainModel.getPriceBid());
         viewModel.setGroupId(domainModel.getGroupId());
-        viewModel.setKeywordId(domainModel.getKeywordId());
+        viewModel.setId(domainModel.getKeywordId());
         viewModel.setKeywordTag(domainModel.getKeywordTag());
         return viewModel;
     }

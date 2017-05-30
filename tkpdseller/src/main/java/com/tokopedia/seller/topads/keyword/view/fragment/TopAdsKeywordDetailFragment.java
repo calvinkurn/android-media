@@ -33,6 +33,7 @@ import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailActivity;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
@@ -214,7 +215,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     }
 
     private void editAd() {
-
+        TopAdsKeywordEditDetailActivity.start(getActivity(), ad);
     }
 
     private void deleteAd() {

@@ -3,7 +3,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 import android.view.View;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/30/17.
@@ -11,7 +11,7 @@ import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailVie
 
 public class TopAdsKeywordEditDetailNegativeFragment extends TopAdsKeywordEditDetailFragment {
 
-    public static TopAdsKeywordEditDetailNegativeFragment createInstance(TopAdsKeywordEditDetailViewModel model) {
+    public static TopAdsKeywordEditDetailNegativeFragment createInstance(KeywordAd model) {
         TopAdsKeywordEditDetailNegativeFragment fragment = new TopAdsKeywordEditDetailNegativeFragment();
         fragment.setArguments(createArguments(model));
         return fragment;
