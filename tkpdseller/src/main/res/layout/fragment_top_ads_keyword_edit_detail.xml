@@ -50,6 +50,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <TextView
+                android:id="@+id/text_view_top_ads_max_price_description"
                 style="@style/TextView.TopAds.Body.Gray"
                 android:maxLines="3"
                 android:layout_margin="@dimen/top_ads_margin_layout"

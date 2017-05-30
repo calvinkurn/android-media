@@ -21,6 +21,9 @@ import rx.functions.Func1;
 
 public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>>, EditTopAdsKeywordDetailDomainModel> {
 
+    public static final String ON = "on";
+    public static final String OFF = "off";
+
     @Inject
     public TopAdsKeywordEditDetailDataMapper() {
     }
@@ -34,7 +37,11 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
         dataModel.setPriceBid(modelInput.getPriceBid());
         dataModel.setShopId(modelInput.getShopId());
         dataModel.setSource("dashboard_user_main");
-        dataModel.setToggle(modelInput.getToggle());
+        if (modelInput.getToggle() == 1) {
+            dataModel.setToggle(ON);
+        } else {
+            dataModel.setToggle(OFF);
+        }
         return dataModel;
     }
 
@@ -49,7 +56,8 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
         domainModel.setPriceBid(Double.parseDouble(dataModel.getPriceBid()));
         domainModel.setShopId(dataModel.getShopId());
         domainModel.setSource(dataModel.getSource());
-        domainModel.setToggle(Integer.parseInt(dataModel.getToggle()));
+        int toggle = (dataModel.getToggle().equals(ON)) ? 1 : 0;
+        domainModel.setToggle(toggle);
         return domainModel;
     }
 }

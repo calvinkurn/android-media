@@ -31,7 +31,7 @@ public class TopAdsKeywordEditDetailInputDataModel {
     private String source;
 
     @SerializedName("toggle")
-    private int toggle;
+    private String toggle;
 
     public String getKeywordId() {
         return keywordId;
@@ -89,11 +89,11 @@ public class TopAdsKeywordEditDetailInputDataModel {
         this.source = source;
     }
 
-    public int getToggle() {
+    public String getToggle() {
         return toggle;
     }
 
-    public void setToggle(int toggle) {
+    public void setToggle(String toggle) {
         this.toggle = toggle;
     }
 }
