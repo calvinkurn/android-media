@@ -30,6 +30,7 @@ public class TopAdsExtraConstant {
     public static final String EXTRA_FILTER_SELECTED_GROUP_ID = "EXTRA_FILTER_SELECTED_GROUP_ID";
     public static final String EXTRA_FILTER_CURRENT_GROUP_ID = "EXTRA_FILTER_CURRENT_GROUP_ID";
     public static final String EXTRA_FILTER_CURRENT_GROUP_NAME = "EXTRA_FILTER_CURRENT_GROUP_NAME";
+    public static final String EXTRA_FILTER_CURRECT_GROUP_SELECTION = "EXTRA_FILTER_CURRECT_GROUP_SELECTION";
 
     public static final int TYPE_NEW_PROMO_GROUP = 0;
     public static final int TYPE_NEW_PROMO_EXIST_GROUP = 1;

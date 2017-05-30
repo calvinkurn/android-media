@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.data.model.data.GroupAd;
+import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordFilterStatusFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordGroupsFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsFilterStatusFragment;
@@ -19,18 +21,16 @@ import java.util.List;
  */
 public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements HasComponent<AppComponent> {
 
+    @KeywordStatusTypeDef
     private int selectedFilterStatus;
-    private long selectedGroupId;
-    private long currentGroupId;
-    private String currentGroupName;
+
+    private GroupAd currentGroupAd;
 
     @Override
     protected void setupBundlePass(Bundle extras) {
         super.setupBundlePass(extras);
         selectedFilterStatus = extras.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS);
-        selectedGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID);
-        currentGroupId = extras.getLong(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_ID);
-        currentGroupName = extras.getString(TopAdsExtraConstant.EXTRA_FILTER_CURRENT_GROUP_NAME);
+        currentGroupAd = extras.getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements
         TopAdsFilterStatusFragment topAdsFilterStatusFragment = TopAdsKeywordFilterStatusFragment.createInstance(selectedFilterStatus);
         topAdsFilterStatusFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterStatusFragment);
-        TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(selectedGroupId, currentGroupId, currentGroupName);
+        TopAdsKeywordGroupsFragment topAdsFilterGroupNameFragment = TopAdsKeywordGroupsFragment.createInstance(currentGroupAd);
         topAdsFilterGroupNameFragment.setActive(true);
         filterContentFragmentList.add(topAdsFilterGroupNameFragment);
         return filterContentFragmentList;
@@ -49,7 +49,7 @@ public class TopAdsKeywordFilterActivity extends TopAdsFilterActivity implements
     protected Intent getDefaultIntentResult() {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedFilterStatus);
-        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, selectedGroupId);
+        intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_GROUP_ID, currentGroupAd);
         return intent;
     }
 
