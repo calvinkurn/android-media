@@ -14,10 +14,12 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.util.AccurateTimer;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -130,12 +132,16 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
             textDiscount.setText(String.format(discount,data.getPercentageAmount()));
 
             try {
-                SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
-                long now = new Date().getTime();
-                long end = sf.parse(data.getEndDate()).getTime();
-                long delta = end - now;
+                cashbackHolder.setVisibility(VISIBLE);
+                textDiscount.setVisibility(VISIBLE);
+                textOriginalPrice.setVisibility(VISIBLE);
+                linearDiscountTimerHolder.setVisibility(VISIBLE);
 
-                new CountDownTimer(delta, 1000) {
+                SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
+                long delta = sf.parse(data.getEndDate()).getTime() - new Date().getTime();
+                textDiscountTimer.setText(getCountdownText(delta));
+
+                new AccurateTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         textDiscountTimer.setText(getCountdownText(millisUntilFinished));
@@ -143,21 +149,21 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
                     @Override
                     public void onFinish() {
-                        linearDiscountTimerHolder.setVisibility(GONE);
-                        textDiscount.setVisibility(GONE);
-                        textOriginalPrice.setVisibility(GONE);
-                        tvPrice.setText(data.getOriginalPrice());
+                        hideProductCampaign(data);
                     }
                 }.start();
-
-                cashbackHolder.setVisibility(VISIBLE);
-                textDiscount.setVisibility(VISIBLE);
-                textOriginalPrice.setVisibility(VISIBLE);
-                linearDiscountTimerHolder.setVisibility(VISIBLE);
-            } catch (ParseException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
+                hideProductCampaign(data);
             }
         }
+    }
+
+    private void hideProductCampaign(ProductCampaign data) {
+        linearDiscountTimerHolder.setVisibility(GONE);
+        textDiscount.setVisibility(GONE);
+        textOriginalPrice.setVisibility(GONE);
+        tvPrice.setText(data.getOriginalPrice());
     }
 
     private String getCountdownText(long millisUntilFinished) {
