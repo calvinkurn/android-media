@@ -233,6 +233,7 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                     view.renderErrorHttpProductDigitalData(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
                     view.clearContentRendered();
+                    view.closeView();
                     ServerErrorHandlerUtil.handleError(e);
                 } else {
             /* Ini diluar dari segalanya hahahaha */
