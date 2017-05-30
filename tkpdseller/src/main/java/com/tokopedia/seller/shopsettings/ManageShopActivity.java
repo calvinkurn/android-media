@@ -6,6 +6,10 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.seller.R;
 
+/**
+ * Use in reflection by SellerRouter
+ * If you want to rename the class or refactor its package, rename also the route at SellerRouter
+ */
 public class ManageShopActivity extends TkpdActivity {
 
 	@Override

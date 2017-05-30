@@ -10,18 +10,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tokopedia.core.EtalaseShopEditor;
-import com.tokopedia.core.ManageShopAddress;
-import com.tokopedia.core.PaymentEditor;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
+import com.tokopedia.seller.shopsettings.payment.PaymentEditor;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.core.customadapter.SimpleListTabViewAdapter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity;
-import com.tokopedia.core.shipping.EditShippingActivity;
+import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.seller.shop.ShopEditorActivity;
 import com.tokopedia.seller.shop.presenter.ShopSettingView;
 

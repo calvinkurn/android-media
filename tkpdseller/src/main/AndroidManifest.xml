@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.seller">
 
     <application
@@ -245,6 +246,42 @@
         <activity android:name=".shopsettings.ManageShopActivity"
             android:label="@string/title_activity_manage_shop"
             android:screenOrientation="portrait"/>
+        <activity
+            android:name=".shopsettings.payment.PaymentEditor"
+            android:label="@string/title_activity_payment_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopsettings.address.activity.ManageShopAddress"
+            android:label="@string/title_activity_manage_shop_address"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopsettings.address.activity.ShopAddressForm"
+            android:label="@string/title_activity_shop_address_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopsettings.etalase.activity.EtalaseShopEditor"
+            android:label="@string/title_activity_etalase_shop_editor"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".shopsettings.shipping.EditShippingActivity"
+            android:label="@string/shop_shipping_setting"
+            android:screenOrientation="portrait">
+            <intent-filter tools:ignore="GoogleAppIndexingWarning">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="ANDROID.INTENT.CATEGORY.BROWSABLE" />
+
+                <data
+                    android:host="com.tokopedia.tkpd"
+                    android:pathPrefix="/myshop-editor.pl"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".shopsettings.shipping.OpenShopEditShipping"
+            android:label="@string/title_open_shop" />
 
         <service
             android:name=".selling.SellingService"

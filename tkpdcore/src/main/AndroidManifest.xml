@@ -145,38 +145,7 @@
             android:name="com.tokopedia.core.manage.shop.notes.activity.ManageShopNotesActivity"
             android:label="@string/title_activity_manage_shop_notes"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.shipping.EditShippingActivity"
-            android:label="@string/shop_shipping_setting"
-            android:screenOrientation="portrait">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
-                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="ANDROID.INTENT.CATEGORY.BROWSABLE" />
-
-                <data
-                    android:host="com.tokopedia.tkpd"
-                    android:pathPrefix="/myshop-editor.pl"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tokopedia.core.EtalaseShopEditor"
-            android:label="@string/title_activity_etalase_shop_editor"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.PaymentEditor"
-            android:label="@string/title_activity_payment_editor"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ManageShopAddress"
-            android:label="@string/title_activity_manage_shop_address"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.ShopAddressForm"
-            android:label="@string/title_activity_shop_address_form"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.tokopedia.core.ManagePeople"
             android:label="@string/title_activity_manage_people"
@@ -374,15 +343,6 @@
             android:name="com.tokopedia.core.onboarding.FreeReturnOnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.shipping.OpenShopEditShipping"
-            android:label="@string/title_open_shop" />
-        <activity
-            android:name="com.tokopedia.core.shop.ShopEditorActivity"
-            android:label="@string/shop_setting"
-            android:theme="@style/ShopAppTheme" />
-
-
 
         <activity
             android:name="com.tokopedia.core.topads.WebViewTopAdsActivity"
