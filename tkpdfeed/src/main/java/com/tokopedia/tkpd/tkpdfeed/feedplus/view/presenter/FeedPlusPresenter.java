@@ -109,4 +109,5 @@ public class FeedPlusPresenter
                 getFirstPageFeedsUseCase.getFeedPlusParam(sessionHandler, currentCursor),
                 new GetFirstPageFeedsSubscriber(viewListener));
     }
+
 }

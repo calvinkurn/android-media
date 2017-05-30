@@ -16,6 +16,7 @@ import com.facebook.FacebookSdk;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
@@ -134,7 +135,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         return new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (!adapter.isLoading())
+                if (!adapter.isLoading() && !(adapter.getlist().get(0) instanceof EmptyModel))
                     presenter.fetchNextPage();
             }
         };

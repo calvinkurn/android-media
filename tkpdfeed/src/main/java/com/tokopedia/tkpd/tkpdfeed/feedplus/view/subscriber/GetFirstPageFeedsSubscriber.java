@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
@@ -35,7 +36,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorGetFeedFirstPage(e.toString());
+        viewListener.onErrorGetFeedFirstPage(
+                ErrorHandler.getErrorMessage(e,
+                        viewListener.getActivity()));
     }
 
     @Override
