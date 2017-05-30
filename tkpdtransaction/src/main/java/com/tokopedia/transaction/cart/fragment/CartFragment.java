@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -743,6 +744,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                     holderUseVoucher.setVisibility(View.GONE);
                     btnCheckVoucher.setOnClickListener(null);
                     etVoucherCode.setText("");
+                    tvVoucherDesc.setText("");
+                    tilEtVoucherCode.setErrorEnabled(false);
                     tvTotalPayment.setText(totalPaymentWithLoyaltyIdr);
                     if (totalLoyaltyBalance != null)
                         renderVisibleLoyaltyBalance(totalLoyaltyBalance, totalLoyaltyPoint);
@@ -756,7 +759,13 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.processCheckVoucherCode();
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                if (getVoucherCodeCheckoutData().isEmpty()) {
+                    renderErrorCheckVoucher(
+                            getStringFromResource(R.string.label_error_form_voucher_code_empty));
+                } else {
+                    presenter.processCheckVoucherCode();
+                }
             }
         };
     }

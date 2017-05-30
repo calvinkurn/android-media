@@ -27,7 +27,7 @@
     <string name="label_message_default_voucher_desc_result">"Anda mendapatkan promo "</string>
     <string name="label_error_form_dropshipper_name_empty">Nama pengirim harus diisi</string>
     <string name="label_error_form_dropshipper_phone_empty">Telepon pengirim harus diisi</string>
-    <string name="label_error_form_voucher_code_empty">Kode Promo Kosong</string>
+    <string name="label_error_form_voucher_code_empty">Masukan kode promo terlebih dahulu</string>
     <string name="label_message_success_update_item_cart_data">Berhasil mengubah keranjang</string>
     <string name="label_message_success_update_cart_insurance">Berhasil mengubah asuransi</string>
     <string name="label_error_default_top_pay">Proses pembayaran gagal, mohon ulangi lagi</string>
