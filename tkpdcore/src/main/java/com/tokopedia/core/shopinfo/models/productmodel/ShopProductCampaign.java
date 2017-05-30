@@ -1,5 +1,8 @@
 package com.tokopedia.core.shopinfo.models.productmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by brilliant.oka on 29/03/17.
  */
 
-public class ShopProductCampaign {
+public class ShopProductCampaign implements Parcelable {
 
     @SerializedName("product_id")
     @Expose
@@ -69,4 +72,40 @@ public class ShopProductCampaign {
         this.originalPrice = originalPrice;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.productId);
+        dest.writeInt(this.percentageAmount);
+        dest.writeString(this.discountedPrice);
+        dest.writeString(this.endDate);
+        dest.writeString(this.originalPrice);
+    }
+
+    public ShopProductCampaign() {
+    }
+
+    protected ShopProductCampaign(Parcel in) {
+        this.productId = in.readInt();
+        this.percentageAmount = in.readInt();
+        this.discountedPrice = in.readString();
+        this.endDate = in.readString();
+        this.originalPrice = in.readString();
+    }
+
+    public static final Parcelable.Creator<ShopProductCampaign> CREATOR = new Parcelable.Creator<ShopProductCampaign>() {
+        @Override
+        public ShopProductCampaign createFromParcel(Parcel source) {
+            return new ShopProductCampaign(source);
+        }
+
+        @Override
+        public ShopProductCampaign[] newArray(int size) {
+            return new ShopProductCampaign[size];
+        }
+    };
 }
