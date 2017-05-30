@@ -44,12 +44,14 @@ public class TopAdsKeywordGetDetailUseCase extends UseCase<KeywordDetailDomain> 
                 .map(topAdsKeywordDetailMapperToDomain);
     }
 
-    public static RequestParams createRequestParams(Date startDate, Date endDate, String adId, int isPositive){
+    public static RequestParams createRequestParams(Date startDate, Date endDate, String adId,
+                                                    int isPositive, String shopId){
         String startDateText = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate);
         String endDateText = new SimpleDateFormat(TopAdsConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate);
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(KeywordTypeDef.IS_POSITIVE, Integer.toString(isPositive));
+        requestParams.putString(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
         requestParams.putString(TopAdsNetworkConstant.PARAM_START_DATE, startDateText);
         requestParams.putString(TopAdsNetworkConstant.PARAM_END_DATE, endDateText);
         requestParams.putString(TopAdsNetworkConstant.PARAM_AD_ID, adId);

@@ -24,6 +24,7 @@ public class TopAdsNetworkConstant {
     public static final String PATH_CREATE_GROUP_AD = "v2/promo/group";
 
     public static final String PATH_EDIT_KEYWORD_DETAIL = "/v2/promo/keyword";
+    public static final String PATH_BULK_KEYWORD_DETAIL = PATH_EDIT_KEYWORD_DETAIL + "/bulk";
 
     public static final String PARAM_AD = "ad";
     public static final String PARAM_SHOP_ID = "shop_id";
@@ -42,6 +43,7 @@ public class TopAdsNetworkConstant {
     public static final String PARAM_PAGE = "page";
     public static final String PARAM_IS_PROMOTED = "is_promoted";
     public static final String PARAM_KEYWORD_AD_ID = "keyword_id";
+    public static final String PARAM_ACTION = "action";
 
     public static final String VALUE_SOURCE_ANDROID = "android";
     public static final String VALUE_TOGGLE_ON = "on";

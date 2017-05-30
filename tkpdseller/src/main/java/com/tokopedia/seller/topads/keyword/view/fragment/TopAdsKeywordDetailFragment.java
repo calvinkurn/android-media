@@ -23,6 +23,7 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
@@ -219,7 +220,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
 
     private void deleteAd() {
         showLoading();
-        topadsKeywordDetailPresenter.deleteAd(ad.getId());
+        topadsKeywordDetailPresenter.deleteAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     @Override
@@ -240,10 +241,10 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     private void refreshAd() {
         if (ad != null) {
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), ad.getId(), isPositive());
+                    getDatePickerPresenter().getEndDate(), ad.getId(), isPositive(), SessionHandler.getShopID(getActivity()));
         }else{
             topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                    getDatePickerPresenter().getEndDate(), adId, isPositive());
+                    getDatePickerPresenter().getEndDate(), adId, isPositive(), SessionHandler.getShopID(getActivity()));
         }
     }
 
@@ -295,10 +296,12 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
 
     protected void turnOnAd() {
         showLoading();
+        topadsKeywordDetailPresenter.turnOnAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     protected void turnOffAd() {
         showLoading();
+        topadsKeywordDetailPresenter.turnOffAd(ad.getId(), ad.getGroupId(), SessionHandler.getShopID(getActivity()));
     }
 
     protected void setResultAdDetailChanged() {

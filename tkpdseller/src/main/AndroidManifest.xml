@@ -168,6 +168,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
         <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordDetailActivity"
+            android:exported="true"
+            android:label="@string/top_ads_keyword_title_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordDetailNegativeActivity"
+            android:exported="true"
+            android:label="@string/top_ads_keyword_title_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
+        <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />

@@ -1,8 +1,10 @@
 package com.tokopedia.seller.topads.keyword.data.repository;
 
-import com.tokopedia.seller.topads.keyword.data.mapper.TopAdsKeywordDeleteMapper;
-import com.tokopedia.seller.topads.keyword.data.source.TopAdsKeywordDeleteDataSource;
-import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordDeleteRepository;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
+import com.tokopedia.seller.topads.keyword.data.source.TopAdsKeywordActionBulkDataSource;
+import com.tokopedia.seller.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
 
 import rx.Observable;
 
@@ -10,19 +12,15 @@ import rx.Observable;
  * Created by zulfikarrahman on 5/29/17.
  */
 
-public class TopAdsKeywordDeleteRepositoryImpl implements TopAdsKeywordDeleteRepository {
-    private final TopAdsKeywordDeleteDataSource topAdsKeywordDeleteDataSource;
-    private final TopAdsKeywordDeleteMapper topAdsKeywordDeleteMapper;
+public class TopAdsKeywordDeleteRepositoryImpl implements TopAdsKeywordActionBulkRepository {
+    private final TopAdsKeywordActionBulkDataSource topAdsKeywordActionBulkDataSource;
 
-    public TopAdsKeywordDeleteRepositoryImpl(TopAdsKeywordDeleteDataSource topAdsKeywordDeleteDataSource,
-                                             TopAdsKeywordDeleteMapper topAdsKeywordDeleteMapper) {
-        this.topAdsKeywordDeleteDataSource = topAdsKeywordDeleteDataSource;
-        this.topAdsKeywordDeleteMapper = topAdsKeywordDeleteMapper;
+    public TopAdsKeywordDeleteRepositoryImpl(TopAdsKeywordActionBulkDataSource topAdsKeywordActionBulkDataSource) {
+        this.topAdsKeywordActionBulkDataSource = topAdsKeywordActionBulkDataSource;
     }
 
     @Override
-    public Observable<Boolean> deleteAd(String id) {
-        return topAdsKeywordDeleteDataSource.deleteAd(id)
-                .map(topAdsKeywordDeleteMapper);
+    public Observable<PageDataResponse<DataBulkKeyword>> actionBulk(RequestParams requestParams) {
+        return topAdsKeywordActionBulkDataSource.actionBulk(requestParams);
     }
 }
