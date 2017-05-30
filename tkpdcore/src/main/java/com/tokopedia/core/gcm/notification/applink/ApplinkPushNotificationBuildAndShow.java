@@ -65,7 +65,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
                 .multipleSender(false)
                 .taskStackBuilder(stackBuilder)
                 .build();
-        buildAndShowNotification.buildAndShowNotification(applinkNotificationPass, configuration);
+        buildAndShowNotification.buildAndShowApplinkNotification(applinkNotificationPass, data, configuration);
     }
 
     @Override

@@ -20,14 +20,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/edit_description"
         android:textColor="@color/black"
-        android:maxLines="3"
+        android:maxLines="5"
+        android:minLines="2"
         android:maxLength="@integer/max_image_description_length"/>
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="end">
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/margin_small">
 
         <android.support.v7.widget.AppCompatTextView
             android:layout_width="80dp"

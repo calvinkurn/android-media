@@ -26,142 +26,72 @@ public class Attributes {
     private Promo promo;
     @SerializedName("status")
     @Expose
-    private Integer status;
+    private int status;
     @SerializedName("weight")
     @Expose
-    private Integer weight;
+    private int weight;
 
-    /**
-     *
-     * @return
-     *     The desc
-     */
     public String getDesc() {
         return desc;
     }
 
-    /**
-     *
-     * @param desc
-     *     The desc
-     */
     public void setDesc(String desc) {
         this.desc = desc;
     }
 
-    /**
-     *
-     * @return
-     *     The detail
-     */
     public String getDetail() {
         return detail;
     }
 
-    /**
-     *
-     * @param detail
-     *     The detail
-     */
     public void setDetail(String detail) {
         this.detail = detail;
     }
 
-    /**
-     *
-     * @return
-     *     The detailUrl
-     */
     public String getDetailUrl() {
         return detailUrl;
     }
 
-    /**
-     *
-     * @param detailUrl
-     *     The detail_url
-     */
     public void setDetailUrl(String detailUrl) {
         this.detailUrl = detailUrl;
     }
 
-    /**
-     *
-     * @return
-     *     The info
-     */
     public String getInfo() {
         return info;
     }
 
-    /**
-     *
-     * @param info
-     *     The info
-     */
     public void setInfo(String info) {
         this.info = info;
     }
 
-    /**
-     *
-     * @return
-     *     The price
-     */
     public String getPrice() {
         return price;
     }
 
-    /**
-     *
-     * @param price
-     *     The price
-     */
     public void setPrice(String price) {
         this.price = price;
     }
 
-    /**
-     *
-     * @return
-     *     The promo
-     */
     public Promo getPromo() {
         return promo;
     }
 
-    /**
-     *
-     * @param promo
-     *     The promo
-     */
     public void setPromo(Promo promo) {
         this.promo = promo;
     }
 
-    /**
-     *
-     * @return
-     *     The status
-     */
-    public Integer getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    /**
-     *
-     * @param status
-     *     The status
-     */
-    public void setStatus(Integer status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
-    public Integer getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 }

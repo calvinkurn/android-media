@@ -168,7 +168,7 @@ public class BuildAndShowNotification {
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
         //TODO : create flow again
-        saveIncomingNotification(notificationPass, data);
+        saveIncomingNotification(notificationPass.title, data);
 
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -231,10 +231,50 @@ public class BuildAndShowNotification {
         mNotificationManager.notify(configuration.getNotificationId(), notif);
     }
 
-    private void saveIncomingNotification(NotificationPass notificationPass, Bundle data) {
+    public void buildAndShowApplinkNotification(ApplinkNotificationPass applinkNotificationPass, Bundle data, NotificationConfiguration configuration) {
+        NotificationManager mNotificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+                .setSmallIcon(getDrawableIcon())
+                .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
+                .setAutoCancel(true);
+        NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
+        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+        mBuilder.setContentText(applinkNotificationPass.getDescription());
+        bigStyle.bigText(applinkNotificationPass.getDescription());
+        mBuilder.setStyle(bigStyle);
+        mBuilder.setTicker(applinkNotificationPass.getTicker());
+
+        mBuilder = configureBigPictureNotification(data, mBuilder);
+
+        mBuilder = configureIconNotification(data, mBuilder);
+
+        if (configuration.isBell()) {
+            mBuilder.setSound(configuration.getSoundUri());
+            if (configuration.isVibrate()) {
+                mBuilder.setVibrate(configuration.getVibratePattern());
+            }
+        }
+
+        stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
+
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        Notification notif = mBuilder.build();
+        if (configuration.isVibrate() && configuration.isBell()) {
+            notif.defaults |= Notification.DEFAULT_VIBRATE;
+        }
+        mNotificationManager.notify(configuration.getNotificationId(), notif);
+    }
+
+
+    private void saveIncomingNotification(String title, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
         notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
-        notificationEntity.setTitle(notificationPass.title);
+        notificationEntity.setTitle(title);
         cacheManager.saveIncomingNotification(notificationEntity);
     }
 

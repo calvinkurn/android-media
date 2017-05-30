@@ -3,21 +3,21 @@ package com.tokopedia.seller.gmsubscribe.view.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
 import com.tokopedia.seller.gmsubscribe.di.GmHomeDependencyInjection;
 import com.tokopedia.seller.gmsubscribe.di.component.DaggerGmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.component.GmSubscribeComponent;
 import com.tokopedia.seller.gmsubscribe.di.module.GmSubscribeModule;
 import com.tokopedia.seller.gmsubscribe.view.presenter.GmHomePresenterImpl;
 
-import butterknife.OnClick;
 
 /**
  * @author sebastianuskh on 12/2/16.
@@ -36,10 +36,6 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
         return new GmHomeFragment();
     }
 
-    /**
-     * BUTTERKNIFE BINDING
-     */
-    @OnClick(R2.id.button_home_to_select_product)
     public void goToProductSelection() {
         listener.goToGMProductFristTime();
     }
@@ -98,6 +94,18 @@ public class GmHomeFragment extends BasePresenterFragment<GmHomePresenterImpl> i
     @Override
     protected void setupArguments(Bundle bundle) {
 
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        view.findViewById(R.id.button_home_to_select_product).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToProductSelection();
+            }
+        });
+        return view;
     }
 
     @Override

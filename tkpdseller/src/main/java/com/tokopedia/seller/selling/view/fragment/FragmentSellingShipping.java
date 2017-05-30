@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -50,20 +51,13 @@ import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by Toped10 on 7/28/2016.
  */
 public class FragmentSellingShipping extends BaseFragment<Shipping> implements ShippingView {
 
-    @BindView(R2.id.order_list)
     RecyclerView recyclerView;
-    @BindView(R2.id.fab)
     FloatingActionButton fab;
-    @BindView(R2.id.root)
     View rootView;
     private View filterView;
     SearchView search;
@@ -100,6 +94,16 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         }
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.order_list);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        rootView = view.findViewById(R.id.root);
+        return view;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_shop_shipping_confirmation;
@@ -124,7 +128,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
             super.onCreateActionMode(actionMode, menu);
             FragmentSellingShipping.this.actionMode = actionMode;
-            disableFilter();
+            hideFab();
             actionMode.setTitle("1");
             getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
             refresh.setPullEnabled(false);
@@ -147,6 +151,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         public void onDestroyActionMode(ActionMode actionMode) {
             super.onDestroyActionMode(actionMode);
             enableFilter();
+            showFab();
             refresh.setPullEnabled(true);
             multiSelector.clearSelections();
             presenter.updateListDataChecked(false);
@@ -303,6 +308,9 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
+        if(actionMode != null && !isVisibleToUser){
+            actionMode.finish();
+        }
         initPresenter();
         presenter.getShippingList(isVisibleToUser);
         super.setUserVisibleHint(isVisibleToUser);
@@ -447,14 +455,20 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     public void initView() {
         filterView = getActivity().getLayoutInflater().inflate(R.layout.filter_layout_selling_shipping, null);
-        search = ButterKnife.findById(filterView, R.id.search);
+        search = (SearchView) filterView.findViewById(R.id.search);
         int searchPlateId = search.getContext().getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = search.findViewById(searchPlateId);
         searchPlate.setBackgroundColor(Color.TRANSPARENT);
-        dueDate = ButterKnife.findById(filterView, R.id.due_date);
-        shippingService = ButterKnife.findById(filterView, R.id.shipping);
+        dueDate = (Spinner) filterView.findViewById(R.id.due_date);
+        shippingService = (Spinner) filterView.findViewById(R.id.shipping);
         bottomSheetDialog = new BottomSheetDialog(getActivity());
         bottomSheetDialog.setContentView(filterView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetDialog.show();
+            }
+        });
     }
 
     @Override
@@ -536,12 +550,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
     @Override
     public void hideFilter() {
         bottomSheetDialog.hide();
-    }
-
-
-    @OnClick(R2.id.fab)
-    public void onClick() {
-        bottomSheetDialog.show();
     }
 
     private RefreshHandler.OnRefreshHandlerListener onRefreshListener() {

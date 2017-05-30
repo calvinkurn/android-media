@@ -13,4 +13,9 @@ public interface ProductDraftRepository {
     Observable<UploadProductInputDomainModel> getDraft(long productId);
 
     Observable<Boolean> clearAllDraft();
+
+    void deleteDraft(long productId);
+
+    void updateDraft(long productId, UploadProductInputDomainModel domainModel);
+
 }

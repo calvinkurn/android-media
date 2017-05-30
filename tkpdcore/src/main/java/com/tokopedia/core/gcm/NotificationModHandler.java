@@ -222,6 +222,14 @@ public class NotificationModHandler {
                                     dialog.dismiss();
                                 }
                             })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
@@ -242,6 +250,14 @@ public class NotificationModHandler {
                                     dialog.dismiss();
                                 }
                             })
+                            .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialogInterface) {
+                                    FCMCacheManager.setDialogNotificationSetting(context);
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setCancelable(false)
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .show();
                 }
