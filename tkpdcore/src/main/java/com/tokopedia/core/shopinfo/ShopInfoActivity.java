@@ -258,20 +258,19 @@ public class ShopInfoActivity extends BaseActivity
     private void initFacadeGet() {
         facadeGetRetrofit = new GetShopInfoRetrofit(this, shopModel.info.shopId, shopModel.info.shopDomain);
         facadeGetRetrofit.setGetShopInfoListener(onGetShopInfoRetro());
-        facadeAction = new ActionShopInfoRetrofit(this,
-                shopModel.info.shopName, shopModel.info.shopId, shopModel.info.shopDomain, adKey);
+        facadeAction = new ActionShopInfoRetrofit(this, shopModel.info.shopId, shopModel.info.shopDomain, adKey);
         facadeAction.setOnActionToggleFavListener(onActionToggleFav());
     }
 
     private ActionShopInfoRetrofit.OnActionToggleFavListener onActionToggleFav() {
         return new ActionShopInfoRetrofit.OnActionToggleFavListener() {
             @Override
-            public void onSuccess(String shopName) {
+            public void onSuccess() {
                 shopModel.info.shopAlreadyFavorited = (shopModel.info.shopAlreadyFavorited + 1) % 2;
                 updateIsFavoritedIntent(shopModel.info.shopAlreadyFavorited != 0);
                 setShopAlreadyFavorite();
                 holder.favorite.clearAnimation();
-                showToggleFavoriteSuccess(shopName, shopModel.info.shopAlreadyFavorited != 0);
+                showToggleFavoriteSuccess(shopModel.info.shopName, shopModel.info.shopAlreadyFavorited != 0);
             }
 
             @Override

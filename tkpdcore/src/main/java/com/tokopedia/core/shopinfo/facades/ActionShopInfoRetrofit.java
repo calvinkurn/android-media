@@ -30,7 +30,7 @@ import rx.schedulers.Schedulers;
 public class ActionShopInfoRetrofit {
 
     public interface OnActionToggleFavListener {
-        void onSuccess(String shopName);
+        void onSuccess();
 
         void onFailure(String string);
     }
@@ -40,15 +40,13 @@ public class ActionShopInfoRetrofit {
     private Context context;
     private ActionService actionService;
     private String shopId;
-    private String shopName;
     private String shopDomain;
     private String adKey;
     private OnActionToggleFavListener onActionToggleFavListener;
     private Subscription onActionToggleFavSubs;
 
-    public ActionShopInfoRetrofit(Context context, String shopName, String id, String domain, String adKey) {
+    public ActionShopInfoRetrofit(Context context, String id, String domain, String adKey) {
         this.context = context;
-        this.shopName = shopName;
         this.shopId = id;
         this.shopDomain = domain;
         this.adKey = adKey;
@@ -88,7 +86,7 @@ public class ActionShopInfoRetrofit {
                 tkpdResponseResponse.body().getStringData();
                 if (tkpdResponseResponse.isSuccessful())
                     if (!tkpdResponseResponse.body().isError()) {
-                        onActionToggleFavListener.onSuccess(shopName);
+                        onActionToggleFavListener.onSuccess();
                     } else {
                         String errorMessage = tkpdResponseResponse.body().getErrorMessages().toString();
                         if (!TextUtils.isEmpty(errorMessage)) {
