@@ -29,6 +29,7 @@ public interface Constants {
     String REGISTRATION_MESSAGE_ERROR = "FCM Error";
     String EXTRA_PLAYSTORE_URL = "market://details?id=com.tokopedia.tkpd";
     String EXTRA_FROM_PUSH = "from_notif";
+    String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";
@@ -40,6 +41,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
     interface Applinks {
+        String HOME = "tokopedia://home";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
@@ -54,6 +56,7 @@ public interface Constants {
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
+        String PURCHASE_HISTORY = "tokopedia://buyer/history";
         String CART = "tokopedia://cart";
         String SELLER_NEW_ORDER = "tokopedia://seller/new-order";
         String SELLER_SHIPMENT = "tokopedia://seller/shipment";
@@ -62,6 +65,7 @@ public interface Constants {
         String REPUTATION = "tokopedia://review";
         String PRODUCT_REPUTATION = "tokopedia://product/{product_id}/review";
         String WEBVIEW = "tokopedia://webview";
+        String PRODUCT_TALK = "tokopedia://product/{product_id}/talk";
     }
 
     interface Settings {

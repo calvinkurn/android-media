@@ -45,7 +45,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = intent.getData();
             presenter.processUTM(applink);
             deepLinkDelegate.dispatchFrom(this, intent);
