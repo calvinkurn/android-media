@@ -142,6 +142,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     RelativeLayout cancelPanelLayout;
     @BindView(R2.id.iv_my_location_button)
     ImageView myLocationBtn;
+    @BindView(R2.id.tv_canellation_charges)
+    TextView cancellationFeeTextView;
 
     private NotificationManager mNotifyMgr;
     private Notification acceptedNotification;
@@ -155,7 +157,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private int markerId;
     private ProgressDialog mProgressDialog;
 
-    public static OnTripMapFragment newInstance(Bundle bundle) {
+    public static OnTripMapFragment newInstance(ConfirmBookingViewModel confirmBookingViewModel) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(OnTripActivity.EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
         OnTripMapFragment fragment = new OnTripMapFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -206,6 +210,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 destination = new Location();
                 destination.setLatitude(confirmBookingViewModel.getDestination().getLatitude());
                 destination.setLongitude(confirmBookingViewModel.getDestination().getLongitude());
+
+                saveCancellationFee(confirmBookingViewModel.getCancellationFee());
             } else if (rideRequest != null) {
                 source = new Location();
                 source.setLatitude(rideRequest.getPickup().getLatitude());
@@ -962,6 +968,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 0xBB000000);
         backgroundColorAnimator.setDuration(500);
         backgroundColorAnimator.start();
+
+        cancellationFeeTextView.setText(getCancellationFee());
     }
 
     @Override
@@ -1255,6 +1263,18 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void saveActiveProductName(String displayName) {
         RideConfiguration configuration = new RideConfiguration(getActivity());
         configuration.saveActiveProductName(displayName);
+    }
+
+    @Override
+    public void saveCancellationFee(String cancellationFee) {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        configuration.saveActiveRequestCancellationFee(cancellationFee);
+    }
+
+    @Override
+    public String getCancellationFee() {
+        RideConfiguration configuration = new RideConfiguration(getActivity());
+        return configuration.getActiveCancellationFee();
     }
 
     @Override

@@ -23,6 +23,7 @@ public class RideConfiguration {
     private static final String RIDE_DESTINATION = "RIDE_DESTINATION";
     private static final String KEY_REQUEST_ID = "request_id";
     private static final String KEY_PRODUCT_NAME = "product_name";
+    private static final String KEY_CANCELLATION_FEE = "cancellation_fee";
     private static final String DEFAULT_EMPTY_VALUE = "";
 
     private static final String KEY_USER_STATE = "user_state";
@@ -144,7 +145,6 @@ public class RideConfiguration {
         cache.applyEditor();
     }
 
-
     public void clearActiveProductName() {
         LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
         cache.putString(KEY_PRODUCT_NAME, DEFAULT_EMPTY_VALUE);
@@ -154,5 +154,22 @@ public class RideConfiguration {
     public String getActiveProductName() {
         LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
         return cache.getString(KEY_PRODUCT_NAME, DEFAULT_EMPTY_VALUE);
+    }
+
+    public void clearActiveRequestCancellationFee() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_CANCELLATION_FEE, DEFAULT_EMPTY_VALUE);
+        cache.applyEditor();
+    }
+
+    public void saveActiveRequestCancellationFee(String cancellationFee) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        cache.putString(KEY_CANCELLATION_FEE, cancellationFee);
+        cache.applyEditor();
+    }
+
+    public String getActiveCancellationFee() {
+        LocalCacheHandler cache = new LocalCacheHandler(context, RIDE_CONFIGURATION);
+        return cache.getString(KEY_CANCELLATION_FEE, DEFAULT_EMPTY_VALUE);
     }
 }

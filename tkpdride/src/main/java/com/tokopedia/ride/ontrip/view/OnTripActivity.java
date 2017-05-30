@@ -81,7 +81,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         homeIntent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                 HomeRouter.INIT_STATE_FRAGMENT_HOME);
 
@@ -163,9 +163,7 @@ public class OnTripActivity extends BaseActivity implements OnTripMapFragment.On
     @NeedsPermission({Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION})
     public void initFragment() {
         if (confirmBookingViewModel != null) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(EXTRA_CONFIRM_BOOKING, confirmBookingViewModel);
-            OnTripMapFragment fragment = OnTripMapFragment.newInstance(bundle);
+            OnTripMapFragment fragment = OnTripMapFragment.newInstance(confirmBookingViewModel);
             backButtonListener = fragment.getBackButtonListener();
             onUpdatedByPushNotification = fragment.getUpdatedByPushListener();
             addFragment(R.id.container, fragment, OnTripMapFragment.TAG);

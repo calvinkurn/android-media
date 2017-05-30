@@ -173,6 +173,10 @@ public interface OnTripMapContract {
 
         void saveActiveProductName(String displayName);
 
+        void saveCancellationFee(String cancellationFee);
+
+        String getCancellationFee();
+
         void showShareEtaProgress();
 
         void hideShareEtaProgress();

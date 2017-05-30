@@ -59,8 +59,10 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setProductImage(product.getProduct().getImage());
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setProductPriceFmt(getPricePerDistance(product.getProduct().getPriceDetail()));
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
+
         }
         return rideProductViewModel;
     }
@@ -75,6 +77,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(true);
 
             if (fareEstimate.getFare() != null) {
@@ -102,6 +105,7 @@ public class RideProductViewModelMapper {
             rideProductViewModel.setCapacity(product.getProduct().getCapacity());
             rideProductViewModel.setTimeEstimate(product.getTimesEstimate().getEstimate() / 60 + " min");
             rideProductViewModel.setBaseFare(getBaseFare(product.getProduct().getPriceDetail()));
+            rideProductViewModel.setCancellationFee(getCancellationCharges(product.getProduct().getPriceDetail()));
             rideProductViewModel.setEnabled(true);
 
             if (fareEstimate.getFare() != null) {
@@ -130,6 +134,22 @@ public class RideProductViewModelMapper {
         String baseFare = "--";
         if (priceDetail != null) {
             baseFare = "Base Fare: " + " " + priceDetail.getCurrencyCode() + " " + priceDetail.getBase();
+        }
+
+        return baseFare;
+    }
+
+    /**
+     * This is the helper function to get cancellationCharges
+     *
+     * @param priceDetail
+     * @return
+     */
+    private String getCancellationCharges(PriceDetail priceDetail) {
+        //set base fare
+        String baseFare = "--";
+        if (priceDetail != null) {
+            baseFare = priceDetail.getCurrencyCode() + " " + priceDetail.getCancellationFee();
         }
 
         return baseFare;

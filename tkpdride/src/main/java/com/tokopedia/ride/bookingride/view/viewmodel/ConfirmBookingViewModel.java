@@ -26,6 +26,7 @@ public class ConfirmBookingViewModel implements Parcelable {
     private int maxCapacity;
     private float surgeMultiplier;
     private String surgeConfirmationHref;
+    private String cancellationFee;
 
     public ConfirmBookingViewModel() {
     }
@@ -48,6 +49,7 @@ public class ConfirmBookingViewModel implements Parcelable {
         maxCapacity = in.readInt();
         surgeMultiplier = in.readFloat();
         surgeConfirmationHref = in.readString();
+        cancellationFee = in.readString();
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ConfirmBookingViewModel implements Parcelable {
         dest.writeInt(maxCapacity);
         dest.writeFloat(surgeMultiplier);
         dest.writeString(surgeConfirmationHref);
+        dest.writeString(cancellationFee);
     }
 
     @Override
@@ -229,5 +232,13 @@ public class ConfirmBookingViewModel implements Parcelable {
 
     public void setPromoDescription(String promoDescription) {
         this.promoDescription = promoDescription;
+    }
+
+    public String getCancellationFee() {
+        return cancellationFee;
+    }
+
+    public void setCancellationFee(String cancellationFee) {
+        this.cancellationFee = cancellationFee;
     }
 }
