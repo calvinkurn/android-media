@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -346,7 +347,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case OPEN_DETAIL:
-                showSnackbar(data.getStringExtra("message"));
+                if(resultCode == Activity.RESULT_OK)
+                    showSnackbar(data.getStringExtra("message"));
                 break;
             default:
                 break;
