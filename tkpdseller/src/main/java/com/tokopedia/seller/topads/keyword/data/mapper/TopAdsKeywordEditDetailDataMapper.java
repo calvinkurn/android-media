@@ -30,10 +30,10 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
 
     public static TopAdsKeywordEditDetailInputDataModel mapDomainToData(TopAdsKeywordEditDetailInputDomainModel modelInput) {
         TopAdsKeywordEditDetailInputDataModel dataModel = new TopAdsKeywordEditDetailInputDataModel();
-        dataModel.setKeywordId(String.valueOf(modelInput.getKeywordId()));
-        dataModel.setGroupId(String.valueOf(modelInput.getGroupId()));
+        dataModel.setKeywordId(modelInput.getKeywordId());
+        dataModel.setGroupId(modelInput.getGroupId());
         dataModel.setKeywordTag(modelInput.getKeywordTag());
-        dataModel.setKeywordTypeId(String.valueOf(modelInput.getKeywordTypeId()));
+        dataModel.setKeywordTypeId(modelInput.getKeywordTypeId());
         dataModel.setPriceBid(modelInput.getPriceBid());
         dataModel.setShopId(modelInput.getShopId());
         dataModel.setSource("dashboard_user_main");
@@ -49,11 +49,11 @@ public class TopAdsKeywordEditDetailDataMapper implements Func1<Response<DataRes
     public EditTopAdsKeywordDetailDomainModel call(Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>> dataResponse) {
         EditTopAdsKeywordDetailDomainModel domainModel = new EditTopAdsKeywordDetailDomainModel();
         EditTopAdsKeywordDetailDataModel dataModel = dataResponse.body().getData().get(0);
-        domainModel.setGroupId(Long.parseLong(dataModel.getGroupId()));
-        domainModel.setKeywordId(Integer.parseInt(dataModel.getKeywordId()));
+        domainModel.setGroupId(dataModel.getGroupId());
+        domainModel.setKeywordId(dataModel.getKeywordId());
         domainModel.setKeywordTag(dataModel.getKeywordTag());
-        domainModel.setKeywordTypeId(Integer.parseInt(dataModel.getKeywordTypeId()));
-        domainModel.setPriceBid(Double.parseDouble(dataModel.getPriceBid()));
+        domainModel.setKeywordTypeId(dataModel.getKeywordTypeId());
+        domainModel.setPriceBid(dataModel.getPriceBid());
         domainModel.setShopId(dataModel.getShopId());
         domainModel.setSource(dataModel.getSource());
         int toggle = (dataModel.getToggle().equals(ON)) ? 1 : 0;

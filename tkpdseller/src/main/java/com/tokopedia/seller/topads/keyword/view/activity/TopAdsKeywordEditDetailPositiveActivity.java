@@ -11,24 +11,25 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailFragment;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailFragmentListener;
 import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordEditDetailPositiveFragment;
-import com.tokopedia.seller.topads.keyword.view.model.TopAdsKeywordEditDetailViewModel;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 
 /**
  * @author sebastianuskh on 5/23/17.
  */
 
-public class TopAdsKeywordEditDetailActivity extends BaseActivity implements HasComponent<AppComponent>, TopAdsKeywordEditDetailFragmentListener {
+public class TopAdsKeywordEditDetailPositiveActivity extends BaseActivity implements HasComponent<AppComponent>, TopAdsKeywordEditDetailFragmentListener {
 
     public static final String KEYWORD_DETAIL_MODEL = "KEYWORD_DETAIL_MODEL";
 
-    public static void start(Context context, TopAdsKeywordEditDetailViewModel model) {
+    public static void start(Context context, KeywordAd model) {
         context.startActivity(createIntent(context, model));
     }
 
-    public static Intent createIntent(Context context, TopAdsKeywordEditDetailViewModel model){
-        Intent starter = new Intent(context, TopAdsKeywordEditDetailActivity.class);
+    public static Intent createIntent(Context context, KeywordAd model){
+        Intent starter = new Intent(context, TopAdsKeywordEditDetailPositiveActivity.class);
         starter.putExtra(KEYWORD_DETAIL_MODEL, model);
         return starter;
     }
@@ -39,15 +40,19 @@ public class TopAdsKeywordEditDetailActivity extends BaseActivity implements Has
         setContentView(R.layout.activity_top_ads_keyword_edit_detail);
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment fragment = supportFragmentManager.findFragmentByTag(TopAdsKeywordEditDetailPositiveFragment.TAG);
+        Fragment fragment = supportFragmentManager.findFragmentByTag(TopAdsKeywordEditDetailFragment.TAG);
         if (fragment == null) {
-            TopAdsKeywordEditDetailViewModel model = getIntent().getParcelableExtra(KEYWORD_DETAIL_MODEL);
-            fragment = TopAdsKeywordEditDetailPositiveFragment.createInstance(model);
+            KeywordAd model = getIntent().getParcelableExtra(KEYWORD_DETAIL_MODEL);
+            fragment = getFragment(model);
             supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.container, fragment, TopAdsKeywordEditDetailPositiveFragment.TAG)
+                    .replace(R.id.container, fragment, TopAdsKeywordEditDetailFragment.TAG)
                     .commit();
         }
+    }
+
+    protected TopAdsKeywordEditDetailFragment getFragment(KeywordAd model) {
+        return TopAdsKeywordEditDetailPositiveFragment.createInstance(model);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class TopAdsKeywordEditDetailActivity extends BaseActivity implements Has
     }
 
     @Override
-    public void onSuccessEditTopAdsKeywordDetail(TopAdsKeywordEditDetailViewModel viewModel) {
+    public void onSuccessEditTopAdsKeywordDetail(KeywordAd viewModel) {
         setResult(Activity.RESULT_OK, new Intent().putExtra(KEYWORD_DETAIL_MODEL, viewModel));
         finish();
     }

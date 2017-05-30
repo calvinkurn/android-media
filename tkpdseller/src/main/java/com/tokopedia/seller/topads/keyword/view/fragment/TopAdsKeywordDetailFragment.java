@@ -5,17 +5,13 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -29,10 +25,10 @@ import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
+import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordEditDetailPositiveActivity;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
@@ -214,7 +210,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     }
 
     private void editAd() {
-
+        TopAdsKeywordEditDetailPositiveActivity.start(getActivity(), ad);
     }
 
     private void deleteAd() {

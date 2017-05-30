@@ -37,7 +37,8 @@ public class TopAdsKeywordViewHolder extends RecyclerView.ViewHolder {
         return itemView.getContext().getString(stringRes, value);
     }
 
-    public void bindDataAds(Datum datum) {
+
+    public void bindDataAds(final Datum datum) {
         titleProduct.setText(datum.getKeywordTag());
         statusActive.setText(datum.getKeywordStatusDesc());
         pricePromoPerClick.setText(getString(R.string.top_ads_per_click_detail, datum.getKeywordPriceBidFmt()));
