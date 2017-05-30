@@ -12,10 +12,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 02/11/2015.
+ * @author Angga.Prasetiyo on 02/11/2015.
  */
 public class NewShopView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = NewShopView.class.getSimpleName();
 
     public NewShopView(Context context) {
         super(context);

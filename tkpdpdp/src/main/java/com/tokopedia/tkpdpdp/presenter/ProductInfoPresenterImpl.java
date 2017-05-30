@@ -26,7 +26,7 @@ import com.tokopedia.tkpdpdp.listener.ProductInfoView;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 09/11/2015.
+ * @author Angga.Prasetiyo on 09/11/2015.
  */
 public class ProductInfoPresenterImpl implements ProductInfoPresenter {
     private static final String TAG = ProductInfoPresenterImpl.class.getSimpleName();

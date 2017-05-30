@@ -12,11 +12,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class ErrorProductView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = ErrorProductView.class.getSimpleName();
-
     private TextView tvTitle;
     private TextView tvSubTitle;
 

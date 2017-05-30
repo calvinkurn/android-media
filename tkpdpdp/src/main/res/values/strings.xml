@@ -20,4 +20,11 @@
     <string name="download">Download</string>
     <string name="descriptions">Descriptions</string>
     <string name="informasi_produk">Informasi produk</string>
+    <string name="bunga">Bunga</string>
+    <string name="mulaiDari">mulai dari</string>
+    <string name="ulasan">Ulasan</string>
+    <string name="diskusi">Diskusi</string>
+    <string name="kurir">Kurir</string>
+    <string name="choose_etalase">Pilih Etalase</string>
+    <string name="add_etalase">Tambah Etalase</string>
 </resources>

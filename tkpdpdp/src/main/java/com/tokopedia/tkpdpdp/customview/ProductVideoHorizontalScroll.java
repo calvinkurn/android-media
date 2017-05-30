@@ -14,7 +14,7 @@ import com.tokopedia.tkpdpdp.R;
 import java.util.List;
 
 /**
- * Created by kris on 11/3/16. Tokopedia
+ * @author kris on 11/3/16. Tokopedia
  */
 
 public class ProductVideoHorizontalScroll extends HorizontalScrollView {

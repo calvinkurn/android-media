@@ -21,10 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = DetailInfoView.class.getSimpleName();
 
     private List<TextView> tvCategories;
     private TextView tvWeight;
@@ -176,7 +175,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
         private final ProductBreadcrumb data;
 
-        public CategoryClick(ProductBreadcrumb productBreadcrumb) {
+        CategoryClick(ProductBreadcrumb productBreadcrumb) {
             this.data = productBreadcrumb;
         }
 
@@ -194,7 +193,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private class EtalaseClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public EtalaseClick(ProductDetailData data) {
+        EtalaseClick(ProductDetailData data) {
             this.data = data;
         }
 
@@ -211,7 +210,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private class CatalogClick implements OnClickListener {
         private final ProductDetailData data;
 
-        public CatalogClick(ProductDetailData data) {
+        CatalogClick(ProductDetailData data) {
             this.data = data;
         }
 

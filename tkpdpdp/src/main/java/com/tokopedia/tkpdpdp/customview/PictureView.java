@@ -25,10 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Angga.Prasetiyo on 29/10/2015.
+ * @author Angga.Prasetiyo on 29/10/2015.
  */
 public class PictureView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = PictureView.class.getSimpleName();
 
     private ViewPager vpImage;
     private CirclePageIndicator indicator;
@@ -130,7 +129,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
     private class PagerAdapterAction implements ImagePagerAdapter.OnActionListener {
         private final ProductDetailData data;
 
-        public PagerAdapterAction(ProductDetailData data) {
+        PagerAdapterAction(ProductDetailData data) {
             this.data = data;
         }
 

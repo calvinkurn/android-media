@@ -19,14 +19,12 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by kris on 11/3/16. Tokopedia
+ * @author kris on 11/3/16. Tokopedia
  */
 
 public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductDetailView> {
 
-    private boolean isExpand = false;
     private DescriptionTextView tvDesc;
-    private ImageView ivToggle;
     private LinearLayout descriptionContainer;
     private ProductVideoHorizontalScroll productVideoHorizontalScroll;
 
@@ -60,7 +58,7 @@ public class VideoDescriptionLayout extends BaseView<ProductDetailData, ProductD
     protected void initView(Context context) {
         super.initView(context);
         tvDesc = (DescriptionTextView) findViewById(R.id.tv_description);
-        ivToggle = (ImageView) findViewById(R.id.iv_toggle);
+        ImageView ivToggle = (ImageView) findViewById(R.id.iv_toggle);
         descriptionContainer = (LinearLayout) findViewById(R.id.tv_desc);
         productVideoHorizontalScroll
                 = (ProductVideoHorizontalScroll) findViewById(R.id.product_video_horizontal_scroll);

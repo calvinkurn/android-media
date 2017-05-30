@@ -14,7 +14,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import java.util.List;
 
 /**
- * Created by ANGGA on 11/2/2015.
+ * @author ANGGA on 11/2/2015.
  */
 public interface ProductDetailView extends ViewListener {
 

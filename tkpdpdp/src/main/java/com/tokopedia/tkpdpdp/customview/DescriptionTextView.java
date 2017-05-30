@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- * Created by alvarisi on 9/19/16.
+ * @author alvarisi on 9/19/16.
  */
 public class DescriptionTextView extends TextView {
 

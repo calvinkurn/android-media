@@ -48,7 +48,7 @@ import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 /**
- * Created by stevenfredian on 7/4/16.
+ * @author stevenfredian on 7/4/16.
  */
 public class ReportProductDialogFragment extends DialogFragment implements ReportProductDialogView {
 

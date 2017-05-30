@@ -15,11 +15,9 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 
 /**
- * Created by Angga.Prasetiyo on 26/10/2015.
+ * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = HeaderInfoView.class.getSimpleName();
-
     private TextView tvName;
     private TextView cashbackTextView;
     private TextView tvPrice;

@@ -57,14 +57,16 @@ public class TransactionDetailView extends BaseView<ProductDetailData, ProductDe
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         setVisibility(VISIBLE);
-        ReturnInfo returnInfo = data.getInfo().getReturnInfo();
-        if (returnInfo.getContent().equals("")) {
-            noFreeReturnView.setVisibility(VISIBLE);
-            freeReturnView.setVisibility(GONE);
-        } else {
-            freeReturnView.setVisibility(VISIBLE);
-            noFreeReturnView.setVisibility(GONE);
-            freeReturnView.renderData(data);
+        if (data.getInfo() != null && data.getInfo().getReturnInfo() != null) {
+            ReturnInfo returnInfo = data.getInfo().getReturnInfo();
+            if ("".equals(returnInfo.getContent())) {
+                noFreeReturnView.setVisibility(VISIBLE);
+                freeReturnView.setVisibility(GONE);
+            } else {
+                freeReturnView.setVisibility(VISIBLE);
+                noFreeReturnView.setVisibility(GONE);
+                freeReturnView.renderData(data);
+            }
         }
     }
 }

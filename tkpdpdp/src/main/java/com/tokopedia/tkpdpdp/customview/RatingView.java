@@ -14,11 +14,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 23/10/2015.
+ * @author Angga.Prasetiyo on 23/10/2015.
  */
 public class RatingView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = RatingView.class.getSimpleName();
-
     private TextView tvQualityRate;
     private TextView tvAccuracyRate;
     private ImageView ivQualityRate;

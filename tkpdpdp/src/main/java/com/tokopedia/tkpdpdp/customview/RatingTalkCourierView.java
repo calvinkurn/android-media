@@ -16,12 +16,10 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by alifa on 5/8/17.
+ * @author alifa on 5/8/17.
  */
 
 public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = RatingView.class.getSimpleName();
-
     private ImageView ivQualityRate;
     private TextView tvReview;
     private TextView tvTalk;
@@ -73,16 +71,25 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
 
     @Override
     public void renderData(@NonNull final ProductDetailData data) {
-        ivQualityRate.setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
-        tvReview.setText(data.getStatistic().getProductReviewCount() + " Ulasan");
-        tvTalk.setText(data.getStatistic().getProductTalkCount() + " Diskusi");
+        ivQualityRate
+                .setImageResource(getRatingDrawable(data.getRating().getProductRatingStarPoint()));
+
+        String ulasan = getContext().getString(R.string.ulasan);
+        String review = data.getStatistic().getProductReviewCount() + ulasan;
+        String diskusi = getContext().getString(R.string.diskusi);
+        String talk = data.getStatistic().getProductTalkCount() + diskusi;
+        String kurir = getContext().getString(R.string.kurir);
+        tvReview.setText(review);
+        tvTalk.setText(talk);
         talkContainer.setOnClickListener(new ClickTalk(data));
         reviewContainer.setOnClickListener(new ClickReview(data));
         int courierCount = 0;
         if (data.getShopInfo().getShopShipments() != null) {
             courierCount = data.getShopInfo().getShopShipments().size();
         }
-        tvCourier.setText(Integer.toString(courierCount) + " Kurir");
+
+        String courierText = String.valueOf(courierCount) + kurir;
+        tvCourier.setText(courierText);
         courierContainer.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,7 +126,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     private class ClickTalk implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickTalk(ProductDetailData data) {
+        ClickTalk(ProductDetailData data) {
             this.data = data;
         }
 
@@ -138,7 +145,7 @@ public class RatingTalkCourierView extends BaseView<ProductDetailData, ProductDe
     private class ClickReview implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickReview(ProductDetailData data) {
+        ClickReview(ProductDetailData data) {
             this.data = data;
         }
 

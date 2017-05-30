@@ -14,11 +14,9 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 /**
- * Created by Angga.Prasetiyo on 29/10/2015.
+ * @author Angga.Prasetiyo on 29/10/2015.
  */
 public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailView> {
-    private static final String TAG = TalkReviewView.class.getSimpleName();
-
     private LinearLayout llTalk;
     private TextView tvTalk;
     private LinearLayout llReview;
@@ -74,14 +72,10 @@ public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void updateTalkCount(int talkCount) {
-        tvTalk.setText(String.valueOf(talkCount));
-    }
-
     private class ClickTalk implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickTalk(ProductDetailData data) {
+        ClickTalk(ProductDetailData data) {
             this.data = data;
         }
 
@@ -100,7 +94,7 @@ public class TalkReviewView extends BaseView<ProductDetailData, ProductDetailVie
     private class ClickReview implements OnClickListener {
         private final ProductDetailData data;
 
-        public ClickReview(ProductDetailData data) {
+        ClickReview(ProductDetailData data) {
             this.data = data;
         }
 

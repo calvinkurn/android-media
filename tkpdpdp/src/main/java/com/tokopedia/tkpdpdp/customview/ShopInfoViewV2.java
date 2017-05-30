@@ -44,7 +44,6 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     private LinearLayout llReputationMedal;
     private ImageView lastOnlineImageView;
 
-    private boolean isShopFavorite = false;
 
     public ShopInfoViewV2(Context context) {
         super(context);
@@ -146,20 +145,25 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
     public void updateFavoriteStatus(int statFave) {
         switch (statFave) {
             case 0:
-                isShopFavorite = false;
                 favoriteButton.setSelected(false);
                 favoriteButton.setClickable(true);
                 favoriteText.setText(getContext().getString(R.string.favoritkan));
-                favoriteText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_add_black_24dp, 0, 0, 0);
+                favoriteText
+                        .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_add_black_24dp, 0, 0, 0);
+
                 favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
                 break;
             case 1:
                 favoriteButton.setSelected(true);
                 favoriteButton.setClickable(false);
                 favoriteText.setText(getContext().getString(R.string.favorited));
-                favoriteText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_check_green_24dp, 0, 0, 0);
-                favoriteText.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-                isShopFavorite = true;
+                favoriteText
+                        .setCompoundDrawablesWithIntrinsicBounds(
+                                R.drawable.ic_check_green_24dp, 0, 0, 0);
+
+                favoriteText.setTextColor(
+                        ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
                 break;
         }
     }
@@ -188,7 +192,8 @@ public class ShopInfoViewV2 extends BaseView<ProductDetailData, ProductDetailVie
         public void onClick(View v) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, String.valueOf(data.getShopInfo().getShopId()));
+            bundle.putString(InboxRouter.PARAM_SHOP_ID,
+                    String.valueOf(data.getShopInfo().getShopId()));
             bundle.putString(InboxRouter.PARAM_OWNER_FULLNAME, data.getShopInfo().getShopName());
             listener.onProductShopMessageClicked(bundle);
         }
