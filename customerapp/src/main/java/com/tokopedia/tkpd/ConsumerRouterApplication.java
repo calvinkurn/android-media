@@ -23,6 +23,7 @@ import com.tokopedia.seller.logout.TkpdSellerLogout;
 import com.tokopedia.seller.myproduct.ManageProduct;
 import com.tokopedia.seller.myproduct.presenter.AddProductPresenterImpl;
 import com.tokopedia.seller.product.view.activity.ProductEditActivity;
+import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
@@ -90,6 +91,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ManageProduct.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToManageEtalase(Context context) {
+        Intent intent = new Intent(context, EtalaseShopEditor.class);
+        startActivity(intent);
     }
 
     @Override
