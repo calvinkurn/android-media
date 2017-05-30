@@ -42,6 +42,9 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         configuration.setNetworkIcon(false);
         Uri url = Uri.parse(applink);
         handlerIntent.setData(url);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+        handlerIntent.putExtras(bundle);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         Intent homeIntent = null;

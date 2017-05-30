@@ -17,6 +17,7 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.review.var.Const;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -166,7 +167,12 @@ public class PurchaseActivity extends DrawerPresenterActivity implements
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

@@ -29,6 +29,7 @@ public interface Constants {
     String REGISTRATION_MESSAGE_ERROR = "FCM Error";
     String EXTRA_PLAYSTORE_URL = "market://details?id=com.tokopedia.tkpd";
     String EXTRA_FROM_PUSH = "from_notif";
+    String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
     String EXTRA_UNREAD = "unread";
     String EXTRA_APPLINK_CATEGORY = "applink_category";
     String EXTRA_APPLINK_RESET = "applink_reset";

@@ -42,6 +42,7 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.SellingService;
@@ -453,6 +454,16 @@ public class ActivitySellingTransaction extends TkpdActivity implements Fragment
         @Override
         public int getCount() {
             return fragmentList.size();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
+            startActivity(HomeRouter.getHomeActivity(this));
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }
