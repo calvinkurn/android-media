@@ -91,6 +91,12 @@ public class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void goToCreateMerchantRedirect(Context context) {
+        //no route to merchant redirect on seller, go to default
+        goToDefaultRoute(context);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         if (SessionHandler.isV4Login(context)) {
             return new Intent(context, SellerHomeActivity.class);

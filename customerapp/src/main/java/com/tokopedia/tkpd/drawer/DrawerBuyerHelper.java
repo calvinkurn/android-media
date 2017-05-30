@@ -55,6 +55,8 @@ public class DrawerBuyerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerHeaderDataBinder.DrawerHeaderListener {
 
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
     private TextView shopName;
     private TextView shopLabel;
 
@@ -447,9 +449,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                 break;
             case TkpdState.DrawerPosition.GOLD_MERCHANT:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication())
-                            .goToMerchantRedirect(context);
+                Intent launchIntent = context.getPackageManager()
+                        .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+
+                if (launchIntent != null) {
+                    context.startActivity(launchIntent);
+                } else if (context.getApplication() instanceof TkpdCoreRouter) {
+                    ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
                 }
                 break;
             default:
@@ -513,13 +519,13 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
-
-
+        Intent launchIntent = context.getPackageManager()
+                .getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+        if (launchIntent != null) {
+            context.startActivity(launchIntent);
+        } else if (context.getApplication() instanceof TkpdCoreRouter) {
+            ((TkpdCoreRouter) context.getApplication()).goToCreateMerchantRedirect(context);
+        }
     }
 
     private void onGoToShop() {

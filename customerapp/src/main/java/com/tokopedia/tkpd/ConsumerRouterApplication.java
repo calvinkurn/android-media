@@ -30,6 +30,7 @@ import com.tokopedia.seller.product.view.activity.ProductEditActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.recharge.fragment.RechargeCategoryFragment;
+import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 /**
@@ -128,6 +129,12 @@ public class ConsumerRouterApplication extends MainApplication implements
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToCreateMerchantRedirect(Context context) {
+        Intent intent = new Intent(context, RedirectCreateShopActivity.class);
         context.startActivity(intent);
     }
 
