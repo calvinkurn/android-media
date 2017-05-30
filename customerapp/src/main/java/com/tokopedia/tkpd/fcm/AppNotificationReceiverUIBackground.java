@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -103,7 +102,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     }
 
     private void handleApplinkNotification(Bundle data) {
-        handleApplinkUTM(data);
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             if (SessionHandler.isV4Login(mContext)
                     && SessionHandler.getLoginID(mContext).equals(
@@ -137,11 +135,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
             else
                 prepareAndExecuteApplinkNotification(data);
         }
-    }
-
-    private void handleApplinkUTM(Bundle bundle){
-        String url = bundle.getString(Constants.ARG_NOTIFICATION_APPLINK);
-        CommonUtils.dumper("utm applinks "+url);
     }
 
     private void prepareAndExecuteApplinkNotification(Bundle data) {
