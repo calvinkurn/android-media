@@ -9,15 +9,11 @@ import android.widget.TextView;
 
 import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
- * Created by alifa on 5/16/17.
+ * @author by alifa on 5/16/17.
  */
 
 public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.WholeSaleViewHolder> {
@@ -58,16 +54,13 @@ public class WholesaleAdapter extends RecyclerView.Adapter<WholesaleAdapter.Whol
     }
 
     static class WholeSaleViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.courier_item_name)
         TextView name;
-
-        @BindView(R2.id.courier_item_info)
         TextView info;
 
-        public WholeSaleViewHolder(View itemView) {
+        WholeSaleViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            name = (TextView) itemView.findViewById(R.id.courier_item_name);
+            info = (TextView) itemView.findViewById(R.id.courier_item_info);
         }
 
         public void bindData(ProductWholesalePrice productWholesalePrice) {

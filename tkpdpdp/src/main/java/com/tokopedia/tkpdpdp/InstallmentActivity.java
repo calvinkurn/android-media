@@ -57,10 +57,15 @@ public class InstallmentActivity extends TActivity {
     }
 
     private void setupViewPager() {
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new InstallmentMonthsFragment(monthsInstallmentItemss3), MONTHS_3);
-        adapter.addFragment(new InstallmentMonthsFragment(monthsInstallmentItemss6), MONTHS_6);
-        adapter.addFragment(new InstallmentMonthsFragment(monthsInstallmentItemss12), MONTHS_12);
+        adapter.addFragment(
+                InstallmentMonthsFragment.newInstance(monthsInstallmentItemss3), MONTHS_3);
+        adapter.addFragment(
+                InstallmentMonthsFragment.newInstance(monthsInstallmentItemss6), MONTHS_6);
+        adapter.addFragment(
+                InstallmentMonthsFragment.newInstance(monthsInstallmentItemss12), MONTHS_12);
+
         viewPager.setAdapter(adapter);
     }
 
@@ -75,16 +80,22 @@ public class InstallmentActivity extends TActivity {
             for (ProductInstallment productInstallment : productInstallments) {
                 Terms terms = productInstallment.getTerms();
                 if (terms != null && terms.getRule3Months() != null) {
-                    monthsInstallmentItemss3.add(new MonthsInstallmentItem(terms.getRule3Months().getPrice(),
-                            terms.getRule3Months().getMinPurchase(), productInstallment.getIcon()));
+                    monthsInstallmentItemss3.add(
+                            new MonthsInstallmentItem(terms.getRule3Months().getPrice(),
+                                    terms.getRule3Months().getMinPurchase(), productInstallment.getIcon())
+                    );
                 }
                 if (terms != null && terms.getRule6Months() != null) {
-                    monthsInstallmentItemss6.add(new MonthsInstallmentItem(terms.getRule6Months().getPrice(),
-                            terms.getRule6Months().getMinPurchase(), productInstallment.getIcon()));
+                    monthsInstallmentItemss6.add(
+                            new MonthsInstallmentItem(terms.getRule6Months().getPrice(),
+                                    terms.getRule6Months().getMinPurchase(), productInstallment.getIcon())
+                    );
                 }
                 if (terms != null && terms.getRule12Months() != null) {
-                    monthsInstallmentItemss12.add(new MonthsInstallmentItem(terms.getRule12Months().getPrice(),
-                            terms.getRule12Months().getMinPurchase(), productInstallment.getIcon()));
+                    monthsInstallmentItemss12.add(
+                            new MonthsInstallmentItem(terms.getRule12Months().getPrice(),
+                                    terms.getRule12Months().getMinPurchase(), productInstallment.getIcon())
+                    );
                 }
             }
         }

@@ -11,33 +11,40 @@ import android.view.ViewGroup;
 import com.tokopedia.core.product.model.etalase.MonthsInstallmentItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.tkpdpdp.R;
-import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.tkpdpdp.adapter.MonthsInstallmentAdapter;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
- * Created by alifa on 5/17/17.
+ * @author by alifa on 5/17/17.
  */
 
 public class InstallmentMonthsFragment extends Fragment {
 
+    private static final String ARGS_MONTH_INSTALLMENT = "ARGS_MONTH_INSTALLMENT";
     private RecyclerView recyclerView;
 
-    private final ArrayList<MonthsInstallmentItem> monthsInstallmentItems;
+    private ArrayList<MonthsInstallmentItem> monthsInstallmentItems;
 
-    private MonthsInstallmentAdapter monthsInstallmentAdapter;
+    public InstallmentMonthsFragment() {
+    }
 
-    public InstallmentMonthsFragment(ArrayList<MonthsInstallmentItem> monthsInstallmentItems) {
-        this.monthsInstallmentItems = monthsInstallmentItems;
+    public static InstallmentMonthsFragment newInstance(ArrayList<MonthsInstallmentItem> listItems) {
+        InstallmentMonthsFragment installmentMonthsFragment = new InstallmentMonthsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(ARGS_MONTH_INSTALLMENT, listItems);
+        installmentMonthsFragment.setArguments(bundle);
+        return installmentMonthsFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            monthsInstallmentItems = getArguments().getParcelableArrayList(ARGS_MONTH_INSTALLMENT);
+        } else {
+            monthsInstallmentItems = new ArrayList<>();
+        }
     }
 
     @Override
@@ -58,11 +65,17 @@ public class InstallmentMonthsFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        monthsInstallmentAdapter = new MonthsInstallmentAdapter(getActivity());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(monthsInstallmentAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider300));
-        monthsInstallmentAdapter.setData(monthsInstallmentItems);
+        MonthsInstallmentAdapter installmentAdapter = new MonthsInstallmentAdapter(getActivity());
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(installmentAdapter);
+        DividerItemDecoration itemDecoration
+                = new DividerItemDecoration(getActivity(), R.drawable.divider300);
+
+        recyclerView.addItemDecoration(itemDecoration);
+        installmentAdapter.setData(monthsInstallmentItems);
     }
 
 
