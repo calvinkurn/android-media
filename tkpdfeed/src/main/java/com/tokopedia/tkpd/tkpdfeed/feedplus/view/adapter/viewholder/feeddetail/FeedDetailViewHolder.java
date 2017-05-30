@@ -90,6 +90,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
             @Override
             public void onClick(View v) {
                 viewListener.onWishlistClicked(
+                        getAdapterPosition(),
                         feedDetailViewModel.getProductId(),
                         feedDetailViewModel.isWishlist());
             }

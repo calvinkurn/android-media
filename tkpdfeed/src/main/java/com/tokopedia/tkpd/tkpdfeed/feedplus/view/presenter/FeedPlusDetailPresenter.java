@@ -57,19 +57,19 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
                 new FeedDetailSubscriber(viewListener));
     }
 
-    public void addToWishlist(String productId) {
+    public void addToWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
         addWishlistUseCase.execute(
                 AddWishlistUseCase.generateParam(productId, sessionHandler),
-                new AddWishlistSubscriber(viewListener));
+                new AddWishlistSubscriber(viewListener, adapterPosition));
     }
 
 
     @Override
-    public void removeFromWishlist(String productId) {
+    public void removeFromWishlist(int adapterPosition, String productId) {
         viewListener.showLoadingProgress();
         removeWishlistUseCase.execute(
                 RemoveWishlistUseCase.generateParam(productId, sessionHandler),
-                new RemoveWishlistSubscriber(viewListener));
+                new RemoveWishlistSubscriber(viewListener, adapterPosition));
     }
 }

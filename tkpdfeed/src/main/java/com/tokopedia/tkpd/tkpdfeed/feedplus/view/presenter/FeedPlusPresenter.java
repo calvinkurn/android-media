@@ -101,6 +101,7 @@ public class FeedPlusPresenter
         this.currentCursor = currentCursor;
     }
 
+    @Override
     public void refreshPage() {
         viewListener.showRefresh();
         currentCursor = "";

@@ -1,9 +1,14 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.pojo.WishlistData;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist.AddWishlistDomain;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -14,6 +19,7 @@ import rx.functions.Func1;
 
 public class AddWishlistMapper implements Func1<Response<TkpdResponse>, AddWishlistDomain> {
     private static final String DEFAULT_ERROR = "Terjadi kesalahan, mohon coba kembali.";
+    private static final String ERROR_MESSAGE = "message_error";
 
     @Override
     public AddWishlistDomain call(Response<TkpdResponse> response) {
@@ -24,14 +30,19 @@ public class AddWishlistMapper implements Func1<Response<TkpdResponse>, AddWishl
         AddWishlistDomain model = new AddWishlistDomain();
 
         if (response.isSuccessful()) {
-            if (!response.body().isNullData()) {
-                WishlistData data = response.body().convertDataObj(WishlistData.class);
+            if (response.code() == ResponseStatus.SC_CREATED) {
+                model.setSuccess(true);
             } else {
-                if (response.body().getErrorMessages() == null
-                        && response.body().getErrorMessages().isEmpty()) {
+                try {
+                    String msgError = "";
+                    JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                    JSONArray jsonArray = jsonObject.getJSONArray(ERROR_MESSAGE);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        msgError += jsonArray.get(i).toString() + " ";
+                    }
+                    throw new ErrorMessageException(msgError);
+                } catch (Exception e) {
                     throw new ErrorMessageException(DEFAULT_ERROR);
-                } else {
-                    throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 }
             }
         } else {

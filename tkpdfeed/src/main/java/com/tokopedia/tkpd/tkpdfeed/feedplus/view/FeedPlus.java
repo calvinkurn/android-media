@@ -72,5 +72,7 @@ public interface FeedPlus{
 
         void fetchNextPage();
 
+        void refreshPage();
+
     }
 }

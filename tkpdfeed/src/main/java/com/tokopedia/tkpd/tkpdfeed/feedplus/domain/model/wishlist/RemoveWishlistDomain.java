@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist;
  */
 
 public class RemoveWishlistDomain {
+    private boolean isSuccess;
+
+    public void setSuccess(boolean success) {
+        this.isSuccess = success;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }

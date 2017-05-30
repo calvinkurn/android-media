@@ -31,6 +31,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusDetailPresent
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
 
 import java.util.ArrayList;
 
@@ -177,11 +178,11 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onWishlistClicked(Integer productId, boolean isWishlist) {
-        if(!isWishlist) {
-            presenter.addToWishlist(String.valueOf(productId));
-        }else{
-            presenter.removeFromWishlist(String.valueOf(productId));
+    public void onWishlistClicked(int adapterPosition, Integer productId, boolean isWishlist) {
+        if (!isWishlist) {
+            presenter.addToWishlist(adapterPosition, String.valueOf(productId));
+        } else {
+            presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
 
         }
     }
@@ -252,6 +253,45 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onErrorAddWishList(String errorMessage, int adapterPosition) {
+        dismissLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(int adapterPosition) {
+        dismissLoadingProgress();
+        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
+            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(true);
+            adapter.notifyItemChanged(adapterPosition);
+        }
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, int adapterPosition) {
+        dismissLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(int adapterPosition) {
+        dismissLoadingProgress();
+        if (adapter.getList().get(adapterPosition) instanceof FeedDetailViewModel) {
+            ((FeedDetailViewModel) adapter.getList().get(adapterPosition)).setWishlist(false);
+            adapter.notifyItemChanged(adapterPosition);
+        }
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    private void dismissLoadingProgress() {
+        if (progressDialog != null && progressDialog.isProgress())
+            progressDialog.dismiss();
+    }
+
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -262,6 +302,5 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         super.onSaveInstanceState(outState);
         outState.putString(ARGS_DETAIL_ID, detailId);
     }
-
 
 }

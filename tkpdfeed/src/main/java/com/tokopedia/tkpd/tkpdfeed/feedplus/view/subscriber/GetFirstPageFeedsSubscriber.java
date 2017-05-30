@@ -21,7 +21,6 @@ import rx.Subscriber;
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     protected final FeedPlus.View viewListener;
-    private static final String TYPE_ACTIVITY = "activity";
     private static final String TYPE_NEW_PRODUCT = "new_product";
     private static final String TYPE_PROMOTION = "promotion";
 

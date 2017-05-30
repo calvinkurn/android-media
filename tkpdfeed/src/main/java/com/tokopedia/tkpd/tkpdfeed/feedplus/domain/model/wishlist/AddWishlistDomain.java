@@ -5,4 +5,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.wishlist;
  */
 
 public class AddWishlistDomain {
+    private boolean isSuccess;
+
+    public void setSuccess(boolean isSuccess) {
+        this.isSuccess = isSuccess;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
 }
