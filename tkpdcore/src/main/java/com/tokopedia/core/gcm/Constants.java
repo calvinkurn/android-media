@@ -41,6 +41,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED = "login_required";
 
     interface Applinks {
+        String HOME = "tokopedia://home";
         String MESSAGE = "tokopedia://message";
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
