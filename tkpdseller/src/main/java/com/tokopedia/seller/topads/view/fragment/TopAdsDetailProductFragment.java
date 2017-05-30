@@ -2,11 +2,11 @@ package com.tokopedia.seller.topads.view.fragment;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -100,7 +100,8 @@ public class TopAdsDetailProductFragment extends TopAdsDetailFragment<TopAdsDeta
     @Override
     protected void initialPresenter() {
         super.initialPresenter();
-        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(context).getAccessToken(context)),
+        presenter = new TopAdsDetailProductPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
+                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
                 new TopAdsDbDataSourceImpl(), new TopAdsCacheDataSourceImpl(getActivity())));
     }
 

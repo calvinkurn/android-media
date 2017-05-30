@@ -34,7 +34,7 @@
                 app:title="@string/label_top_ads_groups" />
 
             <include
-                layout="@layout/include_topads_content_detail" />
+                layout="@layout/include_topads_content_keyword_detail" />
 
         </LinearLayout>
 

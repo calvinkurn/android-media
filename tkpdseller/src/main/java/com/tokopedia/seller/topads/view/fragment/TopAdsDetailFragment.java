@@ -28,6 +28,7 @@ import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
@@ -190,7 +191,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     protected void showDeleteConfirmation(String title, String content) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context, R.style.AppCompatAlertDialogStyle);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle);
         alertDialog.setTitle(title);
         alertDialog.setMessage(content);
         alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

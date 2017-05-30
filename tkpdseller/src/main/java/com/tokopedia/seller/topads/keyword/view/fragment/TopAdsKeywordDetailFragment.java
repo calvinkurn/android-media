@@ -30,12 +30,11 @@ import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.data.model.data.ProductAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 
@@ -49,17 +48,13 @@ import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAc
 
 public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implements TopAdsKeywordDetailViewListener {
 
-    protected LabelView keywordName;
     protected DateLabelView dateLabelView;
-
-    protected LabelView priceAndSchedule;
-    protected LabelView name;
+    protected LabelView keywordName;
+    protected LabelView keywordType;
     private LabelSwitch status;
+    protected LabelView priceMax;
     private LabelView maxBid;
     private LabelView avgCost;
-    protected LabelView start;
-    protected LabelView end;
-    protected LabelView dailyBudget;
     private LabelView sent;
     private LabelView impr;
     private LabelView click;
@@ -70,18 +65,20 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    protected Ad ad;
+    protected KeywordAd ad;
     protected String adId;
+
+    boolean adStatusChanged = false;
 
     @Inject
     TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
-    public static Fragment createInstance(Ad ad, String adId) {
+    public static Fragment createInstance(KeywordAd ad, String adId) {
         Fragment fragment = new TopAdsKeywordDetailFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
-//        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
-//        fragment.setArguments(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -91,52 +88,28 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            setupArguments(savedInstanceState);
-        }
-    }
-
     protected void setupArguments(Bundle bundle) {
         ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
         adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_top_ads_keyword_detail, container);
+    protected void initView(View view) {
+        super.initView(view);
         keywordName = (LabelView) view.findViewById(R.id.keyword);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
 
-        name = (LabelView) view.findViewById(R.id.name);
+        keywordType = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
         maxBid = (LabelView) view.findViewById(R.id.max_bid);
         avgCost = (LabelView) view.findViewById(R.id.avg_cost);
-        start = (LabelView) view.findViewById(R.id.start);
-        end = (LabelView) view.findViewById(R.id.end);
-        dailyBudget = (LabelView) view.findViewById(R.id.daily_budget);
         sent = (LabelView) view.findViewById(R.id.sent);
         impr = (LabelView) view.findViewById(R.id.impr);
         click = (LabelView) view.findViewById(R.id.click);
         ctr = (LabelView) view.findViewById(R.id.ctr);
         favorite = (LabelView) view.findViewById(R.id.favorite);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
-        setHasOptionsMenu(true);
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
-            @Override
-            public void onRefresh(View view) {
-                loadData();
-            }
-        });
+        priceMax = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -146,7 +119,41 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
-        setDatePresent();
+    }
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_top_ads_keyword_detail;
+    }
+
+    @Override
+    protected void initialVar() {
+        super.initialVar();
+        new RefreshHandler(getActivity(), getView(), new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                loadData();
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        // check if the request code is the same
+        if (requestCode == TopAdsConstant.REQUEST_CODE_AD_EDIT && intent != null) {
+            adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adStatusChanged) {
+            refreshAd();
+            setResultAdDetailChanged();
+            adStatusChanged = false;
+        }
     }
 
     @Override
@@ -169,8 +176,8 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
         return super.onOptionsItemSelected(item);
     }
 
-    protected void loadAdDetail(Ad ad) {
-        name.setContent(ad.getName());
+    protected void loadAdDetail(KeywordAd ad) {
+        keywordType.setContent(ad.getkeywordType());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
@@ -183,17 +190,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
         status.setSwitchStatusText(ad.getStatusDesc());
         maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
         avgCost.setContent(ad.getStatAvgClick());
-        start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
-        if (TextUtils.isEmpty(ad.getEndTime())) {
-            end.setContent(ad.getEndDate());
-        } else {
-            end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
-        }
-        if(TextUtils.isEmpty(ad.getPriceDailySpentFmt())) {
-            dailyBudget.setContent(ad.getPriceDailyFmt());
-        }else{
-            dailyBudget.setContent(getString(R.string.topads_format_daily_budget, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
-        }
         sent.setContent(ad.getStatTotalSpent());
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());
@@ -222,11 +218,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     private void deleteAd() {
         showLoading();
         topadsKeywordDetailPresenter.deleteAd(ad.getId());
-    }
-
-    @Override
-    protected void fetchData() {
-        loadData();
     }
 
     @Override
@@ -271,7 +262,7 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     }
 
     @Override
-    public void onAdLoaded(Ad ad) {
+    public void onAdLoaded(KeywordAd ad) {
         this.ad = ad;
         hideLoading();
         loadAdDetail(ad);
