@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * @author normansyahputa on 5/17/17.
  */
-public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsAdListFragment<T> {
+public abstract class TopAdsBaseKeywordListFragment<T extends TopAdsKeywordListPresenter> extends TopAdsBaseListFragment<T> {
 
     public static final int REQUEST_CODE_FILTER_KEYWORD = 21;
     protected static final int REQUEST_CODE_CREATE_KEYWORD = 20;

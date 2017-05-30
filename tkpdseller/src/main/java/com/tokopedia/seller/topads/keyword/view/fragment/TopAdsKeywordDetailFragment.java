@@ -1,22 +1,24 @@
-package com.tokopedia.seller.topads.view.fragment;
-
+package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -28,30 +30,31 @@ import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsDatePickerFragment;
-import com.tokopedia.seller.topads.view.listener.TopAdsDetailViewListener;
+import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordDetailComponent;
+import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordDetailModule;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordDetailViewListener;
+import com.tokopedia.seller.topads.keyword.view.model.KeywordAd;
+import com.tokopedia.seller.topads.keyword.view.presenter.TopadsKeywordDetailPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDetailPresenter;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.core.network.NetworkErrorHelper.createSnackbarWithAction;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by zulfikarrahman on 5/26/17.
  */
-public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> extends TopAdsDatePickerFragment<T> implements TopAdsDetailViewListener, CompoundButton.OnCheckedChangeListener {
 
-    protected static final int REQUEST_CODE_AD_EDIT = 1;
+public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implements TopAdsKeywordDetailViewListener {
 
-    private DateLabelView dateLabelView;
-    protected LabelView priceAndSchedule;
-    protected LabelView name;
+    protected DateLabelView dateLabelView;
+    protected LabelView keywordName;
+    protected LabelView keywordType;
     private LabelSwitch status;
+    protected LabelView priceMax;
     private LabelView maxBid;
     private LabelView avgCost;
-    protected LabelView start;
-    protected LabelView end;
-    protected LabelView dailyBudget;
     private LabelView sent;
     private LabelView impr;
     private LabelView click;
@@ -62,15 +65,21 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     protected ProgressDialog progressDialog;
     private SnackbarRetry snackbarRetry;
 
-    protected Ad ad;
+    protected KeywordAd ad;
     protected String adId;
 
-    protected abstract void refreshAd();
+    boolean adStatusChanged = false;
 
-    protected abstract void editAd();
+    @Inject
+    TopadsKeywordDetailPresenter topadsKeywordDetailPresenter;
 
-    public TopAdsDetailFragment() {
-        // Required empty public constructor
+    public static Fragment createInstance(KeywordAd ad, String adId) {
+        Fragment fragment = new TopAdsKeywordDetailFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(TopAdsExtraConstant.EXTRA_AD, ad);
+        bundle.putString(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -79,31 +88,27 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
+    protected void setupArguments(Bundle bundle) {
+        ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
+        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
+        keywordName = (LabelView) view.findViewById(R.id.keyword);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-        name = (LabelView) view.findViewById(R.id.name);
+        keywordType = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
         maxBid = (LabelView) view.findViewById(R.id.max_bid);
         avgCost = (LabelView) view.findViewById(R.id.avg_cost);
-        start = (LabelView) view.findViewById(R.id.start);
-        end = (LabelView) view.findViewById(R.id.end);
-        dailyBudget = (LabelView) view.findViewById(R.id.daily_budget);
         sent = (LabelView) view.findViewById(R.id.sent);
         impr = (LabelView) view.findViewById(R.id.impr);
         click = (LabelView) view.findViewById(R.id.click);
         ctr = (LabelView) view.findViewById(R.id.ctr);
         favorite = (LabelView) view.findViewById(R.id.favorite);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
-        priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-        dateLabelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openDatePicker();
-            }
-        });
+        priceMax = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -111,13 +116,13 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
             }
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
-        ad = bundle.getParcelable(TopAdsExtraConstant.EXTRA_AD);
-        adId = bundle.getString(TopAdsExtraConstant.EXTRA_AD_ID);
+    protected int getFragmentLayout() {
+        return R.layout.fragment_top_ads_keyword_detail;
     }
 
     @Override
@@ -132,21 +137,10 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if (checked) {
-            turnOnAd();
-        } else {
-            turnOffAd();
-        }
-    }
-
-    boolean adStatusChanged = false;
-
-    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         // check if the request code is the same
-        if (requestCode == REQUEST_CODE_AD_EDIT && intent != null) {
+        if (requestCode == TopAdsConstant.REQUEST_CODE_AD_EDIT && intent != null) {
             adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
         }
     }
@@ -162,32 +156,46 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     }
 
     @Override
-    protected void loadData() {
-        showLoading();
-        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
-        if (ad != null) {
-            onAdLoaded(ad);
-        } else {
-            refreshAd();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_top_ads_keyword_detail, menu);
+        menu.findItem(R.id.menu_edit).setVisible(ad != null);
+        menu.findItem(R.id.menu_delete).setVisible(ad != null);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_edit) {
+            editAd();
+            return true;
+        } else if (item.getItemId() == R.id.menu_delete) {
+            showDeleteConfirmation(getString(R.string.title_delete_keyword_topads), getString(R.string.label_confirm_delete_keyword_topads));
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void showLoading() {
-        if (!swipeToRefresh.isRefreshing()) {
-            progressDialog.show();
+    protected void loadAdDetail(KeywordAd ad) {
+        keywordName.setContent(ad.getName());
+        keywordType.setContent(ad.getkeywordTypeDesc());
+        switch (ad.getStatus()) {
+            case TopAdsConstant.STATUS_AD_ACTIVE:
+            case TopAdsConstant.STATUS_AD_NOT_SENT:
+                setStatusSwitch(true);
+                break;
+            default:
+                setStatusSwitch(false);
+                break;
         }
-    }
-
-    protected void turnOnAd() {
-        showLoading();
-    }
-
-    protected void turnOffAd() {
-        showLoading();
-    }
-
-    protected void deleteAd() {
-        showLoading();
+        status.setSwitchStatusText(ad.getStatusDesc());
+        maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
+        avgCost.setContent(ad.getStatAvgClick());
+        sent.setContent(ad.getStatTotalSpent());
+        impr.setContent(ad.getStatTotalImpression());
+        click.setContent(ad.getStatTotalClick());
+        ctr.setContent(ad.getStatTotalCtr());
+        favorite.setContent(ad.getStatTotalConversion());
     }
 
     protected void showDeleteConfirmation(String title, String content) {
@@ -204,12 +212,104 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         alertDialog.show();
     }
 
+    private void editAd() {
+
+    }
+
+    private void deleteAd() {
+        showLoading();
+        topadsKeywordDetailPresenter.deleteAd(ad.getId());
+    }
+
     @Override
-    public void onAdLoaded(Ad ad) {
+    protected void loadData() {
+        showLoading();
+        setDatePresent();
+        if (ad != null) {
+            onAdLoaded(ad);
+        } else {
+            refreshAd();
+        }
+    }
+
+    private void setDatePresent() {
+        dateLabelView.setDate(getDatePickerPresenter().getStartDate(), getDatePickerPresenter().getEndDate());
+    }
+
+    private void refreshAd() {
+        if (ad != null) {
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), ad.getId());
+        }else{
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), adId);
+        }
+    }
+
+    private void showLoading() {
+        if (!swipeToRefresh.isRefreshing()) {
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerTopAdsKeywordDetailComponent
+                .builder()
+                .appComponent(getComponent(AppComponent.class))
+                .topAdsKeywordDetailModule(new TopAdsKeywordDetailModule())
+                .build()
+                .inject(this);
+    }
+
+    @Override
+    public void onAdLoaded(KeywordAd ad) {
         this.ad = ad;
         hideLoading();
         loadAdDetail(ad);
         getActivity().invalidateOptionsMenu();
+    }
+
+
+    protected void setStatusSwitch(boolean checked) {
+        status.setSwitchEnabled(true);
+        status.setListenerValue(null);
+        status.setChecked(checked);
+        status.setListenerValue(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    turnOnAd();
+                } else {
+                    turnOffAd();
+                }
+            }
+        });
+    }
+
+    protected void turnOnAd() {
+        showLoading();
+    }
+
+    protected void turnOffAd() {
+        showLoading();
+    }
+
+    protected void setResultAdDetailChanged() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
+
+    private void setResultAdDeleted() {
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     private void hideLoading() {
@@ -296,78 +396,9 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         snackbarRetry.showRetrySnackbar();
     }
 
-    protected void loadAdDetail(Ad ad) {
-        name.setContent(ad.getName());
-        switch (ad.getStatus()) {
-            case TopAdsConstant.STATUS_AD_ACTIVE:
-            case TopAdsConstant.STATUS_AD_NOT_SENT:
-                setStatusSwitch(true);
-                break;
-            default:
-                setStatusSwitch(false);
-                break;
-        }
-        status.setSwitchStatusText(ad.getStatusDesc());
-        maxBid.setContent(getString(R.string.top_ads_bid_format_text, ad.getPriceBidFmt(), ad.getLabelPerClick()));
-        avgCost.setContent(ad.getStatAvgClick());
-        start.setContent(ad.getStartDate() + " - " + ad.getStartTime());
-        if (TextUtils.isEmpty(ad.getEndTime())) {
-            end.setContent(ad.getEndDate());
-        } else {
-            end.setContent(getString(R.string.top_ads_range_date_text, ad.getEndDate(), ad.getEndTime()));
-        }
-        if(TextUtils.isEmpty(ad.getPriceDailySpentFmt())) {
-            dailyBudget.setContent(ad.getPriceDailyFmt());
-        }else{
-            dailyBudget.setContent(getString(R.string.topads_format_daily_budget, ad.getPriceDailySpentFmt(), ad.getPriceDailyFmt()));
-        }
-        sent.setContent(ad.getStatTotalSpent());
-        impr.setContent(ad.getStatTotalImpression());
-        click.setContent(ad.getStatTotalClick());
-        ctr.setContent(ad.getStatTotalCtr());
-        favorite.setContent(ad.getStatTotalConversion());
-    }
-
-    protected void setStatusSwitch(boolean checked) {
-        status.setSwitchEnabled(true);
-        status.setListenerValue(null);
-        status.setChecked(checked);
-        status.setListenerValue(this);
-    }
-
-    protected void setResultAdDetailChanged() {
-        Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-    }
-
-    private void setResultAdDeleted() {
-        Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_DELETED, true);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        menu.clear();
-        inflater.inflate(R.menu.menu_top_ads_detail, menu);
-        menu.findItem(R.id.menu_edit).setVisible(ad != null);
-        menu.findItem(R.id.menu_delete).setVisible(ad != null);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_edit) {
-            editAd();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.unSubscribe();
+        topadsKeywordDetailPresenter.unSubscribe();
     }
 }

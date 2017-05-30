@@ -582,6 +582,12 @@
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
     <string name="top_ads_keyword_choose_keyword_type">Pilih Tipe Kata Kunci</string>
+
+    <string name="topads_label_keyword_type">Tipe Kata Kunci</string>
+    <string name="title_delete_keyword_topads">Hapus kata kunci</string>
+    <string name="label_confirm_delete_keyword_topads">Apakah anda yakin untuk menghapus keyword ini?</string>
+
+    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
     <string name="top_ads_keyword_phrase_match_positive_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
                                                                  <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]></string>
