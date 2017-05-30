@@ -35,6 +35,7 @@ import rx.Subscriber;
 public class PhoneVerificationPresenterImpl implements PhoneVerificationPresenter {
 
     private static final String OTP_TYPE_PHONE_NUMBER_VERIFICATION = "11";
+    private static final String TOKEN_BEARER = "Bearer ";
 
     private final PhoneVerificationFragmentView viewListener;
     private RequestOtpUseCase requestOtpUseCase;
@@ -48,7 +49,7 @@ public class PhoneVerificationPresenterImpl implements PhoneVerificationPresente
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
         bundle.putString(AccountsService.AUTH_KEY,
-                "Bearer " + sessionHandler.getAccessToken(viewListener.getActivity()));
+                TOKEN_BEARER + sessionHandler.getAccessToken(viewListener.getActivity()));
         bundle.putBoolean(AccountsService.USING_BOTH_AUTHORIZATION,
                 true);
         AccountsService accountsService = new AccountsService(bundle);

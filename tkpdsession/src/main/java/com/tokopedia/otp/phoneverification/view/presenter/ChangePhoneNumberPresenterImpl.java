@@ -22,6 +22,7 @@ import com.tokopedia.session.R;
 
 public class ChangePhoneNumberPresenterImpl implements ChangePhoneNumberPresenter {
 
+    private static final String TOKEN_BEARER = "Bearer ";
     private final ChangePhoneNumberView viewListener;
     private ChangePhoneNumberUseCase changePhoneNumberUseCase;
 
@@ -31,7 +32,7 @@ public class ChangePhoneNumberPresenterImpl implements ChangePhoneNumberPresente
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(viewListener.getActivity());
         bundle.putString(AccountsService.AUTH_KEY,
-                "Bearer " + sessionHandler.getAccessToken(viewListener.getActivity()));
+                TOKEN_BEARER + sessionHandler.getAccessToken(viewListener.getActivity()));
         bundle.putBoolean(AccountsService.USING_BOTH_AUTHORIZATION,
                 true);
         AccountsService accountsService = new AccountsService(bundle);
