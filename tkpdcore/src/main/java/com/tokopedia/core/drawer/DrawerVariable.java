@@ -458,9 +458,14 @@ public class DrawerVariable {
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                 break;
             case TkpdState.DrawerPosition.GOLD_MERCHANT:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    ((TkpdCoreRouter) context.getApplication())
-                            .goToMerchantRedirect(context);
+                Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                if(launchIntent != null){
+                    context.startActivity(launchIntent);
+                } else {
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication())
+                                .goToCreateMerchantRedirect(context);
+                    }
                 }
                 break;
             case TkpdState.DrawerPosition.SETTINGS:
