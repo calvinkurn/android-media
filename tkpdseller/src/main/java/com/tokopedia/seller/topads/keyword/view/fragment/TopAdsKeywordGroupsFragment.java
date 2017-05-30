@@ -1,5 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.widget.EditText;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordNewChooseGroupComponent;
@@ -21,6 +24,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListV
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
+import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
 
 import java.util.List;
 
@@ -30,13 +34,32 @@ import javax.inject.Inject;
  * @author normansyahputa on 5/26/17.
  */
 
-public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter> implements TopAdsKeywordGroupListView {
+public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter>
+        implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
+    protected TopAdsFilterContentFragment.Callback callback;
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
     private EditText groupFilterSearch;
     private RecyclerView groupFilterRecyclerView;
+    private GroupAd selection;
+    /**
+     * Sign for title filter list
+     */
+    private boolean active;
 
+    public static TopAdsKeywordGroupsFragment createInstance(long selectedGroupId, long currentGroupId, String currentGroupName) {
+        return new TopAdsKeywordGroupsFragment();
+    }
+
+    public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
+        TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
+        Bundle argument = new Bundle();
+        if (currentGroupAd != null)
+            argument.putParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, currentGroupAd);
+        topAdsKeywordGroupsFragment.setArguments(argument);
+        return topAdsKeywordGroupsFragment;
+    }
 
     @Override
     protected String getScreenName() {
@@ -67,6 +90,9 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        if (savedInstanceState == null && getArguments() != null) {
+            selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        }
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
         groupFilterSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -120,11 +146,6 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     }
 
     @Override
-    protected void fetchData() {
-
-    }
-
-    @Override
     public void onGetGroupAdList(List<GroupAd> groupAds) {
         onSearchAdLoaded(groupAds, groupAds.size());
     }
@@ -136,6 +157,46 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
 
     @Override
     protected TopAdsAdListAdapter initializeTopAdsAdapter() {
-        return new TopAdsKeywordGroupListAdapter();
+        TopAdsKeywordGroupListAdapter topAdsKeywordGroupListAdapter = new TopAdsKeywordGroupListAdapter();
+        topAdsKeywordGroupListAdapter.setListener(this);
+        return topAdsKeywordGroupListAdapter;
+    }
+
+    @Override
+    public String getTitle(Context context) {
+        return "Filter Group";
+    }
+
+    @Override
+    public Intent addResult(Intent intent) {
+        if (selection != null)
+            intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, selection);
+
+        return intent;
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    @Override
+    public void setCallback(TopAdsFilterContentFragment.Callback callback) {
+        this.callback = callback;
+    }
+
+    @Override
+    public void notifySelect(GroupAd groupAd) {
+        this.selection = groupAd;
+    }
+
+    @Override
+    public boolean isSelection(GroupAd groupAd) {
+        return selection != null && selection.equals(groupAd);
     }
 }

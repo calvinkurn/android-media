@@ -44,15 +44,18 @@
         <activity
             android:name=".topads.view.activity.TopAdsFilterGroupActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsFilterProductPromoActivity"
             android:label="@string/title_top_ads_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
@@ -132,24 +135,31 @@
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordListActivity"
             android:label="@string/title_top_ads_dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordFilterActivity"
             android:label="@string/title_top_ads_dashboard"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordAddActivity"
             android:label="@string/title_top_ads_keyword_add_detail"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailActivity"
+            android:label="@string/top_ads_title_keyword_edit_keyword"
+            android:screenOrientation="portrait"
+            android:theme="@style/BasicThemeActionBar"/>
+        <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
+            android:exported="true"
             android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait"
-            android:theme="@style/BasicThemeActionBar"
-            android:exported="true"/>
+            android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".shop.ShopEditorActivity"
             android:label="@string/shop_setting"
@@ -212,8 +222,9 @@
         <activity
             android:name=".gmsubscribe.view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".product.view.activity.ProductDraftEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".product.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />
@@ -242,7 +253,7 @@
             android:theme="@style/BasicThemeActionBar" />
         <activity
             android:name=".product.view.activity.YoutubeAddVideoActivity"
-            android:label="@string/product_label_video"
+            android:label="@string/product_product_label_video"
             android:theme="@style/BasicThemeActionBar" />
 
         <activity

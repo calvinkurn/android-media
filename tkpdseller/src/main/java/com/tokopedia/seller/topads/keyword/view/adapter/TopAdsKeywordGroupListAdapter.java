@@ -18,10 +18,19 @@ import java.util.List;
 
 public class TopAdsKeywordGroupListAdapter extends TopAdsAdListAdapter {
     private List<GroupAd> data;
+    private Listener listener;
 
     public TopAdsKeywordGroupListAdapter() {
         super();
         this.data = new ArrayList<>();
+    }
+
+    public Listener getListener() {
+        return listener;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     public int getDataSize() {
@@ -37,7 +46,11 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsAdListAdapter {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case GroupAd.TYPE:
-                return new TopAdsKeywordGroupViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_name_item, parent, false));
+                TopAdsKeywordGroupViewHolder topAdsKeywordGroupViewHolder
+                        = new TopAdsKeywordGroupViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_group_name_item, parent, false));
+                topAdsKeywordGroupViewHolder.setListener(listener);
+                return topAdsKeywordGroupViewHolder;
             default:
                 return super.onCreateViewHolder(parent, viewType);
         }
@@ -88,5 +101,11 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsAdListAdapter {
     public void clearData() {
         this.data.clear();
         notifyDataSetChanged();
+    }
+
+    public interface Listener {
+        void notifySelect(GroupAd groupAd);
+
+        boolean isSelection(GroupAd groupAd);
     }
 }
