@@ -553,5 +553,8 @@
     <string name="error_keyword_per_group_reach_limit">Batas kata kunci per grup adalah 50.</string>
     <string name="key_word">Kata Kunci</string>
     <string name="negative">Negatif</string>
+    <string name="topads_label_keyword_type">Tipe Kata Kunci</string>
+    <string name="title_delete_keyword_topads">Hapus kata kunci</string>
+    <string name="label_confirm_delete_keyword_topads">Apakah anda yakin untuk menghapus keyword ini?</string>
 
 </resources>
