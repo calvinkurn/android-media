@@ -151,12 +151,11 @@
 
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordEditDetailActivity"
-            android:label="@string/top_ads_title_keyword_edit_keyword"
+            android:label="@string/top_ads_keyword_title_keyword_edit_keyword"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar"/>
         <activity
             android:name=".topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity"
-            android:exported="true"
             android:label="@string/top_ads_title_keyword_add_keyword"
             android:screenOrientation="portrait"
             android:theme="@style/BasicThemeActionBar" />

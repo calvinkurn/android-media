@@ -62,8 +62,8 @@
         <item>Exact Match</item>
     </string-array>
     <string-array name="keyword_type_spinner">
-        <item>@string/top_ads_choose_keyword_type</item>
-        <item>@string/top_ads_phrase_match</item>
-        <item>@string/top_ads_exact_match</item>
+        <item>@string/top_ads_keyword_choose_keyword_type</item>
+        <item>@string/top_ads_keyword_phrase_match</item>
+        <item>@string/top_ads_keyword_exact_match</item>
     </string-array>
 </resources>

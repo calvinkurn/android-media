@@ -1,11 +1,13 @@
 package com.tokopedia.seller.topads.keyword.data.mapper;
 
 import com.tokopedia.seller.topads.data.model.response.PageDataResponse;
+import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.KeywordAddResponseDatum;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.AddKeywordRequest;
 import com.tokopedia.seller.topads.keyword.data.model.cloud.request.keywordadd.KeywordAddRequestDatum;
 import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModelDatum;
 import com.tokopedia.seller.topads.keyword.domain.model.keywordadd.AddKeywordDomainModel;
+import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,8 @@ public class KeywordAddDomainDataMapper
 
     public static final String DEFAULT_TOGGLE = "1";
     public static final String DEFAULT_STATUS = "1";
-    public static final String DEFAULT_SOURCE = "dashboard_user_add_keyword_positive";
+    public static final String DEFAULT_SOURCE_POS = "dashboard_user_add_keyword_positive";
+    public static final String DEFAULT_SOURCE_NEG = "dashboard_user_add_keyword_negative";
 
     @Inject
     public KeywordAddDomainDataMapper() {
@@ -60,7 +63,7 @@ public class KeywordAddDomainDataMapper
      groupId         <= groupId
      toggle          <= 1
      status          <= 1
-     source          <= "android"
+     source          <= "dashboard_user_add_keyword_positive/negative"
      */
 
     public static AddKeywordRequest convertDomainToRequestData(AddKeywordDomainModel addKeywordDomainModel){
@@ -70,13 +73,16 @@ public class KeywordAddDomainDataMapper
         for (int i = 0, sizei = domainModelList.size(); i<sizei;i++){
             AddKeywordDomainModelDatum domainModel = domainModelList.get(i);
             KeywordAddRequestDatum datum = new KeywordAddRequestDatum();
+            @KeywordTypeDef int keywordTypeId = domainModel.getKeyWordTypeId();
             datum.setGroupId(domainModel.getGroupId());
             datum.setKeywordTag(domainModel.getKeywordTag());
-            datum.setKeywordTypeId(String.valueOf(domainModel.getKeyWordTypeId()));
+            datum.setKeywordTypeId(String.valueOf(keywordTypeId));
             datum.setShopId(domainModel.getShopId());
             datum.setToggle(DEFAULT_TOGGLE);
             datum.setStatus(DEFAULT_STATUS);
-            datum.setSource(DEFAULT_SOURCE);
+            datum.setSource(KeywordTypeMapper.isKeywordPositive(keywordTypeId)?
+                    DEFAULT_SOURCE_POS:
+                    DEFAULT_SOURCE_NEG);
             datumList.add(datum);
         }
         addKeywordRequest.setData(datumList);

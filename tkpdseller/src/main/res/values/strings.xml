@@ -441,8 +441,8 @@
     </string-array>
 
     <string-array name="top_ads_keyword_type_entries">
-        <item>@string/top_ads_phrase_match</item>
-        <item>@string/top_ads_exact_match</item>
+        <item>@string/top_ads_keyword_phrase_match</item>
+        <item>@string/top_ads_keyword_exact_match</item>
     </string-array>
     <string-array name="top_ads_keyword_type_values">
         <item>1</item>
@@ -490,6 +490,9 @@
         <item>@string/product_pre_order_value_day</item>
         <item>@string/product_pre_order_value_week</item>
     </string-array>
+
+    <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
+    <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
 
     <string name="product_free_return_values_active">3</string>
     <string name="product_free_return_values_inactive">0</string>
@@ -568,23 +571,21 @@
     <string name="top_ads_negative">Negatif</string>
     <string name="search_group">Cari Grup</string>
     <string name="title_top_ads_keyword_add">Tambah Kata Kunci</string>
-    <string name="count">(%1$d)</string>
     <string name="top_ads_broad_match">Broad Match</string>
-    <string name="top_ads_phrase_match">Phrase Match</string>
-    <string name="top_ads_exact_match">Exact Match</string>
+    <string name="top_ads_keyword_phrase_match">Phrase Match</string>
+    <string name="top_ads_keyword_exact_match">Exact Match</string>
     <string name="top_ads_broad_match_positive_description">Kata Kunci dengan jangkauan pencarian luas</string>
-    <string name="top_ads_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
-    <string name="top_ads_exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
+    <string name="top_ads_keyword_phrase_match_positive_description">Kata Kunci dengan jangkauan pencarian yang lebih spesifik</string>
+    <string name="top_ads_keyword_exact_match_positive_description">Kata Kunci pencarian sama dengan kata kunci yang telah dibuat</string>
     <string name="top_ads_keyword_type_hint">Kata Kunci</string>
-    <string name="top_ads_title_keyword_edit_keyword">Ubah Kata Kunci</string>
+    <string name="top_ads_keyword_title_keyword_edit_keyword">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_change_hint">Ubah Kata Kunci</string>
     <string name="top_ads_keyword_cost_per_click">Biaya Per Klik</string>
-
-    <string name="dialog_cancel_message">Apakah Anda yakin ingin keluar?</string>
-    <string name="dialog_cancel_title">Perubahan yang Anda lakukan tidak akan tersimpan.</string>
-    <string name="top_ads_choose_keyword_type">Pilih Tipe Kata Kunci</string>
+    <string name="top_ads_keyword_choose_keyword_type">Pilih Tipe Kata Kunci</string>
     <string name="top_ads_keyword_type">Tipe Kata Kunci</string>
-    <string name="top_ads_phrase_match_positive_example">Contoh kata kunci: Pakaian Wanita\nContoh pencarian: Pakaian Wanita Murah</string>
-
-    <string name="top_ads_exact_match_positive_example">Contoh kata kunci: Pakaian Wanita\nContoh pencarian: Pakaian Wanita</string>
+    <string name="top_ads_keyword_phrase_match_positive_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i><br />]]>
+                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita <![CDATA[<i><b>Murah</b></i>]]></string>
+    <string name="top_ads_keyword_exact_match_positive_example"><![CDATA[<i>Contoh kata kunci:</i> <i><b>Pakaian Wanita</b></i> <br />]]>\n
+                                                                 <![CDATA[<i>Contoh pencarian:</i>]]> Pakaian Wanita</string>
+    <string name="top_ads_keyword_has_been_added">Kata Kunci berhasil ditambahkan</string>
 </resources>

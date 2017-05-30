@@ -123,8 +123,9 @@ public class TopAdsKeywordListFragment extends TopAdsBaseKeywordListFragment<Top
 
     @Override
     public void onCreateKeyword() {
-        Intent intent = new Intent(getActivity(), TopAdsKeywordNewChooseGroupActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_CREATE_KEYWORD);
+        TopAdsKeywordNewChooseGroupActivity.start(
+                TopAdsKeywordListFragment.this,
+                getActivity(), REQUEST_CODE_CREATE_KEYWORD, true);
     }
 
     @Override

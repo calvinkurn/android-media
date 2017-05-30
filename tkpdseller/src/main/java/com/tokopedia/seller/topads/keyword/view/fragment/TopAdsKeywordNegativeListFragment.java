@@ -84,8 +84,9 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
 
     @Override
     public void onCreateKeyword() {
-        Intent intent = new Intent(getActivity(), TopAdsKeywordNewChooseGroupActivity.class);
-        startActivityForResult(intent, REQUEST_CODE_CREATE_KEYWORD);
+        TopAdsKeywordNewChooseGroupActivity.start(
+                TopAdsKeywordNegativeListFragment.this,
+                getActivity(), REQUEST_CODE_CREATE_KEYWORD, false);
     }
 
     @Override
