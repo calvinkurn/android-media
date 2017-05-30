@@ -13,6 +13,10 @@ public class DataRequest<T> {
     @Expose
     T data;
 
+    public DataRequest(){
+
+    }
+
     public DataRequest(T dataBulkKeyword) {
         this.data = dataBulkKeyword;
     }
