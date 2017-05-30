@@ -258,10 +258,30 @@ public class BuildAndShowNotification {
                 mBuilder.setVibrate(configuration.getVibratePattern());
             }
         }
+        PendingIntent resultPendingIntent;
+        if (applinkNotificationPass.getTaskStackBuilder() != null) {
+            resultPendingIntent = applinkNotificationPass.getTaskStackBuilder().getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        0,
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            } else {
+                resultPendingIntent = PendingIntent.getActivity(
+                        mContext,
+                        applinkNotificationPass.getNotificationId(),
+                        applinkNotificationPass.getIntent(),
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+            }
+        }
 
         stackBuilder.addNextIntent(applinkNotificationPass.getIntent());
 
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
         Notification notif = mBuilder.build();
         if (configuration.isVibrate() && configuration.isBell()) {

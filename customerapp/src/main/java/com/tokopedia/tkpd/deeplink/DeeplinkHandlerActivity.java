@@ -41,7 +41,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         if (getIntent() != null) {
             Intent intent = getIntent();
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             deepLinkDelegate.dispatchFrom(this, intent);
             if (getIntent().getExtras() != null) {
                 Bundle bundle = getIntent().getExtras();

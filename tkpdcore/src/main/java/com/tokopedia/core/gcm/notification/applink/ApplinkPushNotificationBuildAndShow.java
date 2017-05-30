@@ -50,8 +50,7 @@ public class ApplinkPushNotificationBuildAndShow extends AbstractApplinkBuildAnd
         } else {
             homeIntent = HomeRouter.getHomeActivity(context);
         }
-        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        stackBuilder.addNextIntent(homeIntent);
+        stackBuilder.addNextIntentWithParentStack(homeIntent);
         stackBuilder.addNextIntent(handlerIntent);
 
         ApplinkNotificationPass applinkNotificationPass = builder
