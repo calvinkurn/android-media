@@ -40,4 +40,6 @@ public interface TkpdCoreRouter {
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
     void onLogout(AppComponent appComponent);
+
+    void goToCreateMerchantRedirect(Context context);
 }

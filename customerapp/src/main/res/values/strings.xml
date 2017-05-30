@@ -14,4 +14,5 @@
 
     <!--favorite page-->
     <string name="msg_empty_wishlist">Empty wishlist</string>
+    <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
 </resources>

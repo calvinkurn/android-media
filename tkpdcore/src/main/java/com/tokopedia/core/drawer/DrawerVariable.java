@@ -78,6 +78,8 @@ public class DrawerVariable {
     private static final String CACHE_TOKO_CASH_OTHER_ACTION = "CACHE_TOKO_CASH_OTHER_ACTION";
     private static final String CACHE_TOKO_CASH_LINK = "CACHE_TOKO_CASH_LINK";
 
+    private static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
+
     private NetworkInteractor networkInteractor;
     public AppCompatActivity context;
     private ViewHolder holder;
@@ -259,10 +261,16 @@ public class DrawerVariable {
             @Override
             public void onClick(View v) {
                 if (Session.getShopID().equals("0") || Session.getShopID().equals("")) {
-                    Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    context.startActivity(intent);
+                    Intent launchIntent = context.getPackageManager().getLaunchIntentForPackage(TOP_SELLER_APPLICATION_PACKAGE);
+                    if(launchIntent != null){
+                        context.startActivity(launchIntent);
+                    } else {
+                        if (context.getApplication() instanceof TkpdCoreRouter) {
+                            ((TkpdCoreRouter) context.getApplication())
+                                    .goToCreateMerchantRedirect(context);
+                        }
+                    }
+
                 } else {
                     Intent intent = new Intent(context, ShopInfoActivity.class);
                     intent.putExtras(ShopInfoActivity.createBundle(Session.getShopID(), "", model.header.shopName, model.header.shopIcon, 0));

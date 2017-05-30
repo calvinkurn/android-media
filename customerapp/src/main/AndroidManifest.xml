@@ -153,6 +153,10 @@
 
         <activity android:name=".truecaller.TruecallerActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".redirect.RedirectCreateShopActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            />
     </application>
 
 </manifest>
