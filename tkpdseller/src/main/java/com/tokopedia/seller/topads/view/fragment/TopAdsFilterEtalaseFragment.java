@@ -10,18 +10,19 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
-import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.data.model.data.Etalase;
-import com.tokopedia.seller.topads.view.model.RadioButtonItem;
+import com.tokopedia.seller.topads.di.TopAdsGetEtalaseListDI;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsWhiteRetryDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsEtalaseListView;
+import com.tokopedia.seller.topads.view.model.RadioButtonItem;
 import com.tokopedia.seller.topads.view.presenter.TopAdsEtalaseListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment<TopAdsEtalaseListPresenter>
-    implements TopAdsEtalaseListView{
+        implements TopAdsEtalaseListView {
 
     private int selectedEtalaseId;
     private String shopId;
@@ -48,7 +49,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        shopId = new SessionHandler(context).getShopID();
+        shopId = new SessionHandler(getActivity()).getShopID();
 //        adapter.setOnRetryListenerRV(new RetryDataBinder.OnRetryListener() {
 //            @Override
 //            public void onRetryCliked() {
@@ -137,7 +138,7 @@ public class TopAdsFilterEtalaseFragment extends TopAdsFilterRadioButtonFragment
     }
 
 
-    private RadioButtonItem getDefaultRadioButton (){
+    private RadioButtonItem getDefaultRadioButton() {
         RadioButtonItem defaultRadioButton = new RadioButtonItem();
         defaultRadioButton.setName(getString(R.string.title_all_etalase));
         defaultRadioButton.setValue("0");

@@ -14,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
@@ -27,7 +27,7 @@ import com.tokopedia.seller.topads.keyword.view.listener.KeywordListListener;
  * Created by nathan on 5/15/17.
  */
 
-public class TopAdsKeywordListActivity extends TActivity implements
+public class TopAdsKeywordListActivity extends BaseActivity implements
         HasComponent<AppComponent>, SearchView.OnQueryTextListener,
         KeywordListListener.Listener {
     public static final int OFFSCREEN_PAGE_LIMIT = 2;
@@ -41,7 +41,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_date_picker);
+        setContentView(R.layout.activity_keyword_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         TabLayout tabLayout = (TabLayout) findViewById(R.id.indicator);
         keywordListTablayout = new KeywordListListener(tabLayout, this);
@@ -68,8 +68,8 @@ public class TopAdsKeywordListActivity extends TActivity implements
         viewPager.addOnPageChangeListener(keywordListTablayout);
         DatePickerTabListener tabListener = new DatePickerTabListener(viewPager);
         tabLayout.setOnTabSelectedListener(tabListener);
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.key_word));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.negative));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_key_word));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.top_ads_negative));
     }
 
     private void fabOnClick() {
@@ -78,8 +78,8 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     private TopAdsPagerAdapter getViewPagerAdapter() {
         String[] titles = {
-                getString(R.string.key_word),
-                getString(R.string.negative)
+                getString(R.string.top_ads_key_word),
+                getString(R.string.top_ads_negative)
         };
         return new TopAdsPagerAdapter(getSupportFragmentManager(), titles);
     }
@@ -96,7 +96,7 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_top_ads_list, menu);
+        getMenuInflater().inflate(R.menu.menu_keyword_top_ads_list, menu);
         searchItem = menu.findItem(R.id.menu_search);
         MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -147,7 +147,10 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_filter) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.menu_filter) {
             if (getTopAdsBaseKeywordListFragment() != null) {
                 getTopAdsBaseKeywordListFragment().onFilterChanged("sekarang");
             }
@@ -158,12 +161,11 @@ public class TopAdsKeywordListActivity extends TActivity implements
 
     @Override
     public void removeListener() {
-        searchView.setQuery("", false);
-        searchView.clearFocus();
-        searchView.setIconified(true);
-        ;
-        searchView.setOnQueryTextListener(null);
-        searchItem.collapseActionView();
+//        searchView.setQuery("", false);
+//        searchView.clearFocus();
+//        searchView.setIconified(true);
+//        searchView.setOnQueryTextListener(null);
+//        searchItem.collapseActionView();
     }
 
     @Override

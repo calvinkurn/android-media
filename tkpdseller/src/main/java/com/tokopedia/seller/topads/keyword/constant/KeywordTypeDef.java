@@ -27,4 +27,6 @@ public @interface KeywordTypeDef {
     String END_DATE = "end_date";
     String PAGE = "page";
     String IS_POSITIVE = "is_positive";
+    String GROUP_ID = "group";
+    String KEYWORD_STATUS = "status";
 }

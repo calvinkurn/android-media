@@ -2,6 +2,7 @@ package com.tokopedia.seller.topads.keyword.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -10,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -35,9 +35,9 @@ import javax.inject.Inject;
 
 public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment implements TopAdsKeywordNewChooseGroupView {
 
-    TkpdTextInputLayout inputLayoutChooseGroup;
-    TopAdsCustomAutoCompleteTextView autoCompleteChooseGroup;
-    Button buttonNext;
+    private TkpdTextInputLayout inputLayoutChooseGroup;
+    private TopAdsCustomAutoCompleteTextView autoCompleteChooseGroup;
+    private View buttonNext;
 
     @Inject
     public TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
@@ -56,20 +56,11 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_top_ads_keyword_new_choose_group, container, false);
-        topAdsKeywordNewChooseGroupPresenter.attachView(this);
 
-        buttonNext = (Button) view.findViewById(R.id.button_submit);
+        buttonNext = view.findViewById(R.id.button_next);
         adapterChooseGroup = new TopAdsAutoCompleteAdapter(getActivity(), R.layout.item_top_ads_autocomplete_text);
         inputLayoutChooseGroup = (TkpdTextInputLayout) view.findViewById(R.id.input_layout_choose_group);
-        autoCompleteChooseGroup = (TopAdsCustomAutoCompleteTextView) view.findViewById(R.id.choose_group_auto_text);
-
-
-        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
-            @Override
-            public ArrayList<String> getData() {
-                return groupNames;
-            }
-        });
+        autoCompleteChooseGroup = (TopAdsCustomAutoCompleteTextView) inputLayoutChooseGroup.findViewById(R.id.choose_group_auto_text);
         autoCompleteChooseGroup.setAdapter(adapterChooseGroup);
         autoCompleteChooseGroup.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,6 +87,14 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                 }
             }
         });
+
+        adapterChooseGroup.setListenerGetData(new TopAdsAutoCompleteAdapter.ListenerGetData() {
+            @Override
+            public ArrayList<String> getData() {
+                return groupNames;
+            }
+        });
+
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,6 +112,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
                 .appComponent(getComponent(AppComponent.class))
                 .build()
                 .inject(this);
+        topAdsKeywordNewChooseGroupPresenter.attachView(this);
     }
 
     @Override
@@ -135,5 +135,26 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     @Override
     public void onGetGroupAdListError() {
         inputLayoutChooseGroup.setError(getString(R.string.error_connection_problem));
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        topAdsKeywordNewChooseGroupPresenter.detachView();
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, boolean isEndOfFile) {
+
+    }
+
+    @Override
+    public void onSearchAdLoaded(@NonNull List adList, int totalItem) {
+
+    }
+
+    @Override
+    public void onLoadSearchAdError() {
+
     }
 }

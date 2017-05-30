@@ -1,6 +1,5 @@
 package com.tokopedia.seller.topads.keyword.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordNewChooseGroupView;
@@ -63,10 +62,9 @@ public class TopAdsKeywordNewChooseGroupPresenterImpl extends TopAdsKeywordNewCh
 
             @Override
             public void onNext(String s) {
-                if (!s.equals("")) {
-                    topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(s)
-                            , getSubscriberSearchGroupName());
-                }
+                // remove checking cause param generator already handle it.
+                topAdsSearchGroupAdsNameUseCase.execute(TopAdsSearchGroupAdsNameUseCase.createRequestParams(s)
+                        , getSubscriberSearchGroupName());
             }
         };
     }

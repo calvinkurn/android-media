@@ -8,6 +8,7 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.domain.interactor.KeywordDashboardUseCase;
 import com.tokopedia.seller.topads.keyword.domain.model.KeywordDashboardDomain;
+import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordNegativeParam;
 import com.tokopedia.seller.topads.keyword.view.model.KeywordPositiveParam;
@@ -21,7 +22,7 @@ import rx.Subscriber;
  * @author normansyahputa on 5/17/17.
  */
 
-public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter implements TopAdsAdListPresenter<GroupAd> {
+public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter<TopAdsListViewListener> implements TopAdsAdListPresenter<GroupAd> {
 
     public static final String KEYWORD_DATE_FORMAT = "yyyy-MM-dd";
     private static final String TAG = "TopAdsKeywordListPresen";
@@ -108,8 +109,8 @@ public class TopAdsKeywordListPresenterImpl extends TopAdsKeywordListPresenter i
         requestParams.putString(KeywordTypeDef.IS_POSITIVE, Integer.toString(baseKeywordParam.isPositive()));
 
 //        requestParams.putString("keyword_id", Long.toString(baseKeywordParam.keywordId));
-//        requestParams.putString("group_id", Long.toString(baseKeywordParam.groupId));
-//        requestParams.putString("keyword_status", Integer.toString(baseKeywordParam.keywordStatus));
+        requestParams.putString(KeywordTypeDef.GROUP_ID, Long.toString(baseKeywordParam.groupId));
+        requestParams.putString(KeywordTypeDef.KEYWORD_STATUS, Integer.toString(baseKeywordParam.keywordStatus));
 //        requestParams.putString("keyword_type_id", Integer.toString(baseKeywordParam.keywordTypeId));
 //        requestParams.putString("sorting", Integer.toString(baseKeywordParam.sortingParam));
         return requestParams;

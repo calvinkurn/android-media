@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -26,6 +25,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
@@ -49,6 +49,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int REQUEST_CODE_AD_ADD = 4;
 
+    private DateLabelView dateLabelView;
     protected RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
     private FloatingActionButton fabFilter;
@@ -67,6 +68,8 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     private SnackbarRetry snackBarRetry;
     private ProgressDialog progressDialog;
     private RecyclerView.OnScrollListener onScrollListener;
+
+    private boolean isSearchModeOn;
 
     protected abstract TopAdsEmptyAdDataBinder getEmptyViewBinder();
 
@@ -94,11 +97,18 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         recyclerView = (RecyclerView) view.findViewById(R.id.list_product);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         fabFilter = (FloatingActionButton) view.findViewById(R.id.fab_filter);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
         fabFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -172,6 +182,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         emptyGroupAdsDataBinder.setEmptyContentItemText(null);
         adapter.setEmptyView(emptyGroupAdsDataBinder);
         adapter.notifyDataSetChanged();
+        isSearchModeOn = true;
     }
 
     private void updateEmptyViewDefault(){
@@ -185,7 +196,7 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         page = START_PAGE;
         adapter.clearData();
         adapter.showLoadingFull(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
         searchAd();
     }
 
@@ -253,13 +264,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         }
         adapter.addData(adList);
         hideLoading();
-        if (adapter.getDataSize() < 1) {
+        if (adapter.getDataSize() < 1 ) {
             adapter.showEmptyFull(true);
         }
-        if (adapter.getDataSize() < 1) {
-            fabFilter.setVisibility(View.GONE);
+        if (adapter.getDataSize() < 1 && !isSearchModeOn) {
+            showFabFilter(false);
         } else {
-            fabFilter.setVisibility(View.VISIBLE);
+            showFabFilter(true);
         }
         if (listener!=null && adapter.getDataSize() > 0) {
             listener.startShowCase();
@@ -279,10 +290,13 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         } else {
             recyclerView.removeOnScrollListener(onScrollListener);
             adapter.showRetryFull(true);
-            if (fabFilter.getVisibility() == View.VISIBLE) {
-                fabFilter.setVisibility(View.GONE);
-            }
+            showFabFilter(false);
         }
+    }
+
+    private void showFabFilter(boolean visible) {
+        dateLabelView.setVisibility(visible ? View.VISIBLE : View.GONE);
+        fabFilter.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private void hideLoading() {
@@ -335,15 +349,6 @@ public abstract class TopAdsAdListFragment<T extends TopAdsAdListPresenter> exte
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(this);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_date) {
-            openDatePicker();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

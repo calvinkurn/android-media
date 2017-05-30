@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/group_name_"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="6dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="16dp"
+        android:button="@drawable/selector_enable_selection"
+        android:textColor="@color/black_seventy_percent"
+        android:textSize="16sp"
+        tools:text="[Group A]" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#1e000000" />
+</LinearLayout>

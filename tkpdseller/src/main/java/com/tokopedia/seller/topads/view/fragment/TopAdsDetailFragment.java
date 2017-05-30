@@ -22,6 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.DateLabelView;
 import com.tokopedia.seller.lib.widget.LabelSwitch;
 import com.tokopedia.seller.lib.widget.LabelView;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
@@ -41,6 +42,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     protected static final int REQUEST_CODE_AD_EDIT = 1;
 
+    private DateLabelView dateLabelView;
     protected LabelView priceAndSchedule;
     protected LabelView name;
     private LabelSwitch status;
@@ -78,6 +80,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void initView(View view) {
         super.initView(view);
+        dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         name = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
         maxBid = (LabelView) view.findViewById(R.id.max_bid);
@@ -94,6 +97,12 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         priceAndSchedule = (LabelView) view.findViewById(R.id.title_price_and_schedule);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePicker();
+            }
+        });
         snackbarRetry = createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -154,7 +163,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
     @Override
     protected void loadData() {
         showLoading();
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle(datePickerPresenter.getRangeDateFormat(startDate, endDate));
+        dateLabelView.setDate(datePickerPresenter.getStartDate(), datePickerPresenter.getEndDate());
         if (ad != null) {
             onAdLoaded(ad);
         } else {
@@ -348,10 +357,7 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_date) {
-            openDatePicker();
-            return true;
-        } else if (item.getItemId() == R.id.menu_edit) {
+        if (item.getItemId() == R.id.menu_edit) {
             editAd();
             return true;
         }

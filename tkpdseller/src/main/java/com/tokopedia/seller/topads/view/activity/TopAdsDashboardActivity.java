@@ -1,11 +1,11 @@
 package com.tokopedia.seller.topads.view.activity;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,12 +20,12 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsConstant;
-import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.adapter.TopAdsDashboardPagerAdapter;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
 import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardShopFragment;
 import com.tokopedia.seller.topads.view.listener.TopAdsDashboardTabListener;
+import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.util.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -142,7 +142,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(dashboardProductFragment);
         fragmentList.add(dashboardShopFragment);
-        return new TopAdsDashboardPagerAdapter(getFragmentManager(), fragmentList);
+        return new TopAdsDashboardPagerAdapter(getSupportFragmentManager(), fragmentList);
     }
 
     @Override
@@ -220,7 +220,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
         viewPager.post(new Runnable() {
             @Override
             public void run() {
-                if (isFinishing()) {
+                if (isFinishing() ) {
                     return;
                 }
                 View depositView = dashboardProductFragment.getDepositView();

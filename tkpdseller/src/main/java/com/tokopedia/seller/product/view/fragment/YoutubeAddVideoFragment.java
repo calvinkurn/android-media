@@ -141,7 +141,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
                 showRemoveVideoConfirmation(index);
             }
         });
-        addUrlVideoAdapter.setVideoSameWarn(getString(R.string.video_same_warn));
+        addUrlVideoAdapter.setVideoSameWarn(getString(R.string.product_video_same_warn));
         addUrlVideoAdapter.setRetryView(getRetryDataBinder(addUrlVideoAdapter));
         recyclerViewAddUrlVideo.setAdapter(addUrlVideoAdapter);
         recyclerViewAddUrlVideo.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false));
@@ -236,7 +236,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
 
     private void setVideoSubtitle(int from, int max) {
         ((AppCompatActivity) getActivity()).getSupportActionBar()
-                .setSubtitle(String.format(getString(R.string.from_to_video), from, max));
+                .setSubtitle(String.format(getString(R.string.product_from_to_video), from, max));
     }
 
     private void setVideoSubtitle() {
@@ -256,7 +256,7 @@ public class YoutubeAddVideoFragment extends BaseDaggerFragment implements Youtu
     }
 
     public void showMaxRows() {
-        showMessageErrorRaw(getString(R.string.couldn_t_add_videos));
+        showMessageErrorRaw(getString(R.string.product_couldn_t_add_videos));
     }
 
     public void showMenuButton() {
