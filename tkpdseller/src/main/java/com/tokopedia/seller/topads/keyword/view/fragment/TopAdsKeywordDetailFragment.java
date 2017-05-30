@@ -98,7 +98,6 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
         super.initView(view);
         keywordName = (LabelView) view.findViewById(R.id.keyword);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
-
         keywordType = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
         maxBid = (LabelView) view.findViewById(R.id.max_bid);
@@ -172,12 +171,14 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
             return true;
         } else if (item.getItemId() == R.id.menu_delete) {
             showDeleteConfirmation(getString(R.string.title_delete_keyword_topads), getString(R.string.label_confirm_delete_keyword_topads));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     protected void loadAdDetail(KeywordAd ad) {
-        keywordType.setContent(ad.getkeywordType());
+        keywordName.setContent(ad.getName());
+        keywordType.setContent(ad.getkeywordTypeDesc());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
             case TopAdsConstant.STATUS_AD_NOT_SENT:
@@ -236,8 +237,13 @@ public class TopAdsKeywordDetailFragment extends TopAdsDatePickerFragment implem
     }
 
     private void refreshAd() {
-        topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
-                getDatePickerPresenter().getEndDate(), ad.getId());
+        if (ad != null) {
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), ad.getId());
+        }else{
+            topadsKeywordDetailPresenter.refreshAd(getDatePickerPresenter().getStartDate(),
+                    getDatePickerPresenter().getEndDate(), adId);
+        }
     }
 
     private void showLoading() {
