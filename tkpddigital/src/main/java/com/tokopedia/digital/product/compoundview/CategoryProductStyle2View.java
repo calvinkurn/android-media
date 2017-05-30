@@ -88,7 +88,7 @@ public class CategoryProductStyle2View extends
         clearHolder(holderRadioChooserOperator);
         renderInstantCheckoutOptions();
         renderOperatorChooserOptions();
-        btnBuyDigital.setOnClickListener(getButtonBuyListener(data));
+        btnBuyDigital.setOnClickListener(getButtonBuyListener());
     }
 
     @Override
@@ -304,56 +304,59 @@ public class CategoryProductStyle2View extends
     }
 
     @NonNull
-    private OnClickListener getButtonBuyListener(final CategoryData data) {
+    private OnClickListener getButtonBuyListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View view) {
-                PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
-                boolean canBeCheckout = false;
-
-                if (operatorSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(R.string.message_error_digital_operator_not_selected)
-                    );
-                } else if (!operatorSelected.getClientNumberList().isEmpty()
-                        && clientNumberInputView.getText().isEmpty()) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(
-                                    R.string.message_error_digital_client_number_not_filled
-                            ) + " " + operatorSelected.getClientNumberList().get(0).getText()
-                                    .toLowerCase()
-                    );
-                } else if (productSelected == null) {
-                    if (operatorSelected.getRule().getProductViewStyle() == 99
-                            && !operatorSelected.getClientNumberList().isEmpty()
-                            && !clientNumberInputView.isValidInput()) {
-                        actionListener.onCannotBeCheckoutProduct(
-                                operatorSelected.getClientNumberList().get(0).getText()
-                                        + " " + context.getString(
-                                        R.string.message_error_digital_client_number_format_invalid
-                                )
-                        );
-                    } else {
-                        actionListener.onCannotBeCheckoutProduct(
-                                context.getString(R.string.message_error_digital_product_not_selected)
-                        );
-                    }
-                } else {
-                    preCheckoutProduct.setProductId(productSelected.getProductId());
-                    preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
-                    canBeCheckout = true;
-                    if (productSelected.getPromo() != null) {
-                        preCheckoutProduct.setPromo(true);
-                    }
-                }
-                preCheckoutProduct.setCategoryId(data.getCategoryId());
-                preCheckoutProduct.setCategoryName(data.getName());
-                preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
-                preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
-
-                if (canBeCheckout) actionListener.onButtonBuyClicked(preCheckoutProduct);
+                actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };
+    }
+
+    private PreCheckoutProduct generatePreCheckoutData() {
+        PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
+        boolean canBeCheckout = false;
+        if (operatorSelected == null) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(R.string.message_error_digital_operator_not_selected)
+            );
+        } else if (!operatorSelected.getClientNumberList().isEmpty()
+                && clientNumberInputView.getText().isEmpty()) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(
+                            R.string.message_error_digital_client_number_not_filled
+                    ) + " " + operatorSelected.getClientNumberList().get(0).getText()
+                            .toLowerCase()
+            );
+        } else if (productSelected == null) {
+            if (operatorSelected.getRule().getProductViewStyle() == 99
+                    && !operatorSelected.getClientNumberList().isEmpty()
+                    && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
+                preCheckoutProduct.setErrorCheckout(
+                        operatorSelected.getClientNumberList().get(0).getText()
+                                + " " + context.getString(
+                                R.string.message_error_digital_client_number_format_invalid
+                        )
+                );
+            } else {
+                preCheckoutProduct.setErrorCheckout(
+                        context.getString(R.string.message_error_digital_product_not_selected)
+                );
+            }
+        } else {
+            preCheckoutProduct.setProductId(productSelected.getProductId());
+            preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
+            canBeCheckout = true;
+            if (productSelected.getPromo() != null) {
+                preCheckoutProduct.setPromo(true);
+            }
+        }
+        preCheckoutProduct.setCategoryId(data.getCategoryId());
+        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
+        preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
+        preCheckoutProduct.setCanBeCheckout(canBeCheckout);
+        return preCheckoutProduct;
     }
 
 

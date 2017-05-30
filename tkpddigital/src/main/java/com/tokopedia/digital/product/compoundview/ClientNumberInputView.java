@@ -301,10 +301,19 @@ public class ClientNumberInputView extends LinearLayout {
         };
     }
 
-    public boolean isValidInput() {
+    public boolean isValidInput(List<String> prefixList) {
+        String clientNumberInput = autoCompleteTextView.getText().toString();
+        boolean isStartWithPrefix = false;
+        for (String string : prefixList) {
+            if (clientNumberInput.startsWith(string)) {
+                isStartWithPrefix = true;
+                break;
+            }
+        }
+        if (!isStartWithPrefix) return false;
         if (clientNumber != null) {
             for (Validation validation : clientNumber.getValidation()) {
-                if (Pattern.matches(validation.getRegex(), autoCompleteTextView.getText().toString()))
+                if (Pattern.matches(validation.getRegex(), clientNumberInput))
                     return true;
             }
             return false;

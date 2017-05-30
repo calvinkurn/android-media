@@ -154,6 +154,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         private boolean instantCheckout;
         private boolean promo;
         private String voucherCodeCopied;
+        private boolean canBeCheckout;
+        private String errorCheckout;
 
         public String getClientNumber() {
             return clientNumber;
@@ -217,6 +219,22 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
         void setCategoryName(String categoryName) {
             this.categoryName = categoryName;
+        }
+
+        public boolean isCanBeCheckout() {
+            return canBeCheckout;
+        }
+
+        public void setCanBeCheckout(boolean canBeCheckout) {
+            this.canBeCheckout = canBeCheckout;
+        }
+
+        public String getErrorCheckout() {
+            return errorCheckout;
+        }
+
+        public void setErrorCheckout(String errorCheckout) {
+            this.errorCheckout = errorCheckout;
         }
     }
 

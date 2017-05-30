@@ -95,7 +95,7 @@ public class CategoryProductStyle1View extends
 
         }
         renderInstantCheckoutOption();
-        btnBuyDigital.setOnClickListener(getButtonBuyClickListener(data));
+        btnBuyDigital.setOnClickListener(getButtonBuyClickListener());
     }
 
     @Override
@@ -207,43 +207,47 @@ public class CategoryProductStyle1View extends
     }
 
     @NonNull
-    private OnClickListener getButtonBuyClickListener(final CategoryData data) {
+    private OnClickListener getButtonBuyClickListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
-                boolean canBeCheckout = false;
-                if (!data.getClientNumberList().isEmpty()
-                        && clientNumberInputView.getText().isEmpty()) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(
-                                    R.string.message_error_digital_client_number_not_filled
-                            ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
-                    );
-                } else if (productSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(R.string.message_error_digital_product_not_selected)
-                    );
-                } else if (operatorSelected == null) {
-                    actionListener.onCannotBeCheckoutProduct(
-                            context.getString(R.string.message_error_digital_operator_not_selected)
-                    );
-                } else {
-                    preCheckoutProduct.setProductId(productSelected.getProductId());
-                    preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
-                    canBeCheckout = true;
-                    if (productSelected.getPromo() != null) {
-                        preCheckoutProduct.setPromo(true);
-                    }
-                }
-                preCheckoutProduct.setCategoryId(data.getCategoryId());
-                preCheckoutProduct.setCategoryName(data.getName());
-                preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
-                preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
-
-                if (canBeCheckout) actionListener.onButtonBuyClicked(preCheckoutProduct);
+                actionListener.onButtonBuyClicked(generatePreCheckoutData());
             }
         };
+    }
+
+    private PreCheckoutProduct generatePreCheckoutData() {
+        PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
+        boolean canBeCheckout = false;
+        if (!data.getClientNumberList().isEmpty()
+                && clientNumberInputView.getText().isEmpty()) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(
+                            R.string.message_error_digital_client_number_not_filled
+                    ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
+            );
+        } else if (productSelected == null) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(R.string.message_error_digital_product_not_selected)
+            );
+        } else if (operatorSelected == null) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(R.string.message_error_digital_operator_not_selected)
+            );
+        } else {
+            preCheckoutProduct.setProductId(productSelected.getProductId());
+            preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
+            canBeCheckout = true;
+            if (productSelected.getPromo() != null) {
+                preCheckoutProduct.setPromo(true);
+            }
+        }
+        preCheckoutProduct.setCategoryId(data.getCategoryId());
+        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
+        preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
+        preCheckoutProduct.setCanBeCheckout(canBeCheckout);
+        return preCheckoutProduct;
     }
 
     @NonNull
