@@ -7,24 +7,28 @@
     android:paddingLeft="@dimen/topads_detail_padding_item"
     android:paddingStart="@dimen/topads_detail_padding_item">
 
-    <LinearLayout
-        android:id="@+id/group_filter_search_container"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/group_filter_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_search_black_24dp"
-            android:drawableRight="@drawable/ic_search_black_24dp"
             android:hint="@string/search_group"
             android:imeOptions="actionSearch"
-            android:maxLines="1" />
+            android:maxLines="1"
+            android:paddingEnd="24dp"
+            android:paddingRight="24dp"
+            android:singleLine="true" />
 
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/group_filter_search_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/ic_search_black_24dp" />
+    </FrameLayout>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"

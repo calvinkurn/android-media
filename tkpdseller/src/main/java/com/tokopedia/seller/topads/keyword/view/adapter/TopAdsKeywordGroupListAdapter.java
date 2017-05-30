@@ -104,7 +104,7 @@ public class TopAdsKeywordGroupListAdapter extends TopAdsAdListAdapter {
     }
 
     public interface Listener {
-        void notifySelect(GroupAd groupAd);
+        void notifySelect(GroupAd groupAd, int adapterPosition);
 
         boolean isSelection(GroupAd groupAd);
     }

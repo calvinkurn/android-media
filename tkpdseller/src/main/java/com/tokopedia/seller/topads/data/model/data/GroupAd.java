@@ -5,13 +5,13 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.topads.view.model.TypeBasedModel;
+import com.tokopedia.seller.topads.view.model.StateTypeBasedModel;
 
 /**
  * Created by zulfikarrahman on 12/14/16.
  */
 
-public class GroupAd extends TypeBasedModel implements Ad, Parcelable {
+public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable {
 
     public static final int TYPE = 19294123;
     public static final Parcelable.Creator<GroupAd> CREATOR = new Parcelable.Creator<GroupAd>() {

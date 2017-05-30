@@ -5,17 +5,30 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/group_name_"
+    <LinearLayout
+        android:id="@+id/group_name_container"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
         android:layout_marginTop="16dp"
-        android:button="@drawable/selector_enable_selection"
-        android:textColor="@color/black_seventy_percent"
-        android:textSize="16sp"
-        tools:text="[Group A]" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/group_name_"
+            style="@style/TopAdsRadioButton"
+            android:layout_height="20dp"
+            android:clickable="false" />
+
+        <TextView
+            android:id="@+id/text_group_name_"
+            style="@style/TextView.TopAds.Title.Black"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="[Group A]" />
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

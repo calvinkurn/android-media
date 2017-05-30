@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<TopAdsKeywordNewChooseGroupPresenter>
         implements TopAdsKeywordGroupListView, TopAdsFilterContentFragmentListener, TopAdsKeywordGroupListAdapter.Listener {
 
+    private static final String TAG = "TopAdsKeywordGroupsFrag";
     protected TopAdsFilterContentFragment.Callback callback;
     @Inject
     TopAdsKeywordNewChooseGroupPresenter topAdsKeywordNewChooseGroupPresenter;
@@ -47,10 +49,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
      * Sign for title filter list
      */
     private boolean active;
-
-    public static TopAdsKeywordGroupsFragment createInstance(long selectedGroupId, long currentGroupId, String currentGroupName) {
-        return new TopAdsKeywordGroupsFragment();
-    }
+    private ImageView groupFilterImage;
 
     public static TopAdsKeywordGroupsFragment createInstance(GroupAd currentGroupAd) {
         TopAdsKeywordGroupsFragment topAdsKeywordGroupsFragment = new TopAdsKeywordGroupsFragment();
@@ -85,19 +84,30 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
                 .inject(this);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null && getArguments() != null) {
+            selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         topAdsKeywordNewChooseGroupPresenter.attachView(this);
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        if (savedInstanceState == null && getArguments() != null) {
-            selection = getArguments().getParcelable(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION);
-        }
         groupFilterSearch = (EditText) view.findViewById(R.id.group_filter_search);
+        groupFilterImage = (ImageView) view.findViewById(R.id.group_filter_search_icon);
+
         groupFilterSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                if (s.length() > 0) {
+                    groupFilterImage.setImageResource(R.drawable.ic_close_green_14x14);
+                } else {
+                    groupFilterImage.setImageResource(R.drawable.ic_search_black_24dp);
+                }
             }
 
             @Override
@@ -191,7 +201,8 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     }
 
     @Override
-    public void notifySelect(GroupAd groupAd) {
+    public void notifySelect(GroupAd groupAd, int adapterPosition) {
+
         this.selection = groupAd;
     }
 
