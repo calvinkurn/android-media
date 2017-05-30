@@ -10,12 +10,13 @@ import com.tokopedia.seller.topads.data.model.data.GroupAd;
 import com.tokopedia.seller.topads.keyword.constant.KeywordStatusTypeDef;
 import com.tokopedia.seller.topads.keyword.di.component.DaggerTopAdsKeywordComponent;
 import com.tokopedia.seller.topads.keyword.di.module.TopAdsModule;
+import com.tokopedia.seller.topads.keyword.domain.model.Datum;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordFilterActivity;
 import com.tokopedia.seller.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordAdapter;
 import com.tokopedia.seller.topads.keyword.view.model.BaseKeywordParam;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenterImpl;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 
 import java.util.Map;
@@ -90,7 +91,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
     }
 
     @Override
-    protected TopAdsAdListAdapter initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter<Datum> initializeTopAdsAdapter() {
         return new TopAdsKeywordAdapter();
     }
 

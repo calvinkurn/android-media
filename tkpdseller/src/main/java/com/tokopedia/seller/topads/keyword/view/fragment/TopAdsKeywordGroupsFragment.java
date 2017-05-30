@@ -22,7 +22,7 @@ import com.tokopedia.seller.topads.keyword.di.module.TopAdsKeywordNewChooseGroup
 import com.tokopedia.seller.topads.keyword.view.adapter.TopAdsKeywordGroupListAdapter;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsKeywordGroupListView;
 import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordNewChooseGroupPresenter;
-import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.listener.TopAdsFilterContentFragmentListener;
 
@@ -156,7 +156,7 @@ public class TopAdsKeywordGroupsFragment extends TopAdsBaseKeywordListFragment<T
     }
 
     @Override
-    protected TopAdsAdListAdapter initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter<GroupAd> initializeTopAdsAdapter() {
         TopAdsKeywordGroupListAdapter topAdsKeywordGroupListAdapter = new TopAdsKeywordGroupListAdapter();
         topAdsKeywordGroupListAdapter.setListener(this);
         return topAdsKeywordGroupListAdapter;

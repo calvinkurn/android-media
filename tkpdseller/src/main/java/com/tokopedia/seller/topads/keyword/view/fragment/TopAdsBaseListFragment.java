@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,12 +20,12 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.data.model.data.Ad;
 import com.tokopedia.seller.topads.keyword.view.listener.TopAdsListViewListener;
-import com.tokopedia.seller.topads.keyword.view.presenter.TopAdsKeywordListPresenter;
 import com.tokopedia.seller.topads.view.adapter.TopAdsAdListAdapter;
+import com.tokopedia.seller.topads.view.adapter.TopAdsBaseListAdapter;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsEmptyAdDataBinder;
 import com.tokopedia.seller.topads.view.adapter.viewholder.TopAdsRetryDataBinder;
-import com.tokopedia.seller.topads.view.presenter.TopAdsAdListPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenter;
 import com.tokopedia.seller.topads.view.presenter.TopAdsDatePickerPresenterImpl;
 import com.tokopedia.seller.topads.view.widget.DividerItemDecoration;
@@ -39,7 +38,7 @@ import java.util.List;
  */
 
 public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment<T> implements
-        TopAdsListViewListener, TopAdsAdListAdapter.Callback {
+        TopAdsListViewListener, TopAdsBaseListAdapter.Callback<Ad> {
     protected static final int REQUEST_CODE_AD_STATUS = 2;
     protected static final int REQUEST_CODE_AD_FILTER = 3;
     protected static final int START_PAGE = 1;
@@ -49,7 +48,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
     protected int page;
     protected int totalItem;
 
-    protected TopAdsAdListAdapter adapter;
+    protected TopAdsBaseListAdapter<Ad> adapter;
     protected RecyclerView recyclerView;
     private SwipeToRefresh swipeToRefresh;
     private boolean searchMode;
@@ -152,7 +151,7 @@ public abstract class TopAdsBaseListFragment<T> extends TopAdsDatePickerFragment
         adapter.setRetryView(topAdsRetryDataBinder);
     }
 
-    protected TopAdsAdListAdapter initializeTopAdsAdapter() {
+    protected TopAdsBaseListAdapter initializeTopAdsAdapter() {
         return new TopAdsAdListAdapter();
     }
 
