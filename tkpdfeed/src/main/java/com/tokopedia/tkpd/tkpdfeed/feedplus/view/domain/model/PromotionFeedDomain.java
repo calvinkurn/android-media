@@ -25,7 +25,7 @@ public class PromotionFeedDomain {
 
     private final @Nonnull String code;
 
-    private final @Nonnull Object url;
+    private final @Nonnull String url;
 
     private final @Nonnull String minTranscation;
 
@@ -41,7 +41,7 @@ public class PromotionFeedDomain {
         this.description = description;
         this.periode = periode;
         this.code = code;
-        this.url = url;
+        this.url = url.toString();
         this.minTranscation = min_transcation;
     }
 
@@ -81,7 +81,7 @@ public class PromotionFeedDomain {
     }
 
     @Nonnull
-    public Object getUrl() {
+    public String getUrl() {
         return url;
     }
 

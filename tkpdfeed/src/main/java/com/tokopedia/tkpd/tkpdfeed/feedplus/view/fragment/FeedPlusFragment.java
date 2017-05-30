@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -10,19 +11,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
+import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
+import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.ClipboardHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
@@ -37,13 +44,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.BlogViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoCardViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromoViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         implements FeedPlus.View,
         SwipeRefreshLayout.OnRefreshListener {
 
+    private static final int OPEN_DETAIL = 54;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
 
@@ -102,7 +104,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         adapter = new FeedPlusAdapter(typeFactory);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
+        recyclerviewScrollListener = onRecyclerViewListener();
     }
 
     @Nullable
@@ -122,6 +124,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void prepareView() {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(recyclerviewScrollListener);
         swipeToRefresh.setOnRefreshListener(this);
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(getActivity());
     }
@@ -129,7 +132,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+//
 //        BlogViewModel imageBlog = new BlogViewModel("https://islamkajian.files.wordpress.com/2015/03/kuda.jpg", "Test Blog");
 //        BlogViewModel videoBlog = new BlogViewModel("http://www.androidbegin.com/tutorial/AndroidCommercial.3gp");
 //
@@ -223,7 +226,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 //        listPromotedProduct.add(prod4);
 //
 //
-//        List<Visitable> list = new ArrayList<>();
+        List<Visitable> list = new ArrayList<>();
 //        list.add(imageBlog);
 //        list.add(videoBlog);
 //        list.add(new ActivityCardViewModel(listProduct));
@@ -244,16 +247,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
 //
 //        list.add(new InspirationViewModel("Inspirasi dari Pembelian Anda", listInspiration));
 //        list.add(new OfficialStoreViewModel("https://ecs7.tokopedia.net/img/mobile/banner-4.png", listOfficialStore));
-////        list.add(new ActivityCardViewModel("Nisie 4", listProduct4));
-////        list.add(new ActivityCardViewModel("Nisie 5", listProduct5));
+//        list.add(new ActivityCardViewModel("Nisie 4", listProduct4));
+//        list.add(new ActivityCardViewModel("Nisie 5", listProduct5));
 //        list.add(new ActivityCardViewModel(listProduct6));
 //        list.add(new PromotedShopViewModel("Tep Shop 1", true, "Toko terbaik", listProduct3));
 //        list.add(new ActivityCardViewModel(listProduct8));
 //
-//         adapter.addList(list);
+//        adapter.addList(list);
 //        adapter.notifyDataSetChanged();
 
-        presenter.fetchFirstPage();
+        presenter.fetchFirstPage(true);
     }
 
 
@@ -261,14 +264,15 @@ public class FeedPlusFragment extends BaseDaggerFragment
         return new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-
+                if (!adapter.isLoading())
+                    presenter.fetchNextPage();
             }
         };
     }
 
     @Override
     public void onRefresh() {
-        presenter.fetchFirstPage();
+        presenter.fetchFirstPage(false);
     }
 
     @Override
@@ -299,19 +303,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail() {
-
-    }
-
-    @Override
-    public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
-        Intent intent = FeedPlusDetailActivity.getIntent(getActivity(), "1758307");
+    public void onGoToProductDetail(Integer productId) {
+        Intent intent = ProductInfoActivity.createInstance(getActivity(), String.valueOf(productId));
         startActivity(intent);
     }
 
-    @Override
-    public void onGoToShopDetail() {
 
+    @Override
+    public void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel) {
+        Intent intent = FeedPlusDetailActivity.getIntent(
+                getActivity(),
+                activityCardViewModel.getFeedId());
+        startActivityForResult(intent, OPEN_DETAIL);
+    }
+
+    @Override
+    public void onGoToShopDetail(Integer shopId, String url) {
+        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
+        Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(shopId), url);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override
@@ -334,6 +345,14 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
+
+        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                .setProductId(String.valueOf(productFeedViewModel.getProductId()))
+                .build();
+
+        Intent intent = TransactionAddToCartRouter
+                .createInstanceAddToCartActivity(getActivity(), pass);
+        startActivity(intent);
 
     }
 
@@ -371,10 +390,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         adapter.clearData();
-
         finishLoading();
         adapter.removeEmpty();
-
         if (listFeed.size() == 0) {
             adapter.showEmpty();
         } else {
@@ -386,6 +403,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void finishLoading() {
         if (swipeToRefresh.isRefreshing())
             swipeToRefresh.setRefreshing(false);
+        adapter.removeLoading();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -396,7 +415,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.fetchFirstPage();
+                            presenter.fetchFirstPage(false);
                         }
                     });
         } else {
@@ -423,33 +442,37 @@ public class FeedPlusFragment extends BaseDaggerFragment
         presenter.setCursor(currentCursor);
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        try {
-//            if (isVisibleToUser && isAdded() && getActivity() != null) {
-//                if (isAdapterNotEmpty()) {
-//                    validateMessageError();
-//                } else {
-//                    favoritePresenter.loadInitialData();
-//                }
-//                ScreenTracking.screen(getScreenName());
-//
-//            } else {
-//                if (messageSnackbar != null && messageSnackbar.isShown()) {
-//                    messageSnackbar.hideRetrySnackbar();
-//                }
-//            }
-//        } catch (NullPointerException e) {
-//            e.printStackTrace();
-//            onCreate(new Bundle());
-//        }
-//    }
+    @Override
+    public void showLoading() {
+        adapter.showLoading();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccessGetFeed(ArrayList<Visitable> listFeed) {
+        finishLoading();
+        adapter.removeEmpty();
+        adapter.addList(listFeed);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSeePromo(String link) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), link);
+    }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case OPEN_DETAIL:
+                showSnackbar(data.getStringExtra("message"));
+                break;
+            default:
+                break;
+        }
     }
 
 }

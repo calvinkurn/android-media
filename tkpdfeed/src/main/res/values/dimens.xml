@@ -19,6 +19,6 @@
     <dimen name="feed_detail_product">100dp</dimen>
 
     <dimen name="padding_info">16dp</dimen>
-
+    <dimen name="cactus_height">100dp</dimen>
 
 </resources>

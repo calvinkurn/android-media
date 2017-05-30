@@ -26,6 +26,8 @@ public interface FeedPlusDetail {
                                     boolean hasNextPage);
 
         void showLoading();
+
+        void showLoadingProgress();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

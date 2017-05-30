@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/header"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:padding="@dimen/padding_small">
 
     <ImageView
@@ -20,41 +20,52 @@
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignTop="@id/shop_avatar"
-        android:layout_toEndOf="@id/shop_avatar"
         android:layout_marginTop="2dp"
-        android:visibility="visible"
+        android:layout_toEndOf="@id/shop_avatar"
         android:layout_toRightOf="@id/shop_avatar"
-        android:src="@drawable/ic_shop_gold" />
+        android:src="@drawable/ic_shop_gold"
+        android:visibility="visible" />
 
     <ImageView
         android:id="@+id/official_store"
         android:layout_width="@dimen/ic_badge_size"
         android:layout_height="@dimen/ic_badge_size"
         android:layout_alignTop="@id/shop_avatar"
+        android:layout_marginTop="2dp"
         android:layout_toEndOf="@id/gold_merchant"
         android:layout_toRightOf="@id/gold_merchant"
-        android:layout_marginTop="2dp"
-        tools:visibility="gone"
-        android:src="@drawable/ic_official" />
+        android:src="@drawable/ic_official"
+        tools:visibility="gone" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/shop_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/official_store"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_toEndOf="@id/official_store"
         android:layout_toRightOf="@id/official_store"
+        android:textStyle="bold"
+        tools:text="MaroonVape " />
+
+    <TextView
+        android:id="@+id/action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/official_store"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_toEndOf="@id/shop_name"
+        android:layout_toRightOf="@id/shop_name"
         tools:text="MaroonVape supwpaiwiasdasdasdasdasioi " />
 
     <TextView
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/shop_name"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_toRightOf="@id/shop_avatar"
         android:textSize="@dimen/fontvs"
         tools:text="4 hours ago" />
 
-    </RelativeLayout>
+</RelativeLayout>

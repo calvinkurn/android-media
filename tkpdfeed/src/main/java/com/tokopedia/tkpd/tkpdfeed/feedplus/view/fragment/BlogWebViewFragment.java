@@ -1,11 +1,18 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -25,6 +32,7 @@ public class BlogWebViewFragment extends BasePresenterFragment {
 
     @BindView(R2.id.webview)
     TkpdWebView webView;
+    private ProgressBar progressBar;
 
     public static BlogWebViewFragment createInstance(Bundle bundle) {
         BlogWebViewFragment fragment = new BlogWebViewFragment();
@@ -79,6 +87,9 @@ public class BlogWebViewFragment extends BasePresenterFragment {
 
     @Override
     protected void initView(View view) {
+        progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
+        progressBar.setIndeterminate(true);
+
         if (webView != null) {
             webView.clearCache(true);
         }
@@ -90,6 +101,16 @@ public class BlogWebViewFragment extends BasePresenterFragment {
         webSettings.setAppCacheEnabled(false);
         MethodChecker.setAllowMixedContent(webSettings);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                //  progressBar.setProgress(newProgress);
+                if (newProgress == 100) {
+                    progressBar.setVisibility(View.GONE);
+                }
+                super.onProgressChanged(view, newProgress);
+            }
+        });
     }
 
     @Override
@@ -112,6 +133,30 @@ public class BlogWebViewFragment extends BasePresenterFragment {
         @Override
         protected boolean onOverrideUrl(Uri url) {
             return false;
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+            super.onReceivedHttpError(view, request, errorResponse);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 

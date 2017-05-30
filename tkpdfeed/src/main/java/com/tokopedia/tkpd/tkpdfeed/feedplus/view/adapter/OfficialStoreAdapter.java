@@ -60,7 +60,7 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
         ImageHandler.LoadImage(holder.shopAva, list.get(position).getShopAva());
         holder.favoriteButton.setBackgroundResource(list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
@@ -73,14 +73,14 @@ public class OfficialStoreAdapter extends RecyclerView.Adapter<OfficialStoreAdap
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
     }

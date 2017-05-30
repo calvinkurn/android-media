@@ -25,11 +25,11 @@ public interface FeedPlus{
                                    String imgUrl,
                                    String contentMessage);
 
-        void onGoToProductDetail();
+        void onGoToProductDetail(Integer productId);
 
         void onGoToFeedDetail(ActivityCardViewModel activityCardViewModel);
 
-        void onGoToShopDetail();
+        void onGoToShopDetail(Integer shopId, String url);
 
         void onCopyClicked(String s);
 
@@ -60,11 +60,17 @@ public interface FeedPlus{
         void showRefresh();
 
         void updateCursor(String currentCursor);
+
+        void showLoading();
+
+        void onSuccessGetFeed(ArrayList<Visitable> visitables);
+
+        void onSeePromo(String link);
     }
 
     public interface Presenter extends CustomerPresenter<View>{
 
-        void fetchFirstPage();
+        void fetchFirstPage(boolean isRefresh);
 
         void fetchNextPage();
 

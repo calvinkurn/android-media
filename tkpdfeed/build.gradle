@@ -123,7 +123,7 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
-    compile rootProject.ext.miscDependencies.videoPlayerManager
+    compile rootProject.ext.miscDependencies.lottie
 
     compile rootProject.ext.apolloDependencies.apolloRxSupport
     compile rootProject.ext.apolloDependencies.apolloRuntime

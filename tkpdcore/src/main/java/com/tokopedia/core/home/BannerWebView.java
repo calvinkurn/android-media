@@ -3,14 +3,21 @@ package com.tokopedia.core.home;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MenuItem;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.product.activity.ProductInfoActivity;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -23,6 +30,20 @@ public class BannerWebView extends TActivity implements
 
     private FragmentBannerWebView fragment;
     public static final String EXTRA_URL = "url";
+
+    @DeepLink({Constants.Applinks.PROMO, Constants.Applinks.PROMO_WITH_DASH})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        String promoId = bundle.getString("promo_id", "");
+        String result = "https://www.tokopedia.com/promo/";
+        if (!TextUtils.isEmpty(promoId)) {
+            result += promoId;
+        }
+        result+="?flag_app=1";
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, BannerWebView.class)
+                .setData(uri.build())
+                .putExtra(BannerWebView.EXTRA_URL, result);
+    }
 
     @Override
     public String getScreenName() {

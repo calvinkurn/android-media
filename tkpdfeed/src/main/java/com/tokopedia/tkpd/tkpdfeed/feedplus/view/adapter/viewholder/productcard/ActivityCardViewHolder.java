@@ -25,7 +25,9 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     @LayoutRes
     public static final int LAYOUT = R.layout.list_feed_activity_card;
 
-    TextView title;
+    TextView action;
+    TextView shopName;
+
     ImageView shopAvatar;
     ImageView goldMerchantBadge;
     ImageView officialStoreBadge;
@@ -40,7 +42,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     public ActivityCardViewHolder(View itemView, FeedPlus.View viewListener) {
         super(itemView);
 
-        title = (TextView) itemView.findViewById(R.id.title);
+        shopName = (TextView) itemView.findViewById(R.id.shop_name);
+        action = (TextView) itemView.findViewById(R.id.action);
         shopAvatar = (ImageView) itemView.findViewById(R.id.shop_avatar);
         goldMerchantBadge = (ImageView) itemView.findViewById(R.id.gold_merchant);
         officialStoreBadge = (ImageView) itemView.findViewById(R.id.official_store);
@@ -99,9 +102,8 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
     }
 
     public void setHeader(final ActivityCardViewModel activityCardViewModel) {
-        String titleText = "<b>" + activityCardViewModel.getHeader().getShopName() + "</b> "
-                + activityCardViewModel.getActionText();
-        title.setText(MethodChecker.fromHtml(titleText));
+        shopName.setText(MethodChecker.fromHtml(activityCardViewModel.getHeader().getShopName()));
+        action.setText(MethodChecker.fromHtml(activityCardViewModel.getActionText()));
         ImageHandler.LoadImage(shopAvatar, activityCardViewModel.getHeader().getShopAvatar());
 
         if (activityCardViewModel.getHeader().isGoldMerchant())
@@ -119,13 +121,23 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
         shopAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToShopDetail();
+                viewListener.onGoToShopDetail(
+                        activityCardViewModel.getHeader().getShopId(),
+                        activityCardViewModel.getHeader().getUrl());
             }
         });
-        title.setOnClickListener(new View.OnClickListener() {
+        action.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToFeedDetail(activityCardViewModel);
+            }
+        });
+        shopName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewListener.onGoToShopDetail(
+                        activityCardViewModel.getHeader().getShopId(),
+                        activityCardViewModel.getHeader().getUrl());
             }
         });
 
@@ -144,7 +156,7 @@ public class ActivityCardViewHolder extends AbstractViewHolder<ActivityCardViewM
                             viewModel.getShareUrl(),
                             titleText,
                             "",
-                            titleText
+                            viewModel.getShareLinkDescription()
                     );
                 }
             });

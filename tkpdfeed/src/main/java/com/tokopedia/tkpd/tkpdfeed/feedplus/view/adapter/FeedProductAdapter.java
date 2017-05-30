@@ -14,15 +14,11 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.R2;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ActivityCardViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductFeedViewModel;
 
 import java.util.ArrayList;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by nisie on 5/16/17.
@@ -71,16 +67,16 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final ArrayList<ProductFeedViewModel> list = activityCardViewModel.getListProduct();
         holder.productName.setText(MethodChecker.fromHtml(list.get(position).getName()));
         holder.productPrice.setText(list.get(position).getPrice());
-        ImageHandler.LoadImage(holder.productImage, list.get(position).getImageSource());
+        ImageHandler.LoadImage(holder.productImage, getItemCount()>1? list.get(position).getImageSource() : list.get(position).getImageSourceSingle());
 
         if (list.size() > 6 && position == 5) {
             holder.blackScreen.setForeground(new ColorDrawable(ContextCompat.getColor(context, R.color.trans_black_40)));
             holder.extraProduct.setVisibility(View.VISIBLE);
-            String extra = "+" + (list.size() - 6);
+            String extra = "+" + (activityCardViewModel.getTotalProduct() - 5);
             holder.extraProduct.setText(extra);
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,25 +90,23 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.blackScreen.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail();
+                    viewListener.onGoToFeedDetail(activityCardViewModel);
+                }
+            });
+            holder.productName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(list.get(position).getProductId());
+                }
+            });
+
+            holder.productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewListener.onGoToProductDetail(list.get(position).getProductId());
                 }
             });
         }
-
-        holder.productName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail();
-            }
-        });
-
-        holder.productImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewListener.onGoToProductDetail();
-            }
-        });
-
 
     }
 

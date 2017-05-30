@@ -16,16 +16,22 @@ import java.util.ArrayList;
 
 public class PromoViewModel{
 
+    private String link;
     private String description;
     private String period;
     private String promoCode;
     private String imageUrl;
 
-    public PromoViewModel(String description, String period, String promoCode, String imageUrl) {
+    public PromoViewModel(String description, String period, String promoCode, String imageUrl, String link) {
         this.description = description;
         this.period = period;
         this.promoCode = promoCode;
         this.imageUrl = imageUrl;
+        this.link = link;
+    }
+
+    public PromoViewModel() {
+
     }
 
     public String getDescription() {
@@ -62,5 +68,13 @@ public class PromoViewModel{
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }

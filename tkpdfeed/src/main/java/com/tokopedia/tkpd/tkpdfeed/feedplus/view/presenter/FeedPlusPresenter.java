@@ -1,21 +1,16 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.DataFeedDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.PromotedShopViewModel;
 
 import javax.inject.Inject;
 
@@ -51,8 +46,6 @@ public class FeedPlusPresenter
     public void attachView(FeedPlus.View view) {
         super.attachView(view);
         this.viewListener = view;
-        fetchFirstPage();
-
     }
 
     @Override
@@ -62,10 +55,18 @@ public class FeedPlusPresenter
 
 
     @Override
-    public void fetchFirstPage() {
+    public void fetchFirstPage(boolean isLoadFromCache) {
         viewListener.showRefresh();
-        getFirstPageFeedsUseCase.execute(getFeedPlusParam(),
+        getFirstPageFeedsUseCase.execute(getFeedPlusParam(isLoadFromCache),
                 new GetFirstPageFeedsSubscriber(viewListener));
+    }
+
+    private RequestParams getFeedPlusParam(boolean isLoadFromCache) {
+        RequestParams params = getFeedPlusParam();
+        params.putBoolean(GetFirstPageFeedsUseCase.PARAM_IS_LOAD_FROM_CACHE, isLoadFromCache);
+        currentCursor = "";
+        params.putString(GetFeedsUseCase.PARAM_CURSOR, "");
+        return params;
     }
 
     private RequestParams getFeedPlusParam() {
@@ -77,33 +78,8 @@ public class FeedPlusPresenter
 
     @Override
     public void fetchNextPage() {
-        getFeedsUseCase.execute(getFeedPlusParam(), getFeedsSubscriber());
-    }
-
-
-    private String getCurrentCursor(FeedResult feedResult) {
-        int lastIndex = feedResult.getDataFeedDomainList().size() - 1;
-        return feedResult.getDataFeedDomainList().get(lastIndex).getCursor();
-    }
-
-    private Subscriber<FeedResult> getFeedsSubscriber() {
-        return new Subscriber<FeedResult>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(FeedResult feedResult) {
-
-                currentCursor = getCurrentCursor(feedResult);
-            }
-        };
+        viewListener.showLoading();
+        getFeedsUseCase.execute(getFeedPlusParam(), new GetFeedsSubscriber(viewListener));
     }
 
     public void favoriteShop(PromotedShopViewModel promotedShopViewModel, final int adapterPosition) {

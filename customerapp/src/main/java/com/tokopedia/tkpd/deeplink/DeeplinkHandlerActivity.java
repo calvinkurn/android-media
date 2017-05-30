@@ -18,6 +18,13 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
         InboxDeeplinkModule.class
 })
 public class DeeplinkHandlerActivity extends AppCompatActivity {
+    public static DeepLinkDelegate getDelegateInstance() {
+        return new DeepLinkDelegate(
+                new ConsumerDeeplinkModuleLoader(),
+                new CoreDeeplinkModuleLoader(),
+                new InboxDeeplinkModuleLoader()
+        );
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

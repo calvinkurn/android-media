@@ -49,7 +49,7 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if(getItemViewType(position) == VIEW_MORE) {
             final ViewMoreViewHolder temp = (ViewMoreViewHolder) holder;
             temp.container.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +84,32 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
                     viewListener.onCopyClicked(temp.promoCode.getText().toString());
                 }
             });
+
+            setActionArea(temp, list.get(position).getPromoCode());
+
+            temp.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewListener.onSeePromo(list.get(position).getLink());
+                }
+            });
+
+            temp.seeArea.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewListener.onSeePromo(list.get(position).getLink());
+                }
+            });
+        }
+    }
+
+    private void setActionArea(LayoutViewHolder holder, String promoCode) {
+        if(promoCode == null || promoCode.length() == 0){
+            holder.seeArea.setVisibility(View.VISIBLE);
+            holder.copyArea.setVisibility(View.GONE);
+        }else {
+            holder.copyArea.setVisibility(View.VISIBLE);
+            holder.seeArea.setVisibility(View.GONE);
         }
     }
 
@@ -118,6 +144,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         private TextView description;
         private TextView promoCode;
         private ImageView imageView;
+        private View copyArea;
+        private View seeArea;
 
         public LayoutViewHolder(View itemView) {
             super(itemView);
@@ -127,6 +155,8 @@ public class PromoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             period = (TextView) itemView.findViewById(R.id.date);
             promoCode = (TextView) itemView.findViewById(R.id.promo_link);
             copyButton = itemView.findViewById(R.id.copy_but);
+            copyArea = itemView.findViewById(R.id.action_copy);
+            seeArea = itemView.findViewById(R.id.see_all);
         }
     }
 

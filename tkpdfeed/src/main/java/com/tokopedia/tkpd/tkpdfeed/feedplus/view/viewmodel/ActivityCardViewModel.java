@@ -14,26 +14,27 @@ import java.util.ArrayList;
 
 public class ActivityCardViewModel extends ProductCardViewModel {
 
+    private final int totalProduct;
     private ProductCardHeaderViewModel productCardHeaderViewModel;
     private String shareUrl;
     private String actionText;
-
+    private String feedId;
+    private String shareLinkDescription;
 
     public ActivityCardViewModel(ProductCardHeaderViewModel productCardHeaderViewModel,
                                  ArrayList<ProductFeedViewModel> listProduct,
                                  String shareUrl,
-                                 String actionText) {
+                                 String shareLinkDescription,
+                                 String actionText,
+                                 String feedId,
+                                 int totalProduct) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
+        this.shareLinkDescription = shareLinkDescription;
         this.actionText = actionText;
-    }
-
-    public ActivityCardViewModel(ArrayList<ProductFeedViewModel> listProduct) {
-        this.productCardHeaderViewModel = new ProductCardHeaderViewModel();
-        this.shareUrl = "https://tokopedia.com";
-        this.actionText = "Mengubah 1 produk";
-        this.listProduct = listProduct;
+        this.feedId = feedId;
+        this.totalProduct = totalProduct;
     }
 
     @Override
@@ -66,4 +67,31 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.actionText = actionText;
     }
 
+    public String getFeedId() {
+        return feedId;
+    }
+
+    public void setFeedId(String feedId) {
+        this.feedId = feedId;
+    }
+
+    public ProductCardHeaderViewModel getProductCardHeaderViewModel() {
+        return productCardHeaderViewModel;
+    }
+
+    public void setProductCardHeaderViewModel(ProductCardHeaderViewModel productCardHeaderViewModel) {
+        this.productCardHeaderViewModel = productCardHeaderViewModel;
+    }
+
+    public String getShareLinkDescription() {
+        return shareLinkDescription;
+    }
+
+    public void setShareLinkDescription(String shareLinkDescription) {
+        this.shareLinkDescription = shareLinkDescription;
+    }
+
+    public int getTotalProduct() {
+        return totalProduct;
+    }
 }

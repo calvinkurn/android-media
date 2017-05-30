@@ -44,6 +44,8 @@ public interface Constants {
         String MESSAGE_DETAIL = "tokopedia://message/{message_id}";
         String TALK = "tokopedia://talk";
         String TALK_DETAIL = "tokopedia://talk/{talk_id}";
+        String PROMO = "tokopedia://promo/{promo_id}";
+        String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";
     }
 
     interface Settings{

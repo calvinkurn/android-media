@@ -124,7 +124,7 @@ public class ShareBottomDialog {
                 share.setType("text/plain");
                 if (shareModel.getTitle() != null
                         && !shareModel.getTitle().equals(""))
-                    share.putExtra(Intent.EXTRA_SUBJECT, shareModel.getTitle());
+                    share.putExtra(Intent.EXTRA_SUBJECT, shareModel.getContentMessage());
 
                 if (shareModel.getUrl() != null
                         && !shareModel.getUrl().equals(""))

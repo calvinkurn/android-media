@@ -56,7 +56,7 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
 
         holder.favoriteButton.setBackgroundResource(list.get(position).isFavorited() ? R.drawable.ic_faved : R.drawable.ic_fav);
@@ -68,14 +68,14 @@ public class InspirationAdapter extends RecyclerView.Adapter<InspirationAdapter.
         holder.productName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
 
         holder.productImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProductDetail();
+                viewListener.onGoToProductDetail(list.get(position).getProductId());
             }
         });
     }
