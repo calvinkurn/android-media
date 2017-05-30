@@ -94,8 +94,7 @@
         android:gravity="center_vertical"
         android:background="@drawable/bg_rounded_corners_red"
         android:padding="@dimen/margin_vvvs"
-        android:text="10%OFF"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/rating_review_container"
