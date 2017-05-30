@@ -1,7 +1,7 @@
 package com.tokopedia.seller.topads.keyword.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -39,6 +39,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     private EditText topAdsKeyword;
     private EditText topAdsCostPerClick;
     private TopAdsKeywordEditDetailViewModel model;
+    private TopAdsKeywordEditDetailFragmentListener listener;
 
     public static Bundle createArguments(
             TopAdsKeywordEditDetailViewModel model) {
@@ -55,6 +56,14 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                 .topAdsKeywordEditDetailModule(new TopAdsKeywordEditDetailModule())
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof TopAdsKeywordEditDetailFragmentListener){
+            this.listener = (TopAdsKeywordEditDetailFragmentListener) context;
+        }
     }
 
     @Nullable
@@ -131,6 +140,11 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onSuccessEditTopAdsKeywordDetail(TopAdsKeywordEditDetailViewModel viewModel) {
+        listener.onSuccessEditTopAdsKeywordDetail(viewModel);
     }
 
     @Override
