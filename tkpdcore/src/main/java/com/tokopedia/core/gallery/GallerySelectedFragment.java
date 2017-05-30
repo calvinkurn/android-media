@@ -1,5 +1,7 @@
 package com.tokopedia.core.gallery;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -82,5 +84,9 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
     @Override
     public void onMediaClick(AlbumItem album, MediaItem item, int adapterPosition) {
         // this finish here
+        Intent intent = new Intent();
+        intent.putExtra("EXTRA_RESULT_SELECTION", item.getContentUri());
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 }

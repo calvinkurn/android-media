@@ -7,12 +7,14 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -468,6 +470,12 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
                         onFailedAddAttachment();
                     }
                     break;
+            }
+        } else if (requestCode == REQUEST_CODE_GALLERY){
+            if (resultCode == Activity.RESULT_OK && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
+                Uri uri = data.getParcelableExtra("EXTRA_RESULT_SELECTION");
+                Log.d("hangnadi", "onActivityResult: " + uri.toString());
+                // todo here do something to upload
             }
         }
     }
