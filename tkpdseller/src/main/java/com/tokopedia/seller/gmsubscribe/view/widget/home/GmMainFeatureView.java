@@ -11,10 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by sebastianuskh on 1/20/17.
@@ -23,16 +19,10 @@ import butterknife.ButterKnife;
 
 public class GmMainFeatureView extends FrameLayout {
 
-    /**
-     * BUTTERKNIFE VIEWS FIELD
-     */
-    @BindView(R2.id.image_gm_subscribe_main_feature)
     ImageView imageViewFeature;
 
-    @BindView(R2.id.title_gm_subscribe_main_feature)
     TextView textViewTitleFeature;
 
-    @BindView(R2.id.desc_gm_subscribe_main_feature)
     TextView textViewDescFeature;
 
     private Drawable imgFeature;
@@ -73,7 +63,9 @@ public class GmMainFeatureView extends FrameLayout {
 
     private void initView() {
         View view = inflate(getContext(), R.layout.layout_gm_subscribe_main_feature, null);
-        ButterKnife.bind(this, view);
+        imageViewFeature = (ImageView) view.findViewById(R.id.image_gm_subscribe_main_feature);
+        textViewTitleFeature = (TextView) view.findViewById(R.id.title_gm_subscribe_main_feature);
+        textViewDescFeature = (TextView) view.findViewById(R.id.desc_gm_subscribe_main_feature);
         addView(view);
     }
 

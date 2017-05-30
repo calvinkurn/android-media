@@ -28,6 +28,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.Label;
 import com.tokopedia.core.var.ProductItem;
@@ -274,6 +275,7 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventBannerEmptyFeedOS();
                 context.startActivity(BrandsWebViewActivity.newInstance(context,
                         TkpdBaseURL.OfficialStore.URL_WEBVIEW));
             }

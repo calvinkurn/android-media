@@ -297,9 +297,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onStart() {
         super.onStart();
-        if(!TextUtils.isEmpty(departmentId)) {
-            ScreenTracking.eventDiscoveryScreenAuth(departmentId);
-        }
+        ScreenTracking.eventDiscoveryScreenAuth(departmentId);
     }
 
     private void showErrorEmptyState() {

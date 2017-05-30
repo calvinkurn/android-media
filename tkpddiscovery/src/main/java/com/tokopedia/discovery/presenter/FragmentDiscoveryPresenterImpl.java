@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
+import com.tokopedia.core.network.entity.discovery.BrowseProductActivityModel;
 import com.tokopedia.core.network.entity.discovery.BrowseProductModel;
 import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.product.fragment.ProductDetailFragment;
@@ -30,6 +31,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.activity.BrowseProductActivity;
 import com.tokopedia.discovery.adapter.ProductAdapter;
 import com.tokopedia.discovery.fragment.ProductFragment;
 import com.tokopedia.discovery.interactor.DiscoveryInteractor;
@@ -44,8 +46,10 @@ import com.tokopedia.discovery.view.FragmentBrowseProductView;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import rx.Subscriber;
@@ -64,7 +68,6 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     private BrowseProductModel browseProductModel;
     int spanCount;
     private int topAdsPaging = 1;
-    private int wishlistButtonCounter = 0;
     private CacheInteractorImpl cacheInteractor;
     private RetrofitInteractorImpl retrofitInteractor;
 
@@ -134,15 +137,10 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
     public void onWishlistButtonClick(ProductItem data, int itemPosition, Context context) {
         int productId = Integer.parseInt(data.getId());
         if (SessionHandler.isV4Login(context)) {
-            if (wishlistButtonCounter < 6) {
-                if (data.productAlreadyWishlist) {
-                    requestRemoveWishList(context, productId, itemPosition);
-                } else {
-                    requestAddWishList(context, productId, itemPosition);
-                }
-                wishlistButtonCounter++;
+            if (data.productAlreadyWishlist) {
+                requestRemoveWishList(context, productId, itemPosition);
             } else {
-                view.showToastMessage(context.getString(R.string.wishlist_too_much_attempt_error_message));
+                requestAddWishList(context, productId, itemPosition);
             }
         } else {
             cacheInteractor.deleteProductDetail(productId);
@@ -255,7 +253,8 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                 && browseProductModel.header != null
                                 && listPagingHandlerModelPair.getModel1() != null
                                 && listPagingHandlerModelPair.getModel2() != null) {
-                            processBrowseProduct(browseProductModel.header.getTotalData(), listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
+                            view.updateTotalProduct(browseProductModel.header.getTotalData());
+                            processBrowseProduct(listPagingHandlerModelPair.getModel1(), listPagingHandlerModelPair.getModel2());
                         }
                         sendGTMNoResult(context);
                     }
@@ -299,8 +298,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
         return pagingHandlerModel;
     }
 
-    public void processBrowseProduct(final Long totalProduct,
-                                     final List<ProductItem> productItems,
+    public void processBrowseProduct(final List<ProductItem> productItems,
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {

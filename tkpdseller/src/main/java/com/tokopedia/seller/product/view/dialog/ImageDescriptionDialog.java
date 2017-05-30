@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.view.dialog;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -25,6 +26,7 @@ public class ImageDescriptionDialog extends DialogFragment {
     OnImageDescDialogListener mListener;
     public interface OnImageDescDialogListener {
         void onImageDescDialogOK(String newDescription);
+        void onDismiss();
     }
 
     public void setListener(OnImageDescDialogListener listener) {
@@ -83,4 +85,12 @@ public class ImageDescriptionDialog extends DialogFragment {
         });
     }
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (mListener!= null) {
+            mListener.onDismiss();
+            mListener = null;
+        }
+    }
 }

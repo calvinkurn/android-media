@@ -86,7 +86,7 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
                     viewListener.goToActivationPage(viewModel);
                 break;
             case GO_TO_RESET_PASSWORD:
-                viewListener.goToAutomaticResetPassword();
+                viewListener.showInfo();
                 break;
             default:
                 throw new RuntimeException("ERROR UNKNOWN ACTION");

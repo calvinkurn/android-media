@@ -45,7 +45,7 @@ public class DataFavoriteMapper {
                 wishlistItem.setProductId(dataWishlist.getId());
                 wishlistItem.setProductImage(dataWishlist.getProductImageUrl());
                 ArrayList<String> badges = new ArrayList<>();
-                if(dataWishlist.getBadges()!=null) {
+                if (dataWishlist.getBadges() !=null) {
                     for (WishListBadge badge : dataWishlist.getBadges()) {
                         badges.add(badge.getImgUrl());
                     }
@@ -61,19 +61,21 @@ public class DataFavoriteMapper {
     public TopAdsShopViewModel prepareDataTopAdsShop(TopAdsShop adsShop) {
         TopAdsShopViewModel shopViewModel = new TopAdsShopViewModel();
         ArrayList<TopAdsShopItem> shopItems = new ArrayList<>();
-        for (com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShopItem item
-                : adsShop.getTopAdsShopItemList()) {
-            TopAdsShopItem shopItem = new TopAdsShopItem();
-            shopItem.setShopId(item.getShopId());
-            shopItem.setShopDomain(item.getShopDomain());
-            shopItem.setShopName(item.getShopName());
-            shopItem.setAdKey(item.getAdRefKey());
-            shopItem.setShopClickUrl(item.getShopClickUrl());
-            shopItem.setShopCoverUrl(item.getShopImageCover());
-            shopItem.setShopImageUrl(item.getShopImageUrl());
-            shopItem.setShopLocation(item.getShopLocation());
-            shopItem.setFav(item.isSelected());
-            shopItems.add(shopItem);
+        if (adsShop.getTopAdsShopItemList() != null) {
+            for (com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShopItem item
+                    : adsShop.getTopAdsShopItemList()) {
+                TopAdsShopItem shopItem = new TopAdsShopItem();
+                shopItem.setShopId(item.getShopId());
+                shopItem.setShopDomain(item.getShopDomain());
+                shopItem.setShopName(item.getShopName());
+                shopItem.setAdKey(item.getAdRefKey());
+                shopItem.setShopClickUrl(item.getShopClickUrl());
+                shopItem.setShopCoverUrl(item.getShopImageCover());
+                shopItem.setShopImageUrl(item.getShopImageUrl());
+                shopItem.setShopLocation(item.getShopLocation());
+                shopItem.setFav(item.isSelected());
+                shopItems.add(shopItem);
+            }
         }
         shopViewModel.setAdsShopItems(shopItems);
         return shopViewModel;

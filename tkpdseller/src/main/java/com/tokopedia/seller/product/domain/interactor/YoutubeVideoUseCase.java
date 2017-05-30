@@ -72,23 +72,7 @@ public class YoutubeVideoUseCase extends UseCase<YoutubeVideoModel> {
                                 return createObservable(requestParams);
                             }
                         }
-                ).toList()
-                .doOnNext(new Action1<List<YoutubeVideoModel>>() {
-                    @Override
-                    public void call(List<YoutubeVideoModel> youtubeVideoModels) {
-                        if (youtubeVideoUseCaseListener != null) {
-                            youtubeVideoUseCaseListener.onHideLoading();
-                        }
-                    }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        if (youtubeVideoUseCaseListener != null) {
-                            youtubeVideoUseCaseListener.onHideLoading();
-                        }
-                    }
-                });
+                ).toList();
     }
 
     public void executeList(List<RequestParams> requestParams, Subscriber<List<YoutubeVideoModel>> subscriber) {

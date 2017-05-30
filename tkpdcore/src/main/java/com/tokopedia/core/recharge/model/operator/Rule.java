@@ -13,19 +13,19 @@ public class Rule {
     private String productText;
     @SerializedName("products_view_style")
     @Expose
-    private Integer productsViewStyle;
+    private int productsViewStyle;
     @SerializedName("show_price")
     @Expose
-    private Boolean showPrice;
+    private boolean showPrice;
     @SerializedName("show_product")
     @Expose
-    private Boolean showProduct;
+    private boolean showProduct;
     @SerializedName("show_product_list_page")
     @Expose
-    private Boolean showProductListPage;
+    private boolean showProductListPage;
     @SerializedName("allow_alphanumeric_number")
     @Expose
-    private Boolean allowAphanumericNumber;
+    private boolean allowAphanumericNumber;
 
     /**
      *
