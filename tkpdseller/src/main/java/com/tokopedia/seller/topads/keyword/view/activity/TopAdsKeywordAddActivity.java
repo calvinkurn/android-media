@@ -17,7 +17,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.seller.topads.keyword.helper.KeywordTypeMapper;
-import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddDetailFragment;
+import com.tokopedia.seller.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
 
 import java.util.ArrayList;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 public class TopAdsKeywordAddActivity extends BaseActivity
         implements HasComponent<AppComponent>,
-        TopAdsKeywordAddDetailFragment.OnSuccessSaveKeywordListener {
+        TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
     public static final String EXTRA_GROUP_ID = "grp_id";
     public static final String EXTRA_GROUP_NAME = "grp_nm";
@@ -97,8 +97,8 @@ public class TopAdsKeywordAddActivity extends BaseActivity
         if (savedInstanceState == null) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.container,
-                    TopAdsKeywordAddDetailFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords)
-                    , TopAdsKeywordAddDetailFragment.TAG);
+                    TopAdsKeywordAddFragment.newInstance(groupId,keywordType, serverCount, maxWords, localWords)
+                    , TopAdsKeywordAddFragment.TAG);
             fragmentTransaction.commit();
         }
     }
@@ -141,7 +141,7 @@ public class TopAdsKeywordAddActivity extends BaseActivity
     public void onBackPressed() {
         // check if user already make a changes by adding or deleting
         // if so, when backpressed, show dialog if user really want to delete the change or save the changes
-        TopAdsKeywordAddDetailFragment fragment = (TopAdsKeywordAddDetailFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddDetailFragment.TAG);
+        TopAdsKeywordAddFragment fragment = (TopAdsKeywordAddFragment) getSupportFragmentManager().findFragmentByTag(TopAdsKeywordAddFragment.TAG);
         if (fragment!= null && fragment.isButtonSaveEnabled()) {
             AlertDialog dialog = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle)
                     .setTitle(getString(R.string.dialog_cancel_title))

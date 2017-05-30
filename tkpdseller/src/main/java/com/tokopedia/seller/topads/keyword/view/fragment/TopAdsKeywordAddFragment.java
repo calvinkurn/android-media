@@ -36,10 +36,10 @@ import javax.inject.Inject;
  * Created by hendry on 5/18/2017.
  */
 
-public class TopAdsKeywordAddDetailFragment extends BaseDaggerFragment
+public class TopAdsKeywordAddFragment extends BaseDaggerFragment
         implements KeywordAdapter.OnKeywordAdapterListener, TopAdsKeywordAddView {
 
-    public static final String TAG = TopAdsKeywordAddDetailFragment.class.getSimpleName();
+    public static final String TAG = TopAdsKeywordAddFragment.class.getSimpleName();
 
     @Inject
     TopAdsKeywordAddPresenter topAdsKeywordAddPresenter;
@@ -71,12 +71,12 @@ public class TopAdsKeywordAddDetailFragment extends BaseDaggerFragment
     private View buttonSave;
     private TkpdProgressDialog progressDialog;
 
-    public static TopAdsKeywordAddDetailFragment newInstance(String groupId,
-                                                             int keywordType,
-                                                             int serverCount,
-                                                             int maxWords,
-                                                             ArrayList<String> localWords) {
-        TopAdsKeywordAddDetailFragment fragment = new TopAdsKeywordAddDetailFragment();
+    public static TopAdsKeywordAddFragment newInstance(String groupId,
+                                                       int keywordType,
+                                                       int serverCount,
+                                                       int maxWords,
+                                                       ArrayList<String> localWords) {
+        TopAdsKeywordAddFragment fragment = new TopAdsKeywordAddFragment();
         Bundle args = new Bundle();
         args.putString(EXTRA_GROUP_ID, groupId);
         args.putInt(EXTRA_KEYWORD_TYPE, keywordType);
@@ -179,6 +179,8 @@ public class TopAdsKeywordAddDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSaveKeyword() {
         hideLoading();
+        CommonUtils.UniversalToast(getActivity(),
+                getString(R.string.top_ads_keyword_has_been_added));
         if (onSuccessSaveListener != null) {
             onSuccessSaveListener.onSuccessSave(keywordRecyclerView.getKeywordList());
         }
@@ -282,8 +284,8 @@ public class TopAdsKeywordAddDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onKeywordRemoved() {
-        if (! buttonSave.isEnabled()) {
-            buttonSave.setEnabled(true);
+        if (getLocalKeyWordSize() == 0 ) {
+            buttonSave.setEnabled(false);
         }
         setCurrentMaxKeyword();
     }

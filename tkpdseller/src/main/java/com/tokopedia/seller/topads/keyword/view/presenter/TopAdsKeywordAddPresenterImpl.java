@@ -53,7 +53,9 @@ public class TopAdsKeywordAddPresenterImpl extends TopAdsKeywordAddPresenter {
 
             @Override
             public void onError(Throwable e) {
-                getView().onFailedSaveKeyword(e);
+                if (isViewAttached()) {
+                    getView().onFailedSaveKeyword(e);
+                }
             }
 
             @Override

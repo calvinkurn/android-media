@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdTextInputLayout;
 import com.tokopedia.seller.product.view.widget.SpinnerTextView;
@@ -74,9 +75,7 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private TextView textKeywordDesc;
     private TextView textKeywordExample;
 
-    private
-    @KeywordTypeDef
-    int keywordType;
+    private @KeywordTypeDef int keywordType = -1;
 
     public static Fragment newInstance(boolean isPositiveKeyword) {
         Fragment fragment = new TopAdsKeywordNewChooseGroupFragment();
@@ -231,27 +230,27 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
     private void setKeywordsInfo(@KeywordTypeDef int keywordType) {
         switch (keywordType) {
             case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
-                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
-                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
-                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_EXACT:
-                textKeywordTitle.setText(getString(R.string.top_ads_exact_match));
-                textKeywordDesc.setText(getString(R.string.top_ads_exact_match_positive_description));
-                textKeywordExample.setText(getString(R.string.top_ads_exact_match_positive_example));
+                textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
-                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
-                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
-                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
-                textKeywordTitle.setText(getString(R.string.top_ads_phrase_match));
-                textKeywordDesc.setText(getString(R.string.top_ads_phrase_match_positive_description));
-                textKeywordExample.setText(getString(R.string.top_ads_phrase_match_positive_example));
+                textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             default:

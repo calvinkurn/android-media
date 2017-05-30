@@ -59,9 +59,6 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseActivity implements
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             isPositive = bundle.getBoolean(EXTRA_IS_POSITIVE);
-        } else {
-            // TODO remove, just for test
-            isPositive = true;
         }
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
