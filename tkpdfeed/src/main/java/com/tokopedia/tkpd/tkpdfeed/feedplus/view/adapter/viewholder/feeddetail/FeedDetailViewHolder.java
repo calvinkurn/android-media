@@ -52,7 +52,7 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
     }
 
     @Override
-    public void bind(FeedDetailViewModel feedDetailViewModel) {
+    public void bind(final FeedDetailViewModel feedDetailViewModel) {
 
         ImageHandler.LoadImage(productImage, feedDetailViewModel.getImageSource());
 
@@ -89,7 +89,9 @@ public class FeedDetailViewHolder extends AbstractViewHolder<FeedDetailViewModel
         wishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onWishlistClicked();
+                viewListener.onWishlistClicked(
+                        feedDetailViewModel.getProductId(),
+                        feedDetailViewModel.isWishlist());
             }
         });
     }

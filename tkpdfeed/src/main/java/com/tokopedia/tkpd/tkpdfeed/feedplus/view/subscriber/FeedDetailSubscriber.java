@@ -2,13 +2,12 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.feeddetail.DataFeedDetailDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.feeddetail.FeedDetailProductDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.feeddetail.FeedDetailShopDomain;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.feeddetail.FeedDetailWholesaleDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.DataFeedDetailDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailShopDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feeddetail.FeedDetailWholesaleDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FeedDetailViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.ProductCardHeaderViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +64,7 @@ public class FeedDetailSubscriber extends Subscriber<List<DataFeedDetailDomain>>
 
     private FeedDetailViewModel createProductViewModel(FeedDetailProductDomain productDomain) {
         return new FeedDetailViewModel(
+                productDomain.getId(),
                 productDomain.getName(),
                 productDomain.getPrice(),
                 productDomain.getImage(),

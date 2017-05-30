@@ -15,7 +15,7 @@ public interface FeedPlusDetail {
 
     public interface View extends CustomerView {
 
-        void onWishlistClicked();
+        void onWishlistClicked(Integer productId, boolean wishlist);
 
         void onGoToShopDetail(Integer shopId);
 
@@ -31,5 +31,8 @@ public interface FeedPlusDetail {
     }
 
     public interface Presenter extends CustomerPresenter<View> {
+        void addToWishlist(String productId);
+
+        void removeFromWishlist(String productId);
     }
 }

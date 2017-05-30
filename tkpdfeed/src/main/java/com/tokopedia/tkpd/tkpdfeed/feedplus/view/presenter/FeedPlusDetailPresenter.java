@@ -1,10 +1,14 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.FeedPlusDetail;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.AddWishlistSubscriber;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.FeedDetailSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.RemoveWishlistSubscriber;
 
 import javax.inject.Inject;
 
@@ -16,11 +20,20 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
         implements FeedPlusDetail.Presenter {
 
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
+    private final AddWishlistUseCase addWishlistUseCase;
+    private final RemoveWishlistUseCase removeWishlistUseCase;
+    private final SessionHandler sessionHandler;
     private FeedPlusDetail.View viewListener;
 
     @Inject
-    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase) {
+    FeedPlusDetailPresenter(GetFeedsDetailUseCase getFeedsDetailUseCase,
+                            AddWishlistUseCase addWishlistUseCase,
+                            RemoveWishlistUseCase removeWishlistUseCase,
+                            SessionHandler sessionHandler) {
         this.getFeedsDetailUseCase = getFeedsDetailUseCase;
+        this.addWishlistUseCase = addWishlistUseCase;
+        this.removeWishlistUseCase = removeWishlistUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -33,22 +46,30 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
     public void detachView() {
         super.detachView();
         getFeedsDetailUseCase.unsubscribe();
+        addWishlistUseCase.unsubscribe();
+        removeWishlistUseCase.unsubscribe();
     }
 
     public void getFeedDetail(String detailId, int page) {
         viewListener.showLoading();
-        getFeedsDetailUseCase.execute(getFeedDetailParam(detailId, page),
+        getFeedsDetailUseCase.execute(
+                getFeedsDetailUseCase.getFeedDetailParam(detailId, page),
                 new FeedDetailSubscriber(viewListener));
     }
 
-    private RequestParams getFeedDetailParam(String detailId, int page) {
-        RequestParams params = RequestParams.create();
-        params.putString(GetFeedsDetailUseCase.PARAM_DETAIL_ID, detailId);
-        params.putInt(GetFeedsDetailUseCase.PARAM_PAGE, page);
-        return params;
+    public void addToWishlist(String productId) {
+        viewListener.showLoadingProgress();
+        addWishlistUseCase.execute(
+                AddWishlistUseCase.generateParam(productId, sessionHandler),
+                new AddWishlistSubscriber(viewListener));
     }
 
-    public void addToWishlist() {
+
+    @Override
+    public void removeFromWishlist(String productId) {
         viewListener.showLoadingProgress();
+        removeWishlistUseCase.execute(
+                RemoveWishlistUseCase.generateParam(productId, sessionHandler),
+                new RemoveWishlistSubscriber(viewListener));
     }
 }

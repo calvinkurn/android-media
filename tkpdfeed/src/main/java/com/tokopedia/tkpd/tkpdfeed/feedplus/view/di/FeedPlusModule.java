@@ -3,57 +3,41 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.di;
 import android.content.Context;
 
 import com.apollographql.apollo.ApolloClient;
-import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ActivityContext;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.google.gson.Gson;
-import com.tokopedia.core.base.di.qualifier.ActivityContext;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.apiservices.mojito.MojitoNoRetryAuthService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.module.OkHttpClientModule;
-import com.tokopedia.core.network.di.module.OkHttpClientModule;
-import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.shopinfo.facades.authservices.ActionService;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FavoriteShopFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FeedFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FavoriteShopMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedDetailListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedResultMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FavoriteShopRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FavoriteShopRepositoryImpl;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepositoryImpl;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.FavoriteShopUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsDetailUseCase;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FavoriteShopFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.FeedFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.WishlistFactory;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.AddWishlistMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FavoriteShopMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedDetailListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedListMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RemoveWishlistMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FavoriteShopRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.FeedRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepository;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.repository.WishlistRepositoryImpl;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.FeedResult;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.AddWishlistUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FavoriteShopUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 
 import javax.inject.Named;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.factory.FeedFactory;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedDetailListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedListMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.mapper.FeedResultMapper;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepository;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.data.repository.FeedRepositoryImpl;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.model.FeedResult;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsDetailUseCase;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.domain.usecase.GetFirstPageFeedsUseCase;
-
-import javax.inject.Named;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RemoveWishlistUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -171,25 +155,27 @@ public class FeedPlusModule {
     @Provides
     FavoriteShopUseCase provideDoFavoriteShopUseCase(ThreadExecutor threadExecutor,
                                                      PostExecutionThread postExecutionThread,
-                                                     FavoriteShopRepository repository){
+                                                     FavoriteShopRepository repository) {
         return new FavoriteShopUseCase(threadExecutor, postExecutionThread, repository);
     }
 
     @FeedPlusScope
     @Provides
-    FavoriteShopMapper provideFavoriteShopMapper(){
+    FavoriteShopMapper provideFavoriteShopMapper() {
         return new FavoriteShopMapper();
     }
 
     @FeedPlusScope
     @Provides
-    ActionService provideActionService(){
+    ActionService provideActionService() {
         return new ActionService();
     }
 
     @FeedPlusScope
     @Provides
-    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context, FavoriteShopMapper mapper, ActionService service){
+    FavoriteShopFactory provideFavoriteShopFactory(@ActivityContext Context context,
+                                                   FavoriteShopMapper mapper,
+                                                   ActionService service) {
         return new FavoriteShopFactory(context, mapper, service);
     }
 
@@ -198,4 +184,59 @@ public class FeedPlusModule {
     FavoriteShopRepository provideFavoriteShopRepository(FavoriteShopFactory favoriteShopFactory) {
         return new FavoriteShopRepositoryImpl(favoriteShopFactory);
     }
+
+    @FeedPlusScope
+    @Provides
+    AddWishlistMapper provideAddWishlistMapper() {
+        return new AddWishlistMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    RemoveWishlistMapper provideRemoveWishlistMapper() {
+        return new RemoveWishlistMapper();
+    }
+
+    @FeedPlusScope
+    @Provides
+    MojitoNoRetryAuthService provideMojitoNoRetryAuthService() {
+        return new MojitoNoRetryAuthService();
+    }
+
+    @FeedPlusScope
+    @Provides
+    WishlistFactory provideWishlistFactory(AddWishlistMapper addWishlistMapper,
+                                           RemoveWishlistMapper removeWishlistMapper,
+                                           MojitoNoRetryAuthService mojitoNoRetryAuthService) {
+        return new WishlistFactory(addWishlistMapper,
+                removeWishlistMapper,
+                mojitoNoRetryAuthService);
+    }
+
+    @FeedPlusScope
+    @Provides
+    WishlistRepository provideWishlistRepository(WishlistFactory wishlistFactory) {
+        return new WishlistRepositoryImpl(wishlistFactory);
+    }
+
+    @FeedPlusScope
+    @Provides
+    AddWishlistUseCase provideAddWishlistUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 WishlistRepository wishlistRepository) {
+        return new AddWishlistUseCase(threadExecutor,
+                postExecutionThread,
+                wishlistRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    RemoveWishlistUseCase provideRemoveWishlistUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutionThread,
+                                                       WishlistRepository wishlistRepository) {
+        return new RemoveWishlistUseCase(threadExecutor,
+                postExecutionThread,
+                wishlistRepository);
+    }
+
 }

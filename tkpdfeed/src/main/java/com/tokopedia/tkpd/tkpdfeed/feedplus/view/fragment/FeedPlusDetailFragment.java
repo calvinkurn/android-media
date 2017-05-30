@@ -177,8 +177,13 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onWishlistClicked() {
-        presenter.addToWishlist();
+    public void onWishlistClicked(Integer productId, boolean isWishlist) {
+        if(!isWishlist) {
+            presenter.addToWishlist(String.valueOf(productId));
+        }else{
+            presenter.removeFromWishlist(String.valueOf(productId));
+
+        }
     }
 
     @Override
