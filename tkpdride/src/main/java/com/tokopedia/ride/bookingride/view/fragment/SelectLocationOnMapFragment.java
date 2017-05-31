@@ -123,7 +123,9 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         if (savedInstanceState != null) {
-            centerMarker.setImageDrawable(getResources().getDrawable(savedInstanceState.getInt(EXTRA_MARKER_ID)));
+            if (savedInstanceState.getInt(EXTRA_MARKER_ID) != 0) {
+                centerMarker.setImageDrawable(getResources().getDrawable(savedInstanceState.getInt(EXTRA_MARKER_ID)));
+            }
 //            source = savedInstanceState.getParcelable(EXTRA_SOURCE);
         }
     }

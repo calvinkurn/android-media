@@ -6,6 +6,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
@@ -33,7 +34,7 @@ public class GooglePlacePickerActivity extends BaseActivity
         setContentView(R.layout.activity_google_place_picker);
 
         boolean showAutoDetectLocation = true;
-        boolean selectLocationOnMap = false;
+        boolean selectLocationOnMap = true;
         if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
             showAutoDetectLocation = false;
             selectLocationOnMap = true;
@@ -68,7 +69,8 @@ public class GooglePlacePickerActivity extends BaseActivity
 
     @Override
     public void onSelectLocationOnMapSelected() {
-        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance((PlacePassViewModel) getIntent().getParcelableExtra(EXTRA_SOURCE)));
+        CommonUtils.hideKeyboard(this, getCurrentFocus());
+        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(getIntent().getIntExtra(EXTRA_SOURCE, 0)));
     }
 
     @Override
