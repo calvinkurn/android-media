@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ContentResolver;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.product.model.BannerData;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -68,5 +69,5 @@ public interface IProductDigitalView extends IBaseView {
 
     boolean isUserLoggedIn();
 
-    void interruptUserNeedLogin();
+    void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData);
 }

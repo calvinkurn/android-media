@@ -38,6 +38,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -100,6 +101,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String EXTRA_STATE_CLIENT_NUMBER = "EXTRA_STATE_CLIENT_NUMBER";
     private static final String EXTRA_STATE_CATEGORY_DATA = "EXTRA_STATE_CATEGORY_DATA";
     private static final String EXTRA_STATE_BANNER_LIST_DATA = "EXTRA_STATE_BANNER_LIST_DATA";
+    private static final String EXTRA_STATE_CHECKOUT_PASS_DATA = "EXTRA_STATE_CHECKOUT_PASS_DATA";
     private static final String EXTRA_STATE_INSTANT_CHECKOUT_CHECKED =
             "EXTRA_STATE_INSTANT_CHECKOUT_CHECKED";
     private static final String EXTRA_STATE_HISTORY_CLIENT_NUMBER =
@@ -124,6 +126,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private List<BannerData> bannerDataListState;
     private HistoryClientNumber historyClientNumberState;
     private String voucherCodeCopiedState;
+    private DigitalCheckoutPassData digitalCheckoutPassDataState;
 
     private boolean isInstantCheckoutChecked;
 
@@ -187,6 +190,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
         state.putParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER, historyClientNumberState);
         state.putString(EXTRA_STATE_VOUCHER_CODE_COPIED, voucherCodeCopiedState);
+        state.putParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA, digitalCheckoutPassDataState);
     }
 
     @Override
@@ -199,6 +203,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bannerDataListState = savedState.getParcelableArrayList(EXTRA_STATE_BANNER_LIST_DATA);
         historyClientNumberState = savedState.getParcelable(EXTRA_STATE_HISTORY_CLIENT_NUMBER);
         voucherCodeCopiedState = savedState.getString(EXTRA_STATE_VOUCHER_CODE_COPIED);
+        digitalCheckoutPassDataState = savedState.getParcelable(EXTRA_STATE_CHECKOUT_PASS_DATA);
 
         presenter.processStateDataToReRender();
     }
@@ -498,7 +503,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void interruptUserNeedLogin() {
+    public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
+        this.digitalCheckoutPassDataState = digitalCheckoutPassData;
         Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
@@ -549,7 +555,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return;
         }
         preCheckoutProduct.setVoucherCodeCopied(voucherCodeCopiedState);
-        presenter.processAddToCartProduct(preCheckoutProduct);
+        presenter.processAddToCartProduct(presenter.generateCheckoutPassData(preCheckoutProduct));
     }
 
     @Override
@@ -664,6 +670,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     renderContactDataToClientNumber(contact);
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+                break;
+            case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
+                if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
+                    presenter.processAddToCartProduct(digitalCheckoutPassDataState);
                 }
                 break;
         }

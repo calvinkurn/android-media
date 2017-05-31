@@ -158,10 +158,30 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
         }
     }
 
+
     @Override
-    public void processAddToCartProduct(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+    public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
+        if (view.isUserLoggedIn()) {
+            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
+                IDigitalModuleRouter digitalModuleRouter =
+                        (IDigitalModuleRouter) view.getMainApplication();
+                view.navigateToActivityRequest(
+                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                );
+            }
+        } else {
+            view.interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
+        }
+    }
+
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData(
+            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct
+    ) {
+
         String clientNumber = preCheckoutProduct.getClientNumber();
-        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
+        return new DigitalCheckoutPassData.Builder()
                 .action("init_data")
                 .categoryId(preCheckoutProduct.getCategoryId())
                 .clientNumber(clientNumber)
@@ -176,20 +196,6 @@ public class ProductDigitalPresenter implements IProductDigitalPresenter {
                 .utmMedium("widget")
                 .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
                 .build();
-
-        if (view.isUserLoggedIn()) {
-            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) view.getMainApplication();
-                view.navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-                );
-            }
-        } else {
-            view.interruptUserNeedLogin();
-        }
-
     }
 
     @NonNull
