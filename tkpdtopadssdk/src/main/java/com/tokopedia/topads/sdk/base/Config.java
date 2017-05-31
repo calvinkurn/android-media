@@ -64,8 +64,36 @@ public class Config {
         return clientId;
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
+    }
+
+    public void setEndpoint(Endpoint endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public void setTopAdsParams(TopAdsParams topAdsParams) {
+        this.topAdsParams = topAdsParams;
+    }
+
     public DisplayMode getDisplayMode() {
         return displayMode;
+    }
+
+    public void setDisplayMode(DisplayMode displayMode) {
+        this.displayMode = displayMode;
     }
 
     public TopAdsParams getTopAdsParams() {

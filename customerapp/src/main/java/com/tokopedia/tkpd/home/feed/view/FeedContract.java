@@ -45,6 +45,8 @@ public interface FeedContract {
 
         void showEmptyFeed();
 
+        void showEmptyFeedAdapter();
+
         void hideEmptyFeed();
 
         void showMessageRefreshFailed();

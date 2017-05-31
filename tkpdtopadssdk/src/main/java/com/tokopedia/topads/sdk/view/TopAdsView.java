@@ -151,6 +151,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                         GridLayoutManager.VERTICAL, false));
                 break;
             case LIST:
+            case FEED:
                 itemDecoration.setOrientation(DividerItemDecoration.VERTICAL_LIST);
                 recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 break;

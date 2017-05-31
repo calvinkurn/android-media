@@ -58,17 +58,19 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
     }
 
     @Override
+    public Config getConfig() {
+        return config;
+    }
+
+    @Override
     public void setMaxItems(int items) {
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, String.valueOf(items));
     }
 
     @Override
     public void setDisplayMode(DisplayMode displayMode) {
-        if(config.getDisplayMode() != null){
-            adsUseCase.setDisplayMode(config.getDisplayMode());
-        } else {
-            adsUseCase.setDisplayMode(displayMode);
-        }
+        adsUseCase.setDisplayMode(displayMode);
+        config.setDisplayMode(displayMode);
     }
 
     public DisplayMode getDisplayMode(){
@@ -95,9 +97,6 @@ public class TopAdsPresenter implements AdsPresenter, PreferedCategoryListener {
         Log.d(TAG, "Load TopAds");
         if(config.getEndpoint()!=null) {
             setEndpoinParam(config.getEndpoint().getDescription());
-        }
-        if(config.getDisplayMode() == DisplayMode.FEED){
-            setMaxItems(4);
         }
         if(config.isWithPreferedCategory()){
             getPreferedCategory();

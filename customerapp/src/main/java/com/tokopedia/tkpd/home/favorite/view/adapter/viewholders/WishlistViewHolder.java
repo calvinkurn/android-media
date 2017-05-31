@@ -22,7 +22,7 @@ import com.tokopedia.tkpd.home.favorite.view.viewmodel.WishlistViewModel;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
 
 /**
  * @author kulomady on 1/24/17.

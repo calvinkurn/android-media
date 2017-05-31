@@ -42,6 +42,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     private int mPage = 1;
     private boolean hasHeader = false;
     private boolean headerPlaced = false;
+    private boolean isFeed = false;
     private boolean shouldLoadAds = true; //default load ads
 
     public TopAdsPlacer(
@@ -206,10 +207,14 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
             Log.d(TAG, "add new item pos " + i);
             arrayList.add(model);
         }
-        if (hasHeader && !headerPlaced) {
-            setTopAds(list, arrayList, 1);
+        if (isFeed) {
+            setTopAds(list, arrayList, arrayList.size());
         } else {
-            setTopAds(list, arrayList, 0);
+            if (hasHeader && !headerPlaced) {
+                setTopAds(list, arrayList, 1);
+            } else {
+                setTopAds(list, arrayList, 0);
+            }
         }
         ajustedPositionStart = getItemCount();
         ajustedItemCount = arrayList.size();
@@ -246,7 +251,14 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
     }
 
     public void setConfig(Config config) {
+        if (config.getDisplayMode() == DisplayMode.FEED) {
+            isFeed = true;
+        }
         presenter.setConfig(config);
+    }
+
+    public Config getConfig(){
+        return presenter.getConfig();
     }
 
     private void setTopAds(List<Item> list, ArrayList<Item> arrayList, int pos) {

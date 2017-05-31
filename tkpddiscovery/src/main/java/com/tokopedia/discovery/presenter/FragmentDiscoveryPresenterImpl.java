@@ -302,7 +302,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                                      final PagingHandler.PagingHandlerModel pagingHandlerModel) {
 
         if (TextUtils.isEmpty(view.getUserId()) || productItems.isEmpty()) {
-            view.onCallProductServiceResult(totalProduct, productItems, pagingHandlerModel);
+            view.onCallProductServiceResult(productItems, pagingHandlerModel);
             return;
         }
 
@@ -335,7 +335,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
                         if (browseProductModel.getCategoryData() != null) {
                             view.addCategoryHeader(browseProductModel.getCategoryData());
                         }
-                        view.onCallProductServiceResult(totalProduct, productItems, pagingHandlerModel);
+                        view.onCallProductServiceResult(productItems, pagingHandlerModel);
                     }
                 });
     }

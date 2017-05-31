@@ -35,6 +35,11 @@ public class AdsItemAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void addItem(Item item){
+        this.list.add(item);
+        notifyDataSetChanged();
+    }
+
     public void setItemClickListener(LocalAdsClickListener itemClickListener) {
         typeFactory.setItemClickListener(itemClickListener);
         notifyDataSetChanged();

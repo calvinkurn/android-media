@@ -205,7 +205,7 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
     }
 
     @Override
-    public void onCallProductServiceResult(Long totalProduct, List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
+    public void onCallProductServiceResult(List<ProductItem> model, PagingHandler.PagingHandlerModel pagingHandlerModel) {
         topAdsRecyclerAdapter.shouldLoadAds(model.size() > 0);
         productAdapter.addAll(new ArrayList<RecyclerViewItem>(model));
         productAdapter.notifyDataSetChanged();
@@ -354,7 +354,6 @@ public class ProductFragment extends BaseFragment<FragmentDiscoveryPresenter>
             return;
         }
         productAdapter = new ProductAdapter(getActivity(), new ArrayList<RecyclerViewItem>(), this);
-        productAdapter.setIsLoading(true);
         spanCount = calcColumnSize(getResources().getConfiguration().orientation);
         linearLayoutManager = new LinearLayoutManager(getActivity());
         gridLayoutManager = new GridLayoutManager(getActivity(), spanCount);

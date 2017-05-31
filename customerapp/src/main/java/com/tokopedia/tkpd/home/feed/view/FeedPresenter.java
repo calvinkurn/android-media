@@ -199,6 +199,9 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
         private void displayFeed(ProductFeedViewModel productFeedViewModel) {
             getView().showFeedDataFromCache(productFeedViewModel.getData());
+            if(productFeedViewModel.getData().size() < 2){
+                getView().showEmptyFeedAdapter();
+            }
         }
 
     }
@@ -323,6 +326,9 @@ public class FeedPresenter extends BaseDaggerPresenter<FeedContract.View>
 
         private void displayRefreshData(ProductFeedViewModel productFeedViewModel) {
             getView().refreshFeedData(productFeedViewModel.getData());
+            if(productFeedViewModel.getData().size() < 2){
+                getView().showEmptyFeedAdapter();
+            }
         }
 
         private Boolean isFeedError(DataFeed dataFeed) {

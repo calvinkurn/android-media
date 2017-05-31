@@ -111,6 +111,10 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         placer.setConfig(config);
     }
 
+    public Config getConfig(){
+        return placer.getConfig();
+    }
+
     public void setHasHeader(boolean hasHeader) {
         placer.setHasHeader(hasHeader);
     }
@@ -229,7 +233,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
         if (layoutManager instanceof GridLayoutManager) {
-            placer.setDisplayMode(DisplayMode.GRID);
+            if(getConfig().getDisplayMode() == DisplayMode.FEED){
+                placer.setDisplayMode(getConfig().getDisplayMode());
+            } else {
+                placer.setDisplayMode(DisplayMode.GRID);
+            }
             GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             if (spanSizeLookup != null) {
                 gridLayoutManager.setSpanSizeLookup(spanSizeLookup);
@@ -238,7 +246,11 @@ public class TopAdsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             this.recyclerView.setLayoutManager(gridLayoutManager);
         } else if (layoutManager instanceof LinearLayoutManager) {
-            placer.setDisplayMode(DisplayMode.LIST);
+            if(getConfig().getDisplayMode() == DisplayMode.FEED){
+                placer.setDisplayMode(getConfig().getDisplayMode());
+            } else {
+                placer.setDisplayMode(DisplayMode.LIST);
+            }
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
             this.recyclerView.setLayoutManager(linearLayoutManager);
         }

@@ -69,6 +69,9 @@ public class ModelConverter {
             } else if (displayMode == DisplayMode.LIST && visitable instanceof ShopGridViewModel) {
                 list.set(i, ModelConverter.convertToShopListViewModel(((ShopGridViewModel)
                         list.get(i)).getData()));
+            } else if(displayMode == DisplayMode.FEED && visitable instanceof ShopGridViewModel) {
+                list.set(i, ModelConverter.convertToShopFeedViewModel(((ShopGridViewModel)
+                        list.get(i)).getData()));
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.core.home.adapter;
+package com.tokopedia.tkpd.home.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,16 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.customwidget.FlowLayout;
+import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
+import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.fragment.FragmentIndexMainHeader;
 import com.tokopedia.core.home.model.HistoryProductListItem;
-import com.tokopedia.core.home.model.HorizontalProductList;
 import com.tokopedia.core.home.model.ViewHolderProductTopAds;
-import com.tokopedia.core.var.RecyclerViewItem;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.R;
 
-import java.util.List;
 
 /**
  * Created by Nisie on 5/06/15.
@@ -92,7 +90,7 @@ public class ProductFeedAdapter {
 
     public static RecyclerView.ViewHolder createEmtpyFeed(ViewGroup parent) {
         View viewLayout = LayoutInflater
-                .from(parent.getContext()).inflate(R.layout.empty_product_feed, parent, false);
+                .from(parent.getContext()).inflate(R.layout.empty_state_product_feed, parent, false);
         return new ViewHolderEmptyFeed(viewLayout);
     }
     public static ViewHolderHistoryProduct
@@ -116,22 +114,5 @@ public class ProductFeedAdapter {
                 .createAdapter(historyProductRecyclerViewAdapter));
     }
 
-    private void bindEmpty(ViewHolderEmpty holder, int position) {
-//        holder.hotListButton.setOnClickListener(onHotListClicked());
-    }
-
-    public static boolean isTopAds(List<RecyclerViewItem> data, int position) {
-        try {
-            return position > 0
-                    && data.get(position).getType() == TkpdState.RecyclerViewItem.TYPE_LIST
-                    && ((HorizontalProductList) data.get(position)).getListProduct().get(0).getIsTopAds();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static boolean isTopAds(RecyclerViewItem data) {
-        return data.getType() == TkpdState.RecyclerView.VIEW_TOP_ADS;
-    }
 
 }

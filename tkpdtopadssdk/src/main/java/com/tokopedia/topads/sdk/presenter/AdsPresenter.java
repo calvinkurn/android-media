@@ -40,4 +40,6 @@ public interface AdsPresenter <V extends AdsView>{
     void getPreferedCategory();
 
     void setConfig(Config config);
+
+    Config getConfig();
 }

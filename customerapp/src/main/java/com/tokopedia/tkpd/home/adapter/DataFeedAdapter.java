@@ -19,8 +19,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.BaseRecyclerViewAdapter;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.adapter.HistoryProductRecyclerViewAdapter;
-import com.tokopedia.core.home.adapter.ProductFeedAdapter;
-import com.tokopedia.core.home.adapter.ViewHolderEmptyFeed;
 import com.tokopedia.core.home.adapter.ViewHolderHistoryProduct;
 import com.tokopedia.core.home.model.HistoryProductListItem;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
@@ -43,11 +41,11 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createEmtpyFeed;
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createViewHistoryProduct;
-import static com.tokopedia.core.home.adapter.ProductFeedAdapter.createViewProductFeed;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.FAVORITE_TAB;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.HOTLIST_TAB;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createEmtpyFeed;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createViewHistoryProduct;
+import static com.tokopedia.tkpd.home.adapter.ProductFeedAdapter.createViewProductFeed;
 import static com.tokopedia.core.home.model.HistoryProductListItem.HISTORY_PRODUCT_LIST_ITEM;
 import static com.tokopedia.core.var.ProductItem.PRODUCT_ITEM_TYPE;
 
@@ -133,6 +131,7 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
     private void bindEmptyFeedModel(ViewHolderEmptyFeed holder, int position) {
         holder.checkFavoriteShopButton.setOnClickListener(onFindFavoriteClicked());
         holder.officialStoreLinkContainer.setOnClickListener(onOfficialStoreLinkClicked());
+        holder.generateTopAds();
     }
 
     private void bindProductFeedViewHolder(ProductFeedAdapter.ViewHolderProductFeed holder, ProductItem data) {
@@ -337,4 +336,10 @@ public class DataFeedAdapter extends BaseRecyclerViewAdapter {
         data.addAll(datas);
         notifyItemRangeInserted(positionStart, datas.size());
     }
+
+    public void setEmptyFeed() {
+        data.add(new EmptyFeedModel());
+        notifyItemInserted(1);
+    }
+
 }
