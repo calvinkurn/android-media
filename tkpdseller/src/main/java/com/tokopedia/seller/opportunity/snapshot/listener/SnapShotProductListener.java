@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.listener;
+package com.tokopedia.seller.opportunity.snapshot.listener;
 
 import android.app.Fragment;
 

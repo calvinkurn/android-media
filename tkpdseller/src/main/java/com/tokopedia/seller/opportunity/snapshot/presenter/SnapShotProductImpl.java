@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.presenter;
+package com.tokopedia.seller.opportunity.snapshot.presenter;
 
 import android.content.Context;
 import android.net.Uri;
@@ -6,8 +6,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.snapshot.fragment.SnapShotFragment;
-import com.tokopedia.core.snapshot.listener.SnapShotProductListener;
+import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
+import com.tokopedia.seller.opportunity.snapshot.fragment.SnapShotFragment;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotProductListener;
 import com.tokopedia.core.var.ProductItem;
 
 import java.util.List;
@@ -25,8 +26,13 @@ public class SnapShotProductImpl implements SnapShotProductPresenter {
     @Override
     public void initialFragment(Context context, Uri uriData, Bundle bundleData) {
         viewListener.inflateFragment(SnapShotFragment
-                        .newInstance(generateProductPass(bundleData, uriData)),
+                        .newInstance(generateProductPass(bundleData, uriData),
+                                getOpportunityId(bundleData)),
                 SnapShotFragment.class.getSimpleName());
+    }
+
+    private String getOpportunityId(Bundle bundleData) {
+        return bundleData.getString(SnapShotProduct.PARAM_OPPORTUNITY_ID, "");
     }
 
     private ProductPass generateProductPass(Bundle bundleData, Uri uriData) {

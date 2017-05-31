@@ -1,74 +1,104 @@
-package com.tokopedia.core.snapshot.fragment;
+package com.tokopedia.seller.opportunity.snapshot.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.PreviewProductImage;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.snapshot.customview.ButtonView;
-import com.tokopedia.core.snapshot.customview.DescriptionView;
-import com.tokopedia.core.snapshot.customview.DetailInfoView;
-import com.tokopedia.core.snapshot.customview.FreeReturnView;
-import com.tokopedia.core.snapshot.customview.HeaderInfoView;
-import com.tokopedia.core.snapshot.customview.PictureView;
-import com.tokopedia.core.snapshot.customview.ShopInfoView;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
-import com.tokopedia.core.snapshot.presenter.SnapShotFragmentImpl;
-import com.tokopedia.core.snapshot.presenter.SnapShotFragmentPresenter;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
+import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
+import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
+import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
+import com.tokopedia.seller.opportunity.presentation.ActionViewData;
+import com.tokopedia.seller.opportunity.snapshot.customview.ButtonView;
+import com.tokopedia.seller.opportunity.snapshot.customview.DescriptionView;
+import com.tokopedia.seller.opportunity.snapshot.customview.DetailInfoView;
+import com.tokopedia.seller.opportunity.snapshot.customview.FreeReturnView;
+import com.tokopedia.seller.opportunity.snapshot.customview.HeaderInfoView;
+import com.tokopedia.seller.opportunity.snapshot.customview.PictureView;
+import com.tokopedia.seller.opportunity.snapshot.customview.ShopInfoView;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
+import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentImpl;
+import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotFragmentPresenter;
 
-import butterknife.BindView;
 
 /**
  * Created by hangnadi on 3/1/17.
  */
 public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPresenter>
-    implements SnapShotFragmentView {
+        implements SnapShotFragmentView {
 
     private static final String ARG_PARAM_PRODUCT_PASS_DATA = "ARG_PARAM_PRODUCT_PASS_DATA";
+    private static final String ARG_PASS_OPPORTUNITY_ID = "ARG_PASS_OPPORTUNITY_ID";
     private static final String ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK";
     private static final String TAG = SnapShotFragment.class.getSimpleName();
     public static final int INIT_REQUEST = 1;
     public static final int RE_REQUEST = 2;
 
-    @BindView(R2.id.view_header)
     HeaderInfoView headerInfoView;
-    @BindView(R2.id.view_detail)
     DetailInfoView detailInfoView;
-    @BindView(R2.id.view_picture)
     PictureView pictureView;
-    @BindView(R2.id.view_desc)
     DescriptionView descriptionView;
-    @BindView(R2.id.view_shop_info)
     ShopInfoView shopInfoView;
-    @BindView(R2.id.view_buy)
     ButtonView buttonView;
-    @BindView(R2.id.view_progress)
     ProgressBar progressBar;
-    @BindView(R2.id.view_free_return)
     FreeReturnView freeReturnView;
 
     private ProductPass productPass;
     private ProductDetailData productData;
+    private TkpdProgressDialog progressDialog;
 
-    public static Fragment newInstance(ProductPass productPass) {
+
+    public static Fragment newInstance(ProductPass productPass, String opportunityId) {
         SnapShotFragment fragment = new SnapShotFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_PRODUCT_PASS_DATA, productPass);
+        args.putString(ARG_PASS_OPPORTUNITY_ID, opportunityId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        headerInfoView = (HeaderInfoView) view.findViewById(R.id.view_header);
+        detailInfoView = (DetailInfoView) view.findViewById(R.id.view_detail);
+        pictureView = (PictureView) view.findViewById(R.id.view_picture);
+        descriptionView = (DescriptionView) view.findViewById(R.id.view_desc);
+        shopInfoView = (ShopInfoView) view.findViewById(R.id.view_shop_info);
+        buttonView = (ButtonView) view.findViewById(R.id.view_buy);
+        progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
+        freeReturnView = (FreeReturnView) view.findViewById(R.id.view_free_return);
+        return view;
+
+
     }
 
     @Override
@@ -104,6 +134,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         this.descriptionView.renderData(productData);
         this.shopInfoView.renderData(productData);
         this.freeReturnView.renderData(productData);
+        this.buttonView.renderData(productData);
     }
 
     @Override
@@ -123,12 +154,25 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     protected void initialPresenter() {
-        presenter = new SnapShotFragmentImpl(this);
+
+        OpportunityService opportunityService = new OpportunityService();
+
+        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
+                new ActionReplacementSourceFactory(context),
+                new OpportunityDataSourceFactory(context,
+                        opportunityService,
+                        new OpportunityListMapper(),
+                        new OpportunityFilterMapper(),
+                        new GlobalCacheManager())
+        );
+        AcceptReplacementUseCase acceptReplacementUseCase = new AcceptReplacementUseCase(
+                new JobExecutor(), new UIThread(), repository);
+
+        presenter = new SnapShotFragmentImpl(this, acceptReplacementUseCase);
     }
 
     @Override
     protected void initialListener(Activity activity) {
-
     }
 
     @Override
@@ -154,6 +198,8 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
         descriptionView.setListener(this);
         shopInfoView.setListener(this);
         freeReturnView.setListener(this);
+        buttonView.setListener(this);
+
     }
 
     @Override
@@ -185,7 +231,7 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
 
     @Override
     public void showProductDetailRetry() {
-        if(productPass !=null && !productPass.getProductName().isEmpty()){
+        if (productPass != null && !productPass.getProductName().isEmpty()) {
             NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                     initializationErrorListener()).showRetrySnackbar();
         } else {
@@ -246,5 +292,60 @@ public class SnapShotFragment extends BasePresenterFragment<SnapShotFragmentPres
     @Override
     public void onProductShopAvatarClicked(Bundle bundle) {
         navigateShopActivity(bundle);
+    }
+
+    @Override
+    public void onActionConfirmClicked() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.message_dialog_accept_opportunity);
+        builder.setPositiveButton(R.string.action_agree, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.acceptOpportunity();
+                dialogInterface.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.action_back, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void showLoadingProgress() {
+        if (progressDialog == null && getActivity() != null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+
+        if (progressDialog != null && getActivity() != null)
+            progressDialog.showDialog();
+    }
+
+    @Override
+    public String getOpportunityId() {
+        return getArguments().getString(ARG_PASS_OPPORTUNITY_ID, "");
+    }
+
+    @Override
+    public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
+        finishLoadingProgress();
+        CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
+
+    private void finishLoadingProgress() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onErrorTakeOpportunity(String errorMessage) {
+        finishLoadingProgress();
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 }

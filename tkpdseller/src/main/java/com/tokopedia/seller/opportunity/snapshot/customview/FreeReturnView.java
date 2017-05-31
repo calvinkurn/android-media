@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,35 +9,41 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ReturnInfo;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
-
-import butterknife.BindView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
  * Created by hangnadi on 3/2/17.
  */
 public class FreeReturnView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    @BindView(R2.id.layout_free_return)
     LinearLayout layoutFreeReturn;
-    @BindView(R2.id.image_free_return)
     ImageView imageFreeReturn;
-    @BindView(R2.id.text_free_return)
     TextView textFreeReturn;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        layoutFreeReturn = (LinearLayout) findViewById(R.id.layout_free_return);
+        imageFreeReturn = (ImageView) findViewById(R.id.image_free_return);
+        textFreeReturn = (TextView) findViewById(R.id.text_free_return);
+    }
 
     public FreeReturnView(Context context) {
         super(context);
@@ -78,10 +84,10 @@ public class FreeReturnView extends BaseView<ProductDetailData, SnapShotFragment
             textFreeReturn.setText(MethodChecker.fromHtml(returnInfo.getContent()));
             textFreeReturn.setMovementMethod(new SelectableSpannedMovementMethod());
 
-            Spannable sp = (Spannable)textFreeReturn.getText();
-            URLSpan[] urls=sp.getSpans(0, textFreeReturn.getText().length(), URLSpan.class);
-            SpannableStringBuilder style=new SpannableStringBuilder(textFreeReturn.getText());
-            for(final URLSpan url : urls){
+            Spannable sp = (Spannable) textFreeReturn.getText();
+            URLSpan[] urls = sp.getSpans(0, textFreeReturn.getText().length(), URLSpan.class);
+            SpannableStringBuilder style = new SpannableStringBuilder(textFreeReturn.getText());
+            for (final URLSpan url : urls) {
                 style.setSpan(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {

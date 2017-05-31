@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.presenter;
+package com.tokopedia.seller.opportunity.snapshot.presenter;
 
 import android.content.Context;
 
@@ -11,4 +11,7 @@ public interface SnapShotFragmentPresenter {
     void processDataPass(ProductPass productPass);
 
     void requestProductDetail(Context context, ProductPass productPass, int type, boolean forceNetwork);
+
+    void acceptOpportunity();
+
 }

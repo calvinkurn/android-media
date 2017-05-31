@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,34 +8,40 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 
 import com.tkpd.library.viewpagerindicator.LinePageIndicator;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.product.adapter.ImagePagerAdapter;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * Created by hangnadi on 3/1/17.
  */
 public class PictureView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    @BindView(R2.id.view_pager)
     ViewPager vpImage;
-    @BindView(R2.id.indicator)
     LinePageIndicator indicator;
 
     private ImagePagerAdapter imagePagerAdapter;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        vpImage = (ViewPager) findViewById(R.id.view_pager);
+        indicator = (LinePageIndicator) findViewById(R.id.indicator);
+    }
 
     public PictureView(Context context) {
         super(context);

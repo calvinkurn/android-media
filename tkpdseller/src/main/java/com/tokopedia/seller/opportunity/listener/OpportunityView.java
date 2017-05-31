@@ -17,9 +17,9 @@ public interface OpportunityView {
 
     void showLoadingProgress();
 
-    void onSuccessTakeOpportunity(ActionViewData actionViewData);
-
     String getString(int resId);
+
+    void onSuccessTakeOpportunity(ActionViewData actionViewData);
 
     void onErrorTakeOpportunity(String errorMessage);
 }

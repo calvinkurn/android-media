@@ -7,4 +7,5 @@ public interface OpportunityPresenter {
     void acceptOpportunity();
 
     void unsubscribeObservable();
+
 }

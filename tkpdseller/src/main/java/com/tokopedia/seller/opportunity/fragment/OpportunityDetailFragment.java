@@ -14,7 +14,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.snapshot.SnapShotProduct;
+import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailButtonView;
@@ -35,6 +35,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         implements OpportunityView {
 
     public static final int RESULT_DELETED = 8881;
+    private static final int REQUEST_OPEN_SNAPSHOT = 1919;
 
     OpportunityDetailButtonView buttonView;
     OpportunityDetailStatusView statusView;
@@ -85,7 +86,10 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onActionSeeDetailProduct(String productId) {
-        startActivity(SnapShotProduct.createIntent(getActivity(), productId));
+        startActivityForResult(
+                SnapShotProduct.createIntent(getActivity(), productId, getOpportunityId()),
+                REQUEST_OPEN_SNAPSHOT
+        );
     }
 
 
@@ -191,6 +195,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
         finishLoadingProgress();
         CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
+        getActivity().finish();
     }
 
     @Override
@@ -208,5 +213,12 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     public void onDestroyView() {
         super.onDestroyView();
         presenter.unsubscribeObservable();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_OPEN_SNAPSHOT && resultCode == Activity.RESULT_OK)
+            getActivity().finish();
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

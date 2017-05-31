@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot.presenter;
+package com.tokopedia.seller.opportunity.snapshot.presenter;
 
 import android.content.Context;
 import android.net.Uri;

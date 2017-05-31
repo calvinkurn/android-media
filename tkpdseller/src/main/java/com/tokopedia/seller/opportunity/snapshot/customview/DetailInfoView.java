@@ -1,18 +1,16 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
-
-import butterknife.BindView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
  * Created by hangnadi on 3/1/17.
@@ -20,18 +18,27 @@ import butterknife.BindView;
 
 public class DetailInfoView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    @BindView(R2.id.tv_weight)
     TextView tvWeight;
-    @BindView(R2.id.tv_minimum)
     TextView tvMinOrder;
-    @BindView(R2.id.tv_insurance)
     TextView tvInsurance;
-    @BindView(R2.id.tv_condition)
     TextView tvCondition;
-    @BindView(R2.id.tv_preorder)
     TextView tvPreOrder;
-    @BindView(R2.id.tr_preorder)
     TableRow preOrderView;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        tvWeight = (TextView) findViewById(R.id.tv_weight);
+        tvMinOrder = (TextView) findViewById(R.id.tv_minimum);
+        tvInsurance = (TextView) findViewById(R.id.tv_insurance);
+        tvCondition = (TextView) findViewById(R.id.tv_condition);
+        tvPreOrder = (TextView) findViewById(R.id.tv_preorder);
+        preOrderView = (TableRow) findViewById(R.id.tr_preorder);
+
+    }
 
     public DetailInfoView(Context context) {
         super(context);
@@ -78,7 +85,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, SnapShotFragment
         tvWeight.setText(String.format("%s%s",
                 data.getInfo().getProductWeight(),
                 data.getInfo().getProductWeightUnit()));
-        tvMinOrder.setText(data.getInfo().getProductMinOrder().replace(".",""));
+        tvMinOrder.setText(data.getInfo().getProductMinOrder().replace(".", ""));
         tvInsurance.setText(data.getInfo().getProductInsurance());
         tvCondition.setText(data.getInfo().getProductCondition());
 

@@ -1,9 +1,10 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -13,7 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.customview.DescriptionTextView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
 
 import butterknife.BindView;
@@ -23,12 +24,20 @@ import butterknife.BindView;
  */
 public class DescriptionView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    @BindView(R2.id.tv_desc)
     DescriptionTextView tvDesc;
-    @BindView(R2.id.iv_toggle)
     ImageView ivToggle;
 
     private boolean isExpand = false;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        tvDesc = (DescriptionTextView) findViewById(R.id.tv_desc);
+        ivToggle = (ImageView) findViewById(R.id.iv_toggle);
+    }
 
     public DescriptionView(Context context) {
         super(context);

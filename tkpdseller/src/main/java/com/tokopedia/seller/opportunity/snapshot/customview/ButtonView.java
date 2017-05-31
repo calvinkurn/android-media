@@ -1,18 +1,32 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.product.customview.BaseView;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
 /**
  * Created by hangnadi on 3/1/17.
  */
 
 public class ButtonView extends BaseView<Object, SnapShotFragmentView> {
+
+    TextView actionConfirm;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        actionConfirm = (TextView) findViewById(R.id.action_confirm);
+    }
 
     public ButtonView(Context context) {
         super(context);
@@ -24,7 +38,7 @@ public class ButtonView extends BaseView<Object, SnapShotFragmentView> {
 
     @Override
     public void setListener(SnapShotFragmentView listener) {
-
+        this.listener = listener;
     }
 
     @Override
@@ -44,6 +58,11 @@ public class ButtonView extends BaseView<Object, SnapShotFragmentView> {
 
     @Override
     public void renderData(@NonNull Object data) {
-
+        actionConfirm.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onActionConfirmClicked();
+            }
+        });
     }
 }

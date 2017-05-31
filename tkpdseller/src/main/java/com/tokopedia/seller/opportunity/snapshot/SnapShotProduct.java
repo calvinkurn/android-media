@@ -1,4 +1,4 @@
-package com.tokopedia.core.snapshot;
+package com.tokopedia.seller.opportunity.snapshot;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -9,9 +9,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.snapshot.listener.SnapShotProductListener;
-import com.tokopedia.core.snapshot.presenter.SnapShotProductImpl;
-import com.tokopedia.core.snapshot.presenter.SnapShotProductPresenter;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotProductListener;
+import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotProductImpl;
+import com.tokopedia.seller.opportunity.snapshot.presenter.SnapShotProductPresenter;
 
 /**
  * Created by hangnadi on 2/28/17.
@@ -20,14 +20,17 @@ public class SnapShotProduct extends BasePresenterActivity<SnapShotProductPresen
     implements SnapShotProductListener {
 
     private static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_OPPORTUNITY_ID = "opportunity_id";
+
 
     private Uri uriData;
     private Bundle bundleData;
 
-    public static Intent createIntent(Context context, String productId) {
+    public static Intent createIntent(Context context, String productId, String opportunityId) {
         Intent intent = new Intent(context, SnapShotProduct.class);
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PRODUCT_ID, productId);
+        bundle.putString(PARAM_OPPORTUNITY_ID, opportunityId);
         intent.putExtras(bundle);
         return intent;
     }

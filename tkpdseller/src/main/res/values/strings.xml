@@ -557,4 +557,5 @@
     <string name="title_quantity">Jumlah :</string>
     <string name="item">barang</string>
     <string name="title_supported_shipping">Dukungan Pengiriman</string>
+    <string name="message_dialog_reject_opportunity">Apakah anda yakin ingin menghapus peluang ini?</string>
 </resources>

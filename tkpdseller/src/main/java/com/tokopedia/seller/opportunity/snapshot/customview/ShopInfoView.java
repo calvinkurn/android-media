@@ -1,26 +1,25 @@
-package com.tokopedia.core.snapshot.customview;
+package com.tokopedia.seller.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ShopBadge;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.seller.R;
+import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 
-import butterknife.BindView;
 
 /**
  * Created by hangnadi on 3/1/17.
@@ -28,30 +27,39 @@ import butterknife.BindView;
 
 public class ShopInfoView extends BaseView<ProductDetailData, SnapShotFragmentView> {
 
-    @BindView(R2.id.iv_ava)
     ImageView ivShopAva;
-    @BindView(R2.id.iv_gold)
     ImageView ivGoldShop;
-    @BindView(R2.id.iv_official)
     ImageView ivOfficialStore;
-    @BindView(R2.id.iv_lucky)
     ImageView ivLuckyShop;
-    @BindView(R2.id.tv_name)
     TextView tvShopName;
-    @BindView(R2.id.tv_location)
     TextView tvShopLoc;
-    @BindView(R2.id.iv_fav)
     ImageView ivBtnFav;
-    @BindView(R2.id.iv_message)
     ImageView ivShopMessage;
-    @BindView(R2.id.l_rating)
     LinearLayout llRating;
-    @BindView(R2.id.l_medal)
     LinearLayout llReputationMedal;
-    @BindView(R2.id.tv_reputation)
     TextView tvReputationPoint;
-    @BindView(R2.id.l_other)
     LinearLayout layoutOther;
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(getLayoutView(), this, true);
+
+        ivShopAva = (ImageView) findViewById(R.id.iv_ava);
+        ivGoldShop = (ImageView) findViewById(R.id.iv_gold);
+        ivOfficialStore = (ImageView) findViewById(R.id.iv_official);
+        ivLuckyShop = (ImageView) findViewById(R.id.iv_lucky);
+        tvShopName = (TextView) findViewById(R.id.tv_name);
+        tvShopLoc = (TextView) findViewById(R.id.tv_location);
+        ivBtnFav = (ImageView) findViewById(R.id.iv_fav);
+        ivShopMessage = (ImageView) findViewById(R.id.iv_message);
+        llRating = (LinearLayout) findViewById(R.id.l_rating);
+        llReputationMedal = (LinearLayout) findViewById(R.id.l_medal);
+        tvReputationPoint = (TextView) findViewById(R.id.tv_reputation);
+        layoutOther = (LinearLayout) findViewById(R.id.l_other);
+
+    }
 
     public ShopInfoView(Context context) {
         super(context);

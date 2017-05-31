@@ -6,12 +6,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
 import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
@@ -19,12 +14,7 @@ import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
 import com.tokopedia.seller.opportunity.data.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
-import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
-
-import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -70,5 +60,6 @@ public class OpportunityImpl implements OpportunityPresenter {
     public void unsubscribeObservable() {
         acceptReplacementUseCase.unsubscribe();
     }
+
 
 }

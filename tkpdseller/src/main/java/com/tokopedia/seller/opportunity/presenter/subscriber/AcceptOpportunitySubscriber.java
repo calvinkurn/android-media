@@ -33,51 +33,7 @@ public class AcceptOpportunitySubscriber extends Subscriber<AcceptReplacementMod
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            view.onErrorTakeOpportunity(view.getString(R.string.msg_no_connection));
-        } else if (e instanceof SocketTimeoutException) {
-            view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_timeout));
-        } else if (e instanceof IOException) {
-            view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_internal_server));
-        } else if (e.getLocalizedMessage() != null
-                && e instanceof ErrorMessageException) {
-            view.onErrorTakeOpportunity(e.getLocalizedMessage());
-        } else if (e instanceof RuntimeException
-                && e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_timeout));
-
-                }
-
-                @Override
-                public void onServerError() {
-                    view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_internal_server));
-
-                }
-
-                @Override
-                public void onBadRequest() {
-                    view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_bad_request));
-
-                }
-
-                @Override
-                public void onForbidden() {
-                    view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_forbidden_auth));
-
-                }
-            }, Integer.parseInt(e.toString()));
-        } else {
-            view.onErrorTakeOpportunity(view.getString(R.string.default_request_error_unknown));
-        }
+        view.onErrorTakeOpportunity(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
