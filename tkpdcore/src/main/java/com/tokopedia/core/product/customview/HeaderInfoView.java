@@ -14,13 +14,12 @@ import com.tokopedia.core.product.listener.ProductDetailView;
 import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.util.AccurateTimer;
 import com.tokopedia.core.util.MethodChecker;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindString;
@@ -138,10 +137,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
 
                 SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
-                long delta = sf.parse(data.getEndDate()).getTime() - new Date().getTime();
+                Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
+                long delta = sf.parse(data.getEndDate()).getTime() + 3000 - now.getTimeInMillis();
                 textDiscountTimer.setText(getCountdownText(delta));
 
-                new AccurateTimer(delta, 1000) {
+                new CountDownTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         textDiscountTimer.setText(getCountdownText(millisUntilFinished));
