@@ -157,6 +157,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
                 break;
         }
         this.displayMode = displayMode;
+        presenter.setDisplayMode(displayMode);
         adapter.switchDisplayMode(displayMode);
     }
 

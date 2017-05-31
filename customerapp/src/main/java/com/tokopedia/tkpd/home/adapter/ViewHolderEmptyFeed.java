@@ -53,8 +53,8 @@ public class ViewHolderEmptyFeed extends RecyclerView.ViewHolder {
                 .build();
         TopAdsView adsView = new TopAdsView(context);
         adsView.setConfig(config);
-        adsView.setDisplayMode(DisplayMode.FEED);
         adsView.setMaxItems(1);
+        adsView.setDisplayMode(DisplayMode.FEED);
         adsView.loadTopAds();
         container.addView(adsView);
     }
