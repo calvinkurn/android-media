@@ -17,7 +17,7 @@
             <com.tokopedia.seller.lib.widget.DateLabelView
                 android:id="@+id/date_label_view"
                 android:layout_marginBottom="@dimen/topads_detail_padding_item"
-                style="@style/LabelLayout" />
+                style="@style/LabelLayoutWithoutBorder" />
 
             <include
                 layout="@layout/include_topads_keyword_header_detail"

@@ -127,7 +127,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
         keywordAd.setId(Integer.toString(datum.getKeywordId()));
         keywordAd.setGroupId(Integer.toString(datum.getGroupId()));
         keywordAd.setKeywordTypeId(datum.getKeywordTypeId());
-
+        keywordAd.setGroupName(datum.getGroupName());
         keywordAd.setKeywordTag(datum.getKeywordTag());
         keywordAd.setStatus(datum.getKeywordStatus());
         keywordAd.setStatusDesc(datum.getKeywordStatusDesc());

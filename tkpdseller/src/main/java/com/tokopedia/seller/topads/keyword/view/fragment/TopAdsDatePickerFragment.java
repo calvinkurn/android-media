@@ -113,4 +113,9 @@ public abstract class TopAdsDatePickerFragment<T> extends BasePresenterFragment<
         super.onDestroy();
         datePickerResultListener = null;
     }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return true;
+    }
 }

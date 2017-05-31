@@ -38,5 +38,5 @@ public interface KeywordApi {
     Observable<Response<DataResponse<List<EditTopAdsKeywordDetailDataModel>>>> editTopAdsKeywordDetail(@Body DataRequest<List<TopAdsKeywordEditDetailInputDataModel>> dataModel);
 
     @PATCH(TopAdsNetworkConstant.PATH_BULK_KEYWORD_DETAIL)
-    Observable<PageDataResponse<DataBulkKeyword>> actionBulkKeyword(@Body DataRequest<DataBulkKeyword> dataModel);
+    Observable<Response<PageDataResponse<DataBulkKeyword>>> actionBulkKeyword(@Body DataRequest<DataBulkKeyword> dataModel);
 }

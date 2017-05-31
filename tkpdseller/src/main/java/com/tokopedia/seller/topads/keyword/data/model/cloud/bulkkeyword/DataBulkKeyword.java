@@ -13,7 +13,7 @@ public class DataBulkKeyword {
     @SerializedName("action")
     @Expose
     private String action;
-    @SerializedName("keyword")
+    @SerializedName("keywords")
     @Expose
     private List<Keyword> keyword = null;
 
