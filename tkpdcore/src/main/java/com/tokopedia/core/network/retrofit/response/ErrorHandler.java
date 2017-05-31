@@ -77,6 +77,7 @@ public class ErrorHandler {
             return context.getString(R.string.default_request_error_internal_server);
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
+                !e.getLocalizedMessage().equals("") &&
                 e.getLocalizedMessage().length() <= 3) {
             int code = Integer.parseInt(e.getLocalizedMessage());
             switch (code) {
