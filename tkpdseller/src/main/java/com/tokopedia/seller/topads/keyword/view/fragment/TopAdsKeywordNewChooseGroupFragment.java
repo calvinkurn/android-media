@@ -232,25 +232,25 @@ public class TopAdsKeywordNewChooseGroupFragment extends BaseDaggerFragment impl
             case KeywordTypeDef.KEYWORD_TYPE_PHRASE:
                 textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match)));
                 textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_description)));
-                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_example)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_EXACT:
                 textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match)));
                 textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_description)));
-                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_example)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_PHRASE:
                 textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match)));
-                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_description)));
-                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_positive_example)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_negative_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_phrase_match_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             case KeywordTypeDef.KEYWORD_TYPE_NEGATIVE_EXACT:
                 textKeywordTitle.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match)));
-                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_description)));
-                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_positive_example)));
+                textKeywordDesc.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_negative_description)));
+                textKeywordExample.setText(MethodChecker.fromHtml(getString(R.string.top_ads_keyword_exact_match_example)));
                 viewGroupKeywordInfo.setVisibility(View.VISIBLE);
                 break;
             default:

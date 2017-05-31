@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/margin_vs"
-        android:text="@string/top_ads_keyword_phrase_match_positive_example"
+        tools:text="@string/top_ads_keyword_phrase_match_example"
         android:maxLines="4"
         style="@style/TextView.TopAds.Body.Gray"/>
 </LinearLayout>
