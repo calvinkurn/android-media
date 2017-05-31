@@ -90,6 +90,7 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
     @Override
     protected void initView(View view) {
         super.initView(view);
+        topadsKeywordDetailPresenter.attachView(this);
         keywordName = (LabelView) view.findViewById(R.id.keyword);
         keywordType = (LabelView) view.findViewById(R.id.name);
         status = (LabelSwitch) view.findViewById(R.id.status);
@@ -169,11 +170,11 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.menu_top_ads_keyword_detail, menu);
         menu.findItem(R.id.menu_edit).setVisible(ad != null);
         menu.findItem(R.id.menu_delete).setVisible(ad != null);
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -201,6 +202,7 @@ public abstract class TopAdsBaseKeywordDetailFragment extends TopAdsDatePickerFr
                 break;
         }
         status.setSwitchStatusText(ad.getStatusDesc());
+        promoGroupLabelView.setContent(ad.getGroupName());
     }
 
     protected void showDeleteConfirmation(String title, String content) {

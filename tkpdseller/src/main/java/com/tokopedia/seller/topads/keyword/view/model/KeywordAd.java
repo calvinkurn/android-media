@@ -13,7 +13,7 @@ public class KeywordAd implements Ad, Parcelable {
     private String id;
     private String groupId;
     private String keywordTypeId;
-
+    private String groupName;
     private String keywordTag;
     private int status;
     private String statusDesc;
@@ -209,6 +209,14 @@ public class KeywordAd implements Ad, Parcelable {
         return groupId;
     }
 
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
     public String getKeywordTypeId() {
         return keywordTypeId;
     }
@@ -223,6 +231,7 @@ public class KeywordAd implements Ad, Parcelable {
         dest.writeString(this.id);
         dest.writeString(this.groupId);
         dest.writeString(this.keywordTypeId);
+        dest.writeString(this.groupName);
         dest.writeString(this.keywordTag);
         dest.writeInt(this.status);
         dest.writeString(this.statusDesc);
@@ -241,6 +250,7 @@ public class KeywordAd implements Ad, Parcelable {
         this.id = in.readString();
         this.groupId = in.readString();
         this.keywordTypeId = in.readString();
+        this.groupName = in.readString();
         this.keywordTag = in.readString();
         this.status = in.readInt();
         this.statusDesc = in.readString();

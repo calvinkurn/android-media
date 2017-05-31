@@ -55,8 +55,9 @@ public abstract class TopAdsBaseActivity extends BaseActivity implements HasComp
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
+                return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     protected abstract Fragment getNewFragment(Bundle savedinstancestate);

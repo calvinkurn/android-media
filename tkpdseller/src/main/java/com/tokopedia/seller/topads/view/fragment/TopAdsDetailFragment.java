@@ -370,4 +370,5 @@ public abstract class TopAdsDetailFragment<T extends TopAdsDetailPresenter> exte
         super.onDestroy();
         presenter.unSubscribe();
     }
+
 }

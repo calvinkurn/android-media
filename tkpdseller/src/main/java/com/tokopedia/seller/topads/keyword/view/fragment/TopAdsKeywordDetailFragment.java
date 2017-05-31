@@ -59,6 +59,12 @@ public class TopAdsKeywordDetailFragment extends TopAdsBaseKeywordDetailFragment
         click = (LabelView) view.findViewById(R.id.click);
         ctr = (LabelView) view.findViewById(R.id.ctr);
         favorite = (LabelView) view.findViewById(R.id.favorite);
+        dateLabelView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDatePicker();
+            }
+        });
     }
 
     @Override
