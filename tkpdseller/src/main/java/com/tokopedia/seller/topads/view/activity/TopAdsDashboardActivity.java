@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -185,6 +186,25 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     public void onCreditAdded() {
         dashboardShopFragment.populateDeposit();
         dashboardProductFragment.populateDeposit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTaskRoot()) {
+            //coming from deeplink
+            if (getApplication() instanceof TkpdCoreRouter) {
+                TkpdCoreRouter router = (TkpdCoreRouter) getApplication();
+                try {
+                    Intent intent = new Intent(this, router.getHomeClass(this));
+                    this.startActivity(intent);
+                    this.finish();
+                    return;
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        super.onBackPressed();
     }
 
     @Override

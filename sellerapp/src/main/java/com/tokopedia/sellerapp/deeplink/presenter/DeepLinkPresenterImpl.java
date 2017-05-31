@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.deeplink.presenter;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,8 +14,10 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
-import com.tokopedia.seller.topads.view.fragment.TopAdsDashboardProductFragment;
-import com.tokopedia.seller.topads.view.fragment.TopAdsGroupNewPromoFragment;
+import com.tokopedia.seller.topads.constant.TopAdsExtraConstant;
+import com.tokopedia.seller.topads.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsDetailProductActivity;
+import com.tokopedia.seller.topads.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.listener.DeepLinkView;
 
@@ -35,6 +38,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
+    public static final String PARAM_AD_ID = "ad_id";
+    public static final String PARAM_ITEM_ID = "item_id";
+    public static final String TOPADS_VIEW_TYPE = "view";
+    public static final String TOPADS_CREATE_TYPE = "create";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -234,15 +241,26 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openTopAds(Uri uriData) {
 
-        String type = uriData.getQueryParameter("type");
-
-        if(type.equals("view")){
-            Fragment fragment = TopAdsDashboardProductFragment.createInstance();
-            viewListener.inflateFragment(fragment, "TOPADS_INFO");
-        } else if (type.equals("create")){
-            Fragment fragment = TopAdsGroupNewPromoFragment.createInstance();
-            viewListener.inflateFragment(fragment, "TOPADS_ADD");
+        String type = uriData. getQueryParameter("type");
+        Intent intentToLaunch = null;
+        if (TextUtils.isEmpty(type)){
+            // goto Top Ads Dashboard
+            intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
+            intentToLaunch.setData(uriData);
         }
+        else if(TOPADS_VIEW_TYPE.equals(type)){
+            String adId = uriData.getQueryParameter(PARAM_AD_ID);
+            intentToLaunch = new Intent(context, TopAdsDetailProductActivity.class);
+            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
+            intentToLaunch.setData(uriData);
+        } else if (TOPADS_CREATE_TYPE.equals(type)){
+            String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
+            intentToLaunch = new Intent(context, TopAdsGroupNewPromoActivity.class);
+            intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
+            intentToLaunch.setData(uriData);
+        }
+        context.startActivity(intentToLaunch);
+        context.finish();
 
         CommonUtils.dumper("TOPADS segment "+uriData.getQuery());
 

@@ -1,5 +1,9 @@
 package com.tokopedia.seller.topads.data.repository;
 
+import android.content.Context;
+
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.topads.constant.TopAdsNetworkConstant;
 import com.tokopedia.seller.topads.data.source.cloud.CloudTopAdsSearchProductDataSource;
 import com.tokopedia.seller.topads.domain.TopAdsSearchProductRepository;
 import com.tokopedia.seller.topads.domain.model.ProductListDomain;
@@ -15,15 +19,17 @@ import rx.Observable;
 public class TopAdsSearchProductRepositoryImpl implements TopAdsSearchProductRepository {
 
     private CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource;
+    private Context context;
 
-    public TopAdsSearchProductRepositoryImpl(
+    public TopAdsSearchProductRepositoryImpl(Context context,
             CloudTopAdsSearchProductDataSource cloudTopAdsSearchProductDataSource) {
-
+        this.context = context;
         this.cloudTopAdsSearchProductDataSource = cloudTopAdsSearchProductDataSource;
     }
 
     @Override
     public Observable<ProductListDomain> searchProduct(Map<String, String> param) {
+        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
         return cloudTopAdsSearchProductDataSource.searchProduct(param);
     }
 }
