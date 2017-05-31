@@ -118,7 +118,7 @@ public class IntermediaryCategoryMapper implements Func3<Response<CategoryHadesM
                         productModel.setLabels(labelModels);
                         productModels.add(productModel);
 
-                        if (productModels.size()==4)
+                        if (productModels.size()==6)
                             break;
                     }
                 }

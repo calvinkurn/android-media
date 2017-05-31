@@ -40,7 +40,10 @@ public class IntermediaryDataSource {
         param.put("categories",categoryId);
         param.put("perPage", "7");
 
-        return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId),
+        Map<String, String> paramCat = new HashMap<>();
+        paramCat.put("total_curated","6");
+
+        return Observable.zip(hadesApi.getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat),
                 aceApi.getHotlistCategory(param), mojitoApi.getBrandsCategory(categoryId), mapper);
 
     }

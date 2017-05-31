@@ -136,7 +136,9 @@ public class DiscoveryInteractorImpl implements DiscoveryInteractor {
 
     @Override
     public void getCategoryHeader(String categoryId, final int level) {
-        getCompositeSubscription().add(hadesService.getApi().getCategories(HadesApi.ANDROID_DEVICE,categoryId)
+        Map<String, String> paramCat = new HashMap<>();
+        paramCat.put("total_curated","6");
+        getCompositeSubscription().add(hadesService.getApi().getCategories(HadesApi.ANDROID_DEVICE,categoryId,paramCat)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
