@@ -550,6 +550,17 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                         });
                     }
                 })
+                        .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>() {
+                            @Override
+                            public Observable<?> call(Observable<? extends Throwable> observable) {
+                                return observable.flatMap(new Func1<Throwable, Observable<?>>() {
+                                    @Override
+                                    public Observable<?> call(Throwable throwable) {
+                                        return Observable.timer(CURRENT_REQUEST_DETAIL_POLLING_TIME_DELAY, TimeUnit.MILLISECONDS);
+                                    }
+                                });
+                            }
+                        })
                         .subscribeOn(Schedulers.newThread())
                         .unsubscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
