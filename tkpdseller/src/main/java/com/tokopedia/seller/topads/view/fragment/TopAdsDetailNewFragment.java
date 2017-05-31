@@ -42,19 +42,6 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
         updateSelectedProductCount();
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState == null && !TextUtils.isEmpty(itemIdToAdd)) {
-            presenter.getProductDetail(itemIdToAdd);
-        }
-    }
-
-    protected void onSuccessLoadProduct (TopAdsProductViewModel model) {
-        topAdsProductList.add(model);
-        updateSelectedProductCount();
-    }
-
     private void updateSelectedProductCount() {
         if (topAdsProductList != null && topAdsProductList.size() > 0) {
             selectedProductTextView.setText(getString(R.string.label_top_ads_total_selected_product, topAdsProductList.size()));
@@ -65,6 +52,12 @@ public abstract class TopAdsDetailNewFragment<T extends TopAdsDetailEditPresente
             addProductText.setText(R.string.label_top_ads_add_product);
             submitButton.setEnabled(false);
         }
+    }
+
+    @Override
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) {
+        topAdsProductList.add(topAdsProductViewModel);
+        updateSelectedProductCount();
     }
 
     @Override

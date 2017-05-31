@@ -94,8 +94,4 @@ public class TopAdsDetailNewGroupFragment extends TopAdsDetailNewFragment<TopAds
         startActivity(intent);
     }
 
-    @Override
-    public void onSuccessLoadProduct(TopAdsProductViewModel model) {
-        super.onSuccessLoadProduct(model);
-    }
 }

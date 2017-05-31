@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.seller.topads.domain.interactor.TopAdsCreateDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
@@ -18,8 +19,9 @@ public class TopAdsDetailNewShopPresenterImpl extends TopAdsDetailEditShopPresen
     private TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase;
 
     public TopAdsDetailNewShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
-                                            TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase) {
-        super(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase);
+                                            TopAdsCreateDetailShopUseCase topAdsCreateDetailShopUseCase,
+                                            TopAdsProductListUseCase topAdsProductListUseCase) {
+        super(topAdsGetDetailShopUseCase, topAdsSaveDetailShopUseCase, topAdsProductListUseCase);
         this.topAdsCreateDetailShopUseCase = topAdsCreateDetailShopUseCase;
     }
 

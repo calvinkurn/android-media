@@ -8,6 +8,4 @@ import com.tokopedia.seller.topads.view.model.TopAdsProductViewModel;
 public interface TopAdsDetailNewGroupView extends TopAdsDetailEditView {
 
     void goToGroupDetail(String groupId);
-
-    void onSuccessLoadProduct(TopAdsProductViewModel model);
 }

@@ -116,6 +116,14 @@ public abstract class TopAdsDetailEditFragment<T extends TopAdsDetailEditPresent
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (savedInstanceState == null && !TextUtils.isEmpty(itemIdToAdd)) {
+            presenter.getProductDetail(itemIdToAdd);
+        }
+    }
+
+    @Override
     protected void initView(View view) {
         nameInputLayout = (TextInputLayout) view.findViewById(R.id.input_layout_name);
         nameEditText = (EditText) view.findViewById(R.id.edit_text_name);

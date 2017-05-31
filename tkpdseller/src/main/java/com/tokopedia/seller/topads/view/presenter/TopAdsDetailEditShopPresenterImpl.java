@@ -1,16 +1,13 @@
 package com.tokopedia.seller.topads.view.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsGetDetailShopUseCase;
+import com.tokopedia.seller.topads.domain.interactor.TopAdsProductListUseCase;
 import com.tokopedia.seller.topads.domain.interactor.TopAdsSaveDetailShopUseCase;
 import com.tokopedia.seller.topads.domain.model.TopAdsDetailShopDomainModel;
 import com.tokopedia.seller.topads.utils.ViewUtils;
 import com.tokopedia.seller.topads.view.listener.TopAdsDetailEditView;
-import com.tokopedia.seller.topads.view.listener.TopAdsEditPromoFragmentListener;
 import com.tokopedia.seller.topads.view.mapper.TopAdDetailProductMapper;
 import com.tokopedia.seller.topads.view.model.TopAdsDetailShopViewModel;
 
@@ -19,14 +16,15 @@ import rx.Subscriber;
 /**
  * Created by Nisie on 5/9/16.
  */
-public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> extends BaseDaggerPresenter<T> implements TopAdsDetailEditShopPresenter<T> {
+public class TopAdsDetailEditShopPresenterImpl<T extends TopAdsDetailEditView> extends TopAdsGetProductDetailPresenter<T> implements TopAdsDetailEditShopPresenter<T> {
 
     private TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase;
     private TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase;
-    private TopAdsEditPromoFragmentListener listener;
-    private Context context;
 
-    public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase, TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase) {
+    public TopAdsDetailEditShopPresenterImpl(TopAdsGetDetailShopUseCase topAdsGetDetailShopUseCase,
+                                             TopAdsSaveDetailShopUseCase topAdsSaveDetailShopUseCase,
+                                             TopAdsProductListUseCase topAdsProductListUseCase) {
+        super(topAdsProductListUseCase);
         this.topAdsGetDetailShopUseCase = topAdsGetDetailShopUseCase;
         this.topAdsSaveDetailShopUseCase = topAdsSaveDetailShopUseCase;
     }
