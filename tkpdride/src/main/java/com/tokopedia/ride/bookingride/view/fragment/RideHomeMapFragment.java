@@ -602,6 +602,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void renderTripRoute(List<List<LatLng>> routes) {
+        if (mGoogleMap == null) {
+            return;
+        }
+
+
         mGoogleMap.clear();
 
         for (List<LatLng> route : routes) {

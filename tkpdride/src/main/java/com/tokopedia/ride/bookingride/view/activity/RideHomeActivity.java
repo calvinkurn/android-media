@@ -232,7 +232,6 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
 
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void actionInflateInitialToolbar() {
@@ -294,10 +293,11 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
 
         if (source != null && destination != null) {
             replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination));
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination));
         } else {
             replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance());
+            replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
         }
-        replaceFragment(R.id.bottom_container, UberProductFragment.newInstance());
     }
 
     private void addFragment(int containerViewId, Fragment fragment) {
