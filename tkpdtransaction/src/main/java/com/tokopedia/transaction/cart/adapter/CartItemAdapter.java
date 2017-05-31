@@ -321,6 +321,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    holder.tilEtDropshiperName.requestFocus();
                     if (cartItemActionListener != null)
                         cartItemActionListener.onDropShipperOptionChecked();
                     updateDropShipperCartName(

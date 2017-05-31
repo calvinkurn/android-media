@@ -26,6 +26,11 @@ def allowDistribution() {
     return "false";
 }
 
+def getTopAdsSdk() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
+}
+
 def getTkpdVersionCode() {
     return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
 }
@@ -227,6 +232,7 @@ dependencies {
     compile project(':tkpdsession')
     compile project(':tkpdinbox')
     compile project(':tkpddigital')
+    compile getTopAdsSdk()
 
 //    compile rootProject.ext.tkpdDependencies.discovery
 //    compile rootProject.ext.tkpdDependencies.transaction
