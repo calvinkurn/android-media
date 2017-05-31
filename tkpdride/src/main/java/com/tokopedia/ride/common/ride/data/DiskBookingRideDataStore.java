@@ -13,9 +13,11 @@ import com.tokopedia.ride.common.ride.data.entity.RideRequestEntity;
 import com.tokopedia.ride.common.ride.data.entity.RideRequestMapEntity;
 import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by alvarisi on 5/31/17.
@@ -100,6 +102,11 @@ public class DiskBookingRideDataStore implements BookingRideDataStore {
 
     @Override
     public Observable<List<RideAddressEntity>> getAddresses(TKPDMapParam<String, Object> parameters) {
-        return addressCache.getCache();
+        return addressCache.getCache().onErrorReturn(new Func1<Throwable, List<RideAddressEntity>>() {
+            @Override
+            public List<RideAddressEntity> call(Throwable throwable) {
+                return new ArrayList<>();
+            }
+        });
     }
 }

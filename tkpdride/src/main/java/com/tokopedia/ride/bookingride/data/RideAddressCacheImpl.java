@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.ride.bookingride.data.entity.PeopleAddressResponse;
 import com.tokopedia.ride.common.ride.data.entity.RideAddressEntity;
 
 import java.lang.reflect.Type;
@@ -57,8 +58,13 @@ public class RideAddressCacheImpl implements RideAddressCache {
     public Observable<List<RideAddressEntity>> getCache() {
         Type type = new TypeToken<List<RideAddressEntity>>() {
         }.getType();
-        String cache = cacheManager.getValueString(RIDE_ADDRESS_CACHE);
-        List<RideAddressEntity> entities = CacheUtil.convertStringToListModel(cache, type);
-        return Observable.just(entities);
+        try {
+            String cache = cacheManager.getValueString(RIDE_ADDRESS_CACHE);
+            List<RideAddressEntity> entities = CacheUtil.convertStringToListModel(cache, type);
+            return Observable.just(entities);
+        } catch (RuntimeException e) {
+            return Observable.empty();
+        }
+
     }
 }
