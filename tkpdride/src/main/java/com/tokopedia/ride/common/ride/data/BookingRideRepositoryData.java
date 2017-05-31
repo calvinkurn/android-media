@@ -1,6 +1,8 @@
 package com.tokopedia.ride.common.ride.data;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.RideAddressCache;
+import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
@@ -235,10 +237,29 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     public Observable<List<RideAddress>> getAddresses(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore()
                 .getAddresses(parameters)
+                .doOnNext(new Action1<List<RideAddressEntity>>() {
+                    @Override
+                    public void call(List<RideAddressEntity> entities) {
+                        RideAddressCache rideAddressCache = new RideAddressCacheImpl();
+                        rideAddressCache.put(entities);
+                    }
+                })
                 .map(new Func1<List<RideAddressEntity>, List<RideAddress>>() {
                     @Override
                     public List<RideAddress> call(List<RideAddressEntity> rideAddressEntities) {
                         return rideAddressEntityMapper.transform(rideAddressEntities);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<List<RideAddress>> getAddressesFromCache() {
+        return mBookingRideDataStoreFactory.createDiskDataStore()
+                .getAddresses(new TKPDMapParam<String, Object>())
+                .map(new Func1<List<RideAddressEntity>, List<RideAddress>>() {
+                    @Override
+                    public List<RideAddress> call(List<RideAddressEntity> entities) {
+                        return rideAddressEntityMapper.transform(entities);
                     }
                 });
     }

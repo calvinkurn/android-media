@@ -78,6 +78,8 @@ public interface PlaceAutoCompleteContract {
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
+        void actionGetUserAddressesFromCache();
+
         void actionGetPeopleAddresses(boolean isLoadMore);
 
         void actionGetUserAddresses(boolean isLoadMore);

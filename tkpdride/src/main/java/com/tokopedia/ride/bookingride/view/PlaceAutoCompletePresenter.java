@@ -31,12 +31,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddress;
 import com.tokopedia.ride.bookingride.domain.model.PeopleAddressWrapper;
@@ -76,16 +78,19 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private GetPeopleAddressesUseCase mGetPeopleAddressesUseCase;
     private CompositeSubscription compositeSubscription;
     private GetUserAddressUseCase getUserAddressUseCase;
+    private GetUserAddressCacheUseCase getUserAddressCacheUseCase;
 
     private interface OnQueryListener {
         void onQuerySubmit(String query);
     }
 
     public PlaceAutoCompletePresenter(GetPeopleAddressesUseCase getPeopleAddressesUseCase,
-                                      GetUserAddressUseCase getUserAddressUseCase) {
+                                      GetUserAddressUseCase getUserAddressUseCase,
+                                      GetUserAddressCacheUseCase getUserAddressCacheUseCase) {
         mGetPeopleAddressesUseCase = getPeopleAddressesUseCase;
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
+        this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
     }
 
     @Override
@@ -118,8 +123,57 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             );
             getView().hideGoogleLabel();
             getView().setActiveMarketplaceSource();
+            actionGetUserAddressesFromCache();
             actionGetUserAddresses(false);
         }
+    }
+
+    @Override
+    public void actionGetUserAddressesFromCache() {
+        getView().showAutoDetectLocationButton();
+        getUserAddressCacheUseCase.execute(RequestParams.EMPTY, new Subscriber<List<RideAddress>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                if (isViewAttached()) {
+                    actionGetUserAddresses(false);
+                }
+            }
+
+            @Override
+            public void onNext(List<RideAddress> rideAddresses) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    if (!getView().isActiveMarketPlaceSource()) return;
+                    compositeSubscription.clear();
+                    ArrayList<Visitable> addresses = new ArrayList<>();
+                    for (RideAddress rideAddress : rideAddresses) {
+                        if (!TextUtils.isEmpty(rideAddress.getLongitude()) && !TextUtils.isEmpty(rideAddress.getLatitude())) {
+                            PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
+                            address.setAddress(String.valueOf(rideAddress.getAddressDescription()));
+                            address.setTitle(String.valueOf(rideAddress.getAddressName()));
+                            address.setAddressId("0");
+                            address.setLatitude(Double.parseDouble(rideAddress.getLatitude()));
+                            address.setLongitude(Double.parseDouble(rideAddress.getLongitude()));
+                            address.setType(PlaceAutoCompeleteViewModel.TYPE.MARKETPLACE_PLACE);
+                            addresses.add(address);
+                        }
+                    }
+                    getView().showListPlaces();
+                    getView().setPagingConfiguration(null);
+                    if (addresses.size() > 0) {
+                        addresses.add(0, new LabelViewModel());
+                    }
+                    getView().renderPlacesList(addresses);
+                    getView().hideAutoCompleteLoadingCross();
+                    getView().hideGoogleLabel();
+                }
+            }
+        });
     }
 
     @Override

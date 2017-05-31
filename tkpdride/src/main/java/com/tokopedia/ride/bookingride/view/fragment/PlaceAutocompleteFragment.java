@@ -136,7 +136,7 @@ public class PlaceAutocompleteFragment extends BaseFragment implements PlaceAuto
                 if (TextUtils.isEmpty(s)) {
                     CommonUtils.dumper("Executed OTC M");
                     setActiveMarketplaceSource();
-                    mPresenter.actionGetUserAddresses(false);
+                    mPresenter.actionGetUserAddressesFromCache();
                 } else {
                     setActiveGooglePlaceSource();
                     CommonUtils.dumper("Executed OTC G");

@@ -17,4 +17,7 @@ public class BookingRideDataStoreFactory {
     public BookingRideDataStore createCloudDataStore(){
         return new CloudBookingRideDataStore(mRideApi);
     }
+    public BookingRideDataStore createDiskDataStore(){
+        return new DiskBookingRideDataStore();
+    }
 }

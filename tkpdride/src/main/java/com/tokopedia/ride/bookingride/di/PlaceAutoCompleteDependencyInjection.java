@@ -23,6 +23,7 @@ import com.tokopedia.ride.bookingride.data.PeopleAddressApi;
 import com.tokopedia.ride.bookingride.data.PeopleAddressDataStoreFactory;
 import com.tokopedia.ride.bookingride.data.PeopleAddressRepositoryData;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
+import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.PeopleAddressRepository;
 import com.tokopedia.ride.bookingride.view.ConfirmBookingContract;
@@ -224,6 +225,31 @@ public class PlaceAutoCompleteDependencyInjection {
         );
     }
 
+    private GetUserAddressCacheUseCase provideGetUserAddressCacheUseCase(String token, String userId) {
+        return new GetUserAddressCacheUseCase(
+                provideThreadExecutor(),
+                providePostExecutionThread(),
+                provideBookingRideRepository(
+                        provideBookingRideDataStoreFactory(
+                                provideRideApi(
+                                        provideRideRetrofit(
+                                                provideRideOkHttpClient(provideRideInterceptor(token, userId),
+                                                        provideLoggingInterceptory(),
+                                                        provideChuckInterceptor()),
+                                                provideGeneratedHostConverter(),
+                                                provideTkpdResponseConverter(),
+                                                provideResponseConverter(),
+                                                provideGsonConverterFactory(provideGson()),
+                                                provideRxJavaCallAdapterFactory()
+                                        )
+                                )
+                        ),
+                        new ProductEntityMapper(),
+                        new TimeEstimateEntityMapper()
+                )
+        );
+    }
+
     public static PlaceAutoCompleteContract.Presenter createPresenter(Context context) {
         SessionHandler sessionHandler = new SessionHandler(context);
         String token = String.format("Bearer %s", sessionHandler.getAccessToken(context));
@@ -232,7 +258,8 @@ public class PlaceAutoCompleteDependencyInjection {
 
         GetPeopleAddressesUseCase getPeopleAddressesUseCase = injection.provideGetFareEstimateUseCase();
         GetUserAddressUseCase getUserAddressUseCase = injection.provideGetUserAddressUseCase(token, userId);
-        return new PlaceAutoCompletePresenter(getPeopleAddressesUseCase, getUserAddressUseCase);
+        GetUserAddressCacheUseCase getUserAddressCacheUseCase = injection.provideGetUserAddressCacheUseCase(token, userId);
+        return new PlaceAutoCompletePresenter(getPeopleAddressesUseCase, getUserAddressUseCase, getUserAddressCacheUseCase);
     }
 
     private GetUserAddressUseCase provideGetUserAddressUseCase(String token, String userId) {

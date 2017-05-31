@@ -49,4 +49,6 @@ public interface BookingRideRepository {
     Observable<ApplyPromo> applyPromo(TKPDMapParam<String, Object> parameters);
 
     Observable<List<RideAddress>> getAddresses(TKPDMapParam<String, Object> parameters);
+
+    Observable<List<RideAddress>> getAddressesFromCache();
 }
