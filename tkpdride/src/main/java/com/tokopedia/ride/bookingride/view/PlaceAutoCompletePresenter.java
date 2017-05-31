@@ -140,9 +140,6 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (isViewAttached()) {
-                    actionGetUserAddresses(false);
-                }
             }
 
             @Override
