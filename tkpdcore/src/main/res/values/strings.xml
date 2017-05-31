@@ -113,7 +113,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_old_email">Email Terdaftar</string>
     <string name="title_new_desired_email">Masukkan Email Baru!</string>
     <string name="title_insert_new_phone_number">Masukkan Nomor Baru</string>
-    <string name="title_send_verification_code">Request</string>
+    <string name="title_send_verification_code">Request OTP</string>
     <string name="title_verification_timeout">Maaf, Telah terjadi masalah koneksi</string>
     <string name="message_verification_timeout">Silahkan coba kembali</string>
     <string name="link_change_email">Ubah Email</string>
