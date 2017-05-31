@@ -473,7 +473,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onShopFavoriteUpdated(int statFave) {
-        shopInfoView.updateFavoriteStatus(statFave);
+        shopInfoView.reverseFavorite();
     }
 
     @Override
