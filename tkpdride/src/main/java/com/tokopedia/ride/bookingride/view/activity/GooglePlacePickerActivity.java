@@ -96,7 +96,7 @@ public class GooglePlacePickerActivity extends BaseActivity
             getFragmentManager().popBackStack();
 
             boolean showAutoDetectLocation = true;
-            boolean selectLocationOnMap = false;
+            boolean selectLocationOnMap = true;
             if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
                 showAutoDetectLocation = false;
                 selectLocationOnMap = true;
