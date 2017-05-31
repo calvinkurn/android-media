@@ -159,6 +159,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     private String lastOperatorSelected = "";
     private String lastProductSelected = "";
 
+    private DigitalCheckoutPassData digitalCheckoutPassDataState;
+
     public static RechargeFragment newInstance(Category category, int position) {
         RechargeFragment rechargeFragment = new RechargeFragment();
         Bundle bundle = new Bundle();
@@ -172,6 +174,21 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         setVisibilityImageAndProductView(isVisibleToUser);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null)
+            digitalCheckoutPassDataState = savedInstanceState.getParcelable(
+                    "EXTRA_CHECKOUT_PASS_DATA"
+            );
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable("EXTRA_CHECKOUT_PASS_DATA", digitalCheckoutPassDataState);
     }
 
     @Override
@@ -194,6 +211,17 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                         String message = intent.getStringExtra(IDigitalModuleRouter.EXTRA_MESSAGE);
                         if (!TextUtils.isEmpty(message)) {
                             NetworkErrorHelper.showSnackbar(getActivity(), message);
+                        }
+                    }
+                    break;
+                case LOGIN_REQUEST_CODE:
+                    if (SessionHandler.isV4Login(getActivity()) && digitalCheckoutPassDataState != null) {
+                        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+                            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+                            startActivityForResult(
+                                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassDataState),
+                                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+                            );
                         }
                     }
                     break;
@@ -994,6 +1022,8 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
     //endregion
 
     private void gotoLogin() {
+        digitalCheckoutPassDataState = getGeneratedCheckoutPassData(rechargeEditText.getText());
+
         Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         rechargePresenter.saveLastInputToCache(
@@ -1004,8 +1034,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
         storeLastClientNumberTyped(String.valueOf(category.getId()), rechargeEditText.getText());
 
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
-
-
     }
 
     private String getUrlCheckout() {
@@ -1030,7 +1058,21 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
 
     private void goToNativeCheckout() {
         String clientNumber = rechargeEditText.getText();
-        DigitalCheckoutPassData digitalCheckoutPassData = new DigitalCheckoutPassData.Builder()
+        DigitalCheckoutPassData digitalCheckoutPassData = getGeneratedCheckoutPassData(clientNumber);
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
+            startActivityForResult(
+                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
+                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
+            );
+        }
+
+        storeLastClientNumberTyped(String.valueOf(category.getId()), clientNumber);
+    }
+
+    @NonNull
+    private DigitalCheckoutPassData getGeneratedCheckoutPassData(String clientNumber) {
+        return new DigitalCheckoutPassData.Builder()
                 .action("init_data")
                 .categoryId(String.valueOf(category.getId()))
                 .clientNumber(clientNumber)
@@ -1049,15 +1091,6 @@ public class RechargeFragment extends Fragment implements RechargeEditText.Recha
                 .utmSource(bundle.getString(ARG_UTM_SOURCE, "android"))
                 .utmMedium(bundle.getString(ARG_UTM_MEDIUM, "widget"))
                 .build();
-        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) getActivity().getApplication();
-            startActivityForResult(
-                    digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                    IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-            );
-        }
-
-        storeLastClientNumberTyped(String.valueOf(category.getId()), clientNumber);
     }
 
     private String generateATokenRechargeCheckout() {
