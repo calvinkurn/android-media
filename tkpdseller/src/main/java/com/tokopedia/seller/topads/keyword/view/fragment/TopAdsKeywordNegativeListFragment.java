@@ -164,7 +164,7 @@ public class TopAdsKeywordNegativeListFragment extends TopAdsBaseKeywordListFrag
         filterStatus = intent.getIntExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, KeywordStatusTypeDef.KEYWORD_STATUS_ALL);
         if (groupAd != null)
             filters.put(TopAdsExtraConstant.EXTRA_FILTER_CURRECT_GROUP_SELECTION, groupAd.getId());
-        filters.put(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.toString(status));
+        filters.put(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, Integer.toString(filterStatus));
         return filters;
     }
 
