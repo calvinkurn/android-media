@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">tkpddigital</string>
-    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai voucher
+    <string name="notes_voucher">* Hanya berlaku untuk satu kali pembayaran.\n** Sisa nilai promo
         tidak dapat dikembalikan (hangus) apabila
         melewati masa kadaluarsa."</string>
-    <string name="kode_voucher">Kode Voucher</string>
-    <string name="error_voucher">Kode voucher tidak ditemukan</string>
-    <string name="empty_voucher">Masukkan kode voucher terlebih dahulu</string>
+    <string name="kode_voucher">Kode Promo</string>
+    <string name="error_voucher">Kode promo tidak ditemukan</string>
+    <string name="empty_voucher">Masukkan kode promo terlebih dahulu</string>
     <string name="cancel_voucher">Batalkan</string>
     <string name="use_voucher">Gunakan</string>
-    <string name="title_detail_voucher">Anda mendapatkan voucher:</string>
+    <string name="title_detail_voucher">Anda mendapatkan promo:</string>
     <string name="link_lihat_detail">Lihat Detail</string>
     <string name="link_tutup">Tutup</string>
     <string name="user_price_info">Masukkan jumlah nominal yang akan dibayar, %1$s sampai
@@ -25,7 +25,7 @@
     <string name="label_btn_re_request_otp_digital_module">Kirim Ulang Kode Verifikasi</string>
     <string name="label_hint_input_otp_digital_module">Masukkan Kode Verifikasi</string>
     <string name="label_price_cart_digital">Harga</string>
-    <string name="label_discount_cart_digital">Diskon Voucher</string>
+    <string name="label_discount_cart_digital">Diskon Promo</string>
     <string name="label_total_payment_cart_digital">Total Pembayaran</string>
     <string name="label_btn_next_cart_digital">LANJUT</string>
     <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>
